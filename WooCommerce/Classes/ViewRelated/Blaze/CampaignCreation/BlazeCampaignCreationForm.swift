@@ -274,6 +274,8 @@ private extension BlazeCampaignCreationForm {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .cornerRadius(Layout.cornerRadius)
+                    .redacted(reason: viewModel.isLoadingProductImage ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoadingProductImage)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
@@ -324,6 +326,7 @@ private extension BlazeCampaignCreationForm {
                     radius: Layout.shadowRadius,
                     x: 0,
                     y: Layout.shadowYOffset)
+            .environment(\.colorScheme, .light)
 
             VStack(spacing: Layout.contentPadding) {
                 // Label "Suggested by AI"
@@ -331,10 +334,11 @@ private extension BlazeCampaignCreationForm {
                     Image(uiImage: .sparklesImage)
                         .renderingMode(.template)
                         .resizable()
-                        .foregroundColor(Color(uiColor: .textSubtle))
+                        .foregroundColor(Color(.textSubtle))
                         .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
                     Text(Localization.suggestedByAI)
+                        .foregroundColor(Color(.textSubtle))
                         .subheadlineStyle()
 
                     Spacer()
@@ -356,7 +360,6 @@ private extension BlazeCampaignCreationForm {
                 .shimmering(active: !viewModel.canEditAd)
             }
         }
-        .environment(\.colorScheme, .light)
         .padding(Layout.contentPadding)
         .background(Color(light: .init(uiColor: .systemGray6),
                           dark: .init(uiColor: .tertiarySystemBackground)))
@@ -454,11 +457,6 @@ private extension BlazeCampaignCreationForm {
             "blazeCampaignCreationForm.title",
             value: "Preview",
             comment: "Title of the Blaze campaign creation screen"
-        )
-        static let shopNow = NSLocalizedString(
-            "blazeCampaignCreationForm.shopNow",
-            value: "Shop Now",
-            comment: "Button to shop on the Blaze ad preview"
         )
         static let suggestedByAI = NSLocalizedString(
             "blazeCampaignCreationForm.suggestedByAI",
@@ -606,6 +604,12 @@ private extension BlazeCampaignCreationForm {
 
 struct BlazeCampaignCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+        Group {
+            BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+                .preferredColorScheme(.light)
+
+            BlazeCampaignCreationForm(viewModel: .init(siteID: 123, productID: 123, onCompletion: {}))
+                .preferredColorScheme(.dark)
+        }
     }
 }

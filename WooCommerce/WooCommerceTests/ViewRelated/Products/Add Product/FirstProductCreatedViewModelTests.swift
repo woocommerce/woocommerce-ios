@@ -176,16 +176,16 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
                                                      productName: productName,
                                                      showShareProductButton: showShareProductButton,
                                                      eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false))
+        var launchAISharingFlowCalled = false
+        viewModel.launchAISharingFlow = {
+            launchAISharingFlowCalled = true
+        }
 
         // When
-        waitForExpectation { exp in
-            exp.isInverted = true
-            viewModel.launchAISharingFlow = {
-                exp.fulfill()
-            }
+        viewModel.didTapShareProduct()
 
-            viewModel.didTapShareProduct()
-        }
+        // Then
+        XCTAssertFalse(launchAISharingFlowCalled)
     }
 
     func test_it_fires_launchAISharingFlow_when_AI_eligible() throws {
@@ -198,16 +198,16 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
                                                      showShareProductButton: showShareProductButton,
                                                      isPad: true,
                                                      eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true))
-
+        var launchAISharingFlowCalled = false
+        viewModel.launchAISharingFlow = {
+            launchAISharingFlowCalled = true
+        }
 
         // When
-        waitForExpectation { exp in
-            viewModel.launchAISharingFlow = {
-                exp.fulfill()
-            }
+        viewModel.didTapShareProduct()
 
-            viewModel.didTapShareProduct()
-        }
+        // Then
+        XCTAssertTrue(launchAISharingFlowCalled)
     }
 }
 

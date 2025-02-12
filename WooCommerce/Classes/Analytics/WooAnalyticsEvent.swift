@@ -68,18 +68,10 @@ extension WooAnalyticsEvent {
         case general
         /// Shown in products banner for general feedback.
         case productsGeneral  = "products_general"
-        /// Shown in shipping labels banner for Milestone 3 features.
-        case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
         /// Shown in orders banner for order creation release.
         case orderCreation = "order_creation"
-        /// Shown in beta feature banner for coupon management.
-        case couponManagement = "coupon_management"
-        /// Shown in store setup task list
-        case storeSetup = "store_setup"
-        /// Shown in Product details form for a AI generated product
-        case productCreationAI = "product_creation_ai"
         /// Shown in the order form after adding a shipping line
         case orderFormShippingLines = "order_form_shipping_lines"
     }
@@ -1819,6 +1811,7 @@ extension WooAnalyticsEvent {
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
             case readerSoftwareUpdate = "reader_software_update"
+            case readerSoftwareUpdateError = "reader_software_update_error"
             case locationPermissionDenied = "location_permission_denied"
             case other = "unknown"
         }
@@ -2493,10 +2486,12 @@ extension WooAnalyticsEvent {
             case dashboardMainStats
             case analyticsHub
             case appStartup
+            case pointOfSaleLoaded
         }
 
         private enum Keys {
             static let waitingTime = "waiting_time"
+            static let millisecondsTimeElapsedInSplashScreen = "milliseconds_time_elapsed_in_splash_screen"
         }
 
         static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
@@ -2511,6 +2506,8 @@ extension WooAnalyticsEvent {
                 return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             case .appStartup:
                 return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .pointOfSaleLoaded:
+                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime])
             }
         }
     }
@@ -2527,6 +2524,7 @@ extension WooAnalyticsEvent {
             case isJetpackInstalled = "is_jetpack_installed"
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
+            case hiddenSiteCount = "hidden_site_count"
         }
 
         /// Tracks when the result for site discovery is returned
@@ -2546,6 +2544,37 @@ extension WooAnalyticsEvent {
         ///
         static func newToWooTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerNewToWooTapped, properties: [:])
+        }
+
+        /// Tracks when the Edit button is shown on the top right.
+        ///
+        static func editButtonShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonShown, properties: [:])
+        }
+
+        /// Tracks when the user taps the Edit button on the top right.
+        ///
+        static func editButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerEditButtonTapped, properties: [:])
+        }
+
+        /// Tracks when the user taps the Save button on the edit store list screen
+        ///
+        static func listSaveButtonTapped(hiddenSiteCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSaveButtonTapped,
+                              properties: [Key.hiddenSiteCount.rawValue: hiddenSiteCount])
+        }
+
+        /// Tracks when saving is successful
+        ///
+        static func listEditSavingSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSavingSuccess, properties: [:])
+        }
+
+        /// Tracks when saving fails
+        ///
+        static func listEditSavingFailure(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .sitePickerListSavingFailure, properties: [:], error: error)
         }
     }
 }

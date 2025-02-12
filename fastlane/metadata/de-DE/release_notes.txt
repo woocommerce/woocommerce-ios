@@ -1,3 +1,1 @@
-Wir haben diese neue Version in nur zwei Wochen mit unzähligen Neuerungen ausgestattet! Es gibt nun einen GTIN-Support für die global eindeutige Produktkennung. Außerdem kannst du den Call-to-Action in Blaze-Kampagnen bearbeiten.
-
-Das Einrichten persönlicher Zahlungen im Shop gelingt nun noch schneller, die Bestätigung für den Versand von Belegen ist eindeutiger und der Test von „Tap to Pay“ auf dem iPhone ist jetzt noch nahtloser. Außerdem haben wir die Dashboard-Statistiken verbessert und einige Bugs behoben.
+Profitiere von einer aktualisierten WooCommerce-App, die an unser neues Branding angepasst wurde! Außerdem haben wir die Zuverlässigkeit von Zahlungen verbessert: Bei Updates am Kartenlesegerät werden Probleme mit niedrigem Akkustand nun besser gehandhabt und Fehler bei Zahlungen und Rückerstattungen werden reibungsloser behoben. Genieße bei jeder Transaktion ein reibungsloseres und optimiertes Erlebnis.

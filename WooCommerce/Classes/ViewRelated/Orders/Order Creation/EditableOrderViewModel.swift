@@ -63,11 +63,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates whether user has made any changes
     ///
     var hasChanges: Bool {
-        switch flow {
-        case .creation:
-            return orderSynchronizer.order != OrderFactory.emptyNewOrder
-        case .editing(let initialOrder):
-            return orderSynchronizer.order != initialOrder
+        if selectionSyncApproach == .onRecalculateButtonTap {
+            // In split view, we need to check whether the screen has changes that are not yet synced to the order.
+            return orderSynchronizer.orderHasBeenChanged || syncRequired
+        } else {
+            return orderSynchronizer.orderHasBeenChanged
         }
     }
 
@@ -1550,6 +1550,13 @@ private extension EditableOrderViewModel {
         syncRequired = false
     }
 
+    func isSyncRequired(products: [Product], variations: [ProductVariation]) -> Bool {
+        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+
+        return (addedItemsToSync + removedItemsToSync).isNotEmpty
+    }
+
     /// Adds a selected product (from the product list) to the order.
     ///
     func changeSelectionStateForProduct(_ product: Product, to isSelected: Bool) {
@@ -2012,7 +2019,7 @@ private extension EditableOrderViewModel {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
         case .onRecalculateButtonTap:
-            syncRequired = true
+            syncRequired = isSyncRequired(products: selectedProducts, variations: selectedProductVariations)
         case .onSelectorButtonTap:
             return
         }

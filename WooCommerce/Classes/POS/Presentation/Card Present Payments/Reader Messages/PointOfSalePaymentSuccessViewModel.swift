@@ -1,0 +1,50 @@
+import Foundation
+
+struct PointOfSalePaymentSuccessViewModel: Equatable {
+    let title: String = Localization.title
+    let message: String?
+
+    init(formattedOrderTotal: String?, paymentMethod: PointOfSalePaymentMethod) {
+        if let formattedOrderTotal {
+            self.message = String(format: paymentMethod.paymentSuccessMessageFormatString, formattedOrderTotal)
+        } else {
+            self.message = nil
+        }
+    }
+}
+
+private extension PointOfSalePaymentSuccessViewModel {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.title",
+            value: "Payment successful",
+            comment: "Title shown to users when payment is made successfully."
+        )
+
+        static let messageCard = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.message.card",
+            value: "A card payment of %1$@ was successfully made",
+            comment: "Message shown to users when payment is made. %1$@ is a placeholder for the order " +
+            " total, e.g $10.50. Please include %1$@ in your formatted string"
+        )
+
+        static let messageCash = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.message.cash",
+            value: "A cash payment of %1$@ was successfully made",
+            comment: "Message shown to users when payment is made. %1$@ is a placeholder for the order " +
+            " total, e.g $10.50. Please include %1$@ in your formatted string"
+        )
+    }
+}
+
+private extension PointOfSalePaymentMethod {
+    var paymentSuccessMessageFormatString: String {
+        switch self {
+        case .card:
+            return PointOfSalePaymentSuccessViewModel.Localization.messageCard
+
+        case .cash:
+            return PointOfSalePaymentSuccessViewModel.Localization.messageCash
+        }
+    }
+}

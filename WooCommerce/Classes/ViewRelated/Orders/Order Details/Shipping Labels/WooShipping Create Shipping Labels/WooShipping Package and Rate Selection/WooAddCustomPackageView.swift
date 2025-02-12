@@ -129,14 +129,14 @@ struct WooAddCustomPackageView: View {
                         }
                         else {
                             Spacer()
-                            Button(WooShippingAddPackageView.Localization.addPackage) {
+                            Button(selectionButtonText) {
                                 Task { @MainActor in
                                     isAddingPackage = true
                                     await addPackageButtonTapped()
                                     isAddingPackage = false
                                 }
                             }
-                            .disabled(!viewModel.validateCustomPackageInputFields())
+                            .disabled(selectionButtonDisabled)
                             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
                             .padding(.bottom)
                         }
@@ -163,6 +163,17 @@ struct WooAddCustomPackageView: View {
                 .disabled(isSavingPackage)
             }
         }
+    }
+
+    private var selectionButtonDisabled: Bool {
+        !viewModel.validateCustomPackageInputFields()
+    }
+
+    private var selectionButtonText: String {
+        if selectionButtonDisabled {
+            return WooShippingAddPackageView.Localization.addPackageDetails
+        }
+        return WooShippingAddPackageView.Localization.addPackage
     }
 
     private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {

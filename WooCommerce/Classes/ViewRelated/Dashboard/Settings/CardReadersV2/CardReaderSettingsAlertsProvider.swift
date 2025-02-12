@@ -74,6 +74,7 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func updatingFailedLowBattery(from: UIViewController,
                                   batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
                                   close: @escaping () -> Void)
 
     /// Defines an alert indicating an update couldn't be installed.

@@ -1,13 +1,14 @@
 import SwiftUI
 import Kingfisher
 
-struct ProductImageThumbnail: View {
+struct ProductImageThumbnail<Placeholder: View>: View {
     private let productImageURL: URL?
     private let productImageSize: CGFloat
     private let scale: CGFloat
     private let productImageCornerRadius: CGFloat
     private let foregroundColor: Color
     private let cachesOriginalImage: Bool
+    private let placeholder: Placeholder
 
     /// Image processor to resize images in a background thread to avoid blocking the UI
     ///
@@ -23,13 +24,15 @@ struct ProductImageThumbnail: View {
          scale: CGFloat,
          productImageCornerRadius: CGFloat = 0,
          foregroundColor: Color,
-         cachesOriginalImage: Bool = false) {
+         cachesOriginalImage: Bool = false,
+         @ViewBuilder placeholder: () -> Placeholder) {
         self.productImageURL = productImageURL
         self.productImageSize = productImageSize
         self.scale = scale
         self.productImageCornerRadius = productImageCornerRadius
         self.foregroundColor = foregroundColor
         self.cachesOriginalImage = cachesOriginalImage
+        self.placeholder = placeholder()
     }
 
     var body: some View {
@@ -37,7 +40,7 @@ struct ProductImageThumbnail: View {
             .url(productImageURL)
             .cacheOriginalImage(cachesOriginalImage)
             .placeholder {
-                Image(uiImage: .productPlaceholderImage)
+                placeholder
             }
             .setProcessor(imageProcessor)
             .resizable()
@@ -46,5 +49,24 @@ struct ProductImageThumbnail: View {
             .cornerRadius(productImageCornerRadius)
             .foregroundColor(foregroundColor)
             .accessibilityHidden(true)
+    }
+}
+
+// Convenience initializer that maintains the default behavior.
+extension ProductImageThumbnail where Placeholder == Image {
+    init(productImageURL: URL?,
+         productImageSize: CGFloat,
+         scale: CGFloat,
+         productImageCornerRadius: CGFloat = 0,
+         foregroundColor: Color,
+         cachesOriginalImage: Bool = false) {
+        self.init(productImageURL: productImageURL,
+                 productImageSize: productImageSize,
+                 scale: scale,
+                 productImageCornerRadius: productImageCornerRadius,
+                 foregroundColor: foregroundColor,
+                 cachesOriginalImage: cachesOriginalImage) {
+            Image(uiImage: .productPlaceholderImage)
+        }
     }
 }

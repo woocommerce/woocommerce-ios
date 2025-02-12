@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.7
+This update brings improvements to media library and login experience. You'll find enhanced accessibility in tax-related views and clearer product image organization with cover tags to help you manage your store. Update now for a smoother WooCommerce experience!
+
+## 21.6
+Experience a refreshed WooCommerce app with an updated look that aligns with our new branding! We’ve also improved payment reliability—card reader updates now handle low battery issues better, and errors during payments and refunds are managed more smoothly. Enjoy a more seamless and polished experience in every transaction.
+
+## 21.5
+Get ready for a smoother WooCommerce experience! This update brings smarter AI-powered product previews, instant dashboard stats, and improved email receipts for failed payments. We’ve also fine-tuned order creation, enhanced Jetpack setups, and enabled previews for coming-soon stores. Plus, we’ve addressed navigation, database recovery, and streamlined workflows.
+
+## 21.4
+This update introduces the ability to hide specific stores from the store picker, perfect for agencies managing multiple sites. We’ve also enhanced plugin info fetching to handle unexpected data types, ensuring smoother performance. Additionally, a bug on iPad causing order creation issues with custom amounts has been resolved. Enjoy a more focused and reliable experience!
+
 ## 21.3
 
 This update brings enhanced reliability and clarity to your WooCommerce experience! Enjoy improved Jetpack setup, smoother media handling, and better product and payment workflows. We’ve also optimized storage and addressed key UI issues to elevate performance. Plus, Tap to Pay onboarding now guides you with ease!

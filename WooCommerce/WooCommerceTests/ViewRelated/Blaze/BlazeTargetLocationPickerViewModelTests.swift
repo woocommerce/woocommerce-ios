@@ -90,7 +90,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
         viewModel.searchQuery = "test"
 
         // Then
-        XCTAssertEqual(viewModel.emptyViewImage, .searchNoResultImage)
+        XCTAssertEqual(viewModel.emptyViewImage, .magnifyingGlassNotFound)
     }
 
     func test_emptyViewMessage_is_updated_based_on_query_length() {

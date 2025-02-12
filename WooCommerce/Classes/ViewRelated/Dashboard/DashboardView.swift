@@ -25,8 +25,6 @@ struct DashboardView: View {
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
     var viewAllOnboardingTasksTapped: ((Site) -> Void)?
-    /// Set externally in the hosting controller.
-    var onboardingShareFeedbackAction: (() -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllBlazeCampaignsTapped: (() -> Void)?
@@ -215,8 +213,6 @@ private extension DashboardView {
                         }, onViewAllTapped: {
                             guard let currentSite else { return }
                             viewAllOnboardingTasksTapped?(currentSite)
-                        }, shareFeedbackAction: {
-                            onboardingShareFeedbackAction?()
                         })
                     case .blaze:
                         BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
@@ -285,7 +281,7 @@ private extension DashboardView {
 
     var shareStoreCard: some View {
         VStack(spacing: .zero) {
-            Image(uiImage: .blazeSuccessImage)
+            Image(uiImage: .launchImage)
                 .padding(.top, Layout.imagePadding)
                 .padding(.bottom, Layout.elementPadding)
 
@@ -437,7 +433,7 @@ private extension DashboardView {
 
             static let subtitle = NSLocalizedString(
                 "dashboardView.shareStoreCard.subtitle",
-                value: "Use email or social media to spread the word about your store",
+                value: "Use email or social media to spread the word about your store.",
                 comment: "Subtitle of the Share Your Store card"
             )
 

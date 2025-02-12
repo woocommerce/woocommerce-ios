@@ -14,8 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int,
-                                      pageSize: Int) async throws -> [ProductVariation]
+                                      pageNumber: Int) async throws -> PagedItems<ProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -76,25 +75,40 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///   - siteID: Site for which we'll fetch remote product variations.
     ///   - parentProductID: Product for which we'll fetch remote product variations.
     ///   - pageNumber: Number of page that should be retrieved.
-    ///   - pageSize: Number of product variations to be retrieved per page.
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber,
-                                             pageSize: Int = Default.pageSize) async throws -> [ProductVariation] {
+                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<ProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
+                                               downloadable: false,
+                                               status: .published,
+                                               orderBy: .menuOrder,
+                                               order: .ascending,
                                                context: nil,
                                                pageNumber: pageNumber,
-                                               pageSize: pageSize)
+                                               pageSize: POSConstants.variationsPerPage)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
-        return try await enqueue(request, mapper: mapper)
+
+        let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        // Extracts the total number of pages from the response headers.
+        // Response header names are case insensitive.
+        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+            .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
+
+        return PagedItems(items: variations, hasMorePages: hasMorePages)
     }
 
     private func productVariationsRequest(for siteID: Int64,
                                           productID: Int64,
                                           variationIDs: [Int64],
+                                          downloadable: Bool? = nil,
+                                          status: ProductStatus? = nil,
+                                          orderBy: OrderByField? = nil,
+                                          order: OrderDirection? = nil,
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int) -> JetpackRequest {
@@ -103,8 +117,12 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
+            ParameterKey.downloadable: downloadable.map { String($0) },
             ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs
+            ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs,
+            ParameterKey.status: status?.rawValue,
+            ParameterKey.orderBy: orderBy?.rawValue,
+            ParameterKey.order: order?.rawValue
         ]
             .compactMapValues { $0 }
 
@@ -326,5 +344,26 @@ public extension ProductVariationsRemote {
         static let contextKey: String = "context"
         static let image: String = "image"
         static let include: String    = "include"
+        static let downloadable: String = "downloadable"
+        static let status: String = "status"
+        static let orderBy: String    = "orderby"
+        static let order: String      = "order"
+    }
+
+    enum OrderByField: String {
+        case date
+        case menuOrder = "menu_order"
+    }
+
+    enum OrderDirection: String {
+        case ascending = "asc"
+        case descending = "desc"
+    }
+
+}
+
+private extension ProductVariationsRemote {
+    enum POSConstants {
+        static let variationsPerPage: Int = 25
     }
 }

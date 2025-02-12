@@ -6,4 +6,5 @@ struct PointOfSaleOrderTotals: Equatable {
     let cartTotal: String
     let orderTotal: String
     let taxTotal: String
+    let orderTotalDecimal: Decimal
 }

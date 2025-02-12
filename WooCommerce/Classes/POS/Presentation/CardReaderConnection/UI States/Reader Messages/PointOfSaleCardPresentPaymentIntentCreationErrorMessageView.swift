@@ -12,12 +12,12 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posPrimaryText)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
@@ -25,12 +25,12 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 if let editOrderButtonViewModel = viewModel.editOrderButtonViewModel {
                     Button(editOrderButtonViewModel.title,
                            action: editOrderButtonViewModel.actionHandler)
-                    .buttonStyle(POSSecondaryButtonStyle())
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
         }

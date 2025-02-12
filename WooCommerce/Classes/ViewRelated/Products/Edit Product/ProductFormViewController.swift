@@ -254,6 +254,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .published)
     }
 
+    @objc func dismissPresentedViewController() {
+        presentedViewController?.dismiss(animated: true, completion: nil)
+    }
+
     func saveProductAsDraft() {
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
@@ -1042,7 +1046,21 @@ private extension ProductFormViewController {
         guard let url = URL(string: product.permalink) else {
             return
         }
-        WebviewHelper.launch(url, with: self)
+
+        let stores = ServiceLocator.stores
+        guard let site = stores.sessionManager.defaultSite,
+            stores.shouldAuthenticateAdminPage(for: site) else {
+            WebviewHelper.launch(url.absoluteString, with: self)
+            return
+        }
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let controller = AuthenticatedWebViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: controller)
+        controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                      target: self,
+                                                                      action: #selector(dismissPresentedViewController))
+        present(navigationController, animated: true)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
@@ -1329,14 +1347,16 @@ private extension ProductFormViewController {
             UIAlertController.presentDiscardNewProductActionSheet(viewController: viewControllerToPresentAlert,
                                                                   onSaveDraft: { [weak self] in
                 self?.saveProductAsDraft()
-            }, onDiscard: {
+            }, onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
             })
         case .edit:
             UIAlertController.presentDiscardChangesActionSheet(viewController: viewControllerToPresentAlert,
-                                                               onDiscard: {
+                                                               onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
@@ -1344,6 +1364,10 @@ private extension ProductFormViewController {
         case .readonly:
             break
         }
+    }
+
+    func resetProductImages() {
+        productImageActionHandler.resetProductImages(to: viewModel.productModel)
     }
 }
 

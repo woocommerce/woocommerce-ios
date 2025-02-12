@@ -401,7 +401,7 @@ private extension CollectOrderPaymentUseCase {
                                                       paymentGatewayAccount: PaymentGatewayAccount,
                                                       channel: PaymentChannel,
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard case ServerSidePaymentCaptureError.paymentGateway(.otherError) = error else {
+        guard case ServerSidePaymentCaptureError.paymentGateway = error else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,
@@ -756,10 +756,6 @@ private extension CollectOrderPaymentUseCase {
                         }
                     }
                 },
-                                                         noReceiptAction: noReceiptAction)
-            } else if MFMailComposeViewController.canSendMail() {
-                receiptState = .promptToSendEmailReceipt(printReceiptAction: presentBackendReceiptAction,
-                                                         emailReceiptAction: presentBackendReceiptAction,
                                                          noReceiptAction: noReceiptAction)
             } else {
                 receiptState = .emailSendingNotSupported(printReceiptAction: presentBackendReceiptAction,

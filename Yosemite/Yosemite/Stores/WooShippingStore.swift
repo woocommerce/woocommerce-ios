@@ -65,6 +65,12 @@ public final class WooShippingStore: Store {
                                   completion: completion)
         case let .printLabel(siteID, labelIDs, paperSize, completion):
             printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
+        case .loadOriginAddresses(let siteID, let completion):
+            loadOriginAddresses(siteID: siteID, completion: completion)
+        case let .validateAddress(siteID, address, completion):
+            validateAddress(siteID: siteID, address: address, completion: completion)
+        case let .updateOriginAddress(siteID, address, isVerified, completion):
+            updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
         }
     }
 }
@@ -183,6 +189,11 @@ private extension WooShippingStore {
                     completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         remote.printLabel(siteID: siteID, labelIDs: labelIDs, paperSize: paperSize, completion: completion)
     }
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
+        remote.loadOriginAddresses(siteID: siteID, completion: completion)
+    }
 }
 
 // MARK: Helpers
@@ -242,6 +253,19 @@ private extension WooShippingStore {
                 }
             }
         }
+    }
+
+    func validateAddress(siteID: Int64,
+                         address: ShippingLabelAddress,
+                         completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
+        remote.addressValidation(siteID: siteID, address: address, completion: completion)
+    }
+
+    func updateOriginAddress(siteID: Int64,
+                             address: WooShippingOriginAddress,
+                             isVerified: Bool,
+                             completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
+        remote.updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
     }
 }
 

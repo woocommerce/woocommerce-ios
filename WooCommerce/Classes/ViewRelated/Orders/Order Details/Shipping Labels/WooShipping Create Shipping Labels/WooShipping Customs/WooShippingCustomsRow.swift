@@ -1,8 +1,11 @@
 import SwiftUI
 import WooFoundation
+import Yosemite
 
 struct WooShippingCustomsRow: View {
     let informationIsCompleted: Bool
+    let customsFormViewModel: WooShippingCustomsFormViewModel
+
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var showCustomsForm: Bool = false
 
@@ -15,8 +18,8 @@ struct WooShippingCustomsRow: View {
             Spacer()
 
             Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .captionStyle()
                 .foregroundColor(.black)
+                .captionStyle()
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)
                 .background(
@@ -35,8 +38,7 @@ struct WooShippingCustomsRow: View {
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
         .sheet(isPresented: $showCustomsForm) {
-            WooShippingCustomsForm(viewModel: WooShippingCustomsFormViewModel(internationalTransactionNumber: "123",
-                                                                              returnToSenderIfNotDelivered: true))
+            WooShippingCustomsForm(viewModel: customsFormViewModel)
         }
     }
 }

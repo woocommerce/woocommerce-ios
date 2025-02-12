@@ -300,13 +300,19 @@ private extension StorePickerViewController {
             self.updateFooterViewIfNeeded()
         }.store(in: &subscriptions)
 
-        viewModel.$shouldEnableHidingStores.sink { [weak self] shouldEnable in
-            guard let self else { return }
-            navigationItem.rightBarButtonItem = !shouldEnable ? nil : UIBarButtonItem(title: Localization.editListButton,
-                                                                                      style: .plain,
-                                                                                      target: self,
-                                                                                      action: #selector(editList))
-        }.store(in: &subscriptions)
+        viewModel.$shouldEnableHidingStores
+            .removeDuplicates()
+            .sink { [weak self] shouldEnable in
+                guard let self else { return }
+                if shouldEnable {
+                    ServiceLocator.analytics.track(event: .SitePicker.editButtonShown())
+                }
+                navigationItem.rightBarButtonItem = !shouldEnable ? nil : UIBarButtonItem(title: Localization.editListButton,
+                                                                                          style: .plain,
+                                                                                          target: self,
+                                                                                          action: #selector(editList))
+            }
+            .store(in: &subscriptions)
     }
 
     func backgroundColor() -> UIColor {
@@ -657,6 +663,7 @@ private extension StorePickerViewController {
     }
 
     @objc func editList() {
+        ServiceLocator.analytics.track(event: .SitePicker.editButtonTapped())
         let editViewModel = EditStoreListViewModel(availableSites: viewModel.allFetchedSites,
                                                    displayedSites: viewModel.displayedStores,
                                                    currentlySelectedSite: currentlySelectedSite,

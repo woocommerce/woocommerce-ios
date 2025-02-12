@@ -9,7 +9,7 @@ struct LastOrdersDashboardEmptyView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
-            Image(uiImage: .emptyOrdersImage)
+            Image(uiImage: .boxesImage)
 
             Text(message)
                 .subheadlineStyle()

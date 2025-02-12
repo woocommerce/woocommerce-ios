@@ -259,6 +259,11 @@ enum WooAnalyticsStat: String {
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
     case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
     case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+    case sitePickerEditButtonShown = "site_picker_edit_button_shown"
+    case sitePickerEditButtonTapped = "site_picker_edit_button_tapped"
+    case sitePickerListSaveButtonTapped = "site_picker_list_save_button_tapped"
+    case sitePickerListSavingSuccess = "site_picker_list_saving_success"
+    case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
     // MARK: Site creation
     //
@@ -546,6 +551,13 @@ enum WooAnalyticsStat: String {
     // MARK: Order List Sorting/Filtering
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
+
+    // MARK: Filter History
+    //
+    case filterHistoryButtonTapped = "filter_history_button_tapped"
+    case filterHistoryPastFilterApplied = "filter_history_past_filter_applied"
+    case filterHistoryPastFilterRemoved = "filter_history_past_filter_removed"
+    case filterHistoryCleared = "filter_history_cleared"
 
     // MARK: Barcode Scanning events
     //
@@ -1256,9 +1268,24 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
-    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
-    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
-    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
+    case pointOfSaleLoaded = "pos_loaded"
+    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
+    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
+    case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCheckoutTapped = "checkout_tapped"
+    case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleClearCartTapped = "clear_cart_tapped"
+    case pointOfSaleExitMenuItemTapped = "exit_pos_menu_item_tapped"
+    case pointOfSaleExitConfirmed = "exit_pos_confirmed"
+    case pointOfSaleGetSupportTapped = "get_support_tapped"
+    case pointOfSaleSimpleProductsExplanationDialogShown = "simple_products_explanation_dialog_shown"
+    case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
+    case pointOfSaleEmailReceiptTapped = "email_receipt_tapped"
+    case pointOfSaleEmailReceiptSendTapped = "email_receipt_send_tapped"
+    case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
+    case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

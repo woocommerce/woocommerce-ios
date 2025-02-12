@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-11-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-02-06 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -251,10 +251,6 @@ which should be translated separately and considered part of this sentence. */
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d elementos";
 
-/* Settings > Manage Card Reader > Connect > Help hint number 1
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
-"1" = "1";
-
 /* Navigation bar title for selecting multiple products when one product has been selected.
    Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 producto seleccionado";
@@ -268,37 +264,14 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Disponible como estándar en WooCommerce Payments (se aplican restricciones). Es posible que para otros proveedores de pago se necesiten extensiones adicionales.";
 
-/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order" = "1. Crea un pedido";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 2
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
-"2" = "2";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Solo disponible en EE. UU.: para otros países, se requerirá una extensión adicional.";
-
-/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
-"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Toca en «Cobrar pago» y elige «Tap to Pay on iPhone».";
-
-/* Settings > Manage Card Reader > Connect > Help hint number 3
-   Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
-"3" = "3";
-
-/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
-"3. Present your iPhone to the customer." = "3. Presenta tu iPhone al cliente.";
 
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. Una vez completada la conexión, estarás conectado a tu tienda.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minutos";
-
-/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
-"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Tu cliente sostiene su tarjeta horizontalmente en la parte superior de tu iPhone, sobre el símbolo sin contacto.";
-
-/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
-"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Cuando aparezca la marca «Hecho», la tienda procesará el pago y la transacción se habrá completado.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -354,12 +327,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Recuperación de carritos abandonados";
-
-/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
-"About Tap to Pay" = "Acerca de Tap to Pay";
-
-/* Navigation title for the About Tap to Pay on iPhone Screen. */
-"About Tap to Pay on iPhone" = "Acerca de Tap to Pay on iPhone";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Acerca de la aplicación";
@@ -816,8 +783,7 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "Cualquiera";
 
-/* Format of a product variation attribute description where the attribute is set to any value.
-   Product variation attribute description where the attribute is set to any value. */
+/* Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Cualquier %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -984,9 +950,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the secondary button on the store onboarding launched store screen. */
 "Back to My Store" = "Volver a mi tienda";
-
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"Back to Order" = "Volver al pedido";
 
 /* Text for the button to dismiss the store picker error screen */
 "Back to sites" = "Volver a los sitios";
@@ -1282,7 +1245,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "Cancelar";
 
@@ -1314,21 +1276,13 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "No se puede añadir el paquete";
 
-/* Order gift card error notice message when the gift card cannot be applied.
-   Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "Error al aplicar la tarjeta regalo al pedido";
-
-/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
-"Cannot apply gift card to order error: %1$@" = "Error al aplicar la tarjeta regalo al pedido: %1$@";
-
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "El producto no se puede duplicar";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "No se ha podido encontrar información sobre el escritorio WP-Admin de tu sitio. Inténtalo de nuevo.";
 
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
-   The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error updating the product */
 "Cannot update product" = "No se puede actualizar el producto";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1559,7 +1513,6 @@ which should be translated separately and considered part of this sentence. */
 "Clear selection" = "Borrar selección";
 
 /* Accessibility label for the close button
-   Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
@@ -1627,7 +1580,7 @@ which should be translated separately and considered part of this sentence. */
 "Colombia" = "Colombia";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Vuelve pronto para ver más consejos y detalles sobre cómo ampliar tu tienda.";
+"Come back soon for more tips and insights on growing your store." = "Vuelve pronto para ver más consejos y detalles sobre cómo ampliar tu tienda.";
 
 /* Country option for a site address. */
 "Comoros" = "Comoras";
@@ -1875,9 +1828,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "No se pudo seguir el sitio en la dirección especificada.";
 
-/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Could not launch your store" = "No se ha podido publicar tu tienda.";
-
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "No se pudo dejar de seguir el sitio en la dirección especificada.";
 
@@ -1989,9 +1939,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "Crear pedido";
-
-/* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "¡Crea etiquetas de envío desde tu dispositivo!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Crea tu primera variación";
@@ -2269,7 +2216,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
-   Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -2279,7 +2225,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
@@ -2360,7 +2305,6 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
-   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2460,7 +2404,7 @@ which should be translated separately and considered part of this sentence. */
 "Drag and drop to re-order photos" = "Arrastrar y soltar para reordenar fotos";
 
 /* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Genera más ventas hacia tu tienda con Blaze";
+"Drive more sales to your store with Blaze." = "Genera más ventas hacia tu tienda con Blaze";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplicar";
@@ -2918,7 +2862,7 @@ which should be translated separately and considered part of this sentence. */
 "Explore" = "Descúbrela";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Descubre cómo puedes aumentar las ventas de tu tienda";
+"Explore how you can increase your store sales." = "Descubre cómo puedes aumentar las ventas de tu tienda";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Externo\/Afiliado";
@@ -3227,18 +3171,10 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "Código de tarjeta regalo";
 
-/* Order gift card error notice message when the gift card is invalid.
-   Order gift card error notice title when the gift card is invalid. */
-"Gift card is invalid" = "La tarjeta regalo no es válida";
-
-/* Order gift card error notice title when the gift card is invalid. */
-"Gift card is not applied" = "La tarjeta regalo no se ha aplicado";
-
 /* No comment provided by engineer. */
 "Gift cards" = "Tarjetas regalo";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
@@ -3436,9 +3372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "¿Cómo podemos mejorar?";
 
-/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
-"How it works" = "Cómo funciona";
-
 /* Country option for a site address. */
 "Hungary" = "Hungría";
 
@@ -3507,9 +3440,6 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Hay existencias";
 
-/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
-"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "En el Reino Unido, las tarjetas solo pueden utilizarse con Tap to Pay para transacciones hasta %1$@.";
-
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "En la sección de administración de tu sitio encontrarás la dirección de correo electrónico que usaste para conectar WordPress.com desde el Escritorio de Jetpack, en Conexiones > Conexión de la cuenta";
 
@@ -3521,16 +3451,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Pagos en Persona";
-
-/* Main prompt for the screen to select the preferred provider for In-Person Payments */
-"In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Los pagos en persona se pueden procesar a través de cualquiera de estos proveedores de pago. ¿Qué proveedor te gustaría utilizar?";
-
-/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
-"In-Person Payments is currently unavailable" = "Pagos en Persona no está disponible en este momento";
-
-/* Title for the error screen when the merchant's payment account has been rejected. */
-"In-Person Payments isn't available for this store" = "Pagos en Persona no está disponible para esta tienda";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Compras en la aplicación";
@@ -3664,12 +3584,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "Identificador no válido";
 
-/* The title of the alert when there is an error with the package name */
-"Invalid Package Name" = "Nombre del paquete no válido";
-
-/* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "SKU de producto no válido";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Dirección del sitio inválida";
 
@@ -3688,9 +3602,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Variable no válida";
 
-/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
-"Invalid gift card error: %1$@" = "Error de tarjeta regalo no válida: %1$@";
-
 /* No comment provided by engineer. */
 "Invalid username" = "Nombre de usuario inválido";
 
@@ -3705,6 +3616,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventario";
+
+/* Main prompt for the screen to select the preferred provider for In-Person Payments
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Los pagos en persona se pueden procesar a través de cualquiera de estos proveedores de pago. ¿Qué proveedor te gustaría utilizar?";
+
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments is currently unavailable" = "Pagos en Persona no está disponible en este momento";
+
+/* Title for the error screen when the merchant's payment account has been rejected.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments isn't available for this store" = "Pagos en Persona no está disponible para esta tienda";
 
 /* Country option for a site address. */
 "Iran" = "Irán";
@@ -4340,9 +4269,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Mongolia" = "Mongolia";
 
-/* Caption displayed in promotional screens shown during the login flow. */
-"Monitor and approve your product reviews" = "Supervisa y aprueba los comentarios de tus productos";
-
 /* Country option for a site address. */
 "Montenegro" = "Montenegro";
 
@@ -4707,8 +4633,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information.
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4751,9 +4676,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Solo el propietario del sitio puede gestionar los métodos de pago de la etiqueta de envío. Ponte en contacto con %1$@ (%2$@) para gestionar los métodos de pago.";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Oops, some unexpected errors happened." = "¡Vaya! Han ocurrido algunos errores inesperados.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Abrir ajustes del dispositivo";
@@ -5164,9 +5086,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Comprueba que tu teléfono cumple estos requisitos: iPhone XS o posterior con iOS 16.7 o superior. Ponte en contacto con el servicio de soporte si aparece este error en un dispositivo compatible.";
-
-/* Order gift card error notice message when the gift card is invalid. */
-"Please check the remaining balance of the gift card." = "Comprueba el saldo restante de la tarjeta regalo.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Comprueba que tu ID de Apple sea válido e inténtalo de nuevo. Para aceptar las Condiciones del servicio de Apple, se requiere un ID de Apple válido.";
@@ -5918,9 +5837,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatorio";
 
-/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
-"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Es necesario disponer de un iPhone XS o modelos posteriores con iOS a partir de la versión %1$@. El símbolo del pago sin contacto es una marca registrada propiedad de EMVCo, LLC y se utiliza con su autorización.";
-
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Restablecer registros de actividad";
 
@@ -5989,9 +5905,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Volver a mi tienda";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
-"Return to Payments" = "Volver a los pagos";
-
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver el paquete al remitente si no se puede entregar";
 
@@ -6036,9 +5949,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
-
-/* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "Otro producto ya usa este SKU";
 
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
@@ -6352,8 +6262,7 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Fijar el tipo impositivo";
 
-/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
-   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Configura la función \"Tap to Pay on iPhone\"";
 
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
@@ -6381,6 +6290,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configura el paquete que vas a utilizar para enviar tus productos. Lo guardaremos para futuros pedidos.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"SetUpTapToPayPaymentPrompt.skipButton.title" = "Ahora no";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -6421,8 +6333,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "URL para compartir";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner
-   Title of the feedback button in the action sheet. */
+/* Title of the feedback action button on the In-Person Payments feedback banner */
 "Share feedback" = "Compartir comentarios";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
@@ -6661,9 +6572,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Lo sentimos, pero tu nombre de usuario contiene una frase no válida %@.";
-
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Lo sentimos, la eliminación de imágenes en las variaciones de productos es compatible con WooCommerce 4.7 o versiones superiores. Actualiza tu sitio.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "La dirección sólo puede contenter letras minúsculas (a-z) y números.";
@@ -6999,9 +6907,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tap to Pay on iPhone está listo";
 
-/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
-"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Tap to Pay on iPhone te permite aceptar todo tipo de pagos sin contacto (desde tarjetas físicas de débito y crédito, hasta Apple Pay y otras carteras digitales) sin necesidad de adquirir un lector físico de tarjetas.";
-
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Toca para insertar una regla horizontal";
 
@@ -7167,14 +7072,20 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "That username is not allowed." = "Ese nombre de usuario no está permitido.";
 
-/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "Para los Pagos en persona, la extensión %1$@ no puede estar en modo de prueba. Desactiva el modo de prueba.";
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension cannot be in test mode for In‑Person Payments. Please disable test mode." = "Para los Pagos en persona, la extensión %1$@ no puede estar en modo de prueba. Desactiva el modo de prueba.";
 
-/* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "La extensión %1$@ está instalada en tu tienda, pero no se ha activado. Actívala para aceptar Pagos en persona";
+/* Error message when a Card Present Payments extension is not activated
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In‑Person Payments" = "La extensión %1$@ está instalada en tu tienda, pero no se ha activado. Actívala para aceptar Pagos en persona";
 
-/* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "La extensión %1$@ está instalada en tu tienda, pero se debe actualizar para los Pagos en persona. Actualízala a la versión más reciente.";
+/* Error message when a Card Present Payments extension is installed but the version is not supported
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "La extensión %1$@ está instalada en tu tienda, pero se debe actualizar para los Pagos en persona. Actualízala a la versión más reciente.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "La conexión entre el Bluetooth y el lector de tarjetas se ha perdido inesperadamente.";
@@ -7284,20 +7195,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "El dominio comprado redireccionará a los usuarios a la dirección principal.";
 
-/* Caption displayed in the simplified prologue screen */
-"The ecommerce platform that grows with you" = "La plataforma de comercio electrónico que crece contigo";
-
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Es posible que la primera vez que utilices Tap to Pay on iPhone, se te solicite que aceptes las condiciones del servicio de Apple.";
-
-/* Order gift card error thrown when the gift card is not applied. */
-"The gift card is not applied." = "La tarjeta regalo no se ha aplicado.";
-
-/* The message of the alert when another custom package has the same name */
-"The new custom package name is not unique." = "El nuevo nombre del paquete personalizado ya existe.";
-
-/* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "El nuevo nombre del paquete de servicios ya existe.";
 
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "La tarjeta presentada no permite realizar un pago por este importe. Prueba otro método de pago.";
@@ -7422,11 +7321,17 @@ which should be translated separately and considered part of this sentence. */
 /* The error message shown if the app can't show a theme demo. */
 "ThemesPreviewView.errorLoadingThemeDemo" = "No se puede mostrar la demostración de este tema. Inténtalo en otro tema.";
 
-/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Tu cuenta está pendiente de cumplir algunos requisitos. Para seguir aceptando Pagos en Persona, completa estos requisitos antes del %1$@.";
+/* Error message when because there are pending requirements in the merchant's
+In-Person Payments account.
+%1$d will contain the localized deadline (e.g. August 11, 2021)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In‑Person Payments." = "Tu cuenta está pendiente de cumplir algunos requisitos. Para seguir aceptando Pagos en Persona, completa estos requisitos antes del %1$@.";
 
-/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
-"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Tu cuenta está pendiente de cumplir algunos requisitos. Para seguir aceptando Pagos en Persona, completa estos requisitos.";
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In‑Person Payments." = "Tu cuenta está pendiente de cumplir algunos requisitos. Para seguir aceptando Pagos en Persona, completa estos requisitos.";
 
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Se ha producido un problema con la conexión de Jetpack de tu tienda. Vuelve a conectar Jetpack o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
@@ -7511,17 +7416,11 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "Este mes";
 
-/* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "Este SKU se usa en otro producto o no es válido.";
-
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "Esta semana";
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Este año";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this." = "Esta aplicación necesita permiso para acceder al Bluetooth y conectarse a un lector de tarjetas. Para permitir esta acción, debes cambiar los ajustes de privacidad.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Para usar esta aplicación, debes instalar WooCommerce 3.5 en el servidor. De lo contrario, no funcionará correctamente. Actualízala cuanto antes para poder seguir usando esta aplicación.";
@@ -7624,14 +7523,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Hasta";
 
-/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
-"To accept payments above this limit, consider purchasing a card reader." = "Para aceptar pagos por encima de este límite, considera la posibilidad de adquirir un lector de tarjetas.";
-
 /* Description text for the product discount row informational tooltip */
 "To add a Product Discount, please remove all Coupons from your order" = "Para añadir un descuento de producto, elimina todos los cupones de tu pedido";
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Para añadir una variación, primero tendrás que definir los atributos (color, tamaño, etc.)";
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first." = "Para añadir una variación, primero tendrás que definir los atributos (color, tamaño, etc.)";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Para cerrar esta cuenta ahora, contacta con nuestro equipo de soporte.";
@@ -7813,8 +7709,7 @@ which should be translated separately and considered part of this sentence. */
 "Try a test order" = "Haz un pedido de prueba";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
-   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Intentarlo de nuevo";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
@@ -8080,8 +7975,10 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "No se puede actualizar el precio";
 
-/* Title for the error screen when In-Person Payments is unavailable */
-"Unable to verify In-Person Payments for this store" = "No se ha podido verificar Pagos en Persona para esta tienda";
+/* Title for the error screen when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"Unable to verify In‑Person Payments for this store" = "No se ha podido verificar Pagos en Persona para esta tienda";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "No ha sido posible verificar la dirección de correo electrónico. Por favor, inténtalo de nuevo más tarde.";
@@ -8095,9 +7992,7 @@ which should be translated separately and considered part of this sentence. */
 /* Undo Action */
 "Undo" = "Deshacer";
 
-/* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product
-   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+/* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "Error inesperado";
 
 /* Country option for a site address. */
@@ -8421,9 +8316,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Puedes ver los complementos con tu dispositivo.";
 
-/* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "Ver y editar cupones";
-
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Ver ajustes de archivo de descarga";
 
@@ -8474,8 +8366,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis y Futuna";
 
-/* Error message when the merchant's payment account has been rejected */
-"We are sorry but we can't support In-Person Payments for this store." = "Lo sentimos, pero no podemos admitir Pagos en Persona para esta tienda.";
+/* Error message when the merchant's payment account has been rejected
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We are sorry but we can't support In‑Person Payments for this store." = "Lo sentimos, pero no podemos admitir Pagos en Persona para esta tienda.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Estamos trabajando para que sea más sencillo ver complementos de producto directamente con tu dispositivo. A partir de ahora, podrás ver los complementos de tus pedidos. Puedes crear y editar estos complementos en el escritorio web.";
@@ -8517,17 +8411,25 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "No hemos podido actualizar el software de tu lector.";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "No admitimos Pagos en persona en %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in %1$@" = "No admitimos Pagos en persona en %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments in your country" = "No admitimos Pagos en Persona en tu país";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in your country" = "No admitimos Pagos en Persona en tu país";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "No admitimos Pagos en persona con Stripe en %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in %1$@" = "No admitimos Pagos en persona con Stripe en %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "No admitimos Pagos en persona con Stripe en tu país.";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in your country" = "No admitimos Pagos en persona con Stripe en tu país.";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We enable you to process them effortlessly." = "Puedes procesarlos sin esfuerzo.";
@@ -8540,9 +8442,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
 "We encountered an error loading plan information" = "Se ha producido un error al cargar la información del plan.";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"We found that the store has already launched." = "Hemos detectado que la tienda ya se ha publicado.";
 
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Hemos puesto en pausa tu tienda. Puedes adquirir otro plan accediendo a WordPress.com desde tu navegador.";
@@ -8604,8 +8503,10 @@ which should be translated separately and considered part of this sentence. */
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Lo sentimos, no hemos encontrado resultados para \"%@\"";
 
-/* Generic error message when In-Person Payments is unavailable */
-"We're sorry, we were unable to verify In-Person Payments for this store." = "No hemos podido verificar Pagos en Persona para esta tienda.";
+/* Generic error message when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We're sorry, we were unable to verify In‑Person Payments for this store." = "No hemos podido verificar Pagos en Persona para esta tienda.";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Te hemos enviado por correo electrónico un enlace de registro para crear tu cuenta de WordPress.com. Consulta tu correo electrónico en este dispositivo y toca el enlace del mensaje que recibas de WordPress.com.";
@@ -8640,9 +8541,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Utilizaremos la información para empezar a configurar los envíos, impuestos y pagos.";
 
-/* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "Hemos estado trabajando para que puedas ver y editar los cupones en tu dispositivo.";
-
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "¿Qué dirección de correo electrónico debo usar para iniciar sesión?";
 
@@ -8652,9 +8550,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "¿Qué es Jetpack?";
-
-/* Main heading for the About Tap to Pay on iPhone screen */
-"What is Tap to Pay on iPhone?" = "¿Qué es Tap to Pay on iPhone?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "¿En qué consiste el descuento de WooCommerce Services?";
@@ -8828,9 +8723,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions guiding the merchant to manage a site's plan upgrade. */
 "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "Puedes gestionar tu suscripción desde tu iPhone en Ajustes → Tu nombre → Suscripciones";
 
-/* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Ahora puedes crear etiquetas de envío para todos los pedidos físicos directamente desde tu dispositivo con el plugin gratuito WooCommerce Shipping. Toca Crear etiqueta de envío para probar nuestra función beta.";
-
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Solo puedes añadir suscripciones variables en el escritorio de tu página web";
 
@@ -8864,8 +8756,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Tienes un pedido nuevo 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
-"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Tu cuenta no cumple al menos un requisito. Resuélvelo para reanudar Pagos en Persona.";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "Tu cuenta no cumple al menos un requisito. Resuélvelo para reanudar Pagos en Persona.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "Debes proporcionar una descripción clara y específica de cada artículo.";
@@ -8879,8 +8773,10 @@ which should be translated separately and considered part of this sentence. */
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que tienes instalado el plugin móvil de DudaMobile y está impidiendo a la aplicación conectarse a tu blog";
 
-/* Error message when the merchant's payment account is under review */
-"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "En cuanto terminemos de revisar tu cuenta, podrás aceptar Pagos en Persona.";
+/* Error message when the merchant's payment account is under review
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "En cuanto terminemos de revisar tu cuenta, podrás aceptar Pagos en Persona.";
 
 /* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
 "You're in a free trial" = "Estás en un período de prueba";
@@ -8985,14 +8881,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Tu período de prueba ha finalizado.";
 
-/* Error message when WooCommerce Payments is not installed */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Tendrás que instalar la extensión gratuita de WooCommerce Payments en tu tienda para aceptar Pagos en Persona.";
+/* Error message when WooCommerce Payments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Tendrás que instalar la extensión gratuita de WooCommerce Payments en tu tienda para aceptar Pagos en Persona.";
 
 /* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
 "You’re almost there" = "Ya casi estás.";
 
-/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
-"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Ya casi has acabado. Termina de configurar %1$@ para empezar a aceptar Pagos en Persona.";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Ya casi has acabado. Termina de configurar %1$@ para empezar a aceptar Pagos en Persona.";
 
 /* Country option for a site address. */
 "Zambia" = "Zambia";
@@ -9973,6 +9873,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Comprobando el dispositivo";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Inténtalo de nuevo";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Cancelar";
 
@@ -9989,8 +9892,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Buscando lector";
 
+/* A title for CTA to present native location permission alert */
+"cardPresentPayment.locationPreAlert.continueButton" = "Continuar";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"cardPresentPayment.locationPreAlert.settingsNotice" = "Puedes cambiar esta opción más adelante en los ajustes de la aplicación.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.subtitle" = "Es necesario activar los permisos de los servicios de ubicación para reducir el fraude, evitar discusiones y garantizar pagos seguros.";
+
+/* A title explaining why location services are needed to make a payment */
+"cardPresentPayment.locationPreAlert.title" = "Activa los servicios de ubicación en la pantalla siguiente para permitir los pagos.";
+
+/* Dismisses the location alert */
+"cardPresentPayment.locationRequired.dismiss" = "Descartar";
+
+/* Opens iOS's Device Settings for the app */
+"cardPresentPayment.locationRequired.openSettings" = "Abrir ajustes del dispositivo";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"cardPresentPayment.locationRequired.subtitle" = "Es necesario activar los permisos de los servicios de ubicación para reducir el fraude, evitar discusiones y garantizar pagos seguros.";
+
+/* A title explaining the requirement of location services for making a payment */
+"cardPresentPayment.locationRequired.title" = "Para permitir los pagos, activa los servicios de ubicación en los ajustes del dispositivo.";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.backToOrder" = "Volver al pedido";
+
+/* Button to dismiss modal overlay. Presented to users after refunding a payment fails */
+"cardPresentPaymentsModal.error.close" = "Cerrar";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.dismiss" = "Descartar";
+
+/* Button to email receipts. Presented to users after a payment processing has failed */
+"cardPresentPaymentsModal.error.emailReceipt" = "Enviar recibo por correo electrónico";
+
 /* Message informing the user that a receipt has been sent to their email address. %1$@ is the email address */
 "cardPresentPaymentsModal.error.receiptMessage" = "Se ha enviado un recibo a %1$@";
+
+/* Button to dismiss modal overlay and try another payment method. Presented to users after collecting a payment fails */
+"cardPresentPaymentsModal.error.tryAnotherPaymentMethod" = "Utilizar otro método de pago";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.emailReceipt" = "Enviar recibo por correo electrónico";
@@ -10051,6 +9993,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "El total del pedido ha cambiado desde el inicio del pago. Vuelve y comprueba que el pedido sea correcto; después, vuelve a intentar el pago.";
+
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "El importe debe ser superior o igual al total.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "El cambio vence el %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Se ha producido un error al procesar el pago. Inténtalo de nuevo.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecciona el producto para la campaña Blaze.";
@@ -10496,6 +10447,33 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Medios en el dispositivo";
 
+/* Button to dismiss the Edit Store List view */
+"editStoreListView.cancelButton" = "Cancelar";
+
+/* Footer of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreFooter" = "Cambia a otra tienda antes de esconder esta";
+
+/* Header of the Current Store section of the the Edit Store List view */
+"editStoreListView.currentStoreHeader" = "Tienda actual";
+
+/* Error message when updating notification settings fails when saving the store list for the store picker */
+"editStoreListView.errorUpdatingNotificationSettings" = "Se ha producido un error al actualizar los ajustes de las notificaciones. Inténtalo de nuevo.";
+
+/* Header of the Other Stores section on the Edit Store List view */
+"editStoreListView.otherStoresHeader" = "Otras tiendas";
+
+/* Button to retry saving changes in the Edit Store List view */
+"editStoreListView.retryButton" = "Reintentar";
+
+/* Button to save changes in the Edit Store List view */
+"editStoreListView.saveButton" = "Guardar";
+
+/* Title of the Edit Store List view */
+"editStoreListView.title" = "Tiendas visibles";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Las tiendas que no se han seleccionado no se mostrarán en el selector de tiendas y no recibirán notificaciones push de nuevos pedidos o productos.";
+
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Comparte tu opinión";
 
@@ -10566,6 +10544,30 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Productos favoritos";
 
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "Aplicar";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "Cancelar";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "Borrar historial";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "¿Seguro que quieres borrar todo el historial de filtros?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "No se han encontrado filtros anteriores";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "Reciente";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Historial de filtros";
+
+/* Accessibility hint for the filter history button on the filter list screen */
+"filterListViewController.historyBarButtonItem.accessibilityHint" = "Historial de filtros";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Cliente";
 
@@ -10634,6 +10636,132 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Ver todas las campañas";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "La aplicación necesita permiso para acceder al Bluetooth y conectarse a tu lector de tarjetas. Puedes otorgar el permiso en los ajustes del sistema, en la sección Woo.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "El ID de la cuenta de Apple vinculada se ha desactivado.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "El lector Bluetooth ya está vinculado con otro dispositivo. Es necesario restablecer la vinculación del lector para conectarlo con este dispositivo.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "La conexión Bluetooth tiene un ID de ubicación no válido.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "La aplicación necesita permiso para acceder al Bluetooth y conectarse a tu lector de tarjetas. Puedes otorgar el permiso en los ajustes del sistema, en la sección Woo.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "El lector ha eliminado la información de vinculación de este dispositivo. Intenta olvidar el lector en los ajustes de iOS.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "El lector Bluetooth se ha desconectado y estamos intentando restablecer la conexión.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "No se ha podido cancelar la operación porque ya se había completado.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "La función de deslizar la tarjeta no está disponible.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Ponte en contacto con el soporte técnico: el sistema operativo no puede ejecutar el comando.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "El titular de la tarjeta debe dar su consentimiento para que la operación se complete correctamente.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Se ha producido un error al recuperar el token de conexión.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "La solicitud del token de conexión ha caducado.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Ponte en contacto con el soporte técnico: la función no está disponible.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "No se permite reenviar un pago en modo en vivo en el modo de prueba.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "No se permite reenviar un pago en modo de prueba en el modo en vivo.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac no es compatible con el modo sin conexión.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Se ha producido un error desconocido en la red.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "La conexión con el lector a través de Internet ha caducado. Asegúrate de que el dispositivo y el lector están conectados a la misma red Wi-Fi.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Ponte en contacto con el soporte técnico: la clave secreta del cliente no es válida.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Ponte en contacto con el soporte técnico: la configuración de detección no es válida.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "El ID de ubicación no es válido.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "El lector que quieres actualizar no es válido.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Ponte en contacto con el soporte técnico: los parámetros de reembolso no son válidos.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Ponte en contacto con el soporte técnico: el parámetro necesario no es válido.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "El lector no ha podido leer los datos del método de pago presentado. Si se produce este error varias veces, es posible que el lector esté defectuoso, por lo que te recomendamos que te pongas en contacto con el soporte técnico.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Ponte en contacto con el soporte técnico: no se ha encontrado la intención de pago.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Ponte en contacto con el soporte técnico: no se ha encontrado el método de reembolso del pago.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Ponte en contacto con el soporte técnico: no se ha encontrado el intento de configuración.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Se estaba confirmando el pago sin conexión, pero se ha detectado que la tarjeta había caducado.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Asegúrate de que la conexión a la red es consistente en el momento de recibir y confirmar el pago.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Cuando no hay conexión, se utiliza una tarjeta de prueba en el modo en vivo.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Se ha producido un error al confirmar el pago sin conexión y verificar la tarjeta.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "El PIN en línea no se admite en el modo sin conexión. Intenta efectuar el pago de nuevo con otra tarjeta.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "La configuración de conexión del lector no es válida.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "El lector no dispone de las claves de cifrado necesarias para recibir pagos y se ha desconectado y reiniciado. Vuelve a conectarte al lector para intentar reinstalar las claves. Si el error persiste, ponte en contacto con el soporte técnico.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "No se ha podido actualizar el software del lector porque la actualización ha caducado. Desconéctate del lector y vuelve a conectarte para recuperar una nueva actualización.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Ponte en contacto con el soporte técnico: el parámetro de propinas del lector no es válido.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "No se ha podido efectuar el reembolso. El banco o el emisor de la tarjeta del cliente no han podido procesarlo correctamente (por ejemplo, la cuenta bancaria está cerrada o hay un problema con la tarjeta).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Ponte en contacto con el soporte técnico: se ha producido un error al descodificar la respuesta de la API de Stripe.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Se ha producido un error inesperado con el lector.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "El lector devuelto por la detección no tiene dirección IP y no es posible conectarse a él.";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Cupones";
@@ -10767,8 +10895,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Aumenta tus ventas";
 
-/* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "WooCommerce te acompaña desde tu primera venta hasta que alcances ingresos millonarios. Descubre por qué los vendedores de 3,9 millones de tiendas online confían en nosotros.";
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Sincronizando tienda...";
+
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "WooCommerce te acompaña desde tu primera venta hasta que alcances ingresos millonarios. Descubre por qué los vendedores de 3,9 millones de tiendas confían en nosotros.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "La plataforma de comercio electrónico que crece contigo";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "reembolso manual";
@@ -10858,9 +10992,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
 "menu.payments.tapToPay.about.row.title" = "Acerca de Tap to Pay";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"menu.payments.tapToPay.feedback.row.title" = "Compartir comentarios";
 
 /* Title for the Tap to Pay section in the In-Person payments settings */
 "menu.payments.tapToPay.section.title" = "Tap to Pay";
@@ -11325,12 +11456,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Procesando pago";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.cardPresent.paymentSuccessful.message" = "Se ha efectuado correctamente un pago de %1$@";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.cardPresent.paymentSuccessful.title" = "¡Pago correcto!";
-
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.message" = "Preparando la tarjeta para el pago";
 
@@ -11364,11 +11489,20 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Lector no conectado";
 
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Para procesar este pago, conecta tu lector o selecciona el pago en efectivo.";
+
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Comprobando pedido";
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "En preparación";
+
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "El pedido no alcanza la cantidad mínima necesaria para procesar el pago con tarjeta (%1$@). En su lugar, puedes aceptar un pago en efectivo.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "No se puede realizar un pago con tarjeta";
 
 /* Button title to retry order validation. */
 "pointOfSale.cardPresent.validatingOrderError.retry" = "Reintentar";
@@ -11505,14 +11639,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "No hemos podido actualizar el software de tu lector.";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Se ha producido un error en la actualización del software del lector porque la batería del lector se encuentra al %.0f%% de la carga. Carga la batería del lector por encima del 50%% antes de intentarlo de nuevo.";
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "No se ha podido actualizar el lector porque la batería está al %.0f%%. Cárgalo e inténtalo de nuevo.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Cancelar";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Se ha producido un error en la actualización del software del lector porque el lector tiene poca batería. Carga la batería del lector por encima del 50 \\u0025 antes de intentarlo de nuevo.";
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "No se ha podido actualizar el lector porque tiene poca batería. Cárgalo e inténtalo de nuevo.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Inténtalo de nuevo";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Carga el lector.";
@@ -11553,6 +11690,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Es posible que el pedido no se haya realizado correctamente";
 
+/* Subtitle for the cash payment view navigation back buttonReads as 'Total: $1.23' */
+"pointOfSale.cashview.back.navigation.subtitle" = "Total: %1$@";
+
+/* Title for the cash payment view navigation back button */
+"pointOfSale.cashview.back.navigation.title" = "Pago en efectivo";
+
+/* Button to mark a cash payment as completed */
+"pointOfSale.cashview.button.markpaymentcompleted.title" = "Marcar el pago como completo";
+
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Se ha producido un error al procesar el pago. Inténtalo de nuevo.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
 
@@ -11583,11 +11732,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "No se han podido cargar los totales";
 
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message" = "Se ha efectuado correctamente un pago de %1$@";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Pago correcto";
+
+/* Button title for sending a receipt */
+"pointOfSale.sendreceipt.button.title" = "Enviar";
+
+/* Text that shows at the top of the receipts screen along the back button. */
+"pointOfSale.sendreceipt.emailReceiptNavigationText" = "Enviar recibo por correo electrónico";
+
+/* Error message that is displayed when an invalid email is used when emailing a receipt. */
+"pointOfSale.sendreceipt.emailValidationErrorText" = "Introduce una dirección de correo electrónico válida.";
+
+/* Generic error message that is displayed when there's an error emailing a receipt. */
+"pointOfSale.sendreceipt.sendReceiptErrorText" = "Se ha producido un error al intentar enviar este correo electrónico. Vuelve a intentarlo.";
+
+/* Placeholder for the view where an email address should be entered when sending receipts */
+"pointOfSale.sendreceipt.textfield.placeholder" = "Introducir el correo electrónico";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Hecho";
+
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pagos en persona";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
@@ -11601,6 +11774,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Borrar";
 
+/* Back button title in the child item list screen. */
+"pos.childItemList.back" = "Volver";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Sin conexión a Internet";
 
@@ -11613,17 +11789,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "¿Salir del modo de punto de venta?";
 
-/* Title at the top of the Point of Sale product selector screen. */
-"pos.headerTitleView.productSelectorTitle" = "Productos";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadButtonTitle" = "Reintentar";
+"pos.itemList.failedToLoadProductsButtonTitle" = "Reintentar";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Inténtalo de nuevo";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Se ha producido un error al cargar los productos.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "No se han podido cargar más elementos";
 
 /* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadSubtitle" = "¿Intentarlo de nuevo?";
+"pos.itemList.failedToLoadProductsSubtitle" = "¿Quieres volver a intentarlo?";
 
 /* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadTitle" = "Se ha producido un error al cargar los productos";
+"pos.itemList.failedToLoadProductsTitle" = "Se ha producido un error al cargar los productos";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "Reintentar";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Inténtalo de nuevo";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Se ha producido un error al cargar las variaciones.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "No se han podido cargar más elementos";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "¿Intentarlo de nuevo?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Error al cargar las variaciones";
+
+/* Title at the top of the Point of Sale item list full screen. */
+"pos.itemListFullscreen.title" = "Productos";
 
 /* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
 "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Descartar";
@@ -11631,23 +11834,47 @@ which should be translated separately and considered part of this sentence. */
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint" = "Otros tipos de productos, como los variables y los virtuales, estarán disponibles en futuras actualizaciones.";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Otros tipos de productos estarán disponibles en futuras actualizaciones.";
+
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Más información";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle" = "En estos momentos, solo los productos físicos sencillos están disponibles con TPV.";
 
+/* Subtitle of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "En estos momentos, solo se pueden utilizar productos simples y variables no descargables con el TPV.";
+
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Mostrar solo productos sencillos";
 
+/* Title of the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Se muestran únicamente productos simples y variables";
+
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.itemlistview.title" = "Productos";
+
+/* Text indicating that there are options available for a parent product */
+"pos.parentProductCard.optionsAvailable" = "Opciones disponibles";
+
 /* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Para añadir uno, sal del punto de venta y ve a Productos";
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Para añadir uno, sal del TPV y ve a Productos.";
 
 /* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "Las órdenes de compra actualmente solo admiten productos simples.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "El TPV solo admite productos simples y variables.";
 
 /* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "No se han encontrado productos compatibles";
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "No se han encontrado productos compatibles.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Para añadir una, sal del TPV y edita este producto en la pestaña Productos.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "El TPV solo es compatible con variaciones habilitadas y no descargables.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "No se han encontrado variaciones compatibles.";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Crear un pedido en la gestión de la tienda";
@@ -11655,11 +11882,20 @@ which should be translated separately and considered part of this sentence. */
 /* Hint in the simple products information modal in POS */
 "pos.simpleProductsModal.hint" = "Para aceptar el pago de un producto no sencillo, sal de TPV y crea un nuevo pedido desde la pestaña de pedidos.";
 
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Para aceptar el pago de un producto no compatible, sal del TPV y crea un nuevo pedido desde la pestaña de pedidos.";
+
 /* Message in the simple products information modal in POS, explaining future plans */
 "pos.simpleProductsModal.message.future" = "Otros tipos de productos, como los variables y los virtuales, estarán disponibles en futuras actualizaciones.";
 
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Otros tipos de productos estarán disponibles en futuras actualizaciones.";
+
 /* Message in the simple products information modal in POS */
 "pos.simpleProductsModal.message.issue" = "En estos momentos, solo se pueden utilizar productos físicos sencillos con TPV.";
+
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "En estos momentos, solo se pueden utilizar productos simples y variables no descargables con el TPV.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "Aceptar";
@@ -11668,10 +11904,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.simpleProductsModal.title" = "¿Por qué no puedo ver mis productos?";
 
 /* Button title for new order button */
-"pos.totalsView.newOrder" = "Nuevo pedido";
+"pos.totalsView.button.newOrder" = "Nuevo pedido";
 
 /* Button title for the receipt button */
-"pos.totalsView.sendReceipt" = "Recibo";
+"pos.totalsView.button.sendReceipt" = "Enviar recibo por correo electrónico";
+
+/* Title for the cash payment button title */
+"pos.totalsView.cash.button.title" = "Pago en efectivo";
+
+/* Text for the banner requiring specific WooCommerce version. */
+"pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Actualiza WooCommerce a la versión 9.5.0";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
@@ -11681,6 +11923,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Total";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Ajusta la división de la pantalla para que el punto de venta tenga más espacio.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "El punto de venta no se puede visualizar con este ancho de pantalla.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Cerrar";
@@ -11753,21 +12001,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text detection failed error message on the starting information screen. */
 "productCreationAIStartingInfoViewModel.textDetectionFailed" = "Se ha producido un error al explorar la foto. Elige otra foto del embalaje o introduce los detalles del producto manualmente.";
-
-/* Description in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.description" = "¿Tienes un momento? Ayúdanos a mejorar nuestras funciones asistidas por inteligencia artificial con tus comentarios.";
-
-/* Start Survey button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.startTheSurvey" = "Empieza la encuesta.";
-
-/* Title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.title" = "Valoramos tu opinión.";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "No mostrarlo de nuevo";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.remindMeLater" = "Recuérdamelo más tarde";
 
 /* Category label for other product creation types */
 "productCreationCategory.other" = "Otros";
@@ -11924,9 +12157,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
-
-/* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Introduce solo números y guiones (-).";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Intervalo de facturación";
@@ -12109,8 +12339,41 @@ which should be translated separately and considered part of this sentence. */
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "compartir información";
 
+/* Body for the custom items description educational dialog */
+"shipping.customs.descriptionInfoDialogBody" = "Para hacer envíos a países sujetos a las normas aduaneras de la Unión Europea (UE), debes proporcionar una descripción clara y específica de cada artículo. Por ejemplo, si envías ropa, para que se acepte la descripción, debes indicar el tipo de ropa del que se trata (camisas de hombre, chalecos para chicas, chaquetas para chicos, etc.). De lo contrario, los envíos pueden sufrir retrasos o interrupciones en la aduana.";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.descriptionInfoDialogDone" = "Hecho";
+
+/* Button title for the learn more action in the custom descriptions info dialog */
+"shipping.customs.descriptionInfoDialogLearnMore" = "Más información";
+
+/* Title for the custom description educational dialog */
+"shipping.customs.descriptionInfoDialogTitle" = "Descripción";
+
+/* Body for the custom items origin country educational dialog */
+"shipping.customs.originCountryInfoDialogBody" = "País en el que se fabricó o montó el producto.";
+
+/* Button title for the done button in the customs description educational dialog */
+"shipping.customs.originCountryInfoDialogDoneButton" = "Hecho";
+
+/* Title for the custom origin country educational dialog */
+"shipping.customs.originCountryInfoDialogTitle" = "País de origen";
+
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Cancelar";
+
+/* Badge wording when the customs information is completed */
+"shippingLabels.customs.completedBadge" = "Completado";
+
+/* Customs row title in the main Shipping Labels view */
+"shippingLabels.customs.customsTitle" = "Aduanas";
+
+/* Accessibility label for the button to edit the shipping labels customs */
+"shippingLabels.customs.editButtonAccessibiliy" = "Editar la información aduanera de las etiquetas de envío";
+
+/* Badge wording when the customs information is missing */
+"shippingLabels.customs.missingInfo" = "Falta información";
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Editar envío";
@@ -12178,8 +12441,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button in date range picker to add a Custom Range tab */
 "storePerformanceViewModel.addCustomRange" = "Añadir";
 
+/* Button to edit the items to be displayed on the store picker */
+"storePicker.editList" = "Editar";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Conectar una tienda existente";
+
+/* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
+"storePickerViewModel.pickStoreWithHiddenStoreCount" = "Elegir tienda para conectar (%1$d ocultas)";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Fecha seleccionada";
@@ -12328,6 +12597,90 @@ which should be translated separately and considered part of this sentence. */
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is successful, we show a Notice to alert the user – this is the title of the notice. */
 "tap.to.pay.try.payment.refundNotice.success.title" = "Prueba el pago de Tap to Pay";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"tapToPay.aboutTapToPay.contactlessLimit.gb" = "En el Reino Unido, solo puedes aceptar pagos con tarjeta con Tap to Pay para transacciones de hasta %1$@. Para pagos superiores a %1$@, algunas tarjetas permiten que los clientes introduzcan su PIN directamente en el teléfono, mientras que otras necesitan un lector de tarjetas para completar el pago.";
+
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"tapToPay.aboutTapToPay.overLimitSuggestion" = "Para aceptar todos los pagos por encima de este límite, considera la posibilidad de adquirir un lector de tarjetas.";
+
+/* Title of the button to dismiss the Tap to Pay awareness screen */
+"tapToPay.awarenessMoment.closeButton" = "Cerrar";
+
+/* A title for CTA to start Tap to Pay set up process */
+"tapToPay.awarenessMoment.enableButton" = "Habilitar ahora";
+
+/* A title for CTA to open a view explaining Tap to Pay */
+"tapToPay.awarenessMoment.learnMore" = "Más información";
+
+/* A subtitle for the Tap to Pay modal promoting the feature. */
+"tapToPay.awarenessMoment.subtitle" = "Acepta pagos sin contacto usando solo un iPhone.";
+
+/* Title for the Tap to Pay modal promoting the feature. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.awarenessMoment.title" = "Tap to Pay on iPhone. Ya disponible.";
+
+/* Text for the button to take one step back in Tap to Pay education flow */
+"tapToPay.education.back" = "Volver";
+
+/* Text for the button to dismiss Tap to Pay education flow */
+"tapToPay.education.done" = "Hecho";
+
+/* Text for the button to go to the next Tap to Pay education flow step */
+"tapToPay.education.next" = "Siguiente";
+
+/* Button title for Set up Tap to Pay button in Tap to Pay education flow. The button opens the Set Up Tap to Pay on iPhone flow. */
+"tapToPay.education.setUpTapToPay" = "Configurar Tap to Pay on iPhone";
+
+/* Text for the button to skip Tap to Pay education flow to the last step */
+"tapToPay.education.skip" = "Omitir";
+
+/* First description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep1" = "Crea un pedido en tu iPhone, añade productos o un importe personalizado, y finaliza la compra con Tap to Pay on iPhone.";
+
+/* Second description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep2" = "Muestra tu iPhone al cliente.";
+
+/* Third description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep3" = "Tu cliente sostiene el dispositivo cerca de tu iPhone, sobre el símbolo de pago sin contacto.";
+
+/* Fourth description step for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.descriptionStep4" = "Cuando aparezca la marca de verificación Listo, se habrá completado la lectura de la tarjeta y se habrá procesado la transacción.";
+
+/* Title for the 'How to accept Apple Pay' Tap to Pay merchant education */
+"tapToPay.education.step.applePay.title" = "Cómo aceptar Apple Pay y otras carteras digitales con Tap to Pay on iPhone.";
+
+/* First description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep1" = "Crea un pedido en tu iPhone, añade productos o un importe personalizado, y finaliza la compra con Tap to Pay on iPhone.";
+
+/* Second description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep2" = "Muestra tu iPhone al cliente.";
+
+/* Third description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep3" = "Tu cliente sostiene su tarjeta de forma horizontal en la parte superior de tu iPhone, sobre el símbolo de pago sin contacto.";
+
+/* Fourth description step for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.descriptionStep4" = "Cuando aparezca la marca de verificación Listo, se habrá completado la lectura de la tarjeta y se habrá procesado la transacción.";
+
+/* Title for the 'How to accept contactless card' Tap to Pay merchant education */
+"tapToPay.education.step.contactlessCard.title" = "Cómo aceptar una tarjeta de pago sin contacto con Tap to Pay on iPhone.";
+
+/* Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using another contactless payment method or alternative payment options. */
+"tapToPay.education.step.fallbackMethod.description" = "Algunas tarjetas no pueden completar transacciones sin contacto usando un PIN, lo que puede dar lugar a un error en el pago.\n\nPregúntale al cliente si dispone de otra tarjeta de pago sin contacto o de una cartera digital, y selecciona \"Intentar efectuar el pago de nuevo\" para continuar la transacción con Tap to Pay on iPhone.\n\nEn caso de que no sea posible, selecciona \"Utilizar otro método de pago\" y escoge una alternativa compatible como Efectivo, Compartir el enlace para realizar el pago, Cash Reader o Escanear para pagar.";
+
+/* Title for the 'Fallback payment method' Tap to Pay merchant education step */
+"tapToPay.education.step.fallbackMethod.title" = "Cómo aceptar un método de pago alternativo.";
+
+/* Description for the initial Tap to Pay merchant education step. When using the name “Tap to Pay on iPhone” in headlines or copy, do not shorten to “Tap to Pay” or “Apple Tap to Pay. Always typeset “Tap to Pay on iPhone” as five words. The T and Ps should be uppercased, followed by lowercase letters. */
+"tapToPay.education.step.intro.description" = "Con Tap to Pay on iPhone y la aplicación Woo, puedes aceptar pagos en persona y sin contacto, hechos tanto desde tarjetas físicas de crédito y de débito como desde Apple Pay u otras carteras digitales, directamente en tu iPhone, sin necesidad de un hardware adicional. Es fácil, seguro y privado.";
+
+/* Title for the initial Tap to Pay merchant education step */
+"tapToPay.education.step.intro.title" = "Acepta pagos sin contacto usando solo un iPhone.";
+
+/* Instructions for customers using accessibility options during PIN entry with Tap to Pay on iPhone.Describes how to use audible guidance for drawing or tapping the PIN digits and the gesture to submit. */
+"tapToPay.education.step.pin.description" = "En circunstancias determinadas, se solicita a los clientes que introduzcan el PIN de su tarjeta con Tap to Pay on iPhone.\n\nAquellos clientes que necesiten asistencia visual o de cualquier otro tipo pueden seleccionar \"Opciones de accesibilidad\" en la pantalla del PIN para acceder a las opciones de accesibilidad. Las instrucciones de audio guían a los clientes a la hora de dibujar su PIN en la pantalla o al tocar la pantalla para indicar cada dígito (un toque para el número 1, dos para el número 2 y así sucesivamente). Para enviar el PIN, solo tienen que deslizar hacia la derecha con dos dedos.";
+
+/* Title for the 'PIN entry' Tap to Pay merchant education step */
+"tapToPay.education.step.pin.title" = "Cómo gestionar la introducción del PIN de una tarjeta.";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -12536,6 +12889,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Semanas";
 
+/* Title for the Add Package screen Add Package Details button */
+"wooShipping.createLabel.addPackage.addPackageDetails" = "Añadir detalles del paquete";
+
 /* Info label for selected box as a package type */
 "wooShipping.createLabel.addPackage.box" = "Caja";
 
@@ -12581,6 +12937,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Guardado";
 
+/* Title for the Add Package screen Select Package button */
+"wooShipping.createLabel.addPackage.selectPackage" = "Elegir paquete";
+
 /* Title for the Add Package screen */
 "wooShipping.createLabel.addPackage.title" = "Añadir paquete";
 
@@ -12592,6 +12951,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "Cerrar";
+
+/* Title for the Edit Package screen Done button */
+"wooShipping.createLabel.editPackage.done" = "Hecho";
+
+/* Title for the Edit Package screen */
+"wooShipping.createLabel.editPackage.title" = "Editar paquete";
+
+/* Title for the Edit Package screen Use Selected Package button */
+"wooShipping.createLabel.editPackage.useSelectedPackage" = "Usar el paquete seleccionado";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatLabel" = "¿Vas a enviar mercancías peligrosas?";
@@ -12605,11 +12973,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Firma de un adulto obligatoria";
 
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.afterPurchaseMarkComplete" = "Después de comprar una etiqueta, marca este pedido como completo y notifícaselo al cliente";
+
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (cuota base)";
-
-/* Label for the toggle to mark the order as complete on the shipping label creation screen */
-"wooShipping.createLabels.bottomSheet.markComplete" = "Marcar este pedido como completo y avisar al cliente";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Detalles del pedido";
@@ -12644,6 +13012,90 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "Añadir empresa";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "Añadir la información que falta";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "Dirección";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "Cancelar";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "Ciudad";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "Cerrar";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "Empresa";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "País";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Guardar como dirección de origen por defecto";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "Hecho";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "Dirección de correo electrónico";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "Información que falta";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "Nombre";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "Opcional";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "Teléfono";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "Código postal";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "Provincia";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "Dirección no verificada";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "Validar y guardar";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "Proporciona una dirección válida.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "Proporciona una ciudad válida.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "Selecciona un país.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "Proporciona una dirección de correo electrónico válida.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Proporciona un nombre o razón social válidos.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "Proporciona un número de teléfono válido.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "Proporciona un código postal válido.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "Proporciona un estado válido.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "Dirección verificada";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ elementos";
 
@@ -12652,6 +13104,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Button for dismissing the keyboard */
+"wooShipping.createLabels.package.done" = "Hecho";
+
+/* Heading for the package section in the shipping label creation screen. */
+"wooShipping.createLabels.package.title" = "Paquete";
+
+/* Label for the total shipment weight input field in the shipping label creation screen. */
+"wooShipping.createLabels.package.totalWeight" = "Peso total del envío (con paquete)";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Aprende a imprimir desde tu dispositivo móvil";
@@ -12724,6 +13185,147 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Ver etiqueta de envío";
+
+/* Customs button title when it's disabled and there's still info to add */
+"wooShipping.customs.addMissingInformationButtonTitle" = "Añadir la información que falta";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.customs.cancel" = "Cancelar";
+
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "Detalles del contenido";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Describe qué tipo de bienes contiene este paquete";
+
+/* Title for the Content Type menu in the Shipping Customs Form */
+"wooShipping.customs.contentType" = "Tipo de contenido";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.documents" = "Documentos";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.gift" = "Regalo";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.merchandise" = "Promociones comerciales";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.other" = "Otros…";
+
+/* Info label for shipping content type returned goods */
+"wooShipping.customs.contentType.returnedGoods" = "Mercancías devueltas";
+
+/* Info label for shipping content type merchandise */
+"wooShipping.customs.contentType.sample" = "Muestra";
+
+/* Title for the Internaction Transaction Number in the Shipping Customs Form */
+"wooShipping.customs.internationalTransactionNumber" = "Número de transacción internacional";
+
+/* Explanatory text for the international transaction number in customs */
+"wooShipping.customs.internationalTransactionNumber.infoText" = "Más información sobre el número de transacción internacional";
+
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Introduce un número de transacción internacional válido";
+
+/* Product Details Section title */
+"wooShipping.customs.productDetails" = "Detalles del producto";
+
+/* Title for the Restriction Type menu in the Shipping Customs Form */
+"wooShipping.customs.restrictionType" = "Tipo de restricción";
+
+/* Info label for shipping restriction type none */
+"wooShipping.customs.restrictionType.none" = "Ninguno";
+
+/* Info label for shipping restriction type other */
+"wooShipping.customs.restrictionType.other" = "Otros";
+
+/* Info label for shipping restriction type quarantine */
+"wooShipping.customs.restrictionType.quarantine" = "Cuarentena";
+
+/* Info label for shipping restriction type sanitary */
+"wooShipping.customs.restrictionType.sanitary" = "Inspección sanitaria\/fitosanitaria";
+
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Detalles de la restricción";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Describe qué tipo de restricciones debe tener este paquete";
+
+/* Info label for a toggle to return the package to a sender if necessary toggle */
+"wooShipping.customs.returnToSenderMessage" = "Devolver el paquete al remitente si no se puede entregar";
+
+/* Customs button title when it's enabled and there's no info to add */
+"wooShipping.customs.saveCustomsDetails" = "Guardar detalles de aduanas";
+
+/* Title for the Customs screen */
+"wooShipping.customs.title" = "Aduanas";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Valor requerido";
+
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Hecho";
+
+/* Title for the customs items description text field for customs items */
+"wooShipping.customsItems.description" = "Descripción";
+
+/* Title for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber" = "Número del arancel del SA";
+
+/* Information text about the HS Tariff */
+"wooShipping.customsItems.hsTariffNumber.moreInfoText" = "Más información sobre el arancel del SA";
+
+/* Placeholder for the HS Tariff Number text field for customs items */
+"wooShipping.customsItems.hsTariffNumber.placeholder" = "Opcional";
+
+/* Title for the origin country text field */
+"wooShipping.customsItems.originCountry" = "País de origen";
+
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "El número del arancel debe tener entre 6 y 12 dígitos";
+
+/* Title for the customs items value per unit text field for customs items */
+"wooShipping.customsItems.valuePerUnit" = "Valor por unidad";
+
+/* Warning text when some required value is missing */
+"wooShipping.customsItems.valueRequired" = "Valor requerido";
+
+/* Title for the customs items weight per unit text field for customs items */
+"wooShipping.customsItems.weightPerUnit" = "Peso por unidad";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "Cancelar";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Confirmar dirección introducida";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Confirmar dirección sugerida";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Lo que has introducido";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Hemos modificado ligeramente la dirección introducida.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Si es correcta, usa la dirección sugerida para garantizar que la entrega se realice correctamente.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Sugerida";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Confirmar dirección";
+
+/* Indicates that the address is the default origin address  on the shipping label creation screen */
+"wooShipping.originAddresses.defaultAddress" = "(por defecto)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Editar el original";
+
+/* Heading for the list of origin addresses to choose from on the shipping label creation screen */
+"wooShipping.originAddresses.shipFrom" = "Enviar desde";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mi tienda, hoy, esta semana, este mes, este año, pedidos, visitantes, conversión, conversión principal, artículos vendidos";

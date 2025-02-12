@@ -138,18 +138,6 @@ class NSManagedObjectContextStorageTests: XCTestCase {
         XCTAssert(anyObject is DummyEntity)
     }
 
-    /// Verifies that the `saveIfNeeded` persists changes (if any)
-    ///
-    func test_saveIfNeeded_effectively_persist_changes_if_any() {
-        XCTAssertFalse(context.hasChanges)
-
-        _ = context.insertNewObject(ofType: DummyEntity.self)
-        XCTAssertTrue(context.hasChanges)
-
-        context.saveIfNeeded()
-        XCTAssertFalse(context.hasChanges)
-    }
-
     /// Verifies that loadObject returns nil whenever the entity was deleted
     ///
     func test_loadObject_returns_nil_if_the_object_was_deleted() {

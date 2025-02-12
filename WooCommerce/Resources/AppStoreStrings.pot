@@ -61,11 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v21.3-whats-new"
+msgctxt "v21.7-whats-new"
 msgid ""
-"\n"
-"This update brings enhanced reliability and clarity to your WooCommerce experience! Enjoy improved Jetpack setup, smoother media handling, and better product and payment workflows. We’ve also optimized storage and addressed key UI issues to elevate performance. Plus, Tap to Pay onboarding now guides you with ease!\n"
-"\n"
+"This update brings improvements to media library and login experience. You'll find enhanced accessibility in tax-related views and clearer product image organization with cover tags to help you manage your store. Update now for a smoother WooCommerce experience!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

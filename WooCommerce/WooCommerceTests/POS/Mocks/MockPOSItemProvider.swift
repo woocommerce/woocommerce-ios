@@ -3,28 +3,47 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 @testable import struct Yosemite.POSSimpleProduct
+@testable import struct Yosemite.POSVariation
 import struct Yosemite.PagedItems
+import struct Yosemite.POSVariableParentProduct
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    var items: [POSItem] = []
-    var shouldThrowError = false
+    /// An array of pages of items, returned when other flags are not set.
+    var itemPages: [[POSItem]] = []
+    var errorToThrow: Error?
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
+    var shouldSimulateMorePages = false
 
     var spyLastRequestedPageNumber: Int?
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
-        if shouldThrowError {
-            throw MockError.requestFailed
+        if let errorToThrow {
+            throw errorToThrow
         }
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
         }
-        if shouldSimulateTwoPages,
-            pageNumber > 1 {
-            return .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: false)
+        if shouldSimulateTwoPages {
+            return pageNumber > 1 ?
+                .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages):
+                .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
         }
-        return .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
+        return .init(items: (itemPages[safe: pageNumber - 1] ?? []), hasMorePages: itemPages.count > pageNumber)
+    }
+
+    var shouldSimulateTwoPagesOfVariations = false
+    var shouldSimulateMorePagesOfVariations = false
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        if let errorToThrow {
+            throw errorToThrow
+        }
+        if shouldSimulateTwoPagesOfVariations,
+           pageNumber > 1 {
+            return .init(items: MockPointOfSaleItemService.makeSecondPageVariationItems(), hasMorePages: shouldSimulateMorePagesOfVariations)
+        }
+
+        return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations)
     }
 }
 
@@ -65,7 +84,47 @@ extension MockPointOfSaleItemService {
         return [.simpleProduct(product3), .simpleProduct(product4)]
     }
 
-    enum MockError: Error {
-        case requestFailed
+    static func makeInitialVariationItems() -> [POSItem] {
+        let fakeUUID1 = UUID(uuidString: "B04AF636-CF6C-11EF-A45C-FA719FB6C0F0") ?? UUID()
+        let fakeUUID2 = UUID(uuidString: "B04AF727-CF6C-11EF-A45C-FA719FB6C0F0") ?? UUID()
+
+        let variation1 = POSVariation(id: fakeUUID1,
+                                      name: "Choco",
+                                      formattedPrice: "$2.00",
+                                      price: "2.00",
+                                      productID: 1,
+                                      variationID: 1,
+                                      parentProductName: "Ice cream")
+
+        let variation2 = POSVariation(id: fakeUUID2,
+                                      name: "Vanilla",
+                                      formattedPrice: "$2.00",
+                                      price: "2.00",
+                                      productID: 1,
+                                      variationID: 2,
+                                      parentProductName: "Ice cream")
+        return [.variation(variation1), .variation(variation2)]
+    }
+
+    static func makeSecondPageVariationItems() -> [POSItem] {
+        let fakeUUID3 = UUID(uuidString: "B04AF758-CF6C-11EF-A45C-FA719FB6C0F0") ?? UUID()
+        let fakeUUID4 = UUID(uuidString: "B04AF78A-CF6C-11EF-A45C-FA719FB6C0F0") ?? UUID()
+
+        let variation3 = POSVariation(id: fakeUUID3,
+                                      name: "Strawberry",
+                                      formattedPrice: "$2.00",
+                                      price: "2.00",
+                                      productID: 1,
+                                      variationID: 3,
+                                      parentProductName: "Ice cream")
+
+        let variation4 = POSVariation(id: fakeUUID4,
+                                      name: "Pistachio",
+                                      formattedPrice: "$3.00",
+                                      price: "2.00",
+                                      productID: 1,
+                                      variationID: 4,
+                                      parentProductName: "Ice cream")
+        return [.variation(variation3), .variation(variation4)]
     }
 }

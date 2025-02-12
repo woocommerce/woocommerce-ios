@@ -18,14 +18,14 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
                 .foregroundStyle(Color.posPrimaryText)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
@@ -33,12 +33,12 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 Button(action: viewModel.newOrderButtonViewModel.actionHandler) {
                     Label(viewModel.newOrderButtonViewModel.title, systemImage: "arrow.uturn.backward")
                 }
-                .buttonStyle(POSSecondaryButtonStyle())
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
         .multilineTextAlignment(.center)
@@ -60,4 +60,5 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             newOrderButtonAction: {}),
         animation: .init(namespace: namespace)
     )
+    .environmentObject(POSModalManager())
 }

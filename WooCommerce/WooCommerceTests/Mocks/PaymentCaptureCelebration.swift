@@ -1,7 +1,9 @@
 @testable import WooCommerce
 
-struct MockPaymentCaptureCelebration: PaymentCaptureCelebrationProtocol {
+final class MockPaymentCaptureCelebration: PaymentCaptureCelebrationProtocol {
+    private(set) var celebrationWasCalled: Bool = false
+
     func celebrate() {
-        // no-op
+        celebrationWasCalled = true
     }
 }

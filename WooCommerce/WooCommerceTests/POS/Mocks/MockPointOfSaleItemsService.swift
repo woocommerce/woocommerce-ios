@@ -3,12 +3,15 @@ import Combine
 @testable import WooCommerce
 import enum Yosemite.POSItem
 
+@available(iOS 17.0, *)
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemsViewStatePublisher: any Publisher<ItemsViewState, Never> = Empty()
+    var itemsViewState: ItemsViewState = .init(containerState: .empty,
+                                               itemsStack: .init(root: .loaded([], hasMoreItems: false),
+                                                                 itemStates: [:]))
 
-    func loadInitialItems() async { }
+    func loadItems(base: ItemListBaseItem) async { }
 
-    func loadNextItems() async { }
+    func refreshItems(base: WooCommerce.ItemListBaseItem) async { }
 
-    func reload() async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
 }

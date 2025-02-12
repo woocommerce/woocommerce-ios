@@ -1,3 +1,1 @@
-Hanya dalam dua minggu, kami melengkapi rilis ini. Ada dukungan pengenal produk global GTIN dan Anda dapat menyunting call-to-action di kampanye Blaze.
-
-Penyiapan toko untuk pembayaran langsung kini lebih cepat, konfirmasi terkirimnya tanda terima lebih jelas, dan pengujian Ketuk untuk Bayar di iPhone lebih lancar. Kami juga menyempurnakan statistik dasbor dan mengatasi bug.
+Dapatkan aplikasi WooCommerce tampilan baru yang selaras dengan branding baru kami! Kami telah meningkatkan keandalan pembayaran. Pembaruan pembaca kartu membuatnya lebih andal meski saat baterai lemah. Selain itu, error saat pembayaran dan pengembalian dana bisa ditangani dengan lebih baik. Nikmati pengalaman yang lebih baik dan lancar di setiap transaksi.

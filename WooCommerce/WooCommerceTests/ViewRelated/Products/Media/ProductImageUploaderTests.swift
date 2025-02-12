@@ -9,6 +9,7 @@ final class ProductImageUploaderTests: XCTestCase {
     private let productID: Int64 = 606
     private var errorsSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
+    private var activeUploadsSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -571,9 +572,85 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         XCTAssertEqual(errors.count, 0)
     }
+
+    // MARK: `activeUploads`
+
+    func test_product_is_removed_from_activeUploads_when_upload_completes() {
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        let asset = PHAsset()
+        let uploadedMedia = Media.fake().copy(mediaID: 645)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(uploadedMedia))
+            }
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+
+        // Then
+        waitUntil {
+            activeUploads == [key]
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, images, onCompletion) = action {
+                onCompletion(.success(.fake().copy(images: images)))
+            }
+        }
+        imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { _ in
+            // Then
+            XCTAssertEqual(activeUploads, [])
+        }
+    }
+
+    func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+        let productFormDataModel = EditableProductModel(product: .fake().copy(siteID: siteID, productID: productID, images: []))
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        let asset = PHAsset()
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+
+        // Then
+        waitUntil {
+            activeUploads == [key]
+        }
+
+        // When
+        actionHandler.resetProductImages(to: productFormDataModel)
+
+        // Then
+        waitUntil {
+            activeUploads == []
+        }
+    }
 }
 
-extension ProductImageUploadErrorInfo: Equatable {
+extension ProductImageUploadErrorInfo: @retroactive Equatable {
     public static func == (lhs: ProductImageUploadErrorInfo, rhs: ProductImageUploadErrorInfo) -> Bool {
         return lhs.siteID == rhs.siteID &&
         lhs.productOrVariationID == rhs.productOrVariationID &&
@@ -582,7 +659,7 @@ extension ProductImageUploadErrorInfo: Equatable {
     }
 }
 
-extension ProductImageUploaderError: Equatable {
+extension ProductImageUploaderError: @retroactive Equatable {
     public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
         switch (lhs, rhs) {
         case (.failedUploadingImage(let lhsError), .failedUploadingImage(let rhsError)):

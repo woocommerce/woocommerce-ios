@@ -79,23 +79,42 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
                                                     productImageUploader: productImageUploader)
-        let rootNavigationController = UINavigationController(rootViewController: .init())
+        let rootNavigationController = MockNavigationController(rootViewController: .init())
         window.rootViewController = rootNavigationController
 
         // When
         rootNavigationController.pushViewController(productForm, animated: false)
-
-        waitUntil {
-            rootNavigationController.viewControllers.count == 2
-        }
-
+        // And
         rootNavigationController.popViewController(animated: false)
-
-        waitUntil {
-            rootNavigationController.viewControllers.count == 1
-        }
 
         // Then
         XCTAssertTrue(productImageUploader.startEmittingErrorsWasCalled)
+    }
+}
+
+// MARK: - MockNavigationController
+/// Popping with UINavigationController doesn't work reliably in unit tests and doesn't always result in viewWillDisappear being called.
+/// Created a mock to simulate the behavior of UINavigationController.
+///
+private class MockNavigationController: UINavigationController {
+    private var pushedViewControllers: [UIViewController] = []
+    private var isBeingDismissedToReturn: Bool = false
+
+    override var isBeingDismissed: Bool {
+        isBeingDismissedToReturn
+    }
+
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        super.pushViewController(viewController, animated: true)
+        isBeingDismissedToReturn = false
+        pushedViewControllers.append(viewController)
+    }
+
+    @discardableResult
+    override func popViewController(animated: Bool) -> UIViewController? {
+        let viewController = pushedViewControllers.popLast()
+        isBeingDismissedToReturn = true
+        viewController?.viewWillDisappear(animated)
+        return super.popViewController(animated: animated)
     }
 }

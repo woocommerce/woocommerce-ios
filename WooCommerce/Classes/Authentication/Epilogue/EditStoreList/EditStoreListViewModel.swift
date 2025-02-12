@@ -53,14 +53,17 @@ final class EditStoreListViewModel: ObservableObject {
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
 
+        analytics.track(event: .SitePicker.listSaveButtonTapped(hiddenSiteCount: hiddenSiteIDs.count))
         shouldShowErrorAlert = false
         isUpdatingNotificationSettings = true
         do {
             try await updateNotificationSettings(displayedSiteIDs: displayedSiteIDs, hiddenSiteIDs: hiddenSiteIDs)
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
+            analytics.track(event: .SitePicker.listEditSavingSuccess())
             onCompletion()
         } catch {
             shouldShowErrorAlert = true
+            analytics.track(event: .SitePicker.listEditSavingFailure(error: error))
         }
         isUpdatingNotificationSettings = false
     }

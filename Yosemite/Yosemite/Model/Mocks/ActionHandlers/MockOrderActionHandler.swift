@@ -25,6 +25,8 @@ struct MockOrderActionHandler: MockActionHandler {
             } else {
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             }
+        case .updateOrderStatus(let siteID, let orderID, let status, let onCompletion):
+            onCompletion(nil)
 
         default: unimplementedAction(action: action)
         }

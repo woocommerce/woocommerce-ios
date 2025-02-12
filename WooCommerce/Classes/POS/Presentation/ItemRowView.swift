@@ -5,104 +5,81 @@ struct ItemRowView: View {
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
+    @Binding private var showProductImage: Bool
 
-    init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
+    private var dimension: CGFloat {
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
+    init(cartItem: CartItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
+        self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalCardSpacing) {
+        HStack(spacing: Constants.horizontalElementSpacing) {
             productImage
 
-            VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
-                Text(cartItem.item.name)
-                    .foregroundColor(Color.posPrimaryText)
-                    .font(Constants.itemNameFont)
-                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
-                    .padding(.top, Constants.verticalPadding * (1 / scale))
+            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+                Text(cartItem.title)
+                    .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
+                    .font(Constants.itemTitleFont)
+                if let subtitle = cartItem.subtitle {
+                    Text(subtitle)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemSubtitleFont)
+                }
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.posPrimaryText)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                     .font(Constants.itemPriceFont)
-                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
-                    .padding(.bottom, Constants.verticalPadding * (1 / scale))
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
             .accessibilityElement(children: .combine)
-            Spacer()
+
             if let onItemRemoveTapped {
                 Button(action: {
                     onItemRemoveTapped()
                 }, label: {
                     Image(systemName: "xmark.circle")
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .padding()
-                .foregroundColor(Color.posTertiaryText)
+                .padding(.trailing, Constants.cardContentHorizontalPadding)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(backgroundColor)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
-                .stroke(Color.black, lineWidth: Constants.nilOutline)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
         .padding(.horizontal, Constants.horizontalPadding)
-        .padding(.vertical, Constants.verticalPadding)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
     }
 
     @ViewBuilder
     private var productImage: some View {
-        if dynamicTypeSize >= .accessibility3 {
+        if !showProductImage {
             EmptyView()
-        } else if let imageSource = cartItem.item.productImageSource {
-            ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                  productImageSize: Constants.productCardSize,
-                                  scale: scale,
-                                  foregroundColor: .clear,
-                                  cachesOriginalImage: true)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                   height: Constants.productCardSize * scale)
-            .clipped()
         } else {
-            Rectangle()
-                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                       height: Constants.productCardSize * scale)
-                .foregroundColor(Color(.secondarySystemFill))
-        }
-    }
-}
-
-private extension ItemRowView {
-    var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posTertiaryBackground
-        default:
-            return Color.posSecondaryBackground
+            POSItemImageView(imageSource: cartItem.item.productImageSource,
+                             imageSize: dimension,
+                             scale: 1)
+            .frame(width: dimension, height: dimension)
         }
     }
 }
 
 private extension ItemRowView {
     enum Constants {
-        static let productCardSize: CGFloat = 76
+        static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
-        static let productCardCornerRadius: CGFloat = 8
-        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
-        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
-        static let nilOutline: CGFloat = 0
-        static let verticalPadding: CGFloat = 4
         static let horizontalPadding: CGFloat = 16
-        static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
-        static let itemNameAndPriceSpacing: CGFloat = 8
-        static let itemNameFont: POSFontStyle = .posDetailEmphasized
-        static let itemPriceFont: POSFontStyle = .posDetailLight
+        static let cardContentHorizontalPadding: CGFloat = 16
+        static let itemTitleAndPriceSpacing: CGFloat = 4
+        static let itemTitleFont: POSFontStyle = .posBodySmallBold
+        static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
+        static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
     }
 
     enum Localization {
@@ -115,9 +92,22 @@ private extension ItemRowView {
 }
 
 #if DEBUG
-#Preview {
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
     ItemRowView(cartItem: CartItem(id: UUID(),
                                    item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: "Item Subtitle",
+                                   quantity: 2),
+                onItemRemoveTapped: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: nil,
                                    quantity: 2),
                 onItemRemoveTapped: { })
 }

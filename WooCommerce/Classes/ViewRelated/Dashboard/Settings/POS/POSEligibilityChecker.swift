@@ -19,16 +19,12 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
-        guard isTablet else {
+        guard isTablet,
+              #available(iOS 17.0, *) else {
             return Just(false)
                 .eraseToAnyPublisher()
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.paymentsOnboardingInPointOfSale) else {
-            return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
-                .map { $0 && $1 && $2 }
-                .eraseToAnyPublisher()
-        }
         return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
             .filter { [weak self] _ in
                 self?.isEligibleFromSiteChecks ?? false
@@ -38,14 +34,12 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     }
 
     private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores,
@@ -53,25 +47,12 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
-        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
         self.stores = stores
         self.featureFlagService = featureFlagService
     }
 }
 
 private extension POSEligibilityChecker {
-    var isOnboardingComplete: AnyPublisher<Bool, Never> {
-        return cardPresentPaymentsOnboarding.statePublisher
-            .filter { [weak self] _ in
-                self?.isEligibleFromSiteChecks ?? false
-            }
-            .map { onboardingState in
-                // Woo Payments plugin enabled and user setup complete
-                onboardingState == .completed(plugin: .wcPayOnly) || onboardingState == .completed(plugin: .wcPayPreferred)
-            }
-            .eraseToAnyPublisher()
-    }
-
     var isWooCommerceVersionSupported: AnyPublisher<Bool, Never> {
         Future<Bool, Never> { [weak self] promise in
             guard let self else {
@@ -85,6 +66,8 @@ private extension POSEligibilityChecker {
                 return
             }
 
+            let wcPluginMinimumVersion = wcPluginMinimumVersion
+
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 guard let wcPlugin = wcPlugin, wcPlugin.active else {
                     promise(.success(false))
@@ -92,7 +75,7 @@ private extension POSEligibilityChecker {
                 }
 
                 let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                    minimumRequired: Constants.wcPluginMinimumVersion)
+                                                                    minimumRequired: wcPluginMinimumVersion)
                 promise(.success(isSupported))
             }
             self.stores.dispatch(action)
@@ -136,11 +119,19 @@ private extension POSEligibilityChecker {
                 return false
         }
     }
+
+    private var wcPluginMinimumVersion: String {
+        guard featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale) else {
+            return Constants.legacyWcPluginMinimumVersion
+        }
+        return Constants.wcPluginMinimumVersion
+    }
 }
 
 private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
-        static let wcPluginMinimumVersion = "6.6.0"
+        static let wcPluginMinimumVersion = "9.6.0-beta"
+        static let legacyWcPluginMinimumVersion = "6.6.0"
     }
 }

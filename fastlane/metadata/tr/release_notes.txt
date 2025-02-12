@@ -1,3 +1,1 @@
-Yalnızca iki hafta içinde bu sürümü tamamen doldurduk. GTIN küresel ürün tanımlama desteği sunulur ve Blaze kampanyalarında eylem çağrılarını düzenleyebilirsiniz.
-
-Şahsen ödeme için mağazada kurulum daha hızlı, fatura gönderilme onayları daha net ve iPhone'da Tap To Pay'in test edilmesi daha kolay. Ayrıca pano istatistikleri iyileştirildi ve bazı hatalar düzeltildi.
+Yeni markamızla uyumlu güncellenmiş bir görünüme sahip yenilenmiş bir WooCommerce uygulamasını deneyimleyin! Ödeme güvenilirliğini de iyileştirdik; kart okuyucu güncellemeleri artık düşük pil sorunlarını daha iyi ele alıyor ve ödemeler ve iadeler sırasında oluşan hatalar daha sorunsuz bir şekilde yönetiliyor. Her işlemde daha kusursuz ve kaliteli bir deneyimin keyfini çıkarın.

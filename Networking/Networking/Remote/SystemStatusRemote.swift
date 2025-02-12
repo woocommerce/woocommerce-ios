@@ -38,7 +38,7 @@ public class SystemStatusRemote: Remote {
     ///   - completion: Closure to be excuted upon completion
     ///
     public func fetchSystemStatusReport(for siteID: Int64,
-                                        completion: @escaping (Result<SystemStatus, Error>) -> Void) {
+                                        completion: @escaping (Result<SystemStatusReport, Error>) -> Void) {
         let path = Constants.systemStatusPath
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -46,7 +46,7 @@ public class SystemStatusRemote: Remote {
                                      path: path,
                                      parameters: nil,
                                      availableAsRESTRequest: true)
-        let mapper = SystemStatusMapper(siteID: siteID)
+        let mapper = SystemStatusReportMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

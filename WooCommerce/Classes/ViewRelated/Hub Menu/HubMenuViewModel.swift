@@ -97,10 +97,10 @@ final class HubMenuViewModel: ObservableObject {
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let currencySettings = ServiceLocator.currencySettings
 
-        return PointOfSaleProductService(siteID: siteID,
-                                         currencySettings: currencySettings,
-                                         credentials: credentials,
-                                         isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
+        return PointOfSaleItemService(siteID: siteID,
+                                      currencySettings: currencySettings,
+                                      credentials: credentials,
+                                      isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -159,8 +159,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
-                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
         self.analytics = analytics
@@ -171,15 +170,22 @@ final class HubMenuViewModel: ObservableObject {
         createCardPresentPaymentService()
     }
 
-    func viewDidAppear() {
+    func viewDidAppear() async {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
         viewAppeared = true
-        if !hasGoogleAdsCampaigns {
-            refreshGoogleAdsCampaignCheck()
-        }
 
-        if !isSiteEligibleForBlaze {
-            refreshBlazeEligibilityCheck()
+        await withTaskGroup(of: Void.self) { group in
+            if !hasGoogleAdsCampaigns {
+                group.addTask {
+                    await self.refreshGoogleAdsCampaignCheck()
+                }
+            }
+
+            if !isSiteEligibleForBlaze {
+                group.addTask {
+                    await self.refreshBlazeEligibilityCheck()
+                }
+            }
         }
     }
 
@@ -208,23 +214,21 @@ final class HubMenuViewModel: ObservableObject {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
-    func refreshGoogleAdsCampaignCheck() {
-        Task { @MainActor in
-            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
-        }
+    func refreshGoogleAdsCampaignCheck() async {
+        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
     }
 
-    func refreshBlazeEligibilityCheck() {
+    func refreshBlazeEligibilityCheck() async {
         guard let site = currentSite else {
             return
         }
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
+        updateTrackEventPrefix(isPointOfSaleActive)
     }
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
@@ -272,6 +276,12 @@ private extension HubMenuViewModel {
             ServiceLocator.pushNotesManager.enableInAppNotifications()
         }
     }
+
+    // Decorates track events with a different prefix when Point of Sale is active
+    //
+    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
+        TracksProvider.setPOSMode(isPointOfSaleActive)
+    }
 }
 
 // MARK: - Helper methods
@@ -284,7 +294,6 @@ private extension HubMenuViewModel {
     }
 
     func setupPOSElement() {
-        cardPresentPaymentsOnboarding.refreshIfNecessary()
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()
@@ -479,6 +488,27 @@ private extension HubMenuViewModel {
     }
 }
 
+// MARK: - Helpers
+extension HubMenuViewModel {
+    func viewDidAppear() {
+        Task { @MainActor in
+            await viewDidAppear()
+        }
+    }
+
+    func refreshBlazeEligibilityCheck() {
+        Task { @MainActor in
+            await refreshBlazeEligibilityCheck()
+        }
+    }
+
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            await refreshGoogleAdsCampaignCheck()
+        }
+    }
+}
+
 protocol HubMenuItem {
     static var id: String { get }
     var title: String { get }
@@ -655,7 +685,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartPurpleIcon
+        let icon: UIImage = .shoppingCartFilled
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"

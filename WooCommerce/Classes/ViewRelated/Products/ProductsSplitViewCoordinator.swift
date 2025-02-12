@@ -99,7 +99,7 @@ private extension ProductsSplitViewCoordinator {
     func showEmptyView() {
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyViewMessage),
-            image: .emptyProductsTabImage
+            image: .productBlouseImage
         )
         let emptyStateViewController = EmptyStateViewController(style: .basic, configuration: config)
         showSecondaryView(contentType: .empty, viewController: emptyStateViewController, replacesNavigationStack: true)

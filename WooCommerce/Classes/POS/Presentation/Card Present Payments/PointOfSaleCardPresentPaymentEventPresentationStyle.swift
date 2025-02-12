@@ -160,10 +160,11 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                         dependencies.dismissReaderConnectionModal()
                     })))
 
-        case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
+        case .updateFailedLowBattery(let batteryLevel, let retrySearch, let cancelUpdate):
             self = .alert(.updateFailedLowBattery(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
                     batteryLevel: batteryLevel,
+                    retrySearchAction: retrySearch,
                     cancelUpdateAction: {
                         cancelUpdate()
                         dependencies.dismissReaderConnectionModal()
@@ -187,8 +188,9 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
         case .paymentSuccess:
-            self = .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(
-                formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
+            self = .message(.paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(
+                formattedOrderTotal: dependencies.formattedOrderTotalPrice,
+                paymentMethod: .card)))
         case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {
             case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,

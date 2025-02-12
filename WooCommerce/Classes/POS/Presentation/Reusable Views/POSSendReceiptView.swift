@@ -1,11 +1,14 @@
 import SwiftUI
 import class WordPressShared.EmailFormatValidator
 
+@available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
+    @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
@@ -14,32 +17,37 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .center, spacing: conditionalPadding(8)) {
             HStack {
                 Button(action: {
-                    isShowingSendReceiptView = false
+                    withAnimation {
+                        isShowingSendReceiptView = false
+                        isTextFieldFocused = false
+                    }
                 }, label: {
                     HStack {
-                        Image(systemName: "arrow.backward")
+                        Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.title)
-                    .bold()
-                    .foregroundColor(.primary)
+                    .font(.posHeading)
+                    .foregroundColor(.posPrimaryText)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                    .accessibilityAddTraits(.isHeader)
                 })
                 Spacer()
             }
             .buttonStyle(.plain)
-            .padding()
             .disabled(isLoading)
 
             TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.none)
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
+                .font(POSFontStyle.posBodyXLarge)
                 .focused()
+                .focused($isTextFieldFocused)
                 .padding()
                 .onSubmit {
                     sendReceipt()
@@ -47,36 +55,24 @@ struct POSSendReceiptView: View {
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .foregroundColor(.red)
+                    .padding(.bottom, Constants.errorMessagePadding)
             }
 
             Button(action: {
                 sendReceipt()
             }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryText)
-                    } else {
-                        Text(Localization.buttonTitle)
-                            .font(Constants.buttonFont)
-                    }
-                }
-                .frame(maxWidth: .infinity)
+                Text(Localization.buttonTitle)
             })
-            .padding(Constants.buttonPadding)
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
             .disabled(isLoading)
 
             Spacer()
         }
-        .padding()
+        .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
@@ -84,6 +80,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
+        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText
@@ -93,7 +90,10 @@ struct POSSendReceiptView: View {
             do {
                 errorMessage = nil
                 try await posModel.sendReceipt(to: textFieldInput)
-                isShowingSendReceiptView = false
+                withAnimation {
+                    isShowingSendReceiptView = false
+                    isTextFieldFocused = false
+                }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
             }
@@ -102,15 +102,25 @@ struct POSSendReceiptView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
+        static let errorMessagePadding: CGFloat = 8
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return 0
+        } else if dynamicTypeSize >= .xLarge {
+            return padding * 0.8
+        } else {
+            return padding
+        }
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     struct Localization {
         static let buttonTitle = NSLocalizedString(
@@ -137,12 +147,13 @@ private extension POSSendReceiptView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

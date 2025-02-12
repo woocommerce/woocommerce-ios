@@ -112,13 +112,17 @@ final class PushNotificationsManager: PushNotesManager {
 
     private let analytics: Analytics
 
+    private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
+
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
     ///
     init(configuration: PushNotificationsConfiguration = .default,
+         backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
+        self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
     }
 }
@@ -315,7 +319,7 @@ extension PushNotificationsManager {
             backgroundNotificationsSubject.send(notification)
         }
 
-        return await PushNotificationBackgroundSynchronizer(userInfo: userInfo, stores: configuration.storesManager).sync()
+        return await backgroundSynchronizerFactory.make(userInfo: userInfo, stores: configuration.storesManager).sync()
     }
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {

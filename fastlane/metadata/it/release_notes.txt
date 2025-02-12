@@ -1,3 +1,1 @@
-In sole due settimane abbiamo riempito questa release di contenuti. È disponibile il supporto per l'identificatore di prodotto globale GTIN ed è possibile modificare l'invito all'azione nelle campagne Blaze.
-
-L'impostazione del negozio per i pagamenti di persona è più veloce, le conferme di invio ricevute sono più chiare e il test Tap to Pay su iPhone è più fluido. Inoltre, abbiamo migliorato le statistiche della bacheca ed eliminato alcuni bug.
+Prova un'app WooCommerce rinnovata con un look aggiornato che si allinea al nostro nuovo branding! Abbiamo anche migliorato l'affidabilità dei pagamenti: gli aggiornamenti dei lettori di carte ora gestiscono meglio i problemi di batteria scarica e gli errori durante i pagamenti e i rimborsi sono gestiti in modo più fluido. Goditi un'esperienza più fluida e raffinata in ogni transazione.

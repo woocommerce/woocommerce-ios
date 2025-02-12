@@ -64,14 +64,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.connectedReaderPublisher = connectedReaderPublisher
 
         readerConnectionStatusPublisher = connectedReaderPublisher
-            .map({ reader -> CardPresentPaymentReaderConnectionStatus? in
-                if let reader {
-                    return .connected(reader)
-                } else {
-                    return nil
+            .map({ reader -> CardPresentPaymentReaderConnectionStatus in
+                guard let reader else {
+                    return .disconnected
                 }
+                return .connected(reader)
             })
-            .compactMap { $0 }
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
@@ -104,8 +102,13 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() async {
         readerConnectionStatusSubject.send(.disconnecting)
 
-        cancelPayment()
+        do {
+            try await cancelPayment()
+        } catch {
+            DDLogError("Attempting to cancel the payment has failed \(error)")
+        }
 
+        paymentTask?.cancel()
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
         return await withCheckedContinuation { continuation in
@@ -161,6 +164,18 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func cancelPayment() {
         paymentTask?.cancel()
     }
+
+    @MainActor
+    func cancelPayment() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
+            let action = CardPresentPaymentAction.cancelPayment { result in
+                nillableContinuation?.resume(with: result)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 private extension CardPresentPaymentService {
@@ -213,4 +228,5 @@ enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
     case incompleteAddressConnectionError
+    case couldNotCancelPayment
 }

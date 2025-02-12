@@ -415,9 +415,9 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         XCTAssertEqual(window.rootViewController, loginNavigationController)
         waitUntil {
-            loginNavigationController.viewControllers.count == 2
+            loginNavigationController.viewControllers.count == 2 &&
+            loginNavigationController.presentedViewController == nil
         }
-        XCTAssertNil(loginNavigationController.presentedViewController)
     }
 
     func test_appCoordinator_start_resets_default_store_and_proceeds_to_login_when_isAuthenticated_and_needsDefaultStore_are_false() {

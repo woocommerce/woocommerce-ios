@@ -2,9 +2,10 @@ import UIKit
 
 final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalViewModel {
     private let close: () -> Void
+    private let retrySearch: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
-    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
+    let actionsMode: PaymentsModalActionsMode = .twoAction
 
     let topTitle: String = Localization.title
 
@@ -12,7 +13,7 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
 
     let image: UIImage = .cardReaderLowBattery
 
-    let primaryButtonTitle: String? = nil
+    let primaryButtonTitle: String? = Localization.retry
 
     let secondaryButtonTitle: String? = Localization.cancel
 
@@ -26,7 +27,8 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
         return topTitle
     }
 
-    init(batteryLevel: Double?, close: @escaping () -> Void) {
+    init(batteryLevel: Double?, retrySearch: @escaping () -> Void, close: @escaping () -> Void) {
+        self.retrySearch = retrySearch
         self.close = close
         if let batteryLevel = batteryLevel {
             bottomTitle = String(format: Localization.message, 100 * batteryLevel)
@@ -35,7 +37,9 @@ final class CardPresentModalUpdateFailedLowBattery: CardPresentPaymentsModalView
         }
     }
 
-    func didTapPrimaryButton(in viewController: UIViewController?) { }
+    func didTapPrimaryButton(in viewController: UIViewController?) {
+        retrySearch()
+    }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         close()
@@ -61,6 +65,12 @@ private extension CardPresentModalUpdateFailedLowBattery {
         static let messageNoBatteryLevel = NSLocalizedString(
             "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again.",
             comment: "Button to dismiss the alert presented when an update fails because the reader is low on battery."
+        )
+
+        static let retry = NSLocalizedString(
+            "cardPresent.modal.updateFailed.lowBattery.retry.button.title",
+            value: "Try again",
+            comment: "Button title to retry the card reader software update when the reader is low on battery."
         )
 
         static let cancel = NSLocalizedString(

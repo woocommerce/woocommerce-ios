@@ -4,8 +4,8 @@ struct MockCrashLogger: CrashLogger {
     }
 
     func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
-        // no-op
-        fatalError(error.localizedDescription)
+        print(error.localizedDescription)
+        while true {} // Avoid returning from a Never function
     }
 
     func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {

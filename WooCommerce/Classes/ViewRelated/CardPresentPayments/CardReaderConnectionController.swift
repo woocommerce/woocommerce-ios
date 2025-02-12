@@ -505,9 +505,8 @@ private extension CardReaderConnectionController {
     /// Retry a search for a card reader
     ///
     func onRetry() {
-        alertsPresenter.dismiss()
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            self?.state = .beginSearch
+            self?.state = .initializing
         }
         stores.dispatch(action)
     }
@@ -657,15 +656,18 @@ private extension CardReaderConnectionController {
         case .readerSoftwareUpdateFailedBatteryLow:
             alertsPresenter.present(
                 viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
+                                                                   retrySearch: { [weak self] in
+                                                                       self?.state = .retry
+                                                                   },
                                                                    close: {
-                                                                       self.state = .searching
+                                                                       self.state = .cancel(.readerSoftwareUpdateError)
                                                                    }))
         default:
             alertsPresenter.present(
                 viewModel: alertsProvider.updatingFailed(tryAgain: nil,
                                                          close: {
-                    self.state = .searching
-                }))
+                                                             self.state = .cancel(.readerSoftwareUpdateError)
+                                                         }))
         }
     }
 

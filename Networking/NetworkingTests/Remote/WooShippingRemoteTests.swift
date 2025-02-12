@@ -38,7 +38,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let packagesResponse = try XCTUnwrap(result.get())
-        XCTAssertEqual(packagesResponse.customPackages.count, 5)
+        XCTAssertEqual(packagesResponse.customPackages.count, 2)
         XCTAssertEqual(packagesResponse.customPackages.first?.id, "69d7052f934a7c218329de9c1abe3858")
         XCTAssertEqual(packagesResponse.customPackages.first?.name, "WCS&T Box")
         XCTAssertEqual(packagesResponse.customPackages.first?.dimensions, "15 x 15 x 15")
@@ -383,6 +383,137 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_loadOriginAddresses_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "wooshipping-get-origin-addresses-success")
+
+        // When
+        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+            remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let addresses = try XCTUnwrap(result.get())
+        XCTAssertEqual(addresses.count, 1)
+        XCTAssertEqual(addresses.first, sampleOriginAddress())
+    }
+
+    func test_loadOriginAddresses_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/origins", filename: "generic_error")
+
+        // When
+        let result: Result<[WooShippingOriginAddress], Error> = waitFor { promise in
+            remote.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_addressValidation_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/normalize", filename: "wooshipping-address-validation-success")
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID,
+                                     address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let validationResponse = try XCTUnwrap(result.get())
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(validationResponse.normalizedAddress)
+        XCTAssertNotNil(validationResponse.originalAddress)
+        XCTAssertFalse(validationResponse.isTrivialNormalization)
+    }
+
+    func test_addressValidation_returns_errors_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/normalize", filename: "wooshipping-address-validation-error")
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID,
+                                     address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? WooShippingAddressValidationError)
+        XCTAssertEqual(error.addressError, "House number is missing")
+        XCTAssertEqual(error.generalError, "Address not found")
+        XCTAssertEqual(error.nameError, "Either Name or Company is required")
+    }
+
+    func test_addressValidation_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/normalize", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID,
+                                     address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_updateOriginAddress_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/update_origin", filename: "wooshipping-update-origin-success")
+
+        // When
+        let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
+            remote.updateOriginAddress(siteID: self.sampleSiteID,
+                                       address: WooShippingOriginAddress.fake(),
+                                       isVerified: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let addressUpdate = try XCTUnwrap(result.get())
+        XCTAssertEqual(addressUpdate.address, sampleOriginAddress())
+        XCTAssertTrue(addressUpdate.isVerified)
+    }
+
+    func test_updateOriginAddress_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/update_origin", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
+            remote.updateOriginAddress(siteID: self.sampleSiteID,
+                                       address: WooShippingOriginAddress.fake(),
+                                       isVerified: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {
@@ -408,5 +539,22 @@ private extension WooShippingRemoteTests {
                                  rawType: "box",
                                  dimensions: "12 x 12 x 12",
                                  boxWeight: 0.01)
+    }
+
+    func sampleOriginAddress() -> WooShippingOriginAddress {
+        WooShippingOriginAddress(id: "store_details",
+                                 company: "Superlative Centaur",
+                                 address1: "60 29TH ST PMB 343",
+                                 address2: "",
+                                 city: "SAN FRANCISCO",
+                                 state: "CA",
+                                 postcode: "94110-4929",
+                                 country: "US",
+                                 phone: "12345678901",
+                                 firstName: "First",
+                                 lastName: "Last",
+                                 email: "email@automattic.com",
+                                 defaultAddress: true,
+                                 isVerified: true)
     }
 }

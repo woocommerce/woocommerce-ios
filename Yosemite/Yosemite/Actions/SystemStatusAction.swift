@@ -22,5 +22,5 @@ public enum SystemStatusAction: Action {
 
     /// Fetch system status report for a site given its ID
     ///
-    case fetchSystemStatusReport(siteID: Int64, onCompletion: (Result<SystemStatus, Error>) -> Void)
+    case fetchSystemStatusReport(siteID: Int64, onCompletion: (Result<SystemStatusReport, Error>) -> Void)
 }

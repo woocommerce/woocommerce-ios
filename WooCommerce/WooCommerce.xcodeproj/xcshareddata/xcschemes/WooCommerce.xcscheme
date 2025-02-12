@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1620"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -93,6 +93,17 @@
                BlueprintIdentifier = "CCDC49C923FFFFF4003166BA"
                BuildableName = "WooCommerceUITests.xctest"
                BlueprintName = "WooCommerceUITests"
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3F0904072D26A40800D8ACCE"
+               BuildableName = "WordPressAuthenticatorTests.xctest"
+               BlueprintName = "WordPressAuthenticatorTests"
                ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </TestableReference>

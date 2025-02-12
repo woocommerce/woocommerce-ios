@@ -1,8 +1,9 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
 
@@ -27,7 +28,7 @@ struct CardReaderConnectionStatusView: View {
                     }
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
+                        circleIcon(with: Color.posSuccess)
                         Text(Localization.readerConnected)
                             .foregroundColor(connectedFontColor)
                     }
@@ -64,6 +65,7 @@ struct CardReaderConnectionStatusView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     @ViewBuilder
     func progressIndicatingCardReaderStatus(title: String) -> some View {
@@ -81,6 +83,7 @@ private extension CardReaderConnectionStatusView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
@@ -94,20 +97,21 @@ private extension CardReaderConnectionStatusView {
     var disconnectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            Color(.wooCommercePurple(.shade60))
+            .posPrimaryText
         case .secondary:
             POSFloatingControlView.secondaryFontColor
         }
     }
 }
 
+@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
-        static let font = POSFontStyle.posDetailEmphasized
+        static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
         static let overlayRadius: CGFloat = 4
         static let overlayLineWidth: CGFloat = 2
@@ -118,6 +122,7 @@ private extension CardReaderConnectionStatusView {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Localization {
         static let readerConnected = NSLocalizedString(
@@ -156,9 +161,16 @@ private extension CardReaderConnectionStatusView {
 
 #if DEBUG
 
+@available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController()
+    )
     VStack {
         CardReaderConnectionStatusView()
+            .environment(posModel)
     }
 }
 

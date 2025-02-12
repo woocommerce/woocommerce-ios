@@ -921,6 +921,8 @@ private extension ProductFormViewController {
         }, onAddImage: { [weak self] in
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
+        }, onFailedImageUpload: { [weak self] (asset, error) in
+            self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
     }
 }

@@ -27,6 +27,8 @@ protocol ProductImageActionHandlerProtocol {
     func resetProductImages(to product: ProductFormDataModel)
 
     func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus])
+
+    func discardUpload(asset: ProductImageAssetType)
 }
 
 /// Encapsulates the implementation of Product images actions from the UI.
@@ -223,6 +225,19 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                                      onCompletion: onCompletion)
             }
             self.stores.dispatch(action)
+        }
+    }
+
+    func discardUpload(asset: ProductImageAssetType) {
+        queue.async { [weak self] in
+            guard let self else { return }
+
+            guard let uploadIndex = index(of: asset) else {
+                DDLogWarn("⚠️ Could not find upload for asset to discard!")
+                return
+            }
+
+            productImageStatuses.remove(at: uploadIndex)
         }
     }
 

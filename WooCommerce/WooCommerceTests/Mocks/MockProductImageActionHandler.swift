@@ -59,4 +59,8 @@ final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
     func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus]) {
         // no-op
     }
+
+    func discardUpload(asset: ProductImageAssetType) {
+        // no-op
+    }
 }

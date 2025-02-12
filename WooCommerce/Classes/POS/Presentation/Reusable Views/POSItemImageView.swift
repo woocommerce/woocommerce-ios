@@ -11,7 +11,7 @@ struct POSItemImageView: View {
             .foregroundColor(Constants.placeholderBackgroundColor)
             .overlay {
                 Text(Image(systemName: "archivebox"))
-                    .font(.posButtonSymbolSmall)
+                    .font(.posButtonSymbolLarge)
                     .foregroundColor(Constants.placeholderIconColor)
             }
     }

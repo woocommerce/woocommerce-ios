@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// The visual variant of the POS button.
-enum POSButtonVariant {
-    case filled
-    case outlined
-}
-
 /// The size variant of the POS button.
 enum POSButtonSize {
     case normal
@@ -38,6 +32,12 @@ struct POSOutlinedButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         POSButton(configuration: configuration, variant: .outlined, size: size, isLoading: false)
     }
+}
+
+/// The visual variant of the POS button.
+fileprivate enum POSButtonVariant {
+    case filled
+    case outlined
 }
 
 private struct POSButton: View {

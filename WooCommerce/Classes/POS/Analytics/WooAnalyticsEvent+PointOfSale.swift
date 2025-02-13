@@ -12,6 +12,7 @@ extension WooAnalyticsEvent {
             static let paymentsOnboardingState = "onboarding_state"
             static let itemType = "product_type"
             static let itemsInCart = "items_in_cart"
+            static let millisecondsSinceCustomerInteractionStarted = "milliseconds_since_customer_interaction_started"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -34,7 +35,7 @@ extension WooAnalyticsEvent {
 
         static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
-                "milliseconds_since_customer_interaction_started" : "\(millisecondsSinceCustomerIteractionStated)"]
+                Key.millisecondsSinceCustomerInteractionStarted : "\(millisecondsSinceCustomerIteractionStated)"]
             )
         }
     }

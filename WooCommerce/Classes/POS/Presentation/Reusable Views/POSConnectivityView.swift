@@ -28,19 +28,19 @@ struct POSConnectivityView: View {
     @ViewBuilder private var noConnectionBanner: some View {
         HStack(spacing: Constants.spacing) {
             Image(systemName: "wifi.exclamationmark")
-                .foregroundColor(Color(.text.inverted))
+                .foregroundColor(Color.posOnSecondaryContainer)
                 .font(.posBodySmallBold)
 
             Text(Localization.title)
-                .foregroundColor(Color(.text.inverted))
+                .foregroundColor(Color.posOnSecondaryContainer)
                 .font(.posBodySmallBold)
         }
         .padding(.vertical, Constants.verticalPadding)
         .padding(.horizontal, Constants.horizontalPadding)
         .frame(minHeight: Constants.height)
-        .background(Color(.systemGray6.inverted))
+        .background(Color.posSecondaryContainer)
         .cornerRadius(Constants.cornerRadius)
-        .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 2)
+        .shadow(color: Color.posShadow.opacity(0.2), radius: 8, x: 0, y: 2)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
@@ -66,4 +66,9 @@ private extension POSConnectivityView {
             comment: "Title shown on a toast view that appears when there's no internet connection"
         )
     }
+}
+
+#Preview {
+    // To enable preview, set `isVisible` to `true` and comment out `onAppear` block.
+    POSConnectivityView()
 }

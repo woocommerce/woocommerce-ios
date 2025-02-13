@@ -5,6 +5,11 @@ import Combine
 final class MockProductImageUploader {
     let errors: AnyPublisher<ProductImageUploadErrorInfo, Never>
 
+    var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
+        $activeUploadsKeys.eraseToAnyPublisher()
+    }
+
+    @Published var activeUploadsKeys: [ProductImageUploaderKey] = []
     var replaceLocalIDWasCalled = false
     var saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled = false
     var startEmittingErrorsWasCalled = false
@@ -29,6 +34,7 @@ final class MockProductImageUploader {
 }
 
 extension MockProductImageUploader: ProductImageUploaderProtocol {
+
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         replaceLocalIDWasCalled = true
     }

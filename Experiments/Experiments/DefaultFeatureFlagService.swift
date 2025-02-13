@@ -91,8 +91,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .acceptCashForPointOfSale:
             return true
-        case .variableProductsInPointOfSale:
-            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:

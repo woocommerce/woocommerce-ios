@@ -5,9 +5,11 @@ struct POSItemCardBorderStylesModifier: ViewModifier {
         content
             .overlay {
                 RoundedRectangle(cornerRadius: Constants.cardCornerRadius)
-                    .stroke(Color.black, lineWidth: Constants.nilOutline)
+                    .stroke(Color.posShadow, lineWidth: Constants.nilOutline)
             }
             .clipShape(RoundedRectangle(cornerRadius: Constants.cardCornerRadius))
+            .shadow(color: Color.posShadow.opacity(0.04), radius: 12, x: 0, y: 8)
+            .shadow(color: Color.posShadow.opacity(0.08), radius: 4, x: 0, y: 2)
     }
 }
 

@@ -162,6 +162,7 @@
 		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
 		0220F4952C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0220F4942C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift */; };
 		0221121E288973C20028F0AF /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221121D288973C20028F0AF /* LocalNotification.swift */; };
+		02222BD02D5AFE4F00FB97D2 /* POSButtonProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02222BCF2D5AFE4F00FB97D2 /* POSButtonProgressViewStyle.swift */; };
 		022266BA2AE76E0E00614F34 /* ProductBundleItem+SwiftUIPreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022266B92AE76E0E00614F34 /* ProductBundleItem+SwiftUIPreviewHelpers.swift */; };
 		022266BC2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022266BB2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift */; };
 		0225091D2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225091C2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift */; };
@@ -3365,6 +3366,7 @@
 		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
 		0220F4942C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift; sourceTree = "<group>"; };
 		0221121D288973C20028F0AF /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
+		02222BCF2D5AFE4F00FB97D2 /* POSButtonProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSButtonProgressViewStyle.swift; sourceTree = "<group>"; };
 		022266B92AE76E0E00614F34 /* ProductBundleItem+SwiftUIPreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductBundleItem+SwiftUIPreviewHelpers.swift"; sourceTree = "<group>"; };
 		022266BB2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleItemViewModel.swift; sourceTree = "<group>"; };
 		0225091C2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductCreation.swift"; sourceTree = "<group>"; };
@@ -6640,6 +6642,7 @@
 			isa = PBXGroup;
 			children = (
 				0210A2482D55F0530054C78D /* POSButtonStyle.swift */,
+				02222BCF2D5AFE4F00FB97D2 /* POSButtonProgressViewStyle.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -15840,6 +15843,7 @@
 				D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */,
 				20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
+				02222BD02D5AFE4F00FB97D2 /* POSButtonProgressViewStyle.swift in Sources */,
 				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
 				2004E2D82C08E56300D62521 /* CardPresentPaymentOnboardingPresentationEvent.swift in Sources */,
 				68D1BEDD2900E4180074A29E /* CustomerSearchUICommand.swift in Sources */,

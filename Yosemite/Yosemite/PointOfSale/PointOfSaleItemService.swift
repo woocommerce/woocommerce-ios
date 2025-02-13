@@ -21,24 +21,20 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
     private let variationRemote: ProductVariationsRemoteProtocol
-    private let isVariableProductsFeatureEnabled: Bool
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
         self.variationRemote = ProductVariationsRemote(network: network)
-        self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?,
-                            isVariableProductsFeatureEnabled: Bool) {
+                            credentials: Credentials?) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  isVariableProductsFeatureEnabled: isVariableProductsFeatureEnabled)
+                  network: AlamofireNetwork(credentials: credentials))
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -47,8 +43,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
-        let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
-        [.simple, .variable] : [.simple]
+        let productTypes: [ProductType] = [.simple, .variable]
         do {
             let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
             let products = pagedProducts.items

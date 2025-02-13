@@ -28,12 +28,12 @@ struct ParentProductCardView: View {
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(name)
                     .lineLimit(2)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(detailText)
-                    .foregroundStyle(Color.posSecondaryText)
+                    .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))

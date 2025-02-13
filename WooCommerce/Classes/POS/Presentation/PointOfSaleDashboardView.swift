@@ -7,6 +7,7 @@ struct PointOfSaleDashboardView: View {
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
+    @State private var showDocumentation: Bool = false
 
     @State private var floatingSize: CGSize = .zero
 
@@ -41,7 +42,8 @@ struct PointOfSaleDashboardView: View {
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport)
+                                   showSupport: $showSupport,
+                                   showDocumentation: $showDocumentation)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
@@ -75,6 +77,9 @@ struct PointOfSaleDashboardView: View {
         .posRootModal()
         .sheet(isPresented: $showSupport) {
             supportForm
+        }
+        .sheet(isPresented: $showDocumentation) {
+            documentationView
         }
         .task {
             await posModel.loadItems(base: .root)
@@ -125,6 +130,10 @@ private extension PointOfSaleDashboardView {
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    var documentationView: some View {
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {

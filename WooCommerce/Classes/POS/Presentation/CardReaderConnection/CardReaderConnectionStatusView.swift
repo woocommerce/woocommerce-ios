@@ -52,7 +52,7 @@ struct CardReaderConnectionStatusView: View {
                     } label: {
                         Text(Localization.connectReader)
                     }
-                    .buttonStyle(POSButtonStyle(variant: .filled, size: .extraSmall))
+                    .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .frame(maxHeight: .infinity)
@@ -109,7 +109,7 @@ private extension CardReaderConnectionStatusView {
         static let imageDimension: CGFloat = 12
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
-        static let font = POSFontStyle.posDetailEmphasized
+        static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
     }
 }

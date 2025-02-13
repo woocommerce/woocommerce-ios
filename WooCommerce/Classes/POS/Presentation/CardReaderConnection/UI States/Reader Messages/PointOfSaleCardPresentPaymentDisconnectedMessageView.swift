@@ -14,12 +14,12 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .foregroundStyle(Color.posPrimaryText)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.instruction)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posPrimaryText)
             }
 
@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             } label: {
                 Text(viewModel.connectReaderButtonTitle)
             }
-            .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
         .multilineTextAlignment(.center)

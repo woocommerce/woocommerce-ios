@@ -24,12 +24,12 @@ struct VariationCardView: View {
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(variation.name)
                     .lineLimit(2)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(variation.formattedPrice)
-                    .foregroundStyle(Color.posSecondaryText)
+                    .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))

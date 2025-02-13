@@ -7,10 +7,14 @@ struct POSFloatingControlView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
+    @Binding private var showDocumentation: Bool
 
-    init(showExitPOSModal: Binding<Bool>, showSupport: Binding<Bool>) {
+    init(showExitPOSModal: Binding<Bool>,
+         showSupport: Binding<Bool>,
+         showDocumentation: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
+        self._showDocumentation = showDocumentation
     }
 
     var body: some View {
@@ -34,11 +38,19 @@ struct POSFloatingControlView: View {
                         icon: { Image(systemName: "questionmark.circle") }
                     )
                 }
+                Button {
+                    showDocumentation = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.viewDocumentation) },
+                        icon: { Image(systemName: "info.circle") }
+                    )
+                }
             } label: {
                 VStack {
                     Spacer()
                     Image(systemName: "ellipsis")
-                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
                         .foregroundStyle(fontColor)
                     Spacer()
                 }
@@ -108,6 +120,12 @@ private extension POSFloatingControlView {
             value: "Get Support",
             comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
         )
+
+        static let viewDocumentation = NSLocalizedString(
+            "pointOfSale.floatingButtons.viewDocumentation.button.title",
+            value: "Documentation",
+            comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
+        )
     }
 }
 
@@ -119,7 +137,7 @@ private extension POSFloatingControlView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
@@ -132,7 +150,7 @@ private extension POSFloatingControlView {
         cardPresentPaymentService: paymentService,
         orderController: PointOfSalePreviewOrderController())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
@@ -143,7 +161,7 @@ private extension POSFloatingControlView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(posModel)
 }

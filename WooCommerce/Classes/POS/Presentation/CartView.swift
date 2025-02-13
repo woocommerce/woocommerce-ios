@@ -7,7 +7,6 @@ struct CartView: View {
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
 
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
@@ -36,7 +35,7 @@ struct CartView: View {
                         if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
-                                .foregroundColor(Color.posSecondaryText)
+                                .foregroundColor(Color.posOnSurfaceVariantLowest)
                         }
                     }
                     .accessibilityElement(children: .combine)
@@ -50,9 +49,8 @@ struct CartView: View {
                         posModel.removeAllItemsFromCart()
                     } label: {
                         Text(Localization.clearButtonTitle)
-                            .font(Constants.clearButtonFont)
                     }
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
             }
@@ -198,10 +196,9 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
-        static let primaryFont: POSFontStyle = .posTitleEmphasized
-        static let secondaryFont: POSFontStyle = .posBodyRegular
-        static let itemsFont: POSFontStyle = .posDetailRegular
-        static let clearButtonFont: POSFontStyle = .posDetailEmphasized
+        static let primaryFont: POSFontStyle = .posHeading
+        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
@@ -247,7 +244,7 @@ private extension CartView {
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 
     @ViewBuilder
@@ -261,8 +258,8 @@ private extension CartView {
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
+                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.posOnSurface)
             }
         }
     }
@@ -306,6 +303,21 @@ private extension CartView {
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
+    return CartView()
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Cart with one item") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    posModel.addToCart(.simpleProduct(.init(id: UUID(),
+                                            name: "Sample Product",
+                                            formattedPrice: "$10.00",
+                                            productID: 6,
+                                            price: "10")))
     return CartView()
         .environment(posModel)
 }

@@ -14,11 +14,11 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(.white)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .foregroundStyle(.white)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)

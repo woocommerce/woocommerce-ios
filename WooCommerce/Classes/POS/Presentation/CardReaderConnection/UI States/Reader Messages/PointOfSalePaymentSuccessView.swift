@@ -27,7 +27,7 @@ struct PointOfSalePaymentSuccessView: View {
 
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
-                                .font(.posTitleEmphasized)
+                                .font(.posHeading)
                                 .foregroundStyle(Color.posPrimaryText)
                                 .accessibilityAddTraits(.isHeader)
                                 .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
@@ -35,21 +35,19 @@ struct PointOfSalePaymentSuccessView: View {
 
                             if let message = viewModel.message {
                                 Text(message)
-                                    .font(.posBodyRegular)
+                                    .font(.posBodyLargeRegular())
                                     .foregroundStyle(Color.posPrimaryText)
                                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                     .opacity(isViewLoaded ? 1 : 0)
                             }
                         }
 
-                        GeometryReader { geometry in
-                            PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                               isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                                .frame(width: geometry.size.width / 2)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                                .opacity(isViewLoaded ? 1 : 0)
-                        }
+                        PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
+                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                        .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 

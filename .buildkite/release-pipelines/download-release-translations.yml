@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
+steps:
+  - label: Download Release Translations
+    plugins: [$CI_TOOLKIT]
+    command: |
+      echo '--- :robot_face: Use bot for Git operations'
+      source use-bot-for-git
+
+      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
+
+      echo '--- :ruby: Setup Ruby Tools'
+      install_gems
+
+      echo '--- :closed_lock_with_key: Access Secrets'
+      bundle exec fastlane run configure_apply
+
+      echo '--- :globe_with_meridians: Download Release Translations'
+      bundle exec fastlane download_release_translations skip_confirm:true
+    retry:
+      manual:
+        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        allowed: false

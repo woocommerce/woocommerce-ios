@@ -116,7 +116,7 @@ private extension ItemListView {
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .shadow(color: Color.posShadow.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
             showSimpleProductsModal = true
@@ -128,7 +128,7 @@ private extension ItemListView {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
             .font(POSFontStyle.posBodySmallBold.font())
-            .foregroundColor(Color(.accent))
+            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder

@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import Storage
 import class Networking.UserAgent
-import class Networking.BackgroundURLSessionManager
+import class Networking.MediaUploadSessionManager
 import Experiments
 import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
@@ -270,8 +270,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,
                      completionHandler: @escaping () -> Void) {
-        if identifier == ServiceLocator.backgroundURLSessionManager.backgroundSessionIdentifier {
-            ServiceLocator.backgroundURLSessionManager.handleBackgroundSessionCompletion(completionHandler)
+        if identifier == ServiceLocator.backgroundMediaUploadSessionManager.backgroundSessionIdentifier {
+            ServiceLocator.backgroundMediaUploadSessionManager.handleBackgroundSessionCompletion(completionHandler)
         }
     }
 }

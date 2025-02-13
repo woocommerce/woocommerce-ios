@@ -6,12 +6,12 @@ import Storage
 //
 public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
-    private let backgroundUploader: BackgroundURLSessionManager
+    private let backgroundUploader: MediaUploadSessionManager
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
 
     public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
-        let backgroundUploader = BackgroundURLSessionManager()
+        let backgroundUploader = MediaUploadSessionManager()
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, backgroundUploader: backgroundUploader)
     }
 
@@ -19,13 +19,13 @@ public final class MediaStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         backgroundUploader: BackgroundURLSessionManager) {
+         backgroundUploader: MediaUploadSessionManager) {
         self.remote = remote
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, backgroundUploader: BackgroundURLSessionManager) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, backgroundUploader: MediaUploadSessionManager) {
         self.remote = MediaRemote(network: network)
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -35,9 +35,14 @@ public final class MediaStore: Store {
                      dispatcher: Dispatcher,
                      storageManager: StorageManagerType,
                      network: Network,
-                     backgroundUploader: BackgroundURLSessionManager) {
+                     backgroundUploader: MediaUploadSessionManager) {
         let remote = MediaRemote(network: network)
-        self.init(mediaExportService: mediaExportService, dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, backgroundUploader: backgroundUploader)
+        self.init(mediaExportService: mediaExportService,
+                  dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network,
+                  remote: remote,
+                  backgroundUploader: backgroundUploader)
     }
 
     init(mediaExportService: MediaExportService,
@@ -45,7 +50,7 @@ public final class MediaStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         backgroundUploader: BackgroundURLSessionManager) {
+         backgroundUploader: MediaUploadSessionManager) {
         self.remote = remote
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -236,8 +241,6 @@ private extension MediaStore {
 
                 // Start background upload
                 backgroundUploader.uploadMedia(request: request,
-                                               siteID: siteID,
-                                               productID: productID,
                                                mediaItem: uploadableMedia,
                                                uploadID: uploadID) { result in
                     // Removes local media after the upload API request.

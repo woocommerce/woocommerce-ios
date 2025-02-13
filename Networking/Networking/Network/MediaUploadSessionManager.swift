@@ -1,10 +1,9 @@
 import Foundation
-import UIKit
 
-protocol BackgroundURLSessionManagerDelegate: AnyObject {
-    func backgroundURLSessionManager(_ manager: BackgroundURLSessionManager,
-                                     didCompleteUpload uploadID: String,
-                                     withResult result: Result<Media, Error>)
+public protocol MediaUploadSessionManagerDelegate: AnyObject {
+    func mediaUploadSessionManager(_ manager: MediaUploadSessionManager,
+                                   didCompleteUpload uploadID: String,
+                                   withResult result: Result<Media, Error>)
 }
 
 /// Background upload specific errors
@@ -15,7 +14,7 @@ enum BackgroundUploadError: Error {
 }
 
 //TODO: cleanup all prints added for debug reason.
-public final class BackgroundURLSessionManager: NSObject {
+public final class MediaUploadSessionManager: NSObject {
 
     public let backgroundSessionIdentifier: String
     private lazy var backgroundSession: URLSession = {
@@ -30,7 +29,7 @@ public final class BackgroundURLSessionManager: NSObject {
     private var completionHandlers: [String: (Result<Media, Error>) -> Void] = [:]
     private var taskResponseData: [Int: Data] = [:]
     private var backgroundCompletionHandler: (() -> Void)?
-    weak var delegate: BackgroundURLSessionManagerDelegate?
+    weak var delegate: MediaUploadSessionManagerDelegate?
 
     public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload") {
         self.backgroundSessionIdentifier = sessionIdentifier
@@ -38,8 +37,6 @@ public final class BackgroundURLSessionManager: NSObject {
     }
 
     public func uploadMedia(request: URLRequest,
-                            siteID: Int64,
-                            productID: Int64,
                             mediaItem: UploadableMedia,
                             uploadID: String,
                             completion: @escaping (Result<Media, Error>) -> Void) {
@@ -81,7 +78,7 @@ public final class BackgroundURLSessionManager: NSObject {
 }
 
 //TODO: cleanup all prints added for debug reason.
-extension BackgroundURLSessionManager: URLSessionDataDelegate {
+extension MediaUploadSessionManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession,
                            dataTask: URLSessionDataTask,
                            didReceive data: Data) {
@@ -157,7 +154,7 @@ extension BackgroundURLSessionManager: URLSessionDataDelegate {
             guard let self = self else { return }
             self.completionHandlers[uploadID]?(result)
             self.completionHandlers.removeValue(forKey: uploadID)
-            self.delegate?.backgroundURLSessionManager(self, didCompleteUpload: uploadID, withResult: result)
+            self.delegate?.mediaUploadSessionManager(self, didCompleteUpload: uploadID, withResult: result)
         }
     }
 }

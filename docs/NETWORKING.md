@@ -38,7 +38,7 @@ There are three implementations of this protocol:
 * [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift): a mock networking stack that does not actually hit the network, to be used in the unit tests.
 
 ## Background Uploads
-The [`BackgroundURLSessionManager`](../Networking/Networking/Network/BackgroundURLSession/BackgroundURLSessionManager.swift) provides support for background upload tasks that continue even when the app is suspended or terminated.
+The [`MediaUploadSessionManager`](../Networking/Networking/Network/MediaUploadSessionManager.swift) provides support for media background upload tasks that continue even when the app is suspended or terminated.
 
 Key features:
 * Uses URLSession background configuration 

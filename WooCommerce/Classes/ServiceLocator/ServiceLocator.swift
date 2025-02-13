@@ -4,7 +4,7 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
-import class Networking.BackgroundURLSessionManager
+import class Networking.MediaUploadSessionManager
 import WooFoundation
 import WordPressShared
 
@@ -100,7 +100,7 @@ final class ServiceLocator {
 
     /// Background image service
     ///
-    private static var _backgroundURLSessionManager = BackgroundURLSessionManager()
+    private static var _backgroundMediaUploadSessionManager = MediaUploadSessionManager()
 
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
@@ -272,10 +272,10 @@ final class ServiceLocator {
         _startupWaitingTimeTracker
     }
 
-    /// Provides access point to the `BackgroundURLSessionManager`.
+    /// Provides access point to the `MediaUploadSessionManager`.
     ///
-    static var backgroundURLSessionManager: BackgroundURLSessionManager {
-        return _backgroundURLSessionManager
+    static var backgroundMediaUploadSessionManager: MediaUploadSessionManager {
+        return _backgroundMediaUploadSessionManager
     }
 }
 

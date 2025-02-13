@@ -11,12 +11,15 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
     private let stores: StoresManager
+    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
         self.currencyFormatter = currencyFormatter
         self.stores = stores
+        self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         paymentEventPublisher.assign(to: &$latestPaymentEvent)
     }
 
@@ -52,7 +55,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
-                analyticsTracker: POSCollectOrderPaymentAnalytics())
+                analyticsTracker: collectOrderPaymentAnalyticsTracker)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

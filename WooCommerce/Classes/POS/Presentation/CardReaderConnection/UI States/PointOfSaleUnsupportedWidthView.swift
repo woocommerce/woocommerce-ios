@@ -10,7 +10,7 @@ struct PointOfSaleUnsupportedWidthView: View {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
                 Image(systemName: "ipad.landscape.badge.exclamationmark")
                     .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color(.wooCommerceAmber(.shade60)), Color.posOnSurface)
+                    .foregroundStyle(Color.posAlert, Color.posOnSurface)
                     .font(.system(size: Constants.iconSize))
                     .accessibilityHidden(true)
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)

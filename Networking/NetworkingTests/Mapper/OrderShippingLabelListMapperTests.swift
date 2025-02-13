@@ -99,5 +99,6 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: sampleOrderID, paperSize: .label))
         XCTAssertEqual(response.shippingLabels.count, 3)
+        XCTAssertFalse(response.shippingLabels.contains { $0.shippingLabelID == 4697 }, "Labels with error should be filtered out")
     }
 }

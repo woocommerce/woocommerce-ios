@@ -27,25 +27,27 @@ struct PointOfSalePaymentSuccessView: View {
 
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
-                                .font(.posTitleEmphasized)
-                                .foregroundStyle(Color.posPrimaryText)
+                                .font(.posHeading)
+                                .foregroundStyle(Color.posOnSurface)
                                 .accessibilityAddTraits(.isHeader)
                                 .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                 .opacity(isViewLoaded ? 1 : 0)
 
                             if let message = viewModel.message {
                                 Text(message)
-                                    .font(.posBodyRegular)
-                                    .foregroundStyle(Color.posPrimaryText)
+                                    .font(.posBodyLargeRegular())
+                                    .foregroundStyle(Color.posOnSurface)
                                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                     .opacity(isViewLoaded ? 1 : 0)
                             }
                         }
 
                         PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                           isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                            .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                            .opacity(isViewLoaded ? 1 : 0)
+                                              isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
+                        .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
                     }
                     .multilineTextAlignment(.center)
 
@@ -104,10 +106,17 @@ private extension PointOfSalePaymentSuccessView {
     }
 }
 
+#if DEBUG
 @available(iOS 17.0, *)
 #Preview {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
     return PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card)
     )
+    .environment(posModel)
 }
+#endif

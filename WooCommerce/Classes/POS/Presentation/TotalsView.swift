@@ -64,12 +64,10 @@ struct TotalsView: View {
                         }
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
-                            .font(POSFontStyle.posBodyEmphasized)
-                            .foregroundColor(.posPrimaryText)
-                            .frame(height: Constants.buttonHeight)
+                            .font(POSFontStyle.posBodyLargeBold)
                             .minimumScaleFactor(0.5)
                     })
-                    .buttonStyle(SecondaryButtonStyle())
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .padding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
@@ -165,7 +163,7 @@ private extension TotalsView {
                     .redacted(reason: shimmeringActive ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
-            .foregroundColor(Color.posPrimaryText)
+            .foregroundColor(Color.posOnSurface)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -189,7 +187,7 @@ private extension TotalsView {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.posPrimaryText)
+            .foregroundColor(Color.posOnSurface)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -345,7 +343,6 @@ private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
-        static let buttonHeight: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
         static let cashButtonBottomPadding: CGFloat = 16
 
@@ -353,10 +350,10 @@ private extension TotalsView {
         static let subtotalsVerticalSpacing: CGFloat = 8
         static let totalVerticalSpacing: CGFloat = 16
         static let totalsHorizontalSpacing: CGFloat = 24
-        static let subtotalTitleFont: POSFontStyle = .posBodyRegular
-        static let subtotalAmountFont: POSFontStyle = .posBodyRegular
-        static let totalTitleFont: POSFontStyle = .posTitleRegular
-        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
+        static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
+        static let totalTitleFont: POSFontStyle = .posHeading
+        static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = 4

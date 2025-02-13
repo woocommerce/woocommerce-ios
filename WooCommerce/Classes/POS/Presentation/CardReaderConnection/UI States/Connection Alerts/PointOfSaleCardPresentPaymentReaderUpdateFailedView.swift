@@ -17,7 +17,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.title)
-                    .font(POSFontStyle.posTitleEmphasized)
+                    .font(POSFontStyle.posHeading)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
@@ -27,7 +27,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,

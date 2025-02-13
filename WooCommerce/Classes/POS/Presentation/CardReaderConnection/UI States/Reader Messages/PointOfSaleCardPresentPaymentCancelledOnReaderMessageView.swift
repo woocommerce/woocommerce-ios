@@ -7,8 +7,8 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
             Text(viewModel.title)
-                .font(.posTitleEmphasized)
-                .foregroundStyle(Color.posPrimaryText)
+                .font(.posHeading)
+                .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
                 .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
         }

@@ -15,12 +15,12 @@ struct ItemListErrorCardView: View {
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(errorState.title)
                     .lineLimit(2)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(errorState.subtitle)
-                    .foregroundStyle(Color.posSecondaryText)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
@@ -34,7 +34,7 @@ struct ItemListErrorCardView: View {
                 Text(errorState.buttonText)
                     .font(Constants.itemTitleFont)
             }
-            .buttonStyle(POSTertiaryButtonStyle())
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .frame(maxWidth: Constants.accessoryButtonMaxWidth * scale)
             .padding(Constants.accessoryButtonPadding * (1 / scale))
         }

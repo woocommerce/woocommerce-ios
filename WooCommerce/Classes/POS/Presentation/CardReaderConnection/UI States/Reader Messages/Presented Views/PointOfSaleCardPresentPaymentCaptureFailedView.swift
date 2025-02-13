@@ -10,22 +10,22 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(Localization.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeading)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(Localization.message)
                     Text(Localization.nextSteps)
                 }
-                .font(.posBodyRegular)
-                .foregroundStyle(Color.posPrimaryText)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
             }
 
             Button(Localization.understandButtonTitle,
                    action: {
                 isPresented = false
             })
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .multilineTextAlignment(.center)
         .padding(Layout.contentPadding)

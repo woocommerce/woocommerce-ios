@@ -23,6 +23,7 @@ public final class BackgroundURLSessionManager: NSObject {
         config.sharedContainerIdentifier = "group.com.automattic.woocommerce"
         config.sessionSendsLaunchEvents = true
         config.isDiscretionary = false
+        config.allowsCellularAccess = true
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 

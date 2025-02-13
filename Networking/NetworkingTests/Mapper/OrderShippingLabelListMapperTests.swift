@@ -91,7 +91,7 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
 
     func test_order_shipping_labels_and_settings_are_properly_parsed_if_labelsData_contains_an_error() throws {
         // Given
-        let jsonData = try XCTUnwrap(Loader.contentsOf("order-shipping-labels-with-error-in-labelsData"))
+        let jsonData = try XCTUnwrap(Loader.contentsOf("order-shipping-labels-with-error-in-labels-data"))
 
         // When
         let response = try OrderShippingLabelListMapper(siteID: sampleSiteID, orderID: sampleOrderID).map(response: jsonData)

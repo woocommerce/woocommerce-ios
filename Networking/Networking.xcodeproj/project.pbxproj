@@ -454,7 +454,7 @@
 		451A97E9260B657D0059D135 /* ShippingLabelPredefinedOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A97E8260B657D0059D135 /* ShippingLabelPredefinedOption.swift */; };
 		451A9832260B9D2D0059D135 /* ShippingLabelPackagesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A9831260B9D2D0059D135 /* ShippingLabelPackagesMapper.swift */; };
 		451A9836260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A9835260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift */; };
-		4523FB872D596F8000FD1328 /* order-shipping-labels-with-error-in-labelsData.json in Resources */ = {isa = PBXBuildFile; fileRef = 4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labelsData.json */; };
+		4523FB872D596F8000FD1328 /* order-shipping-labels-with-error-in-labels-data.json in Resources */ = {isa = PBXBuildFile; fileRef = 4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labels-data.json */; };
 		4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */; };
 		453305E92459DF2100264E50 /* PostMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305E82459DF2100264E50 /* PostMapper.swift */; };
 		453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EA2459E01A00264E50 /* PostMapperTests.swift */; };
@@ -1656,7 +1656,7 @@
 		451A97E8260B657D0059D135 /* ShippingLabelPredefinedOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPredefinedOption.swift; sourceTree = "<group>"; };
 		451A9831260B9D2D0059D135 /* ShippingLabelPackagesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesMapper.swift; sourceTree = "<group>"; };
 		451A9835260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesMapperTests.swift; sourceTree = "<group>"; };
-		4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labelsData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-shipping-labels-with-error-in-labelsData.json"; sourceTree = "<group>"; };
+		4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labels-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-shipping-labels-with-error-in-labels-data.json"; sourceTree = "<group>"; };
 		4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-on-sale-with-empty-sale-price.json"; sourceTree = "<group>"; };
 		453305E82459DF2100264E50 /* PostMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapper.swift; sourceTree = "<group>"; };
 		453305EA2459E01A00264E50 /* PostMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapperTests.swift; sourceTree = "<group>"; };
@@ -3341,7 +3341,7 @@
 				DEF13C5F29668C420024A02B /* order-without-data.json */,
 				034480C227A42F9100DFACD2 /* order-with-charge.json */,
 				02C254D62563999200A04423 /* order-shipping-labels.json */,
-				4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labelsData.json */,
+				4523FB862D596F6300FD1328 /* order-shipping-labels-with-error-in-labels-data.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				01F42C0A2CE1ECB7003D0A5A /* orders-actions-send-order-details.json */,
 				DEF13C5D296686AB0024A02B /* orders-load-all-without-data.json */,
@@ -4484,7 +4484,7 @@
 				CE12AE9B29F2AC3C0056DD17 /* subscription-without-data.json in Resources */,
 				028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */,
 				DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */,
-				4523FB872D596F8000FD1328 /* order-shipping-labels-with-error-in-labelsData.json in Resources */,
+				4523FB872D596F8000FD1328 /* order-shipping-labels-with-error-in-labels-data.json in Resources */,
 				EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */,
 				02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */,
 				CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */,

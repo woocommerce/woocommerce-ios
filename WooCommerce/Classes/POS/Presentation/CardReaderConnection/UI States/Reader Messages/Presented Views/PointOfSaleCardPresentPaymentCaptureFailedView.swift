@@ -10,7 +10,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(Localization.title)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .font(.posHeading)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
                     Text(Localization.nextSteps)
                 }
                 .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posPrimaryText)
+                .foregroundStyle(Color.posOnSurface)
             }
 
             Button(Localization.understandButtonTitle,

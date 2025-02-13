@@ -4,7 +4,7 @@ struct POSHeaderTitleView: View {
     private let title: String
     private let foregroundColor: Color
 
-    init(title: String, foregroundColor: Color = .posPrimaryText) {
+    init(title: String, foregroundColor: Color = .posOnSurface) {
         self.title = title
         self.foregroundColor = foregroundColor
     }

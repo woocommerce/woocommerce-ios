@@ -88,7 +88,7 @@ private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .posPrimaryText
+            .posOnSurface
         case .secondary:
             POSFloatingControlView.secondaryFontColor
         }

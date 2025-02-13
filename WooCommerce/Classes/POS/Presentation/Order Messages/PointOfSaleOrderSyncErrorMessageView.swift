@@ -11,11 +11,11 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 POSErrorExclamationMark()
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
-                        .foregroundStyle(Color.posPrimaryText)
+                        .foregroundStyle(Color.posOnSurface)
                         .font(.posHeading)
 
                     Text(viewModel.message)
-                        .foregroundStyle(Color.posPrimaryText)
+                        .foregroundStyle(Color.posOnSurface)
                         .font(.posBodyLargeRegular())
                         .padding([.leading, .trailing])
                 }

@@ -30,7 +30,7 @@ struct POSSendReceiptView: View {
                         Text(Localization.emailReceiptNavigationText)
                     }
                     .font(.posHeading)
-                    .foregroundColor(.posPrimaryText)
+                    .foregroundColor(.posOnSurface)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)
                 })

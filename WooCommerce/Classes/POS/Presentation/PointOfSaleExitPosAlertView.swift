@@ -18,7 +18,7 @@ struct PointOfSaleExitPosAlertView: View {
                     Image(systemName: "xmark")
                         .font(.posButtonSymbol)
                 }
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
             Text(Localization.exitTitle)
                 .font(.posHeading)

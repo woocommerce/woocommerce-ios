@@ -35,7 +35,7 @@ extension WooAnalyticsEvent {
 
         static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
-                Key.millisecondsSinceCustomerInteractionStarted : "\(millisecondsSinceCustomerIteractionStated)"]
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStated)"]
             )
         }
     }

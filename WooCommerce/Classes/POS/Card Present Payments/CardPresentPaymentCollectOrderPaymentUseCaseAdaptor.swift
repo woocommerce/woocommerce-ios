@@ -51,7 +51,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
-                preflightController: preflightController)
+                preflightController: preflightController,
+                analyticsTracker: POSCollectOrderPaymentAnalytics())
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

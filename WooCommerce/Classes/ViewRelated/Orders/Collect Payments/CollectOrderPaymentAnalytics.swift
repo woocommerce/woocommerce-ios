@@ -26,6 +26,24 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackReceiptPrintFailed(error: Error)
 }
 
+final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
+    var connectedReaderModel: String?
+
+    func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
+    
+    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess())
+    }
+    
+    func trackPaymentFailure(with error: any Error) { }
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
+    func trackEmailTapped() { }
+    func trackReceiptPrintTapped() { }
+    func trackReceiptPrintSuccess() { }
+    func trackReceiptPrintCanceled() { }
+    func trackReceiptPrintFailed(error: any Error) { }
+}
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 

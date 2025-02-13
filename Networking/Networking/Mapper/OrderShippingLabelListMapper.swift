@@ -86,10 +86,28 @@ private struct OrderShippingLabelListData: Decodable {
         // Shipping labels.
         let formData = try container.decode(OrderShippingLabelListFormData.self, forKey: .formData)
 
+        // Use a helper method to decode shipping labels without errors.
+        let shippingLabelsWithoutAddresses = try Self.decodeShippingLabelsWithoutErrors(from: container, siteID: siteID, orderID: orderID)
+
+        // Filters only labels with a tracking number and status `.purchased`.
+        // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
+        // in each shipping label response.
+        let shippingLabels = shippingLabelsWithoutAddresses
+            .filter { !$0.trackingNumber.isEmpty && $0.status == .purchased }
+            .map {
+                $0.copy(originAddress: formData.originAddress, destinationAddress: formData.destinationAddress)
+            }
+
+        self.init(shippingLabels: shippingLabels, settings: settings)
+    }
+
+    /// Helper method to decode shipping labels filtering out any labels with an error.
+    private static func decodeShippingLabelsWithoutErrors(from container: KeyedDecodingContainer<CodingKeys>, siteID: Int64, orderID: Int64) throws -> [ShippingLabel] {
         // Decode the labelsData as an array of dictionaries,
         // and filter out labels that have an "error" key
         // then convert the filtered array of dictionaries to JSON data.
-        // This match the web behavior that doesn't display shipping labels error, that are sent together in `labelsData` array.
+        // This matches the web behavior that doesn't display shipping labels error,
+        // that are sent together in `labelsData` array.
         var labelsData = try container.decode([[String: AnyCodable]].self, forKey: .labelsData)
         labelsData = labelsData.filter { $0["error"] == nil }
 
@@ -102,18 +120,7 @@ private struct OrderShippingLabelListData: Decodable {
             .siteID: siteID,
             .orderID: orderID
         ]
-        let shippingLabelsWithoutAddresses = try decoder.decode([ShippingLabel].self, from: filteredLabelsData)
-
-        // Filters only labels with a tracking number and status `.purchased`.
-        // Then populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
-        // in each shipping label response.
-        let shippingLabels = shippingLabelsWithoutAddresses
-            .filter { !$0.trackingNumber.isEmpty && $0.status == .purchased }
-            .map {
-                $0.copy(originAddress: formData.originAddress, destinationAddress: formData.destinationAddress)
-            }
-
-        self.init(shippingLabels: shippingLabels, settings: settings)
+        return try decoder.decode([ShippingLabel].self, from: filteredLabelsData)
     }
 
     private enum CodingKeys: String, CodingKey {

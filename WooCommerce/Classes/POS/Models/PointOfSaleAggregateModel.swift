@@ -155,8 +155,11 @@ extension PointOfSaleAggregateModel {
     }
 
     private func trackCustomerInteractionStarted() {
-        // TODO: Only track if no cart items yet
-        collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
+        // At the moment we're assumming that an interaction starts simply when the cart is zero
+        // but a more complex logic will be needed for other cases
+        if cart.count == 0 {
+            collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
+        }
     }
 }
 

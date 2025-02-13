@@ -37,9 +37,8 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
     func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        let customerInteractionFinished = Date().timeIntervalSince1970 - customerInteractionStarted
-        debugPrint("end at \(customerInteractionFinished)")
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: customerInteractionFinished))
+        let elapsedTime = calculateElapsedTimeInMilliseconds(start: customerInteractionStarted, end: Date().timeIntervalSince1970)
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: elapsedTime))
     }
 
     func trackPaymentFailure(with error: any Error) { }
@@ -52,7 +51,10 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func trackCustomerInteractionStarted() {
         customerInteractionStarted = Date().timeIntervalSince1970
-        debugPrint("started at \(customerInteractionStarted)")
+    }
+
+    private func calculateElapsedTimeInMilliseconds(start: Double, end: Double) -> Double {
+        (end - start) * 1000
     }
 }
 

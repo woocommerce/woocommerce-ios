@@ -102,14 +102,16 @@ private struct OrderShippingLabelListData: Decodable {
     }
 
     /// Helper method to decode shipping labels filtering out any labels with an error.
-    private static func decodeShippingLabelsWithoutErrors(from container: KeyedDecodingContainer<CodingKeys>, siteID: Int64, orderID: Int64) throws -> [ShippingLabel] {
+    private static func decodeShippingLabelsWithoutErrors(from container: KeyedDecodingContainer<CodingKeys>,
+                                                          siteID: Int64,
+                                                          orderID: Int64) throws -> [ShippingLabel] {
         // Decode the labelsData as an array of dictionaries,
         // and filter out labels that have an "error" key
         // then convert the filtered array of dictionaries to JSON data.
         // This matches the web behavior that doesn't display shipping labels error,
         // that are sent together in `labelsData` array.
         var labelsData = try container.decode([[String: AnyCodable]].self, forKey: .labelsData)
-        labelsData = labelsData.filter { $0["error"] == nil }
+        labelsData = labelsData.filter { $0[CodingKeys.errorKey] == nil }
 
         let encoder = JSONEncoder()
         let filteredLabelsData = try encoder.encode(labelsData)
@@ -127,6 +129,7 @@ private struct OrderShippingLabelListData: Decodable {
         case formData
         case paperSize
         case labelsData
+        static let errorKey = "error"
     }
 }
 

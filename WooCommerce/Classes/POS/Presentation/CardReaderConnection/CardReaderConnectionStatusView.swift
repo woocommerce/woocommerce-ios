@@ -113,7 +113,7 @@ private extension CardReaderConnectionStatusView {
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
-        static let overlayRadius: CGFloat = 4
+        static let overlayRadius: CGFloat = POSCornerRadiusStyle.small.value
         static let overlayLineWidth: CGFloat = 2
         static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
         static let overlayInnerHorizontalPadding: CGFloat =  16 + Self.overlayLineWidth

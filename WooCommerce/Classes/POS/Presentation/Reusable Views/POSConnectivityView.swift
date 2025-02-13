@@ -51,7 +51,7 @@ struct POSConnectivityView: View {
 
 private extension POSConnectivityView {
     enum Constants {
-        static let cornerRadius: CGFloat = 16
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.large.value
         static let height: CGFloat = 64
         static let spacing: CGFloat = 16
         static let horizontalPadding: CGFloat = 24

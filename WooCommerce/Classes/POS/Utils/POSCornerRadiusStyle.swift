@@ -10,7 +10,7 @@ enum POSCornerRadiusStyle {
     case large
     case extraLarge
     case full
-    
+
     var value: CGFloat {
         switch self {
         case .extraSmall:

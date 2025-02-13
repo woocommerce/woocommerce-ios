@@ -73,7 +73,7 @@ private extension SimpleProductsOnlyInformation {
         static let modalContentPadding: CGFloat = 40
         static let hintVerticalPadding: CGFloat = 24
         static let hintHorizontalPadding: CGFloat = 40
-        static let hintBackgroundCornerRadius: CGFloat = 8
+        static let hintBackgroundCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let contentBlockSpacing: CGFloat = 40
         static let textSpacing: CGFloat = 16
         static let textToModalBottomPadding: CGFloat = 8

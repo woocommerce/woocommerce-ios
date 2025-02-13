@@ -373,7 +373,7 @@ class BackgroundURLSessionHelperTests: URLSessionHelperTests {
 
 }
 
-private class TestBackgroundURLSessionDelegate: BackgroundURLSessionDelegate {
+private final class TestBackgroundURLSessionDelegate: BackgroundURLSessionDelegate {
     var startedReceivingResponse = false
     var completionCalled = false
 

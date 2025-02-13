@@ -62,6 +62,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
+    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -72,11 +73,13 @@ protocol PointOfSaleAggregateModelProtocol {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
+        self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -121,6 +124,7 @@ private extension POSItem {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
+        trackCustomerInteractionStarted()
         guard let cartItem = item.cartItem else { return }
         cart.insert(cartItem, at: cart.startIndex)
     }
@@ -148,6 +152,11 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
+    }
+
+    private func trackCustomerInteractionStarted() {
+        // TODO: Only track if no cart items yet
+        collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
     }
 }
 

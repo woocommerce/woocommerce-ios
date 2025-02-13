@@ -132,7 +132,8 @@ private extension POSFloatingControlView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
 
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),

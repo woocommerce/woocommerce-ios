@@ -136,6 +136,7 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -288,9 +289,8 @@ private extension HubMenuViewModel {
 private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
-            let collectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics()
             self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracking)
+                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }
 

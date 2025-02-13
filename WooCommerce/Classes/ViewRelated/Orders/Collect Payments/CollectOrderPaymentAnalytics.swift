@@ -24,18 +24,24 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackReceiptPrintCanceled()
 
     func trackReceiptPrintFailed(error: Error)
+    
+    func trackCustomerInteractionStarted()
 }
 
 final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
+    private var customerInteractionStarted: Double = 0
+
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
-    
+
     func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess())
+        let customerInteractionFinished = Date().timeIntervalSince1970 - customerInteractionStarted
+        debugPrint("end at \(customerInteractionFinished)")
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: customerInteractionFinished))
     }
-    
+
     func trackPaymentFailure(with error: any Error) { }
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
     func trackEmailTapped() { }
@@ -43,6 +49,16 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintSuccess() { }
     func trackReceiptPrintCanceled() { }
     func trackReceiptPrintFailed(error: any Error) { }
+
+    func trackCustomerInteractionStarted() {
+        customerInteractionStarted = Date().timeIntervalSince1970
+        debugPrint("started at \(customerInteractionStarted)")
+    }
+}
+
+// Protocol conformance. These events are not needed for IPP, only for POS.
+extension CollectOrderPaymentAnalytics {
+    func trackCustomerInteractionStarted() { }
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {

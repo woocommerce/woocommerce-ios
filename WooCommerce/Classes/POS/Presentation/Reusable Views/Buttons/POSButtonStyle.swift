@@ -137,7 +137,7 @@ private struct POSButton: View {
 
 private extension POSButton {
     enum Constants {
-        static let cornerRadius: CGFloat = 8.0
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let borderStrokeWidth: CGFloat = 2.0
     }
 }

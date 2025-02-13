@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		010C9A8F2C75C2BF00EBA228 /* Color+Inverted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010C9A8E2C75C2BF00EBA228 /* Color+Inverted.swift */; };
 		011D396F2D09FCD200DB1445 /* CardPresentModalLocationRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */; };
 		011D39712D0A324200DB1445 /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D39702D0A324100DB1445 /* LocationServiceTests.swift */; };
 		011D7A332CEC877A0007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */; };
@@ -81,6 +80,7 @@
 		0204E3622B8CD40B00F1B5FD /* WooAnalyticsEvent+Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204E3612B8CD40B00F1B5FD /* WooAnalyticsEvent+Products.swift */; };
 		0204F0CA29C047A400CFC78F /* SelfSizingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204F0C929C047A400CFC78F /* SelfSizingHostingController.swift */; };
 		0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205021D27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift */; };
+		02055B142D5DAB6400E51059 /* POSCornerRadiusStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02055B132D5DAB6400E51059 /* POSCornerRadiusStyle.swift */; };
 		0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0206483923FA4160008441BB /* OrdersRootViewController.swift */; };
 		0206E296299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */; };
 		020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */; };
@@ -3225,7 +3225,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		010C9A8E2C75C2BF00EBA228 /* Color+Inverted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Inverted.swift"; sourceTree = "<group>"; };
 		011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationRequired.swift; sourceTree = "<group>"; };
 		011D39702D0A324100DB1445 /* LocationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTests.swift; sourceTree = "<group>"; };
 		011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableErrorEmailSent.swift; sourceTree = "<group>"; };
@@ -3285,6 +3284,7 @@
 		0204E3612B8CD40B00F1B5FD /* WooAnalyticsEvent+Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Products.swift"; sourceTree = "<group>"; };
 		0204F0C929C047A400CFC78F /* SelfSizingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSizingHostingController.swift; sourceTree = "<group>"; };
 		0205021D27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxEligibilityUseCase.swift; sourceTree = "<group>"; };
+		02055B132D5DAB6400E51059 /* POSCornerRadiusStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCornerRadiusStyle.swift; sourceTree = "<group>"; };
 		0206483923FA4160008441BB /* OrdersRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRootViewController.swift; sourceTree = "<group>"; };
 		0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+DomainSettings.swift"; sourceTree = "<group>"; };
 		020732032988AB7B000A53C2 /* DomainContactInfoForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainContactInfoForm.swift; sourceTree = "<group>"; };
@@ -7156,9 +7156,9 @@
 				68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */,
 				DA4104392C247B6900E8456A /* PointOfSalePreviewOrderController.swift */,
 				01664F9D2C50E685007CB5DD /* POSFontStyle.swift */,
-				010C9A8E2C75C2BF00EBA228 /* Color+Inverted.swift */,
 				01FB19572C6E901800A44FF0 /* DynamicHStack.swift */,
 				68625DE52D4134D50042B231 /* DynamicVStack.swift */,
+				02055B132D5DAB6400E51059 /* POSCornerRadiusStyle.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -16075,7 +16075,6 @@
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				DE49C7922BBFB8C500A45AEB /* ErrorTopBanner.swift in Sources */,
-				010C9A8F2C75C2BF00EBA228 /* Color+Inverted.swift in Sources */,
 				DE3650682B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
 				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,
@@ -17103,6 +17102,7 @@
 				B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
+				02055B142D5DAB6400E51059 /* POSCornerRadiusStyle.swift in Sources */,
 				CE29FEF42C009D7C007679C2 /* ShippingLineRowViewModel.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,

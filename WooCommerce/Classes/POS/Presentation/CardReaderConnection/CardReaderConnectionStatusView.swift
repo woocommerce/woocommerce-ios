@@ -40,20 +40,24 @@ struct CardReaderConnectionStatusView: View {
             case .cancellingConnection:
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
-                HStack(spacing: Constants.horizontalPadding) {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color.posAlert)
-                        Text(Localization.readerDisconnected)
-                            .foregroundColor(disconnectedFontColor)
+                Button {
+                    posModel.connectCardReader()
+                } label: {
+                    HStack(spacing: Constants.horizontalPadding) {
+                        HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                            circleIcon(with: Color.posAlert)
+                            Text(Localization.readerDisconnected)
+                                .foregroundColor(disconnectedFontColor)
+                        }
                     }
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .frame(maxHeight: .infinity)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Constants.disconnectedBorderCornerRadius)
+                            .stroke(disconnectedBorderColor, lineWidth: Constants.disconnectedBorderWidth)
+                    )
+                    .padding(Constants.disconnectedBorderInset)
                 }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .frame(maxHeight: .infinity)
-                .overlay(
-                    RoundedRectangle(cornerRadius: Constants.disconnectedBorderCornerRadius)
-                        .stroke(disconnectedBorderColor, lineWidth: Constants.disconnectedBorderWidth)
-                )
-                .padding(Constants.disconnectedBorderInset)
             }
         }
         .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)

@@ -822,6 +822,7 @@ enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
     case productImageUploadFailed = "product_image_upload_failed"
+    case productImageUploadRetryButtonTapped = "product_image_upload_retry_button_tapped"
     case savingProductAfterBackgroundImageUploadSuccess = "saving_product_after_background_image_upload_success"
     case savingProductAfterBackgroundImageUploadFailed = "saving_product_after_background_image_upload_failed"
     case failureSavingProductAfterImageUploadNoticeShown = "failure_saving_product_after_image_upload_notice_shown"

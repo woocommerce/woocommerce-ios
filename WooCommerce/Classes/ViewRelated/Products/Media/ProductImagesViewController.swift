@@ -276,6 +276,7 @@ private extension ProductImagesViewController {
         alert.addAction(discard)
 
         let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            ServiceLocator.analytics.track(.productImageUploadRetryButtonTapped)
             self?.productImageActionHandler.discardUpload(asset: asset)
             self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         })

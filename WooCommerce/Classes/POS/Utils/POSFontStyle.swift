@@ -110,6 +110,7 @@ extension View {
 }
 
 // MARK: - Preview
+#if DEBUG
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
@@ -140,10 +141,15 @@ extension View {
                     .font(.posCaptionBold)
                 Text("Caption Regular")
                     .font(.posCaptionRegular)
-                Text("Button Symbol")
-                    .font(.posButtonSymbol)
+                Text("Button Symbol Small")
+                    .font(.posButtonSymbolSmall)
+                Text("Button Symbol Medium")
+                    .font(.posButtonSymbolMedium)
+                Text("Button Symbol Large")
+                    .font(.posButtonSymbolLarge)
             }
         }
         .padding()
     }
 }
+#endif

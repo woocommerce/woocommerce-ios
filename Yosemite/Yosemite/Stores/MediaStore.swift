@@ -218,14 +218,14 @@ private extension MediaStore {
 
     /// Uploads an exportable media asset to the site's WP Media Library using background URLSession
     ///
-    private func uploadMediaInBackground(siteID: Int64,
-                                         productID: Int64,
-                                         mediaAsset: ExportableAsset,
-                                         altText: String?,
-                                         filename: String?,
-                                         uploadID: String,
-                                         shouldRemoveFileUponCompletion: Bool = true,
-                                         onCompletion: @escaping (Result<Media, Error>) -> Void) {
+    func uploadMediaInBackground(siteID: Int64,
+                                 productID: Int64,
+                                 mediaAsset: ExportableAsset,
+                                 altText: String?,
+                                 filename: String?,
+                                 uploadID: String,
+                                 shouldRemoveFileUponCompletion: Bool = true,
+                                 onCompletion: @escaping (Result<Media, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
@@ -236,10 +236,10 @@ private extension MediaStore {
 
                 // Start background upload
                 backgroundUploader.uploadMedia(request: request,
-                                                               siteID: siteID,
-                                                               productID: productID,
-                                                               mediaItem: uploadableMedia,
-                                                               uploadID: uploadID) { result in
+                                               siteID: siteID,
+                                               productID: productID,
+                                               mediaItem: uploadableMedia,
+                                               uploadID: uploadID) { result in
                     // Removes local media after the upload API request.
                     if shouldRemoveFileUponCompletion {
                         do {

@@ -15,12 +15,12 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .font(.posHeading)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
             }
 
             Button {

@@ -175,8 +175,8 @@ extension WPStyleGuide {
         if WordPressAuthenticator.shared.configuration.showLoginOptions {
             let baseString =  NSLocalizedString("Or log in by _entering your site address_.", comment: "Label for button to log in using site address. Underscores _..._ denote underline.")
 
-            let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
-            let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
+            let attrStrNormal = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonColor)
+            let attrStrHighlight = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonHighlightColor)
             let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
             button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: alignment)
@@ -203,8 +203,8 @@ extension WPStyleGuide {
     class func wpcomSignupButton() -> UIButton {
         let style = WordPressAuthenticator.shared.style
         let baseString = NSLocalizedString("Don't have an account? _Sign up_", comment: "Label for button to log in using your site address. The underscores _..._ denote underline")
-        let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
-        let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
+        let attrStrNormal = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonColor)
+        let attrStrHighlight = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonHighlightColor)
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
@@ -219,8 +219,8 @@ extension WPStyleGuide {
 
         let baseString =  NSLocalizedString("By signing up, you agree to our _Terms of Service_.", comment: "Legal disclaimer for signup buttons, the underscores _..._ denote underline")
 
-        let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
-        let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
+        let attrStrNormal = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonColor)
+        let attrStrHighlight = baseString.withColor(color: style.subheadlineColor, linkColor: style.textButtonHighlightColor)
         let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
 
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center)
@@ -237,8 +237,8 @@ extension WPStyleGuide {
         let textColor = unifiedStyle?.textSubtleColor ?? originalStyle.subheadlineColor
         let linkColor = unifiedStyle?.textButtonColor ?? originalStyle.textButtonColor
 
-        let attrStrNormal = baseString.underlined(color: textColor, underlineColor: linkColor)
-        let attrStrHighlight = baseString.underlined(color: textColor, underlineColor: linkColor)
+        let attrStrNormal = baseString.withColor(color: textColor, linkColor: linkColor)
+        let attrStrHighlight = baseString.withColor(color: textColor, linkColor: linkColor)
         let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
 
         let button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center, forUnified: true)

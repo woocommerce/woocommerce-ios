@@ -10,19 +10,19 @@ struct PointOfSaleUnsupportedWidthView: View {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
                 Image(systemName: "ipad.landscape.badge.exclamationmark")
                     .symbolRenderingMode(.palette)
-                    .foregroundStyle(Color.posAlert, Color.posAlert)
+                    .foregroundStyle(Color.posAlert, Color.posOnSurface)
                     .font(.system(size: Constants.iconSize))
                     .accessibilityHidden(true)
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
                 Group {
                     Text(Localization.title)
-                        .font(.posBodyEmphasized)
+                        .font(.posBodyLargeBold)
                         .accessibilityAddTraits(.isHeader)
                     Text(Localization.detail)
-                        .font(.posBodyRegular)
+                        .font(.posBodyLargeRegular())
                 }
-                .foregroundStyle(Color.posPrimaryText)
+                .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.center)
             }

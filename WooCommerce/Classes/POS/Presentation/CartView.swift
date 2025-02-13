@@ -27,7 +27,7 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(posModel.cart.isEmpty ? .posSecondaryText : .posPrimaryText)
+                            .foregroundColor(.posOnSurface)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()
@@ -49,9 +49,8 @@ struct CartView: View {
                         posModel.removeAllItemsFromCart()
                     } label: {
                         Text(Localization.clearButtonTitle)
-                            .font(Constants.clearButtonFont)
                     }
-                    .buttonStyle(POSButtonStyle(variant: .outlined, size: .extraSmall))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
             }
@@ -197,10 +196,9 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
-        static let primaryFont: POSFontStyle = .posTitleEmphasized
-        static let secondaryFont: POSFontStyle = .posBodyRegular
-        static let itemsFont: POSFontStyle = .posDetailRegular
-        static let clearButtonFont: POSFontStyle = .posDetailEmphasized
+        static let primaryFont: POSFontStyle = .posHeading
+        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
@@ -246,7 +244,7 @@ private extension CartView {
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 
     @ViewBuilder
@@ -260,7 +258,7 @@ private extension CartView {
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
                     .foregroundColor(.posOnSurface)
             }
         }
@@ -275,7 +273,7 @@ private extension CartView {
             // avoids issues when the text size is changed through dynamic type.
             Text(Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {
                     Image(decorative: PointOfSaleAssets.shoppingBags.imageName)

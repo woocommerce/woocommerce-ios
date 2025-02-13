@@ -12,13 +12,13 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
-                        .font(POSFontStyle.posTitleEmphasized)
+                        .font(POSFontStyle.posHeading)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.description)
-                        .font(POSFontStyle.posBodyRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .fixedSize(horizontal: false, vertical: true)
                         .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                 }
@@ -29,11 +29,11 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
                        action: viewModel.connectButton.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }

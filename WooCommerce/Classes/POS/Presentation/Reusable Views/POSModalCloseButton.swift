@@ -24,7 +24,7 @@ struct POSModalCloseButton: ViewModifier {
                     Text(Image(systemName: "xmark"))
                         .font(.posButtonSymbolSmall)
                 })
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .accessibilityLabel(accessibilityLabel)
             }
 

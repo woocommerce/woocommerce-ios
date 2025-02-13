@@ -17,28 +17,28 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeading)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
-                .font(.posBodyRegular)
-                .foregroundStyle(Color.posPrimaryText)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 Button(action: viewModel.newOrderButtonViewModel.actionHandler) {
                     Label(viewModel.newOrderButtonViewModel.title, systemImage: "arrow.uturn.backward")
                 }
-                .buttonStyle(POSButtonStyle(variant: .outlined, size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
         }
         .multilineTextAlignment(.center)

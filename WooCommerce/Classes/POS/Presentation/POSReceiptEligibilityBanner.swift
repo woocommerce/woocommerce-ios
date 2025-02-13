@@ -12,7 +12,7 @@ struct POSReceiptEligibilityBanner: View {
                 .clipShape(Circle())
                 .padding(Constants.imagePadding)
             Text(Localization.updateWooCommerceVersionText)
-                .foregroundColor(Color.posPrimaryText)
+                .foregroundColor(Color.posOnSurface)
         }
         .padding()
         .background(Color.posSurface)

@@ -8,7 +8,7 @@ struct PointOfSaleItemListFullscreenView<Content: View>: View {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
                 POSHeaderTitleView(
                     title: Localization.title,
-                    foregroundColor: .posSecondaryText
+                    foregroundColor: .posOnSurfaceVariantHighest
                 )
                 Spacer()
             }

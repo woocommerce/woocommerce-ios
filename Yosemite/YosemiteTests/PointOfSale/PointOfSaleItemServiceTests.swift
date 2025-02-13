@@ -15,8 +15,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         currencySettings = CurrencySettings()
         itemProvider = PointOfSaleItemService(siteID: siteID,
                                                  currencySettings: currencySettings,
-                                                 network: network,
-                                                 isVariableProductsFeatureEnabled: false)
+                                                 network: network)
     }
 
     override func tearDown() {
@@ -110,26 +109,11 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     // MARK: - Query Parameters
 
-    func test_providePointOfSaleItems_sets_types_parameters_to_simple_only() async throws {
+    func test_providePointOfSaleItems_sets_types_parameters_correctly() async throws {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                      currencySettings: currencySettings,
-                                                     network: network,
-                                                     isVariableProductsFeatureEnabled: false)
-
-        // When
-        _ = try? await itemProvider.providePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple")
-    }
-
-    func test_providePointOfSaleItems_sets_types_parameters_correctly_when_variable_products_feature_is_enabled() async throws {
-        // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                     currencySettings: currencySettings,
-                                                     network: network,
-                                                     isVariableProductsFeatureEnabled: true)
+                                                     network: network)
 
         // When
         _ = try? await itemProvider.providePointOfSaleItems()
@@ -142,8 +126,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
-                                                  network: network,
-                                                  isVariableProductsFeatureEnabled: true)
+                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -185,8 +168,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
-                                                  network: network,
-                                                  isVariableProductsFeatureEnabled: true)
+                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -221,8 +203,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                             currencySettings: currencySettings,
-                                            network: network,
-                                            isVariableProductsFeatureEnabled: true)
+                                            network: network)
         let parentProductID: Int64 = 123
         let expectedError = PointOfSaleItemServiceError.requestFailed
 
@@ -251,8 +232,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
-                                                  network: network,
-                                                  isVariableProductsFeatureEnabled: true)
+                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When

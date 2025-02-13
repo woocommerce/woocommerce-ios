@@ -27,16 +27,16 @@ struct PointOfSalePaymentSuccessView: View {
 
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
-                                .font(.posTitleEmphasized)
-                                .foregroundStyle(Color.posPrimaryText)
+                                .font(.posHeading)
+                                .foregroundStyle(Color.posOnSurface)
                                 .accessibilityAddTraits(.isHeader)
                                 .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                 .opacity(isViewLoaded ? 1 : 0)
 
                             if let message = viewModel.message {
                                 Text(message)
-                                    .font(.posBodyRegular)
-                                    .foregroundStyle(Color.posPrimaryText)
+                                    .font(.posBodyLargeRegular())
+                                    .foregroundStyle(Color.posOnSurface)
                                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                                     .opacity(isViewLoaded ? 1 : 0)
                             }

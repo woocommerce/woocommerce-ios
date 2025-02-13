@@ -3,10 +3,12 @@
 
 21.8
 -----
+- [**] Shipping Labels: resolved issue preventing shipping labels from displaying in some orders when an error occurred during label creation. [https://github.com/woocommerce/woocommerce-ios/pull/15101]
 - [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/15088]
 - [*] Improved image loading in Blaze Campaign Creation: displays a redacted and shimmering effects when loading product image and falls back to a placeholder if no image is available. [https://github.com/woocommerce/woocommerce-ios/pull/15098]
 - [*] Product List: Display syncing animation on items with image upload in progress [https://github.com/woocommerce/woocommerce-ios/pull/15052]
 - [*] Background image upload: Fix issue showing uploaded images while saving is in progress [https://github.com/woocommerce/woocommerce-ios/pull/15107]
+- [*] Background image upload: Fix missing error notice in iPhones [https://github.com/woocommerce/woocommerce-ios/pull/15117]
 
 21.7
 -----

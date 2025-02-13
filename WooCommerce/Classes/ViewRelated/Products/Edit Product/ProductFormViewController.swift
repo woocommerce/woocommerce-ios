@@ -196,9 +196,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         view.endEditing(true)
 
         if isBeingDismissedInAnyWay {
-            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
-                                                                productOrVariationID: productOrVariationID,
-                                                                isLocalID: !viewModel.productModel.existsRemotely))
+            let key = ProductImageUploaderKey(siteID: viewModel.productModel.siteID,
+                                              productOrVariationID: productOrVariationID,
+                                              isLocalID: !viewModel.productModel.existsRemotely)
+            productImageUploader.startEmittingErrors(key: key)
+            productImageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
         }
     }
 

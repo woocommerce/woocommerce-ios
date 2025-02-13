@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
@@ -21,7 +21,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                     Text(viewModel.nextStep)
                 }
                 .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posPrimaryText)
+                .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 

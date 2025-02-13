@@ -13,8 +13,8 @@ struct GhostItemCardView: View {
                 .frame(width: dimension, height: dimension)
             Rectangle()
                 .foregroundColor(.posOnSurfaceVariantLowest)
-                .frame(height: 36 * scale)
-                .cornerRadius(8)
+                .frame(height: Layout.placeholderHeight * scale)
+                .cornerRadius(Layout.cornerRadius)
                 .padding(.horizontal, Constants.horizontalTextPadding)
             Spacer()
                 .frame(width: dimension, height: dimension)
@@ -25,6 +25,11 @@ struct GhostItemCardView: View {
 
 private extension GhostItemCardView {
     typealias Constants = PointOfSaleItemListCardConstants
+
+    enum Layout {
+        static let placeholderHeight: CGFloat = 36
+        static let cornerRadius: CGFloat = 8
+    }
 }
 
 #Preview {

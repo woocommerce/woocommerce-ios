@@ -138,15 +138,9 @@ private extension CardReaderConnectionStatusView {
         )
 
         static let readerDisconnected = NSLocalizedString(
-            "pointOfSale.floatingButtons.readerNotConnected.title",
-            value: "Reader not connected",
+            "pointOfSale.floatingButtons.readerDisconnected.title",
+            value: "Connect your reader",
             comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
-        )
-
-        static let connectReader = NSLocalizedString(
-            "pointOfSale.floatingButtons.connectCardReader.button.title",
-            value: "Connect",
-            comment: "The title of the menu button to connect a card reader."
         )
 
         static let readerDisconnecting = NSLocalizedString(

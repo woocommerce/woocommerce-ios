@@ -88,6 +88,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     ///
     public let wasEcommerceTrial: Bool
 
+    /// Whether Jetpack SSO is enabled for the site
+    ///
+    public let hasSSOEnabled: Bool
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -126,6 +130,11 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
             return activeFeatures.contains { $0 == Constants.aiAssistantFeature }
         }()
 
+        let hasSSOEnabled: Bool = {
+            let jetpackModules = (try? siteContainer.decodeIfPresent([String].self, forKey: SiteKeys.jetpackModules)) ?? []
+            return jetpackModules.contains(OptionKeys.sso.rawValue) == true
+        }()
+
         self.init(siteID: siteID,
                   name: name,
                   description: description,
@@ -146,7 +155,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   visibility: visibility,
                   canBlaze: canBlaze,
                   isAdmin: isAdmin,
-                  wasEcommerceTrial: wasEcommerceTrial)
+                  wasEcommerceTrial: wasEcommerceTrial,
+                  hasSSOEnabled: hasSSOEnabled)
     }
 
     /// Designated Initializer.
@@ -171,7 +181,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 visibility: SiteVisibility,
                 canBlaze: Bool,
                 isAdmin: Bool,
-                wasEcommerceTrial: Bool) {
+                wasEcommerceTrial: Bool,
+                hasSSOEnabled: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -193,6 +204,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.canBlaze = canBlaze
         self.isAdmin = isAdmin
         self.wasEcommerceTrial = wasEcommerceTrial
+        self.hasSSOEnabled = hasSSOEnabled
     }
 }
 
@@ -239,6 +251,7 @@ private extension Site {
         case isJetpackThePluginInstalled = "jetpack"
         case isJetpackConnected          = "jetpack_connection"
         case wasEcommerceTrial           = "was_ecommerce_trial"
+        case jetpackModules = "jetpack_modules"
     }
 
     enum PlanInfo: String, CodingKey {
@@ -266,6 +279,8 @@ private extension Site {
         case frameNonce = "frame_nonce"
         case visibility = "blog_public"
         case canBlaze = "can_blaze"
+        case sso = "sso"
+        
     }
 
     enum PlanKeys: String, CodingKey {

@@ -55,6 +55,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     visibility: SiteVisibility(rawValue: Int(visibility)) ?? .privateSite,
                     canBlaze: canBlaze,
                     isAdmin: isAdmin,
-                    wasEcommerceTrial: wasEcommerceTrial)
+                    wasEcommerceTrial: wasEcommerceTrial,
+                    hasSSOEnabled: false) // TODO
     }
 }

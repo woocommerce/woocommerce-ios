@@ -43,14 +43,12 @@ struct CardReaderConnectionStatusView: View {
                 Button {
                     posModel.connectCardReader()
                 } label: {
-                    HStack(spacing: Constants.horizontalPadding) {
-                        HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                            circleIcon(with: Color.posAlert)
-                            Text(Localization.readerDisconnected)
-                                .foregroundColor(disconnectedFontColor)
-                        }
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        circleIcon(with: Color.posAlert)
+                        Text(Localization.readerDisconnected)
+                            .foregroundColor(disconnectedFontColor)
                     }
-                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.horizontal, Constants.disconnectedBorderAndContentSpacing)
                     .frame(maxHeight: .infinity)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.disconnectedBorderCornerRadius)
@@ -117,11 +115,12 @@ private extension CardReaderConnectionStatusView {
 private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 16
-        static let imageDimension: CGFloat = 12
+        static let imageDimension: CGFloat = 14
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
+        static let disconnectedBorderAndContentSpacing: CGFloat = 16
         static let disconnectedBorderCornerRadius: CGFloat = 4
         static let disconnectedBorderWidth: CGFloat = 2
         static let disconnectedBorderInset: CGFloat = 8

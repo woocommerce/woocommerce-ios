@@ -153,8 +153,12 @@ extension PointOfSaleAggregateModel {
         paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
     }
+}
 
-    private func trackCustomerInteractionStarted() {
+// MARK: - Track events
+@available(iOS 17.0, *)
+private extension PointOfSaleAggregateModel {
+    func trackCustomerInteractionStarted() {
         // At the moment we're assumming that an interaction starts simply when the cart is zero
         // but a more complex logic will be needed for other cases
         if cart.count == 0 {

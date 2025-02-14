@@ -2158,7 +2158,7 @@ private enum Localization {
     enum ImageUploadError {
         static let title = NSLocalizedString(
             "productFormViewController.imageUploadError.title",
-            value: "Cannot upload image",
+            value: "Image was not uploaded",
             comment: "Title of the alert when there is an error uploading an image of a product."
         )
         static let discard = NSLocalizedString(

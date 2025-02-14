@@ -29,12 +29,16 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackOrderCreationSuccess()
     func trackCardReaderReady()
     func trackCardReaderTapped()
+    func trackCheckoutTapped()
+    func resetCheckoutTapCountTracker()
 }
 
 extension CollectOrderPaymentAnalytics {
     func trackOrderCreationSuccess() { }
     func trackCardReaderReady() { }
     func trackCardReaderTapped() { }
+    func trackCheckoutTapped() { }
+    func resetCheckoutTapCountTracker() { }
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {

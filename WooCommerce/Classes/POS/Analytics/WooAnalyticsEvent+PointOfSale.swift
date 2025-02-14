@@ -16,6 +16,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceOrderCreationSuccess = "milliseconds_since_order_creation_success"
             static let millisecondsSinceReaderReadyToCollect = "milliseconds_since_reader_ready_to_collect_payment"
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
+            static let checkoutTapCount = "checkout_tap_count"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -39,12 +40,14 @@ extension WooAnalyticsEvent {
         static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderCreationSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
-                                                     millisecondsSinceCardTapped: Double) -> WooAnalyticsEvent {
+                                                     millisecondsSinceCardTapped: Double,
+                                                     checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderCreationSuccess: "\(millisecondsSinceOrderCreationSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
-                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)"
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
         }
     }

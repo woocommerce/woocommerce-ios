@@ -29,7 +29,7 @@ struct POSReceiptEligibilityBanner: View {
 private extension POSReceiptEligibilityBanner {
     enum Constants {
         static let elementSpacing: CGFloat = 8
-        static let cornerRadius: CGFloat = 20
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.large.value
         static let imagesize: CGFloat = 40
         static let imagePadding: CGFloat = 4
         static let bannerPadding: CGFloat = 16
@@ -41,4 +41,9 @@ private extension POSReceiptEligibilityBanner {
             value: "Please update WooCommerce to version 9.5.0",
             comment: "Text for the banner requiring specific WooCommerce version.")
     }
+}
+
+#Preview {
+    POSReceiptEligibilityBanner(isVisible: .constant(true))
+        .padding()
 }

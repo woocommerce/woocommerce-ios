@@ -63,6 +63,10 @@ extension MockProductImageUploader: ProductImageUploaderProtocol {
         hasUnsavedChangesOnImages
     }
 
+    func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
+        // no-op
+    }
+
     func reset() {
         resetWasCalled = true
     }

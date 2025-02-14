@@ -43,6 +43,7 @@ steps:
     notify:
       - github_commit_status:
           context: Unit Tests
+    parallelism: 50
 
   - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
     command: |

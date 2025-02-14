@@ -16,7 +16,7 @@ install_swiftpm_dependencies
 
 echo "--- 🧪 Testing"
 set +e
-bundle exec fastlane test_without_building name:UnitTests
+bundle exec fastlane test_without_building name:UnitTests device:'iPhone 16'
 TESTS_EXIT_STATUS=$?
 set -e
 

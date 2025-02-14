@@ -195,12 +195,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
-
-        if isBeingDismissedInAnyWay {
-            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
-                                                                productOrVariationID: productOrVariationID,
-                                                                isLocalID: !viewModel.productModel.existsRemotely))
-        }
+        prepareForBackgroundUploadsUponDismissal()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -1359,6 +1354,16 @@ private extension ProductFormViewController {
 // MARK: - Navigation actions handling
 //
 private extension ProductFormViewController {
+    func prepareForBackgroundUploadsUponDismissal() {
+        guard isBeingDismissedInAnyWay else { return }
+
+        let key = ProductImageUploaderKey(siteID: viewModel.productModel.siteID,
+                                          productOrVariationID: productOrVariationID,
+                                          isLocalID: !viewModel.productModel.existsRemotely)
+        productImageUploader.startEmittingErrors(key: key)
+        productImageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
+    }
+
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
             presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
@@ -77,6 +78,11 @@ protocol ProductImageUploaderProtocol {
     /// - Parameters:
     ///   - key: identifiable information about the product.
     func startEmittingErrors(key: ProductImageUploaderKey)
+
+    /// Triggers a notice about background image upload for a product if needed.
+    /// - Parameter key: identifiable information about the product.
+    ///
+    func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter)
 
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
@@ -164,6 +170,13 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func startEmittingErrors(key: ProductImageUploaderKey) {
         statusUpdatesExcludedProductKeys.remove(key)
+    }
+
+    func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
+        if activeUploadsPublisher.contains(key) {
+            let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
+            noticePresenter.enqueue(notice: notice)
+        }
     }
 
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
@@ -306,4 +319,12 @@ enum ProductImageUploaderError: Error {
     case noRemoteProductIDFound
     case failedSavingProductAfterImageUpload(error: Error)
     case failedUploadingImage(asset: ProductImageAssetType, error: Error)
+}
+
+private enum Localization {
+    static let backgroundUploadNoticeTitle = NSLocalizedString(
+        "productImageUploader.backgroundUploadNotice.title",
+        value: "Image uploading will continue in the background",
+        comment: ""
+    )
 }

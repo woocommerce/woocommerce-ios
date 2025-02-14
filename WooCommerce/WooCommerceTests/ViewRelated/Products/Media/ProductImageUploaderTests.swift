@@ -611,6 +611,7 @@ final class ProductImageUploaderTests: XCTestCase {
     }
 
     func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {
+        // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
         let key = ProductImageUploaderKey(siteID: siteID,
@@ -641,6 +642,45 @@ final class ProductImageUploaderTests: XCTestCase {
         waitUntil {
             activeUploads == []
         }
+    }
+
+    func test_background_upload_notice_is_sent_when_there_are_active_uploads() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+
+        let noticePresenter = MockNoticePresenter()
+        var isNoticeTriggered = false
+        noticePresenter.onNoticeQueued = { _ in
+            isNoticeTriggered = true
+        }
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+
+        // Then
+        XCTAssertFalse(isNoticeTriggered)
+
+        // When
+        let asset = PHAsset()
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+        waitUntil {
+            activeUploads == [key]
+        }
+
+        // Then
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+        XCTAssertTrue(isNoticeTriggered)
     }
 }
 

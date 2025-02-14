@@ -43,6 +43,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
+        ServiceLocator.analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = Date().timeIntervalSince1970
     }
 

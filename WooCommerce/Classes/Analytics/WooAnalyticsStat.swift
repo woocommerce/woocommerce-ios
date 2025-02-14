@@ -1287,6 +1287,7 @@ enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

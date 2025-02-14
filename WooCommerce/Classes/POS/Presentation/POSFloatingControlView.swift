@@ -4,7 +4,6 @@ import SwiftUI
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
@@ -71,6 +70,10 @@ struct POSFloatingControlView: View {
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
+        .shadow(color: Color.posShadow.opacity(0.05), radius: 43, y: 50)
+        .shadow(color: Color.posShadow.opacity(0.10), radius: 36, y: 30)
+        .shadow(color: Color.posShadow.opacity(0.18), radius: 27, y: 15)
+        .shadow(color: Color.posShadow.opacity(0.20), radius: 15, y: 5)
     }
 }
 
@@ -81,7 +84,7 @@ private extension POSFloatingControlView {
         case .primary:
             .posSurfaceContainerLow
         case .secondary:
-            colorScheme == .light ? Color(.wooCommercePurple(.shade80)) : Color(.wooCommercePurple(.shade20))
+            .posDisabledContainer
         }
     }
 
@@ -93,14 +96,14 @@ private extension POSFloatingControlView {
 @available(iOS 17.0, *)
 extension POSFloatingControlView {
     static var secondaryFontColor: Color {
-        return .posDarkGray.opacity(0.6)
+        .posOnDisabledContainer
     }
 }
 
 @available(iOS 17.0, *)
 private extension POSFloatingControlView {
     enum Constants {
-        static let size: CGFloat = 56
+        static let size: CGFloat = 80
         static let cornerRadius: CGFloat = 8
     }
 
@@ -127,16 +130,40 @@ private extension POSFloatingControlView {
 }
 
 #if DEBUG
+
 @available(iOS 17.0, *)
-#Preview {
+#Preview("Reader Disconnected") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController())
-
-    POSFloatingControlView(showExitPOSModal: .constant(false),
-                           showSupport: .constant(false),
-                           showDocumentation: .constant(false))
-    .environment(posModel)
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(posModel)
 }
+
+@available(iOS 17.0, *)
+#Preview("Reader Connected") {
+    let paymentService = CardPresentPaymentPreviewService()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: paymentService,
+        orderController: PointOfSalePreviewOrderController())
+    paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
+    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Secondary/disabled Background") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+        .environment(\.posBackgroundAppearance, .secondary)
+        .environment(posModel)
+}
+
 #endif

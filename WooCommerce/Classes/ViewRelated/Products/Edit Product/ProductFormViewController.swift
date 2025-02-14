@@ -195,7 +195,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         view.endEditing(true)
         prepareForBackgroundUploadsUponDismissal()
-        
     }
 
     override var shouldShowOfflineBanner: Bool {

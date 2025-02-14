@@ -8,6 +8,8 @@ extension Color {
     static var posOnPrimaryContainer: Color { Color(.posOnPrimaryContainer) }
 
     // MARK: - Secondary Container Colors
+    static var posSecondary: Color { Color(.posSecondary) }
+    static var posOnSecondary: Color { Color(.posOnSecondary) }
     static var posSecondaryContainer: Color { Color(.posSecondaryContainer) }
     static var posOnSecondaryContainer: Color { Color(.posOnSecondaryContainer) }
 
@@ -43,11 +45,6 @@ extension Color {
     static var posOnSuccess: Color { Color(.posOnSuccess) }
     static var posAlert: Color { Color(.posAlert) }
     static var posOnAlert: Color { Color(.posOnAlert) }
-
-    // MARK: - Text Colors
-    static var posTextPrimary: Color { Color(.posTextPrimary) }
-    static var posTextSecondary: Color { Color(.posTextSecondary) }
-    static var posTextTertiary: Color { Color(.posTextTertiary) }
 
     // MARK: - Other
     static var posShadow: Color { Color(.posShadow) }

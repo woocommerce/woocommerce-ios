@@ -157,26 +157,84 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(statusKey: ProductStatus.pending.rawValue)))
     }
 
+    func test_editing_a_product_remotely_with_changes_in_details_triggers_updateProduct() throws {
+        // Arrange
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("Test")
+        var updateProductTriggered = false
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.updateProduct(product, onCompletion) = action {
+                updateProductTriggered = true
+                onCompletion(.success(product.copy(name: "Test")))
+            }
+        }
+
+        // Action
+        var savedProduct: EditableProductModel?
+        waitForExpectation { expectation in
+            viewModel.saveProductRemotely(status: .published) { result in
+                savedProduct = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertTrue(updateProductTriggered)
+        XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(name: "Test")))
+    }
+
+    func test_editing_a_product_remotely_with_changes_in_uploaded_images_triggers_updateProduct() throws {
+        // Arrange
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        let newImage = ProductImage.fake().copy(imageID: 134)
+        viewModel.updateImages([newImage])
+        var updateProductTriggered = false
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.updateProduct(product, onCompletion) = action {
+                updateProductTriggered = true
+                onCompletion(.success(product.copy(images: [newImage])))
+            }
+        }
+
+        // Action
+        var savedProduct: EditableProductModel?
+        waitForExpectation { expectation in
+            viewModel.saveProductRemotely(status: .published) { result in
+                savedProduct = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertTrue(updateProductTriggered)
+        XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(images: [newImage])))
+    }
+
     func test_editing_a_product_remotely_fires_method_to_save_images_in_background_using_productImagesUploader() throws {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
         let productImagesUploader = MockProductImageUploader()
         let viewModel = createViewModel(product: product, formType: .edit, productImagesUploader: productImagesUploader)
+        var updateProductTriggered = false
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.updateProduct(product, onCompletion) = action {
+                updateProductTriggered = true
                 onCompletion(.success(product))
             }
         }
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .pending) { result in
+            viewModel.saveProductRemotely(status: .published) { result in
                 expectation.fulfill()
             }
         }
 
         // Then
         XCTAssertTrue(productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled)
+        XCTAssertFalse(updateProductTriggered)
     }
 }
 

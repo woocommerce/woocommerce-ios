@@ -34,7 +34,7 @@ struct ItemListView: View {
             .navigationDestination(for: POSItem.self, destination: { item in
                 childListView(parentItem: item)
             })
-            .background(Color.posPrimaryBackground)
+            .background(Color.posSurface)
         }
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
@@ -58,10 +58,10 @@ private extension ItemListView {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
-                        Image(systemName: "info.circle")
-                            .font(.posTitleRegular)
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
                     })
-                    .foregroundColor(.posPrimaryText)
+                    .foregroundColor(.posOnSurface)
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
@@ -76,12 +76,10 @@ private extension ItemListView {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
-                Image(systemName: "info.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
+                Text(Image(systemName: "info.circle"))
+                    .font(.posButtonSymbolLarge)
                     .padding(Constants.iconPadding)
-                    .foregroundColor(Color(uiColor: .wooCommercePurple(.shade30)))
+                    .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
                 Spacer()
             }
@@ -103,9 +101,9 @@ private extension ItemListView {
                 Button(action: {
                     isHeaderBannerDismissed = true
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.posBodyRegular)
-                        .foregroundColor(Color.posTertiaryText)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
                 .padding(Constants.iconPadding)
@@ -114,9 +112,9 @@ private extension ItemListView {
         }
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posSecondaryBackground)
+        .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .posShadow(.medium)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
             showSimpleProductsModal = true
@@ -127,8 +125,8 @@ private extension ItemListView {
     private var bannerHintAndLearnMoreText: Text {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posDetailEmphasized.font())
-            .foregroundColor(Color(.accent))
+            .font(POSFontStyle.posBodySmallBold.font())
+            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder
@@ -175,58 +173,18 @@ private extension ItemListState {
     }
 }
 
-struct GhostItemCardView: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Rectangle()
-                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
-            HStack {
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-                Spacer()
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-            }
-            .frame(height: Constants.productCardSize * scale)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-        }
-        .foregroundColor(Constants.cardForegroundColor)
-        .shimmering()
-    }
-}
-
-private extension GhostItemCardView {
-    enum Constants {
-        static let cornerRadius: CGFloat = 8
-        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
-        static let textForegroundColor: Color = Color.gray.opacity(0.8)
-        static let productCardSize: CGFloat = 112
-        static let textWidth: CGFloat = 112
-        static let textHeight: CGFloat = 32
-    }
-}
-
 /// Constants
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
-        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
-        static let bannerCornerRadius: CGFloat = 8
+        static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
+        static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
+        static let bannerCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
-        static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
@@ -236,20 +194,16 @@ private extension ItemListView {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
-    var variableProductsEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale)
-    }
-
     var headerBannerTitle: String {
-        variableProductsEnabled ? Localization.headerBannerTitleSimpleAndVariable : Localization.headerBannerTitle
+        Localization.headerBannerTitleSimpleAndVariable
     }
 
     var headerBannerSubtitle: String {
-        variableProductsEnabled ? Localization.headerBannerSubtitleSimpleAndVariable : Localization.headerBannerSubtitle
+        Localization.headerBannerSubtitleSimpleAndVariable
     }
 
     var headerBannerHint: String {
-        variableProductsEnabled ? Localization.headerBannerHintSimpleAndVariable : Localization.headerBannerHint
+        Localization.headerBannerHintSimpleAndVariable
     }
 
     enum Localization {
@@ -257,24 +211,6 @@ private extension ItemListView {
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
-        )
-
-        static let headerBannerTitle = NSLocalizedString(
-            "pos.itemlistview.headerBanner.title",
-            value: "Showing simple products only",
-            comment: "Title of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerSubtitle = NSLocalizedString(
-            "pos.itemlistview.headerBanner.subtitle",
-            value: "Only simple physical products are available with POS right now.",
-            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerHint = NSLocalizedString(
-            "pos.itemlistview.headerBanner.hint",
-            value: "Other product types, such as variable and virtual, will become available in future updates.",
-            comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
 
         static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
@@ -321,7 +257,8 @@ private extension ItemListView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ItemListView()
         .environment(posModel)
 }
@@ -331,7 +268,8 @@ private extension ItemListView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ItemListView()
         .environment(posModel)
 }

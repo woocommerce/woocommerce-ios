@@ -11,7 +11,7 @@ struct POSErrorExclamationMark: View {
     var body: some View {
         Image(systemName: "exclamationmark.circle.fill")
             .font(.system(size: size))
-            .foregroundStyle(Color(.wooCommerceAmber(.shade60)))
+            .foregroundStyle(Color.posAlert)
             .accessibilityHidden(true)
             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
     }

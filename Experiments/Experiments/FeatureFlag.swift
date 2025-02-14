@@ -197,10 +197,6 @@ public enum FeatureFlag: Int {
     ///
     case acceptCashForPointOfSale
 
-    /// Supports variable products in POS.
-    ///
-    case variableProductsInPointOfSale
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker

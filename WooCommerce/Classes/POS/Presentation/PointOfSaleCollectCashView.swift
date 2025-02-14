@@ -57,13 +57,13 @@ struct PointOfSaleCollectCashView: View {
 
                 if let changeDue = changeDueMessage {
                     Text(changeDue)
-                        .font(.posBodyRegular)
-                        .foregroundColor(.posSecondaryText)
+                        .font(.posBodyLargeRegular())
+                        .foregroundColor(.posOnSurfaceVariantHighest)
                 }
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
-                        .font(POSFontStyle.posBodyRegular)
+                        .font(POSFontStyle.posBodyLargeRegular())
                         .foregroundColor(.red)
                         .padding(.bottom, Constants.errorMessagePadding)
                 }
@@ -73,24 +73,10 @@ struct PointOfSaleCollectCashView: View {
                         await submitCashAmount()
                     }
                 }, label: {
-                    ZStack {
-                        if isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .tint(Color.posPrimaryTextInverted)
-                        } else {
-                            Text(Localization.markPaymentCompletedButtonTitle)
-                                .font(Constants.buttonFont)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, minHeight: Constants.buttonMinHeight)
+                    Text(Localization.markPaymentCompletedButtonTitle)
                 })
-                .adaptiveButtonPadding(Constants.buttonPadding)
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                 .frame(maxWidth: .infinity)
-                .foregroundColor(colorScheme == .light ? Color.white : Color.black)
-                .background(Color.posPrimaryButtonBackground)
-                .cornerRadius(Constants.buttonCornerRadius)
-                .contentShape(Rectangle())
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .disabled(isLoading)
 
@@ -118,16 +104,16 @@ private extension PointOfSaleCollectCashView {
     var navigationHeader: some View {
         HStack(alignment: .top) {
             Image(systemName: "chevron.backward")
-                .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
             DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
                 Text(Localization.backNavigationTitle)
-                    .font(.posTitleEmphasized)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                 if dynamicTypeSize.isAccessibilitySize {
                     Spacer()
                 }
                 Text(formattedOrderTotal)
-                    .font(.posBodyRegular)
+                    .font(.posBodyLargeRegular())
             }
             .padding(.top, -Constants.navigationButtonSpacing)
         }
@@ -170,13 +156,9 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
         static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = 8
         static let navigationHeaderTopPadding: CGFloat = 8
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }
 
@@ -185,16 +167,11 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return .clear
-        }
+        .posSurface
     }
 
     private var navigationForegroundColor: Color {
-        isLoading ? .posBackgroundButtonDisabled : .primary
+        isLoading ? .posDisabledContainer : .primary
     }
 
     enum Localization {
@@ -228,7 +205,8 @@ private extension PointOfSaleCollectCashView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environment(posModel)
 }

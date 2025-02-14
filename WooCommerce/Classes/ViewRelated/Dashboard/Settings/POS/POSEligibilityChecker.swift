@@ -66,7 +66,7 @@ private extension POSEligibilityChecker {
                 return
             }
 
-            let wcPluginMinimumVersion = wcPluginMinimumVersion
+            let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
 
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 guard let wcPlugin = wcPlugin, wcPlugin.active else {
@@ -119,19 +119,11 @@ private extension POSEligibilityChecker {
                 return false
         }
     }
-
-    private var wcPluginMinimumVersion: String {
-        guard featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale) else {
-            return Constants.legacyWcPluginMinimumVersion
-        }
-        return Constants.wcPluginMinimumVersion
-    }
 }
 
 private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "9.6.0-beta"
-        static let legacyWcPluginMinimumVersion = "6.6.0"
     }
 }

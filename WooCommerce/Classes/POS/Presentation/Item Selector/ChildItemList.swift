@@ -31,7 +31,7 @@ struct ChildItemList: View {
                 errorView(error: error)
             }
         }
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
         .task {
             guard state.items.isEmpty else {
@@ -50,8 +50,8 @@ private extension ChildItemList {
                 dismiss()
             } label: {
                 Image(systemName: "chevron.backward")
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
+                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.posOnSurface)
             }
             POSHeaderTitleView(title: title)
             Spacer()
@@ -164,7 +164,8 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
         .environment(posModel)
 }
@@ -188,7 +189,8 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
         .environment(posModel)
 }

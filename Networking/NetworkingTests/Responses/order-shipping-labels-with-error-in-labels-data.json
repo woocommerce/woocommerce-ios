@@ -1,0 +1,196 @@
+{
+  "data" : {
+    "orderId" : 1530,
+    "labelsData" : [
+      {
+        "expiry_date" : 1754682728000,
+        "status" : "PURCHASED",
+        "is_letter" : false,
+        "refundable_amount" : 8.9499999999999993,
+        "service_name" : "USPS - Priority Mail",
+        "receipt_item_id" : 25072191,
+        "created_date" : 1739130728000,
+        "label_id" : 4730,
+        "commercial_invoice_url" : "",
+        "currency" : "USD",
+        "main_receipt_id" : 20298316,
+        "product_ids" : [
+          58,
+          733
+        ],
+        "product_names" : [
+          "Mojito",
+          "Gin Tonic"
+        ],
+        "package_name" : "Small Flat Rate Box",
+        "id" : "0",
+        "tracking" : "9405500106025109446438",
+        "is_commercial_invoice_submitted_electronically" : false,
+        "rate" : 8.9499999999999993,
+        "created" : 1739130724150,
+        "carrier_id" : "usps"
+      },
+      {
+        "currency" : "USD",
+        "product_names" : [
+          "Mojito",
+          "Gin Tonic"
+        ],
+        "expiry_date" : 1754402449000,
+        "product_ids" : [
+          58,
+          733
+        ],
+        "service_name" : "USPS - Media Mail",
+        "tracking" : "9449000106025109444891",
+        "label_id" : 4709,
+        "created_date" : 1738850450000,
+        "package_name" : "Unknown package",
+        "is_letter" : false,
+        "receipt_item_id" : 25071198,
+        "is_commercial_invoice_submitted_electronically" : false,
+        "created" : 1738850446604,
+        "refundable_amount" : 6.8799999999999999,
+        "commercial_invoice_url" : "",
+        "carrier_id" : "usps",
+        "rate" : 6.8799999999999999,
+        "status" : "PURCHASED",
+        "main_receipt_id" : 20297330
+      },
+      {
+        "currency" : "USD",
+        "product_names" : [
+          "Mojito",
+          "Gin Tonic"
+        ],
+        "expiry_date" : 1754395743000,
+        "product_ids" : [
+          58,
+          733
+        ],
+        "service_name" : "USPS - Media Mail",
+        "tracking" : "9449000106025109444860",
+        "label_id" : 4699,
+        "created_date" : 1738843744000,
+        "package_name" : "Unknown package",
+        "is_letter" : false,
+        "receipt_item_id" : 25071104,
+        "is_commercial_invoice_submitted_electronically" : false,
+        "created" : 1738843740105,
+        "refundable_amount" : 6.8799999999999999,
+        "commercial_invoice_url" : "",
+        "carrier_id" : "usps",
+        "rate" : 6.8799999999999999,
+        "status" : "PURCHASED",
+        "main_receipt_id" : 20297238
+      },
+      {
+        "id" : "0",
+        "product_names" : [
+          "Mojito",
+          "Gin Tonic"
+        ],
+        "product_ids" : [
+          58,
+          733
+        ],
+        "service_name" : "USPS - Ground Advantage",
+        "error" : "Payment failed - 3D Secure (3DS) transactions are not currently supported. Please use a different payment method.",
+        "tracking" : null,
+        "label_id" : 4697,
+        "created_date" : 1738841686000,
+        "package_name" : "Small Flat Rate Box",
+        "is_letter" : false,
+        "receipt_item_id" : -1,
+        "is_commercial_invoice_submitted_electronically" : false,
+        "created" : 1738841686539,
+        "refundable_amount" : 0,
+        "commercial_invoice_url" : "",
+        "carrier_id" : "usps",
+        "status" : "PURCHASE_ERROR"
+      }
+    ],
+    "success" : true,
+    "formData" : {
+      "origin" : {
+        "phone" : "12345678900",
+        "address" : "60 29th Street #343",
+        "country" : "US",
+        "city" : "San Francisco",
+        "company" : "Shut up and sip",
+        "postcode" : "94110",
+        "address_2" : "",
+        "name" : "Paolo",
+        "state" : "CA"
+      },
+      "destination" : {
+        "phone" : "555-1234",
+        "city" : "NEW YORK",
+        "country" : "US",
+        "address" : "20 W 34TH ST STE 100",
+        "company" : "Shut up and sip",
+        "postcode" : "10118-0114",
+        "address_2" : "",
+        "state" : "NY",
+        "name" : "New York store"
+      },
+      "order_id" : 1530,
+      "rates" : {
+        "selected" : {
+
+        }
+      },
+      "selected_packages" : {
+        "default_box" : {
+          "box_id" : "not_selected",
+          "height" : 0,
+          "length" : 0,
+          "id" : "default_box",
+          "weight" : 1.5,
+          "width" : 0,
+          "items" : [
+            {
+              "quantity" : 1,
+              "description" : "Mojito",
+              "width" : 10,
+              "url" : "https://example.com/wp-admin/post.php?post=58&action=edit",
+              "weight" : 0.5,
+              "length" : 10,
+              "origin_country" : "US",
+              "value" : 15,
+              "product_id" : 58,
+              "height" : 10,
+              "hs_tariff_number" : "",
+              "name" : "#58 - Mojito"
+            },
+            {
+              "quantity" : 1,
+              "description" : "Gin Tonic",
+              "width" : 10,
+              "url" : "https://example.com/wp-admin/post.php?post=733&action=edit",
+              "weight" : 1,
+              "length" : 0,
+              "origin_country" : "US",
+              "value" : 5,
+              "product_id" : 733,
+              "height" : 20,
+              "hs_tariff_number" : "",
+              "name" : "#733 - Gin Tonic"
+            }
+          ]
+        }
+      },
+      "origin_normalized" : true,
+      "destination_normalized" : true,
+      "is_packed" : true
+    },
+    "paperSize" : "label",
+    "storeOptions" : {
+      "origin_country" : "US",
+      "dimension_unit" : "cm",
+      "currency_symbol" : "$",
+      "weight_unit" : "kg"
+    },
+    "canChangeCountries" : true
+  }
+}

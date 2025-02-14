@@ -29,8 +29,8 @@ struct POSSendReceiptView: View {
                         Image(systemName: "chevron.backward")
                         Text(Localization.emailReceiptNavigationText)
                     }
-                    .font(.posTitleEmphasized)
-                    .foregroundColor(.posPrimaryText)
+                    .font(.posHeading)
+                    .foregroundColor(.posOnSurface)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .accessibilityAddTraits(.isHeader)
                 })
@@ -45,7 +45,7 @@ struct POSSendReceiptView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
+                .font(POSFontStyle.posBodyXLarge)
                 .focused()
                 .focused($isTextFieldFocused)
                 .padding()
@@ -55,7 +55,7 @@ struct POSSendReceiptView: View {
 
             if let errorMessage = errorMessage {
                 Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
+                    .font(POSFontStyle.posBodyLargeRegular())
                     .foregroundColor(.red)
                     .padding(.bottom, Constants.errorMessagePadding)
             }
@@ -63,25 +63,11 @@ struct POSSendReceiptView: View {
             Button(action: {
                 sendReceipt()
             }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryText)
-                    } else {
-                        Text(Localization.buttonTitle)
-                            .font(Constants.buttonFont)
-                    }
-                }
-                .frame(maxWidth: .infinity)
+                Text(Localization.buttonTitle)
             })
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
             .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-            .padding(conditionalPadding(Constants.buttonPadding))
             .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
             .disabled(isLoading)
 
             Spacer()
@@ -120,9 +106,6 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }
 
@@ -169,7 +152,8 @@ private extension POSSendReceiptView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
         .environment(posModel)
 }

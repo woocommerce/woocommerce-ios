@@ -9,12 +9,12 @@ struct POSRootModalViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
             content
-                .blur(radius: modalManager.isPresented ? 3 : 0)
+                .blur(radius: modalManager.isPresented ? 8 : 0)
                 .disabled(modalManager.isPresented)
                 .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
             if modalManager.isPresented {
-                Color.posOverlayFill
+                Color.posSurfaceDim.opacity(0.8)
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         if modalManager.allowsInteractiveDismissal {
@@ -25,9 +25,9 @@ struct POSRootModalViewModifier: ViewModifier {
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
                     modalManager.getContent()
-                        .background(Color.posPrimaryBackground)
-                        .cornerRadius(24)
-                        .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
+                        .background(Color.posSurfaceBright)
+                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                        .posShadow(.large)
                         .padding()
                 }
                 .zIndex(1)

@@ -26,11 +26,8 @@ struct POSRootModalViewModifier: ViewModifier {
                 ZStack {
                     modalManager.getContent()
                         .background(Color.posSurfaceBright)
-                        .cornerRadius(24)
-                        .shadow(color: Color.posShadow.opacity(0.02), radius: 43, x: 0, y: 50) // 0px 50px 43px 0px #00000005
-                        .shadow(color: Color.posShadow.opacity(0.04), radius: 36, x: 0, y: 30) // 0px 30px 36px 0px #0000000A
-                        .shadow(color: Color.posShadow.opacity(0.07), radius: 27, x: 0, y: 15) // 0px 15px 27px 0px #00000012
-                        .shadow(color: Color.posShadow.opacity(0.08), radius: 15, x: 0, y: 5)  // 0px 5px 15px 0px #00000014
+                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                        .posShadow(.large)
                         .padding()
                 }
                 .zIndex(1)

@@ -135,6 +135,7 @@ private extension TotalsView {
             Spacer().frame(height: Constants.totalVerticalSpacing)
             Divider()
                 .overlay(Constants.separatorColor)
+                .renderedIf(!totalsLoading)
             Spacer().frame(height: Constants.totalVerticalSpacing)
             totalFieldView(formattedPrice: orderTotals?.orderTotal,
                            shimmeringActive: totalsLoading,
@@ -193,10 +194,9 @@ private extension TotalsView {
     }
 
     func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Constants.separatorColor
+        Color.posOnSurfaceVariantLowest
             .frame(width: width, height: height)
             .fixedSize(horizontal: true, vertical: true)
-            .redacted(reason: [.placeholder])
             .shimmering(active: true)
             .cornerRadius(Constants.shimmeringCornerRadius)
     }
@@ -356,10 +356,10 @@ private extension TotalsView {
         static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
-        static let shimmeringCornerRadius: CGFloat = 4
-        static let shimmeringWidth: CGFloat = 334
+        static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
+        static let shimmeringWidth: CGFloat = 342
         static let subtotalsShimmeringHeight: CGFloat = 36
-        static let totalShimmeringHeight: CGFloat = 40
+        static let totalShimmeringHeight: CGFloat = 46
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -427,7 +427,8 @@ private extension View {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     TotalsView()
         .environment(posModel)
 }

@@ -164,7 +164,8 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
         .environment(posModel)
 }
@@ -188,7 +189,8 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
         .environment(posModel)
 }

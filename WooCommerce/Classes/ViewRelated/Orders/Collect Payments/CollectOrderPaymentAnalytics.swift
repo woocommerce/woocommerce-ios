@@ -27,10 +27,12 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func trackCustomerInteractionStarted()
     func trackOrderCreationSuccess()
+    func trackCardReaderReady()
 }
 
 extension CollectOrderPaymentAnalytics {
     func trackOrderCreationSuccess() { }
+    func trackCardReaderReady() { }
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {

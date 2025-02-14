@@ -365,6 +365,10 @@ private extension PointOfSaleAggregateModel {
                 let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
                                                               using: presentationStyleDeterminerDependencies)
 
+                if case .card(.acceptingCard) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
+                }
+
                 return newPaymentState
             }
             .sink(receiveValue: { [weak self] paymentState in

@@ -40,10 +40,33 @@ steps:
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
-    parallelism: 50
     notify:
       - github_commit_status:
           context: Unit Tests
+
+  - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
+    command: |
+      echo "--- :rubygems: Setting up Gems"
+      install_gems
+
+      echo "--- :cocoapods: Setting up Pods"
+      install_cocoapods
+
+      echo "--- :swift: Setting up Swift Packages"
+      install_swiftpm_dependencies
+
+      echo "--- 🧪 Testing"
+      bundle exec fastlane run scan \
+        scheme:WordPressAuthenticator \
+        prelaunch_simulator:true \
+        device:'iPhone 16'
+    plugins: [$CI_TOOLKIT]
+    parallelism: 50
+    artifact_paths:
+      - fastlane/test_output/*
+    notify:
+      - github_commit_status:
+          context: WordPressAuthenticator Unit Tests
 
   #################
   # Linters

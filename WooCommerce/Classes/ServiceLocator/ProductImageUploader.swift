@@ -173,12 +173,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
         if activeUploadsPublisher.contains(key) {
-            let title = NSLocalizedString(
-                "productImageUploader.backgroundUploadNotice.title",
-                value: "Image uploading will continue in the background",
-                comment: ""
-            )
-            let notice = Notice(title: title)
+            let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
             noticePresenter.enqueue(notice: notice)
         }
     }
@@ -315,4 +310,12 @@ enum ProductImageUploaderError: Error {
     case noRemoteProductIDFound
     case failedSavingProductAfterImageUpload(error: Error)
     case failedUploadingImage(error: Error)
+}
+
+private enum Localization {
+    static let backgroundUploadNoticeTitle = NSLocalizedString(
+        "productImageUploader.backgroundUploadNotice.title",
+        value: "Image uploading will continue in the background",
+        comment: ""
+    )
 }

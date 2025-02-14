@@ -442,6 +442,7 @@ extension PointOfSaleAggregateModel {
         await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
+        collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
         await startPaymentWhenCardReaderConnected()
     }
 }

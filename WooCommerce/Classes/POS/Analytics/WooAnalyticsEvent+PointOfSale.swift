@@ -13,6 +13,7 @@ extension WooAnalyticsEvent {
             static let itemType = "product_type"
             static let itemsInCart = "items_in_cart"
             static let millisecondsSinceCustomerInteractionStarted = "milliseconds_since_customer_interaction_started"
+            static let millisecondsSinceOrderCreationSuccess = "milliseconds_since_order_creation_success"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -33,10 +34,12 @@ extension WooAnalyticsEvent {
                               properties: [Key.itemsInCart: itemsInCart])
         }
 
-        static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: Double) -> WooAnalyticsEvent {
+        static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double,
+                                                     millisecondsSinceOrderCreationSuccess: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
-                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStated)"]
-            )
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderCreationSuccess : "\(millisecondsSinceOrderCreationSuccess)"
+            ])
         }
     }
 }

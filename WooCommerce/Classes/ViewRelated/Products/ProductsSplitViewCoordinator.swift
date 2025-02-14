@@ -231,12 +231,7 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
             if let contentType = contentTypes.last, case let .productForm(product) = contentType, let product {
-                let uploader = ServiceLocator.productImageUploader
-                let key = ProductImageUploaderKey(siteID: product.siteID,
-                                                  productOrVariationID: .product(id: product.productID),
-                                                  isLocalID: false)
-                uploader.startEmittingErrors(key: key)
-                uploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
+                didDismissProductForm(product: product)
             }
             contentTypes = []
             secondaryNavigationController.viewControllers = []
@@ -276,6 +271,15 @@ private extension ProductsSplitViewCoordinator {
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
+    }
+
+    func didDismissProductForm(product: Product) {
+        let uploader = ServiceLocator.productImageUploader
+        let key = ProductImageUploaderKey(siteID: product.siteID,
+                                          productOrVariationID: .product(id: product.productID),
+                                          isLocalID: false)
+        uploader.startEmittingErrors(key: key)
+        uploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
     }
 }
 

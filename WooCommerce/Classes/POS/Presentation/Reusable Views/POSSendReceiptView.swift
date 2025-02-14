@@ -152,7 +152,8 @@ private extension POSSendReceiptView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
         .environment(posModel)
 }

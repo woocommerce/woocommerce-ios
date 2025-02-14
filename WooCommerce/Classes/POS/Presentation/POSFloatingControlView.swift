@@ -133,7 +133,8 @@ private extension POSFloatingControlView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -144,8 +145,9 @@ private extension POSFloatingControlView {
     let paymentService = CardPresentPaymentPreviewService()
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: paymentService,
-        orderController: PointOfSalePreviewOrderController())
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
     return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
@@ -157,7 +159,8 @@ private extension POSFloatingControlView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(posModel)

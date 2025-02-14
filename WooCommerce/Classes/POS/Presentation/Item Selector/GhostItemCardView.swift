@@ -20,6 +20,9 @@ struct GhostItemCardView: View {
                 .frame(width: dimension, height: dimension)
         }
         .shimmering()
+        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .background(Color.posSurfaceBright)
+        .posItemCardBorderStyles()
     }
 }
 

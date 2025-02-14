@@ -44,7 +44,6 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation)
-            .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
@@ -169,7 +168,7 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let floatingControlHorizontalOffset: CGFloat = 24
+        static let floatingControlHorizontalOffset: CGFloat = 16
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
@@ -185,8 +184,9 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
+
 @available(iOS 17.0, *)
-#Preview {
+#Preview("Container loading state") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
@@ -197,4 +197,20 @@ private extension PointOfSaleDashboardView {
             .environmentObject(POSModalManager())
     }
 }
+
+@available(iOS 17.0, *)
+#Preview("Content loading state") {
+    let itemsController = PointOfSalePreviewItemsController()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController())
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
+    return NavigationStack {
+        PointOfSaleDashboardView()
+            .environment(posModel)
+            .environmentObject(POSModalManager())
+    }
+}
+
 #endif

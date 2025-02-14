@@ -24,7 +24,6 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
         // Property: milliseconds_since_card_tapped
         let elapsedTimeSinceCardTapped = calculateElapsedTimeInMilliseconds(since: cardReaderTapped)
-        
 
         ServiceLocator.analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
@@ -48,15 +47,15 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     }
 
     func trackOrderCreationSuccess() {
-        orderCreated = Date().timeIntervalSince1970
+        orderCreated = trackCurrentTime()
     }
 
     func trackCardReaderReady() {
-        cardReaderReady = Date().timeIntervalSince1970
+        cardReaderReady = trackCurrentTime()
     }
 
     func trackCardReaderTapped() {
-        cardReaderTapped = Date().timeIntervalSince1970
+        cardReaderTapped = trackCurrentTime()
     }
 
     func trackCheckoutTapped() {
@@ -66,14 +65,27 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func resetCheckoutTapCountTracker() {
         checkoutTapCount = 0
     }
+}
 
-    private func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
+// Helpers
+private extension POSCollectOrderPaymentAnalytics {
+    func trackCurrentTime() -> Double {
+        Date().timeIntervalSince1970
+    }
+
+    func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
         let end = Date().timeIntervalSince1970
         return floor((end - start) * 1000)
     }
 }
 
 // Protocol conformance. These events are not needed for IPP, only for POS.
+// https://github.com/woocommerce/woocommerce-ios/issues/15149
 extension CollectOrderPaymentAnalytics {
     func trackCustomerInteractionStarted() { }
+    func trackOrderCreationSuccess() { }
+    func trackCardReaderReady() { }
+    func trackCardReaderTapped() { }
+    func trackCheckoutTapped() { }
+    func resetCheckoutTapCountTracker() { }
 }

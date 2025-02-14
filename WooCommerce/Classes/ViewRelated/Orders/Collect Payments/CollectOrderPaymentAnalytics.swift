@@ -33,14 +33,6 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func resetCheckoutTapCountTracker()
 }
 
-extension CollectOrderPaymentAnalytics {
-    func trackOrderCreationSuccess() { }
-    func trackCardReaderReady() { }
-    func trackCardReaderTapped() { }
-    func trackCheckoutTapped() { }
-    func resetCheckoutTapCountTracker() { }
-}
-
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 
     private let siteID: Int64

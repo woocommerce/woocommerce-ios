@@ -44,8 +44,6 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation)
-            // TODO: update `POSFloatingControlView` style when PR is merged
-            .posShadow(.large)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)

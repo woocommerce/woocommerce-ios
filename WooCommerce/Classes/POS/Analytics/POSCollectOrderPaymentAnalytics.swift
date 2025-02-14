@@ -27,7 +27,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     }
 
     private func calculateElapsedTimeInMilliseconds(start: Double, end: Double) -> Double {
-        (end - start) * 1000
+        floor((end - start) * 1000)
     }
 }
 

@@ -58,10 +58,10 @@ private extension ItemListView {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
-                        Image(systemName: "info.circle")
-                            .font(.posTitleRegular)
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
                     })
-                    .foregroundColor(.posPrimaryText)
+                    .foregroundColor(.posOnSurface)
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
@@ -76,10 +76,8 @@ private extension ItemListView {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
-                Image(systemName: "info.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
+                Text(Image(systemName: "info.circle"))
+                    .font(.posButtonSymbolLarge)
                     .padding(Constants.iconPadding)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
@@ -103,8 +101,8 @@ private extension ItemListView {
                 Button(action: {
                     isHeaderBannerDismissed = true
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.posBodyRegular)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
@@ -127,7 +125,7 @@ private extension ItemListView {
     private var bannerHintAndLearnMoreText: Text {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posDetailEmphasized.font())
+            .font(POSFontStyle.posBodySmallBold.font())
             .foregroundColor(Color(.accent))
     }
 
@@ -219,14 +217,13 @@ private extension GhostItemCardView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
-        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
+        static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
+        static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
-        static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
@@ -236,20 +233,16 @@ private extension ItemListView {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
-    var variableProductsEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale)
-    }
-
     var headerBannerTitle: String {
-        variableProductsEnabled ? Localization.headerBannerTitleSimpleAndVariable : Localization.headerBannerTitle
+        Localization.headerBannerTitleSimpleAndVariable
     }
 
     var headerBannerSubtitle: String {
-        variableProductsEnabled ? Localization.headerBannerSubtitleSimpleAndVariable : Localization.headerBannerSubtitle
+        Localization.headerBannerSubtitleSimpleAndVariable
     }
 
     var headerBannerHint: String {
-        variableProductsEnabled ? Localization.headerBannerHintSimpleAndVariable : Localization.headerBannerHint
+        Localization.headerBannerHintSimpleAndVariable
     }
 
     enum Localization {
@@ -257,24 +250,6 @@ private extension ItemListView {
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
-        )
-
-        static let headerBannerTitle = NSLocalizedString(
-            "pos.itemlistview.headerBanner.title",
-            value: "Showing simple products only",
-            comment: "Title of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerSubtitle = NSLocalizedString(
-            "pos.itemlistview.headerBanner.subtitle",
-            value: "Only simple physical products are available with POS right now.",
-            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerHint = NSLocalizedString(
-            "pos.itemlistview.headerBanner.hint",
-            value: "Other product types, such as variable and virtual, will become available in future updates.",
-            comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
 
         static let headerBannerTitleSimpleAndVariable = NSLocalizedString(

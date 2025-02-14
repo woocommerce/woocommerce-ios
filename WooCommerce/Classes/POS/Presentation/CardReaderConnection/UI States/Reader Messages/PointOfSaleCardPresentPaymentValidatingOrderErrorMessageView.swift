@@ -11,20 +11,20 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeading)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {
                 Button(tryAgainButtonViewModel.title, action: tryAgainButtonViewModel.actionHandler)
-                    .buttonStyle(POSButtonStyle(variant: .filled, size: .normal))
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
         }
         .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)

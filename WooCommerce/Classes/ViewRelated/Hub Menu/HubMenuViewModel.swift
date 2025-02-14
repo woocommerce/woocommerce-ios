@@ -99,8 +99,7 @@ final class HubMenuViewModel: ObservableObject {
 
         return PointOfSaleItemService(siteID: siteID,
                                       currencySettings: currencySettings,
-                                      credentials: credentials,
-                                      isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
+                                      credentials: credentials)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

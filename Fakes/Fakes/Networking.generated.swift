@@ -2369,6 +2369,21 @@ extension Networking.StoredProductSettings {
         )
     }
 }
+extension Networking.StoredProductSettings.Setting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.StoredProductSettings.Setting {
+        .init(
+            siteID: .fake(),
+            sort: .fake(),
+            stockStatusFilter: .fake(),
+            productStatusFilter: .fake(),
+            productTypeFilter: .fake(),
+            productCategoryFilter: .fake(),
+            favoriteProduct: .fake()
+        )
+    }
+}
 extension Networking.Subscription {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -44,19 +44,17 @@ struct CardReaderConnectionStatusView: View {
                     posModel.connectCardReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color(.wooCommerceAmber(.shade60)))
+                        circleIcon(with: Color.posAlert)
                         Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
-                    .padding(.horizontal, Constants.overlayInnerHorizontalPadding)
+                    .padding(.horizontal, Constants.disconnectedBorderAndContentSpacing)
                     .frame(maxHeight: .infinity)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: Constants.overlayRadius)
-                            .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
-                    }
-                    .padding(.horizontal, Constants.overlayOuterHorizontalPadding)
-                    .padding(.vertical, Constants.overlayOuterVerticalPadding)
-                    .frame(maxHeight: .infinity)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Constants.disconnectedBorderCornerRadius)
+                            .stroke(disconnectedBorderColor, lineWidth: Constants.disconnectedBorderWidth)
+                    )
+                    .padding(Constants.disconnectedBorderInset)
                 }
             }
         }
@@ -102,23 +100,30 @@ private extension CardReaderConnectionStatusView {
             POSFloatingControlView.secondaryFontColor
         }
     }
+
+    var disconnectedBorderColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            .posPrimary
+        case .secondary:
+            POSFloatingControlView.secondaryFontColor
+        }
+    }
 }
 
 @available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Constants {
-        static let buttonImageAndTextSpacing: CGFloat = 12
-        static let imageDimension: CGFloat = 12
+        static let buttonImageAndTextSpacing: CGFloat = 16
+        static let imageDimension: CGFloat = 14
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
-        static let overlayRadius: CGFloat = POSCornerRadiusStyle.small.value
-        static let overlayLineWidth: CGFloat = 2
-        static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
-        static let overlayInnerHorizontalPadding: CGFloat =  16 + Self.overlayLineWidth
-        static let overlayOuterHorizontalPadding: CGFloat = 8 + Self.overlayLineWidth
-        static let overlayOuterVerticalPadding: CGFloat = 8 + Self.overlayLineWidth
+        static let disconnectedBorderAndContentSpacing: CGFloat = 16
+        static let disconnectedBorderCornerRadius: CGFloat = POSCornerRadiusStyle.small.value
+        static let disconnectedBorderWidth: CGFloat = 2
+        static let disconnectedBorderInset: CGFloat = 8
     }
 }
 
@@ -170,6 +175,8 @@ private extension CardReaderConnectionStatusView {
     )
     VStack {
         CardReaderConnectionStatusView()
+            .background(Color.posSurfaceContainerLow)
+            .frame(height: 80)
             .environment(posModel)
     }
 }

@@ -58,8 +58,8 @@ private extension ItemListView {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
                     }, label: {
-                        Image(systemName: "info.circle")
-                            .font(.posButtonSymbol)
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
                     })
                     .foregroundColor(.posOnSurface)
                     .padding(.trailing, Constants.infoIconPadding)
@@ -76,10 +76,8 @@ private extension ItemListView {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
-                Image(systemName: "info.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
+                Text(Image(systemName: "info.circle"))
+                    .font(.posButtonSymbolLarge)
                     .padding(Constants.iconPadding)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
@@ -103,8 +101,8 @@ private extension ItemListView {
                 Button(action: {
                     isHeaderBannerDismissed = true
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.posBodyLargeRegular())
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
@@ -128,7 +126,7 @@ private extension ItemListView {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
             .font(POSFontStyle.posBodySmallBold.font())
-            .foregroundColor(Color(.accent))
+            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder
@@ -175,45 +173,6 @@ private extension ItemListState {
     }
 }
 
-struct GhostItemCardView: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Rectangle()
-                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
-            HStack {
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-                Spacer()
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-            }
-            .frame(height: Constants.productCardSize * scale)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-        }
-        .foregroundColor(Constants.cardForegroundColor)
-        .shimmering()
-    }
-}
-
-private extension GhostItemCardView {
-    enum Constants {
-        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
-        static let textForegroundColor: Color = Color.gray.opacity(0.8)
-        static let productCardSize: CGFloat = 112
-        static let textWidth: CGFloat = 112
-        static let textHeight: CGFloat = 32
-    }
-}
-
 /// Constants
 ///
 @available(iOS 17.0, *)
@@ -226,7 +185,6 @@ private extension ItemListView {
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
-        static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16

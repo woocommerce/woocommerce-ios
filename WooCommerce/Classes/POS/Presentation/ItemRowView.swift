@@ -42,8 +42,8 @@ struct ItemRowView: View {
                 Button(action: {
                     onItemRemoveTapped()
                 }, label: {
-                    Image(systemName: "xmark.circle")
-                        .font(.posBodyLargeRegular())
+                    Text(Image(systemName: "xmark.circle"))
+                        .font(.posButtonSymbolMedium)
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
                 .padding(.trailing, Constants.cardContentHorizontalPadding)

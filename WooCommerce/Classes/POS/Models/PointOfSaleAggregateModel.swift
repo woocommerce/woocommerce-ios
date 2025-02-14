@@ -369,6 +369,10 @@ private extension PointOfSaleAggregateModel {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
                 }
 
+                if case .card(.processingPayment) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                }
+
                 return newPaymentState
             }
             .sink(receiveValue: { [weak self] paymentState in

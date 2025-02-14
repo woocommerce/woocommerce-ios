@@ -6,6 +6,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     private var customerInteractionStarted: Double = 0
     private var orderCreated: Double = 0
     private var cardReaderReady: Double = 0
+    private var cardReaderTapped: Double = 0
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
@@ -22,10 +23,17 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         // 3. milliseconds_since_reader_ready_to_collect_payment
         let elapsedTimeSinceCardReaderReady = calculateElapsedTimeInMilliseconds(start: cardReaderReady,
                                                                                  end: Date().timeIntervalSince1970)
+
+        // 4. milliseconds_since_card_tapped
+        let elapsedTimeSinceCardTapped = calculateElapsedTimeInMilliseconds(start: cardReaderTapped,
+                                                                            end: Date().timeIntervalSince1970)
+
         ServiceLocator.analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
             millisecondsSinceOrderCreationSuccess: elapsedTimeSinceOrderCreation,
-            millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady)
+            millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
+            millisecondsSinceCardTapped: elapsedTimeSinceCardTapped
+        )
         )
     }
 
@@ -47,6 +55,10 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func trackCardReaderReady() {
         cardReaderReady = Date().timeIntervalSince1970
+    }
+
+    func trackCardReaderTapped() {
+        cardReaderTapped = Date().timeIntervalSince1970
     }
 
     private func calculateElapsedTimeInMilliseconds(start: Double, end: Double) -> Double {

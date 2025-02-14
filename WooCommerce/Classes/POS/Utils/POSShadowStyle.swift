@@ -11,7 +11,7 @@ enum POSShadowStyle {
 /// A ViewModifier that applies predefined shadow styles.
 struct POSShadowStyleModifier: ViewModifier {
     let style: POSShadowStyle
-    
+
     func body(content: Content) -> some View {
         switch style {
         case .medium:
@@ -46,7 +46,7 @@ extension View {
             .foregroundStyle(Color.posOnSecondaryContainer)
             .background(Color.posOutlineVariant)
             .posShadow(.medium)
-        
+
         Text("Large Shadow")
             .padding()
             .frame(width: 200, height: 100)

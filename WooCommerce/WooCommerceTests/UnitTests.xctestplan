@@ -25,7 +25,8 @@
       "containerPath" : "container:WooCommerce.xcodeproj",
       "identifier" : "B56DB3C52049BFAA00D4AA8E",
       "name" : "WooCommerce"
-    }
+    },
+    "testRepetitionMode" : "retryOnFailure"
   },
   "testTargets" : [
     {

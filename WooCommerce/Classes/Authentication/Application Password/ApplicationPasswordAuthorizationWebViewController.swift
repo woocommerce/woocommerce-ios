@@ -3,6 +3,7 @@ import UIKit
 import WebKit
 import protocol WooFoundation.Analytics
 import struct Networking.ApplicationPassword
+import enum Networking.RequestAuthenticatorError
 
 /// View with embedded web view to authorize application password for a site.
 ///
@@ -162,14 +163,19 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
-                    navigateToErrorUI()
+                    navigateToApplicationPasswordDisabledUI()
                     return
                 }
                 loadAuthorizationPage(url: url)
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
-                navigateToErrorUI()
+                if let authError = error as? Networking.RequestAuthenticatorError,
+                   authError == .applicationPasswordNotAvailable {
+                    navigateToApplicationPasswordDisabledUI()
+                } else {
+                    showErrorAlert(message: Localization.authorizationRejected)
+                }
             }
             activityIndicator.stopAnimating()
         }
@@ -184,7 +190,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
     }
 
-    private func navigateToErrorUI() {
+    private func navigateToApplicationPasswordDisabledUI() {
         let errorUI = applicationPasswordDisabledUI(for: viewModel.siteURL)
         // When the error view controller is popped, navigate to previous VC
         errorUI.navigationItem.leftBarButtonItem = UIBarButtonItem(

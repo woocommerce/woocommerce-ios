@@ -8,7 +8,7 @@ enum POSShadowStyle {
     case large
 }
 
-/// A ViewModifier that applies predefined shadow styles
+/// A ViewModifier that applies predefined shadow styles.
 struct POSShadowStyleModifier: ViewModifier {
     let style: POSShadowStyle
     

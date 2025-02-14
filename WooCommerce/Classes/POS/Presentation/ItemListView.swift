@@ -114,7 +114,7 @@ private extension ItemListView {
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .shadow(color: Color.posShadow.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
             showSimpleProductsModal = true
@@ -126,7 +126,7 @@ private extension ItemListView {
         Text(headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
             .font(POSFontStyle.posBodySmallBold.font())
-            .foregroundColor(Color(.accent))
+            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder
@@ -170,45 +170,6 @@ private extension ItemListState {
         case .error:
             return false
         }
-    }
-}
-
-struct GhostItemCardView: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Rectangle()
-                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
-            HStack {
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-                Spacer()
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-            }
-            .frame(height: Constants.productCardSize * scale)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-        }
-        .foregroundColor(Constants.cardForegroundColor)
-        .shimmering()
-    }
-}
-
-private extension GhostItemCardView {
-    enum Constants {
-        static let cornerRadius: CGFloat = 8
-        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
-        static let textForegroundColor: Color = Color.gray.opacity(0.8)
-        static let productCardSize: CGFloat = 112
-        static let textWidth: CGFloat = 112
-        static let textHeight: CGFloat = 32
     }
 }
 

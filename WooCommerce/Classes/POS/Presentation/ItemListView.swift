@@ -114,7 +114,7 @@ private extension ItemListView {
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
-        .shadow(color: Color.posShadow.opacity(0.08), radius: 4, y: 2)
+        .posShadow(.medium)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
             showSimpleProductsModal = true

@@ -356,7 +356,7 @@ private extension TotalsView {
         static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
-        static let shimmeringCornerRadius: CGFloat = 8
+        static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let shimmeringWidth: CGFloat = 342
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 46

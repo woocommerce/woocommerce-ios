@@ -31,7 +31,7 @@ private extension GhostItemCardView {
 
     enum Layout {
         static let placeholderHeight: CGFloat = 36
-        static let cornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
 }
 

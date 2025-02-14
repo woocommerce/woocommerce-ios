@@ -121,7 +121,7 @@ private extension CardReaderConnectionStatusView {
         static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
         static let disconnectedBorderAndContentSpacing: CGFloat = 16
-        static let disconnectedBorderCornerRadius: CGFloat = 4
+        static let disconnectedBorderCornerRadius: CGFloat = POSCornerRadiusStyle.small.value
         static let disconnectedBorderWidth: CGFloat = 2
         static let disconnectedBorderInset: CGFloat = 8
     }

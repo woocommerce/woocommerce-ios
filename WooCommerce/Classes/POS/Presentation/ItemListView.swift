@@ -180,7 +180,7 @@ private extension ItemListView {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
         static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
-        static let bannerCornerRadius: CGFloat = 8
+        static let bannerCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8

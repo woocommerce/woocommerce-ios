@@ -104,7 +104,7 @@ extension POSFloatingControlView {
 private extension POSFloatingControlView {
     enum Constants {
         static let size: CGFloat = 80
-        static let cornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
 
     enum Localization {

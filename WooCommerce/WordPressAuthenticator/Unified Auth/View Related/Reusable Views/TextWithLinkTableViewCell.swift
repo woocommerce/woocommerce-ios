@@ -33,8 +33,8 @@ class TextWithLinkTableViewCell: UITableViewCell {
         let linkColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
         let linkHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
 
-        let attributedString = text.underlined(color: textColor, underlineColor: linkColor)
-        let highlightAttributedString = text.underlined(color: textColor, underlineColor: linkHighlightColor)
+        let attributedString = text.withColor(color: textColor, linkColor: linkColor)
+        let highlightAttributedString = text.withColor(color: textColor, linkColor: linkHighlightColor)
 
         button.setAttributedTitle(attributedString, for: .normal)
         button.setAttributedTitle(highlightAttributedString, for: .highlighted)

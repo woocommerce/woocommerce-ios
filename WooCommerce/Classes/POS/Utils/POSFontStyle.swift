@@ -13,7 +13,9 @@ enum POSFontStyle {
     case posBodySmallRegular(underline: Bool = false)
     case posCaptionBold
     case posCaptionRegular
-    case posButtonSymbol
+    case posButtonSymbolSmall
+    case posButtonSymbolMedium
+    case posButtonSymbolLarge
 
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
@@ -40,8 +42,12 @@ enum POSFontStyle {
             Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
         case .posCaptionRegular:
             Font.system(size: scaledValue(FontSize.caption, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
-        case .posButtonSymbol:
-            Font.system(size: scaledValue(32, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
+        case .posButtonSymbolSmall:
+            Font.system(size: scaledValue(20, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
+        case .posButtonSymbolMedium:
+            Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
+        case .posButtonSymbolLarge:
+            Font.system(size: scaledValue(30, maximumContentSizeCategory: maximumContentSizeCategory), weight: .semibold)
         }
     }
 
@@ -104,6 +110,7 @@ extension View {
 }
 
 // MARK: - Preview
+#if DEBUG
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
@@ -134,10 +141,15 @@ extension View {
                     .font(.posCaptionBold)
                 Text("Caption Regular")
                     .font(.posCaptionRegular)
-                Text("Button Symbol")
-                    .font(.posButtonSymbol)
+                Text("Button Symbol Small")
+                    .font(.posButtonSymbolSmall)
+                Text("Button Symbol Medium")
+                    .font(.posButtonSymbolMedium)
+                Text("Button Symbol Large")
+                    .font(.posButtonSymbolLarge)
             }
         }
         .padding()
     }
 }
+#endif

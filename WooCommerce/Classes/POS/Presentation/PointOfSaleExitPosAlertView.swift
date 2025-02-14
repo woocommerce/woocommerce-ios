@@ -15,8 +15,8 @@ struct PointOfSaleExitPosAlertView: View {
                 Button {
                     isPresented = false
                 } label: {
-                    Image(systemName: "xmark")
-                        .font(.posButtonSymbol)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                 }
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
@@ -63,3 +63,9 @@ private extension PointOfSaleExitPosAlertView {
         )
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleExitPosAlertView(isPresented: .constant(true))
+}
+#endif

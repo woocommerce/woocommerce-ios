@@ -116,7 +116,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
-    private var initialStatusesByProduct: [Key: [ProductImageStatus]] = [:]
 
     @Published private var activeUploadsPublisher: [ProductImageUploaderKey] = []
 
@@ -131,12 +130,11 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let actionHandler: ProductImageActionHandler
-        if let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload {
+        if let handler = actionHandlersByProduct[key] {
             actionHandler = handler
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
-            initialStatusesByProduct[key] = originalStatuses
             observeStatusUpdates(key: key, actionHandler: actionHandler)
         }
 
@@ -189,14 +187,24 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         guard let handler = actionHandlersByProduct[key] else {
             return false
         }
-        if let productImagesSaver = imagesSaverByProduct[key], productImagesSaver.imageStatusesToSave.isNotEmpty {
+        let productImagesSaver = imagesSaverByProduct[key]
+
+        if let productImagesSaver, productImagesSaver.imageStatusesToSave.isNotEmpty {
             // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
             return handler.productImageStatuses != productImagesSaver.imageStatusesToSave
         } else {
-            // Otherwise, there are unsaved changes if there is any pending image upload or any difference in the remote image IDs between the
+            if handler.productImageStatuses.hasPendingUpload {
+                return true
+            }
+
+            /// If there's a product saved in background, compare the images to determine unsaved changes.
+            if let savedProduct = productImagesSaver?.savedProduct {
+                return handler.productImageStatuses.images.map { $0.imageID } != savedProduct.images.map { $0.imageID }
+            }
+
+            // Otherwise, there are unsaved changes if there is any difference in the remote image IDs between the
             // original and latest product.
-            return handler.productImageStatuses.hasPendingUpload ||
-            handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
+            return handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
         }
     }
 
@@ -205,12 +213,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         // The product has to exist remotely in order to save its images remotely.
         // In product creation, this save function should be called after a new product is saved remotely for the first time.
         guard key.isLocalID == false else {
-            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
         }
 
         guard let handler = actionHandlersByProduct[key] else {
-            removeProductFromActiveUploads(key: key)
             return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
         }
 
@@ -226,7 +232,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
-            removeProductFromActiveUploads(key: key)
             onProductSave(result)
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
@@ -247,7 +252,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
-        initialStatusesByProduct = [:]
     }
 }
 
@@ -272,10 +276,9 @@ private extension ProductImageUploader {
 
             if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
                 activeUploadsPublisher.append(key)
-            } else if let initialStatuses = initialStatusesByProduct[key],
-                initialStatuses == productImageStatuses,
-                activeUploadsPublisher.contains(key) {
-                /// When upload is reset, remove the key from active uploads
+            } else if activeUploadsPublisher.contains(key), !productImageStatuses.hasPendingUpload {
+                /// When all pending uploads are completed or removed,
+                /// remove the key from active uploads
                 removeProductFromActiveUploads(key: key)
             }
 
@@ -292,7 +295,6 @@ private extension ProductImageUploader {
 
     func removeProductFromActiveUploads(key: Key) {
         activeUploadsPublisher.removeAll(where: { $0 == key })
-        initialStatusesByProduct.removeValue(forKey: key)
     }
 }
 

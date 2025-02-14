@@ -594,26 +594,16 @@ final class ProductImageUploaderTests: XCTestCase {
         let uploadedMedia = Media.fake().copy(mediaID: 645)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
             if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                XCTAssertEqual(activeUploads, [key])
                 onCompletion(.success(uploadedMedia))
+
+                // Then
+                self.waitUntil {
+                    activeUploads == []
+                }
             }
         }
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
-
-        // Then
-        waitUntil {
-            activeUploads == [key]
-        }
-
-        // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            if case let .updateProductImages(_, _, images, onCompletion) = action {
-                onCompletion(.success(.fake().copy(images: images)))
-            }
-        }
-        imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { _ in
-            // Then
-            XCTAssertEqual(activeUploads, [])
-        }
     }
 
     func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {

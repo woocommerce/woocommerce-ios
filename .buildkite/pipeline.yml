@@ -61,7 +61,6 @@ steps:
         prelaunch_simulator:true \
         device:'iPhone 16'
     plugins: [$CI_TOOLKIT]
-    parallelism: 50
     artifact_paths:
       - fastlane/test_output/*
     notify:

@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .filterHistoryOnOrderAndProductLists:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .backgroundProductImageUpload:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

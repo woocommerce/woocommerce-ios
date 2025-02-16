@@ -204,4 +204,8 @@ public enum FeatureFlag: Int {
     /// Supports managing filer history on order and product lists
     ///
     case filterHistoryOnOrderAndProductLists
+    
+    /// Supports uploading product images in background
+    ///
+    case backgroundProductImageUpload
 }

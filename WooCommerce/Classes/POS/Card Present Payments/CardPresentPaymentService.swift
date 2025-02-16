@@ -25,6 +25,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         CardPresentConfigurationLoader().configuration
@@ -33,13 +34,14 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
 
     @MainActor
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) async {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
         self.stores = stores
+        self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
 
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
@@ -138,7 +140,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         // TODO: Update the connected reader subject when we get a connection here.
 
-        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher).collectPaymentTask(
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher,
+                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
+        ).collectPaymentTask(
             for: order,
             using: connectionMethod,
             siteID: siteID,

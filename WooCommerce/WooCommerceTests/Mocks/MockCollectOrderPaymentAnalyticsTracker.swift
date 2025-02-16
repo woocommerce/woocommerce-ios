@@ -53,4 +53,8 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     func trackReceiptPrintFailed(error: Error) {
         // no-op
     }
+
+    func trackCustomerInteractionStarted() {
+        // no-op
+    }
 }

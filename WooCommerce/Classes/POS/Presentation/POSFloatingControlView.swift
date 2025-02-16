@@ -70,10 +70,7 @@ struct POSFloatingControlView: View {
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
-        .shadow(color: Color.posShadow.opacity(0.05), radius: 43, y: 50)
-        .shadow(color: Color.posShadow.opacity(0.10), radius: 36, y: 30)
-        .shadow(color: Color.posShadow.opacity(0.18), radius: 27, y: 15)
-        .shadow(color: Color.posShadow.opacity(0.20), radius: 15, y: 5)
+        .posShadow(.large)
     }
 }
 
@@ -104,7 +101,7 @@ extension POSFloatingControlView {
 private extension POSFloatingControlView {
     enum Constants {
         static let size: CGFloat = 80
-        static let cornerRadius: CGFloat = 8
+        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
 
     enum Localization {
@@ -136,7 +133,8 @@ private extension POSFloatingControlView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -147,8 +145,9 @@ private extension POSFloatingControlView {
     let paymentService = CardPresentPaymentPreviewService()
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: paymentService,
-        orderController: PointOfSalePreviewOrderController())
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
     return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
@@ -160,7 +159,8 @@ private extension POSFloatingControlView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(posModel)

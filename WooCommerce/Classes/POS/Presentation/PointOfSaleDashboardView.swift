@@ -190,7 +190,8 @@ private extension PointOfSaleDashboardView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return NavigationStack {
         PointOfSaleDashboardView()
             .environment(posModel)
@@ -204,7 +205,8 @@ private extension PointOfSaleDashboardView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
     return NavigationStack {
         PointOfSaleDashboardView()

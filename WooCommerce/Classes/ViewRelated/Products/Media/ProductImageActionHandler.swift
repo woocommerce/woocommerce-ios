@@ -1,6 +1,7 @@
 import Combine
 import Photos
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
 protocol ProductImageActionHandlerProtocol {
@@ -45,6 +46,8 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     private let stores: StoresManager
 
+    private let featureFlagService: FeatureFlagService
+
     var productImageStatuses: [ProductImageStatus] {
         return allStatuses.productImageStatuses
     }
@@ -77,11 +80,13 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
          productID: ProductOrVariationID,
          imageStatuses: [ProductImageStatus],
          queue: DispatchQueue = .main,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.productOrVariationID = productID
         self.queue = queue
         self.stores = stores
+        self.featureFlagService = featureFlagService
         self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
@@ -217,21 +222,41 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
             switch asset {
                 case .phAsset(let asset):
+                if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                     action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
-                                                              productID: self.productOrVariationID.id,
-                                                              mediaAsset: asset,
-                                                              altText: nil,
-                                                              filename: nil,
-                                                              uploadID: uploadID,
-                                                              onCompletion: onCompletion)
+                                                                 productID: self.productOrVariationID.id,
+                                                                 mediaAsset: asset,
+                                                                 altText: nil,
+                                                                 filename: nil,
+                                                                 uploadID: uploadID,
+                                                                 onCompletion: onCompletion)
+                } else {
+                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
+                                                                                  productID: self.productOrVariationID.id,
+                                                                                  mediaAsset: asset,
+                                                                                  altText: nil,
+                                                                                  filename: nil,
+                                                                                  uploadID: uploadID,
+                                                                                  onCompletion: onCompletion)
+                }
                 case .uiImage(let image, let filename, let altText):
+                if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                     action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
-                                                              productID: self.productOrVariationID.id,
-                                                              mediaAsset: image,
-                                                              altText: altText,
-                                                              filename: filename,
-                                                              uploadID: uploadID,
-                                                              onCompletion: onCompletion)
+                                                                 productID: self.productOrVariationID.id,
+                                                                 mediaAsset: image,
+                                                                 altText: altText,
+                                                                 filename: filename,
+                                                                 uploadID: uploadID,
+                                                                 onCompletion: onCompletion)
+                } else {
+                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
+                                                                                  productID: self.productOrVariationID.id,
+                                                                                  mediaAsset: image,
+                                                                                  altText: altText,
+                                                                                  filename: filename,
+                                                                                  uploadID: uploadID,
+                                                                                  onCompletion: onCompletion)
+                }
             }
             self.stores.dispatch(action)
         }

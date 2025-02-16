@@ -14,6 +14,8 @@ enum BackgroundUploadError: Error {
 }
 
 //TODO: cleanup all prints added for debug reason.
+/// Session Manager for media upload in background
+///
 public final class MediaUploadSessionManager: NSObject {
 
     public let backgroundSessionIdentifier: String

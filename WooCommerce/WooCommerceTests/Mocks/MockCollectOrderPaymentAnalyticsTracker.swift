@@ -77,4 +77,8 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     func resetCheckoutTapCountTracker() {
         // no-op
     }
+
+    func trackSuccessfulCashPayment() {
+        // no-op
+    }
 }

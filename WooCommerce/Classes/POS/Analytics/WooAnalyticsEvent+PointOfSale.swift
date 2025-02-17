@@ -17,6 +17,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceReaderReadyToCollect = "milliseconds_since_reader_ready_to_collect_payment"
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
+            static let waitingTime = "waiting_time"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -35,6 +36,13 @@ extension WooAnalyticsEvent {
         static func checkoutTapped(_ itemsInCart: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCheckoutTapped,
                               properties: [Key.itemsInCart: itemsInCart])
+        }
+        
+        /// Tracks the time elapsed preparing reader for payment, after successful order creation
+        /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
+        ///
+        static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
         static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double,

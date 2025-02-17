@@ -53,6 +53,9 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func trackCardReaderReady() {
         cardReaderReady = trackCurrentTime()
+
+        // As a side effect of knowing when the reader is ready, we track the elapsed from order creation
+        trackElapsedTimeFromOrderCreationToCardReady()
     }
 
     func trackCardReaderTapped() {
@@ -65,6 +68,11 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func resetCheckoutTapCountTracker() {
         checkoutTapCount = 0
+    }
+
+    private func trackElapsedTimeFromOrderCreationToCardReady() {
+        let elapsedTime = cardReaderReady - orderCreated
+        ServiceLocator.analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
     }
 }
 

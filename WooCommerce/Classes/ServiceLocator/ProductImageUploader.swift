@@ -1,4 +1,5 @@
 import Combine
+import UIKit
 import Foundation
 import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
@@ -113,6 +114,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
     private var statusUpdatesExcludedProductKeys: Set<Key> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
+    private var backgroundSubscriptions: Set<AnyCancellable> = []
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
@@ -126,6 +128,15 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
          imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
         self.stores = stores
         self.imagesProductIDUpdater = imagesProductIDUpdater
+        // Observe when the app enters background.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
@@ -243,10 +254,33 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
+        backgroundSubscriptions = []
         activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
+    }
+
+    func scheduleUploadInProgressNotification() {
+        guard !activeUploadsPublisher.isEmpty else { return }
+
+        let notification = LocalNotification(scenario: .productImageBackgroundUpload)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        Task {
+                await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification, trigger: trigger, remoteFeatureFlag: nil)
+        }
+    }
+
+    @objc private func appDidEnterBackground() {
+        activeUploads
+            .first()
+            .sink { [weak self] activeKeys in
+                guard let self = self else { return }
+                if !activeKeys.isEmpty {
+                    self.scheduleUploadInProgressNotification()
+                }
+            }
+            .store(in: &backgroundSubscriptions)
     }
 }
 

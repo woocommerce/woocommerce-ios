@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// A header view for POS pages.
+/// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
 struct POSPageHeaderView<TrailingContent: View>: View {
     private let title: String
     private let subtitle: String?
@@ -36,7 +38,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                     onBackTapped?()
                 }, label: {
                     Text(Image(systemName: Constants.backButtonIcon))
-                        .font(.posButtonSymbolLarge)
+                        .font(.posButtonSymbolLarge, maximumContentSizeCategory: .accessibilityLarge)
                         .foregroundColor(.posOnSurface)
                         .padding(.horizontal, Constants.backButtonHorizontalPadding)
                 })

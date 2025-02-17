@@ -1,3 +1,4 @@
+import protocol WooFoundation.Analytics
 import Yosemite
 
 final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
@@ -8,6 +9,12 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     private var cardReaderReady: Double = 0
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
+
+    private let analytics: Analytics
+
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
+    }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
@@ -25,7 +32,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         // Property: milliseconds_since_card_tapped
         let elapsedTimeSinceCardTapped = calculateElapsedTimeInMilliseconds(since: cardReaderTapped)
 
-        ServiceLocator.analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
             millisecondsSinceOrderCreationSuccess: elapsedTimeSinceOrderCreation,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,

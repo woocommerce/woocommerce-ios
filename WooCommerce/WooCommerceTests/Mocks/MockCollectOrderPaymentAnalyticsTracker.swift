@@ -70,8 +70,9 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         // no-op
     }
 
+    var didCallTrackCheckoutTapped = false
     func trackCheckoutTapped() {
-        // no-op
+        didCallTrackCheckoutTapped = true
     }
 
     func resetCheckoutTapCountTracker() {

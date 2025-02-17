@@ -12,7 +12,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 

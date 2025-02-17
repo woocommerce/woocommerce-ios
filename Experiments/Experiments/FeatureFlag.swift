@@ -193,10 +193,6 @@ public enum FeatureFlag: Int {
     ///
     case sendReceiptsForPointOfSale
 
-    /// Adds support for  accepting cash as payment for POS
-    ///
-    case acceptCashForPointOfSale
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker

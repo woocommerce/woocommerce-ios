@@ -1,47 +1,49 @@
 import SwiftUI
 
+/// Configuration for the back button in the header.
+struct POSPageHeaderBackButtonConfiguration {
+    enum State {
+        case enabled
+        case shimmering
+        case disabled
+    }
+
+    let state: State
+    let action: () -> Void
+}
+
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
 struct POSPageHeaderView<TrailingContent: View>: View {
     private let title: String
     private let subtitle: String?
-    private let showBackButton: Bool
+    private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
     private let trailingContent: TrailingContent?
-    private let onBackTapped: (() -> Void)?
-
-    private var showsBackButton: Bool {
-        onBackTapped != nil
-    }
 
     private var hStackAlignment: VerticalAlignment {
         subtitle == nil ? .center: .firstTextBaseline
     }
 
+    private var showsBackButton: Bool {
+        backButtonConfiguration != nil
+    }
+
     init(
         title: String,
         subtitle: String? = nil,
-        showBackButton: Bool = true,
-        onBackTapped: (() -> Void)? = nil,
+        backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.showBackButton = showBackButton
-        self.onBackTapped = onBackTapped
+        self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
     }
 
     var body: some View {
         HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
             if showsBackButton {
-                Button(action: {
-                    onBackTapped?()
-                }, label: {
-                    Text(Image(systemName: Constants.backButtonIcon))
-                        .font(.posButtonSymbolLarge, maximumContentSizeCategory: .accessibilityLarge)
-                        .foregroundColor(.posOnSurface)
-                        .padding(.horizontal, Constants.backButtonHorizontalPadding)
-                })
+                backButton
             }
 
             VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
@@ -66,6 +68,22 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
+
+    @ViewBuilder
+    private var backButton: some View {
+        if let configuration = backButtonConfiguration {
+            Button(action: configuration.action) {
+                Text(Image(systemName: Constants.backButtonIcon))
+                    .font(.posButtonSymbolLarge, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
+                    .padding(.horizontal, Constants.backButtonHorizontalPadding)
+            }
+            .disabled(configuration.state == .disabled)
+            .if(configuration.state == .shimmering) { view in
+                view.shimmering()
+            }
+        }
+    }
 }
 
 private enum Constants {
@@ -80,20 +98,34 @@ private enum Constants {
         // Basic header with back button.
         POSPageHeaderView(
             title: "Products",
-            onBackTapped: {}
+            backButtonConfiguration: .init(state: .enabled, action: {})
         )
 
         // Header with subtitle.
         POSPageHeaderView(
             title: "Products",
             subtitle: "Select products to add to cart",
-            onBackTapped: {}
+            backButtonConfiguration: .init(state: .enabled, action: {})
+        )
+
+        // Header with shimmering back button.
+        POSPageHeaderView(
+            title: "Products",
+            subtitle: "Select products to add to cart",
+            backButtonConfiguration: .init(state: .shimmering, action: {})
+        )
+
+        // Header with disabled back button.
+        POSPageHeaderView(
+            title: "Products",
+            subtitle: "Select products to add to cart",
+            backButtonConfiguration: .init(state: .disabled, action: {})
         )
 
         // Header with trailing content.
         POSPageHeaderView(
             title: "Products",
-            onBackTapped: {}
+            backButtonConfiguration: .init(state: .enabled, action: {})
         ) {
             HStack(spacing: 16) {
                 Button(action: {}) {
@@ -114,7 +146,7 @@ private enum Constants {
         POSPageHeaderView(
             title: "Products",
             subtitle: "Select products to add to cart",
-            onBackTapped: {}
+            backButtonConfiguration: .init(state: .enabled, action: {})
         ) {
             Button(action: {}) {
                 Text(Image(systemName: "info.circle"))

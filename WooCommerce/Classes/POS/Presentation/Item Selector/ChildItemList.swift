@@ -45,9 +45,11 @@ struct ChildItemList: View {
 @available(iOS 17.0, *)
 private extension ChildItemList {
     @ViewBuilder var headerView: some View {
-        POSPageHeaderView(title: title, onBackTapped: {
+        POSPageHeaderView(title: title,
+                          backButtonConfiguration: .init(state: .enabled,
+                                                         action: {
             dismiss()
-        })
+        }))
     }
 
     @ViewBuilder

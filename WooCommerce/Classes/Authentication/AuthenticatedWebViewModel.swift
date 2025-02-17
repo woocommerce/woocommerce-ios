@@ -75,18 +75,16 @@ extension AuthenticatedWebViewModel {
     ///
     func authenticationFlow(wpcomCredentialsAvailable: Bool, wporgCredentialsAvailable: Bool) -> WebViewAuthenticationFlow {
         let stores = ServiceLocator.stores
-        guard let initialURL,
-              let domain = initialURL.host,
-              let currentSite = stores.sessionManager.defaultSite else {
+        guard let initialURL else {
             return .none
         }
 
-        let urlIsPartOfSite = initialURL.absoluteString.hasPrefix(currentSite.url)
-
         if wpcomCredentialsAvailable {
-            if wpcomAcceptedDomains.contains(domain) {
+            if let domain = initialURL.host, wpcomAcceptedDomains.contains(domain) {
                 return .wpcom
-            } else if currentSite.hasSSOEnabled, urlIsPartOfSite {
+            } else if let currentSite = stores.sessionManager.defaultSite,
+                      currentSite.hasSSOEnabled,
+                      initialURL.absoluteString.hasPrefix(currentSite.url) {
                 return .jetpackSSO
             }
         }

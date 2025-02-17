@@ -171,8 +171,6 @@ private extension AuthenticatedWebViewController {
         switch viewModel.authenticationFlow {
         case .wpcom:
             authenticateWPComAndLoadContent(url: url)
-        case .atomic:
-            authenticateAtomicAndLoadContent(url: url)
         case .jetpackSSO:
             authenticateSSOAndLoadContent(url: url)
         case .siteCredentials:
@@ -196,24 +194,8 @@ private extension AuthenticatedWebViewController {
         }
     }
 
-    func authenticateAtomicAndLoadContent(url: URL) {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return loadContent(url: url)
-        }
-
-        let isAdminURL = url.absoluteString.contains(site.adminURL)
-        if isAdminURL {
-            return authenticateWPComAndLoadContent(url: url)
-        }
-
-        guard let tempURL = URL(string: Constants.wpcomTempRedirectURL) else {
-            return loadContent(url: url)
-        }
-        authenticateWPComAndLoadContent(url: tempURL)
-    }
-
     func authenticateSSOAndLoadContent(url: URL) {
-        guard let tempURL = URL(string: Constants.ssoTempRedirectURL) else {
+        guard let tempURL = URL(string: Constants.wpcomTempRedirectURL) else {
             return loadContent(url: url)
         }
         authenticateWPComAndLoadContent(url: tempURL)
@@ -238,14 +220,6 @@ private extension AuthenticatedWebViewController {
 
         switch url.absoluteString {
         case Constants.wpcomTempRedirectURL:
-            let site = ServiceLocator.stores.sessionManager.defaultSite
-            let queryItem = URLQueryItem(name: Constants.redirectParam, value: initialURL.absoluteString)
-            guard let site, let loginURL = URL(string: site.loginURL)?.appending(queryItems: [queryItem]) else {
-                return loadContent(url: initialURL)
-            }
-            loadContent(url: loginURL)
-
-        case Constants.ssoTempRedirectURL:
             let site = ServiceLocator.stores.sessionManager.defaultSite
             guard let site, let host = URL(string: site.url)?.host else {
                 return loadContent(url: initialURL)
@@ -329,8 +303,6 @@ extension AuthenticatedWebViewController: WKUIDelegate {
 private extension AuthenticatedWebViewController {
     enum Constants {
         static let wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
-        static let ssoTempRedirectURL = "https://wordpress.com/mobile-redirect-sso"
-        static let redirectParam = "redirect_to"
         static let actionParam = "action"
         static let jetpackSSOAction = "jetpack-sso"
     }

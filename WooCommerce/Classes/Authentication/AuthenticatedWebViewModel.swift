@@ -88,8 +88,6 @@ extension AuthenticatedWebViewModel {
         case .wpcom:
             if wpcomAcceptedDomains.contains(domain) {
                 return .wpcom
-            } else if currentSite.isWordPressComStore, urlIsPartOfSite {
-                return .atomic
             } else if currentSite.hasSSOEnabled, urlIsPartOfSite {
                 return .jetpackSSO
             } else {
@@ -109,7 +107,6 @@ extension AuthenticatedWebViewModel {
 
 enum WebViewAuthenticationFlow {
     case wpcom
-    case atomic
     case jetpackSSO
     case siteCredentials
     case none

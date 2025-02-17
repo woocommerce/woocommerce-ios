@@ -56,6 +56,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     canBlaze: canBlaze,
                     isAdmin: isAdmin,
                     wasEcommerceTrial: wasEcommerceTrial,
-                    hasSSOEnabled: false) // TODO
+                    hasSSOEnabled: hasSSOEnabled)
     }
 }

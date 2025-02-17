@@ -59,8 +59,8 @@ private extension ItemListView {
                         .font(.posButtonSymbolLarge)
                         .foregroundStyle(Color.posOnSurface)
                         .padding(Constants.infoIconInset)
-                        .renderedIf(!shouldShowHeaderBanner)
                 })
+                .renderedIf(!shouldShowHeaderBanner)
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView

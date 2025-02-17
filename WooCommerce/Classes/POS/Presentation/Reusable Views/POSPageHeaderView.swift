@@ -95,31 +95,27 @@ private enum Constants {
 
 #Preview {
     VStack(spacing: 20) {
+        // Header without back button.
+        POSPageHeaderView(
+            title: "Products",
+            trailingContent: {
+                Button(action: {}) {
+                    Text(Image(systemName: "info.circle"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+            })
+
         // Basic header with back button.
         POSPageHeaderView(
-            title: "Products",
-            backButtonConfiguration: .init(state: .enabled, action: {})
-        )
-
-        // Header with subtitle.
-        POSPageHeaderView(
-            title: "Products",
-            subtitle: "Select products to add to cart",
+            title: "Variation",
             backButtonConfiguration: .init(state: .enabled, action: {})
         )
 
         // Header with shimmering back button.
         POSPageHeaderView(
-            title: "Products",
-            subtitle: "Select products to add to cart",
+            title: "Cart",
             backButtonConfiguration: .init(state: .shimmering, action: {})
-        )
-
-        // Header with disabled back button.
-        POSPageHeaderView(
-            title: "Products",
-            subtitle: "Select products to add to cart",
-            backButtonConfiguration: .init(state: .disabled, action: {})
         )
 
         // Header with trailing content.
@@ -142,10 +138,24 @@ private enum Constants {
             }
         }
 
+        // Header with subtitle.
+        POSPageHeaderView(
+            title: "Cash payment",
+            subtitle: "Total: $100.00",
+            backButtonConfiguration: .init(state: .enabled, action: {})
+        )
+
+        // Header with subtitle and disabled back button.
+        POSPageHeaderView(
+            title: "Cash payment",
+            subtitle: "Total: $100.00",
+            backButtonConfiguration: .init(state: .disabled, action: {})
+        )
+
         // Header with everything.
         POSPageHeaderView(
-            title: "Products",
-            subtitle: "Select products to add to cart",
+            title: "Title",
+            subtitle: "Subtitle",
             backButtonConfiguration: .init(state: .enabled, action: {})
         ) {
             Button(action: {}) {
@@ -154,18 +164,6 @@ private enum Constants {
             }
             .foregroundColor(.posOnSurface)
         }
-
-        // Header without back button.
-        POSPageHeaderView(
-            title: "Products",
-            subtitle: "Select products to add to cart",
-            trailingContent: {
-                Button(action: {}) {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
-            })
     }
     .background(Color.posSurface)
 }

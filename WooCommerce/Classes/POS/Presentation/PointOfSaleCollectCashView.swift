@@ -32,7 +32,6 @@ struct PointOfSaleCollectCashView: View {
                     Button(action: {
                         Task { @MainActor in
                             await posModel.cancelCashPayment()
-                            ServiceLocator.analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
                             isTextFieldFocused = false
                         }
                     }, label: {

@@ -243,6 +243,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func cancelCashPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState = .card(.idle)
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()

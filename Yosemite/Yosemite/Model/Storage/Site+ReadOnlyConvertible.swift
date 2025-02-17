@@ -30,6 +30,7 @@ extension Storage.Site: ReadOnlyConvertible {
         canBlaze = site.canBlaze
         isAdmin = site.isAdmin
         wasEcommerceTrial = site.wasEcommerceTrial
+        hasSSOEnabled = site.hasSSOEnabled
     }
 
     /// Returns a ReadOnly version of the receiver.

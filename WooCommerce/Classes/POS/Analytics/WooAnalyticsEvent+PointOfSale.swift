@@ -58,6 +58,12 @@ extension WooAnalyticsEvent {
                 Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
         }
+
+        static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: [
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+            ])
+        }
     }
 }
 

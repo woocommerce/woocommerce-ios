@@ -251,6 +251,7 @@ extension PointOfSaleAggregateModel {
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
         collectOrderPaymentAnalyticsTracker.resetCheckoutTapCountTracker()
     }
 

@@ -31,6 +31,7 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackCardReaderTapped()
     func trackCheckoutTapped()
     func resetCheckoutTapCountTracker()
+    func trackSuccessfulCashPayment()
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {

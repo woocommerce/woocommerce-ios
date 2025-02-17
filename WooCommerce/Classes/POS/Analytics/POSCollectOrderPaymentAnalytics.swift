@@ -33,6 +33,14 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
             checkoutTapCount: checkoutTapCount
         ))
     }
+    
+    func trackSuccessfulCashPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+        
+        ServiceLocator.analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+    }
 
     func trackPaymentFailure(with error: any Error) { }
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
@@ -97,4 +105,5 @@ extension CollectOrderPaymentAnalytics {
     func trackCardReaderTapped() { }
     func trackCheckoutTapped() { }
     func resetCheckoutTapCountTracker() { }
+    func trackSuccessfulCashPayment() { }
 }

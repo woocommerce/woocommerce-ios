@@ -96,13 +96,13 @@ private enum Constants {
             HStack(spacing: 16) {
                 Button(action: {}) {
                     Text(Image(systemName: "info.circle"))
-                        .font(.posHeading)
+                        .font(.posButtonSymbolLarge)
                 }
                 .foregroundColor(.posOnSurface)
 
                 Button(action: {}) {
                     Text(Image(systemName: "trash"))
-                        .font(.posHeading)
+                        .font(.posButtonSymbolLarge)
                 }
                 .foregroundColor(.posOnSurface)
             }
@@ -116,7 +116,7 @@ private enum Constants {
         ) {
             Button(action: {}) {
                 Text(Image(systemName: "info.circle"))
-                    .font(.posHeading)
+                    .font(.posButtonSymbolLarge)
             }
             .foregroundColor(.posOnSurface)
         }
@@ -128,7 +128,7 @@ private enum Constants {
             trailingContent: {
                 Button(action: {}) {
                     Text(Image(systemName: "info.circle"))
-                        .font(.posHeading)
+                        .font(.posButtonSymbolLarge)
                 }
                 .foregroundColor(.posOnSurface)
             })

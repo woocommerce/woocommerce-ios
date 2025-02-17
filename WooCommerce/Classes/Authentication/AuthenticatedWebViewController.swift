@@ -95,6 +95,7 @@ final class AuthenticatedWebViewController: UIViewController {
         configureWebView()
         configureActivityIndicator()
         configureProgressBar()
+        observeWebView()
         startLoading()
     }
 
@@ -146,7 +147,7 @@ private extension AuthenticatedWebViewController {
         ])
     }
 
-    func startLoading() {
+    func observeWebView() {
         webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in
                 if progress == 1 {
@@ -163,7 +164,9 @@ private extension AuthenticatedWebViewController {
                 self?.handleRedirect(for: url)
             }
             .store(in: &subscriptions)
+    }
 
+    func startLoading() {
         guard let url = viewModel.initialURL else {
             return
         }

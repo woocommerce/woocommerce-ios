@@ -44,6 +44,7 @@ struct PointOfSaleDashboardView: View {
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
             .renderedIf(posModel.itemsViewState.containerState != .loading)
@@ -167,6 +168,7 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
+        static let floatingControlBottomPadding: CGFloat = 16
         static let floatingControlHorizontalOffset: CGFloat = 16
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0

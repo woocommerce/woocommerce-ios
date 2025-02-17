@@ -58,7 +58,8 @@ struct CardReaderConnectionStatusView: View {
                 }
             }
         }
-        .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
+        .font(Constants.font)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .opacity(isEnabled ? 1 : 0.5)
     }
 }

@@ -27,6 +27,9 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             .foregroundColor(.posOnSurface)
                             .accessibilityAddTraits(.isHeader)
 
@@ -35,6 +38,9 @@ struct CartView: View {
                         if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                         }
                     }
@@ -258,7 +264,8 @@ private extension CartView {
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
             }
         }

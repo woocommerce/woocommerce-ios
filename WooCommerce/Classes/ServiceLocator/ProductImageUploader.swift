@@ -261,7 +261,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         imagesSaverByProduct = [:]
     }
 
-    func scheduleUploadInProgressNotification() {
+    private func scheduleUploadInProgressNotification() {
         guard !activeUploadsPublisher.isEmpty else { return }
 
         let notification = LocalNotification(scenario: .productImageBackgroundUpload)

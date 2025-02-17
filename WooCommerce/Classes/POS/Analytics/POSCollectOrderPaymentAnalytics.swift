@@ -33,10 +33,10 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
             checkoutTapCount: checkoutTapCount
         ))
     }
-    
+
     func trackSuccessfulCashPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
-        
+
         ServiceLocator.analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))

@@ -37,7 +37,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCheckoutTapped,
                               properties: [Key.itemsInCart: itemsInCart])
         }
-        
+
         /// Tracks the time elapsed preparing reader for payment, after successful order creation
         /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
         ///

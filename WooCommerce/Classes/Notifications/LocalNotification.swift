@@ -21,6 +21,7 @@ struct LocalNotification {
     enum Scenario {
         case blazeNoCampaignReminder
         case blazeAbandonedCampaignCreationReminder
+        case productImageBackgroundUpload
         case unknown(siteID: Int64)
 
         var identifier: String {
@@ -29,6 +30,8 @@ struct LocalNotification {
                 return "blaze_no_campaign_reminder"
             case .blazeAbandonedCampaignCreationReminder:
                 return "blaze_abandoned_campaign_reminder"
+            case .productImageBackgroundUpload:
+                return "product_image_background_upload"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -89,6 +92,9 @@ extension LocalNotification {
         case .blazeAbandonedCampaignCreationReminder:
             title = Localization.AbandonedCampaignCreation.title
             body = String.localizedStringWithFormat(Localization.AbandonedCampaignCreation.body, name)
+        case .productImageBackgroundUpload:
+            title = Localization.ProductImageBackgroundUpload.title
+            body = Localization.ProductImageBackgroundUpload.body
         case .unknown:
             title = ""
             body = ""
@@ -126,6 +132,18 @@ extension LocalNotification {
                 "localNotification.AbandonedCampaignCreation.body",
                 value: "Get your products seen by millions with Blaze and boost your sales",
                 comment: "Message on the local notification to remind to continue the Blaze campaign creation."
+            )
+        }
+        enum ProductImageBackgroundUpload {
+            static let title = NSLocalizedString(
+                "localNotification.ProductImageUploader.title",
+                value: "Product Image Upload in Progress",
+                comment: "Title of the local notification to inform the user that product images are uploading in the background."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.ProductImageUploader.message",
+                value: "Your product images are still uploading, but upload speed may be reduced and errors could occur. For best results, please keep the app open until uploads finish.",
+                comment: "Message on the local notification to inform the user about the background upload of product images."
             )
         }
     }

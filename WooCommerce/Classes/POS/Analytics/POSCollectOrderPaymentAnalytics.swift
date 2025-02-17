@@ -44,7 +44,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackSuccessfulCashPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
-        ServiceLocator.analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
+        analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))
     }
@@ -58,7 +58,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
-        ServiceLocator.analytics.track(.pointOfSaleInteractionWithCustomerStarted)
+        analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = Date().timeIntervalSince1970
     }
 

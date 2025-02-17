@@ -267,7 +267,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         let notification = LocalNotification(scenario: .productImageBackgroundUpload)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         Task {
-                await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification, trigger: trigger, remoteFeatureFlag: nil)
+            await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
+                                                                                                         trigger: trigger, remoteFeatureFlag: nil)
         }
     }
 

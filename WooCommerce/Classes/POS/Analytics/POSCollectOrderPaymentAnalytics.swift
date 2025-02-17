@@ -87,7 +87,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     private func trackElapsedTimeFromOrderCreationToCardReady() {
         let elapsedTime = cardReaderReady - orderCreated
-        ServiceLocator.analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
+        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
     }
 }
 

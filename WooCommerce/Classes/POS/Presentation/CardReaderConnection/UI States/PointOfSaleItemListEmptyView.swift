@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let baseItem: ItemListBaseItem
 
     init(base: ItemListBaseItem) {
@@ -8,25 +9,29 @@ struct PointOfSaleItemListEmptyView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            Spacer()
-            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-            Text(title)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posHeading)
-            Text(subtitle)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
-            Text(hint)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
-            Spacer()
+        ScrollView {
+            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+                Spacer()
+                Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                Text(title)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .font(.posHeading)
+                Text(subtitle)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .font(.posBodyLargeRegular())
+                    .padding([.leading, .trailing])
+                Text(hint)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .font(.posBodyLargeRegular())
+                    .padding([.leading, .trailing])
+                Spacer()
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+            }
         }
     }
 }

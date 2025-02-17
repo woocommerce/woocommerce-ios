@@ -77,14 +77,9 @@ private extension ChildItemList {
 
     @ViewBuilder
     var emptyView: some View {
-        ZStack {
-            VStack {
-                headerView
-                Spacer()
-            }
-
+        VStack {
+            headerView
             PointOfSaleItemListEmptyView(base: .parent(parentItem))
-                .zIndex(1)
         }
     }
 

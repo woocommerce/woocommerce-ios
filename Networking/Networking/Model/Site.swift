@@ -280,7 +280,6 @@ private extension Site {
         case visibility = "blog_public"
         case canBlaze = "can_blaze"
         case sso = "sso"
-        
     }
 
     enum PlanKeys: String, CodingKey {

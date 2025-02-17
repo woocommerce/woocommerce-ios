@@ -28,6 +28,44 @@ enum ProductOrVariationID: Equatable, Hashable {
     }
 }
 
+extension ProductOrVariationID: Codable {
+    enum CodingKeys: String, CodingKey {
+        case type, productID, variationID
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .product(let id):
+            try container.encode("product", forKey: .type)
+            try container.encode(id, forKey: .productID)
+        case .variation(let productID, let variationID):
+            try container.encode("variation", forKey: .type)
+            try container.encode(productID, forKey: .productID)
+            try container.encode(variationID, forKey: .variationID)
+        }
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        switch try container.decode(String.self, forKey: .type) {
+        case "product":
+            let id = try container.decode(Int64.self, forKey: .productID)
+            self = .product(id: id)
+        case "variation":
+            let productID = try container.decode(Int64.self, forKey: .productID)
+            let variationID = try container.decode(Int64.self, forKey: .variationID)
+            self = .variation(productID: productID, variationID: variationID)
+        default:
+            throw DecodingError.dataCorruptedError(
+                forKey: .type,
+                in: container,
+                debugDescription: "Unknown ProductOrVariationID type"
+            )
+        }
+    }
+}
+
 /// Identifiable information about a specific product or product variation of different sites for image upload.
 struct ProductImageUploaderKey: Equatable, Hashable {
     let siteID: Int64

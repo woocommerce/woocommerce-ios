@@ -3,13 +3,13 @@ import Yosemite
 
 extension ProductFormDataModel {
     var imageStatuses: [ProductImageStatus] {
-        return images.map({ ProductImageStatus.remote(image: $0) })
+        return images.map({ ProductImageStatus.remote(image: $0, siteID: siteID, productID: .product(id: productID)) })
     }
 }
 
 extension Product {
     var imageStatuses: [ProductImageStatus] {
-        return images.map({ ProductImageStatus.remote(image: $0) })
+        return images.map({ ProductImageStatus.remote(image: $0, siteID: siteID, productID: .product(id: productID)) })
     }
 
     /// Returns the URL of the first image, if available. Otherwise, nil is returned.

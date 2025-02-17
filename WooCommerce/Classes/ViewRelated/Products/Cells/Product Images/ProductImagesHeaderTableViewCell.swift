@@ -68,7 +68,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
         switch viewModel?.items[indexPath.item] {
         case .image(let status):
             switch status {
-            case .remote(let image):
+            case .remote(let image, let siteID, let productID):
                 onImageSelected?(image, indexPath)
             default:
                 break

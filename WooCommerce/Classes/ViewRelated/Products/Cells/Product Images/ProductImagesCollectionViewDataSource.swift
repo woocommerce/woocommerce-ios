@@ -51,9 +51,9 @@ private extension ProductImagesCollectionViewDataSource {
 
     func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
-        case .remote(let image):
+        case .remote(let image, let siteID, let productID):
             configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
-        case .uploading(let asset):
+        case .uploading(let asset, let siteID, let productID):
             switch asset {
                 case .phAsset(let asset):
                     configureUploadingImageCell(cell, asset: asset)

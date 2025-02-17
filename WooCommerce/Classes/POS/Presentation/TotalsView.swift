@@ -337,11 +337,18 @@ private extension TotalsView {
                     return .primary
                 }
             }
-        case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: 0,
-                                     bottomPadding: nil,
-                                     sidePadding: 0)
+        case .cash(let cashPaymentState):
+            switch cashPaymentState {
+            case .collectingCash:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: 0,
+                                         bottomPadding: nil,
+                                         sidePadding: 0)
+            case .paymentSuccess:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: nil,
+                                         bottomPadding: nil)
+            }
         }
     }
 }

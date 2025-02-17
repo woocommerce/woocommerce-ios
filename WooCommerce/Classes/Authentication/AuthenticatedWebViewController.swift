@@ -168,7 +168,9 @@ private extension AuthenticatedWebViewController {
             return
         }
 
-        switch viewModel.authenticationFlow {
+        let authenticationFlow = viewModel.authenticationFlow(wpcomCredentialsAvailable: wpcomCredentials != nil,
+                                                              wporgCredentialsAvailable: siteCredentials != nil)
+        switch authenticationFlow {
         case .wpcom:
             authenticateWPComAndLoadContent(url: url)
         case .jetpackSSO:
@@ -241,7 +243,7 @@ private extension AuthenticatedWebViewController {
         default:
             if url.absoluteString.contains(WKWebView.wporgNoncePath) == true,
                initialURL.absoluteString.contains(WKWebView.wporgNoncePath) != true {
-                // avoids infinite loop if the initial url happens to be the nonce retrieval path.
+                // Site credentials login completes, now proceed to load the initial URL.
                 loadContent(url: initialURL)
             } else {
                 viewModel.handleRedirect(for: url)

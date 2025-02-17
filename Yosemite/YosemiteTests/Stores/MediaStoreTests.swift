@@ -50,7 +50,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
@@ -76,7 +77,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         insertJCPSiteToStorage(siteID: sampleSiteID)
 
@@ -228,7 +230,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         // When
         let _: Result<[Media], Error> = waitFor { promise in
@@ -255,7 +258,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         // When
         let result: Result<[Media], Error> = waitFor { promise in
@@ -284,7 +288,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         insertJCPSiteToStorage(siteID: sampleSiteID)
 
@@ -314,7 +319,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         insertJCPSiteToStorage(siteID: sampleSiteID)
 
@@ -645,7 +651,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
         // When
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
@@ -670,7 +677,8 @@ final class MediaStoreTests: XCTestCase {
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    remote: remote)
+                                    remote: remote,
+                                    backgroundUploader: MediaUploadSessionManager())
 
         // When
         let result: Result<Media, Error> = waitFor { promise in
@@ -740,12 +748,14 @@ private extension MediaStoreTests {
                               dispatcher: dispatcher,
                               storageManager: storageManager,
                               network: network,
-                              remote: remote)
+                              remote: remote,
+                              backgroundUploader: MediaUploadSessionManager())
         } else {
             return MediaStore(mediaExportService: mediaExportService,
                               dispatcher: dispatcher,
                               storageManager: storageManager,
-                              network: network)
+                              network: network,
+                              backgroundUploader: MediaUploadSessionManager())
         }
     }
 

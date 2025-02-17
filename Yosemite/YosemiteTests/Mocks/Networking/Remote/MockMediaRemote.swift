@@ -49,6 +49,7 @@ extension MockMediaRemote {
         case uploadMedia(siteID: Int64)
         case updateProductID(siteID: Int64)
         case updateProductIDToWordPressSite(siteID: Int64)
+        case uploadMediaRequest(siteID: Int64, productID: Int64)
     }
 }
 
@@ -100,5 +101,18 @@ extension MockMediaRemote: MediaRemoteProtocol {
             return
         }
         completion(result)
+    }
+
+    func uploadMediaRequest(siteID: Int64, productID: Int64, mediaItem: Networking.UploadableMedia) async throws -> URLRequest {
+        invocations.append(.uploadMediaRequest(siteID: siteID, productID: productID))
+        let boundary = UUID().uuidString
+        let urlString = "https://example.com/wp/v2/sites/\(siteID)/media"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        return request
     }
 }

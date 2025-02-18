@@ -35,13 +35,22 @@ final class ProductImagesUserDefaultsStatuses {
         }
     }
 
-    static func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID) -> [ProductImageStatus] {
+    static func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID?) -> [ProductImageStatus] {
         return getAllStatuses().filter { status in
             switch status {
+            case .remote(_, let sID, let pID):
+                if let filterProductID = productID {
+                    return sID == siteID && pID == filterProductID
+                } else {
+                    return false
+                }
             case .uploading(_, let sID, let pID),
-                 .remote(_, let sID, let pID),
                  .uploadFailure(_, _, let sID, let pID):
-                return sID == siteID && pID == productID
+                if let filterProductID = productID {
+                    return sID == siteID && pID == filterProductID
+                } else {
+                    return sID == siteID && pID == nil
+                }
             }
         }
     }
@@ -65,14 +74,23 @@ extension ProductImagesUserDefaultsStatuses {
         saveAllStatuses(statuses)
     }
 
-    static func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID) {
+    static func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
         // Merge with existing, removing any old statuses for this site/product
         var all = getAllStatuses().filter { st in
             switch st {
+            case .remote(_, let sID, let pID):
+                if let filterProductID = productID {
+                    return !(sID == siteID && pID == filterProductID)
+                } else {
+                    return true
+                }
             case .uploading(_, let sID, let pID),
-                 .remote(_, let sID, let pID),
                  .uploadFailure(_, _, let sID, let pID):
-                return !(sID == siteID && pID == productID)
+                if let filterProductID = productID {
+                    return !(sID == siteID && pID == filterProductID)
+                } else {
+                    return !(sID == siteID && pID == nil)
+                }
             }
         }
         all.append(contentsOf: statuses)

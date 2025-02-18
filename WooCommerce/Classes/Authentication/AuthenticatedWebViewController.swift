@@ -47,8 +47,7 @@ final class AuthenticatedWebViewController: UIViewController {
 
     private let wpcomCredentials: Credentials?
 
-    private var firstLoadedPageURL: URL?
-
+    private var isFirstNavigation = true
 
     init(stores: StoresManager = ServiceLocator.stores,
          viewModel: AuthenticatedWebViewModel,
@@ -282,12 +281,15 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        defer {
+            isFirstNavigation = false
+        }
         let response = navigationResponse.response
         if let initialURL = viewModel.initialURL,
            viewModel.isAuthenticationFailure(response: response,
                                              currentSite: currentSite,
                                              authenticationFlow: authenticationFlow,
-                                             firstLoadedPageURL: firstLoadedPageURL) {
+                                             isFirstNavigation: isFirstNavigation) {
             /// When automatic authentication fails, cancel the navigation and redirect to the original URL instead.
             loadContent(url: initialURL)
             return .cancel
@@ -306,9 +308,6 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
             return
         }
         viewModel.didFinishNavigation(for: url)
-        if firstLoadedPageURL == nil {
-            firstLoadedPageURL = url
-        }
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: any Error) {

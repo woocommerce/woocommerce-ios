@@ -102,7 +102,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .siteCredentials,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == true)
@@ -121,7 +121,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .siteCredentials,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == true)
@@ -140,7 +140,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .wpcom,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == true)
@@ -159,7 +159,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .jetpackSSO,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == true)
@@ -178,7 +178,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .none,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == false)
@@ -195,13 +195,13 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .jetpackSSO,
-                                                          firstLoadedPageURL: nil)
+                                                          isFirstNavigation: true)
 
         // Then
         #expect(isFailure == false)
     }
 
-    @Test func isAuthenticationFailure_returns_false_for_non_first_page() throws {
+    @Test func isAuthenticationFailure_returns_false_for_non_first_navigation() throws {
         // Given
         let testSite = Site.fake().copy(siteID: 123, url: siteURL, hasSSOEnabled: true)
         let loginURL = WooConstants.URLs.loginWPCom.asURL()
@@ -214,7 +214,7 @@ struct AuthenticatedWebViewModelTests {
         let isFailure = viewModel.isAuthenticationFailure(response: response,
                                                           currentSite: testSite,
                                                           authenticationFlow: .jetpackSSO,
-                                                          firstLoadedPageURL: testURL)
+                                                          isFirstNavigation: false)
 
         // Then
         #expect(isFailure == false)

@@ -102,9 +102,9 @@ extension AuthenticatedWebViewModel {
     func isAuthenticationFailure(response: URLResponse,
                                  currentSite: Site?,
                                  authenticationFlow: WebViewAuthenticationFlow,
-                                 firstLoadedPageURL: URL?) -> Bool {
+                                 isFirstNavigation: Bool) -> Bool {
         guard authenticationFlow != .none,
-              firstLoadedPageURL == nil,
+              isFirstNavigation,
               let currentSite,
               let urlResponse = response as? HTTPURLResponse,
               let url = urlResponse.url else {

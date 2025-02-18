@@ -61,7 +61,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(.posOnSurfaceVariantHighest)
+                        .foregroundColor(.posOnSurface)
                 }
             }
 

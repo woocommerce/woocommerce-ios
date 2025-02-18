@@ -7,6 +7,7 @@ import Yosemite
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
+    private let productOrVariationID: ProductOrVariationID = .product(id: 606)
     private var errorsSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
     private var activeUploadsSubscription: AnyCancellable?
@@ -184,9 +185,15 @@ final class ProductImageUploaderTests: XCTestCase {
         let imageUploader = ProductImageUploader()
         let localProductID: Int64 = 0
         let remoteProductID = productID
-        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: .phAsset(asset: PHAsset())),
-                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(),
+                                                              siteID: siteID,
+                                                              productID: productOrVariationID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()),
+                                                                 siteID: siteID,
+                                                                 productID: productOrVariationID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()),
+                                                                 siteID: siteID,
+                                                                 productID: productOrVariationID)]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -218,9 +225,9 @@ final class ProductImageUploaderTests: XCTestCase {
         let localProductID: Int64 = 0
         let nonExistentProductID: Int64 = 999
         let remoteProductID = productID
-        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: .phAsset(asset: PHAsset())),
-                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(), siteID: siteID, productID: productOrVariationID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productOrVariationID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productOrVariationID)]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -356,7 +363,7 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [.uploading(asset: .phAsset(asset: asset))],
+                           productImageStatuses: [.uploading(asset: .phAsset(asset: asset), siteID: siteID, productID: productOrVariationID)],
                            error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }

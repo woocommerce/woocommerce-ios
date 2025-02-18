@@ -7,7 +7,7 @@ import Yosemite
 final class ProductImagesSaverTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
-
+    private var productOrVariationID: ProductOrVariationID = .product(id: 606)
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
@@ -44,7 +44,7 @@ final class ProductImagesSaverTests: XCTestCase {
 
         // Saves product images.
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in }
-        XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset)])
+        XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
 
         // When
         imageUploadCompletion(.failure(MediaActionError.unknown))
@@ -79,12 +79,14 @@ final class ProductImagesSaverTests: XCTestCase {
             actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
+        let siteID = siteID
+        let productOrVariationID = productOrVariationID
         let _: Void = waitFor { promise in
             // Saves product images.
             imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in
                 promise(())
             }
-            XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset)])
+            XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
 
             // When
             // Mocks successful image upload.
@@ -135,12 +137,12 @@ final class ProductImagesSaverTests: XCTestCase {
             actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
-        let _: Void = waitFor { promise in
+        let _: Void = waitFor { [self] promise in
             // Saves product images.
             imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in
                 promise(())
             }
-            XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset)])
+            XCTAssertEqual(imagesSaver.imageStatusesToSave, [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
 
             // Mocks successful image upload.
             imageUploadCompletion(.success(.fake().copy(mediaID: 645)))
@@ -156,7 +158,7 @@ final class ProductImagesSaverTests: XCTestCase {
         let variationID: ProductOrVariationID = .variation(productID: productID, variationID: 134)
         let imagesSaver = ProductImagesSaver(siteID: siteID, productOrVariationID: variationID, stores: stores)
         let asset: ProductImageAssetType = .phAsset(asset: PHAsset())
-        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset)])
+        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
         let image = ProductImage.fake()
         actionHandler.assetUploadResults = (asset: asset, result: .success(image))
 
@@ -246,7 +248,7 @@ final class ProductImagesSaverTests: XCTestCase {
         let variationID: ProductOrVariationID = .variation(productID: productID, variationID: 134)
         let imagesSaver = ProductImagesSaver(siteID: siteID, productOrVariationID: variationID, stores: stores, analytics: analytics)
         let asset: ProductImageAssetType = .phAsset(asset: PHAsset())
-        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset)])
+        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
         let image = ProductImage.fake()
         actionHandler.assetUploadResults = (asset: asset, result: .success(image))
 
@@ -275,7 +277,7 @@ final class ProductImagesSaverTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imagesSaver = ProductImagesSaver(siteID: siteID, productOrVariationID: .product(id: 648), stores: stores, analytics: analytics)
         let asset: ProductImageAssetType = .phAsset(asset: PHAsset())
-        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset)])
+        let actionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: asset, siteID: siteID, productID: productOrVariationID)])
         let image = ProductImage.fake()
         actionHandler.assetUploadResults = (asset: asset, result: .success(image))
 

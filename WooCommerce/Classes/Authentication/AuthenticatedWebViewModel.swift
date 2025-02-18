@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import struct Yosemite.Site
 
 /// Optional conformance for a `AuthenticatedWebViewModel` implementation to reload a webview asynchronously.
 protocol WebviewReloadable {
@@ -73,8 +74,9 @@ extension AuthenticatedWebViewModel {
 
     /// Checks for the appropriate authentication flow based on the current site and the URL to be loaded.
     ///
-    func authenticationFlow(wpcomCredentialsAvailable: Bool, wporgCredentialsAvailable: Bool) -> WebViewAuthenticationFlow {
-        let stores = ServiceLocator.stores
+    func authenticationFlow(currentSite: Site,
+                            wpcomCredentialsAvailable: Bool,
+                            wporgCredentialsAvailable: Bool) -> WebViewAuthenticationFlow {
         guard let initialURL else {
             return .none
         }
@@ -82,8 +84,7 @@ extension AuthenticatedWebViewModel {
         if wpcomCredentialsAvailable {
             if let domain = initialURL.host, wpcomAcceptedDomains.contains(domain) {
                 return .wpcom
-            } else if let currentSite = stores.sessionManager.defaultSite,
-                      currentSite.hasSSOEnabled,
+            } else if currentSite.hasSSOEnabled,
                       initialURL.absoluteString.hasPrefix(currentSite.url) {
                 return .jetpackSSO
             }

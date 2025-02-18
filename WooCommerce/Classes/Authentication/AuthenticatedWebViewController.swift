@@ -167,11 +167,13 @@ private extension AuthenticatedWebViewController {
     }
 
     func startLoading() {
-        guard let url = viewModel.initialURL else {
+        guard let url = viewModel.initialURL,
+              let currentSite = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
 
-        let authenticationFlow = viewModel.authenticationFlow(wpcomCredentialsAvailable: wpcomCredentials != nil,
+        let authenticationFlow = viewModel.authenticationFlow(currentSite: currentSite,
+                                                              wpcomCredentialsAvailable: wpcomCredentials != nil,
                                                               wporgCredentialsAvailable: siteCredentials != nil)
         switch authenticationFlow {
         case .wpcom:

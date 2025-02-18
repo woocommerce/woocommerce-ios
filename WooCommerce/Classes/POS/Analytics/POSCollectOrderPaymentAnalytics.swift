@@ -51,6 +51,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))
+        resetCheckoutTapCountTracker()
     }
 
     func trackPaymentFailure(with error: any Error) { }

@@ -21,22 +21,24 @@ struct CartView: View {
             POSPageHeaderView(title: Localization.cartTitle,
                               backButtonConfiguration: backButtonConfiguration,
                               trailingContent: {
-                if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
-                    Text(itemsInCartLabel)
-                        .font(Constants.itemsFont)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(Color.posOnSurfaceVariantLowest)
-                }
+                DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
+                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
+                        Text(itemsInCartLabel)
+                            .font(Constants.itemsFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
+                    }
 
-                Button {
-                    posModel.removeAllItemsFromCart()
-                } label: {
-                    Text(Localization.clearButtonTitle)
+                    Button {
+                        posModel.removeAllItemsFromCart()
+                    } label: {
+                        Text(Localization.clearButtonTitle)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                    .renderedIf(shouldShowClearCartButton)
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
-                .renderedIf(shouldShowClearCartButton)
             })
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 

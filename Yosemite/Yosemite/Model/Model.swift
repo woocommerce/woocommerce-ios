@@ -241,6 +241,8 @@ public typealias WCAnalyticsStatsTotals = Networking.WCAnalyticsStatsTotals
 public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
 public typealias MetaData = Networking.MetaData
+public typealias ProductImageStatus = Networking.ProductImageStatus
+public typealias ProductImageAssetType = Networking.ProductImageAssetType
 
 // MARK: - Exported Storage Symbols
 

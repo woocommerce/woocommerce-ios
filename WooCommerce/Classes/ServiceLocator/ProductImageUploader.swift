@@ -3,6 +3,8 @@ import Foundation
 import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
+import enum Yosemite.ProductImageStatus
+import enum Yosemite.ProductImageAssetType
 
 /// Information about a background product image upload error.
 struct ProductImageUploadErrorInfo {

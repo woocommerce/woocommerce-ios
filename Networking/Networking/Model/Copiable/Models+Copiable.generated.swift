@@ -3311,7 +3311,8 @@ extension Networking.Site {
         visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
-        wasEcommerceTrial: CopiableProp<Bool> = .copy
+        wasEcommerceTrial: CopiableProp<Bool> = .copy,
+        hasSSOEnabled: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -3334,6 +3335,7 @@ extension Networking.Site {
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
+        let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
 
         return Networking.Site(
             siteID: siteID,
@@ -3356,7 +3358,8 @@ extension Networking.Site {
             visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
-            wasEcommerceTrial: wasEcommerceTrial
+            wasEcommerceTrial: wasEcommerceTrial,
+            hasSSOEnabled: hasSSOEnabled
         )
     }
 }

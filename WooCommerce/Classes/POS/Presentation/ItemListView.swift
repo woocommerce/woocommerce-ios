@@ -119,10 +119,9 @@ private extension ItemListView {
         .padding(.bottom, Constants.bannerCardPadding)
     }
 
-    private var bannerHintAndLearnMoreText: Text {
-        Text(headerBannerHint + " ") +
-        Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posBodySmallBold.font())
+    private var bannerHintAndLearnMoreText: some View {
+        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
+            .font(.posBodySmallBold)
             .foregroundColor(Color(.posPrimary))
     }
 

@@ -17,7 +17,7 @@ enum POSFontStyle {
     case posButtonSymbolMedium
     case posButtonSymbolLarge
 
-    func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
+    fileprivate func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
         case .posHeading:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
@@ -81,11 +81,12 @@ private struct POSScaledFont: ViewModifier {
     // Declaring dynamicTypeSize ensures it's automatically observed
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     var style: POSFontStyle
-    var maximumContentSizeCategory: UIContentSizeCategory? = nil
 
     func body(content: Content) -> some View {
-        content
-            .font(style.font(maximumContentSizeCategory: maximumContentSizeCategory))
+        let category = UIContentSizeCategory(dynamicTypeSize)
+
+        return content
+            .font(style.font(maximumContentSizeCategory: category))
             .if(shouldUnderline()) { view in
                 view.underline()
             }
@@ -104,8 +105,29 @@ private struct POSScaledFont: ViewModifier {
 }
 
 extension View {
-    func font(_ style: POSFontStyle, maximumContentSizeCategory: UIContentSizeCategory? = nil) -> some View {
-        return self.modifier(POSScaledFont(style: style, maximumContentSizeCategory: maximumContentSizeCategory))
+    func font(_ style: POSFontStyle) -> some View {
+        return self.modifier(POSScaledFont(style: style))
+    }
+}
+
+// Helper to convert DynamicTypeSize to UIContentSizeCategory
+extension UIContentSizeCategory {
+    init(_ dynamicTypeSize: DynamicTypeSize) {
+        switch dynamicTypeSize {
+        case .xSmall: self = .extraSmall
+        case .small: self = .small
+        case .medium: self = .medium
+        case .large: self = .large
+        case .xLarge: self = .extraLarge
+        case .xxLarge: self = .extraExtraLarge
+        case .xxxLarge: self = .extraExtraExtraLarge
+        case .accessibility1: self = .accessibilityMedium
+        case .accessibility2: self = .accessibilityLarge
+        case .accessibility3: self = .accessibilityExtraLarge
+        case .accessibility4: self = .accessibilityExtraExtraLarge
+        case .accessibility5: self = .accessibilityExtraExtraExtraLarge
+        @unknown default: self = .large
+        }
     }
 }
 

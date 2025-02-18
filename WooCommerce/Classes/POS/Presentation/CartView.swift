@@ -24,6 +24,9 @@ struct CartView: View {
                 if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                     Text(itemsInCartLabel)
                         .font(Constants.itemsFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                 }
 

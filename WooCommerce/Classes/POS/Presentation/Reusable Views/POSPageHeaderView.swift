@@ -49,12 +49,18 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
                 Text(title)
                     .font(.posHeading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
                 if let subtitle {
                     Text(subtitle)
                         .font(.posBodyLargeRegular())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundColor(.posOnSurfaceVariantHighest)
                 }
             }
@@ -74,11 +80,12 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         if let configuration = backButtonConfiguration {
             Button(action: configuration.action) {
                 Text(Image(systemName: Constants.backButtonIcon))
-                    .font(.posButtonSymbolLarge, maximumContentSizeCategory: .accessibilityLarge)
+                    .font(.posButtonSymbolLarge)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }
-            .disabled(configuration.state == .disabled)
+            .disabled(configuration.state == .disabled || configuration.state == .shimmering)
             .if(configuration.state == .shimmering) { view in
                 view.shimmering()
             }

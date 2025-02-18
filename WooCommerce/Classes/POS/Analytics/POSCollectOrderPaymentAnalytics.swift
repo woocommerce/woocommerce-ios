@@ -54,6 +54,8 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
+        // Any action that is considered as user starting an iteraction resets any ongoing counter
+        resetAllCountersOnInteractionStarted()
         customerInteractionStarted = Date().timeIntervalSince1970
     }
 
@@ -81,10 +83,6 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func resetCheckoutTapCountTracker() {
         checkoutTapCount = 0
     }
-
-    private func resetProcessingPaymentTracking() {
-        hasTrackedProcessingPayment = false
-    }
 }
 
 // Helpers
@@ -96,6 +94,18 @@ private extension POSCollectOrderPaymentAnalytics {
     func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
         let end = Date().timeIntervalSince1970
         return floor((end - start) * 1000)
+    }
+
+    private func resetProcessingPaymentTracking() {
+        hasTrackedProcessingPayment = false
+    }
+
+    private func resetAllCountersOnInteractionStarted() {
+        orderCreated = 0
+        cardReaderReady = 0
+        cardReaderTapped = 0
+        resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 }
 

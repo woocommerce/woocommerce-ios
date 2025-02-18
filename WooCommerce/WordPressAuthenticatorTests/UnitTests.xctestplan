@@ -17,6 +17,7 @@
       "identifier" : "B5ED78F3207E976500A8FD8C",
       "name" : "WordPressAuthenticator"
     },
+    "testRepetitionMode" : "retryOnFailure",
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [

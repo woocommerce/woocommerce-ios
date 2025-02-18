@@ -58,7 +58,8 @@ struct CardReaderConnectionStatusView: View {
                 }
             }
         }
-        .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
+        .font(Constants.font)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .opacity(isEnabled ? 1 : 0.5)
     }
 }
@@ -121,7 +122,7 @@ private extension CardReaderConnectionStatusView {
         static let font = POSFontStyle.posBodyMediumRegular()
         static let horizontalPadding: CGFloat = 24
         static let disconnectedBorderAndContentSpacing: CGFloat = 16
-        static let disconnectedBorderCornerRadius: CGFloat = 4
+        static let disconnectedBorderCornerRadius: CGFloat = POSCornerRadiusStyle.small.value
         static let disconnectedBorderWidth: CGFloat = 2
         static let disconnectedBorderInset: CGFloat = 8
     }
@@ -171,7 +172,8 @@ private extension CardReaderConnectionStatusView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController()
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics()
     )
     VStack {
         CardReaderConnectionStatusView()

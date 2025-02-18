@@ -50,21 +50,18 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            HStack {
-                POSHeaderTitleView(title: Localization.title)
-                if !shouldShowHeaderBanner {
-                    Spacer()
-                    Button(action: {
-                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                        showSimpleProductsModal = true
-                    }, label: {
-                        Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolLarge)
-                    })
-                    .foregroundColor(.posOnSurface)
-                    .padding(.trailing, Constants.infoIconPadding)
-                }
-            }
+            POSPageHeaderView(title: Localization.title, trailingContent: {
+                Button(action: {
+                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                    showSimpleProductsModal = true
+                }, label: {
+                    Text(Image(systemName: "info.circle"))
+                        .font(.posButtonSymbolLarge)
+                        .foregroundStyle(Color.posOnSurface)
+                        .padding(Constants.infoIconInset)
+                })
+                .renderedIf(!shouldShowHeaderBanner)
+            })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
@@ -114,7 +111,7 @@ private extension ItemListView {
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.bannerCornerRadius)
-        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .posShadow(.medium)
         .accessibilityAddTraits(.isButton)
         .onTapGesture {
             showSimpleProductsModal = true
@@ -122,11 +119,10 @@ private extension ItemListView {
         .padding(.bottom, Constants.bannerCardPadding)
     }
 
-    private var bannerHintAndLearnMoreText: Text {
-        Text(headerBannerHint + " ") +
-        Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posBodySmallBold.font())
-            .foregroundColor(Color(.accent))
+    private var bannerHintAndLearnMoreText: some View {
+        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
+            .font(.posBodySmallBold)
+            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder
@@ -173,45 +169,6 @@ private extension ItemListState {
     }
 }
 
-struct GhostItemCardView: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Rectangle()
-                .frame(width: Constants.productCardSize * scale, height: Constants.productCardSize * scale)
-            HStack {
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * 2 * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-                Spacer()
-                Rectangle()
-                    .foregroundColor(Constants.textForegroundColor)
-                    .frame(width: Constants.textWidth * scale, height: Constants.textHeight * scale)
-                    .padding(.horizontal)
-            }
-            .frame(height: Constants.productCardSize * scale)
-        }
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.cornerRadius)
-        }
-        .foregroundColor(Constants.cardForegroundColor)
-        .shimmering()
-    }
-}
-
-private extension GhostItemCardView {
-    enum Constants {
-        static let cornerRadius: CGFloat = 8
-        static let cardForegroundColor: Color = Color.gray.opacity(0.5)
-        static let textForegroundColor: Color = Color.gray.opacity(0.8)
-        static let productCardSize: CGFloat = 112
-        static let textWidth: CGFloat = 112
-        static let textHeight: CGFloat = 32
-    }
-}
-
 /// Constants
 ///
 @available(iOS 17.0, *)
@@ -219,11 +176,11 @@ private extension ItemListView {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
         static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
-        static let bannerCornerRadius: CGFloat = 8
+        static let bannerCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
-        static let infoIconPadding: CGFloat = 16
+        static let infoIconInset: EdgeInsets = .init(top: 8, leading: 6, bottom: 8, trailing: 6)
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
@@ -296,7 +253,8 @@ private extension ItemListView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ItemListView()
         .environment(posModel)
 }
@@ -306,7 +264,8 @@ private extension ItemListView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ItemListView()
         .environment(posModel)
 }

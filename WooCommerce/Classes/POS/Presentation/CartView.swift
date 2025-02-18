@@ -27,6 +27,9 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             .foregroundColor(.posOnSurface)
                             .accessibilityAddTraits(.isHeader)
 
@@ -35,6 +38,9 @@ struct CartView: View {
                         if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                         }
                     }
@@ -208,7 +214,7 @@ private extension CartView {
         static let cartHeaderElementSpacing: CGFloat = 16
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = 16
-        static let cartItemSpacing: CGFloat = 16
+        static let cartItemSpacing: CGFloat = 8
     }
 
     enum Localization {
@@ -258,7 +264,8 @@ private extension CartView {
                 posModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .foregroundColor(.posOnSurface)
             }
         }
@@ -302,7 +309,8 @@ private extension CartView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return CartView()
         .environment(posModel)
 }
@@ -312,7 +320,8 @@ private extension CartView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     posModel.addToCart(.simpleProduct(.init(id: UUID(),
                                             name: "Sample Product",
                                             formattedPrice: "$10.00",

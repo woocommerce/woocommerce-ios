@@ -24,8 +24,9 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackReceiptPrintCanceled()
 
     func trackReceiptPrintFailed(error: Error)
-}
 
+    func trackCustomerInteractionStarted()
+}
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 

@@ -104,7 +104,8 @@ private extension PointOfSaleCollectCashView {
     var navigationHeader: some View {
         HStack(alignment: .top) {
             Image(systemName: "chevron.backward")
-                .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                .font(.posBodyLargeBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             DynamicVStack(horizontalAlignment: .leading, spacing: Constants.navigationButtonSpacing) {
                 Text(Localization.backNavigationTitle)
                     .font(.posHeading)
@@ -205,7 +206,8 @@ private extension PointOfSaleCollectCashView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environment(posModel)
 }

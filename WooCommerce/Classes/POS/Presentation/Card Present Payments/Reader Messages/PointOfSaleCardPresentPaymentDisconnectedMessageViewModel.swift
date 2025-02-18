@@ -1,12 +1,10 @@
 import Foundation
 
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
-    let isPOSCashEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale)
-
     let title = Localization.title
     let connectReaderButtonTitle = Localization.collectPayment
     var instruction: String {
-        isPOSCashEnabled ? Localization.instruction : Localization.cardOnlyInstruction
+        Localization.instruction
     }
 }
 
@@ -16,12 +14,6 @@ private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewMode
             "pointOfSale.cardPresent.readerNotConnected.title",
             value: "Reader not connected",
             comment: "Error message. Presented to users when card reader is not connected on the Point of Sale Checkout"
-        )
-
-        static let cardOnlyInstruction = NSLocalizedString(
-            "pointOfSale.cardPresent.readerNotConnected.instruction",
-            value: "To process this payment, please connect your reader.",
-            comment: "Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment."
         )
 
         static let instruction = NSLocalizedString(

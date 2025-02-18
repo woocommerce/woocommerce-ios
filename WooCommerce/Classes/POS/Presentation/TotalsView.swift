@@ -42,8 +42,10 @@ struct TotalsView: View {
                                 .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
-                                .layoutPriority(1)
                                 .background(backgroundColor)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
+                                .geometryGroup()
                         }
 
                         if isShowingTotalsFields {
@@ -51,7 +53,8 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
-                                .layoutPriority(2)
+                                .layoutPriority(1)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
@@ -65,11 +68,12 @@ struct TotalsView: View {
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
                             .font(POSFontStyle.posBodyLargeBold)
-                            .minimumScaleFactor(0.5)
                     })
+                    .layoutPriority(1)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
-                    .padding(.bottom, Constants.cashButtonBottomPadding)
+                    .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
                                                                               paymentState: posModel.paymentState))
                 }
@@ -86,7 +90,7 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .geometryGroupIfSupported()
+        .geometryGroup()
     }
 
     private var backgroundColor: Color {
@@ -344,7 +348,7 @@ private extension TotalsView {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
-        static let cashButtonBottomPadding: CGFloat = 16
+        static let cashButtonBottomPadding: CGFloat = 24
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8
@@ -356,7 +360,7 @@ private extension TotalsView {
         static let totalAmountFont: POSFontStyle = .posHeading
         static let separatorColor: Color = Color.posOutlineVariant
 
-        static let shimmeringCornerRadius: CGFloat = 8
+        static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let shimmeringWidth: CGFloat = 342
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 46
@@ -407,27 +411,14 @@ private extension TotalsView {
     }
 }
 
-private extension View {
-    ///  Force the position and size values to be resolved and animated by the parent
-    ///  before being passed down to each subview.
-    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
-    ///  It results in the whole TotalsView animated together when transitioning.
-    func geometryGroupIfSupported() -> some View {
-        if #available(iOS 17.0, *) {
-            return self.geometryGroup()
-        } else {
-            return self
-        }
-    }
-}
-
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     TotalsView()
         .environment(posModel)
 }

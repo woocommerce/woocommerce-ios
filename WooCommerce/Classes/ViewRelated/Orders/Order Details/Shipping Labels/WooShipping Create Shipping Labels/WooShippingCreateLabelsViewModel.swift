@@ -8,7 +8,7 @@ import Combine
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
-    private let destinationAddress: WooShippingAddress?
+    private var destinationAddress: WooShippingAddress?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
@@ -78,6 +78,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
+
+    /// View model for address to edit.
+    /// Setting this property will navigate to the address edit screen.
+    @Published var addressToEdit: WooShippingEditAddressViewModel?
 
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
@@ -272,6 +276,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
         customsForm = form
+    }
+
+    /// Sets the `addressToEdit` property for editing the destination address.
+    /// After the address is edited, the destination address is replaced with the updated address.
+    func editDestinationAddress() {
+        addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        isVerified: destinationAddressStatus == .verified,
+                                                        onAddressEdited: { [weak self] editedAddress in
+            guard let self else {
+                return
+            }
+            destinationAddress = editedAddress
+            addressToEdit = nil // Dismisses address edit screen
+        })
     }
 }
 

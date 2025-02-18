@@ -158,6 +158,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Closure called when an origin address is done being edited and the changes are confirmed.
     private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
 
+    /// Closure called when a destination address is done being edited and the changes are confirmed.
+    private(set) var onDestinationAddressEdited: ((WooShippingAddress) -> Void)?
+
     init(type: AddressType,
          id: String,
          name: String,
@@ -176,7 +179,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          debounceDelayInSeconds: Double = 1,
-         onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil) {
+         onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil,
+         onDestinationAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -264,6 +268,31 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   stores: stores,
                   storageManager: storageManager,
                   onOriginAddressEdited: onAddressEdited)
+    }
+
+    convenience init(address: WooShippingAddress?,
+                     isVerified: Bool,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+        self.init(type: .destination,
+                  id: UUID().uuidString,
+                  name: address?.name ?? "",
+                  company: address?.company ?? "",
+                  country: address?.country ?? "",
+                  address: address?.combinedAddress ?? "",
+                  city: address?.city ?? "",
+                  state: address?.state ?? "",
+                  postalCode: address?.postcode ?? "",
+                  email: "",
+                  phone: address?.phone ?? "",
+                  isDefaultAddress: false,
+                  showCompanyField: address?.company.isNotEmpty == true,
+                  isVerified: isVerified,
+                  phoneNumberRequired: false, // TODO: Check phone number requirements for destination address.
+                  stores: stores,
+                  storageManager: storageManager,
+                  onDestinationAddressEdited: onAddressEdited)
     }
 
     /// Validates the address remotely.

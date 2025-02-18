@@ -102,6 +102,43 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.countries.count, 1, "Should only include USPS-supported countries for origin addresses")
     }
 
+    func test_destination_address_inits_with_expected_values() {
+        // Given
+        let storageManager = MockStorageManager()
+        let state = StateOfACountry(code: "NY", name: "New York")
+        let countries = [Country(code: "US", name: "United States", states: [state]), Country(code: "CA", name: "Canada", states: [])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+        let address = WooShippingAddress(company: "HEADQUARTERS",
+                                         name: "JANE DOE",
+                                         phone: "223-456-7890",
+                                         country: "US",
+                                         state: "NY",
+                                         address1: "15 ALGONKIN ST",
+                                         address2: "STE 100",
+                                         city: "TICONDEROGA",
+                                         postcode: "12883-1487")
+
+        // When
+        let viewModel = WooShippingEditAddressViewModel(address: address,
+                                                        isVerified: false,
+                                                        storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.name.value, address.name)
+        XCTAssertEqual(viewModel.country.value, address.country)
+        XCTAssertEqual(viewModel.company.value, address.company)
+        XCTAssertEqual(viewModel.address.value, address.combinedAddress)
+        XCTAssertEqual(viewModel.city.value, address.city)
+        XCTAssertEqual(viewModel.state.value, address.state)
+        XCTAssertEqual(viewModel.postalCode.value, address.postcode)
+        XCTAssertEqual(viewModel.phone.value, address.phone)
+        XCTAssertEqual(viewModel.email.value, "")
+        XCTAssertTrue(viewModel.showCompanyField)
+        XCTAssertEqual(viewModel.status, .missingInformation)
+        XCTAssertFalse(viewModel.showSaveAsDefault)
+        XCTAssertEqual(viewModel.countries.count, 2, "Should include all countries for destination addresses")
+    }
+
     func test_it_validates_address_with_missing_information_and_sets_expected_status_on_init() {
         // Given & When
         let viewModel = WooShippingEditAddressViewModel(type: .destination,

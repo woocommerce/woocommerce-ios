@@ -11,6 +11,7 @@
 - [*] Background image upload: Fix missing error notice in iPhones [https://github.com/woocommerce/woocommerce-ios/pull/15117]
 - [*] Background image upload: Show a notice when the user leaves product details while uploads are pending [https://github.com/woocommerce/woocommerce-ios/pull/15134]
 - [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
+- [Internal] Improve authentication logic for authenticated web view [https://github.com/woocommerce/woocommerce-ios/pull/15164]
 
 21.7
 -----

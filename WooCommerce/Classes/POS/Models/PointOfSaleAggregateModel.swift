@@ -227,7 +227,6 @@ extension PointOfSaleAggregateModel {
         }
         do {
             try await collectPayment(for: order)
-            collectOrderPaymentAnalyticsTracker.resetCheckoutTapCountTracker()
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
@@ -251,6 +250,7 @@ extension PointOfSaleAggregateModel {
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
+        // TODO: Move to trackSuccessfulCashPayment() on #15151
         collectOrderPaymentAnalyticsTracker.resetCheckoutTapCountTracker()
     }
 

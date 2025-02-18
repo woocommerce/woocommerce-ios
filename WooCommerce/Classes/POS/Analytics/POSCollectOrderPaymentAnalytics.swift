@@ -39,6 +39,8 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
             checkoutTapCount: checkoutTapCount
         ))
+
+        resetCheckoutTapCountTracker()
     }
 
     func trackPaymentFailure(with error: any Error) { }

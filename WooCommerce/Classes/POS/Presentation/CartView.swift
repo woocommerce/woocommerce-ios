@@ -30,15 +30,13 @@ struct CartView: View {
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                 }
 
-                HStack {
-                    Button {
-                        posModel.removeAllItemsFromCart()
-                    } label: {
-                        Text(Localization.clearButtonTitle)
-                    }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
-                    .renderedIf(shouldShowClearCartButton)
+                Button {
+                    posModel.removeAllItemsFromCart()
+                } label: {
+                    Text(Localization.clearButtonTitle)
                 }
+                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                .renderedIf(shouldShowClearCartButton)
             })
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 

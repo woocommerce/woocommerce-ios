@@ -243,6 +243,7 @@ public typealias WordPressTheme = Networking.WordPressTheme
 public typealias MetaData = Networking.MetaData
 public typealias ProductImageStatus = Networking.ProductImageStatus
 public typealias ProductImageAssetType = Networking.ProductImageAssetType
+public typealias ProductOrVariationID = Networking.ProductOrVariationID
 
 // MARK: - Exported Storage Symbols
 

@@ -5,28 +5,13 @@ import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
 import enum Yosemite.ProductImageStatus
 import enum Yosemite.ProductImageAssetType
+import enum Yosemite.ProductOrVariationID
 
 /// Information about a background product image upload error.
 struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productOrVariationID: ProductOrVariationID
     let error: ProductImageUploaderError
-}
-
-/// Identifiable data about a product or product variation.
-enum ProductOrVariationID: Equatable, Hashable {
-    case product(id: Int64)
-    case variation(productID: Int64, variationID: Int64)
-
-    /// Returns the product ID for product type and variation ID for variation type.
-    var id: Int64 {
-        switch self {
-        case .product(let id):
-            return id
-        case .variation(_, let variationID):
-            return variationID
-        }
-    }
 }
 
 /// Identifiable information about a specific product or product variation of different sites for image upload.

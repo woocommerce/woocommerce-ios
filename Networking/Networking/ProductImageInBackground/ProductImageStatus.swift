@@ -9,15 +9,15 @@ public enum ProductImageStatus: Equatable, Codable {
     /// An image asset is being uploaded.
     ///
     case uploading(asset: ProductImageAssetType, siteID: Int64, productID: ProductOrVariationID)
-    
+
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage, siteID: Int64, productID: ProductOrVariationID)
-    
+
     /// An image asset upload failed.
     ///
     case uploadFailure(asset: ProductImageAssetType, error: Error, siteID: Int64, productID: ProductOrVariationID)
-    
+
     private enum CodingKeys: String, CodingKey {
         case type
         case asset
@@ -26,7 +26,7 @@ public enum ProductImageStatus: Equatable, Codable {
         case siteID
         case productID
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let typeString = try container.decode(String.self, forKey: .type)
@@ -54,7 +54,7 @@ public enum ProductImageStatus: Equatable, Codable {
                                                    debugDescription: "Invalid type value: \(typeString)")
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
@@ -77,7 +77,7 @@ public enum ProductImageStatus: Equatable, Codable {
             try container.encode(productID, forKey: .productID)
         }
     }
-    
+
     public static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case let (.uploading(lAsset, lSiteID, lProductID), .uploading(rAsset, rSiteID, rProductID)):
@@ -141,7 +141,7 @@ public enum ProductImageAssetType: Equatable, Codable {
                                                    debugDescription: "Unknown type \(typeString)")
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {

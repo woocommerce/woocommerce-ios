@@ -250,6 +250,8 @@ extension PointOfSaleAggregateModel {
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
+        // TODO: Move to trackSuccessfulCashPayment() on #15151
+        collectOrderPaymentAnalyticsTracker.resetCheckoutTapCountTracker()
     }
 
     @MainActor
@@ -365,6 +367,14 @@ private extension PointOfSaleAggregateModel {
                 let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
                                                               using: presentationStyleDeterminerDependencies)
 
+                if case .card(.acceptingCard) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
+                }
+
+                if case .card(.processingPayment) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                }
+
                 return newPaymentState
             }
             .sink(receiveValue: { [weak self] paymentState in
@@ -438,10 +448,14 @@ private extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
+        collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
+        if case .success(.newOrder) = syncOrderResult {
+            collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
+        }
         await startPaymentWhenCardReaderConnected()
     }
 }

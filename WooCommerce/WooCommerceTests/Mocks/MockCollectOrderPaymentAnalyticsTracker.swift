@@ -57,4 +57,25 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     func trackCustomerInteractionStarted() {
         // no-op
     }
+
+    func trackOrderCreationSuccess() {
+        // no-op
+    }
+
+    func trackCardReaderReady() {
+        // no-op
+    }
+
+    func trackCardReaderTapped() {
+        // no-op
+    }
+
+    var didCallTrackCheckoutTapped = false
+    func trackCheckoutTapped() {
+        didCallTrackCheckoutTapped = true
+    }
+
+    func resetCheckoutTapCountTracker() {
+        // no-op
+    }
 }

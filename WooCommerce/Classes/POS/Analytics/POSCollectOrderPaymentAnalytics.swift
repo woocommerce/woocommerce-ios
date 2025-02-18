@@ -1,17 +1,48 @@
+import protocol WooFoundation.Analytics
 import Yosemite
 
 final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
     private var customerInteractionStarted: Double = 0
+    private var orderCreated: Double = 0
+    private var cardReaderReady: Double = 0
+    private var cardReaderTapped: Double = 0
+    private var checkoutTapCount: Int = 0
+    private var hasTrackedProcessingPayment = false
+
+    private let analytics: Analytics
+
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
+    }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
     func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        let elapsedTime = calculateElapsedTimeInMilliseconds(start: customerInteractionStarted, end: Date().timeIntervalSince1970)
-        ServiceLocator.analytics.track(event:
-                .PointOfSale.cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStated: elapsedTime))
+        // Property: milliseconds_since_customer_interaction_started
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        // Property: milliseconds_since_order_creation_success
+        let elapsedTimeSinceOrderCreation = calculateElapsedTimeInMilliseconds(since: orderCreated)
+
+        // Property: milliseconds_since_reader_ready_to_collect_payment
+        let elapsedTimeSinceCardReaderReady = calculateElapsedTimeInMilliseconds(since: cardReaderReady)
+
+        // Property: milliseconds_since_card_tapped
+        let elapsedTimeSinceCardTapped = calculateElapsedTimeInMilliseconds(since: cardReaderTapped)
+
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
+            millisecondsSinceOrderCreationSuccess: elapsedTimeSinceOrderCreation,
+            millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
+            millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
+            checkoutTapCount: checkoutTapCount
+        ))
+
+        resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 
     func trackPaymentFailure(with error: any Error) { }
@@ -23,15 +54,68 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
+        // Any action that is considered as user starting an iteraction resets any ongoing counter
+        resetAllCountersOnInteractionStarted()
         customerInteractionStarted = Date().timeIntervalSince1970
     }
 
-    private func calculateElapsedTimeInMilliseconds(start: Double, end: Double) -> Double {
-        floor((end - start) * 1000)
+    func trackOrderCreationSuccess() {
+        orderCreated = trackCurrentTime()
+    }
+
+    func trackCardReaderReady() {
+        cardReaderReady = trackCurrentTime()
+    }
+
+    // The Stripe SDK returns multiple `.processing` events, but we want to capture the first one in the stream only.
+    // This flag is reset as soon as the payment has been successful
+    func trackCardReaderTapped() {
+        if !hasTrackedProcessingPayment {
+            hasTrackedProcessingPayment = true
+            cardReaderTapped = trackCurrentTime()
+        }
+    }
+
+    func trackCheckoutTapped() {
+        checkoutTapCount += 1
+    }
+
+    func resetCheckoutTapCountTracker() {
+        checkoutTapCount = 0
+    }
+}
+
+// Helpers
+private extension POSCollectOrderPaymentAnalytics {
+    func trackCurrentTime() -> Double {
+        Date().timeIntervalSince1970
+    }
+
+    func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
+        let end = Date().timeIntervalSince1970
+        return floor((end - start) * 1000)
+    }
+
+    private func resetProcessingPaymentTracking() {
+        hasTrackedProcessingPayment = false
+    }
+
+    private func resetAllCountersOnInteractionStarted() {
+        orderCreated = 0
+        cardReaderReady = 0
+        cardReaderTapped = 0
+        resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 }
 
 // Protocol conformance. These events are not needed for IPP, only for POS.
+// https://github.com/woocommerce/woocommerce-ios/issues/15149
 extension CollectOrderPaymentAnalytics {
     func trackCustomerInteractionStarted() { }
+    func trackOrderCreationSuccess() { }
+    func trackCardReaderReady() { }
+    func trackCardReaderTapped() { }
+    func trackCheckoutTapped() { }
+    func resetCheckoutTapCountTracker() { }
 }

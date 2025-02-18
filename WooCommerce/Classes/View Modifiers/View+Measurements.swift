@@ -20,4 +20,20 @@ extension View {
             }
         )
     }
+
+    /// Measures the frame of a view in a global coordinate space and calls the provided callback with the frame value.
+    ///
+    func measureFrame(_ callback: @escaping (CGRect) -> Void) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        callback(proxy.frame(in: .global))
+                    }
+                    .onChange(of: proxy.size.height) { newHeight in
+                        callback(proxy.frame(in: .global))
+                    }
+            }
+        )
+    }
 }

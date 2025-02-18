@@ -46,4 +46,32 @@ struct TotalsViewHelperTests {
                                                                      paymentState: paymentState) == false)
     }
 
+    @Test(arguments: [
+        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.idle)),
+        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.validatingOrder)),
+        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.validatingOrderError)),
+        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.preparingReader)),
+        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.acceptingCard))
+    ])
+    func test_shouldShowCollectCashPaymentButton_returns_true_for_supported_states(
+        orderState: PointOfSaleOrderState,
+        paymentState: PointOfSalePaymentState) {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: orderState,
+                                                                         paymentState: paymentState))
+    }
+
+
+    @Test(arguments: [
+        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.idle)),
+        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.validatingOrder)),
+        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.validatingOrderError)),
+        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.preparingReader)),
+        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.acceptingCard))
+    ])
+    func test_shouldShowCollectCashPaymentButton_returns_false_when_order_syncing(
+        orderState: PointOfSaleOrderState,
+        paymentState: PointOfSalePaymentState) {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: orderState,
+                                                                         paymentState: paymentState) == false)
+    }
 }

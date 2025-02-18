@@ -17,6 +17,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     var onImageSelected: ((ProductImage?, IndexPath?) -> Void)?
 
+    /// Closure to be executed when a failed upload is tapped
+    ///
+    var onFailedUploadSelected: ((_ asset: ProductImageAssetType, _ error: Error) -> Void)?
+
     /// Closure to be executed when add image cell is tapped
     ///
     var onAddImage: (() -> Void)?
@@ -70,8 +74,10 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
             switch status {
             case .remote(let image, let siteID, let productID):
                 onImageSelected?(image, indexPath)
-            default:
-                break
+            case .uploading:
+                onImageSelected?(nil, indexPath)
+            case let .uploadFailure(asset, error):
+                onFailedUploadSelected?(asset, error)
             }
         case .addImage:
             onAddImage?()

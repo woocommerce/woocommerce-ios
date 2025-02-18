@@ -73,6 +73,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var productImageUploadsSubscription: AnyCancellable?
     private var blazeEligibilitySubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
@@ -167,20 +168,20 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeVariationsPriceChanges()
         observeUpdateBlazeEligibility()
 
-        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
                 return
             }
 
-            if error != nil {
-                let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
-                let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
-                self.displayErrorAlert(title: title, message: message)
-            }
-
             self.onImageStatusesUpdated(statuses: productImageStatuses)
-
             self.viewModel.updateImages(productImageStatuses.images)
+        }
+
+        productImageUploadsSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                displayImageUploadErrorAlert(error: error, for: asset)
+            }
         }
 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
@@ -915,6 +916,8 @@ private extension ProductFormViewController {
         }, onAddImage: { [weak self] in
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
+        }, onFailedImageUpload: { [weak self] (asset, error) in
+            self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
     }
 }
@@ -1033,6 +1036,26 @@ private extension ProductFormViewController {
             comment: "Dismiss button on the alert when there is an error updating the product"
         ), style: .cancel, handler: nil)
         alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
+    }
+
+    func displayImageUploadErrorAlert(error: Error, for asset: ProductImageAssetType) {
+        let alert = UIAlertController(title: Localization.ImageUploadError.title,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        let discard = UIAlertAction(title: Localization.ImageUploadError.discard, style: .destructive, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+        })
+        alert.addAction(discard)
+
+        let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            ServiceLocator.analytics.track(.productImageUploadRetryButtonTapped)
+            /// Discard the upload before uploading again to replace the failed upload.
+            self?.productImageActionHandler.discardUpload(asset: asset)
+            self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        })
+        alert.addAction(retry)
 
         present(alert, animated: true, completion: nil)
     }
@@ -2136,6 +2159,24 @@ private enum Localization {
                                                comment: "The message for the Write with AI tooltip")
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
+    }
+
+    enum ImageUploadError {
+        static let title = NSLocalizedString(
+            "productFormViewController.imageUploadError.title",
+            value: "Image was not uploaded",
+            comment: "Title of the alert when there is an error uploading an image of a product."
+        )
+        static let discard = NSLocalizedString(
+            "productFormViewController.imageUploadError.discard",
+            value: "Discard",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload."
+        )
+        static let retry = NSLocalizedString(
+            "productFormViewController.imageUploadError.retry",
+            value: "Retry",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+        )
     }
 }
 

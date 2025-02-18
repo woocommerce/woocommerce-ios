@@ -25,7 +25,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         ]
 
         // When
-        sut.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
         #expect(analyticsProvider.receivedEvents.first(where: { $0 == expectedEvent }) != nil)

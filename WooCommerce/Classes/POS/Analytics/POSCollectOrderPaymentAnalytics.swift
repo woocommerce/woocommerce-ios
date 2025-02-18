@@ -20,7 +20,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         // Property: milliseconds_since_customer_interaction_started
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 

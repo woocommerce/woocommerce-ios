@@ -82,7 +82,7 @@ extension AuthenticatedWebViewModel {
         }
 
         if wpcomCredentialsAvailable {
-            if let domain = initialURL.host, wpcomAcceptedDomains.contains(domain) {
+            if let domain = initialURL.host, Constants.wpcomAcceptedDomains.contains(domain) {
                 return .wpcom
             } else if currentSite.hasSSOEnabled,
                       initialURL.absoluteString.hasPrefix(currentSite.url) {
@@ -97,8 +97,42 @@ extension AuthenticatedWebViewModel {
         }
     }
 
-    private var wpcomAcceptedDomains: [String] {
-        ["wordpress.com", "wp.com", "jetpack.com", "woocommerce.com", "jetpack.wordpress.com"]
+    /// Returns `true` if the response indicates an authentication failure and `false` otherwise.
+    ///
+    func isAuthenticationFailure(response: WKNavigationResponse,
+                                 currentSite: Site?,
+                                 authenticationFlow: WebViewAuthenticationFlow,
+                                 firstLoadedPageURL: URL?) -> Bool {
+        guard authenticationFlow != .none,
+              firstLoadedPageURL == nil,
+              let currentSite,
+              response.isForMainFrame,
+              let urlResponse = response.response as? HTTPURLResponse,
+              let url = urlResponse.url else {
+            return false
+        }
+
+        // if the authentication request fails
+        if Constants.errorResponseCodes ~= urlResponse.statusCode {
+            return true
+        }
+
+        let isAuthenticationFailure: Bool = {
+            switch authenticationFlow {
+            case .none:
+                return false
+            case .siteCredentials:
+                return url.absoluteString == currentSite.loginURL
+            case .jetpackSSO, .wpcom:
+                return url.absoluteString == WooConstants.URLs.loginWPCom.rawValue
+            }
+        }()
+
+        guard isAuthenticationFailure else {
+            return false
+        }
+
+        return true
     }
 }
 
@@ -107,4 +141,9 @@ enum WebViewAuthenticationFlow {
     case jetpackSSO
     case siteCredentials
     case none
+}
+
+private enum Constants {
+    static let errorResponseCodes = 400...599
+    static let wpcomAcceptedDomains = ["wordpress.com", "wp.com", "jetpack.com", "woocommerce.com", "jetpack.wordpress.com"]
 }

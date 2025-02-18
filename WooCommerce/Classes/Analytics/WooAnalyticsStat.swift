@@ -1311,14 +1311,11 @@ extension WooAnalyticsStat {
     /// Indicates if site information should be included with this event when it's sent to the tracks server.
     /// Returns `true` if it should be included, `false` otherwise.
     ///
-    /// Note: Currently all application-level and authentication events will return false. If you wish
+    /// Note: Currently all authentication events will return false. If you wish
     /// to include additional no-site-info events, please add them here.
     ///
     var shouldSendSiteProperties: Bool {
         switch self {
-        // Application events
-        case .applicationClosed, .applicationOpened, .applicationUpgraded, .applicationInstalled, .watchAppOpened:
-            return false
         // Authentication Events
         case .signedIn, .logout, .openedLogin, .loginFailed,
              .loginAutoFillCredentialsFilled, .loginAutoFillCredentialsUpdated, .loginEmailFormViewed, .loginMagicLinkOpenEmailClientViewed,

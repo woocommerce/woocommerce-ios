@@ -9,6 +9,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     private var cardReaderReady: Double = 0
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
+    private var hasTrackedProcessingPayment = false
 
     private let analytics: Analytics
 
@@ -39,6 +40,9 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
             checkoutTapCount: checkoutTapCount
         ))
+
+        resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 
     func trackSuccessfulCashPayment() {
@@ -58,6 +62,8 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
+        // Any action that is considered as user starting an iteraction resets any ongoing counter
+        resetAllCountersOnInteractionStarted()
         analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = Date().timeIntervalSince1970
     }
@@ -73,8 +79,13 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         trackElapsedTimeFromOrderCreationToCardReady()
     }
 
+    // The Stripe SDK returns multiple `.processing` events, but we want to capture the first one in the stream only.
+    // This flag is reset as soon as the payment has been successful
     func trackCardReaderTapped() {
-        cardReaderTapped = trackCurrentTime()
+        if !hasTrackedProcessingPayment {
+            hasTrackedProcessingPayment = true
+            cardReaderTapped = trackCurrentTime()
+        }
     }
 
     func trackCheckoutTapped() {
@@ -100,6 +111,18 @@ private extension POSCollectOrderPaymentAnalytics {
     func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
         let end = Date().timeIntervalSince1970
         return floor((end - start) * 1000)
+    }
+
+    private func resetProcessingPaymentTracking() {
+        hasTrackedProcessingPayment = false
+    }
+
+    private func resetAllCountersOnInteractionStarted() {
+        orderCreated = 0
+        cardReaderReady = 0
+        cardReaderTapped = 0
+        resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 }
 

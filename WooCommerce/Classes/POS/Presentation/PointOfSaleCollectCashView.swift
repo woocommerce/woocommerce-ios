@@ -26,7 +26,7 @@ struct PointOfSaleCollectCashView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+            VStack(alignment: .center, spacing: conditionalPadding(13)) {
                 POSPageHeaderView(title: Localization.backNavigationTitle,
                                   subtitle: formattedOrderTotal,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
@@ -37,31 +37,33 @@ struct PointOfSaleCollectCashView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(8)) {
-                    FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                        .focused($isTextFieldFocused)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                        .onSubmit {
-                            Task { @MainActor in
-                                await submitCashAmount()
+                VStack(alignment: .center, spacing: conditionalPadding(62)) {
+                    VStack(alignment: .center, spacing: conditionalPadding(4)) {
+                        FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                            .focused($isTextFieldFocused)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                            .onSubmit {
+                                Task { @MainActor in
+                                    await submitCashAmount()
+                                }
                             }
-                        }
-                        .onChange(of: textFieldViewModel.amount) { newValue in
-                            textFieldAmountInput = newValue
-                            updateChangeDueMessage()
+                            .onChange(of: textFieldViewModel.amount) { newValue in
+                                textFieldAmountInput = newValue
+                                updateChangeDueMessage()
+                            }
+
+                        if let changeDue = changeDueMessage {
+                            Text(changeDue)
+                                .font(.posBodySmallRegular())
+                                .foregroundColor(.posOnSurfaceVariantLowest)
                         }
 
-                    if let changeDue = changeDueMessage {
-                        Text(changeDue)
-                            .font(.posBodySmallRegular())
-                            .foregroundColor(.posOnSurfaceVariantHighest)
-                    }
-
-                    if let errorMessage = errorMessage {
-                        Text(errorMessage)
-                            .font(.posBodySmallRegular())
-                            .foregroundColor(.posError)
-                            .padding(.bottom, Constants.errorMessagePadding)
+                        if let errorMessage = errorMessage {
+                            Text(errorMessage)
+                                .font(.posBodySmallRegular())
+                                .foregroundColor(.posError)
+                                .padding(.bottom, Constants.errorMessagePadding)
+                        }
                     }
 
                     Button(action: {

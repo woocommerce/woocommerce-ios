@@ -223,6 +223,10 @@ private extension WooShippingCreateLabelsView {
                 addressVerificationLabel
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            PencilEditButton {
+                // TODO: Open destination address editing flow.
+            }
+            .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
     }

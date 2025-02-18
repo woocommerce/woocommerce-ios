@@ -45,7 +45,7 @@ struct POSSendReceiptView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .multilineTextAlignment(.center)
-                .font(POSFontStyle.posBodyXLarge)
+                .font(POSFontStyle.posHeadingRegular)
                 .focused()
                 .focused($isTextFieldFocused)
                 .padding()

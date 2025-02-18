@@ -4,6 +4,7 @@ import SwiftUI
 /// 1qcjzXitBHU7xPnpCOWnNM-fi-23_7310
 enum POSFontStyle {
     case posHeadingBold
+    case posHeadingRegular
     case posBodyXLarge
     case posBodyLargeBold
     case posBodyLargeRegular(underline: Bool = false)
@@ -21,6 +22,8 @@ enum POSFontStyle {
         switch self {
         case .posHeadingBold:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
+        case .posHeadingRegular:
+            Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .regular)
         case .posBodyXLarge:
             Font.system(
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),

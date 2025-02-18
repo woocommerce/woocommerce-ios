@@ -140,8 +140,10 @@ extension UIContentSizeCategory {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
             Group {
-                Text("Title Emphasized")
+                Text("Heading Bold")
                     .font(.posHeadingBold)
+                Text("Heading Regular")
+                    .font(.posHeadingRegular)
                 Text("Body Extra Large")
                     .font(.posBodyXLarge)
                 Text("Body Large Bold")

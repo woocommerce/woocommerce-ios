@@ -39,7 +39,7 @@ extension Collection where Element == ProductImageStatus {
     var hasPendingUpload: Bool {
         return contains(where: {
             switch $0 {
-            case .uploading(_, _, _):
+            case .uploading:
                 return true
             default:
                 return false

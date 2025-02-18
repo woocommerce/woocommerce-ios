@@ -175,8 +175,15 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
             guard let self = self else {
                 return
             }
+            let uploadingStatus = ProductImageStatus.uploading(asset: asset, siteID: self.siteID, productID: self.productOrVariationID)
 
-            productImageStatuses = [.uploading(asset: asset, siteID: self.siteID, productID: self.productOrVariationID)] + self.productImageStatuses
+            // If the product is a variation, substitute the existing status with the new uploading status.
+            // Otherwise, if a standard product, append a new status.
+            if case .variation = self.productOrVariationID {
+                self.productImageStatuses = [uploadingStatus]
+            } else {
+                self.productImageStatuses = [uploadingStatus] + self.productImageStatuses
+            }
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in

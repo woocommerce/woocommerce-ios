@@ -249,6 +249,16 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///
     func updateProductID(_ remoteProductID: ProductOrVariationID) {
         self.productOrVariationID = remoteProductID
+        self.productImageStatuses = self.productImageStatuses.map { status in
+            switch status {
+            case .uploading(let asset, let siteID, _):
+                return .uploading(asset: asset, siteID: siteID, productID: remoteProductID)
+            case .uploadFailure(let asset, let error, let siteID, _):
+                return .uploadFailure(asset: asset, error: error, siteID: siteID, productID: remoteProductID)
+            default:
+                return status
+            }
+        }
     }
 
     func deleteProductImage(_ productImage: ProductImage) {

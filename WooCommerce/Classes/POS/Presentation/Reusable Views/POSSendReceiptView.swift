@@ -28,7 +28,10 @@ struct POSSendReceiptView: View {
             }))
 
             VStack(alignment: .center, spacing: conditionalPadding(8)) {
-                TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                TextField("",
+                          text: $textFieldInput,
+                          prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                    .foregroundStyle(Color.posOnSurface)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)

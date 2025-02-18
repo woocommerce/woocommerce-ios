@@ -1051,6 +1051,7 @@ private extension ProductFormViewController {
 
         let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
             ServiceLocator.analytics.track(.productImageUploadRetryButtonTapped)
+            /// Discard the upload before uploading again to replace the failed upload.
             self?.productImageActionHandler.discardUpload(asset: asset)
             self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         })

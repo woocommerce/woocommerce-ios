@@ -70,51 +70,17 @@ private extension ItemListView {
     }
 
     var bannerCardView: some View {
-        HStack(alignment: .top, spacing: 0) {
-            VStack {
-                Spacer()
-                Text(Image(systemName: "info.circle"))
-                    .font(.posButtonSymbolLarge)
-                    .padding(Constants.iconPadding)
-                    .foregroundColor(Color.posOnSurface)
-                    .accessibilityHidden(true)
-                Spacer()
+        POSNoticeView(
+            title: headerBannerTitle,
+            subtitle: headerBannerSubtitle,
+            onDismiss: {
+                isHeaderBannerDismissed = true
+            },
+            onTap: {
+                showSimpleProductsModal = true
             }
-            VStack(alignment: .leading, spacing: Constants.bannerTitleSpacing) {
-                Text(headerBannerTitle)
-                    .font(Constants.bannerTitleFont)
-                    .accessibilityAddTraits(.isHeader)
-                VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                    Text(headerBannerSubtitle)
-                    bannerHintAndLearnMoreText
-                }
-                .font(Constants.bannerSubtitleFont)
-                .lineSpacing(Constants.bannerTextSpacing)
-                .accessibilityElement(children: .combine)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Constants.bannerVerticalPadding)
-            VStack {
-                Button(action: {
-                    isHeaderBannerDismissed = true
-                }, label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolSmall)
-                        .foregroundColor(Color.posOnSurfaceVariantLowest)
-                        .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
-                })
-                .padding(Constants.iconPadding)
-                Spacer()
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posSurfaceBright)
-        .cornerRadius(Constants.bannerCornerRadius)
-        .posShadow(.medium)
-        .accessibilityAddTraits(.isButton)
-        .onTapGesture {
-            showSimpleProductsModal = true
+        ) {
+            bannerHintAndLearnMoreText
         }
         .padding(.bottom, Constants.bannerCardPadding)
     }
@@ -174,14 +140,7 @@ private extension ItemListState {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: POSFontStyle = .posBodyLargeBold
-        static let bannerSubtitleFont: POSFontStyle = .posBodySmallRegular()
-        static let bannerCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-        static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTextSpacing: CGFloat = 4
-        static let bannerTitleSpacing: CGFloat = 8
         static let infoIconInset: EdgeInsets = .init(top: 8, leading: 6, bottom: 8, trailing: 6)
-        static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
     }
@@ -231,13 +190,6 @@ private extension ItemListView {
             "pos.itemlistview.headerBanner.learnMoreHint",
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
-        )
-
-        static let dismissBannerAccessibilityLabel = NSLocalizedString(
-            "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel",
-            value: "Dismiss",
-            comment: "Accessibility label for button to dismiss the product selector header banner. " +
-            "The banner explains current POS limitations. Tapping the button prevents it being shown again."
         )
     }
 }

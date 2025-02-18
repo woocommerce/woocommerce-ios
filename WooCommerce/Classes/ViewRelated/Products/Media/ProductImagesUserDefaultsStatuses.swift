@@ -54,6 +54,10 @@ final class ProductImagesUserDefaultsStatuses {
         saveAllStatuses(statuses)
     }
 
+    static func clearAllStatuses() {
+        UserDefaults.standard.removeObject(forKey: key)
+    }
+    
     private static func saveAllStatuses(_ statuses: [ProductImageStatus]) {
         do {
             let data = try JSONEncoder().encode(statuses)

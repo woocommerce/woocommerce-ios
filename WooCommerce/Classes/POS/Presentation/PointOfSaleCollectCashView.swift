@@ -57,14 +57,14 @@ struct PointOfSaleCollectCashView: View {
 
                 if let changeDue = changeDueMessage {
                     Text(changeDue)
-                        .font(.posBodyLargeRegular())
+                        .font(.posBodySmallRegular())
                         .foregroundColor(.posOnSurfaceVariantHighest)
                 }
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
-                        .font(POSFontStyle.posBodyLargeRegular())
-                        .foregroundColor(.red)
+                        .font(POSFontStyle.posBodySmallRegular())
+                        .foregroundColor(.posError)
                         .padding(.bottom, Constants.errorMessagePadding)
                 }
 

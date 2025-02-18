@@ -11,6 +11,23 @@ enum ProductImageStatus: Equatable {
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage)
+
+    /// An image asset upload failed.
+    ///
+    case uploadFailure(asset: ProductImageAssetType, error: Error)
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case let (.uploading(lAsset), .uploading(rAsset)):
+            lAsset == rAsset
+        case let (.remote(lImage), .remote(image: rImage)):
+            lImage == rImage
+        case let (.uploadFailure(lAsset, lError), .uploadFailure(rAsset, rError)):
+            lAsset == rAsset && (lError as NSError) == (rError as NSError)
+        default:
+            false
+        }
+    }
 }
 
 /// The type of product image asset.
@@ -57,6 +74,8 @@ extension ProductImageStatus {
         switch self {
         case .uploading:
             return InProgressProductImageCollectionViewCell.self
+        case .uploadFailure:
+            return FailedProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
         }
@@ -74,6 +93,8 @@ extension ProductImageStatus {
                 case .uiImage:
                     return UUID().uuidString
             }
+        case .uploadFailure:
+            return UUID().uuidString
         case .remote(let image):
             return "\(image.imageID)"
         }

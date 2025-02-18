@@ -74,7 +74,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         mockProductImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
         waitForExpectation { expectation in
             self.productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { statuses in
-                if statuses.productImageStatuses.isNotEmpty {
+                if statuses.isNotEmpty {
                     expectation.fulfill()
                 }
             }

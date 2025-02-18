@@ -411,8 +411,6 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockAsset = PHAsset()
         handler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
 
-        // Aspetta brevemente l'aggiornamento asincrono
-        // (usando XCTestExpectation o waitUntil helper se presente)
         waitUntil {
             handler.productImageStatuses.first.map {
                 switch $0 {

@@ -162,7 +162,9 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+            let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage,
+                                                                                     siteID: self.siteID,
+                                                                                     productID: self.productOrVariationID) }
             let imageStatuses = newProductImageStatuses + self.productImageStatuses
             self.productImageStatuses = imageStatuses
         }
@@ -174,7 +176,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            productImageStatuses = [.uploading(asset: asset)] + self.productImageStatuses
+            productImageStatuses = [.uploading(asset: asset, siteID: self.siteID, productID: self.productOrVariationID)] + self.productImageStatuses
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in
@@ -257,10 +259,10 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
             var imageStatuses = self.productImageStatuses
             imageStatuses.removeAll { status -> Bool in
-                guard case .remote(let image) = status else {
+                guard case .remote(let image, let siteID, let productID) = status else {
                     return false
                 }
-                return image.imageID == productImage.imageID
+                return image.imageID == productImage.imageID && siteID == self.siteID && productID == self.productOrVariationID
             }
             self.productImageStatuses = imageStatuses
         }
@@ -295,9 +297,9 @@ private extension ProductImageActionHandler {
     func index(of asset: ProductImageAssetType) -> Int? {
         return productImageStatuses.firstIndex(where: { status -> Bool in
             switch status {
-            case .uploading(let uploadingAsset):
-                return uploadingAsset == asset
-            case let .uploadFailure(failedAsset, _):
+            case .uploading(let uploadingAsset, let siteID, let productID):
+                return uploadingAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
+            case let .uploadFailure(failedAsset, _, _, _):
                 return failedAsset == asset
             case .remote:
                 return false
@@ -306,21 +308,21 @@ private extension ProductImageActionHandler {
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
-        if case .uploading(let asset) = productImageStatuses[safe: index] {
+        if case .uploading(let asset, _, _) = productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
                 closure(asset, .success(productImage))
             }
         }
 
-        productImageStatuses[index] = .remote(image: productImage)
+        productImageStatuses[index] = .remote(image: productImage, siteID: siteID, productID: productOrVariationID)
     }
 
     func updateProductImageStatus(at index: Int, error: Error) {
-        if case .uploading(let asset) = productImageStatuses[safe: index] {
+        if case .uploading(let asset, let siteID, let productID) = productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
                 closure(asset, .failure(error))
             }
-            productImageStatuses[index] = .uploadFailure(asset: asset, error: error)
+            productImageStatuses[index] = .uploadFailure(asset: asset, error: error, siteID: siteID, productID: productID)
         } else {
             productImageStatuses.remove(at: index)
         }

@@ -276,6 +276,77 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockPaymentCelebration.celebrationWasCalled == true)
     }
 
+    @available(iOS 17.0, *)
+    @Test func syncOrder_when_successful_returns_newOrder_result() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+        let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
+        let fakeOrder = Order.fake()
+        let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // When
+        let result = await sut.syncOrder(for: [fakeCartItem], retryHandler: { })
+
+        // Then
+        if case .success(let state) = result {
+            #expect(state == .newOrder)
+        } else {
+            #expect(Bool(false), "Expected success with new order result")
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_when_updating_existing_order_returns_orderUpdated_result() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+        let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
+        let fakeOrder = Order.fake()
+        let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // When
+        // 1. Initial order
+        _ = await sut.syncOrder(for: [makeItem()], retryHandler: {})
+
+        // 2. Sync existing order
+        let result = await sut.syncOrder(for: [makeItem(), makeItem()], retryHandler: {})
+
+        // Then
+        if case .success(let state) = result {
+            #expect(state == .orderUpdated)
+        } else {
+            #expect(Bool(false), "Expected success with order updated result")
+        }
+    }
+
+    @available(iOS 17.0, *)
+        @Test func syncOrder_when_cart_matching_order_returns_syncFailure() async throws {
+            // Given
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: mockReceiptService)
+            let orderItem = OrderItem.fake().copy(quantity: 1)
+            let fakeOrder = Order.fake().copy(items: [orderItem])
+            let cartItem = makeItem(orderItemsToMatch: [orderItem])
+            mockOrderService.orderToReturn = fakeOrder
+
+            // When
+            // 1. Initial order
+            _ = await sut.syncOrder(for: [cartItem], retryHandler: {})
+
+            // 2. Syncing existing order with same cart should fail
+            let result = await sut.syncOrder(for: [cartItem], retryHandler: {})
+
+            // Then
+            if case .failure(let error) = result {
+                #expect(error as? SyncOrderStateError == .syncFailure)
+            } else {
+                #expect(Bool(false), "Expected error with syncFailure result")
+            }
+        }
+
     struct AnalyticsTests {
         private let analytics: WooAnalytics
         private let analyticsProvider = MockAnalyticsProvider()

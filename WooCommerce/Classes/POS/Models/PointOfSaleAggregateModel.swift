@@ -450,10 +450,12 @@ extension PointOfSaleAggregateModel {
     func checkOut() async {
         collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
-        collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
+        if case .success(.newOrder) = syncOrderResult {
+            collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
+        }
         await startPaymentWhenCardReaderConnected()
     }
 }

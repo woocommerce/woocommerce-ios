@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct PointOfSaleCollectCashView: View {
@@ -15,6 +17,9 @@ struct PointOfSaleCollectCashView: View {
     @State private var changeDueMessage: String?
 
     let orderTotal: String
+
+    @State private var buttonFrame: CGRect = .zero
+    @State private var keyboardFrame: CGRect = .zero
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
@@ -75,6 +80,9 @@ struct PointOfSaleCollectCashView: View {
                 }, label: {
                     Text(Localization.markPaymentCompletedButtonTitle)
                 })
+                .measureFrame {
+                    buttonFrame = $0
+                }
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                 .frame(maxWidth: .infinity)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -84,11 +92,15 @@ struct PointOfSaleCollectCashView: View {
             }
             .background(backgroundColor)
             .padding(.top, conditionalPadding(Constants.navigationHeaderTopPadding))
-            .padding([.horizontal, .bottom])
+            .padding([.horizontal])
+            .padding(.bottom, keyboardFrame.height)
             .animation(.easeInOut, value: errorMessage)
             .animation(.easeInOut, value: changeDueMessage)
             .onChange(of: textFieldAmountInput) { _ in
                 errorMessage = nil
+            }
+            .onReceive(Publishers.keyboardFrame) {
+                keyboardFrame = $0
             }
         }
     }
@@ -164,7 +176,11 @@ private extension PointOfSaleCollectCashView {
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 0 : padding
+        if keyboardFrame.intersects(buttonFrame) {
+            return 4
+        }
+
+        return padding
     }
 
     private var backgroundColor: Color {

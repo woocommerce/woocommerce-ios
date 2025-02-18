@@ -282,8 +282,9 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        let response = navigationResponse.response
         if let initialURL = viewModel.initialURL,
-           viewModel.isAuthenticationFailure(response: navigationResponse,
+           viewModel.isAuthenticationFailure(response: response,
                                              currentSite: currentSite,
                                              authenticationFlow: authenticationFlow,
                                              firstLoadedPageURL: firstLoadedPageURL) {
@@ -291,7 +292,6 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
             loadContent(url: initialURL)
             return .cancel
         }
-        let response = navigationResponse.response
         return await viewModel.decidePolicy(for: response)
     }
 

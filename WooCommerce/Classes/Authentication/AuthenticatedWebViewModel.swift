@@ -99,15 +99,14 @@ extension AuthenticatedWebViewModel {
 
     /// Returns `true` if the response indicates an authentication failure and `false` otherwise.
     ///
-    func isAuthenticationFailure(response: WKNavigationResponse,
+    func isAuthenticationFailure(response: URLResponse,
                                  currentSite: Site?,
                                  authenticationFlow: WebViewAuthenticationFlow,
                                  firstLoadedPageURL: URL?) -> Bool {
         guard authenticationFlow != .none,
               firstLoadedPageURL == nil,
               let currentSite,
-              response.isForMainFrame,
-              let urlResponse = response.response as? HTTPURLResponse,
+              let urlResponse = response as? HTTPURLResponse,
               let url = urlResponse.url else {
             return false
         }

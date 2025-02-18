@@ -16,6 +16,7 @@ import protocol WooFoundation.Analytics
 enum SyncOrderState {
     case newOrder
     case orderUpdated
+    case orderNotChanged
 }
 
 enum SyncOrderStateError: Error {
@@ -68,9 +69,8 @@ protocol PointOfSaleOrderControllerProtocol {
             POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
         }
 
-        guard !orderState.isSyncing,
-              !posCartItems.matches(order: order) else {
-            return .failure(SyncOrderStateError.syncFailure)
+        guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
+            return .success(.orderNotChanged)
         }
 
         orderState = .syncing

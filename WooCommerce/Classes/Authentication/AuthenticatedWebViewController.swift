@@ -6,8 +6,6 @@ import class Networking.UserAgent
 import struct WordPressAuthenticator.WordPressOrgCredentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
-/// Authentication logic differs depending on the destination URL and the current site.
-/// More information: https://wp.me/pe5sF9-3Si
 ///
 final class AuthenticatedWebViewController: UIViewController {
 
@@ -187,6 +185,9 @@ private extension AuthenticatedWebViewController {
             .store(in: &subscriptions)
     }
 
+    /// Authentication logic differs depending on the destination URL and the current site.
+    /// More information: https://wp.me/pe5sF9-3Si
+    ///
     func startLoading() {
         guard let url = viewModel.initialURL else {
             return
@@ -248,7 +249,7 @@ private extension AuthenticatedWebViewController {
             let cookie = HTTPCookie(properties: [
                 .domain: host,
                 .path: "/",
-                .name: "jetpack_sso_redirect_to",
+                .name: Constants.ssoRedirectCookieName,
                 .value: initialURL.absoluteString,
             ])
 
@@ -338,5 +339,6 @@ private extension AuthenticatedWebViewController {
     enum Constants {
         static let actionParam = "action"
         static let jetpackSSOAction = "jetpack-sso"
+        static let ssoRedirectCookieName = "jetpack_sso_redirect_to"
     }
 }

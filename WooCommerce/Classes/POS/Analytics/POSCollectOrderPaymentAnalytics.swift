@@ -9,6 +9,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     private var cardReaderReady: Double = 0
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
+    private var hasTrackedProcessingPayment = false
 
     private let analytics: Analytics
 
@@ -41,6 +42,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         ))
 
         resetCheckoutTapCountTracker()
+        resetProcessingPaymentTracking()
     }
 
     func trackPaymentFailure(with error: any Error) { }
@@ -63,8 +65,13 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
         cardReaderReady = trackCurrentTime()
     }
 
+    // The Stripe SDK returns multiple `.processing` events, but we want to capture the first one in the stream only.
+    // This flag is reset as soon as the payment has been successful
     func trackCardReaderTapped() {
-        cardReaderTapped = trackCurrentTime()
+        if !hasTrackedProcessingPayment {
+            hasTrackedProcessingPayment = true
+            cardReaderTapped = trackCurrentTime()
+        }
     }
 
     func trackCheckoutTapped() {
@@ -73,6 +80,10 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func resetCheckoutTapCountTracker() {
         checkoutTapCount = 0
+    }
+
+    private func resetProcessingPaymentTracking() {
+        hasTrackedProcessingPayment = false
     }
 }
 

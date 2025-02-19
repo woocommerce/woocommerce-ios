@@ -13,6 +13,7 @@
 - [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
 - [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 - [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
 
 21.7
 -----
@@ -84,7 +85,6 @@
 - [Internal] Updated storage usage in MetaDataStore [https://github.com/woocommerce/woocommerce-ios/pull/14642]
 - [Internal] Prevent potential crashes for converting non-optional dates of deleted objects [https://github.com/woocommerce/woocommerce-ios/pull/14664]
 - [*] Fixed: Improved the error message displayed when Bluetooth permission is denied during the card reader connection process. [https://github.com/woocommerce/woocommerce-ios/pull/14561]
-- [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
 - [*] Payments: error details are now displayed for more Stripe errors, instead of a generic error message. [https://github.com/woocommerce/woocommerce-ios/pull/14583]
 - [Internal] Updated transformable attribute types from Swift Array to NSArray [https://github.com/woocommerce/woocommerce-ios/pull/14611]
 - [Internal] Updated the storage layer to enforce write operations in the background. [https://github.com/woocommerce/woocommerce-ios/pull/14644]

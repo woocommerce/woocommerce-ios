@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// A reusable notice view component that displays information with an icon, title, subtitle, optional dismiss button, and optional hint view.
+/// A reusable notice view component that displays information with an icon, title, optional subtitle, optional dismiss button, and optional hint view.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935
 struct POSNoticeView<HintContent: View>: View {
     private let title: String
-    private let subtitle: String
+    private let subtitle: String?
     private let icon: Image
     private let onDismiss: (() -> Void)?
     private let onTap: (() -> Void)?
@@ -14,7 +14,7 @@ struct POSNoticeView<HintContent: View>: View {
 
     init(
         title: String,
-        subtitle: String,
+        subtitle: String? = nil,
         icon: Image,
         onDismiss: (() -> Void)? = nil,
         onTap: (() -> Void)? = nil,
@@ -29,10 +29,10 @@ struct POSNoticeView<HintContent: View>: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: Constants.padding) {
+        HStack(alignment: .center, spacing: Constants.padding) {
             VStack {
                 Spacer()
-                Text(icon)
+                Text(icon.resizable())
                     .font(.posButtonSymbolLarge)
                     .padding(.horizontal, Constants.iconHorizontalPadding)
                     .foregroundColor(Color.posOnSurface)
@@ -44,7 +44,9 @@ struct POSNoticeView<HintContent: View>: View {
                     .font(Constants.titleFont)
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.textSpacing) {
-                    Text(subtitle)
+                    if let subtitle {
+                        Text(subtitle)
+                    }
                     if let hintContent {
                         hintContent
                     }
@@ -52,6 +54,7 @@ struct POSNoticeView<HintContent: View>: View {
                 .font(Constants.subtitleFont)
                 .lineSpacing(Constants.textSpacing)
                 .accessibilityElement(children: .combine)
+                .renderedIf(subtitle != nil || hintContent != nil)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -134,11 +137,11 @@ private enum Localization {
     .padding()
 }
 
-#Preview("Basic") {
+#Preview("Banner that fits to width") {
     POSNoticeView<AnyView>(
         title: "Example Notice",
-        subtitle: "This is a subtitle that explains more about the notice.",
         icon: Image(systemName: "info.circle")
     )
+    .fixedSize(horizontal: true, vertical: true)
     .padding()
 }

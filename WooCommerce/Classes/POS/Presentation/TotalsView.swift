@@ -19,7 +19,6 @@ struct TotalsView: View {
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         HStack {

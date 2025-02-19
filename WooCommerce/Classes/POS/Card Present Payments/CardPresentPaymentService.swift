@@ -110,7 +110,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             DDLogError("Attempting to cancel the payment has failed \(error)")
         }
 
-        paymentTask?.cancel()
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
         return await withCheckedContinuation { continuation in
@@ -167,10 +166,14 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     func cancelPayment() {
         paymentTask?.cancel()
+        paymentTask = nil
     }
 
     @MainActor
     func cancelPayment() async throws {
+        let cancelPaymentTask: () -> Void = cancelPayment
+        cancelPaymentTask()
+
         try await withCheckedThrowingContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
             let action = CardPresentPaymentAction.cancelPayment { result in

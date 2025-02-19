@@ -5,6 +5,7 @@ import SwiftUI
 struct POSNoticeView<HintContent: View>: View {
     let title: String
     let subtitle: String
+    let icon: Image
     let onDismiss: (() -> Void)?
     let onTap: (() -> Void)?
     let hintContent: HintContent?
@@ -14,12 +15,14 @@ struct POSNoticeView<HintContent: View>: View {
     init(
         title: String,
         subtitle: String,
+        icon: Image,
         onDismiss: (() -> Void)? = nil,
         onTap: (() -> Void)? = nil,
         @ViewBuilder hintContent: () -> HintContent? = { nil }
     ) {
         self.title = title
         self.subtitle = subtitle
+        self.icon = icon
         self.onDismiss = onDismiss
         self.onTap = onTap
         self.hintContent = hintContent()
@@ -29,7 +32,7 @@ struct POSNoticeView<HintContent: View>: View {
         HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
-                Text(Image(systemName: "info.circle"))
+                Text(icon)
                     .font(.posButtonSymbolLarge)
                     .padding(Constants.iconPadding)
                     .foregroundColor(Color.posOnSurface)
@@ -106,6 +109,7 @@ private enum Localization {
     POSNoticeView(
         title: "Example Notice",
         subtitle: "This is a subtitle that explains more about the notice.",
+        icon: Image(systemName: "exclamationmark.triangle"),
         onDismiss: {},
         onTap: {}
     ) {
@@ -120,6 +124,7 @@ private enum Localization {
     POSNoticeView(
         title: "Example Notice",
         subtitle: "This is a subtitle that explains more about the notice.",
+        icon: Image(systemName: "bell"),
         onTap: {}
     ) {
         Text("Here's a hint about what to do next. Learn More")
@@ -132,7 +137,8 @@ private enum Localization {
 #Preview("Basic") {
     POSNoticeView<AnyView>(
         title: "Example Notice",
-        subtitle: "This is a subtitle that explains more about the notice."
+        subtitle: "This is a subtitle that explains more about the notice.",
+        icon: Image(systemName: "info.circle")
     )
     .padding()
 }

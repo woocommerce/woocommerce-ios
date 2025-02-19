@@ -73,6 +73,7 @@ private extension ItemListView {
         POSNoticeView(
             title: headerBannerTitle,
             subtitle: headerBannerSubtitle,
+            icon: Image(systemName: "info.circle"),
             onDismiss: {
                 isHeaderBannerDismissed = true
             },

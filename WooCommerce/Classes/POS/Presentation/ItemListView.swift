@@ -72,7 +72,6 @@ private extension ItemListView {
     var bannerCardView: some View {
         POSNoticeView(
             title: headerBannerTitle,
-            subtitle: headerBannerSubtitle,
             icon: Image(systemName: "info.circle"),
             onDismiss: {
                 isHeaderBannerDismissed = true
@@ -81,7 +80,10 @@ private extension ItemListView {
                 showSimpleProductsModal = true
             }
         ) {
-            bannerHintAndLearnMoreText
+            VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
+                Text(headerBannerSubtitle)
+                bannerHintAndLearnMoreText
+            }
         }
         .padding(.bottom, Constants.bannerCardPadding)
     }
@@ -144,6 +146,7 @@ private extension ItemListView {
         static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
+        static let bannerTextSpacing: CGFloat = 4
     }
 
     enum BannerState {

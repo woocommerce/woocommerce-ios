@@ -1,29 +1,26 @@
 import SwiftUI
 
-/// A reusable notice view component that displays information with an icon, title, optional subtitle, optional dismiss button, and optional hint view.
+/// A reusable notice view component that displays information with an icon, title, optional dismiss button, and optional content view.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935
-struct POSNoticeView<HintContent: View>: View {
+struct POSNoticeView<Content: View>: View {
     private let title: String
-    private let subtitle: String?
     private let icon: Image
     private let onDismiss: (() -> Void)?
     private let onTap: (() -> Void)?
-    private let hintContent: HintContent?
+    private let content: Content?
 
     init(
         title: String,
-        subtitle: String? = nil,
         icon: Image,
         onDismiss: (() -> Void)? = nil,
         onTap: (() -> Void)? = nil,
-        @ViewBuilder hintContent: () -> HintContent? = { nil }
+        @ViewBuilder content: () -> Content? = { nil }
     ) {
         self.title = title
-        self.subtitle = subtitle
         self.icon = icon
         self.onDismiss = onDismiss
         self.onTap = onTap
-        self.hintContent = hintContent()
+        self.content = content()
     }
 
     var body: some View {
@@ -41,29 +38,26 @@ struct POSNoticeView<HintContent: View>: View {
                 Text(title)
                     .font(Constants.titleFont)
                     .accessibilityAddTraits(.isHeader)
-                VStack(alignment: .leading, spacing: Constants.textSpacing) {
-                    if let subtitle {
-                        Text(subtitle)
-                    }
-                    if let hintContent {
-                        hintContent
-                    }
+                if let content {
+                    content
+                        .font(Constants.contentFont)
+                        .lineSpacing(Constants.textSpacing)
+                        .accessibilityElement(children: .combine)
                 }
-                .font(Constants.subtitleFont)
-                .lineSpacing(Constants.textSpacing)
-                .accessibilityElement(children: .combine)
-                .renderedIf(subtitle != nil || hintContent != nil)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
             if let onDismiss {
                 VStack {
-                    Button(action: onDismiss, label: {
-                        Text(Image(systemName: "xmark"))
-                            .font(.posButtonSymbolSmall)
-                            .foregroundColor(Color.posOnSurfaceVariantLowest)
-                            .accessibilityLabel(Localization.dismissAccessibilityLabel)
-                    })
+                    Button(
+                        action: onDismiss,
+                        label: {
+                            Text(Image(systemName: "xmark"))
+                                .font(.posButtonSymbolSmall)
+                                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                                .accessibilityLabel(Localization.dismissAccessibilityLabel)
+                        }
+                    )
                     .padding(Constants.dismissIconPadding)
                     Spacer()
                 }
@@ -89,7 +83,7 @@ struct POSNoticeView<HintContent: View>: View {
 
 private enum Constants {
     static let titleFont: POSFontStyle = .posBodyLargeBold
-    static let subtitleFont: POSFontStyle = .posBodySmallRegular()
+    static let contentFont: POSFontStyle = .posBodySmallRegular()
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     static let textSpacing: CGFloat = 4
     static let titleSpacing: CGFloat = 8
@@ -109,14 +103,16 @@ private enum Localization {
 #Preview("With all options") {
     POSNoticeView(
         title: "Example Notice",
-        subtitle: "This is a subtitle that explains more about the notice.",
         icon: Image(systemName: "exclamationmark.triangle"),
         onDismiss: {},
         onTap: {}
     ) {
-        Text("Here's a hint about what to do next. Learn More")
-            .font(.posBodySmallBold)
-            .foregroundColor(Color(.posPrimary))
+        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            Text("This is a subtitle that explains more about the notice.")
+            Text("Here's a hint about what to do next. Learn More")
+                .font(.posBodySmallBold)
+                .foregroundColor(Color(.posPrimary))
+        }
     }
     .padding()
 }
@@ -124,13 +120,15 @@ private enum Localization {
 #Preview("Without dismiss") {
     POSNoticeView(
         title: "Example Notice",
-        subtitle: "This is a subtitle that explains more about the notice.",
         icon: Image(systemName: "bell"),
         onTap: {}
     ) {
-        Text("Here's a hint about what to do next. Learn More")
-            .font(.posBodySmallBold)
-            .foregroundColor(Color(.posPrimary))
+        VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            Text("This is a subtitle that explains more about the notice.")
+            Text("Here's a hint about what to do next. Learn More")
+                .font(.posBodySmallBold)
+                .foregroundColor(Color(.posPrimary))
+        }
     }
     .padding()
 }

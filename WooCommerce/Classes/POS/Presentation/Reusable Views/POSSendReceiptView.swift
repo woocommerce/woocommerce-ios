@@ -73,7 +73,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
+        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText

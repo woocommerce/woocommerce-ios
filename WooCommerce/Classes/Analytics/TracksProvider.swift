@@ -131,7 +131,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleGetSupportTapped,
             WooAnalyticsStat.pointOfSaleSimpleProductsExplanationDialogShown,
             WooAnalyticsStat.pointOfSaleCreateNewOrderTapped,
-            WooAnalyticsStat.pointOfSaleEmailReceiptSendTapped,
+            WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
             WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,

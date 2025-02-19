@@ -174,7 +174,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                    authError == .applicationPasswordNotAvailable {
                     navigateToApplicationPasswordDisabledUI()
                 } else {
-                    showErrorAlert(message: Localization.authorizationRejected)
+                    showErrorAlert(message: Localization.errorFetchingAuthURL)
                 }
             }
             activityIndicator.stopAnimating()
@@ -321,6 +321,10 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             "Unable to log in because application passwords are disabled on your site.",
             comment: "Error message displayed when application password authorization fails " +
             "during login due to the feature being disabled on the input site."
+        )
+        static let errorFetchingAuthURL = NSLocalizedString(
+            "Failed to fetch the authorization URL for application passwords. Please try again.",
+            comment: "Error message displayed when failed to fetch application password authorization URL during login"
         )
     }
 }

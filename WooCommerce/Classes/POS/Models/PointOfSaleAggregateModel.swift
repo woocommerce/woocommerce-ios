@@ -37,6 +37,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
+
+    func exitPointOfSaleTapped()
 }
 
 @available(iOS 17.0, *)
@@ -471,6 +473,18 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
+    }
+}
+
+// MARK: - Lifecycle
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func exitPointOfSaleTapped() {
+        // Before exiting point of sale, we warn the merchant about losing their in-progress order.
+        // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
+        orderController.clearOrder()
+        startPaymentOnCardReaderConnection?.cancel()
+        cardReaderDisconnection?.cancel()
     }
 }
 

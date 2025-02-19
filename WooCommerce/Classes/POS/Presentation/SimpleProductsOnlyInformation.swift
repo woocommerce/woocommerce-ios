@@ -1,8 +1,10 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
     let deepLinkNavigator: DeepLinkNavigator?
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     init(isPresented: Binding<Bool>,
          deepLinkNavigator: DeepLinkNavigator? = AppDelegate.shared.tabBarController) {
@@ -28,6 +30,7 @@ struct SimpleProductsOnlyInformation: View {
                         .font(.posBodySmallRegular())
 
                     Button {
+                        posModel.exitPointOfSaleTapped()
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
@@ -67,6 +70,7 @@ struct SimpleProductsOnlyInformation: View {
 }
 
 // Constants and Localization enums
+@available(iOS 17.0, *)
 private extension SimpleProductsOnlyInformation {
     enum Constants {
         static let modalFrameWidth: CGFloat = 896
@@ -114,6 +118,7 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     SimpleProductsOnlyInformation(isPresented: .constant(true),
                                   deepLinkNavigator: nil)

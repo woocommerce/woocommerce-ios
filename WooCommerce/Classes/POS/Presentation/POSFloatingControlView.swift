@@ -40,6 +40,7 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     showDocumentation = true
+                    ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
                 } label: {
                     Label(
                         title: { Text(Localization.viewDocumentation) },
@@ -50,7 +51,8 @@ struct POSFloatingControlView: View {
                 VStack {
                     Spacer()
                     Image(systemName: "ellipsis")
-                        .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
+                        .font(.posBodyLargeBold)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         .foregroundStyle(fontColor)
                     Spacer()
                 }

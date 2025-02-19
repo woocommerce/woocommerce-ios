@@ -27,7 +27,7 @@ struct PointOfSalePaymentSuccessView: View {
 
                         VStack(alignment: .center, spacing: Constants.textSpacing) {
                             Text(viewModel.title)
-                                .font(.posHeading)
+                                .font(.posHeadingBold)
                                 .foregroundStyle(Color.posOnSurface)
                                 .accessibilityAddTraits(.isHeader)
                                 .offset(y: isViewLoaded ? 0 : Constants.animationOffset)

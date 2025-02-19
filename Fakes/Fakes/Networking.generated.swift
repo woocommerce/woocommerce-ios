@@ -2219,7 +2219,8 @@ extension Networking.Site {
             visibility: .fake(),
             canBlaze: .fake(),
             isAdmin: .fake(),
-            wasEcommerceTrial: .fake()
+            wasEcommerceTrial: .fake(),
+            hasSSOEnabled: .fake()
         )
     }
 }

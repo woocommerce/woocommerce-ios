@@ -45,18 +45,11 @@ struct ChildItemList: View {
 @available(iOS 17.0, *)
 private extension ChildItemList {
     @ViewBuilder var headerView: some View {
-        HStack {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .font(.posBodyLargeBold, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.posOnSurface)
-            }
-            POSHeaderTitleView(title: title)
-            Spacer()
-        }
-        .padding(.horizontal, Constants.itemListPadding)
+        POSPageHeaderView(title: title,
+                          backButtonConfiguration: .init(state: .enabled,
+                                                         action: {
+            dismiss()
+        }))
     }
 
     @ViewBuilder

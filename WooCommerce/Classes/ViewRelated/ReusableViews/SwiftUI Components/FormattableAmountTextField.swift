@@ -25,6 +25,9 @@ struct FormattableAmountTextField: View {
                 .opacity(0)
 
             Text(viewModel.formattedAmount)
+                .if(style == .pos) {
+                    $0.font(.posHeadingRegular)
+                }
                 .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
@@ -80,5 +83,12 @@ private extension FormattableAmountTextField {
                                                         locale: .current,
                                                         storeCurrencySettings: .init(),
                                                         allowNegativeNumber: false)
-    FormattableAmountTextField(viewModel: viewModel, style: .pos)
+    VStack {
+        Text("Default style")
+        FormattableAmountTextField(viewModel: viewModel, style: .default)
+    }
+    VStack {
+        Text("POS style")
+        FormattableAmountTextField(viewModel: viewModel, style: .pos)
+    }
 }

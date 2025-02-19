@@ -794,6 +794,37 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
         }
+
+        @available(iOS 17.0, *)
+        @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
+            // Given
+            let analyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                cardPresentPaymentService: cardPresentPaymentService,
+                                                orderController: orderController,
+                                                collectOrderPaymentAnalyticsTracker: analyticsTracker)
+
+            // When
+            await sut.checkOut()
+
+            // Then
+            #expect(analyticsTracker.didCallTrackCheckoutTapped == true)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func cancelCashPayment_when_invoked_then_tracks_expected_event() async throws {
+            // Given
+            let analyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                collectOrderPaymentAnalyticsTracker: analyticsTracker)
+            // When
+            await sut.cancelCashPayment()
+
+            // Then
+            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "back_to_checkout_from_cash" }) != nil)
+        }
     }
 }
 

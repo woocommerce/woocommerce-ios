@@ -351,7 +351,12 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
-
+    
+    /// Verifies the destination address of an order.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - completion: Closure to be executed upon completion.
     public func verifyDestinationAddress(siteID: Int64,
                                          orderID: Int64,
                                          completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {

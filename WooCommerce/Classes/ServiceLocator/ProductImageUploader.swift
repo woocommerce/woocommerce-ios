@@ -274,15 +274,9 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     @objc private func appDidEnterBackground() {
-        activeUploads
-            .first()
-            .sink { [weak self] activeKeys in
-                guard let self = self else { return }
-                if !activeKeys.isEmpty {
-                    self.scheduleUploadInProgressNotification()
-                }
-            }
-            .store(in: &backgroundSubscriptions)
+        if !activeUploadsPublisher.isEmpty {
+            self.scheduleUploadInProgressNotification()
+        }
     }
 }
 

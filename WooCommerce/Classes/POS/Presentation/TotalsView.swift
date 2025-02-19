@@ -246,14 +246,10 @@ private extension TotalsView {
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {
-                    HStack(alignment: .center) {
-                        Spacer()
-                        PointOfSaleCardPresentPaymentInLineMessage(
-                            messageType: .paymentSuccess(
-                                viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                                 paymentMethod: .cash)))
-                        Spacer()
-                    }
+                    PointOfSaleCardPresentPaymentInLineMessage(
+                        messageType: .paymentSuccess(
+                            viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                             paymentMethod: .cash)))
                 }
             }
         }

@@ -137,13 +137,13 @@ extension LocalNotification {
         enum ProductImageBackgroundUpload {
             static let title = NSLocalizedString(
                 "localNotification.ProductImageUploader.title",
-                value: "Product Image Upload in Progress",
+                value: "Image Upload in Progress",
                 comment: "Title of the local notification to inform the user that product images are uploading in the background."
             )
             static let body = NSLocalizedString(
                 "localNotification.ProductImageUploader.message",
-                value: "Your product images are still uploading, but upload speed may be reduced" +
-                "and errors could occur. For best results, please keep the app open until uploads finish.",
+                value: "Your product images are still uploading in the background. Upload speed may be slower, and errors could occur." +
+                " For best results, please keep the app open until uploads are complete.",
                 comment: "Message on the local notification to inform the user about the background upload of product images."
             )
         }

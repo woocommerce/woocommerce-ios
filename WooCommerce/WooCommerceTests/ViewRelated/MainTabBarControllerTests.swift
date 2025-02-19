@@ -1,4 +1,5 @@
 import Combine
+import Photos
 import TestKit
 import XCTest
 @testable import WooCommerce
@@ -256,8 +257,8 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: NSError(domain: "", code: 8))))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: NSError(domain: "", code: 8))))
 
         // Given
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
@@ -286,7 +287,6 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
 
         // Given
@@ -316,7 +316,6 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .variation(productID: 0, variationID: 608),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
 
         // Given
@@ -347,8 +346,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: error)))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -389,8 +388,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: error)))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -431,7 +430,6 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()

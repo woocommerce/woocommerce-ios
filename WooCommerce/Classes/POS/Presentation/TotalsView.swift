@@ -363,7 +363,7 @@ private extension TotalsView {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
-        static let cashButtonBottomPadding: CGFloat = 24
+        static let cashButtonBottomPadding: CGFloat = 16
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8

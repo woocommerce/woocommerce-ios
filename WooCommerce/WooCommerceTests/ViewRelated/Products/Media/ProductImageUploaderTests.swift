@@ -32,7 +32,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 promise(statuses)
             }
         }
-        XCTAssertTrue(statuses.productImageStatuses.hasPendingUpload)
+        XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
                                                                          productOrVariationID: .product(id: productID),
                                                                          isLocalID: false),
@@ -82,7 +82,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 promise(statuses)
             }
         }
-        XCTAssertTrue(statuses.productImageStatuses.hasPendingUpload)
+        XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
                                                                          productOrVariationID: .product(id: productID),
                                                                          isLocalID: false),
@@ -263,7 +263,7 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         waitForExpectation { expectation in
             self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
-                if statuses.productImageStatuses.hasPendingUpload == false {
+                if statuses.hasPendingUpload == false {
                     expectation.fulfill()
                 }
             }
@@ -298,19 +298,19 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // When
         var errors: [ProductImageUploadErrorInfo] = []
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -356,7 +356,6 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [.uploading(asset: .phAsset(asset: asset))],
                            error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }
@@ -409,20 +408,20 @@ final class ProductImageUploaderTests: XCTestCase {
                                                     productOrVariationID: .product(id: 9999),
                                                     isLocalID: true))
 
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         var errors: [ProductImageUploadErrorInfo] = []
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: .failedUploadingImage(error: error))],
+                           error: .failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -519,19 +518,19 @@ final class ProductImageUploaderTests: XCTestCase {
                                                      isLocalID: true))
 
         var errors: [ProductImageUploadErrorInfo] = []
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -562,7 +561,12 @@ final class ProductImageUploaderTests: XCTestCase {
 
         let _: Void = waitFor { promise in
             self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
-                if statuses.error != nil {
+                if statuses.contains(where: { status in
+                    switch status {
+                    case .uploadFailure: true
+                    case .remote, .uploading: false
+                    }
+                }) {
                     promise(())
                 }
             }
@@ -684,7 +688,6 @@ extension ProductImageUploadErrorInfo: @retroactive Equatable {
     public static func == (lhs: ProductImageUploadErrorInfo, rhs: ProductImageUploadErrorInfo) -> Bool {
         return lhs.siteID == rhs.siteID &&
         lhs.productOrVariationID == rhs.productOrVariationID &&
-        lhs.productImageStatuses == rhs.productImageStatuses &&
         lhs.error == rhs.error
     }
 }
@@ -692,8 +695,8 @@ extension ProductImageUploadErrorInfo: @retroactive Equatable {
 extension ProductImageUploaderError: @retroactive Equatable {
     public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
         switch (lhs, rhs) {
-        case (.failedUploadingImage(let lhsError), .failedUploadingImage(let rhsError)):
-            return lhsError as NSError == rhsError as NSError
+        case let (.failedUploadingImage(lAsset, lhsError), .failedUploadingImage(rAsset, rhsError)):
+            return lhsError as NSError == rhsError as NSError && lAsset == rAsset
         case (.failedSavingProductAfterImageUpload(let lhsError), .failedSavingProductAfterImageUpload(let rhsError)):
             return lhsError as NSError == rhsError as NSError
         default:

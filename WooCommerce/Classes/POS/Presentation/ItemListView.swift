@@ -180,7 +180,7 @@ private extension ItemListView {
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
-        static let infoIconInset: EdgeInsets = .init(top: 8, leading: 6, bottom: 8, trailing: 6)
+        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16

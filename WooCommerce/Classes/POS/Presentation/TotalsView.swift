@@ -266,7 +266,14 @@ private extension TotalsView {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
-        let sidePadding: CGFloat = 8
+        let sidePadding: CGFloat
+
+        init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
+            self.backgroundColor = backgroundColor
+            self.topPadding = topPadding
+            self.bottomPadding = bottomPadding
+            self.sidePadding = sidePadding
+        }
 
         static let primary = PaymentViewLayout(
             backgroundColor: .clear,
@@ -334,10 +341,18 @@ private extension TotalsView {
                     return .primary
                 }
             }
-        case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: nil,
-                                     bottomPadding: nil)
+        case .cash(let cashPaymentState):
+            switch cashPaymentState {
+            case .collectingCash:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: 0,
+                                         bottomPadding: nil,
+                                         sidePadding: 0)
+            case .paymentSuccess:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: nil,
+                                         bottomPadding: nil)
+            }
         }
     }
 }
@@ -348,7 +363,7 @@ private extension TotalsView {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
-        static let cashButtonBottomPadding: CGFloat = 24
+        static let cashButtonBottomPadding: CGFloat = 16
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8
@@ -356,8 +371,8 @@ private extension TotalsView {
         static let totalsHorizontalSpacing: CGFloat = 24
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
-        static let totalTitleFont: POSFontStyle = .posHeading
-        static let totalAmountFont: POSFontStyle = .posHeading
+        static let totalTitleFont: POSFontStyle = .posHeadingBold
+        static let totalAmountFont: POSFontStyle = .posHeadingBold
         static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value

@@ -17,7 +17,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
         let expectedEvent = "card_present_collect_payment_success"
         let expectedProperties = [
-            "milliseconds_since_order_creation_success",
+            "milliseconds_since_order_sync_success",
             "milliseconds_since_reader_ready_to_collect_payment",
             "milliseconds_since_card_tapped",
             "milliseconds_since_customer_interaction_started",
@@ -25,7 +25,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         ]
 
         // When
-        sut.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
         #expect(analyticsProvider.receivedEvents.first(where: { $0 == expectedEvent }) != nil)

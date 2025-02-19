@@ -13,6 +13,7 @@
 - [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
 - [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 - [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
 
 21.7
 -----

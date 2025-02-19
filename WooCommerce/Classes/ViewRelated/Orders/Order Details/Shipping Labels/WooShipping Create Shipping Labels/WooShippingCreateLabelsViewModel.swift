@@ -236,8 +236,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                          productIDs: itemsDataSource.items.map(\.productOrVariationID))
         let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
                                                              orderID: order.orderID,
-                                                             originAddress: selectedOriginAddress.toShippingLabelAddress(),
-                                                             destinationAddress: destinationAddress.toShippingLabelAddress(),
+                                                             originAddress: selectedOriginAddress.toWooShippingAddress(),
+                                                             destinationAddress: destinationAddress,
                                                              package: packagePurchase) { [weak self] result in
             guard let self else { return }
             isPurchasingLabel = false
@@ -331,8 +331,8 @@ private extension WooShippingCreateLabelsViewModel {
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
                 shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toShippingLabelAddress(),
-                                                              destinationAddress: destinationAddress?.toShippingLabelAddress(),
+                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
+                                                              destinationAddress: destinationAddress,
                                                               stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
                 }
@@ -468,38 +468,20 @@ private extension WooShippingCreateLabelsViewModel {
 }
 
 private extension WooShippingOriginAddress {
-    /// Converts the origin address to a `ShippingLabelAddress`.
+    /// Converts the origin address to a `WooShippingAddress`.
     ///
     /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.
     ///
-    func toShippingLabelAddress() -> ShippingLabelAddress {
-        ShippingLabelAddress(company: company,
-                             name: fullName,
-                             phone: phone,
-                             country: country,
-                             state: state,
-                             address1: address1,
-                             address2: address2,
-                             city: city,
-                             postcode: postcode)
-    }
-}
-
-private extension WooShippingAddress {
-    /// Converts the address to a `ShippingLabelAddress`.
-    ///
-    /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.
-    ///
-    func toShippingLabelAddress() -> ShippingLabelAddress {
-        ShippingLabelAddress(company: company,
-                             name: name,
-                             phone: phone,
-                             country: country,
-                             state: state,
-                             address1: address1,
-                             address2: address2,
-                             city: city,
-                             postcode: postcode)
+    func toWooShippingAddress() -> WooShippingAddress {
+        WooShippingAddress(company: company,
+                           name: fullName,
+                           phone: phone,
+                           country: country,
+                           state: state,
+                           address1: address1,
+                           address2: address2,
+                           city: city,
+                           postcode: postcode)
     }
 }
 

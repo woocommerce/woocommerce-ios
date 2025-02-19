@@ -165,6 +165,22 @@ private extension PointOfSaleAggregateModel {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
         }
     }
+
+    // Tracks when the order is created or updated successfully
+    // pdfdoF-6hn#comment-7625-p2
+    func trackOrderSyncState(_ result: Result<SyncOrderState, Error>) {
+        switch result {
+        case .success(let syncState):
+            switch syncState {
+            case .newOrder, .orderUpdated:
+                collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
+            default:
+                break
+            }
+        case .failure:
+            break
+        }
+    }
 }
 
 // MARK: - Card payments
@@ -453,9 +469,7 @@ extension PointOfSaleAggregateModel {
         let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
-        if case .success(.newOrder) = syncOrderResult {
-            collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
-        }
+        trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
     }
 }

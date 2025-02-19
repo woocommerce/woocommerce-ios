@@ -58,7 +58,7 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         // no-op
     }
 
-    func trackOrderCreationSuccess() {
+    func trackOrderSyncSuccess() {
         // no-op
     }
 

@@ -69,4 +69,10 @@ public enum WooShippingAction: Action {
                              address: WooShippingOriginAddress,
                              isVerified: Bool,
                              completion: (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
+
+    /// Verify destination address of an order.
+    ///
+    case verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void)
 }

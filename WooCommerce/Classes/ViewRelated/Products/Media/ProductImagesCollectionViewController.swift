@@ -7,6 +7,7 @@ import Yosemite
 final class ProductImagesCollectionViewController: UICollectionViewController {
 
     typealias ReorderingHandler = (_ productImageStatuses: [ProductImageStatus]) -> Void
+    typealias FailedUploadHandler = (_ asset: ProductImageAssetType, _ error: Error) -> Void
 
     private var productImageStatuses: [ProductImageStatus]
 
@@ -20,10 +21,12 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
     private let onReordering: ReorderingHandler
+    private let onFailedUploadSelected: FailedUploadHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         onFailedUploadSelected: @escaping FailedUploadHandler,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
          onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
@@ -31,6 +34,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         self.onReordering = onReordering
+        self.onFailedUploadSelected = onFailedUploadSelected
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -92,6 +96,13 @@ private extension ProductImagesCollectionViewController {
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
+        case let .uploadFailure(asset, _):
+            switch asset {
+                case .phAsset(let asset):
+                    configureFailedImageCell(cell, asset: asset)
+                case .uiImage(let image, _, _):
+                    configureFailedImageCell(cell, image: image)
+            }
         }
     }
 
@@ -142,6 +153,29 @@ private extension ProductImagesCollectionViewController {
         cell.imageView.contentMode = .scaleAspectFit
         cell.imageView.image = image
     }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
 }
 
 // MARK: UICollectionViewDelegate
@@ -152,15 +186,17 @@ extension ProductImagesCollectionViewController {
         switch status {
         case .remote:
             break
-        default:
+        case let .uploadFailure(asset, error):
+            return onFailedUploadSelected(asset, error)
+        case .uploading:
             return
         }
 
         let selectedImageIndex: Int = {
-            // In case of any pending images, deduct the number of pending images from the index.
+            // In case of any pending and failed images, deduct the number of pending images from the index.
             let imageStatusIndex = indexPath.row
-            let numberOfPendingImages = productImageStatuses.count - productImageStatuses.images.count
-            return imageStatusIndex - numberOfPendingImages
+            let numberOfPendingOrFailedImages = productImageStatuses.count - productImageStatuses.images.count
+            return imageStatusIndex - numberOfPendingOrFailedImages
         }()
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
                                                                                     selectedIndex: selectedImageIndex,
@@ -294,6 +330,8 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(FailedProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: FailedProductImageCollectionViewCell.reuseIdentifier)
     }
 }
 

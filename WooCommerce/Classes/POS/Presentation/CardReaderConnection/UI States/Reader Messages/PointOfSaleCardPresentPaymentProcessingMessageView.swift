@@ -3,12 +3,14 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
             ProgressView()
                 .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 Text(viewModel.title)
@@ -17,7 +19,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnPrimaryContainer)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)

@@ -4,6 +4,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     let title: String
     let message: String
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
@@ -12,6 +13,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(title)
                     .foregroundStyle(Color(.neutral(.shade40)))
@@ -19,7 +21,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(message)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .foregroundStyle(Color(.neutral(.shade60)))
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)

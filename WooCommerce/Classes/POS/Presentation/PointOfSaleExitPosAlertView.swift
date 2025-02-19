@@ -21,7 +21,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
             Text(Localization.exitTitle)
-                .font(.posHeading)
+                .font(.posHeadingBold)
                 .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
                 .font(.posBodyLargeRegular())

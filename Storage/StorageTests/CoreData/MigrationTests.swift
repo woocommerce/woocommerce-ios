@@ -3260,6 +3260,36 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(predefinedOption.value(forKey: "predefinedPackages") as? NSSet, NSSet(array: [predefinedPackage]))
         XCTAssertEqual(savedPredefinedPackage.value(forKey: "package") as? WooShippingPredefinedPackage, predefinedPackage)
     }
+
+    func test_migrating_from_119_to_120_adds_new_hasSSOEnabled_attribute_to_site() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 119")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["hasSSOEnabled"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 120")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        // `hasSSOEnabled` should be present in `migratedSite`
+        XCTAssertNotNil(migratedSite.entity.attributesByName["hasSSOEnabled"])
+
+        let savedHasSSOEnabled = try XCTUnwrap(migratedSite.value(forKey: "hasSSOEnabled") as? Bool)
+        XCTAssertFalse(savedHasSSOEnabled) // default value
+
+        migratedSite.setValue(true, forKey: "hasSSOEnabled")
+        try targetContext.save()
+
+        let updatedHasSSOEnabled = try XCTUnwrap(migratedSite.value(forKey: "hasSSOEnabled") as? Bool)
+        XCTAssertTrue(updatedHasSSOEnabled)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

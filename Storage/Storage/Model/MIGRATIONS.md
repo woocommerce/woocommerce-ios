@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 120 (Release 21.8.0.0)
+- @itsmeichigo 2025-02-17
+    - Added `hasSSOEnabled` attribute to `Site` entity. 
+
 ## Model 119 (Release 21.3.0.0)
 - @rachelmcr 2024-12-16
     - Added `WooShippingPackagesResponse` entity.

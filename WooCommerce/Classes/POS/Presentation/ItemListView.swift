@@ -50,21 +50,18 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            HStack {
-                POSHeaderTitleView(title: Localization.title)
-                if !shouldShowHeaderBanner {
-                    Spacer()
-                    Button(action: {
-                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                        showSimpleProductsModal = true
-                    }, label: {
-                        Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolLarge)
-                    })
-                    .foregroundColor(.posOnSurface)
-                    .padding(.trailing, Constants.infoIconPadding)
-                }
-            }
+            POSPageHeaderView(title: Localization.title, trailingContent: {
+                Button(action: {
+                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                    showSimpleProductsModal = true
+                }, label: {
+                    Text(Image(systemName: "info.circle"))
+                        .font(.posButtonSymbolLarge)
+                        .foregroundStyle(Color.posOnSurface)
+                        .padding(Constants.infoIconInset)
+                })
+                .renderedIf(!shouldShowHeaderBanner)
+            })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
@@ -122,10 +119,9 @@ private extension ItemListView {
         .padding(.bottom, Constants.bannerCardPadding)
     }
 
-    private var bannerHintAndLearnMoreText: Text {
-        Text(headerBannerHint + " ") +
-        Text(Localization.headerBannerLearnMoreHint)
-            .font(POSFontStyle.posBodySmallBold.font())
+    private var bannerHintAndLearnMoreText: some View {
+        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
+            .font(.posBodySmallBold)
             .foregroundColor(Color(.posPrimary))
     }
 
@@ -184,7 +180,7 @@ private extension ItemListView {
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
-        static let infoIconPadding: CGFloat = 16
+        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16

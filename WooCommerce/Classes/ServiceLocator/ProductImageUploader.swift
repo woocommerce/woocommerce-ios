@@ -9,7 +9,6 @@ import protocol Yosemite.StoresManager
 struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productOrVariationID: ProductOrVariationID
-    let productImageStatuses: [ProductImageStatus]
     let error: ProductImageUploaderError
 }
 
@@ -115,6 +114,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private var statusUpdatesExcludedProductKeys: Set<Key> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
     private var backgroundSubscriptions: Set<AnyCancellable> = []
+    private var imageUploadSubscriptions: Set<AnyCancellable> = []
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
@@ -147,6 +147,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
             observeStatusUpdates(key: key, actionHandler: actionHandler)
+            observeImageUploads(key: key, actionHandler: actionHandler)
         }
 
         return actionHandler
@@ -197,7 +198,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
         if let productImagesSaver, productImagesSaver.imageStatusesToSave.isNotEmpty {
             // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
-            return handler.productImageStatuses != productImagesSaver.imageStatusesToSave
+            return handler.productImageStatuses.images != productImagesSaver.imageStatusesToSave.images
         } else {
             if handler.productImageStatuses.hasPendingUpload {
                 return true
@@ -242,7 +243,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productOrVariationID: key.productOrVariationID,
-                                              productImageStatuses: handler.productImageStatuses,
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
             self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
@@ -255,6 +255,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
         backgroundSubscriptions = []
+        imageUploadSubscriptions = []
         activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
@@ -301,7 +302,7 @@ private extension ProductImageUploader {
     }
 
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
-        let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else { return }
 
             if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
@@ -311,16 +312,24 @@ private extension ProductImageUploader {
                 /// remove the key from active uploads
                 removeProductFromActiveUploads(key: key)
             }
-
-            if let error = error, statusUpdatesExcludedProductKeys.contains(key) == false {
-                removeProductFromActiveUploads(key: key)
-                errorsSubject.send(.init(siteID: key.siteID,
-                                         productOrVariationID: key.productOrVariationID,
-                                         productImageStatuses: productImageStatuses,
-                                         error: .failedUploadingImage(error: error)))
-            }
         }
         statusUpdatesSubscriptions.insert(observationToken)
+    }
+
+    func observeImageUploads(key: Key, actionHandler: ProductImageActionHandler) {
+        let observationToken = actionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self else { return }
+
+            if case .failure(let error) = result {
+                let infoError = ProductImageUploadErrorInfo(siteID: key.siteID,
+                                                            productOrVariationID: key.productOrVariationID,
+                                                            error: .failedUploadingImage(asset: asset, error: error))
+                if statusUpdatesExcludedProductKeys.contains(key) == false {
+                    errorsSubject.send(infoError)
+                }
+            }
+        }
+        imageUploadSubscriptions.insert(observationToken)
     }
 
     func removeProductFromActiveUploads(key: Key) {
@@ -344,7 +353,7 @@ enum ProductImageUploaderError: Error {
     case noActionHandlerFound
     case noRemoteProductIDFound
     case failedSavingProductAfterImageUpload(error: Error)
-    case failedUploadingImage(error: Error)
+    case failedUploadingImage(asset: ProductImageAssetType, error: Error)
 }
 
 private enum Localization {

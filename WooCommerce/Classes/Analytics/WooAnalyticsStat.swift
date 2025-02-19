@@ -1276,9 +1276,10 @@ enum WooAnalyticsStat: String {
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
     case pointOfSaleClearCartTapped = "clear_cart_tapped"
-    case pointOfSaleExitMenuItemTapped = "exit_pos_menu_item_tapped"
-    case pointOfSaleExitConfirmed = "exit_pos_confirmed"
+    case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
+    case pointOfSaleExitConfirmed = "exit_confirmed"
     case pointOfSaleGetSupportTapped = "get_support_tapped"
     case pointOfSaleSimpleProductsExplanationDialogShown = "simple_products_explanation_dialog_shown"
     case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
@@ -1287,6 +1288,10 @@ enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
+    case pointOfSaleViewDocsTapped = "view_docs_tapped"
+    case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
+    case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

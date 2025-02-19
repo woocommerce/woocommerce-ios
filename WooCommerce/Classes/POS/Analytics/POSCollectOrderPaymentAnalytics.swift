@@ -5,7 +5,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     var connectedReaderModel: String?
 
     private var customerInteractionStarted: Double = 0
-    private var orderCreated: Double = 0
+    private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
@@ -20,12 +20,12 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         // Property: milliseconds_since_customer_interaction_started
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
-        // Property: milliseconds_since_order_creation_success
-        let elapsedTimeSinceOrderCreation = calculateElapsedTimeInMilliseconds(since: orderCreated)
+        // Property: milliseconds_since_order_sync_success
+        let elapsedTimeSinceOrderSync = calculateElapsedTimeInMilliseconds(since: orderSync)
 
         // Property: milliseconds_since_reader_ready_to_collect_payment
         let elapsedTimeSinceCardReaderReady = calculateElapsedTimeInMilliseconds(since: cardReaderReady)
@@ -35,7 +35,7 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
         analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
-            millisecondsSinceOrderCreationSuccess: elapsedTimeSinceOrderCreation,
+            millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
             checkoutTapCount: checkoutTapCount
@@ -43,6 +43,15 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
+    }
+
+    func trackSuccessfulCashPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+        resetCheckoutTapCountTracker()
     }
 
     func trackPaymentFailure(with error: any Error) { }
@@ -56,15 +65,19 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
     func trackCustomerInteractionStarted() {
         // Any action that is considered as user starting an iteraction resets any ongoing counter
         resetAllCountersOnInteractionStarted()
+        analytics.track(.pointOfSaleInteractionWithCustomerStarted)
         customerInteractionStarted = Date().timeIntervalSince1970
     }
 
-    func trackOrderCreationSuccess() {
-        orderCreated = trackCurrentTime()
+    func trackOrderSyncSuccess() {
+        orderSync = trackCurrentTime()
     }
 
     func trackCardReaderReady() {
         cardReaderReady = trackCurrentTime()
+
+        // As a side effect of knowing when the reader is ready, we track the elapsed from order sync (created or updated)
+        trackElapsedTimeFromOrderSyncToCardReady()
     }
 
     // The Stripe SDK returns multiple `.processing` events, but we want to capture the first one in the stream only.
@@ -82,6 +95,11 @@ final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTrackin
 
     func resetCheckoutTapCountTracker() {
         checkoutTapCount = 0
+    }
+
+    private func trackElapsedTimeFromOrderSyncToCardReady() {
+        let elapsedTime = cardReaderReady - orderSync
+        analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
     }
 }
 
@@ -101,7 +119,7 @@ private extension POSCollectOrderPaymentAnalytics {
     }
 
     private func resetAllCountersOnInteractionStarted() {
-        orderCreated = 0
+        orderSync = 0
         cardReaderReady = 0
         cardReaderTapped = 0
         resetCheckoutTapCountTracker()
@@ -113,9 +131,10 @@ private extension POSCollectOrderPaymentAnalytics {
 // https://github.com/woocommerce/woocommerce-ios/issues/15149
 extension CollectOrderPaymentAnalytics {
     func trackCustomerInteractionStarted() { }
-    func trackOrderCreationSuccess() { }
+    func trackOrderSyncSuccess() { }
     func trackCardReaderReady() { }
     func trackCardReaderTapped() { }
     func trackCheckoutTapped() { }
     func resetCheckoutTapCountTracker() { }
+    func trackSuccessfulCashPayment() { }
 }

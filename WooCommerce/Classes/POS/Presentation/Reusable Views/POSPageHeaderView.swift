@@ -61,7 +61,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(.posOnSurfaceVariantHighest)
+                        .foregroundColor(.posOnSurface)
                 }
             }
 
@@ -85,7 +85,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }
-            .disabled(configuration.state == .disabled)
+            .disabled(configuration.state == .disabled || configuration.state == .shimmering)
             .if(configuration.state == .shimmering) { view in
                 view.shimmering()
             }

@@ -26,6 +26,11 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackReceiptPrintFailed(error: Error)
 
     func trackCustomerInteractionStarted()
+    func trackOrderCreationSuccess()
+    func trackCardReaderReady()
+    func trackCardReaderTapped()
+    func trackCheckoutTapped()
+    func resetCheckoutTapCountTracker()
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {

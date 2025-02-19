@@ -141,7 +141,7 @@ private extension ItemListState {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let infoIconInset: EdgeInsets = .init(top: 8, leading: 6, bottom: 8, trailing: 6)
+        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let itemListPadding: CGFloat = 16
         static let bannerCardPadding: CGFloat = 16
     }

@@ -15,7 +15,7 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
 
     var didCallTrackSuccessfulPayment = false
     var spyTrackSuccessfulPaymentCapturedPaymentData: CardPresentCapturedPaymentData? = nil
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         didCallTrackSuccessfulPayment = true
         spyTrackSuccessfulPaymentCapturedPaymentData = capturedPaymentData
     }
@@ -58,7 +58,7 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         // no-op
     }
 
-    func trackOrderCreationSuccess() {
+    func trackOrderSyncSuccess() {
         // no-op
     }
 
@@ -76,6 +76,10 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     }
 
     func resetCheckoutTapCountTracker() {
+        // no-op
+    }
+
+    func trackSuccessfulCashPayment() {
         // no-op
     }
 }

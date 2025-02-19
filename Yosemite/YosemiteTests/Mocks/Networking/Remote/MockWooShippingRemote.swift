@@ -156,8 +156,8 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
@@ -202,8 +202,8 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: Networking.ShippingLabelAddress,
-                               destinationAddress: Networking.ShippingLabelAddress,
+                               originAddress: Networking.WooShippingAddress,
+                               destinationAddress: Networking.WooShippingAddress,
                                package: Networking.WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
@@ -267,7 +267,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func addressValidation(siteID: Int64,
-                           address: ShippingLabelAddress,
+                           address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

@@ -48,7 +48,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
 
             VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
                 Text(title)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)

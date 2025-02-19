@@ -28,13 +28,16 @@ struct POSSendReceiptView: View {
             }))
 
             VStack(alignment: .center, spacing: conditionalPadding(8)) {
-                TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
+                TextField("",
+                          text: $textFieldInput,
+                          prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                    .foregroundStyle(Color.posOnSurface)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .multilineTextAlignment(.center)
-                    .font(POSFontStyle.posBodyXLarge)
+                    .font(POSFontStyle.posHeadingRegular)
                     .focused()
                     .focused($isTextFieldFocused)
                     .padding()
@@ -44,8 +47,8 @@ struct POSSendReceiptView: View {
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
-                        .font(POSFontStyle.posBodyLargeRegular())
-                        .foregroundColor(.red)
+                        .font(POSFontStyle.posBodySmallRegular())
+                        .foregroundColor(.posError)
                         .padding(.bottom, Constants.errorMessagePadding)
                 }
 

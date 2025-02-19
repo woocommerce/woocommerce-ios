@@ -179,7 +179,7 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
-        static let primaryFont: POSFontStyle = .posHeading
+        static let primaryFont: POSFontStyle = .posHeadingBold
         static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
         static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8

@@ -88,8 +88,6 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
-            .posSurfaceContainerLowest
         case .card(.processingPayment):
             .posPrimary
         case .cash(.collectingCash):

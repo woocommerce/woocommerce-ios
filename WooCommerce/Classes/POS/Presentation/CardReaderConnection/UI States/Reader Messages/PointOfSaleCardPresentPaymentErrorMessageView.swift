@@ -11,26 +11,26 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posBodyRegular)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
                        action: viewModel.tryAgainButtonViewModel.actionHandler)
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                 if let backToCheckoutButtonViewModel = viewModel.backToCheckoutButtonViewModel {
                     Button(backToCheckoutButtonViewModel.title,
                            action: backToCheckoutButtonViewModel.actionHandler)
-                    .buttonStyle(POSSecondaryButtonStyle())
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
         }

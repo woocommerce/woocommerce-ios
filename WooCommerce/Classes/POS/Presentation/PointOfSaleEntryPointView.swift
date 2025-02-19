@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
-    @StateObject private var posModel: PointOfSaleAggregateModel
+    @State private var posModel: PointOfSaleAggregateModel
     @StateObject private var posModalManager = POSModalManager()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -11,21 +11,23 @@ struct PointOfSaleEntryPointView: View {
     init(itemsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderController: PointOfSaleOrderControllerProtocol) {
+         orderController: PointOfSaleOrderControllerProtocol,
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(
             itemsController: itemsController,
             cardPresentPaymentService: cardPresentPaymentService,
-            orderController: orderController)
+            orderController: orderController,
+            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
 
-        self._posModel = StateObject(wrappedValue: posModel)
+        self._posModel = State(wrappedValue: posModel)
     }
 
     var body: some View {
         PointOfSaleDashboardView()
         .environmentObject(posModalManager)
-        .environmentObject(posModel)
+        .environment(posModel)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }
@@ -42,6 +44,7 @@ struct PointOfSaleEntryPointView: View {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderController: PointOfSalePreviewOrderController())
+                              orderController: PointOfSalePreviewOrderController(),
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
 }
 #endif

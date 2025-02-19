@@ -2220,7 +2220,8 @@ extension Networking.Site {
             visibility: .fake(),
             canBlaze: .fake(),
             isAdmin: .fake(),
-            wasEcommerceTrial: .fake()
+            wasEcommerceTrial: .fake(),
+            hasSSOEnabled: .fake()
         )
     }
 }
@@ -2367,6 +2368,21 @@ extension Networking.StoredProductSettings {
     public static func fake() -> Networking.StoredProductSettings {
         .init(
             settings: .fake()
+        )
+    }
+}
+extension Networking.StoredProductSettings.Setting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.StoredProductSettings.Setting {
+        .init(
+            siteID: .fake(),
+            sort: .fake(),
+            stockStatusFilter: .fake(),
+            productStatusFilter: .fake(),
+            productTypeFilter: .fake(),
+            productCategoryFilter: .fake(),
+            favoriteProduct: .fake()
         )
     }
 }

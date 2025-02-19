@@ -3,7 +3,7 @@ import class WordPressShared.EmailFormatValidator
 
 @available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
@@ -18,75 +18,54 @@ struct POSSendReceiptView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: conditionalPadding(8)) {
-            HStack {
+            POSPageHeaderView(title: Localization.emailReceiptNavigationText,
+                              backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                                             action: {
+                withAnimation {
+                    isShowingSendReceiptView = false
+                    isTextFieldFocused = false
+                }
+            }))
+
+            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+                TextField("",
+                          text: $textFieldInput,
+                          prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                    .foregroundStyle(Color.posOnSurface)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.center)
+                    .font(POSFontStyle.posHeadingRegular)
+                    .focused()
+                    .focused($isTextFieldFocused)
+                    .padding()
+                    .onSubmit {
+                        sendReceipt()
+                    }
+
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .font(POSFontStyle.posBodySmallRegular())
+                        .foregroundColor(.posError)
+                        .padding(.bottom, Constants.errorMessagePadding)
+                }
+
                 Button(action: {
-                    withAnimation {
-                        isShowingSendReceiptView = false
-                        isTextFieldFocused = false
-                    }
+                    sendReceipt()
                 }, label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text(Localization.emailReceiptNavigationText)
-                    }
-                    .font(.posTitleEmphasized)
-                    .foregroundColor(.posPrimaryText)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-                    .accessibilityAddTraits(.isHeader)
+                    Text(Localization.buttonTitle)
                 })
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                .frame(maxWidth: .infinity)
+                .disabled(isLoading)
+
                 Spacer()
             }
-            .buttonStyle(.plain)
-            .disabled(isLoading)
-
-            TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
-                .focused()
-                .focused($isTextFieldFocused)
-                .padding()
-                .onSubmit {
-                    sendReceipt()
-                }
-
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
-                    .foregroundColor(.red)
-                    .padding(.bottom, Constants.errorMessagePadding)
-            }
-
-            Button(action: {
-                sendReceipt()
-            }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryText)
-                    } else {
-                        Text(Localization.buttonTitle)
-                            .font(Constants.buttonFont)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-            })
-            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-            .padding(conditionalPadding(Constants.buttonPadding))
-            .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
-            .disabled(isLoading)
-
-            Spacer()
+            .padding([.horizontal, .bottom])
         }
-        .padding([.horizontal, .bottom])
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
@@ -94,6 +73,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
+        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText
@@ -119,9 +99,6 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
         static let errorMessagePadding: CGFloat = 8
     }
 
@@ -168,8 +145,9 @@ private extension POSSendReceiptView {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

@@ -465,20 +465,42 @@ platform :ios do
     end
   end
 
-  #####################################################################################
-  # finalize_release
-  # -----------------------------------------------------------------------------------
-  # This lane finalize a release: updates store metadata, bump final version number,
-  # remove branch protection and close milestone, then trigger the final release on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane finalize_release [skip_confirm:<skip confirm>] [version:<version>]
+  # Downloads and prepares the latest translations from GlotPress for App Store submission,
+  # then pushes the changes to the remote repository
   #
-  # Example:
-  # bundle exec fastlane finalize_release
-  # bundle exec fastlane finalize_release skip_confirm:true
-  #####################################################################################
-  desc 'Trigger the final release build on CI'
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane download_release_translations skip_confirm:true
+  #
+  lane :download_release_translations do |skip_confirm: false|
+    ensure_git_status_clean
+    ensure_git_branch_is_release_branch!
+
+    UI.important("Downloading latest translations for version #{release_version_current}")
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+
+    # Don't check translation coverage in CI
+    check_translation_progress_all unless is_ci
+    download_localized_strings_and_metadata_from_glotpress
+    lint_localizations
+
+    UI.important('Pushing changes to remote')
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+
+    push_to_git_remote(tags: false)
+
+    UI.success("Successfully downloaded and committed latest translations for #{release_version_current}")
+  end
+
+  # Finalizes a release by bumping version number, removing branch protection, closing milestone,
+  # and triggering the final release build on CI
+  #
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane finalize_release skip_confirm:true
+  #
   lane :finalize_release do |skip_confirm: false|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
 
@@ -487,11 +509,6 @@ platform :ios do
 
     UI.important("Finalizing release: #{release_version_current}")
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    # Don't check translation coverage in CI
-    check_translation_progress_all unless is_ci
-    download_localized_strings_and_metadata_from_glotpress
-    lint_localizations
 
     # Bump the build code
     UI.message('Bumping build code...')
@@ -684,7 +701,7 @@ platform :ios do
       distribute_external: true,
       # If there is a build waiting for beta review, we want to reject that so the new build can be submitted instead
       reject_build_waiting_for_review: true,
-      groups: ['Internal a8c beta testers']
+      groups: ['Internal a8c beta testers', 'Public Beta Testers']
     )
     sh('cd .. && rm WooCommerce.ipa')
   end

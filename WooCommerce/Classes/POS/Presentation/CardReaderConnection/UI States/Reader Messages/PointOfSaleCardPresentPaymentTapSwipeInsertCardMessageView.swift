@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
@@ -12,15 +13,16 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }

@@ -1,5 +1,4 @@
 import enum Yosemite.POSItem
-import Codegen
 
 enum ItemListState {
     case loading(_ currentItems: [POSItem])
@@ -30,4 +29,4 @@ extension ItemListState {
     }
 }
 
-extension ItemListState: Equatable, GeneratedCopiable {}
+extension ItemListState: Equatable {}

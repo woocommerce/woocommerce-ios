@@ -2,15 +2,17 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
+    @State private var showDocumentation: Bool = false
 
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
+        @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
                 switch posModel.itemsViewState.containerState {
@@ -31,7 +33,6 @@ struct PointOfSaleDashboardView: View {
                 case .content:
                     contentView
                         .accessibilitySortPriority(2)
-                        .ignoresSafeArea(edges: .bottom)
                 }
             } else {
                 PointOfSaleUnsupportedWidthView()
@@ -40,9 +41,10 @@ struct PointOfSaleDashboardView: View {
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport)
-            .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
+                                   showSupport: $showSupport,
+                                   showDocumentation: $showDocumentation)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
             .renderedIf(posModel.itemsViewState.containerState != .loading)
@@ -54,7 +56,7 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
         .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
@@ -76,6 +78,9 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $showSupport) {
             supportForm
         }
+        .sheet(isPresented: $showDocumentation) {
+            documentationView
+        }
         .task {
             await posModel.loadItems(base: .root)
         }
@@ -95,7 +100,6 @@ struct PointOfSaleDashboardView: View {
                     CartView()
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
-                        .ignoresSafeArea(edges: .bottom)
                 }
 
                 if posModel.orderStage == .finalizing {
@@ -127,9 +131,13 @@ private extension PointOfSaleDashboardView {
         .navigationViewStyle(.stack)
     }
 
+    var documentationView: some View {
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+    }
+
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = {
-            posModel.cancelCardPaymentsOnboarding()
+        onboardingViewModel.showSupport = { [weak posModel] in
+            posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
@@ -159,7 +167,8 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let floatingControlHorizontalOffset: CGFloat = 24
+        static let floatingControlBottomPadding: CGFloat = 16
+        static let floatingControlHorizontalOffset: CGFloat = 16
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
@@ -175,10 +184,35 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
+
 @available(iOS 17.0, *)
-#Preview {
+#Preview("Container loading state") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return NavigationStack {
         PointOfSaleDashboardView()
+            .environment(posModel)
+            .environmentObject(POSModalManager())
     }
 }
+
+@available(iOS 17.0, *)
+#Preview("Content loading state") {
+    let itemsController = PointOfSalePreviewItemsController()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: itemsController,
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
+    return NavigationStack {
+        PointOfSaleDashboardView()
+            .environment(posModel)
+            .environmentObject(POSModalManager())
+    }
+}
+
 #endif

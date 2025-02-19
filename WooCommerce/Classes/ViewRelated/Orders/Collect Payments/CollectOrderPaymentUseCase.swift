@@ -377,7 +377,7 @@ private extension CollectOrderPaymentUseCase {
     /// Tracks the successful payments
     ///
     func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        analyticsTracker.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+        analyticsTracker.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
     }
 
     func handlePaymentCancellation(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {

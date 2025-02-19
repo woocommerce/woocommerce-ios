@@ -10,7 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// An array of pages of items, returned when other flags are not set.
     var itemPages: [[POSItem]] = []
-    var shouldThrowError = false
+    var errorToThrow: Error?
     var shouldReturnZeroItems = false
     var shouldSimulateTwoPages = false
     var shouldSimulateMorePages = false
@@ -18,8 +18,8 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var spyLastRequestedPageNumber: Int?
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
-        if shouldThrowError {
-            throw MockError.requestFailed
+        if let errorToThrow {
+            throw errorToThrow
         }
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
@@ -35,8 +35,8 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateTwoPagesOfVariations = false
     var shouldSimulateMorePagesOfVariations = false
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        if shouldThrowError {
-            throw MockError.requestFailed
+        if let errorToThrow {
+            throw errorToThrow
         }
         if shouldSimulateTwoPagesOfVariations,
            pageNumber > 1 {
@@ -126,9 +126,5 @@ extension MockPointOfSaleItemService {
                                       variationID: 4,
                                       parentProductName: "Ice cream")
         return [.variation(variation3), .variation(variation4)]
-    }
-
-    enum MockError: Error {
-        case requestFailed
     }
 }

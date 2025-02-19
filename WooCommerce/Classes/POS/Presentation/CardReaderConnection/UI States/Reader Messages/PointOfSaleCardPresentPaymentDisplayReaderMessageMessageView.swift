@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
@@ -10,16 +11,17 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
                 .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .accessibilityHidden(true)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(.white)
-                    .font(.posBodyRegular)
+                    .foregroundColor(.posOnPrimary)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posTitleEmphasized)
-                    .foregroundStyle(.white)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnPrimary)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
@@ -43,4 +45,5 @@ private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView {
             message: "Remove card"),
         animation: .init(namespace: namespace)
     )
+    .background(Color.posPrimary)
 }

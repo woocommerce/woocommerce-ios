@@ -15,23 +15,24 @@ struct PointOfSaleExitPosAlertView: View {
                 Button {
                     isPresented = false
                 } label: {
-                    Image(systemName: "xmark")
-                        .font(.posButtonSymbol)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                 }
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
             Text(Localization.exitTitle)
-                .font(.posTitleEmphasized)
+                .font(.posHeadingBold)
                 .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
+                ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
             } label: {
                 Text(Localization.exitButton)
             }
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(Constants.padding)
     }
@@ -62,3 +63,9 @@ private extension PointOfSaleExitPosAlertView {
         )
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleExitPosAlertView(isPresented: .constant(true))
+}
+#endif

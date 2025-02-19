@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import struct Yosemite.ProductImage
 import enum Yosemite.ProductAction
 import protocol Yosemite.StoresManager
@@ -7,7 +8,6 @@ import protocol Yosemite.StoresManager
 struct ProductImageUploadErrorInfo {
     let siteID: Int64
     let productOrVariationID: ProductOrVariationID
-    let productImageStatuses: [ProductImageStatus]
     let error: ProductImageUploaderError
 }
 
@@ -36,6 +36,10 @@ struct ProductImageUploaderKey: Equatable, Hashable {
 
 /// Handles product image upload to support background image upload.
 protocol ProductImageUploaderProtocol {
+
+    /// Emits active image uploads
+    var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> { get }
+
     /// Emits product image upload errors.
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> { get }
 
@@ -75,6 +79,11 @@ protocol ProductImageUploaderProtocol {
     ///   - key: identifiable information about the product.
     func startEmittingErrors(key: ProductImageUploaderKey)
 
+    /// Triggers a notice about background image upload for a product if needed.
+    /// - Parameter key: identifiable information about the product.
+    ///
+    func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter)
+
     /// Determines whether there are unsaved changes on a product's images.
     /// If the product had any save request before, it checks whether the image statuses to save match the latest image statuses.
     /// Otherwise, it checks whether there is any pending upload or the image statuses match the given original image statuses.
@@ -94,14 +103,22 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         errorsSubject.eraseToAnyPublisher()
     }
 
+    var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
+        $activeUploadsPublisher.eraseToAnyPublisher()
+    }
+
     typealias Key = ProductImageUploaderKey
 
     private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
     private var statusUpdatesExcludedProductKeys: Set<Key> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
+    private var imageUploadSubscriptions: Set<AnyCancellable> = []
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
     private var imagesSaverByProduct: [Key: ProductImagesSaver] = [:]
+
+    @Published private var activeUploadsPublisher: [ProductImageUploaderKey] = []
+
     private let stores: StoresManager
     private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
@@ -113,13 +130,15 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let actionHandler: ProductImageActionHandler
-        if let handler = actionHandlersByProduct[key], handler.productImageStatuses.hasPendingUpload {
+        if let handler = actionHandlersByProduct[key] {
             actionHandler = handler
         } else {
             actionHandler = ProductImageActionHandler(siteID: key.siteID, productID: key.productOrVariationID, imageStatuses: originalStatuses, stores: stores)
             actionHandlersByProduct[key] = actionHandler
-            observeStatusUpdatesForErrors(key: key, actionHandler: actionHandler)
+            observeStatusUpdates(key: key, actionHandler: actionHandler)
+            observeImageUploads(key: key, actionHandler: actionHandler)
         }
+
         return actionHandler
     }
 
@@ -153,18 +172,35 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         statusUpdatesExcludedProductKeys.remove(key)
     }
 
+    func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
+        if activeUploadsPublisher.contains(key) {
+            let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
+            noticePresenter.enqueue(notice: notice)
+        }
+    }
+
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         guard let handler = actionHandlersByProduct[key] else {
             return false
         }
-        if let productImagesSaver = imagesSaverByProduct[key], productImagesSaver.imageStatusesToSave.isNotEmpty {
+        let productImagesSaver = imagesSaverByProduct[key]
+
+        if let productImagesSaver, productImagesSaver.imageStatusesToSave.isNotEmpty {
             // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
-            return handler.productImageStatuses != productImagesSaver.imageStatusesToSave
+            return handler.productImageStatuses.images != productImagesSaver.imageStatusesToSave.images
         } else {
-            // Otherwise, there are unsaved changes if there is any pending image upload or any difference in the remote image IDs between the
+            if handler.productImageStatuses.hasPendingUpload {
+                return true
+            }
+
+            /// If there's a product saved in background, compare the images to determine unsaved changes.
+            if let savedProduct = productImagesSaver?.savedProduct {
+                return handler.productImageStatuses.images.map { $0.imageID } != savedProduct.images.map { $0.imageID }
+            }
+
+            // Otherwise, there are unsaved changes if there is any difference in the remote image IDs between the
             // original and latest product.
-            return handler.productImageStatuses.hasPendingUpload ||
-            handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
+            return handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
         }
     }
 
@@ -196,7 +232,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             if case let .failure(error) = result {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productOrVariationID: key.productOrVariationID,
-                                              productImageStatuses: handler.productImageStatuses,
                                               error: .failedSavingProductAfterImageUpload(error: error)))
             }
             self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
@@ -208,6 +243,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
+        imageUploadSubscriptions = []
+        activeUploadsPublisher = []
 
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
@@ -229,18 +266,39 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatusUpdatesForErrors(key: Key, actionHandler: ProductImageActionHandler) {
-        let observationToken = actionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+    func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
+        let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else { return }
 
-            if let error = error, self.statusUpdatesExcludedProductKeys.contains(key) == false {
-                self.errorsSubject.send(.init(siteID: key.siteID,
-                                              productOrVariationID: key.productOrVariationID,
-                                              productImageStatuses: productImageStatuses,
-                                              error: .failedUploadingImage(error: error)))
+            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
+                activeUploadsPublisher.append(key)
+            } else if activeUploadsPublisher.contains(key), !productImageStatuses.hasPendingUpload {
+                /// When all pending uploads are completed or removed,
+                /// remove the key from active uploads
+                removeProductFromActiveUploads(key: key)
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
+    }
+
+    func observeImageUploads(key: Key, actionHandler: ProductImageActionHandler) {
+        let observationToken = actionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self else { return }
+
+            if case .failure(let error) = result {
+                let infoError = ProductImageUploadErrorInfo(siteID: key.siteID,
+                                                            productOrVariationID: key.productOrVariationID,
+                                                            error: .failedUploadingImage(asset: asset, error: error))
+                if statusUpdatesExcludedProductKeys.contains(key) == false {
+                    errorsSubject.send(infoError)
+                }
+            }
+        }
+        imageUploadSubscriptions.insert(observationToken)
+    }
+
+    func removeProductFromActiveUploads(key: Key) {
+        activeUploadsPublisher.removeAll(where: { $0 == key })
     }
 }
 
@@ -260,5 +318,13 @@ enum ProductImageUploaderError: Error {
     case noActionHandlerFound
     case noRemoteProductIDFound
     case failedSavingProductAfterImageUpload(error: Error)
-    case failedUploadingImage(error: Error)
+    case failedUploadingImage(asset: ProductImageAssetType, error: Error)
+}
+
+private enum Localization {
+    static let backgroundUploadNoticeTitle = NSLocalizedString(
+        "productImageUploader.backgroundUploadNotice.title",
+        value: "Image uploading will continue in the background",
+        comment: ""
+    )
 }

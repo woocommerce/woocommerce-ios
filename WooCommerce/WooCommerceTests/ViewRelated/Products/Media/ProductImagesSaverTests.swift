@@ -181,6 +181,63 @@ final class ProductImagesSaverTests: XCTestCase {
         XCTAssertEqual(savedImages, [image])
     }
 
+    func test_savedProduct_is_updated_correctly() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let actionHandler = ProductImageActionHandler(siteID: siteID, productID: .product(id: productID), imageStatuses: [], stores: stores)
+        let asset: ProductImageAssetType = .phAsset(asset: PHAsset())
+        let imagesSaver = ProductImagesSaver(siteID: siteID, productOrVariationID: .product(id: productID), stores: stores)
+        let expectedProduct = Product.fake().copy(images: [])
+
+        // Mocks successful product images update.
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, _, onCompletion) = action {
+                onCompletion(.success(expectedProduct))
+            }
+        }
+
+        // Uploads an image and waits for the image upload completion closure to be called later.
+        let imageUploadCompletion: ((Result<Media, Error>) -> Void) = waitFor { promise in
+            stores.whenReceivingAction(ofType: MediaAction.self) { action in
+                if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                    promise(onCompletion)
+                }
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        }
+
+        waitFor { promise in
+            // Saves product images.
+            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in
+                promise(())
+            }
+            XCTAssertNil(imagesSaver.savedProduct)
+
+            // When
+            // Mocks successful image upload.
+            imageUploadCompletion(.success(.fake().copy(mediaID: 645)))
+        }
+
+        // Then
+        XCTAssertEqual(imagesSaver.savedProduct, expectedProduct)
+
+        // When
+        // Uploads another image and save.
+        let imageUploadCompletionAfterSave: ((Result<Media, Error>) -> Void) = waitFor { promise in
+            stores.whenReceivingAction(ofType: MediaAction.self) { action in
+                if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                    promise(onCompletion)
+                }
+            }
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        }
+        imageUploadCompletionAfterSave(.success(.fake().copy(mediaID: 606)))
+        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in }
+
+        // Then the saved product is reset immediately
+        XCTAssertNil(imagesSaver.savedProduct)
+    }
+
     // MARK: - Analytics
 
     func test_savingProductAfterBackgroundImageUploadSuccess_is_tracked_on_variation_update_success() throws {

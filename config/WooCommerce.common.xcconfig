@@ -1,0 +1,5 @@
+#include "Common.xcconfig"
+
+// This is App Store account id.
+// Build configurations that need the Enterprise account should override in their dedicated xcconfig.
+DEVELOPMENT_TEAM = PZYM8XX95Q

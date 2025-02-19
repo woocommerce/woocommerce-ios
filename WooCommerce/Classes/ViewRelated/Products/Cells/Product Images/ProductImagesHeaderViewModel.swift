@@ -54,6 +54,7 @@ extension ProductImagesHeaderViewModel {
         let cells = [
             ProductImageCollectionViewCell.self,
             InProgressProductImageCollectionViewCell.self,
+            FailedProductImageCollectionViewCell.self,
             AddProductImageCollectionViewCell.self,
             ExtendedAddProductImageCollectionViewCell.self
         ]

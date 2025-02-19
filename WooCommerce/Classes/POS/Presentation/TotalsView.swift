@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct TotalsView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = TotalsViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
@@ -42,8 +42,10 @@ struct TotalsView: View {
                                 .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
-                                .layoutPriority(1)
                                 .background(backgroundColor)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
+                                .geometryGroup()
                         }
 
                         if isShowingTotalsFields {
@@ -51,7 +53,8 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
-                                .layoutPriority(2)
+                                .layoutPriority(1)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
@@ -64,14 +67,13 @@ struct TotalsView: View {
                         }
                     }, label: {
                         Text(Localization.cashPaymentButtonTitle)
-                            .font(POSFontStyle.posBodyEmphasized)
-                            .foregroundColor(.posPrimaryText)
-                            .frame(height: Constants.buttonHeight)
-                            .minimumScaleFactor(0.5)
+                            .font(POSFontStyle.posBodyLargeBold)
                     })
-                    .buttonStyle(SecondaryButtonStyle())
+                    .layoutPriority(1)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
-                    .padding(.bottom, Constants.cashButtonBottomPadding)
+                    .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
                                                                               paymentState: posModel.paymentState))
                 }
@@ -88,17 +90,17 @@ struct TotalsView: View {
             isShowingTotalsFields = shouldShowTotalsFields
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
-        .geometryGroupIfSupported()
+        .geometryGroup()
     }
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
         case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
-            .posSecondaryBackground
+            .posSurfaceContainerLowest
         case .card(.processingPayment):
-            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
+            .posPrimary
         case .cash(.collectingCash):
-            colorScheme == .light ? .clear : Color.posSecondaryBackground
+            .posSurface
         default:
             .clear
         }
@@ -137,6 +139,7 @@ private extension TotalsView {
             Spacer().frame(height: Constants.totalVerticalSpacing)
             Divider()
                 .overlay(Constants.separatorColor)
+                .renderedIf(!totalsLoading)
             Spacer().frame(height: Constants.totalVerticalSpacing)
             totalFieldView(formattedPrice: orderTotals?.orderTotal,
                            shimmeringActive: totalsLoading,
@@ -165,7 +168,7 @@ private extension TotalsView {
                     .redacted(reason: shimmeringActive ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
-            .foregroundColor(Color.posPrimaryText)
+            .foregroundColor(Color.posOnSurface)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -189,16 +192,15 @@ private extension TotalsView {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.posPrimaryText)
+            .foregroundColor(Color.posOnSurface)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
 
     func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Constants.separatorColor
+        Color.posOnSurfaceVariantLowest
             .frame(width: width, height: height)
             .fixedSize(horizontal: true, vertical: true)
-            .redacted(reason: [.placeholder])
             .shimmering(active: true)
             .cornerRadius(Constants.shimmeringCornerRadius)
     }
@@ -264,7 +266,14 @@ private extension TotalsView {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
-        let sidePadding: CGFloat = 8
+        let sidePadding: CGFloat
+
+        init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
+            self.backgroundColor = backgroundColor
+            self.topPadding = topPadding
+            self.bottomPadding = bottomPadding
+            self.sidePadding = sidePadding
+        }
 
         static let primary = PaymentViewLayout(
             backgroundColor: .clear,
@@ -332,10 +341,18 @@ private extension TotalsView {
                     return .primary
                 }
             }
-        case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: nil,
-                                     bottomPadding: nil)
+        case .cash(let cashPaymentState):
+            switch cashPaymentState {
+            case .collectingCash:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: 0,
+                                         bottomPadding: nil,
+                                         sidePadding: 0)
+            case .paymentSuccess:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: nil,
+                                         bottomPadding: nil)
+            }
         }
     }
 }
@@ -345,7 +362,6 @@ private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let verticalSpacing: CGFloat = 56
-        static let buttonHeight: CGFloat = 56
         static let buttonHorizontalPadding: CGFloat = 48
         static let cashButtonBottomPadding: CGFloat = 16
 
@@ -353,16 +369,16 @@ private extension TotalsView {
         static let subtotalsVerticalSpacing: CGFloat = 8
         static let totalVerticalSpacing: CGFloat = 16
         static let totalsHorizontalSpacing: CGFloat = 24
-        static let subtotalTitleFont: POSFontStyle = .posBodyRegular
-        static let subtotalAmountFont: POSFontStyle = .posBodyRegular
-        static let totalTitleFont: POSFontStyle = .posTitleRegular
-        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
-        static let separatorColor: Color = Color(.systemGray3)
+        static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
+        static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
+        static let totalTitleFont: POSFontStyle = .posHeadingBold
+        static let totalAmountFont: POSFontStyle = .posHeadingBold
+        static let separatorColor: Color = Color.posOutlineVariant
 
-        static let shimmeringCornerRadius: CGFloat = 4
-        static let shimmeringWidth: CGFloat = 334
+        static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
+        static let shimmeringWidth: CGFloat = 342
         static let subtotalsShimmeringHeight: CGFloat = 36
-        static let totalShimmeringHeight: CGFloat = 40
+        static let totalShimmeringHeight: CGFloat = 46
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -410,28 +426,15 @@ private extension TotalsView {
     }
 }
 
-private extension View {
-    ///  Force the position and size values to be resolved and animated by the parent
-    ///  before being passed down to each subview.
-    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
-    ///  It results in the whole TotalsView animated together when transitioning.
-    func geometryGroupIfSupported() -> some View {
-        if #available(iOS 17.0, *) {
-            return self.geometryGroup()
-        } else {
-            return self
-        }
-    }
-}
-
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     TotalsView()
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

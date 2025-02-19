@@ -9,6 +9,7 @@ final class ProductImageUploaderTests: XCTestCase {
     private let productID: Int64 = 606
     private var errorsSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
+    private var activeUploadsSubscription: AnyCancellable?
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
@@ -31,7 +32,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 promise(statuses)
             }
         }
-        XCTAssertTrue(statuses.productImageStatuses.hasPendingUpload)
+        XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
                                                                          productOrVariationID: .product(id: productID),
                                                                          isLocalID: false),
@@ -81,7 +82,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 promise(statuses)
             }
         }
-        XCTAssertTrue(statuses.productImageStatuses.hasPendingUpload)
+        XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
                                                                          productOrVariationID: .product(id: productID),
                                                                          isLocalID: false),
@@ -262,7 +263,7 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         waitForExpectation { expectation in
             self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
-                if statuses.productImageStatuses.hasPendingUpload == false {
+                if statuses.hasPendingUpload == false {
                     expectation.fulfill()
                 }
             }
@@ -297,19 +298,19 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // When
         var errors: [ProductImageUploadErrorInfo] = []
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -355,7 +356,6 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [.uploading(asset: .phAsset(asset: asset))],
                            error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }
@@ -408,20 +408,20 @@ final class ProductImageUploaderTests: XCTestCase {
                                                     productOrVariationID: .product(id: 9999),
                                                     isLocalID: true))
 
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         var errors: [ProductImageUploadErrorInfo] = []
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: .failedUploadingImage(error: error))],
+                           error: .failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -518,19 +518,19 @@ final class ProductImageUploaderTests: XCTestCase {
                                                      isLocalID: true))
 
         var errors: [ProductImageUploadErrorInfo] = []
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
         let _: Void = waitFor { promise in
             self.errorsSubscription = imageUploader.errors.sink { error in
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
 
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [],
-                           error: ProductImageUploaderError.failedUploadingImage(error: error))],
+                           error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
 
@@ -561,7 +561,12 @@ final class ProductImageUploaderTests: XCTestCase {
 
         let _: Void = waitFor { promise in
             self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
-                if statuses.error != nil {
+                if statuses.contains(where: { status in
+                    switch status {
+                    case .uploadFailure: true
+                    case .remote, .uploading: false
+                    }
+                }) {
                     promise(())
                 }
             }
@@ -571,22 +576,127 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         XCTAssertEqual(errors.count, 0)
     }
+
+    // MARK: `activeUploads`
+
+    func test_product_is_removed_from_activeUploads_when_upload_completes() {
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        let asset = PHAsset()
+        let uploadedMedia = Media.fake().copy(mediaID: 645)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                XCTAssertEqual(activeUploads, [key])
+                onCompletion(.success(uploadedMedia))
+
+                // Then
+                self.waitUntil {
+                    activeUploads == []
+                }
+            }
+        }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+    }
+
+    func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+        let productFormDataModel = EditableProductModel(product: .fake().copy(siteID: siteID, productID: productID, images: []))
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        let asset = PHAsset()
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+
+        // Then
+        waitUntil {
+            activeUploads == [key]
+        }
+
+        // When
+        actionHandler.resetProductImages(to: productFormDataModel)
+
+        // Then
+        waitUntil {
+            activeUploads == []
+        }
+    }
+
+    func test_background_upload_notice_is_sent_when_there_are_active_uploads() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores)
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: productID),
+                                          isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+
+        let noticePresenter = MockNoticePresenter()
+        var isNoticeTriggered = false
+        noticePresenter.onNoticeQueued = { _ in
+            isNoticeTriggered = true
+        }
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads
+            .sink { keys in
+                activeUploads = keys
+            }
+
+        // When
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+
+        // Then
+        XCTAssertFalse(isNoticeTriggered)
+
+        // When
+        let asset = PHAsset()
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+        waitUntil {
+            activeUploads == [key]
+        }
+
+        // Then
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+        XCTAssertTrue(isNoticeTriggered)
+    }
 }
 
-extension ProductImageUploadErrorInfo: Equatable {
+extension ProductImageUploadErrorInfo: @retroactive Equatable {
     public static func == (lhs: ProductImageUploadErrorInfo, rhs: ProductImageUploadErrorInfo) -> Bool {
         return lhs.siteID == rhs.siteID &&
         lhs.productOrVariationID == rhs.productOrVariationID &&
-        lhs.productImageStatuses == rhs.productImageStatuses &&
         lhs.error == rhs.error
     }
 }
 
-extension ProductImageUploaderError: Equatable {
+extension ProductImageUploaderError: @retroactive Equatable {
     public static func == (lhs: ProductImageUploaderError, rhs: ProductImageUploaderError) -> Bool {
         switch (lhs, rhs) {
-        case (.failedUploadingImage(let lhsError), .failedUploadingImage(let rhsError)):
-            return lhsError as NSError == rhsError as NSError
+        case let (.failedUploadingImage(lAsset, lhsError), .failedUploadingImage(rAsset, rhsError)):
+            return lhsError as NSError == rhsError as NSError && lAsset == rAsset
         case (.failedSavingProductAfterImageUpload(let lhsError), .failedSavingProductAfterImageUpload(let rhsError)):
             return lhsError as NSError == rhsError as NSError
         default:

@@ -21,10 +21,10 @@ struct POSModalCloseButton: ViewModifier {
             HStack {
                 Spacer()
                 Button(action: closeAction, label: {
-                    Image(systemName: "xmark")
-                        .font(.posButtonSymbol)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolSmall)
                 })
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .accessibilityLabel(accessibilityLabel)
             }
 

@@ -426,7 +426,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let expectedWeight = 2.5
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: address),
                                                          selectedOriginAddress: WooShippingOriginAddress.fake(),
                                                          selectedPackage: samplePackageData(),
                                                          stores: stores,
@@ -472,6 +473,32 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.customsInformationIsCompleted)
+    }
+
+    func test_destinationAddressStatus_unverified_and_noticeLabel_set_for_unverified_address() {
+        // Given
+        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let order = Order.fake().copy(shippingAddress: address)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddressStatus, .unverified)
+        XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
+    }
+
+    func test_destinationAddressStatus_missing_and_noticeLabel_set_for_empty_address() {
+        // Given
+        let destinationAddress = Address.fake()
+        let order = Order.fake().copy(shippingAddress: destinationAddress)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddressStatus, .missing)
+        XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
 }
 

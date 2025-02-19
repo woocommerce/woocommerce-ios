@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-28 14:54:05+0000 */
+/* Translation-Revision-Date: 2025-02-06 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -9873,6 +9873,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "בודק את המכשיר";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "יש לנסות שוב";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "ביטול";
 
@@ -10895,6 +10898,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "מסנכרן חנות...";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "זוהי פלטפורמה למסחר אלקטרוני שגדלה איתך";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
 
@@ -11489,6 +11498,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "מתכוננים…";
 
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "הסכום הכולל של ההזמנה נמוך מהסכום המינימלי שאפשר לגבות בכרטיס, שהוא %1$@. במקום זאת, אפשר לגבות את התשלום במזומן.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "אין אפשרות לגבות תשלום באמצעות כרטיס";
+
 /* Button title to retry order validation. */
 "pointOfSale.cardPresent.validatingOrderError.retry" = "לנסות שוב";
 
@@ -11624,8 +11639,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "העדכון של הקורא נכשל מאחר שהסוללה טעונה ב-%.0f%% בלבד. יש לטעון את הקורא ולנסות שוב.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "ביטול";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "העדכון של הקורא נכשל מאחר שהסוללה חלשה. יש לטעון את הקורא ולנסות שוב.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "יש לנסות שוב";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "יש להטעין את הקורא";
@@ -11707,6 +11731,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message" = "תשלום של %1$@ חויב בהצלחה";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "התשלום בוצע בהצלחה";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "לשלוח";
@@ -11893,6 +11923,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "סכום כולל";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "עליך להתאים את חלוקת המסך כדי לספק מקום נוסף ל'נקודת מכירה'.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "לסגור";
@@ -13228,6 +13264,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote when a required value is missing */
 "wooShipping.customs.valueRequiredWarning" = "ערך נדרש";
 
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "בוצע";
+
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "תיאור";
 
@@ -13254,6 +13293,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "משקל ליחידה";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "ביטול";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "לאשר את הכתובת שהוזנה";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "לאשר את הכתובת המומלצת";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "מה הזנת";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "שינינו מעט את הכתובת שהוזנה.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "אם הכתובת נכונה, אנחנו מציעים להשתמש בכתובת המומלצת כדי לוודא שהיעד למשלוח מדויק.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "מומלצות";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "לאמת את הכתובת";
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(ברירת מחדל)";

@@ -3314,7 +3314,8 @@ extension Networking.Site {
         visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
-        wasEcommerceTrial: CopiableProp<Bool> = .copy
+        wasEcommerceTrial: CopiableProp<Bool> = .copy,
+        hasSSOEnabled: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -3337,6 +3338,7 @@ extension Networking.Site {
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
+        let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
 
         return Networking.Site(
             siteID: siteID,
@@ -3359,7 +3361,8 @@ extension Networking.Site {
             visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
-            wasEcommerceTrial: wasEcommerceTrial
+            wasEcommerceTrial: wasEcommerceTrial,
+            hasSSOEnabled: hasSSOEnabled
         )
     }
 }
@@ -3501,6 +3504,36 @@ extension Networking.SiteVisitStatsItem {
             period: period,
             visitors: visitors,
             views: views
+        )
+    }
+}
+
+extension Networking.StoredProductSettings.Setting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        sort: NullableCopiableProp<String> = .copy,
+        stockStatusFilter: NullableCopiableProp<ProductStockStatus> = .copy,
+        productStatusFilter: NullableCopiableProp<ProductStatus> = .copy,
+        productTypeFilter: NullableCopiableProp<ProductType> = .copy,
+        productCategoryFilter: NullableCopiableProp<ProductCategory> = .copy,
+        favoriteProduct: CopiableProp<Bool> = .copy
+    ) -> Networking.StoredProductSettings.Setting {
+        let siteID = siteID ?? self.siteID
+        let sort = sort ?? self.sort
+        let stockStatusFilter = stockStatusFilter ?? self.stockStatusFilter
+        let productStatusFilter = productStatusFilter ?? self.productStatusFilter
+        let productTypeFilter = productTypeFilter ?? self.productTypeFilter
+        let productCategoryFilter = productCategoryFilter ?? self.productCategoryFilter
+        let favoriteProduct = favoriteProduct ?? self.favoriteProduct
+
+        return Networking.StoredProductSettings.Setting(
+            siteID: siteID,
+            sort: sort,
+            stockStatusFilter: stockStatusFilter,
+            productStatusFilter: productStatusFilter,
+            productTypeFilter: productTypeFilter,
+            productCategoryFilter: productCategoryFilter,
+            favoriteProduct: favoriteProduct
         )
     }
 }

@@ -28,7 +28,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             Task { @MainActor in
-                ServiceLocator.analytics.track(.pointOfSaleEmailReceiptTapped)
+                ServiceLocator.analytics.track(.receiptEmailTapped)
                 await handleSendReceiptAction()
             }
         }, label: {

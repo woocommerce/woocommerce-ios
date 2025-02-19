@@ -351,7 +351,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
-    
+
     /// Verifies the destination address of an order.
     /// - Parameters:
     ///   - siteID: Remote ID of the site.

@@ -129,8 +129,8 @@ private extension ProductImagesSaver {
             guard let self = self else { return }
             guard let index = self.imageStatusesToSave.firstIndex(where: { status -> Bool in
                 switch status {
-                case .uploading(let uploadingAsset, let siteID, let productID):
-                    return uploadingAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
+                case .uploading(let uploadingAsset, _, _):
+                    return uploadingAsset == asset
                 default:
                     return false
                 }

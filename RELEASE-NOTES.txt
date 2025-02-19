@@ -12,6 +12,7 @@
 - [*] Background image upload: Show a notice when the user leaves product details while uploads are pending [https://github.com/woocommerce/woocommerce-ios/pull/15134]
 - [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
 - [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 
 21.7
 -----

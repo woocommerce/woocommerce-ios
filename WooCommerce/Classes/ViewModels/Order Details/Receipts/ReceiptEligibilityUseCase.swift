@@ -44,11 +44,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
     ///
     func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
-        guard featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale) else {
-            onCompletion(false)
-            return
-        }
-
         Task { @MainActor in
             let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
                                                                  minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)

@@ -33,13 +33,6 @@ struct TotalsView: View {
                         if isShowingPaymentView {
                             paymentView
                                 .font(.title)
-                                .padding([.leading, .trailing],
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.sidePadding)
-                                .padding(.bottom,
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.bottomPadding)
-                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor)
@@ -230,6 +223,7 @@ private extension TotalsView {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                     posModel.connectCardReader()
                 }
+                .paymentViewPadding(layout: cardReaderViewLayout)
             } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 switch inlinePaymentMessage {
                 case .paymentSuccess:
@@ -240,6 +234,7 @@ private extension TotalsView {
                         PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
                         Spacer()
                     }
+                    .paymentViewPadding(layout: cardReaderViewLayout)
                 }
             }
         case .cash(let cashPaymentState):
@@ -248,6 +243,7 @@ private extension TotalsView {
                 if case .loaded(let total) = posModel.orderState {
                     PointOfSaleCollectCashView(orderTotal: total.orderTotal)
                         .transition(.move(edge: .trailing))
+                        .paymentViewPadding(layout: cardReaderViewLayout)
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {
@@ -356,6 +352,30 @@ private extension TotalsView {
                                          sidePadding: 0)
             }
         }
+    }
+}
+
+@available(iOS 17.0, *)
+extension TotalsView {
+    fileprivate struct PaymentViewPaddingModifier: ViewModifier {
+        @Environment(\.dynamicTypeSize) var dynamicTypeSize
+        let layout: PaymentViewLayout
+
+        func body(content: Content) -> some View {
+            content.padding(
+                [.leading, .trailing],
+                dynamicTypeSize.isAccessibilitySize ? nil : layout.sidePadding
+            )
+            .padding(.bottom, dynamicTypeSize.isAccessibilitySize ? nil : layout.bottomPadding)
+            .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : layout.topPadding)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+fileprivate extension View {
+    func paymentViewPadding(layout: TotalsView.PaymentViewLayout) -> some View {
+        modifier(TotalsView.PaymentViewPaddingModifier(layout: layout))
     }
 }
 

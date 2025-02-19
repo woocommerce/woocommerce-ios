@@ -3,12 +3,12 @@ import SwiftUI
 /// A reusable notice view component that displays information with an icon, title, subtitle, optional dismiss button, and optional hint view.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-67_18935
 struct POSNoticeView<HintContent: View>: View {
-    let title: String
-    let subtitle: String
-    let icon: Image
-    let onDismiss: (() -> Void)?
-    let onTap: (() -> Void)?
-    let hintContent: HintContent?
+    private let title: String
+    private let subtitle: String
+    private let icon: Image
+    private let onDismiss: (() -> Void)?
+    private let onTap: (() -> Void)?
+    private let hintContent: HintContent?
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -29,12 +29,12 @@ struct POSNoticeView<HintContent: View>: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
+        HStack(alignment: .top, spacing: Constants.padding) {
             VStack {
                 Spacer()
                 Text(icon)
                     .font(.posButtonSymbolLarge)
-                    .padding(Constants.iconPadding)
+                    .padding(.horizontal, Constants.iconHorizontalPadding)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityHidden(true)
                 Spacer()
@@ -54,7 +54,6 @@ struct POSNoticeView<HintContent: View>: View {
                 .accessibilityElement(children: .combine)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Constants.verticalPadding)
 
             if let onDismiss {
                 VStack {
@@ -64,23 +63,23 @@ struct POSNoticeView<HintContent: View>: View {
                             .foregroundColor(Color.posOnSurfaceVariantLowest)
                             .accessibilityLabel(Localization.dismissAccessibilityLabel)
                     })
-                    .padding(Constants.iconPadding)
+                    .padding(Constants.dismissIconPadding)
                     Spacer()
                 }
             }
         }
+        .padding(Constants.padding)
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.cornerRadius)
         .posShadow(.medium)
         .if(onTap != nil) { view in
-            view.accessibilityAddTraits(.isButton)
-        }
-        .if(onTap != nil) { view in
-            view.onTapGesture {
-                onTap?()
-            }
+            view
+                .accessibilityAddTraits(.isButton)
+                .onTapGesture {
+                    onTap?()
+                }
         }
     }
 }
@@ -91,10 +90,11 @@ private enum Constants {
     static let titleFont: POSFontStyle = .posBodyLargeBold
     static let subtitleFont: POSFontStyle = .posBodySmallRegular()
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-    static let verticalPadding: CGFloat = 26
     static let textSpacing: CGFloat = 4
     static let titleSpacing: CGFloat = 8
-    static let iconPadding: CGFloat = 26
+    static let iconHorizontalPadding: CGFloat = 8
+    static let dismissIconPadding: CGFloat = 6
+    static let padding: CGFloat = 16
 }
 
 private enum Localization {

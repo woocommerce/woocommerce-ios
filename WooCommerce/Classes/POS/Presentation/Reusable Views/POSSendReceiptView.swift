@@ -83,12 +83,14 @@ struct POSSendReceiptView: View {
             do {
                 errorMessage = nil
                 try await posModel.sendReceipt(to: textFieldInput)
+                ServiceLocator.analytics.track(.receiptEmailSuccess)
                 withAnimation {
                     isShowingSendReceiptView = false
                     isTextFieldFocused = false
                 }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
+                ServiceLocator.analytics.track(.receiptEmailFailed)
             }
             isLoading = false
         }

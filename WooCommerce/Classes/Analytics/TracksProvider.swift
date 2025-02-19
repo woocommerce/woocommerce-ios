@@ -171,6 +171,8 @@ private extension TracksProvider {
 
             // Receipts
             WooAnalyticsStat.receiptEmailTapped,
+            WooAnalyticsStat.receiptEmailSuccess,
+            WooAnalyticsStat.receiptEmailFailed,
 
             // Payments
             WooAnalyticsStat.collectPaymentCanceled,

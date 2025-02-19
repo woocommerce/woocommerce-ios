@@ -231,10 +231,15 @@ private extension TotalsView {
                     posModel.connectCardReader()
                 }
             } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                HStack(alignment: .center) {
-                    Spacer()
+                switch inlinePaymentMessage {
+                case .paymentSuccess:
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                    Spacer()
+                default:
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                        Spacer()
+                    }
                 }
             }
         case .cash(let cashPaymentState):

@@ -141,7 +141,11 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
 
-            // Shared events - Card Reader Connection
+            // Order
+            WooAnalyticsStat.orderCreationSuccess,
+            WooAnalyticsStat.orderCreationFailed,
+
+            // Card Reader Connection
             WooAnalyticsStat.cardReaderSelectTypeShown,
             WooAnalyticsStat.cardReaderSelectTypeBuiltInTapped,
             WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,

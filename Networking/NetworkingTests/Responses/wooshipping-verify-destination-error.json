@@ -1,0 +1,11 @@
+{
+    "data": {
+        "success": false,
+        "errors": {
+            "address": "House number is missing",
+            "name": "Either Name or Company is required",
+            "general": "Address not found"
+        },
+        "isVerified": false
+    }
+}

@@ -10,7 +10,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
-            POSErrorExclamationMark()
+            Image(decorative: PointOfSaleAssets.readerDisconnected.imageName)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)

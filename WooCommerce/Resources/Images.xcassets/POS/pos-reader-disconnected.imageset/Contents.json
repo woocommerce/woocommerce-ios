@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pos-reader-disconnected.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

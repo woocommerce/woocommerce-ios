@@ -9,8 +9,11 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+        VStack(alignment: .center, spacing: 0) {
             Image(decorative: PointOfSaleAssets.readerDisconnected.imageName)
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
@@ -22,15 +25,22 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
             }
+            .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
 
-            Button {
-                connectCardReader()
-            } label: {
-                Text(viewModel.connectReaderButtonTitle)
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
+            GeometryReader { geometry in
+                Button {
+                    connectCardReader()
+                } label: {
+                    Text(viewModel.connectReaderButtonTitle)
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .frame(width: geometry.size.width * 0.5)
+                .frame(maxWidth: .infinity, alignment: .center)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
-        .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
         .multilineTextAlignment(.center)
     }
 }

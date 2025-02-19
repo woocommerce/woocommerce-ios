@@ -65,6 +65,7 @@ private extension ItemListView {
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
     }

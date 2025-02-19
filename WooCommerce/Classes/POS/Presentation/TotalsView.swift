@@ -32,6 +32,9 @@ struct TotalsView: View {
                         if isShowingPaymentView {
                             paymentView
                                 .font(.title)
+                                .if(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState)) {
+                                    $0.paymentViewPadding(layout: cardReaderViewLayout)
+                                }
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor)
@@ -52,6 +55,7 @@ struct TotalsView: View {
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
 
                     Spacer()
+                        .renderedIf(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState))
 
                     Button(action: {
                         Task { @MainActor in
@@ -220,7 +224,6 @@ private extension TotalsView {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                     posModel.connectCardReader()
                 }
-                .paymentViewPadding(layout: cardReaderViewLayout)
             } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
                 switch inlinePaymentMessage {
                 case .paymentSuccess:
@@ -231,7 +234,6 @@ private extension TotalsView {
                         PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
                         Spacer()
                     }
-                    .paymentViewPadding(layout: cardReaderViewLayout)
                 }
             }
         case .cash(let cashPaymentState):
@@ -240,7 +242,6 @@ private extension TotalsView {
                 if case .loaded(let total) = posModel.orderState {
                     PointOfSaleCollectCashView(orderTotal: total.orderTotal)
                         .transition(.move(edge: .trailing))
-                        .paymentViewPadding(layout: cardReaderViewLayout)
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {
@@ -322,12 +323,16 @@ private extension TotalsView {
                 return .outlined
             case .paymentError:
                 return .topAligned
+            case .cardPaymentSuccessful:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: 0,
+                                         bottomPadding: 0,
+                                         sidePadding: 0)
             case .idle,
                     .acceptingCard,
                     .validatingOrder,
                     .preparingReader,
-                    .processingPayment,
-                    .cardPaymentSuccessful:
+                    .processingPayment:
                 if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
                                                                     paymentState: cardPaymentState) {
                     return .outlined
@@ -345,7 +350,7 @@ private extension TotalsView {
             case .paymentSuccess:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: 0,
-                                         bottomPadding: nil,
+                                         bottomPadding: 0,
                                          sidePadding: 0)
             }
         }

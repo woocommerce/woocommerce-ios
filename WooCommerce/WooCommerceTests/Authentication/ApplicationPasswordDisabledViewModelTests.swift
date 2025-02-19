@@ -28,7 +28,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_image() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let image = viewModel.image
@@ -39,8 +40,9 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_error_message() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
-        let expectation = Expectations.errorMessage.replacingOccurrences(of: "%@", with: "test.com")
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
+        let expectation = Expectations.errorMessage.replacingOccurrences(of: "%1$@", with: "test.com")
 
         // When
         let errorMessage = viewModel.text.string
@@ -51,7 +53,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_auxiliary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isAuxiliaryButtonHidden
@@ -62,7 +65,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let auxiliaryButtonTitle = viewModel.auxiliaryButtonTitle
@@ -73,7 +77,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_primary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isPrimaryButtonHidden
@@ -84,7 +89,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -95,7 +101,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_visibility_for_secondary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let isHidden = viewModel.isSecondaryButtonHidden
@@ -106,7 +113,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_secondary_button() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         let secondaryButtonTitle = viewModel.secondaryButtonTitle
@@ -117,7 +125,8 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
 
     func test_didTapAuxiliaryButton_presents_a_web_view() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: nil)
 
         // When
         viewModel.didTapAuxiliaryButton(in: navigationController)
@@ -129,18 +138,32 @@ final class ApplicationPasswordDisabledViewModelTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is SFSafariViewController)
     }
 
-    func test_didTapPrimaryButton_presents_LoginNavigationController() {
+    func test_didTapPrimaryButton_navigates_to_correct_view_controller() {
         // Given
-        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL)
+        let viewController1 = UIViewController()
+        let viewController2 = UIViewController()
+        let viewController3 = UIViewController()
+
+        navigationController.viewControllers = [viewController1, viewController2, viewController3]
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
+
+        let viewModel = ApplicationPasswordDisabledViewModel(siteURL: testURL,
+                                                             previousViewController: viewController1)
+
+        XCTAssertEqual(viewController3.navigationController, navigationController, "viewController3 should be part of the navigationController's stack")
 
         // When
-        viewModel.didTapPrimaryButton(in: navigationController)
+        viewModel.didTapPrimaryButton(in: viewController3)
+
+        waitUntil(timeout: Constants.expectationTimeout) {
+            return self.navigationController.viewControllers.count == 1 &&
+            self.navigationController.topViewController === viewController1
+        }
 
         // Then
-        waitUntil {
-            self.navigationController.presentedViewController != nil
-        }
-        XCTAssertTrue(navigationController.presentedViewController is LoginNavigationController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1, "After the action, navigationController's stack should contain only one view controller")
+        XCTAssertEqual(navigationController.topViewController, viewController1, "topViewController should be viewController1")
     }
 }
 
@@ -149,23 +172,27 @@ private extension ApplicationPasswordDisabledViewModelTests {
         static let image = UIImage.errorImage
 
         static let errorMessage = NSLocalizedString(
-            "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app.",
+            "applicationPasswordDisabled.errorMessage",
+            value: "It seems that your site %1$@ has Application Password disabled. Please enable it to use the WooCommerce app.",
             comment: "An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. " +
             "Reads like: It seems that your site google.com has Application Password disabled. " +
             "Please enable it to use the WooCommerce app."
         )
         static let secondaryButtonTitle = NSLocalizedString(
-            "Log In With Another Account",
+            "applicationPasswordDisabled.secondaryButtonTitle",
+            value: "Log In With Another Account",
             comment: "Action button that will restart the login flow."
             + "Presented when the user tries to log in to the app with site credentials but has application password disabled."
         )
         static let auxiliaryButtonTitle = NSLocalizedString(
-            "What is Application Password?",
+            "applicationPasswordDisabled.auxiliaryButtonTitle",
+            value: "What is Application Password?",
             comment: "Button that will navigate to a web page explaining Application Password"
         )
         static let primaryButtonTitle = NSLocalizedString(
-            "Log in with WordPress.com",
-            comment: "Button that will navigate to the authentication flow with WP.com"
+            "applicationPasswordDisabled.retry.buttonTitle",
+            value: "Retry",
+            comment: "Button to retry fetching application password authorization if application password is disabled"
         )
     }
 }

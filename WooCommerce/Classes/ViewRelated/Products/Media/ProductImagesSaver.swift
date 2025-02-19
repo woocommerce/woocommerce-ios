@@ -10,6 +10,9 @@ final class ProductImagesSaver {
             imageStatusesToSaveSubject.send(imageStatusesToSave)
         }
     }
+
+    private(set) var savedProduct: Product?
+
     // The use of a `PassthroughSubject` sent on variable `didSet` instead of a `@Published` is because `@Published`
     // subscription happens in `willSet` while we want to update the statuses after `didSet`.
     private let imageStatusesToSaveSubject: PassthroughSubject<[ProductImageStatus], Never> = .init()
@@ -38,6 +41,9 @@ final class ProductImagesSaver {
     ///   - onProductSave: called after the product is updated remotely with the uploaded images.
     func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandlerProtocol,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
+        /// Reset previously saved product
+        savedProduct = nil
+
         let imageStatuses = imageActionHandler.productImageStatuses
         guard imageStatuses.hasPendingUpload else {
             return saveProductImages(imageStatuses.images, onProductSave: onProductSave)
@@ -72,6 +78,7 @@ private extension ProductImagesSaver {
                 guard let self = self else { return }
                 switch result {
                 case .success(let product):
+                    savedProduct = product
                     onProductSave(.success(product.images))
                     self.analytics.track(event:
                             .ImageUpload.savingProductAfterBackgroundImageUploadSuccess(productOrVariation: .product))

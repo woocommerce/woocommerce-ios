@@ -14,7 +14,7 @@ public enum CardPresentPaymentAction: Action {
 
     /// Retrieves the current configuration for IPP.
     ///
-    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentGatewayExtension) -> Void)
+    case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentsPlugin) -> Void)
 
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
     /// We support payment gateway accounts for both the WooCommerce Payments extension AND
@@ -81,6 +81,9 @@ public enum CardPresentPaymentAction: Action {
 
     /// Check the state of available software updates.
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
+
+    /// Observe TTP Terms and Services accept event
+    case observeBuiltInCardReaderAcceptToS(onCompletion: (AnyPublisher<Void, Never>) -> Void)
 
     /// Update card reader firmware.
     case startCardReaderUpdate

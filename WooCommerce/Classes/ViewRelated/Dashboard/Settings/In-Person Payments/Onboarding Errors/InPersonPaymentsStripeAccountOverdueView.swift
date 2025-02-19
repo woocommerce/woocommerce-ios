@@ -4,9 +4,9 @@ import enum Yosemite.CardPresentPaymentsPlugin
 struct InPersonPaymentsStripeAccountOverdue: View {
     let analyticReason: String
     let onRefresh: () -> Void
+    let plugin: CardPresentPaymentsPlugin
     @State private var presentedSetupURL: URL? = nil
 
-    private let plugin: CardPresentPaymentsPlugin = .stripe
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -36,7 +36,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
      }
 
     private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL() else {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL(plugin: plugin) else {
             return nil
         }
 
@@ -56,13 +56,21 @@ private extension InPersonPaymentsStripeAccountOverdue {
 
 private enum Localization {
      static let title = NSLocalizedString(
-         "In-Person Payments is currently unavailable",
-         comment: "Title for the error screen when the Stripe account is restricted because there are overdue requirements."
+         "In‑Person Payments is currently unavailable",
+         comment: """
+                  Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                  """
      )
 
      static let message = NSLocalizedString(
-         "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments.",
-         comment: "Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements"
+         "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments.",
+         comment: """
+                  Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                  """
      )
 
     static let primaryButtonTitle = NSLocalizedString(
@@ -77,6 +85,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { })
+        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { }, plugin: .stripe)
     }
 }

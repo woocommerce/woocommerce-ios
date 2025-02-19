@@ -236,6 +236,7 @@ enum WooAnalyticsStat: String {
     case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
     case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
     case blazeCampaignCreationFeedback = "blaze_campaign_creation_feedback"
+    case blazeSuggestionsLoadingFailed = "blaze_suggestions_loading_failed"
 
     // MARK: Store Onboarding Events
     //
@@ -258,6 +259,11 @@ enum WooAnalyticsStat: String {
     case sitePickerNewToWooTapped = "site_picker_new_to_woo_tapped"
     case sitePickerAddStoreTapped = "site_picker_add_a_store_tapped"
     case sitePickerConnectExistingStoreTapped = "site_picker_connect_existing_store_tapped"
+    case sitePickerEditButtonShown = "site_picker_edit_button_shown"
+    case sitePickerEditButtonTapped = "site_picker_edit_button_tapped"
+    case sitePickerListSaveButtonTapped = "site_picker_list_save_button_tapped"
+    case sitePickerListSavingSuccess = "site_picker_list_saving_success"
+    case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
     // MARK: Site creation
     //
@@ -346,15 +352,14 @@ enum WooAnalyticsStat: String {
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
     case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
-    case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
-    case cardReaderDiscoveredReader = "card_reader_discovery_reader_discovered"
-    case cardReaderConnectionTapped = "card_reader_connection_tapped"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
+    case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
+    case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
 
     // MARK: Card Reader Software Update Events
     //
@@ -384,6 +389,13 @@ enum WooAnalyticsStat: String {
     case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
     case tapToPayAutoRefundSuccess = "card_present_tap_to_pay_test_payment_refund_success"
     case tapToPayAutoRefundFailed = "card_present_tap_to_pay_test_payment_refund_failed"
+    case tapToPayAwarenessShown = "tap_to_pay_awareness_shown"
+    case tapToPayTermsOfServiceAccepted = "tap_to_pay_terms_of_service_accepted"
+
+    // MARK: Tap to Pay Education
+    case tapToPayEducationShown = "tap_to_pay_education_shown"
+    case tapToPayEducationDone = "tap_to_pay_education_done"
+    case tapToPayEducationSkipped = "tap_to_pay_education_skipped"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
@@ -539,6 +551,13 @@ enum WooAnalyticsStat: String {
     // MARK: Order List Sorting/Filtering
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
+
+    // MARK: Filter History
+    //
+    case filterHistoryButtonTapped = "filter_history_button_tapped"
+    case filterHistoryPastFilterApplied = "filter_history_past_filter_applied"
+    case filterHistoryPastFilterRemoved = "filter_history_past_filter_removed"
+    case filterHistoryCleared = "filter_history_cleared"
 
     // MARK: Barcode Scanning events
     //
@@ -803,6 +822,7 @@ enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
     case productImageUploadFailed = "product_image_upload_failed"
+    case productImageUploadRetryButtonTapped = "product_image_upload_retry_button_tapped"
     case savingProductAfterBackgroundImageUploadSuccess = "saving_product_after_background_image_upload_success"
     case savingProductAfterBackgroundImageUploadFailed = "saving_product_after_background_image_upload_failed"
     case failureSavingProductAfterImageUploadNoticeShown = "failure_saving_product_after_image_upload_notice_shown"
@@ -1249,9 +1269,29 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
-    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
-    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
-    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
+    case pointOfSaleLoaded = "loaded"
+    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
+    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
+    case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCheckoutTapped = "checkout_tapped"
+    case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
+    case pointOfSaleClearCartTapped = "clear_cart_tapped"
+    case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
+    case pointOfSaleExitConfirmed = "exit_confirmed"
+    case pointOfSaleGetSupportTapped = "get_support_tapped"
+    case pointOfSaleSimpleProductsExplanationDialogShown = "simple_products_explanation_dialog_shown"
+    case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
+    case pointOfSaleEmailReceiptTapped = "email_receipt_tapped"
+    case pointOfSaleEmailReceiptSendTapped = "email_receipt_send_tapped"
+    case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
+    case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
+    case pointOfSaleViewDocsTapped = "view_docs_tapped"
+    case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
+    case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

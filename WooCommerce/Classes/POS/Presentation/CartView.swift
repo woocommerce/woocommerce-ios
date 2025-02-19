@@ -1,12 +1,12 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct CartView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
 
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
@@ -14,63 +14,43 @@ struct CartView: View {
         posModel.cart.isNotEmpty && offSetPosition < 0
     }
 
+    @State private var shouldShowItemImages: Bool = false
+
     var body: some View {
         VStack {
-            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
-                HStack(spacing: Constants.cartHeaderElementSpacing) {
-                    backAddMoreButton
-                        .disabled(shouldPreventCartEditing)
-                        .shimmering(active: shouldPreventCartEditing)
-
-                    HStack {
-                        Text(Localization.cartTitle)
-                            .font(Constants.primaryFont)
-                            .foregroundColor(posModel.cart.isEmpty ? .posSecondaryText : .posPrimaryText)
-                            .accessibilityAddTraits(.isHeader)
-
-                        Spacer()
-
-                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
-                            Text(itemsInCartLabel)
-                                .font(Constants.itemsFont)
-                                .foregroundColor(Color.posSecondaryText)
-                        }
+            POSPageHeaderView(title: Localization.cartTitle,
+                              backButtonConfiguration: backButtonConfiguration,
+                              trailingContent: {
+                DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
+                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
+                        Text(itemsInCartLabel)
+                            .font(Constants.itemsFont)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
                     }
-                    .accessibilityElement(children: .combine)
-                }
-
-                HStack {
-                    Spacer()
-                        .renderedIf(dynamicTypeSize.isAccessibilitySize)
 
                     Button {
                         posModel.removeAllItemsFromCart()
                     } label: {
                         Text(Localization.clearButtonTitle)
-                            .font(Constants.clearButtonFont)
-                            .padding(Constants.clearButtonTextPadding)
-                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                            )
                     }
-                    .padding(.leading, Constants.itemHorizontalPadding)
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-            .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
-            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
+            })
+            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
             if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        VStack(spacing: 0) {
+                        VStack(spacing: Constants.cartItemSpacing) {
                             ForEach(posModel.cart, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
+                                            showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
+                                    ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
                                     posModel.remove(cartItem: cartItem)
                                 } : nil)
                                 .id(cartItem.id)
@@ -78,14 +58,26 @@ struct CartView: View {
                             }
                         }
                         .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
-                        .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
+                            .onAppear {
+                                updateItemImageVisibility(cartListWidth: geometry.size.width)
+                            }
+                            .onChange(of: geometry.size.width) {
+                                updateItemImageVisibility(cartListWidth: $0)
+                            }
+                            .onChange(of: dynamicTypeSize) {
+                                updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
+                            }
                         })
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position
                         }
+
+                        Spacer()
+                            .frame(height: floatingControlAreaSize.height)
+                            .renderedIf(posModel.orderStage == .finalizing)
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
@@ -132,14 +124,10 @@ private struct ScrollOffSetPreferenceKey: PreferenceKey {
     }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            return Color.posSecondaryBackground
-        default:
-            return posModel.cart.isEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
-        }
+        .posSurfaceBright
     }
 
     var shouldPreventCartEditing: Bool {
@@ -153,26 +141,56 @@ private extension CartView {
             cart: posModel.cart,
             orderStage: posModel.orderStage)
     }
+
+    func updateItemImageVisibility(dynamicTypeSize: DynamicTypeSize? = nil, cartListWidth: CGFloat) {
+        let newVisibility = cartListWidth >= minimumWidthToShowItemImages(with: dynamicTypeSize ?? self.dynamicTypeSize)
+        guard newVisibility != shouldShowItemImages else {
+            return
+        }
+        shouldShowItemImages = newVisibility
+    }
+
+    func minimumWidthToShowItemImages(with dynamicTypeSize: DynamicTypeSize) -> CGFloat {
+        switch dynamicTypeSize {
+        case .xSmall, .small:
+            240
+        case .medium:
+            260
+        case .large:
+            270
+        case .xLarge:
+            280
+        case .xxLarge, .xxxLarge:
+            300
+        case .accessibility1:
+            320
+        case .accessibility2:
+            400
+        case .accessibility3, .accessibility4:
+            420
+        case .accessibility5:
+            450
+        @unknown default:
+            450
+        }
+    }
 }
 
+@available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
-        static let primaryFont: POSFontStyle = .posTitleEmphasized
-        static let secondaryFont: POSFontStyle = .posBodyRegular
-        static let itemsFont: POSFontStyle = .posDetailRegular
-        static let clearButtonFont: POSFontStyle = .posDetailEmphasized
-        static let clearButtonCornerRadius: CGFloat = 4
-        static let clearButtonBorderWidth: CGFloat = 2
-        static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
+        static let primaryFont: POSFontStyle = .posHeadingBold
+        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let emptyViewImageTextSpacing: CGFloat = 30 // This should be 40 by designs, but the overlay technique means we have to tweak it
         static let cartHeaderSpacing: CGFloat = 8
-        static let backButtonSymbol: String = "chevron.backward"
         static let cartHeaderElementSpacing: CGFloat = 16
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = 16
+        static let cartItemSpacing: CGFloat = 8
     }
 
     enum Localization {
@@ -197,31 +215,30 @@ private extension CartView {
 
 /// View sub-components
 ///
+@available(iOS 17.0, *)
 private extension CartView {
     var checkoutButton: some View {
         Button {
             Task { @MainActor in
+                trackCheckoutTapped()
                 await posModel.checkOut()
             }
         } label: {
             Text(Localization.checkoutButtonTitle)
         }
-        .buttonStyle(POSPrimaryButtonStyle())
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 
-    @ViewBuilder
-    var backAddMoreButton: some View {
+    var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         switch posModel.orderStage {
         case .building:
-            EmptyView()
+            return nil
         case .finalizing:
-            Button {
+            let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
+            return .init(state: state, action: {
+                ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
-            } label: {
-                Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
-            }
+            })
         }
     }
 
@@ -234,7 +251,7 @@ private extension CartView {
             // avoids issues when the text size is changed through dynamic type.
             Text(Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {
                     Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
@@ -249,8 +266,39 @@ private extension CartView {
     }
 }
 
+@available(iOS 17.0, *)
+private extension CartView {
+    func trackCheckoutTapped() {
+        let itemsInCart = posModel.cart.count
+        ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
+    }
+}
+
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
-    CartView()
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+    return CartView()
+        .environment(posModel)
+}
+
+@available(iOS 17.0, *)
+#Preview("Cart with one item") {
+    let posModel = PointOfSaleAggregateModel(
+        itemsController: PointOfSalePreviewItemsController(),
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+    posModel.addToCart(.simpleProduct(.init(id: UUID(),
+                                            name: "Sample Product",
+                                            formattedPrice: "$10.00",
+                                            productID: 6,
+                                            price: "10")))
+    return CartView()
+        .environment(posModel)
 }
 #endif

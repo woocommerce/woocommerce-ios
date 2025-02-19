@@ -25,6 +25,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         CardPresentConfigurationLoader().configuration
@@ -33,13 +34,14 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
 
     @MainActor
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) async {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
         self.stores = stores
+        self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
 
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
@@ -64,14 +66,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.connectedReaderPublisher = connectedReaderPublisher
 
         readerConnectionStatusPublisher = connectedReaderPublisher
-            .map({ reader -> CardPresentPaymentReaderConnectionStatus? in
-                if let reader {
-                    return .connected(reader)
-                } else {
-                    return nil
+            .map({ reader -> CardPresentPaymentReaderConnectionStatus in
+                guard let reader else {
+                    return .disconnected
                 }
+                return .connected(reader)
             })
-            .compactMap { $0 }
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
@@ -104,8 +104,13 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() async {
         readerConnectionStatusSubject.send(.disconnecting)
 
-        cancelPayment()
+        do {
+            try await cancelPayment()
+        } catch {
+            DDLogError("Attempting to cancel the payment has failed \(error)")
+        }
 
+        paymentTask?.cancel()
         connectionControllerManager.knownReaderProvider.forgetCardReader()
 
         return await withCheckedContinuation { continuation in
@@ -135,7 +140,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         // TODO: Update the connected reader subject when we get a connection here.
 
-        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher).collectPaymentTask(
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher,
+                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
+        ).collectPaymentTask(
             for: order,
             using: connectionMethod,
             siteID: siteID,
@@ -160,6 +167,18 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     func cancelPayment() {
         paymentTask?.cancel()
+    }
+
+    @MainActor
+    func cancelPayment() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
+            let action = CardPresentPaymentAction.cancelPayment { result in
+                nillableContinuation?.resume(with: result)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 }
 
@@ -213,4 +232,5 @@ enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
     case incompleteAddressConnectionError
+    case couldNotCancelPayment
 }

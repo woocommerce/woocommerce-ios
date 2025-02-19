@@ -263,6 +263,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         let size = os_proc_available_memory()
         DDLogDebug("Received memory warning: Available memory - \(size)")
+        ServiceLocator.imageService.clearMemoryCache()
     }
 }
 
@@ -580,7 +581,7 @@ private extension AppDelegate {
 // MARK: - Magic link
 private extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        return if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+        return if ServiceLocator.stores.isAuthenticated {
             handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
         } else {
             ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)

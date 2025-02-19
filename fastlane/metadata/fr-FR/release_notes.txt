@@ -1,3 +1,1 @@
-En seulement deux semaines, nous avons chargé à bloc cette version. L’identifiant de produit mondial GTIN est pris en charge et vous pouvez modifier l’appel à l’action dans les campagnes Blaze.
-
-La configuration de la boutique pour les paiements en personne est plus rapide, les confirmations d’envoi des reçus sont plus claires et le test d’Appuyer pour payer est plus fluide. Par ailleurs, nous avons amélioré les statistiques du tableau de bord et éliminé quelques bugs.
+Profitez d’une application WooCommerce rafraîchie dont le nouveau look est en adéquation avec notre nouvelle image de marque ! Nous avons également amélioré la fiabilité des paiements, les mises à jour du lecteur de cartes gèrent désormais mieux les problèmes de batterie faible, enfin les erreurs lors des paiements et des remboursements bénéficient d’une gestion plus fluide. Profitez d’une expérience plus fluide et aboutie à chaque transaction.

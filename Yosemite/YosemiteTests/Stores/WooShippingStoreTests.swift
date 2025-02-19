@@ -59,8 +59,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let error = DotcomError.unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                                        message: "At least one of the new custom packages has the same name as existing packages.")
+        let error = PackageCreationError.duplicateCustomPackageNames
         remote.whenCreatePackage(siteID: sampleSiteID, thenReturn: .failure(error))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -76,7 +75,128 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure, .duplicatePackageNames)
+    }
+
+    func test_createPackage_when_successful_then_upserts_packages_into_storage() throws {
+        // Given
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-create-package-success")
+        storageManager.insertSamplePackages(readOnlyPackages: .init(siteID: sampleSiteID,
+                                                                    customPackages: [],
+                                                                    savedPredefinedPackages: [],
+                                                                    allPredefinedOptions: [sampleCarrierPredefinedOptions()]))
+
+        // Confidence check
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingCustomPackage.self), 0)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingSavedPredefinedPackage.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.createPackage(siteID: self.sampleSiteID,
+                                                         customPackage: .fake(),
+                                                         predefinedOption: .fake()) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
+        XCTAssertEqual(storedPackages.siteID, sampleSiteID)
+        XCTAssertEqual(storedPackages.customPackages.count, 2)
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.25)
+        XCTAssertEqual(storedPackages.customPackages.last?.boxWeight, 0.25)
+        XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
+    }
+
+    // MARK: `deletePackage`
+
+    func test_deletePackage_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake()])
+        remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .success(response))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
+                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualResponse = try result.get()
+        XCTAssertEqual(actualResponse, response)
+    }
+
+    func test_deletePackage_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let error = DotcomError.requestFailed
+        remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .failure(error))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
+                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_deletePackage_when_successful_then_upserts_packages_into_storage() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let response = WooShippingCreatePackageResponse.fake().copy(customPackages: [WooShippingCustomPackage.fake().copy(id: "2")],
+                                                                    predefinedOptions: [.init(id: "usps", predefinedPackageIDs: ["small_flat_box"])])
+        remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .success(response))
+        storageManager.insertSamplePackages(readOnlyPackages: .init(siteID: sampleSiteID,
+                                                                    customPackages: [WooShippingCustomPackage.fake().copy(id: "1"),
+                                                                                     WooShippingCustomPackage.fake().copy(id: "2")],
+                                                                    savedPredefinedPackages: [.init(groupTitle: "pri_flat_boxes",
+                                                                                                    providerID: "usps",
+                                                                                                    package: .init(id: "small_flat_box",
+                                                                                                                   name: "",
+                                                                                                                   isLetter: false,
+                                                                                                                   dimensions: "",
+                                                                                                                   boxWeight: "",
+                                                                                                                   groupId: "")),
+                                                                                              .init(groupTitle: "pri_flat_boxes",
+                                                                                                    providerID: "usps",
+                                                                                                    package: .init(id: "medium_flat_box_top",
+                                                                                                                   name: "",
+                                                                                                                   isLetter: false,
+                                                                                                                   dimensions: "",
+                                                                                                                   boxWeight: "",
+                                                                                                                   groupId: ""))],
+                                                                    allPredefinedOptions: [sampleCarrierPredefinedOptions()]))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
+                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
+        XCTAssertEqual(storedPackages.siteID, sampleSiteID)
+        XCTAssertEqual(storedPackages.customPackages.count, 1)
+        XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 1)
     }
 
     // MARK: `loadLabelRates`
@@ -141,7 +261,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -154,15 +274,50 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
+    func test_loadPackages_when_successful_then_upserts_packages_into_storage() throws {
+        // Given
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-get-packages-success")
+
+        // Confidence check
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingPackagesResponse.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        let storedPackages = try XCTUnwrap(storageManager.viewStorage.firstObject(ofType: StorageWooShippingPackagesResponse.self)).toReadOnly()
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingPackagesResponse.self), 1)
+        XCTAssertEqual(storedPackages.siteID, sampleSiteID)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.count, 2)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.count, 1)
+        XCTAssertEqual(storedPackages.allPredefinedOptions.first?.predefinedOptions.first?.predefinedPackages.count, 2)
+        XCTAssertEqual(storedPackages.customPackages.count, 1)
+        XCTAssertEqual(storedPackages.customPackages.first?.name, "Custom name")
+        XCTAssertEqual(storedPackages.customPackages.first?.boxWeight, 0.01)
+        XCTAssertEqual(storedPackages.customPackages.first?.id, "849225dc153")
+        XCTAssertEqual(storedPackages.customPackages.first?.type, .box)
+        XCTAssertEqual(storedPackages.customPackages.first?.dimensions, "12 x 12 x 12")
+        XCTAssertEqual(storedPackages.savedPredefinedPackages.count, 2)
+        XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
+    }
+
     func test_loadPackages_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
-        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(WooShippingLoadPackagesError.loadingFailed(error: expectedError)))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -172,7 +327,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertEqual(error, WooShippingLoadPackagesError.loadingFailed(error: expectedError))
     }
 
     // MARK: `purchaseShippingLabel`
@@ -192,7 +347,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -217,7 +374,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -228,6 +387,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    // slow
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -271,7 +431,9 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
-                                                                 package: .fake()) { result in
+                                                                 package: .fake(),
+                                                                 backendProcessingDelay: 0.0,
+                                                                 pollingDelay: 0.0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -396,6 +558,144 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    func test_loadOriginAddresses_returns_addresses_on_success() {
+        // Given
+        let expectedAddresses: [WooShippingOriginAddress] = [WooShippingOriginAddress.fake()]
+        let remote = MockWooShippingRemote()
+        remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .success(expectedAddresses))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let addresses: [WooShippingOriginAddress] = waitFor { promise in
+            let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                guard let printData = try? result.get() else {
+                    XCTFail("Error loading origin addresses for shipping label: \(String(describing: result.failure))")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(addresses, expectedAddresses)
+    }
+
+    func test_loadOriginAddresses_returns_error_failure() {
+        // Given
+        let expectedError = NetworkError.timeout()
+        let remote = MockWooShippingRemote()
+        remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let error: Error = waitFor { promise in
+            let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                guard let printData = result.failure else {
+                    XCTFail("Unexpected result when printing shipping label: \(result)")
+                    return
+                }
+                promise(printData)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    // MARK: `validateAddress`
+
+    func test_validateAddress_returns_WooShippingAddressValidationSuccess_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedResult = WooShippingAddressValidationSuccess(normalizedAddress: WooShippingAddress.fake(),
+                                                                 originalAddress: WooShippingAddress.fake(),
+                                                                 isTrivialNormalization: true)
+        remote.whenAddressValidation(siteID: sampleSiteID, thenReturn: .success(expectedResult))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            let action = WooShippingAction.validateAddress(siteID: self.sampleSiteID,
+                                                           address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let validationSuccess = try XCTUnwrap(result.get())
+        XCTAssertEqual(validationSuccess, expectedResult)
+    }
+
+    func test_validateAddress_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = WooShippingAddressValidationError(addressError: "House number not found", generalError: nil, nameError: nil)
+        remote.whenAddressValidation(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
+            let action = WooShippingAction.validateAddress(siteID: self.sampleSiteID,
+                                                           address: ShippingLabelAddress.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? WooShippingAddressValidationError, expectedError)
+    }
+
+    // MARK: `updateOriginAddress`
+
+    func test_updateOriginAddress_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedAddressUpdate = WooShippingOriginAddressUpdate(address: WooShippingOriginAddress.fake(), isVerified: true)
+        remote.whenUpdatingOriginAddress(siteID: sampleSiteID, thenReturn: .success(expectedAddressUpdate))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
+            let action = WooShippingAction.updateOriginAddress(siteID: self.sampleSiteID,
+                                                               address: WooShippingOriginAddress.fake(),
+                                                               isVerified: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actualAddressUpdate = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualAddressUpdate, expectedAddressUpdate)
+    }
+
+    func test_updateOriginAddress_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenUpdatingOriginAddress(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingOriginAddressUpdate, Error> = waitFor { promise in
+            let action = WooShippingAction.updateOriginAddress(siteID: self.sampleSiteID,
+                                                               address: WooShippingOriginAddress.fake(),
+                                                               isVerified: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {
@@ -420,5 +720,41 @@ private extension WooShippingStoreTests {
                                  isPickupFree: false,
                                  deliveryDays: 7,
                                  deliveryDateGuaranteed: false)
+    }
+
+    func sampleCustomPackage() -> WooShippingCustomPackage {
+        WooShippingCustomPackage(id: "849225dc153",
+                                 name: "Custom name",
+                                 rawType: "box",
+                                 dimensions: "12 x 12 x 12",
+                                 boxWeight: 0.01)
+    }
+
+    func sampleCarrierPredefinedOptions() -> WooShippingCarrierPredefinedOptions {
+        WooShippingCarrierPredefinedOptions(carrierID: "usps",
+                                            predefinedOptions: [.init(title: "pri_flat_boxes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "small_flat_box",
+                                                                                                 name: "",
+                                                                                                 isLetter: false,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")]),
+                                                                .init(title: "pri_flat_envelopes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "flat_envelope",
+                                                                                                 name: "",
+                                                                                                 isLetter: true,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")]),
+                                                                .init(title: "pri_flat_boxes",
+                                                                      providerID: "usps",
+                                                                      predefinedPackages: [.init(id: "medium_flat_box_top",
+                                                                                                 name: "",
+                                                                                                 isLetter: false,
+                                                                                                 dimensions: "",
+                                                                                                 boxWeight: "",
+                                                                                                 groupId: "")])])
     }
 }

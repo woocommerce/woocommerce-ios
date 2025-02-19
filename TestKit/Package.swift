@@ -11,12 +11,13 @@ let package = Package(
             targets: ["TestKit"]),
     ],
     dependencies: [
-        .package(name: "Difference", url: "https://github.com/krzysztofzablocki/Difference.git", .branch("master"))
+        .package(name: "Difference", url: "https://github.com/krzysztofzablocki/Difference.git", .branch("master")),
+        .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
     ],
     targets: [
         .target(
             name: "TestKit",
-            dependencies: ["Difference"]),
+            dependencies: ["Difference", "Nimble"]),
         .testTarget(
             name: "TestKitTests",
             dependencies: ["TestKit"]),

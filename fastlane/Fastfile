@@ -26,12 +26,10 @@ FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '16.0' # For screenshots
+SIMULATOR_VERSION = '18.1' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
-  'iPhone 11 Pro Max',
-  'iPhone 8 Plus',
-  'iPad Pro (12.9-inch) (2nd generation)',
+  'iPhone 16 Plus',
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
@@ -132,6 +130,12 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
 }.freeze
 
 ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+
+CODE_SIGNING_STORAGE_OPTIONS = {
+  storage_mode: 's3',
+  s3_bucket: 'a8c-fastlane-match',
+  s3_region: 'us-east-2'
+}.freeze
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
@@ -461,20 +465,42 @@ platform :ios do
     end
   end
 
-  #####################################################################################
-  # finalize_release
-  # -----------------------------------------------------------------------------------
-  # This lane finalize a release: updates store metadata, bump final version number,
-  # remove branch protection and close milestone, then trigger the final release on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane finalize_release [skip_confirm:<skip confirm>] [version:<version>]
+  # Downloads and prepares the latest translations from GlotPress for App Store submission,
+  # then pushes the changes to the remote repository
   #
-  # Example:
-  # bundle exec fastlane finalize_release
-  # bundle exec fastlane finalize_release skip_confirm:true
-  #####################################################################################
-  desc 'Trigger the final release build on CI'
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane download_release_translations skip_confirm:true
+  #
+  lane :download_release_translations do |skip_confirm: false|
+    ensure_git_status_clean
+    ensure_git_branch_is_release_branch!
+
+    UI.important("Downloading latest translations for version #{release_version_current}")
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+
+    # Don't check translation coverage in CI
+    check_translation_progress_all unless is_ci
+    download_localized_strings_and_metadata_from_glotpress
+    lint_localizations
+
+    UI.important('Pushing changes to remote')
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+
+    push_to_git_remote(tags: false)
+
+    UI.success("Successfully downloaded and committed latest translations for #{release_version_current}")
+  end
+
+  # Finalizes a release by bumping version number, removing branch protection, closing milestone,
+  # and triggering the final release build on CI
+  #
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane finalize_release skip_confirm:true
+  #
   lane :finalize_release do |skip_confirm: false|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
 
@@ -483,11 +509,6 @@ platform :ios do
 
     UI.important("Finalizing release: #{release_version_current}")
     UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    # Don't check translation coverage in CI
-    check_translation_progress_all unless is_ci
-    download_localized_strings_and_metadata_from_glotpress
-    lint_localizations
 
     # Bump the build code
     UI.message('Bumping build code...')
@@ -667,7 +688,8 @@ platform :ios do
       version: version,
       release_notes_file_path: RELEASE_NOTES_PATH,
       release_assets: archive_zip_path.to_s,
-      prerelease: options[:beta_release]
+      prerelease: options[:beta_release], # Beta = Prerelease, Final = normal Release
+      is_draft: !options[:beta_release] # Beta = publish immediately, Final = Draft (only publish manually after Apple approval)
     )
     sh("rm #{archive_zip_path}")
 
@@ -685,8 +707,8 @@ platform :ios do
   end
 
   desc 'Builds for distribution to the App Store'
-  lane :build_for_app_store_connect do
-    appstore_code_signing
+  lane :build_for_app_store_connect do |fetch_code_signing: true|
+    update_certs_and_profiles_app_store if fetch_code_signing
 
     gym(
       scheme: 'WooCommerce',
@@ -753,8 +775,8 @@ platform :ios do
   end
 
   desc 'Builds a prototype build (Enterprise build)'
-  lane :build_for_prototype_build do
-    alpha_code_signing
+  lane :build_for_prototype_build do |fetch_code_signing: true|
+    update_certs_and_profiles_enterprise if fetch_code_signing
 
     # Get the current build version, and update it if needed
     versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
@@ -817,7 +839,8 @@ platform :ios do
       phased_release: true,
       precheck_include_in_app_purchases: false,
       api_key_path: ASC_KEY_PATH,
-      force: options[:skip_confirm]
+      force: options[:skip_confirm],
+      copyright: "© #{Time.now.year} WooCommerce"
     )
   end
 
@@ -1121,18 +1144,16 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  lane :update_certs_and_profiles do |options|
-    alpha_code_signing(options)
-    appstore_code_signing(options)
+  lane :update_certs_and_profiles do |readonly: true|
+    update_certs_and_profiles_enterprise(readonly: readonly)
+    update_certs_and_profiles_app_store(readonly: readonly)
   end
 
   # Downloads all the required certificates and profiles the enterprise build.
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :alpha_code_signing do |options|
-    readonly = options.fetch(:readonly, true)
-
+  lane :update_certs_and_profiles_enterprise do |readonly: true|
     if readonly
       # In readonly mode, we can use the API key
       api_key_path = ASC_KEY_PATH
@@ -1145,12 +1166,13 @@ platform :ios do
       api_key_path = nil
     end
 
-    match(
+    sync_code_signing(
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path
+      api_key_path: api_key_path,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 
@@ -1158,13 +1180,14 @@ platform :ios do
   # Optionally, it can create any new necessary certificate or profile.
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
-  private_lane :appstore_code_signing do |options|
-    match(
+  lane :update_certs_and_profiles_app_store do |readonly: true|
+    sync_code_signing(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
-      readonly: options.fetch(:readonly, true),
-      api_key_path: ASC_KEY_PATH
+      readonly: readonly,
+      api_key_path: ASC_KEY_PATH,
+      **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
 
@@ -1274,7 +1297,8 @@ lane :test_without_building do |options|
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
-    reset_simulator: true,
+    ensure_devices_found: true,
+    force_quit_simulator: true,
     parallel_testing: parallel_testing_value,
     concurrent_workers: CONCURRENT_SIMULATORS,
     max_concurrent_simulators: CONCURRENT_SIMULATORS,

@@ -51,6 +51,39 @@ extension Yosemite.JustInTimeMessage {
     }
 }
 
+extension Yosemite.POSSimpleProduct {
+    public func copy(
+        id: CopiableProp<UUID> = .copy,
+        name: CopiableProp<String> = .copy,
+        formattedPrice: CopiableProp<String> = .copy,
+        productImageSource: NullableCopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        price: CopiableProp<String> = .copy,
+        productType: CopiableProp<ProductType> = .copy,
+        bundledItems: CopiableProp<[Networking.ProductBundleItem]> = .copy
+    ) -> Yosemite.POSSimpleProduct {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let formattedPrice = formattedPrice ?? self.formattedPrice
+        let productImageSource = productImageSource ?? self.productImageSource
+        let productID = productID ?? self.productID
+        let price = price ?? self.price
+        let productType = productType ?? self.productType
+        let bundledItems = bundledItems ?? self.bundledItems
+
+        return Yosemite.POSSimpleProduct(
+            id: id,
+            name: name,
+            formattedPrice: formattedPrice,
+            productImageSource: productImageSource,
+            productID: productID,
+            price: price,
+            productType: productType,
+            bundledItems: bundledItems
+        )
+    }
+}
+
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
         note: CopiableProp<Note> = .copy,

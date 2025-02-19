@@ -1,7 +1,7 @@
 import Foundation
 @testable import Yosemite
 
-final class MockPOSItem: POSOrderableItem, Equatable {
+final class MockPOSOrderableItem: POSOrderableItem, Equatable {
     var name: String
     var id: UUID
     var formattedPrice: String
@@ -44,7 +44,7 @@ final class MockPOSItem: POSOrderableItem, Equatable {
         return true
     }
 
-    static func == (lhs: MockPOSItem, rhs: MockPOSItem) -> Bool {
+    static func == (lhs: MockPOSOrderableItem, rhs: MockPOSOrderableItem) -> Bool {
         return lhs.name == rhs.name &&
         lhs.id == rhs.id &&
         lhs.formattedPrice == rhs.formattedPrice &&

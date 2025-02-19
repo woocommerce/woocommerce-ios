@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
           "branch": null,
-          "revision": "31045d654bcc1f2b56c85dd658f160fad5b50a29",
-          "version": "1.1.4"
+          "revision": "606384a7492faa1139d489080dd961b0b57f9fd9",
+          "version": "1.1.5"
         }
       },
       {
@@ -26,6 +26,24 @@
           "branch": null,
           "revision": "8d3a15d0aa2991e0761749b767ef8d89bca6275a",
           "version": "1.0.1"
+        }
+      },
+      {
+        "package": "CwlCatchException",
+        "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
+        "state": {
+          "branch": null,
+          "revision": "07b2ba21d361c223e25e3c1e924288742923f08c",
+          "version": "2.2.1"
+        }
+      },
+      {
+        "package": "CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+        "state": {
+          "branch": null,
+          "revision": "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
+          "version": "2.2.2"
         }
       },
       {
@@ -56,12 +74,21 @@
         }
       },
       {
+        "package": "Nimble",
+        "repositoryURL": "https://github.com/Quick/Nimble.git",
+        "state": {
+          "branch": null,
+          "revision": "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
+          "version": "13.7.1"
+        }
+      },
+      {
         "package": "ScreenObject",
         "repositoryURL": "https://github.com/Automattic/ScreenObject",
         "state": {
           "branch": null,
-          "revision": "328db56c62aab91440ec5e07cc9f7eef6e26a26e",
-          "version": "0.2.3"
+          "revision": "5a62548524a0ad65d8e2e5d4f665981c48066253",
+          "version": "0.3.0"
         }
       },
       {
@@ -84,7 +111,7 @@
       },
       {
         "package": "swift-numerics",
-        "repositoryURL": "https://github.com/apple/swift-numerics.git",
+        "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
           "branch": null,
           "revision": "0a5bc04095a675662cf24757cc0640aa2204253b",
@@ -105,8 +132,8 @@
         "repositoryURL": "https://github.com/buildkite/test-collector-swift",
         "state": {
           "branch": null,
-          "revision": "77c7f492f5c1c9ca159f73d18f56bbd1186390b0",
-          "version": "0.3.0"
+          "revision": "631a2400dbe876141a3ef8c7400885907fec7f89",
+          "version": "0.4.1"
         }
       },
       {
@@ -125,15 +152,6 @@
           "branch": null,
           "revision": "5acfa0a3c095ac9ad050abe51c60d1831e8321da",
           "version": "0.10.0"
-        }
-      },
-      {
-        "package": "XCUITestHelpers",
-        "repositoryURL": "https://github.com/Automattic/XCUITestHelpers",
-        "state": {
-          "branch": null,
-          "revision": "5179cb69d58b90761cc713bdee7740c4889d3295",
-          "version": "0.4.0"
         }
       }
     ]

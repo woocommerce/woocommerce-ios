@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "tap-to-pay-education-apple-pay-us.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

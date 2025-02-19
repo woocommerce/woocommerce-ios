@@ -685,9 +685,10 @@ private extension AuthenticationManager {
 
     /// Web view to authorize application password for a given site.
     ///
-    func applicationPasswordWebView(for siteURL: String) -> UIViewController {
+    func applicationPasswordWebView(for siteURL: String, previousVC: UIViewController?) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
         let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
+                                                                           previousViewController: previousVC,
                                                                            onSuccess: { [weak self] applicationPassword, navigationController in
             guard let navigationController else {
                 DDLogInfo("⚠️ No navigation controller found")
@@ -754,13 +755,15 @@ private extension AuthenticationManager {
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
     }
 
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
-                                  in navigationController: UINavigationController) {
-        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+                                  in navigationController: UINavigationController,
+                                  previousViewController: UIViewController? = nil) {
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }
             // Tracking `signedIn` after the user logged in using site creds & application password is created
@@ -806,7 +809,7 @@ private extension AuthenticationManager {
     /// Presents app password site login using a web view.
     ///
     private func presentApplicationPasswordWebView(for siteURL: String, in viewController: UIViewController) {
-        let webViewController = applicationPasswordWebView(for: siteURL)
+        let webViewController = applicationPasswordWebView(for: siteURL, previousVC: viewController)
         viewController.navigationController?.pushViewController(webViewController, animated: true)
     }
 }

@@ -3,13 +3,14 @@ import SwiftUI
 
 struct TapToPayEducationView: View {
     @StateObject private var viewModel: TapToPayEducationViewModel
+    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: TapToPayEducationViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 8) {
                 TabView(selection: $viewModel.selectedStep) {
                     ForEach(0..<viewModel.steps.count, id: \.self) { index in
@@ -57,13 +58,14 @@ struct TapToPayEducationView: View {
             }
         }
         .interactiveDismissDisabled(viewModel.isInteractiveDismissDisabled)
-        .sheet(isPresented: $viewModel.showingSetUpFlow,
-               onDismiss: viewModel.reloadHasPreviousTapToPayUsage,
-               content: {
-            TapToPaySettingsFlowPresentingView(
-                configuration: viewModel.configuration,
-                siteID: viewModel.siteID,
-                onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase)
-        })
+        .onChange(of: viewModel.dismiss) { _ in
+            dismiss()
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
+        .onDisappear {
+            viewModel.onDisappear()
+        }
     }
 }

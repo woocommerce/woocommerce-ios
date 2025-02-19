@@ -19,7 +19,7 @@ final class ImageTextScannerTests: XCTestCase {
 
     func test_scanText_returns_text_from_image_with_text() async throws {
         // Given
-        let imageWithText = UIImage.wooLogoPrologueImage
+        let imageWithText = UIImage(named: "card-brand-visa")!
 
         // When
         let scannedTexts = try await scanner.scanText(from: imageWithText)

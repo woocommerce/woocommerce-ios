@@ -40,13 +40,15 @@ final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
          transactionType: CardPresentTransactionType,
          image: UIImage = .paymentErrorImage,
          email: String,
+         requiresFallbackPaymentMethod: Bool = false,
          tryAgainAction: @escaping () -> Void,
          dismissCompletion: @escaping () -> Void) {
         self.topTitle = CardPresentModalError.Localization.paymentFailed(transactionType: transactionType)
         self.bottomTitle = errorDescription
         self.image = image
         self.primaryButtonTitle = CardPresentModalError.Localization.tryAgain(transactionType: transactionType)
-        self.secondaryButtonTitle = CardPresentModalError.Localization.noThanks(transactionType: transactionType)
+        self.secondaryButtonTitle = CardPresentModalError.Localization.dismiss(transactionType: transactionType,
+                                                                               requiresFallbackPaymentMethod: requiresFallbackPaymentMethod)
         self.tryAgainAction = tryAgainAction
         self.dismissCompletion = dismissCompletion
 

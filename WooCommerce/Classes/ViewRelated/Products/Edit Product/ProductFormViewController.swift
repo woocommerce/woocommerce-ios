@@ -73,6 +73,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var productImageUploadsSubscription: AnyCancellable?
     private var blazeEligibilitySubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
@@ -167,20 +168,20 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeVariationsPriceChanges()
         observeUpdateBlazeEligibility()
 
-        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
                 return
             }
 
-            if error != nil {
-                let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
-                let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
-                self.displayErrorAlert(title: title, message: message)
-            }
-
             self.onImageStatusesUpdated(statuses: productImageStatuses)
-
             self.viewModel.updateImages(productImageStatuses.images)
+        }
+
+        productImageUploadsSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                displayImageUploadErrorAlert(error: error, for: asset)
+            }
         }
 
         productImageUploader.stopEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
@@ -194,12 +195,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
-
-        if isBeingDismissedInAnyWay {
-            productImageUploader.startEmittingErrors(key: .init(siteID: viewModel.productModel.siteID,
-                                                                productOrVariationID: productOrVariationID,
-                                                                isLocalID: !viewModel.productModel.existsRemotely))
-        }
+        prepareForBackgroundUploadsUponDismissal()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -252,6 +248,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             ])
         }
         saveProduct(status: .published)
+    }
+
+    @objc func dismissPresentedViewController() {
+        presentedViewController?.dismiss(animated: true, completion: nil)
     }
 
     func saveProductAsDraft() {
@@ -916,6 +916,8 @@ private extension ProductFormViewController {
         }, onAddImage: { [weak self] in
             self?.eventLogger.logImageTapped()
             self?.showProductImages()
+        }, onFailedImageUpload: { [weak self] (asset, error) in
+            self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
     }
 }
@@ -1038,11 +1040,45 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
+    func displayImageUploadErrorAlert(error: Error, for asset: ProductImageAssetType) {
+        let alert = UIAlertController(title: Localization.ImageUploadError.title,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        let discard = UIAlertAction(title: Localization.ImageUploadError.discard, style: .destructive, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+        })
+        alert.addAction(discard)
+
+        let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            ServiceLocator.analytics.track(.productImageUploadRetryButtonTapped)
+            /// Discard the upload before uploading again to replace the failed upload.
+            self?.productImageActionHandler.discardUpload(asset: asset)
+            self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        })
+        alert.addAction(retry)
+
+        present(alert, animated: true, completion: nil)
+    }
+
     func displayWebViewForProductInStore() {
         guard let url = URL(string: product.permalink) else {
             return
         }
-        WebviewHelper.launch(url, with: self)
+
+        let stores = ServiceLocator.stores
+        guard let site = stores.sessionManager.defaultSite,
+            stores.shouldAuthenticateAdminPage(for: site) else {
+            WebviewHelper.launch(url.absoluteString, with: self)
+            return
+        }
+
+        let viewModel = DefaultAuthenticatedWebViewModel(title: product.name, initialURL: url)
+        let controller = AuthenticatedWebViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: controller)
+        controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                      target: self,
+                                                                      action: #selector(dismissPresentedViewController))
+        present(navigationController, animated: true)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
@@ -1319,6 +1355,16 @@ private extension ProductFormViewController {
 // MARK: - Navigation actions handling
 //
 private extension ProductFormViewController {
+    func prepareForBackgroundUploadsUponDismissal() {
+        guard isBeingDismissedInAnyWay else { return }
+
+        let key = ProductImageUploaderKey(siteID: viewModel.productModel.siteID,
+                                          productOrVariationID: productOrVariationID,
+                                          isLocalID: !viewModel.productModel.existsRemotely)
+        productImageUploader.startEmittingErrors(key: key)
+        productImageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
+    }
+
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
             presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)
@@ -1329,14 +1375,16 @@ private extension ProductFormViewController {
             UIAlertController.presentDiscardNewProductActionSheet(viewController: viewControllerToPresentAlert,
                                                                   onSaveDraft: { [weak self] in
                 self?.saveProductAsDraft()
-            }, onDiscard: {
+            }, onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
             })
         case .edit:
             UIAlertController.presentDiscardChangesActionSheet(viewController: viewControllerToPresentAlert,
-                                                               onDiscard: {
+                                                               onDiscard: { [weak self] in
+                self?.resetProductImages()
                 exitForm()
             }, onCancel: {
                 onCancel()
@@ -1344,6 +1392,10 @@ private extension ProductFormViewController {
         case .readonly:
             break
         }
+    }
+
+    func resetProductImages() {
+        productImageActionHandler.resetProductImages(to: viewModel.productModel)
     }
 }
 
@@ -2107,6 +2159,24 @@ private enum Localization {
                                                comment: "The message for the Write with AI tooltip")
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
+    }
+
+    enum ImageUploadError {
+        static let title = NSLocalizedString(
+            "productFormViewController.imageUploadError.title",
+            value: "Image was not uploaded",
+            comment: "Title of the alert when there is an error uploading an image of a product."
+        )
+        static let discard = NSLocalizedString(
+            "productFormViewController.imageUploadError.discard",
+            value: "Discard",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload."
+        )
+        static let retry = NSLocalizedString(
+            "productFormViewController.imageUploadError.retry",
+            value: "Retry",
+            comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+        )
     }
 }
 

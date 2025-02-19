@@ -1,4 +1,5 @@
 import Combine
+import Photos
 import TestKit
 import XCTest
 @testable import WooCommerce
@@ -225,13 +226,14 @@ final class MainTabBarControllerTests: XCTestCase {
         }
         completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: 606)))
 
-        // Assert
-        waitUntil {
-            hubMenuNavigationController.viewControllers.count != 0
-        }
         // HubMenuViewController should be pushed, and be the MainTabBarController visible index
-        assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
-        XCTAssertEqual(tabBarController.selectedIndex, WooTab.hubMenu.visibleIndex())
+        waitUntil {
+            hubMenuNavigationController.topViewController is HubMenuViewController
+        }
+
+        waitUntil {
+            tabBarController.selectedIndex == WooTab.hubMenu.visibleIndex()
+        }
     }
 
     func test_when_receiving_product_image_upload_error_a_notice_is_enqueued() throws {
@@ -255,8 +257,8 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: NSError(domain: "", code: 8))))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: NSError(domain: "", code: 8))))
 
         // Given
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
@@ -285,7 +287,6 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
 
         // Given
@@ -315,7 +316,6 @@ final class MainTabBarControllerTests: XCTestCase {
         // When
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .variation(productID: 0, variationID: 608),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: NSError(domain: "", code: 18))))
 
         // Given
@@ -346,8 +346,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: error)))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -357,8 +357,10 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         // Then
-        let productNavigationController = try XCTUnwrap(productsNavigationController.presentedViewController as? UINavigationController)
-        assertThat(productNavigationController.topViewController, isAnInstanceOf: ProductLoaderViewController.self)
+        waitUntil {
+            let productNavigationController = productsNavigationController.presentedViewController as? UINavigationController
+            return productNavigationController?.topViewController is ProductLoaderViewController
+        }
     }
 
     // MARK: - Analytics
@@ -386,8 +388,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
-                                 error: .failedUploadingImage(error: error)))
+                                 error: .failedUploadingImage(asset: ProductImageAssetType.phAsset(asset: PHAsset()),
+                                                              error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
@@ -428,7 +430,6 @@ final class MainTabBarControllerTests: XCTestCase {
         let error = NSError(domain: "", code: 8)
         statusUpdates.send(.init(siteID: 134,
                                  productOrVariationID: .product(id: 606),
-                                 productImageStatuses: [],
                                  error: .failedSavingProductAfterImageUpload(error: error)))
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
@@ -494,8 +495,11 @@ final class MainTabBarControllerTests: XCTestCase {
         let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
         let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
-        let secondaryViewController = try XCTUnwrap((splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController)
-        assertThat(secondaryViewController, isAnInstanceOf: OrderLoaderViewController.self)
+
+        waitUntil {
+            let secondaryViewController = (splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController
+            return secondaryViewController is OrderLoaderViewController
+        }
 
         // Resets the tab bar controller mock at the end of the test.
         TestingAppDelegate.mockTabBarController = nil
@@ -537,8 +541,10 @@ final class MainTabBarControllerTests: XCTestCase {
         let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
         let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
-        let secondaryViewController = try XCTUnwrap((splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController)
-        assertThat(secondaryViewController, isAnInstanceOf: OrderLoaderViewController.self)
+        waitUntil {
+            let secondaryViewController = (splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController
+            return secondaryViewController is OrderLoaderViewController
+        }
 
         // Resets the tab bar controller mock at the end of the test.
         TestingAppDelegate.mockTabBarController = nil

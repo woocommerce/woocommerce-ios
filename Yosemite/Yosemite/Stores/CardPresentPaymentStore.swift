@@ -3,8 +3,6 @@ import Hardware
 import Networking
 import Combine
 
-
-
 // MARK: CardPresentPaymentStore
 ///
 public final class CardPresentPaymentStore: Store {
@@ -28,12 +26,12 @@ public final class CardPresentPaymentStore: Store {
     }
 
     /// Which backend is the store using? Default to WCPay until told otherwise
-    private var usingBackend: CardPresentPaymentGatewayExtension {
+    private var usingBackend: CardPresentPaymentsPlugin {
         guard let paymentGatewayAccount = paymentGatewayAccount else {
-            return .wcpay
+            return .wcPay
         }
 
-        return paymentGatewayAccount.isWCPay ? .wcpay : .stripe
+        return paymentGatewayAccount.isWCPay ? .wcPay : .stripe
     }
 
     private let remote: WCPayRemote
@@ -129,6 +127,8 @@ public final class CardPresentPaymentStore: Store {
             cancelRefund(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
+        case .observeBuiltInCardReaderAcceptToS(let completion):
+            observeBuiltInCardReaderAcceptToS(onCompletion: completion)
         case .startCardReaderUpdate:
             startCardReaderUpdate()
         case .reset:
@@ -160,7 +160,7 @@ private extension CardPresentPaymentStore {
 
     func prepareConfigProvider(siteID: Int64) {
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
         case .stripe:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
@@ -400,6 +400,10 @@ private extension CardPresentPaymentStore {
         onCompletion(cardReaderService.softwareUpdateEvents)
     }
 
+    func observeBuiltInCardReaderAcceptToS(onCompletion: @escaping (AnyPublisher<Void, Never>) -> Void) {
+        onCompletion(cardReaderService.builtInCardReaderAcceptToSEvents)
+    }
+
     func startCardReaderUpdate() {
         cardReaderService.installUpdate()
     }
@@ -431,7 +435,7 @@ private extension CardPresentPaymentStore {
         self.paymentGatewayAccount = paymentGatewayAccount
     }
 
-    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentGatewayExtension) -> Void) {
+    func loadActivePaymentGateway(onCompletion: (CardPresentPaymentsPlugin) -> Void) {
         onCompletion(usingBackend)
     }
 
@@ -522,7 +526,7 @@ private extension CardPresentPaymentStore {
                                    paymentIntent: PaymentIntent) -> AnyPublisher<Result<Void, Error>, Never> {
         let captureOrderPaymentPublisher: AnyPublisher<Result<RemotePaymentIntent, Error>, Never>
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             captureOrderPaymentPublisher = remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         case .stripe:
             captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
@@ -537,7 +541,7 @@ private extension CardPresentPaymentStore {
                     }
                     return .success(())
                 case .failure(let error):
-                    let error = PaymentGatewayAccountError(underlyingError: error)
+                    let error = PaymentsError(underlyingError: error)
                     return .failure(ServerSidePaymentCaptureError.paymentGateway(error: error))
                 }
             }
@@ -546,7 +550,7 @@ private extension CardPresentPaymentStore {
 
     func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         switch usingBackend {
-        case .wcpay:
+        case .wcPay:
             remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
                 switch result {
                 case .success(let charge):
@@ -554,7 +558,7 @@ private extension CardPresentPaymentStore {
                         completion(.success(charge))
                     }
                 case .failure(let error):
-                    if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
+                    if case .noSuchChargeError = PaymentsError(underlyingError: error) {
                         self.deleteCharge(siteID: siteID, chargeID: chargeID) {
                             completion(.failure(error))
                         }
@@ -657,53 +661,17 @@ private extension CardPresentPaymentStore {
     }
 }
 
-public enum ServerSidePaymentCaptureError: Error {
+public enum ServerSidePaymentCaptureError: Error, LocalizedError {
     case paymentIntentNotSuccessful
-    case paymentGateway(error: PaymentGatewayAccountError)
-}
-
-public enum PaymentGatewayAccountError: Error, LocalizedError {
-    case orderPaymentCaptureError(message: String?)
-    case otherError(error: AnyError)
-
-    init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, message) = error else {
-            self = .otherError(error: error.toAnyError)
-            return
-        }
-
-        /// See if we recognize this DotcomError code
-        ///
-        self = ErrorCode(rawValue: code)?.error(message: message ?? Localizations.defaultMessage) ?? .otherError(error: error.toAnyError)
-    }
-
-    enum ErrorCode: String {
-        case wcpayCaptureError = "wcpay_capture_error"
-
-        func error(message: String) -> PaymentGatewayAccountError {
-            switch self {
-            case .wcpayCaptureError:
-                return .orderPaymentCaptureError(message: message)
-            }
-        }
-    }
+    case paymentGateway(error: PaymentsError)
 
     public var errorDescription: String? {
         switch self {
-        case .orderPaymentCaptureError(let message):
-            /// Return the message directly from the store, e.g. in the case of fractional quantities, which are not allowed
-            /// "Payment capture failed to complete with the following message: Error: Invalid integer: 2.5"
-            return message
-        case .otherError(let error):
+        case .paymentIntentNotSuccessful:
+            return "Payment intent not successful"
+        case .paymentGateway(error: let error):
             return error.localizedDescription
         }
-    }
-
-    enum Localizations {
-        static let defaultMessage = NSLocalizedString(
-            "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
-            comment: "Message presented when an unexpected error occurs with the store's payment gateway."
-        )
     }
 }
 
@@ -724,49 +692,3 @@ public protocol CardReaderCapableRemote {
 
 extension WCPayRemote: CardReaderCapableRemote {}
 extension StripeRemote: CardReaderCapableRemote {}
-
-// MARK: - WCPayChargesError
-public enum WCPayChargesError: Error, LocalizedError {
-    case noSuchChargeError(message: String)
-    case otherError(error: AnyError)
-
-    init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, message) = error,
-              let message = message else {
-                  self = .otherError(error: error.toAnyError)
-                  return
-              }
-
-        /// See if we recognize this DotcomError code
-        ///
-        self = ErrorCode(rawValue: code)?.error(message: message) ?? .otherError(error: error.toAnyError)
-    }
-
-    enum ErrorCode: String {
-        case getChargeError = "wcpay_get_charge"
-        case unknown
-
-        func error(message: String) -> WCPayChargesError? {
-            switch self {
-            case .getChargeError:
-                guard message.starts(with: "Error: No such charge") else {
-                    return nil
-                }
-                return .noSuchChargeError(message: message)
-            default:
-                return nil
-            }
-        }
-    }
-
-    public var errorDescription: String? {
-        switch self {
-        case .noSuchChargeError(let message):
-            /// Return the message directly from the store
-            /// "Error: No such charge: 'ch_3KMVapErrorERROR'"
-            return message
-        case .otherError(let error):
-            return error.localizedDescription
-        }
-    }
-}

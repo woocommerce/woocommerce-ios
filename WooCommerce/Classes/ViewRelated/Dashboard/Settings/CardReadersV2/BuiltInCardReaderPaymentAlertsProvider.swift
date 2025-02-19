@@ -60,20 +60,20 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                receiptState: CardReaderTransactionFailureAlertReceiptState,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-
-
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             return CardPresentModalErrorEmailSent(errorDescription: builtInReaderDescription(for: error),
                                                   transactionType: .collectPayment,
                                                   image: .builtInReaderError,
                                                   email: email,
+                                                  requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                   tryAgainAction: tryAgain,
                                                   dismissCompletion: dismissCompletion)
         case let .promptToSendEmailReceipt(emailReceiptAction):
             return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
                                          transactionType: .collectPayment,
                                          image: .builtInReaderError,
+                                         requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                          tryAgainAction: tryAgain,
                                          emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
@@ -81,6 +81,7 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
             return CardPresentModalErrorWithoutEmail(errorDescription: builtInReaderDescription(for: error),
                                                      transactionType: .collectPayment,
                                                      image: .builtInReaderError,
+                                                     requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                      tryAgainAction: tryAgain,
                                                      dismissCompletion: dismissCompletion)
         }
@@ -95,17 +96,20 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                                                        errorDescription: builtInReaderDescription(for: error),
                                                        image: .builtInReaderError,
                                                        email: email,
+                                                       requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                        onDismiss: dismissCompletion)
         case let .promptToSendEmailReceipt(emailReceiptAction):
             CardPresentModalNonRetryableError(amount: amount,
                                               errorDescription: builtInReaderDescription(for: error),
                                               image: .builtInReaderError,
+                                              requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                               onDismiss: dismissCompletion,
                                               emailReceiptAction: emailReceiptAction)
         case .noEmailReceipt:
             CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
                                                           errorDescription: builtInReaderDescription(for: error),
                                                           image: .builtInReaderError,
+                                                          requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                           onDismiss: dismissCompletion)
         }
     }
@@ -133,6 +137,14 @@ private extension BuiltInCardReaderPaymentAlertsProvider {
             }
         } else {
             return error.localizedDescription
+        }
+    }
+
+    func errorRequiresFallbackPaymentMethod(_ error: Error) -> Bool {
+        if let error = error as? CardPaymentErrorProtocol {
+            return error.requiresFallbackPaymentMethod
+        } else {
+            return false
         }
     }
 

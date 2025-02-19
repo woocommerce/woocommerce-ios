@@ -422,11 +422,10 @@ private extension ProductStore {
             return onCompletion(.failure(ProductLoadError.emptyIdentifier))
         }
 
-        searchProductsByIdentifier(siteID: siteID,
-                                   keyword: identifier,
-                                   completion: { result in
-            switch result {
-            case let .success((products, source)):
+        Task {
+            do {
+                let (products, source) = try await searchProductsByIdentifier(for: siteID, keyword: identifier)
+
                 let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
                 guard !matchedProducts.isEmpty else {
@@ -449,10 +448,10 @@ private extension ProductStore {
                         onCompletion(.success((.product(product), source)))
                     })
                 }
-            case let .failure(error):
+            } catch {
                 onCompletion(.failure(error))
             }
-        })
+        }
     }
 
     /// Adds a product.
@@ -1279,37 +1278,59 @@ private extension ProductStore {
 }
 
 private extension ProductStore {
-    func searchProductsByIdentifier(siteID: Int64, keyword: String, completion: @escaping (Result<([Product], ItemIdentifierSearchResultSource), Error>) -> Void) {
-        remote.searchProductsBySKU(for: siteID,
-                                   keyword: keyword,
-                                   pageNumber: Remote.Default.firstPageNumber,
-                                   pageSize: ProductsRemote.Default.pageSize,
-                                   completion: { [weak self] result in
-            var returningResults: [Product] = []
-            switch result {
-            case let .success(products):
-                returningResults = products
-            case .failure:
-                break
-            }
+    func searchProductsByIdentifier(for siteID: Int64, keyword: String) async throws -> ([Product], ItemIdentifierSearchResultSource) {
+        async let skuProducts = searchProductsBySKU(for: siteID, keyword: keyword)
+        async let globalUniqueIdentifierProducts = searchProductsByGlobalUniqueIdentifier(for: siteID, keyword: keyword)
 
-            if returningResults.isEmpty {
-                self?.remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
-                                                              keyword: keyword,
-                                                              pageNumber: Remote.Default.firstPageNumber,
-                                                              pageSize: ProductsRemote.Default.pageSize,
-                                                              completion: { result in
-                    switch result {
-                    case let .success(products):
-                        completion(.success((products, .globalUniqueIdentifier)))
-                    case .failure(let error):
-                        completion(.failure(error))
-                    }
-                })
+        do {
+            let globalUniqueIdentifierResult = try await globalUniqueIdentifierProducts
+
+            if !(try await globalUniqueIdentifierProducts.isEmpty) {
+                return (globalUniqueIdentifierResult, .globalUniqueIdentifier)
             } else {
-                completion(.success((returningResults, .SKU)))
+                let skuResult = try await skuProducts
+
+                if !(try await skuProducts.isEmpty) {
+                    return (skuResult, .SKU)
+                } else {
+                    throw ProductLoadError.notFound
+                }
             }
-        })
+        } catch {
+            throw(error)
+        }
+    }
+
+    func searchProductsBySKU(for siteID: Int64, keyword: String) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            remote.searchProductsBySKU(for: siteID,
+                                       keyword: keyword,
+                                       pageNumber: Remote.Default.firstPageNumber,
+                                       pageSize: ProductsRemote.Default.pageSize) { result in
+                switch result {
+                case let .success(products):
+                    continuation.resume(returning: products)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
+    func searchProductsByGlobalUniqueIdentifier(for siteID: Int64, keyword: String) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
+                                                          keyword: keyword,
+                                                          pageNumber: Remote.Default.firstPageNumber,
+                                                          pageSize: ProductsRemote.Default.pageSize) { result in
+                switch result {
+                case let .success(products):
+                    continuation.resume(returning: products)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
 
@@ -1378,6 +1399,47 @@ public enum ProductUpdateError: Error, Equatable {
             case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
                 return .generic(message: message ?? "")
             }
+        }
+    }
+}
+
+extension ProductUpdateError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .duplicatedSKU:
+            return NSLocalizedString("SKU already in use by another product",
+                                     comment: "The message of the alert when there is an error updating the product SKU")
+        case .invalidSKU:
+            return NSLocalizedString("This SKU is used on another product or is invalid.",
+                                     comment: "The message of the alert when there is an error updating the product SKU")
+        case .invalidGlobalUniqueIdentifier:
+            return NSLocalizedString("productInventorySettings.invalidGlobalUniqueIdentifier.error",
+                                     value: "Please enter only numbers and hyphens (-).",
+                                     comment: "The message of the alert when there is an error updating the product global unique identifier")
+        case .generic(let message):
+            return message
+        case .unknown:
+            return NSLocalizedString("Unexpected error", comment: "The message of the alert when there is an unexpected error updating the product")
+        case .variationInvalidImageId:
+            return NSLocalizedString("Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.",
+                                     comment: "The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7")
+        default:
+            return nil
+        }
+    }
+}
+
+extension ProductUpdateError {
+    var alertTitle: String? {
+        switch self {
+        case .duplicatedSKU, .invalidSKU:
+            return NSLocalizedString("Invalid Product SKU",
+                                     comment: "The title of the alert when there is an error updating the product SKU")
+        case .variationInvalidImageId:
+            return NSLocalizedString("Cannot update product",
+                                     comment: "The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7")
+        default:
+            return nil
         }
     }
 }

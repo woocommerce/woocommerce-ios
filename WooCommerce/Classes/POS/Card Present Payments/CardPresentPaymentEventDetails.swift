@@ -38,6 +38,7 @@ enum CardPresentPaymentEventDetails {
                       cancelUpdate: () -> Void)
     case updateFailedNonRetryable(cancelUpdate: () -> Void)
     case updateFailedLowBattery(batteryLevel: Double?,
+                                retrySearch: () -> Void,
                                 cancelUpdate: () -> Void)
     case connectionSuccess(done: () -> Void)
     case tapSwipeOrInsertCard(inputMethods: CardReaderInput,
@@ -53,4 +54,8 @@ enum CardPresentPaymentEventDetails {
     case displayReaderMessage(message: String)
     case cancelledOnReader
     case validatingOrder(cancelPayment: () -> Void)
+
+    case locationRequestPreAlert(requestPermission: () -> Void)
+    case locationRequired(dismiss: () -> Void,
+                          skip: () -> Void)
 }

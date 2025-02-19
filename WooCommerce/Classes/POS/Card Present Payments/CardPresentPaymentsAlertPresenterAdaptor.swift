@@ -23,7 +23,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         switch eventDetails {
         case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _):
             paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
-        case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment):
+        case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway, _, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in
                     cancelPayment()

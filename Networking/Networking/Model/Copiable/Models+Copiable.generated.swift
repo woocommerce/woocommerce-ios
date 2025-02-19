@@ -3311,7 +3311,8 @@ extension Networking.Site {
         visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
-        wasEcommerceTrial: CopiableProp<Bool> = .copy
+        wasEcommerceTrial: CopiableProp<Bool> = .copy,
+        hasSSOEnabled: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -3334,6 +3335,7 @@ extension Networking.Site {
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
+        let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
 
         return Networking.Site(
             siteID: siteID,
@@ -3356,7 +3358,8 @@ extension Networking.Site {
             visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
-            wasEcommerceTrial: wasEcommerceTrial
+            wasEcommerceTrial: wasEcommerceTrial,
+            hasSSOEnabled: hasSSOEnabled
         )
     }
 }
@@ -3498,6 +3501,36 @@ extension Networking.SiteVisitStatsItem {
             period: period,
             visitors: visitors,
             views: views
+        )
+    }
+}
+
+extension Networking.StoredProductSettings.Setting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        sort: NullableCopiableProp<String> = .copy,
+        stockStatusFilter: NullableCopiableProp<ProductStockStatus> = .copy,
+        productStatusFilter: NullableCopiableProp<ProductStatus> = .copy,
+        productTypeFilter: NullableCopiableProp<ProductType> = .copy,
+        productCategoryFilter: NullableCopiableProp<ProductCategory> = .copy,
+        favoriteProduct: CopiableProp<Bool> = .copy
+    ) -> Networking.StoredProductSettings.Setting {
+        let siteID = siteID ?? self.siteID
+        let sort = sort ?? self.sort
+        let stockStatusFilter = stockStatusFilter ?? self.stockStatusFilter
+        let productStatusFilter = productStatusFilter ?? self.productStatusFilter
+        let productTypeFilter = productTypeFilter ?? self.productTypeFilter
+        let productCategoryFilter = productCategoryFilter ?? self.productCategoryFilter
+        let favoriteProduct = favoriteProduct ?? self.favoriteProduct
+
+        return Networking.StoredProductSettings.Setting(
+            siteID: siteID,
+            sort: sort,
+            stockStatusFilter: stockStatusFilter,
+            productStatusFilter: productStatusFilter,
+            productTypeFilter: productTypeFilter,
+            productCategoryFilter: productCategoryFilter,
+            favoriteProduct: favoriteProduct
         )
     }
 }
@@ -4096,6 +4129,57 @@ extension Networking.WooShippingCustomPackage {
     }
 }
 
+extension Networking.WooShippingOriginAddress {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        company: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy,
+        defaultAddress: CopiableProp<Bool> = .copy,
+        isVerified: CopiableProp<Bool> = .copy
+    ) -> Networking.WooShippingOriginAddress {
+        let id = id ?? self.id
+        let company = company ?? self.company
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let state = state ?? self.state
+        let postcode = postcode ?? self.postcode
+        let country = country ?? self.country
+        let phone = phone ?? self.phone
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let email = email ?? self.email
+        let defaultAddress = defaultAddress ?? self.defaultAddress
+        let isVerified = isVerified ?? self.isVerified
+
+        return Networking.WooShippingOriginAddress(
+            id: id,
+            company: company,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postcode: postcode,
+            country: country,
+            phone: phone,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            defaultAddress: defaultAddress,
+            isVerified: isVerified
+        )
+    }
+}
+
 extension Networking.WooShippingPackagePurchase {
     public func copy(
         shipmentID: CopiableProp<String> = .copy,
@@ -4119,18 +4203,18 @@ extension Networking.WooShippingPackagePurchase {
 
 extension Networking.WooShippingPackagesResponse {
     public func copy(
-        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
         savedPredefinedPackages: CopiableProp<[WooShippingSavedPredefinedPackage]> = .copy,
         allPredefinedOptions: CopiableProp<[WooShippingCarrierPredefinedOptions]> = .copy
     ) -> Networking.WooShippingPackagesResponse {
-        let storeOptions = storeOptions ?? self.storeOptions
+        let siteID = siteID ?? self.siteID
         let customPackages = customPackages ?? self.customPackages
         let savedPredefinedPackages = savedPredefinedPackages ?? self.savedPredefinedPackages
         let allPredefinedOptions = allPredefinedOptions ?? self.allPredefinedOptions
 
         return Networking.WooShippingPackagesResponse(
-            storeOptions: storeOptions,
+            siteID: siteID,
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions

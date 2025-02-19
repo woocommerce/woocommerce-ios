@@ -98,8 +98,18 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
                                       endSearch: cancelSearch)
     }
 
-    func updatingFailedLowBattery(batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+    func updatingFailedLowBattery(batteryLevel: Double?, retrySearch: @escaping () -> Void, close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .updateFailedLowBattery(batteryLevel: batteryLevel,
+                                retrySearch: retrySearch,
                                 cancelUpdate: close)
+    }
+
+    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .locationRequestPreAlert(requestPermission: requestPermission)
+    }
+
+    func locationRequired(dismiss: @escaping () -> Void,
+                          skip: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .locationRequired(dismiss: dismiss, skip: skip)
     }
 }

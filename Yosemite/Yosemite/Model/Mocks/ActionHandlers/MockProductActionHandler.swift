@@ -59,14 +59,8 @@ struct MockProductActionHandler: MockActionHandler {
     }
 
     func upsert(products: [Product], onCompletion: @escaping () -> ()) {
-        let storage = storageManager.writerDerivedStorage
-
-        storage.perform {
-            productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            self.productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 }

@@ -15,6 +15,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
+    /// The results to return based on the given arguments in `deletePackage`
+    private var deletePackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
+
     /// The results to return based on the given arguments in `loadLabelRates`
     private var loadLabelRatesResults = [ResultKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
@@ -33,11 +36,27 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `printLabel`
     private var printLabel = [ResultKey: Result<ShippingLabelPrintData, Error>]()
 
+    /// The results to return based on the given arguments in `loadOriginAddresses`
+    private var loadOriginAddresses = [ResultKey: Result<[WooShippingOriginAddress], Error>]()
+
+    /// The results to return based on the given arguments in `addressValidation`
+    private var addressValidation = [ResultKey: Result<WooShippingAddressValidationSuccess, Error>]()
+
+    /// The results to return based on the given arguments in `updateOriginAddress`
+    private var updateOriginAddress = [ResultKey: Result<WooShippingOriginAddressUpdate, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
         let key = ResultKey(siteID: siteID)
         createPackageResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `deletePackage` is called.
+    func whenDeletePackage(siteID: Int64,
+                           thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
+        let key = ResultKey(siteID: siteID)
+        deletePackageResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `loadLabelRates` is called.
@@ -81,6 +100,27 @@ final class MockWooShippingRemote {
         let key = ResultKey(siteID: siteID)
         printLabel[key] = result
     }
+
+    /// Set the value passed to the `completion` block if `loadOriginAddresses` is called.
+    func whenOriginAddresses(siteID: Int64,
+                             thenReturn result: Result<[WooShippingOriginAddress], Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadOriginAddresses[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `addressValidation` is called.
+    func whenAddressValidation(siteID: Int64,
+                               thenReturn result: Result<WooShippingAddressValidationSuccess, Error>) {
+        let key = ResultKey(siteID: siteID)
+        addressValidation[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateOriginAddress` is called.
+    func whenUpdatingOriginAddress(siteID: Int64,
+                                   thenReturn result: Result<WooShippingOriginAddressUpdate, Error>) {
+        let key = ResultKey(siteID: siteID)
+        updateOriginAddress[key] = result
+    }
 }
 
 // MARK: - WooShippingRemoteProtocol
@@ -94,6 +134,19 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func deletePackage(siteID: Int64, packageID: String, completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.deletePackageResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
@@ -192,6 +245,51 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.printLabel[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadOriginAddresses(siteID: Int64,
+                             completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadOriginAddresses[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func addressValidation(siteID: Int64,
+                           address: ShippingLabelAddress,
+                           completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.addressValidation[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func updateOriginAddress(siteID: Int64,
+                             address: WooShippingOriginAddress,
+                             isVerified: Bool,
+                             completion: @escaping (Result<WooShippingOriginAddressUpdate, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.updateOriginAddress[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

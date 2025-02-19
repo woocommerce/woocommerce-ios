@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
 
@@ -22,7 +23,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
-            PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel, animation: animation)
+            PointOfSalePaymentSuccessView(viewModel: viewModel)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):
@@ -45,6 +46,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private var animation: POSCardPresentPaymentInLineMessageAnimation { .init(namespace: namespace) }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     PointOfSaleCardPresentPaymentInLineMessage(messageType: .processing(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
@@ -55,4 +57,5 @@ struct POSCardPresentPaymentInLineMessageAnimation {
     let iconTransitionId: String = "pos_card_present_payment_in_line_message_icon_matched_geometry_id"
     let titleTransitionId: String = "pos_card_present_payment_in_line_message_title_matched_geometry_id"
     let messageTransitionId: String = "pos_card_present_payment_in_line_message_message_matched_geometry_id"
+    let actionButtonsTransitionId = "pos_card_present_payment_in_line_message_action_buttons_matched_geometry_id"
 }

@@ -34,6 +34,9 @@ public class CurrencySettings: Codable, Equatable {
     public var groupingSeparator: String
     public var decimalSeparator: String
     public var fractionDigits: Int
+    public var currencySymbol: String {
+        symbol(from: currencyCode)
+    }
 
     // MARK: - Initializers & Methods
 

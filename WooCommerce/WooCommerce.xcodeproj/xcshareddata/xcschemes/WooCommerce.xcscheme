@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1620"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -96,6 +96,17 @@
                ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3F0904072D26A40800D8ACCE"
+               BuildableName = "WordPressAuthenticatorTests.xctest"
+               BlueprintName = "WordPressAuthenticatorTests"
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -125,7 +136,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-enforce-core-data-write-in-background"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-com.apple.CoreData.ConcurrencyDebug 1"

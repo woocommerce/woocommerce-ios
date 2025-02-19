@@ -26,6 +26,11 @@ public struct WooShippingPredefinedOption: Equatable, GeneratedFakeable {
 public struct WooShippingCarrierPredefinedOptions: Equatable, GeneratedFakeable {
     public let carrierID: String
     public let predefinedOptions: [WooShippingPredefinedOption]
+
+    public init(carrierID: String, predefinedOptions: [WooShippingPredefinedOption]) {
+        self.carrierID = carrierID
+        self.predefinedOptions = predefinedOptions
+    }
 }
 
 // MARK: Decodable

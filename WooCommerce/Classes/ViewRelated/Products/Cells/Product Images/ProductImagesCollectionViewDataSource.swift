@@ -38,7 +38,8 @@ private extension ProductImagesCollectionViewDataSource {
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
         switch item {
         case .image(let status):
-            configureImageCell(cell, productImageStatus: status)
+            let isFirstImage = indexPath.item == 0
+            configureImageCell(cell, productImageStatus: status, isFirstImage: isFirstImage)
         case .extendedAddImage(let isVariation):
             if let cell = cell as? ExtendedAddProductImageCollectionViewCell {
                 cell.configurePlaceholderLabelForProductImages(isVariation: isVariation)
@@ -48,10 +49,10 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
-    func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+    func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, productImage: image)
+            configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
         case .uploading(let asset):
             switch asset {
                 case .phAsset(let asset):
@@ -59,10 +60,17 @@ private extension ProductImagesCollectionViewDataSource {
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
+        case let .uploadFailure(asset, _):
+            switch asset {
+                case .phAsset(let asset):
+                    configureFailedImageCell(cell, asset: asset)
+                case .uiImage(let image, _, _):
+                    configureFailedImageCell(cell, image: image)
+            }
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage, isFirstImage: Bool) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
@@ -83,6 +91,7 @@ private extension ProductImagesCollectionViewDataSource {
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
+        cell.coverTagView.isHidden = !isFirstImage
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
@@ -107,6 +116,29 @@ private extension ProductImagesCollectionViewDataSource {
         cell.imageView.contentMode = .scaleAspectFit
         cell.imageView.image = image
     }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
 }
 
 enum ProductImagesItem {
@@ -122,6 +154,8 @@ enum ProductImagesItem {
                 return ProductImageCollectionViewCell.reuseIdentifier
             case .uploading:
                 return InProgressProductImageCollectionViewCell.reuseIdentifier
+            case .uploadFailure:
+                return FailedProductImageCollectionViewCell.reuseIdentifier
             }
         case .addImage:
             return AddProductImageCollectionViewCell.reuseIdentifier

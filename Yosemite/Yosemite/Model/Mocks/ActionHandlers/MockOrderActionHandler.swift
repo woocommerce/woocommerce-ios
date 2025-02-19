@@ -25,6 +25,8 @@ struct MockOrderActionHandler: MockActionHandler {
             } else {
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             }
+        case .updateOrderStatus(let siteID, let orderID, let status, let onCompletion):
+            onCompletion(nil)
 
         default: unimplementedAction(action: action)
         }
@@ -48,15 +50,9 @@ struct MockOrderActionHandler: MockActionHandler {
     }
 
     private func saveOrders(orders: [Order], onCompletion: @escaping () -> ()) {
-        let storage = storageManager.viewStorage
-
-        storage.perform {
+        storageManager.performAndSave({ storage in
             let updater = OrdersUpsertUseCase(storage: storage)
             updater.upsert(orders)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: storage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }

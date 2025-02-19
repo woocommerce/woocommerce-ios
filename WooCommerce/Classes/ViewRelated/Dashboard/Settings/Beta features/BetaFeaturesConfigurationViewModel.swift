@@ -11,7 +11,6 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          posEligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker(
-            cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
             siteSettings: ServiceLocator.selectedSiteSettings,
             currencySettings: ServiceLocator.currencySettings,
             featureFlagService: ServiceLocator.featureFlagService

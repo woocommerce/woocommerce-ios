@@ -545,6 +545,62 @@ public extension StorageType {
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 
+    // MARK: - Woo Shipping
+
+    /// Returns all stored Woo Shipping packages for a site.
+    ///
+    func loadPackages(siteID: Int64) -> WooShippingPackagesResponse? {
+        let predicate = \WooShippingPackagesResponse.siteID == siteID
+        return firstObject(ofType: WooShippingPackagesResponse.self, matching: predicate)
+    }
+
+    /// Returns all stored Woo Shipping carrier predefined options for a given `WooShippingPackagesResponse`.
+    ///
+    func loadAllPredefinedOptions(packagesResponse: WooShippingPackagesResponse) -> [WooShippingCarrierPredefinedOptions] {
+        let predicate = \WooShippingCarrierPredefinedOptions.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingCarrierPredefinedOptions.carrierID, ascending: true)
+        return allObjects(ofType: WooShippingCarrierPredefinedOptions.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping predefined options for a given `WooShippingCarrierPredefinedOptions`.
+    ///
+    func predefinedOptions(carrier: WooShippingCarrierPredefinedOptions) -> [WooShippingPredefinedOption] {
+        let predicate = \WooShippingPredefinedOption.carrier == carrier
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingPredefinedOption.title, ascending: true)
+        return allObjects(ofType: WooShippingPredefinedOption.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping predefined packages for a given `WooShippingPredefinedOption`.
+    ///
+    func predefinedPackages(predefinedOption: WooShippingPredefinedOption) -> [WooShippingPredefinedPackage] {
+        let predicate = \WooShippingPredefinedPackage.predefinedOption == predefinedOption
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingPredefinedPackage.id, ascending: true)
+        return allObjects(ofType: WooShippingPredefinedPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns all stored Woo Shipping saved predefined packages for a given `WooShippingPackagesResponse`.
+    ///
+    func loadSavedPredefinedPackages(packagesResponse: WooShippingPackagesResponse) -> [WooShippingSavedPredefinedPackage] {
+        let predicate = \WooShippingSavedPredefinedPackage.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingSavedPredefinedPackage.providerID, ascending: true)
+        return allObjects(ofType: WooShippingSavedPredefinedPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns stored Woo Shipping predefined package for a given `WooShippingSavedPredefinedPackage`.
+    ///
+    func loadPredefinedPackage(savedPredefinedPackage: WooShippingSavedPredefinedPackage) -> WooShippingPredefinedPackage? {
+        let predicate = \WooShippingPredefinedPackage.savedPredefinedPackage == savedPredefinedPackage
+        return firstObject(ofType: WooShippingPredefinedPackage.self, matching: predicate)
+    }
+
+    /// Returns all stored Woo Shipping custom packages for a given `WooShippingPackagesResponse`.
+    ///
+    func loadCustomPackages(packagesResponse: WooShippingPackagesResponse) -> [WooShippingCustomPackage] {
+        let predicate = \WooShippingCustomPackage.packagesResponse == packagesResponse
+        let descriptor = NSSortDescriptor(keyPath: \WooShippingCustomPackage.id, ascending: true)
+        return allObjects(ofType: WooShippingCustomPackage.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     // MARK: - BlazeCampaignListItem
 
     /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`

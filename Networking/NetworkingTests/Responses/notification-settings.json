@@ -1,0 +1,114 @@
+{
+    "blogs": [
+        {
+            "blog_id": 190864441,
+            "timeline": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "email": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "devices": [
+                {
+                    "device_id": 58089781,
+                    "new_comment": true,
+                    "comment_like": true,
+                    "post_like": true,
+                    "follow": true,
+                    "achievement": true,
+                    "mentions": true,
+                    "scheduled_publicize": true,
+                    "store_order": true,
+                    "blogging_prompt": false,
+                    "draft_post_prompt": true
+                }
+            ]
+        },
+        {
+            "blog_id": 194373765,
+            "timeline": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "email": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "devices": [
+                {
+                    "device_id": 58089781,
+                    "new_comment": false,
+                    "comment_like": true,
+                    "post_like": true,
+                    "follow": true,
+                    "achievement": true,
+                    "mentions": true,
+                    "scheduled_publicize": true,
+                    "store_order": true,
+                    "blogging_prompt": false,
+                    "draft_post_prompt": true
+                }
+            ]
+        },
+        ]
+    },
+    "wpcom": {
+        "marketing": false,
+        "research": true,
+        "affiliates": true,
+        "community": true,
+        "promotion": false,
+        "news": true,
+        "digest": true,
+        "reports": true,
+        "news_developer": true,
+        "wpcom_spain": false,
+        "scheduled_updates": true,
+        "learn": false,
+        "a4a_agencies": true,
+        "jetpack_agencies": true,
+        "jetpack_manage_onboarding": true,
+        "jetpack_marketing": false,
+        "jetpack_research": true,
+        "jetpack_promotion": false,
+        "jetpack_news": true,
+        "jetpack_reports": true,
+        "akismet_marketing": false,
+        "woopay_marketing": true,
+        "gravatar_onboarding": true
+    }
+}

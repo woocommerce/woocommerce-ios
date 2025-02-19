@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "cash-register.pdf",
+      "filename" : "cash-register-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "cash-register-dark.pdf",
       "idiom" : "universal"
     }
   ],

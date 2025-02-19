@@ -1,0 +1,20 @@
+{
+    "data": [
+        {
+            "company": "Superlative Centaur",
+            "address_2": "",
+            "city": "SAN FRANCISCO",
+            "state": "CA",
+            "postcode": "94110-4929",
+            "country": "US",
+            "phone": "12345678901",
+            "address_1": "60 29TH ST PMB 343",
+            "first_name": "First",
+            "last_name": "Last",
+            "email": "email@automattic.com",
+            "id": "store_details",
+            "default_address": true,
+            "is_verified": true
+        }
+    ]
+}

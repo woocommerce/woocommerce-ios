@@ -15,5 +15,6 @@ public enum AccountAction: Action {
     case synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: String, onCompletion: (Result<Site, Error>) -> Void)
     case synchronizeSitePlan(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
     case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case updateNotificationSettings(notificationSettings: NotificationSettings, onCompletion: (Result<Void, Error>) -> Void)
     case closeAccount(onCompletion: (Result<Void, Error>) -> Void)
 }

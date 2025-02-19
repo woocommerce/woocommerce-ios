@@ -18,6 +18,7 @@ public protocol MultipartFormData {
 /// Unit Testing target, and inject mocked up responses.
 ///
 public protocol Network {
+    typealias ResponseHeaders = [String: String]
 
     var session: URLSession { get }
 
@@ -38,6 +39,8 @@ public protocol Network {
     ///
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
+
+    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?)
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     ///

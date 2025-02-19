@@ -7,9 +7,11 @@ struct FormattableAmountTextField: View {
     @FocusState private var focusAmountInput: Bool
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
+    private let style: Style
 
-    init(viewModel: FormattableAmountTextFieldViewModel) {
+    init(viewModel: FormattableAmountTextFieldViewModel, style: Style = .default) {
         self.viewModel = viewModel
+        self.style = style
     }
 
     var body: some View {
@@ -23,13 +25,16 @@ struct FormattableAmountTextField: View {
                 .opacity(0)
 
             Text(viewModel.formattedAmount)
+                .if(style == .pos) {
+                    $0.font(.posHeadingRegular)
+                }
                 .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: style.textAlignment)
                 .padding(5)
-                .if(focusAmountInput, transform: { field in
+                .if(focusAmountInput && style.showsBorder, transform: { field in
                     field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
                 })
                 .onTapGesture {
@@ -40,10 +45,50 @@ struct FormattableAmountTextField: View {
     }
 }
 
+extension FormattableAmountTextField {
+    enum Style {
+        case `default`
+        case pos
+
+        var showsBorder: Bool {
+            switch self {
+            case .default:
+                return true
+            case .pos:
+                return false
+            }
+        }
+
+        var textAlignment: Alignment {
+            switch self {
+            case .default:
+                return .leading
+            case .pos:
+                return .center
+            }
+        }
+    }
+}
+
 private extension FormattableAmountTextField {
     enum Layout {
         static func amountFontSize(size: CGFloat, scale: CGFloat) -> CGFloat {
             size * scale
         }
+    }
+}
+
+#Preview {
+    let viewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
+                                                        locale: .current,
+                                                        storeCurrencySettings: .init(),
+                                                        allowNegativeNumber: false)
+    VStack {
+        Text("Default style")
+        FormattableAmountTextField(viewModel: viewModel, style: .default)
+    }
+    VStack {
+        Text("POS style")
+        FormattableAmountTextField(viewModel: viewModel, style: .pos)
     }
 }

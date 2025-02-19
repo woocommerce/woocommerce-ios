@@ -250,8 +250,8 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        state = DeauthenticatedState()
         sessionManager.reset()
+        state = DeauthenticatedState()
 
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
@@ -300,7 +300,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Updates the user roles for the default Store site.
     ///
-    func updateDefaultRoles(_ roles: [User.Role]) {
+    func updateDefaultRoles(_ roles: [Yosemite.User.Role]) {
         sessionManager.defaultRoles = roles
     }
 

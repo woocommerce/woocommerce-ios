@@ -102,23 +102,25 @@ struct SiteCredentialLoginView: View {
                 VStack(alignment: .leading, spacing: Constants.fieldVerticalSpacing) {
                     // Username field.
                     AuthenticationFormFieldView(viewModel: .init(header: Localization.usernameFieldTitle,
-                                                                  placeholder: Localization.enterUsername,
-                                                                  keyboardType: .default,
-                                                                  text: $viewModel.username,
-                                                                  isSecure: false,
-                                                                  errorMessage: nil,
-                                                                  isFocused: focusedField == .username))
+                                                                 placeholder: Localization.enterUsername,
+                                                                 keyboardType: .default,
+                                                                 text: $viewModel.username,
+                                                                 isSecure: false,
+                                                                 errorMessage: nil,
+                                                                 isFocused: focusedField == .username,
+                                                                 autocapitalization: .none))
                     .focused($focusedField, equals: .username)
                     .disabled(viewModel.isLoggingIn)
 
                     // Password field.
                     AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                                  placeholder: Localization.enterPassword,
-                                                                  keyboardType: .default,
-                                                                  text: $viewModel.password,
-                                                                  isSecure: true,
-                                                                  errorMessage: nil,
-                                                                  isFocused: focusedField == .password))
+                                                                 placeholder: Localization.enterPassword,
+                                                                 keyboardType: .default,
+                                                                 text: $viewModel.password,
+                                                                 isSecure: true,
+                                                                 errorMessage: nil,
+                                                                 isFocused: focusedField == .password,
+                                                                 autocapitalization: .none))
                     .focused($focusedField, equals: .password)
                     .disabled(viewModel.isLoggingIn)
 

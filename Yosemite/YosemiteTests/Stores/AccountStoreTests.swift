@@ -884,6 +884,56 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as NSError?, error)
     }
+
+    // MARK: - updateNotificationSettings
+
+    func test_updateNotificationSettings_returns_success_upon_success() {
+        // Given
+        let network = MockNetwork()
+        let accountRemote = MockAccountRemote()
+        accountRemote.whenUpdatingNotificationSettings(thenReturn: .success(()))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: accountRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
+            let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateNotificationSettings_relays_error_upon_failure() {
+        // Given
+        let network = MockNetwork()
+        let accountRemote = MockAccountRemote()
+        let error = NSError(domain: "notifications", code: 33)
+        accountRemote.whenUpdatingNotificationSettings(thenReturn: .failure(error))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: accountRemote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let notificationSettings = NotificationSettings(deviceID: 132, enabledSites: [23], disabledSites: [44, 66])
+            let action = AccountAction.updateNotificationSettings(notificationSettings: notificationSettings) { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as NSError?, error)
+    }
 }
 
 // MARK: - Private Methods

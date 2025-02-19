@@ -31,9 +31,6 @@ class NotificationStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
-
-        // Need to nuke this in-between tests otherwise some will randomly fail
-        NotificationStore.resetSharedDerivedStorage()
     }
 
 

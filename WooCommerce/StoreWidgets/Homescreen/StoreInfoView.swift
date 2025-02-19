@@ -79,7 +79,7 @@ private struct StatsCard: View {
                     Text(StoreInfoView.Localization.revenue)
                         .statTitleStyle()
 
-                    Text(entryData.revenue)
+                    Text(entryData.revenueCompact)
                         .statValueStyle()
 
                 }
@@ -132,7 +132,7 @@ private struct AccessibilityStatsCard: View {
                 Text(StoreInfoView.Localization.revenue)
                     .statTitleStyle()
 
-                Text(entryData.revenue)
+                Text(entryData.revenueCompact)
                     .statValueStyle()
             }
 
@@ -151,7 +151,8 @@ private struct NotLoggedInView: View {
             VStack {
                 Image(uiImage: .wooLogo)
                     .resizable()
-                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+                    .scaledToFit()
+                    .frame(width: Layout.logoWidth)
 
                 Spacer()
 
@@ -165,7 +166,7 @@ private struct NotLoggedInView: View {
             }
             .padding(.vertical, Layout.cardVerticalPadding)
         }
-        .widgetBackground(backgroundView: Color(.clear))
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
@@ -178,7 +179,8 @@ private struct UnableToFetchView: View {
             VStack {
                 Image(uiImage: .wooLogo)
                     .resizable()
-                    .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
+                    .scaledToFit()
+                    .frame(width: Layout.logoWidth)
 
                 Spacer()
 
@@ -256,7 +258,7 @@ private extension NotLoggedInView {
 
     enum Layout {
         static let cardVerticalPadding = 22.0
-        static let logoSize = CGSize(width: 24, height: 16)
+        static let logoWidth = 32.0
     }
 }
 
@@ -273,17 +275,19 @@ private extension UnableToFetchView {
 
     enum Layout {
         static let cardVerticalPadding = 22.0
-        static let logoSize = CGSize(width: 24, height: 16)
+        static let logoWidth = 32.0
     }
 }
 
 // MARK: - Previews
+#if DEBUG
+import class WooFoundation.CurrencySettings
 
 struct StoreWidgets_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",
-                                           revenue: "$132.234",
-                                           revenueCompact: "$132",
+                                           revenue: StoreInfoFormatter.formattedAmountString(for: Decimal(123456789), with: CurrencySettings()),
+                                           revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: Decimal(123456789), with: CurrencySettings()),
                                            visitors: "67",
                                            orders: "23",
                                            conversion: "34%",
@@ -307,3 +311,4 @@ struct StoreWidgets_Previews: PreviewProvider {
             .previewDisplayName("Unable to fetch data")
     }
 }
+#endif

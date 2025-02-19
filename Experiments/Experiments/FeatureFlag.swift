@@ -140,10 +140,6 @@ public enum FeatureFlag: Int {
     ///
     case scanToUpdateInventory
 
-    /// Enables backend receipt generation for all payment methods
-    ///
-    case backendReceipts
-
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
@@ -193,18 +189,15 @@ public enum FeatureFlag: Int {
     ///
     case productGlobalUniqueIdentifierSupport
 
-    /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
-    ///
-    case paymentsOnboardingInPointOfSale
-
-    /// Enables sending receipt after the payment via the API
-    case sendReceiptAfterPayment
-
     /// Adds support for  sending receipts after the payment for POS
     ///
     case sendReceiptsForPointOfSale
 
-    /// Enables new Tap to Pay onboarding and education features
+    /// Supports hiding sites from the store picker
     ///
-    case tapToPayEducation
+    case hideSitesInStorePicker
+
+    /// Supports managing filer history on order and product lists
+    ///
+    case filterHistoryOnOrderAndProductLists
 }

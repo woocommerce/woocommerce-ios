@@ -2219,7 +2219,8 @@ extension Networking.Site {
             visibility: .fake(),
             canBlaze: .fake(),
             isAdmin: .fake(),
-            wasEcommerceTrial: .fake()
+            wasEcommerceTrial: .fake(),
+            hasSSOEnabled: .fake()
         )
     }
 }
@@ -2366,6 +2367,21 @@ extension Networking.StoredProductSettings {
     public static func fake() -> Networking.StoredProductSettings {
         .init(
             settings: .fake()
+        )
+    }
+}
+extension Networking.StoredProductSettings.Setting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.StoredProductSettings.Setting {
+        .init(
+            siteID: .fake(),
+            sort: .fake(),
+            stockStatusFilter: .fake(),
+            productStatusFilter: .fake(),
+            productTypeFilter: .fake(),
+            productCategoryFilter: .fake(),
+            favoriteProduct: .fake()
         )
     }
 }
@@ -2761,6 +2777,33 @@ extension Networking.WooShippingAccountSettings {
         )
     }
 }
+extension Networking.WooShippingAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingAddress {
+        .init(
+            company: .fake(),
+            name: .fake(),
+            phone: .fake(),
+            country: .fake(),
+            state: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            postcode: .fake()
+        )
+    }
+}
+extension Networking.WooShippingCarrierPredefinedOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingCarrierPredefinedOptions {
+        .init(
+            carrierID: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCreatePackageResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2784,6 +2827,28 @@ extension Networking.WooShippingCustomPackage {
         )
     }
 }
+extension Networking.WooShippingOriginAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingOriginAddress {
+        .init(
+            id: .fake(),
+            company: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            state: .fake(),
+            postcode: .fake(),
+            country: .fake(),
+            phone: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            email: .fake(),
+            defaultAddress: .fake(),
+            isVerified: .fake()
+        )
+    }
+}
 extension Networking.WooShippingPackagePurchase {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2801,7 +2866,7 @@ extension Networking.WooShippingPackagesResponse {
     ///
     public static func fake() -> Networking.WooShippingPackagesResponse {
         .init(
-            storeOptions: .fake(),
+            siteID: .fake(),
             customPackages: .fake(),
             savedPredefinedPackages: .fake(),
             allPredefinedOptions: .fake()

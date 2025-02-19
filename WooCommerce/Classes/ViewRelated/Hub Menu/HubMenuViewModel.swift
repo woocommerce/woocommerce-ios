@@ -28,7 +28,6 @@ enum HubMenuNavigationDestination: Hashable {
     case inAppPurchase
     case subscriptions
     case customers
-    case pointOfSales
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -83,6 +82,9 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
 
+    /// Whether the app is in POS mode for an eligible site.
+    @Published var showsPOS: Bool = false
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
@@ -95,9 +97,9 @@ final class HubMenuViewModel: ObservableObject {
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let currencySettings = ServiceLocator.currencySettings
 
-        return PointOfSaleProductService(siteID: siteID,
-                                  currencySettings: currencySettings,
-                                  credentials: credentials)
+        return PointOfSaleItemService(siteID: siteID,
+                                      currencySettings: currencySettings,
+                                      credentials: credentials)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -134,6 +136,7 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -156,8 +159,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
-                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
         self.analytics = analytics
@@ -168,15 +170,22 @@ final class HubMenuViewModel: ObservableObject {
         createCardPresentPaymentService()
     }
 
-    func viewDidAppear() {
+    func viewDidAppear() async {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
         viewAppeared = true
-        if !hasGoogleAdsCampaigns {
-            refreshGoogleAdsCampaignCheck()
-        }
 
-        if isSiteEligibleForBlaze {
-            refreshBlazeEligibilityCheck()
+        await withTaskGroup(of: Void.self) { group in
+            if !hasGoogleAdsCampaigns {
+                group.addTask {
+                    await self.refreshGoogleAdsCampaignCheck()
+                }
+            }
+
+            if !isSiteEligibleForBlaze {
+                group.addTask {
+                    await self.refreshBlazeEligibilityCheck()
+                }
+            }
         }
     }
 
@@ -205,24 +214,21 @@ final class HubMenuViewModel: ObservableObject {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
-    func refreshGoogleAdsCampaignCheck() {
-        Task { @MainActor in
-            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
-        }
+    func refreshGoogleAdsCampaignCheck() async {
+        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
     }
 
-    func refreshBlazeEligibilityCheck() {
+    func refreshBlazeEligibilityCheck() async {
         guard let site = currentSite else {
             return
         }
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
-        updateTabBarVisibility(isPointOfSaleActive)
         updateInAppNotifications(isPointOfSaleActive)
+        updateTrackEventPrefix(isPointOfSaleActive)
     }
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
@@ -236,6 +242,23 @@ final class HubMenuViewModel: ObservableObject {
         analytics.track(.hubMenuOptionTapped, withProperties: eventProperties)
     }
 
+    func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
+        GoogleAdsCampaignCoordinator(
+            siteID: siteID,
+            siteAdminURL: woocommerceAdminURL.absoluteString,
+            source: .moreMenu,
+            shouldStartCampaignCreation: !hasGoogleAdsCampaigns,
+            shouldAuthenticateAdminPage: shouldAuthenticateAdminPage,
+            navigationController: navigationController,
+            onCompletion: { [weak self] createdNewCampaign in
+                guard createdNewCampaign else {
+                    return
+                }
+                self?.refreshGoogleAdsCampaignCheck()
+            }
+        )
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }
@@ -244,38 +267,6 @@ final class HubMenuViewModel: ObservableObject {
 // MARK: - Helper method for WooCommerce POS
 //
 private extension HubMenuViewModel {
-    // Hides the app's tab bars when Point of Sale is active
-    //
-    func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
-        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
-        /*
-         When hidding the app's tab bar on POS initialization, we've observed a recurring issue with the UI not being updated appropiately,
-         leaving additional padding in the bottom rather than re-positioning components taking all the available space.
-         In order to address this issue we have to explicitely call for an update to the safeAreaInsets in order to trigger the layout update we need,
-         so that the view controller's view can occupy the space left by the hidden tab bar.
-         Updating the bottom UIEdgeInset to a non-zero value seems to be enough to trigger the UI layout refresh we need.
-         Ref: gh-13785
-         */
-        if isPointOfSaleActive {
-            UIView.animate(withDuration: 0.5) {
-                mainTabBarController.tabBar.alpha = 0
-            } completion: { _ in
-                mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-                let bottomInset = CGFloat.leastNonzeroMagnitude
-                mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-            }
-        } else {
-            mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-            mainTabBarController.additionalSafeAreaInsets = .zero
-            mainTabBarController.tabBar.alpha = 0
-            UIView.animate(withDuration: 0.5) {
-                mainTabBarController.tabBar.alpha = 1
-            }
-        }
-    }
-
     // Disables foreground in-app notifications when Point of Sale is active
     //
     func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
@@ -285,6 +276,12 @@ private extension HubMenuViewModel {
             ServiceLocator.pushNotesManager.enableInAppNotifications()
         }
     }
+
+    // Decorates track events with a different prefix when Point of Sale is active
+    //
+    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
+        TracksProvider.setPOSMode(isPointOfSaleActive)
+    }
 }
 
 // MARK: - Helper methods
@@ -292,12 +289,12 @@ private extension HubMenuViewModel {
 private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }
 
     func setupPOSElement() {
-        cardPresentPaymentsOnboarding.refreshIfNecessary()
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()
@@ -492,6 +489,27 @@ private extension HubMenuViewModel {
     }
 }
 
+// MARK: - Helpers
+extension HubMenuViewModel {
+    func viewDidAppear() {
+        Task { @MainActor in
+            await viewDidAppear()
+        }
+    }
+
+    func refreshBlazeEligibilityCheck() {
+        Task { @MainActor in
+            await refreshBlazeEligibilityCheck()
+        }
+    }
+
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            await refreshGoogleAdsCampaignCheck()
+        }
+    }
+}
+
 protocol HubMenuItem {
     static var id: String { get }
     var title: String { get }
@@ -659,7 +677,8 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .pointOfSales
+        // POS is presented with its own navigation stack as nested navigation stack is not supported.
+        let navigationDestination: HubMenuNavigationDestination? = nil
     }
 
     struct Subscriptions: HubMenuItem {
@@ -667,7 +686,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartPurpleIcon
+        let icon: UIImage = .shoppingCartFilled
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"

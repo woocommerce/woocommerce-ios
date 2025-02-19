@@ -62,34 +62,27 @@ struct InPersonPaymentsMenu: View {
                                 onboardingUseCase: viewModel.onboardingUseCase)
                         }
 
-                        if viewModel.isTapToPayEducationEnabled {
-                            PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                        title: Localization.aboutTapToPayOnIPhone)
-                            .accessibilityAddTraits(.isButton)
-                            .onTapGesture {
-                                viewModel.aboutTapToPayTapped()
+                        PaymentsRow(image: Image(uiImage: .infoOutlineImage),
+                                    title: Localization.aboutTapToPayOnIPhone)
+                        .accessibilityAddTraits(.isButton)
+                        .onTapGesture {
+                            viewModel.aboutTapToPayTapped()
+                        }
+                        .sheet(isPresented: $viewModel.presentAboutTapToPay,
+                               onDismiss: {
+                            Task { @MainActor in
+                                await viewModel.onAppear()
                             }
-                            .sheet(isPresented: $viewModel.presentAboutTapToPay,
-                                   onDismiss: {
-                                Task { @MainActor in
-                                    await viewModel.onAppear()
+                        }) {
+                            TapToPayEducationView(viewModel: .init(flow: .about,
+                                                                   completion: { result in
+                                switch result {
+                                case .setUpTapToPay:
+                                    viewModel.presentSetUpTryOutTapToPay = true
+                                default:
+                                    break
                                 }
-                            }) {
-                                TapToPayEducationView(viewModel: .init(flow: .about, onDismiss: {
-                                    viewModel.presentAboutTapToPay = false
-                                }))
-                            }
-                        } else {
-                            Button {
-                                viewModel.aboutTapToPayTapped()
-                            } label: {
-                                PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                            title: Localization.aboutTapToPayOnIPhone,
-                                            isActive: $viewModel.presentAboutTapToPay) {
-                                    AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
-                                }
-                            }
-                            .buttonStyle(.scrollViewRow)
+                            }))
                         }
                     } header: {
                         Text(Localization.tapToPaySectionTitle.uppercased())
@@ -149,7 +142,8 @@ struct InPersonPaymentsMenu: View {
                         Text(Localization.cardReaderSectionTitle.uppercased())
                             .accessibilityAddTraits(.isHeader)
                     } footer: {
-                        InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
+                        InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu,
+                                                                               paymentGateway: viewModel.selectedPaymentGatewayPlugin),
                                                   showInfoIcon: false)
                         .customOpenURL(binding: $viewModel.safariSheetURL)
                     }
@@ -365,7 +359,7 @@ private extension InPersonPaymentsMenu {
             value: "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
             "of Tap to Pay on iPhone, relevant to the store territory."
-        ).localizedCapitalized
+        )
 
         static let done = NSLocalizedString(
             "menu.payments.wooPaymentsPayouts.navigation.done.button.title",

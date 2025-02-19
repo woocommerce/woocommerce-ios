@@ -9,10 +9,6 @@ public class NotificationStore: Store {
     private let remote: NotificationsRemote
     private let devicesRemote: DevicesRemote
 
-    /// Thread Safety
-    ///
-    private static let lock = NSLock()
-
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!
@@ -101,30 +97,23 @@ private extension NotificationStore {
                 return
             }
 
-            self?.deleteLocalMissingNotes(from: hashes) { [weak self] in
+            self?.deleteLocalMissingNotes(from: hashes) { [weak self] outdatedIDs in
 
-                self?.determineUpdatedNotes(using: hashes) { [weak self] outdatedIDs in
+                guard outdatedIDs.isEmpty == false else {
+                    onCompletion(nil)
+                    return
+                }
+
+                self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
                     guard let self = self else {
                         return
                     }
-
-                    guard outdatedIDs.isEmpty == false else {
-                        onCompletion(nil)
-                        return
-                    }
-
-                    self.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
-                        guard let self = self else {
-                            return
-                        }
-
-                        switch result {
-                        case .failure(let error):
-                            onCompletion(error)
-                        case .success(let notes):
-                            self.updateLocalNotes(with: notes) {
-                                onCompletion(nil)
-                            }
+                    switch result {
+                    case .failure(let error):
+                        onCompletion(error)
+                    case .success(let notes):
+                        self.updateLocalNotes(with: notes) {
+                            onCompletion(nil)
                         }
                     }
                 }
@@ -170,32 +159,22 @@ private extension NotificationStore {
     func updateReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically Update
         ///
-        updateLocalNoteReadStatus(for: noteIDs, read: read)
+        updateLocalNoteReadStatus(for: noteIDs, read: read) { [weak self] in
 
-        /// On error we'll just mark the Note for Refresh
-        ///
-        remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
-            guard let self = self else {
-                return
-            }
+            /// On error we'll just mark the Note for Refresh
+            ///
+            self?.remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
+                guard let self else {
+                    return onCompletion(error)
+                }
 
-            guard let error = error else {
-
-                /// What is this about:
-                /// Notice that there are few conditions in which the Network Request's callback may run *before*
-                /// the Optimisitc Update, such as in Unit Tests.
-                /// This may cause the Callback to run before the Read Flag has been toggled, which isn't cool.
-                /// *FORGIVE ME*, this is a workaround: the onCompletion closure must run after a No-OP in the derived
-                /// storage.
-                ///
-                self.performSharedDerivedStorageNoOp {
+                if let error {
+                    invalidateCache(for: noteIDs) {
+                        onCompletion(error)
+                    }
+                } else {
                     onCompletion(nil)
                 }
-                return
-            }
-
-            self.invalidateCache(for: noteIDs) {
-                onCompletion(error)
             }
         }
     }
@@ -215,29 +194,32 @@ private extension NotificationStore {
 //
 extension NotificationStore {
 
-    /// Deletes the collection of local notifications that cannot be found in a given collection of
-    /// remote hashes.
+    /// Deletes the collection of local notifications that cannot be found in a given collection of remote hashes.
     ///
-    /// - Parameter remoteIds: Collection of remote Note IDs.
+    /// - Parameters:
+    ///    - hashes: Collection of remote hashes to compare local notifications with.
+    ///    - completion: Callback closure returning outdated note IDs.
     ///
-    func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (() -> Void)) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
+    func deleteLocalMissingNotes(from hashes: [NoteHash], completion: @escaping (([Int64]) -> Void)) {
+        storageManager.performAndSave({ [weak self] storage -> [Int64] in
+            guard let self else { return [] }
             // The beauty of threadsafe Immutable Entities!!
             let remoteIDs = hashes.map { $0.noteID }
             let predicate = NSPredicate(format: "NOT (noteID IN %@)", remoteIDs)
 
-            for orphan in derivedStorage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil) {
-                derivedStorage.deleteObject(orphan)
+            let allObjects = storage.allObjects(ofType: Storage.Note.self, matching: predicate, sortedBy: nil)
+            for orphan in allObjects {
+                storage.deleteObject(orphan)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async {
-                completion()
+            return determineOutdatedNotes(using: hashes, in: storage)
+        }, completion: { result in
+            switch result {
+            case .success(let outdatedNoteIDs):
+                completion(outdatedNoteIDs)
+            case .failure: // This case should not happen as no error is thrown above
+                completion([])
             }
-        }
+        }, on: .main)
     }
 
     /// Given a collection of Notes, this method will insert missing local ones, and update the others that can be found.
@@ -247,148 +229,67 @@ extension NotificationStore {
     ///     - completion: Callback to be executed on completion
     ///
     func updateLocalNotes(with remoteNotes: [Note], onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
             for remoteNote in remoteNotes {
-                let localNote = derivedStorage.loadNotification(noteID: remoteNote.noteID) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
+                let localNote = storage.loadNotification(noteID: remoteNote.noteID) ?? storage.insertNewObject(ofType: Storage.Note.self)
                 localNote.update(with: remoteNote)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the read status for the specified Notifications. The callback happens on the Main Thread.
     ///
-    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+    func updateLocalNoteReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: @escaping (() -> Void)) {
+        storageManager.performAndSave({ storage in
+            let notifications = noteIDs.compactMap { storage.loadNotification(noteID: $0) }
             for note in notifications {
                 note.read = read
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Given a collection of NoteHash Entities, this method will determine the `.noteID`'s of those entities that
     /// are either not locally found, or got their `.hash` field outdated.
     ///
-    func determineUpdatedNotes(using hashes: [NoteHash], completion: @escaping ([Int64]) -> Void) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
+    func determineOutdatedNotes(using hashes: [NoteHash], in storage: StorageType) -> [Int64] {
 
-        derivedStorage.perform {
-            let remoteIds = hashes.map { $0.noteID }
-            let predicate = NSPredicate(format: "noteID IN %@", remoteIds)
-            var localHashes = [Int64: Int64]()
+        let remoteIds = hashes.map { $0.noteID }
+        let predicate = NSPredicate(format: "noteID IN %@", remoteIds)
+        var localHashes = [Int64: Int64]()
 
-            for note in derivedStorage.allObjects(ofType: StorageNote.self, matching: predicate, sortedBy: nil) {
-                localHashes[note.noteID] = Int64(note.noteHash)
-            }
-
-            let outdated = hashes.filter { remote in
-                let localHash = localHashes[remote.noteID]
-                return localHash == nil || localHash != remote.hash
-            }
-
-            let outdatedIds = outdated.map { $0.noteID }
-
-            DispatchQueue.main.async {
-                completion(outdatedIds)
-            }
+        for note in storage.allObjects(ofType: StorageNote.self, matching: predicate, sortedBy: nil) {
+            localHashes[note.noteID] = Int64(note.noteHash)
         }
+
+        let outdated = hashes.filter { remote in
+            let localHash = localHashes[remote.noteID]
+            return localHash == nil || localHash != remote.hash
+        }
+
+        let outdatedIds = outdated.map { $0.noteID }
+        return outdatedIds
     }
 
     /// Invalidates the Hash for the specified Notifications.
     ///
     func invalidateCache(for noteIDs: [Int64], onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
+        storageManager.performAndSave({ storage in
+            let notifications = noteIDs.compactMap { storage.loadNotification(noteID: $0) }
             for note in notifications {
                 note.noteHash = Int64.min
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    /// Runs a No-OP in the Shared Derived Storage. On completion, the callback will be executed on the main thread.
-    ///
-    func performSharedDerivedStorageNoOp(onCompletion: @escaping () -> Void) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the deletion "status" for the specified Notification. The callback happens on the Main Thread.
     ///
     func markLocalNoteAsDeleted(for noteID: Int64, isDeleted: Bool, onCompletion: (() -> Void)? = nil) {
-        let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
-
-        derivedStorage.perform {
-            let notification = derivedStorage.loadNotification(noteID: noteID)
+        storageManager.performAndSave({ storage in
+            let notification = storage.loadNotification(noteID: noteID)
             notification?.deleteInProgress = isDeleted
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            guard let onCompletion = onCompletion else {
-                return
-            }
-
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
-
-
-// MARK: - Thread Safety Helpers
-//
-extension NotificationStore {
-    /// Returns the current shared derived StorageType, if any. Otherwise proceeds to create a new
-    /// derived StorageType, given a specified StorageManagerType.
-    ///
-    static func sharedDerivedStorage(with manager: StorageManagerType) -> StorageType {
-        lock.lock()
-        if privateStorage == nil {
-            privateStorage = manager.writerDerivedStorage
-        }
-        lock.unlock()
-
-        return privateStorage
-    }
-
-    /// Nukes the private Shared Derived Storage instance.
-    ///
-    static func resetSharedDerivedStorage() {
-        privateStorage = nil
-    }
-}
-
 
 // MARK: - Constants!
 //

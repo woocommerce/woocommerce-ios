@@ -152,6 +152,161 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertFalse(queryParametersDictionary.contains(where: { $0.key == "include" }))
     }
 
+    // MARK: - Load all POS product variations tests
+
+    func test_loadVariationsForPointOfSale_returns_parsed_variation() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).items
+
+        // Then
+        XCTAssertEqual(variations.count, 8)
+
+        guard let firstVariation = variations.first else {
+            XCTFail("The first product variation should exist.")
+            return
+        }
+        XCTAssertEqual(firstVariation.productVariationID, 1275)
+        XCTAssertEqual(firstVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
+        XCTAssertEqual(firstVariation.sku, "99%-nuts-marble")
+        XCTAssertEqual(firstVariation.globalUniqueID, "12345")
+        XCTAssertEqual(firstVariation.permalink, "https://chocolate.com/marble")
+
+        XCTAssertEqual(firstVariation.dateCreated, DateFormatter.dateFromString(with: "2019-11-14T12:40:55"))
+        XCTAssertEqual(firstVariation.dateModified, DateFormatter.dateFromString(with: "2019-11-14T13:06:42"))
+        XCTAssertEqual(firstVariation.dateOnSaleStart, DateFormatter.dateFromString(with: "2019-10-15T21:30:00"))
+        XCTAssertEqual(firstVariation.dateOnSaleEnd, DateFormatter.dateFromString(with: "2019-10-27T21:29:59"))
+
+        let expectedPrice = 12
+        XCTAssertEqual(firstVariation.price, "\(expectedPrice)")
+        XCTAssertEqual(firstVariation.regularPrice, "\(expectedPrice)")
+        XCTAssertEqual(firstVariation.salePrice, "8")
+
+        XCTAssertEqual(firstVariation.status, .published)
+        XCTAssertEqual(firstVariation.stockStatus, .inStock)
+
+        let expectedAttributes: [ProductVariationAttribute] = [
+            ProductVariationAttribute(id: 0, name: "Darkness", option: "99%"),
+            ProductVariationAttribute(id: 0, name: "Flavor", option: "nuts"),
+            ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
+        ]
+        XCTAssertEqual(firstVariation.attributes, expectedAttributes)
+
+        XCTAssertEqual(firstVariation.image?.imageID, 1063)
+
+        XCTAssertFalse(firstVariation.onSale)
+        XCTAssertTrue(firstVariation.purchasable)
+        XCTAssertFalse(firstVariation.virtual)
+        XCTAssertTrue(firstVariation.downloadable)
+
+        XCTAssertTrue(firstVariation.manageStock)
+        XCTAssertEqual(firstVariation.stockQuantity, 16.5)
+        XCTAssertEqual(firstVariation.backordersKey, "notify")
+        XCTAssertTrue(firstVariation.backordersAllowed)
+        XCTAssertFalse(firstVariation.backordered)
+
+        XCTAssertEqual(firstVariation.downloads.count, 0)
+        XCTAssertEqual(firstVariation.downloadLimit, -1)
+        XCTAssertEqual(firstVariation.downloadExpiry, 0)
+
+        XCTAssertEqual(firstVariation.taxStatusKey, "taxable")
+        XCTAssertEqual(firstVariation.taxClass, "")
+
+        XCTAssertEqual(firstVariation.weight, "2.5")
+        XCTAssertEqual(firstVariation.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
+
+        XCTAssertEqual(firstVariation.shippingClass, "")
+        XCTAssertEqual(firstVariation.shippingClassID, 0)
+
+        XCTAssertEqual(firstVariation.menuOrder, 8)
+    }
+
+    func test_loadVariationsForPointOfSale_returns_page_details() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let hasMorePages = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).hasMorePages
+
+        // Then
+        XCTAssertTrue(hasMorePages)
+    }
+
+    func test_loadVariationssForPointOfSale_returns_hasMorePages_based_on_header_with_case_insensitive_name() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.responseHeaders = ["X-WP-TotalPages": "5"]
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When loading page 1 to 4
+        for pageNumber in 1...4 {
+            let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                                parentProductID: sampleProductID,
+                                                                                pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedVariations.hasMorePages)
+        }
+
+        // When loading page 5
+        let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                            parentProductID: sampleProductID,
+                                                                            pageNumber: 5)
+
+        // Then
+        XCTAssertFalse(pagedVariations.hasMorePages)
+    }
+
+    func test_loadVariationssForPointOfSale_returns_hasMorePages_true_when_header_is_not_set() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When loading the first 5 pages
+        for pageNumber in 1...5 {
+            let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID,
+                                                                                parentProductID: sampleProductID,
+                                                                                pageNumber: pageNumber)
+
+            // Then
+            XCTAssertTrue(pagedVariations.hasMorePages)
+        }
+    }
+
+
+    func test_loadVariationsForPointOfSale_properly_relays_networking_error() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        do {
+            _ = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+        } catch let error as NetworkError {
+            // Then
+            XCTAssertEqual(error, .notFound(response: nil), "Expected a notFound error, but got \(error) instead.")
+        } catch {
+            XCTFail("Expected NetworkError.notFound, but got different error: \(error)")
+        }
+    }
+
+
+    func test_loadVariationsForPointOfSale_does_not_add_include_parameter() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertFalse(queryParametersDictionary.contains(where: { $0.key == "include" }))
+    }
+
     // MARK: - Load single product variation tests
 
     /// Verifies that loadProductVariation properly parses the `product-variation` sample response.
@@ -419,6 +574,38 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: Parameter Tests
+
+    func test_loadVariationsForPointOfSale_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID, pageNumber: 2)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["downloadable"] as? String, String(false))
+        XCTAssertEqual(queryParametersDictionary["status"] as? String, "publish")
+        XCTAssertEqual(queryParametersDictionary["page"] as? String, "2")
+        XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
+    }
+
+    func test_loadAllProductVariations_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        remote.loadAllProductVariations(for: sampleSiteID, productID: sampleProductID, variationIDs: [], completion: { _, _ in })
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertNil(queryParametersDictionary["downloadable"] as? String)
+        XCTAssertNil(queryParametersDictionary["status"] as? String)
+        XCTAssertEqual(queryParametersDictionary["page"] as? String, "1")
+        XCTAssertEqual(queryParametersDictionary["per_page"] as? String, "25")
     }
 }
 

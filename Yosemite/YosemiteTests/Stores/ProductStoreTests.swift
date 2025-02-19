@@ -2435,6 +2435,8 @@ final class ProductStoreTests: XCTestCase {
             .fake().copy(sku: "chocobars", purchasable: true)
         ]))
 
+        remote.whenSearchingProductsByGlobalUniqueIdentifier(identifier: "chocobars", thenReturn: .success([]))
+
         // When
         let result = waitFor { promise in
             store.onAction(ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: self.sampleSiteID,

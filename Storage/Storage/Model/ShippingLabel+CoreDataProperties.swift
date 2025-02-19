@@ -12,7 +12,7 @@ extension ShippingLabel {
     @NSManaged public var orderID: Int64
     @NSManaged public var shippingLabelID: Int64
     @NSManaged public var carrierID: String
-    @NSManaged public var dateCreated: Date
+    @NSManaged public var dateCreated: Date?
     @NSManaged public var packageName: String
     @NSManaged public var rate: Double
     @NSManaged public var currency: String

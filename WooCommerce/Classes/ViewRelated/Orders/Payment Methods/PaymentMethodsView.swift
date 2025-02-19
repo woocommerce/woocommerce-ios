@@ -24,8 +24,6 @@ struct PaymentMethodsView: View {
 
     @State private var showingScanToPayView = false
 
-    private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
-
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -44,6 +42,16 @@ struct PaymentMethodsView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                        if viewModel.showTapToPayRow {
+                            MethodRow(icon: .tapToPayOnIPhoneIcon,
+                                      title: Localization.tapToPay,
+                                      accessibilityID: Accessibility.tapToPayMethod) {
+                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                            }
+
+                            Divider()
+                        }
+
                         MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
@@ -54,16 +62,6 @@ struct PaymentMethodsView: View {
 
                             MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
-                            }
-                        }
-
-                        if viewModel.showTapToPayRow {
-                            Divider()
-
-                            MethodRow(icon: .tapToPayOnIPhoneIcon,
-                                      title: Localization.tapToPay,
-                                      accessibilityID: Accessibility.tapToPayMethod) {
-                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
 
@@ -88,12 +86,12 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
-                    NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)
+                    NavigationLink(destination: WebView(isPresented: .constant(true), url: viewModel.learnMoreViewModel.url)
                                                 .onAppear {
-                                                    learnMoreViewModel.learnMoreTapped()
+                                                    viewModel.learnMoreViewModel.learnMoreTapped()
                                                 }
                     ) {
-                        AttributedText(learnMoreViewModel.learnMoreAttributedString)
+                        AttributedText(viewModel.learnMoreViewModel.learnMoreAttributedString)
                     }.padding(.horizontal)
 
                     NavigationLink(isActive: $showingCashAlert) {

@@ -1,13 +1,20 @@
 import Foundation
 @testable import Yosemite
+import WooFoundation
 
 class MockPOSOrderService: POSOrderServiceProtocol {
     var simulateSyncing = false
     var orderToReturn: Order?
 
     var syncOrderWasCalled = false
-    func syncOrder(cart: [Yosemite.POSCartItem], order: Yosemite.Order?) async throws -> Yosemite.Order {
+    var updateOrderWasCalled = false
+    var spySyncOrderCurrency: CurrencyCode?
+
+    func syncOrder(cart: [Yosemite.POSCartItem],
+                   order: Yosemite.Order?,
+                   currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
+        spySyncOrderCurrency = currency
 
         if simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
@@ -19,7 +26,22 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         return order
     }
 
-    func sendReceipt(order: Yosemite.Order, recipientEmail: String) async throws { }
+    func updatePOSOrder(order: Order, recipientEmail: String) async throws {
+        updateOrderWasCalled = true
+
+        let orderWithUpdatedEmail = MockOrders().sampleOrder().copy(billingAddress: .init(firstName: "",
+                                                                                 lastName: "",
+                                                                                 company: nil,
+                                                                                 address1: "",
+                                                                                 address2: nil,
+                                                                                 city: "",
+                                                                                 state: "",
+                                                                                 postcode: "",
+                                                                                 country: "",
+                                                                                 phone: nil,
+                                                                                 email: recipientEmail))
+        orderToReturn = orderWithUpdatedEmail
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

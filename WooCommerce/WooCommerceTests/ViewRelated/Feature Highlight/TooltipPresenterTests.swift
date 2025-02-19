@@ -9,20 +9,23 @@ final class TooltipPresenterTests: XCTestCase {
         let containerView = UIView()
         let toolTip = Tooltip()
 
-        waitForExpectation { exp in
-            let sut = TooltipPresenter(containerView: containerView,
-                                       tooltip: toolTip,
-                                       target: .point(tooltipTargetPoint),
-                                       primaryTooltipAction: {
-                // Then
-                exp.fulfill()
-            })
+        var primaryTooltipActionCalled = false
+        let sut = TooltipPresenter(containerView: containerView,
+                                   tooltip: toolTip,
+                                   target: .point(tooltipTargetPoint),
+                                   animation: TooltipAnimationMock.self,
+                                   primaryTooltipAction: {
+            // Then
+            primaryTooltipActionCalled = true
+        })
 
-            sut.showTooltip()
+        sut.showTooltip()
 
-            // When
-            sut.dismissTooltip()
-        }
+        // When
+        sut.dismissTooltip()
+
+        // Then
+        XCTAssertTrue(primaryTooltipActionCalled)
     }
 
     // MARK: `removeTooltip`
@@ -32,28 +35,39 @@ final class TooltipPresenterTests: XCTestCase {
         let containerView = UIView()
         let toolTip = Tooltip()
 
-        waitForExpectation { exp in
-            exp.isInverted = true
+        var primaryTooltipActionCalled = false
+        let sut = TooltipPresenter(containerView: containerView,
+                                   tooltip: toolTip,
+                                   target: .point(tooltipTargetPoint),
+                                   animation: TooltipAnimationMock.self,
+                                   primaryTooltipAction: {
+            // Then
+            primaryTooltipActionCalled = true
+        })
 
-            let sut = TooltipPresenter(containerView: containerView,
-                                       tooltip: toolTip,
-                                       target: .point(tooltipTargetPoint),
-                                       primaryTooltipAction: {
-                // Then
-                // `primaryTooltipAction` should not be fired
-                exp.fulfill()
-            })
+        sut.showTooltip()
 
-            sut.showTooltip()
+        // When
+        sut.removeTooltip()
 
-            // When
-            sut.removeTooltip()
-        }
+        // Then
+        XCTAssertFalse(primaryTooltipActionCalled)
     }
 }
 
 private extension TooltipPresenterTests {
     func tooltipTargetPoint() -> CGPoint {
         .zero
+    }
+}
+
+private class TooltipAnimationMock: TooltipAnimation {
+    static func animate(withDuration duration: TimeInterval,
+                        delay: TimeInterval,
+                        options: UIView.AnimationOptions,
+                        animations: @escaping () -> Void,
+                        completion: ((Bool) -> Void)?) {
+        animations()
+        completion?(true)
     }
 }

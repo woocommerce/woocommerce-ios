@@ -1,3 +1,1 @@
-På bara två veckor har vi proppat den här utgåvan full. Det finns stöd för GTIN:s globala produktidentifierare, och du kan redigera uppmaningen till handling i Blaze-kampanjer.
-
-Butiksinställningar för personliga betalningar går fortare, bekräftelser av skickade kvitton är tydligare och det är smidigare att testa ”Tryck för att betala” på iPhone. Dessutom har vi förbättrat adminpanelens statistik och åtgärdat några buggar.
+Upplev en uppfräschad WooCommerce-app, med ett uppdaterat utseende anpassat till vår nya profilering. Vi har också förbättrat tillförlitligheten för betalningar – kortläsaruppdateringar hanterar nu problem med låg batterinivå bättre och fel som uppstår vid betalningar och återbetalningar hanteras på ett smidigare sätt. Ta del av en mer sömlös och genomarbetad upplevelse vid varje transaktion.

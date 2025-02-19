@@ -1,3 +1,1 @@
-Em apenas duas semanas, enchemos esta versão de novidades. Agora o identificador de produto global GTIN é compatível, e você pode editar a chamada para ação em campanhas do Blaze.
-
-A configuração de pagamentos presenciais para lojas ficou mais rápida, as confirmações de envio de recibo mais claras, e os testes do Tap to Pay on iPhone mais simples. Além disso, melhoramos as estatísticas do painel e eliminamos alguns bugs.
+Confira o app do WooCommerce com uma aparência atualizada que está alinhada com nossa nova identidade visual! Nós também melhoramos a confiabilidade do pagamento. Com as atualizações, o leitor de cartões tem melhor desempenho em situações de bateria baixa, além de processar pagamentos e reembolsos com menos erros. Aproveite uma experiência mais tranquila e aprimorada em todas as transações.

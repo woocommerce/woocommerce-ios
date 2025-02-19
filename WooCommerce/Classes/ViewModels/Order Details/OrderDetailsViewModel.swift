@@ -940,16 +940,10 @@ extension OrderDetailsViewModel {
             return
         }
 
-        receiptEligibilityUseCase.isEligibleSendingReceiptAfterPayment { [weak self] isEligible in
-            guard isEligible, let self else {
-                return
-            }
-
-            let action = OrderAction.updateOrderStatus(siteID: order.siteID,
-                                                       orderID: order.orderID,
-                                                       status: .pending, onCompletion: { _ in })
-            stores.dispatch(action)
-        }
+        let action = OrderAction.updateOrderStatus(siteID: order.siteID,
+                                                   orderID: order.orderID,
+                                                   status: .pending, onCompletion: { _ in })
+        stores.dispatch(action)
     }
 }
 

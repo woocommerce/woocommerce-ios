@@ -11,10 +11,6 @@ public class ReceiptStore: Store {
     private let fileStorage: FileStorage
     private let remote: ReceiptRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.writerDerivedStorage
-    }()
-
     private lazy var currencyFormatter: CurrencyFormatter = {
         CurrencyFormatter(currencySettings: CurrencySettings())
     }()

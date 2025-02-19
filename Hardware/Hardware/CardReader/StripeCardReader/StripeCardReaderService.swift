@@ -16,6 +16,8 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
+    private let builtInCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
+
     private var connectionAttemptInvalidated: Bool = false
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
@@ -60,6 +62,10 @@ extension StripeCardReaderService: CardReaderService {
 
     public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
         softwareUpdateSubject.eraseToAnyPublisher()
+    }
+
+    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+        builtInCardReaderAcceptToSSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -424,7 +430,13 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             paymentCancellable.cancel({ [weak self] error in
-                if error == nil {
+                // If the action could not be canceled,
+                // e.g. it has already completed, the completion block will be called with an
+                // error. Otherwise, the completion block will be called with nil.
+                if let error {
+                    let underlyingError = Self.logAndDecodeError(error)
+                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                } else {
                     self?.paymentCancellable = nil
                     cancelPaymentIntent()
                 }
@@ -988,6 +1000,10 @@ extension StripeCardReaderService: LocalMobileReaderDelegate {
             connectedReadersSubject.send([CardReader(reader: reader)])
             softwareUpdateSubject.send(.none)
         }
+    }
+
+    public func localMobileReaderDidAcceptTermsOfService(_ reader: Reader) {
+        builtInCardReaderAcceptToSSubject.send(())
     }
 }
 

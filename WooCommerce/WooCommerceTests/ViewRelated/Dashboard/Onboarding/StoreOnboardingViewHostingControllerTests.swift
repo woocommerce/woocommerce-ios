@@ -10,7 +10,7 @@ final class StoreOnboardingViewHostingControllerTests: XCTestCase {
     func test_it_reloads_tasks_when_view_appears() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()
-        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake(), shareFeedbackAction: nil)
+        let sut = StoreOnboardingViewHostingController(viewModel: mockViewModel, navigationController: .init(), site: .fake())
 
         // When
         sut.viewWillAppear(true)

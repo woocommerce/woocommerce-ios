@@ -42,16 +42,8 @@ extension UserDefaults {
         // AI prompt tone
         case aiPromptTone
 
-        // Product Creation AI
-        case numberOfTimesProductCreationAISurveySuggested
-        case didStartProductCreationAISurvey
-
         // Theme installation
         case themesPendingInstall
-
-        // Store Creation
-        case siteIDPendingStoreSwitch
-        case expectedStoreNamePendingStoreSwitch
 
         // Watch
         case watchDependencies
@@ -69,6 +61,13 @@ extension UserDefaults {
         // Whether the site is suspended on WordPress.com and can't be connected using Jetpack
         //
         case wpcomSiteSuspended
+
+        // Tap to Pay awareness moment
+        case tapToPayAwarenessMomentPresented
+        case tapToPayAwarenessMomentFirstLaunchCompleted
+
+        // Hide stores from store picker
+        case hiddenStoreIDs
     }
 }
 

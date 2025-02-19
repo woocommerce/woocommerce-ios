@@ -65,7 +65,7 @@ public final class CoreDataManager: StorageManagerType {
             return context
         }()
 
-        self.writerDerivedStorage = {
+        self.writerStorage = {
             let backgroundContext = persistentContainer.newBackgroundContext()
             backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             return backgroundContext
@@ -87,22 +87,13 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public let viewStorage: StorageType
 
-    /// Returns a shared derived storage instance dedicated for write operations.
+    /// Storage instance dedicated for write operations.
     ///
-    public let writerDerivedStorage: StorageType
+    private let writerStorage: StorageType
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public let persistentContainer: NSPersistentContainer
-
-    /// Saves the derived storage. Note: the closure may be called on a different thread
-    ///
-    public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
-        derivedStorage.perform {
-            derivedStorage.saveIfNeeded()
-            closure()
-        }
-    }
 
     /// Execute the given operation with a background context and save the changes.
     ///
@@ -116,12 +107,11 @@ public final class CoreDataManager: StorageManagerType {
     public func performAndSave(_ operation: @escaping (StorageType) -> Void,
                                completion: (() -> Void)?,
                                on queue: DispatchQueue) {
-        let derivedStorage = writerDerivedStorage
+        let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
-            derivedStorage.perform {
+            derivedStorage.perform { [self] in
                 operation(derivedStorage)
-
-                derivedStorage.saveIfNeeded()
+                saveStorageIfNeeded(derivedStorage)
                 queue.async { completion?() }
                 done()
             }
@@ -142,12 +132,12 @@ public final class CoreDataManager: StorageManagerType {
                                   completion: @escaping (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
-        let derivedStorage = writerDerivedStorage
+        let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
-            derivedStorage.perform {
+            derivedStorage.perform { [self] in
                 let result = Result(catching: { try operation(derivedStorage) })
                 if case .success = result {
-                    derivedStorage.saveIfNeeded()
+                    saveStorageIfNeeded(derivedStorage)
                 }
                 queue.async { completion(result) }
                 done()
@@ -155,29 +145,19 @@ public final class CoreDataManager: StorageManagerType {
         })
     }
 
-    /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
+    /// This method effectively **deletes** all of the stored data from the persistent container,
+    /// and generates a blank Persistent Store from scratch.
     ///
-    public func reset() {
-        /// Reset the view context first
-        let viewContext = persistentContainer.viewContext
-        viewContext.performAndWait {
-            viewContext.reset()
-            self.deleteAllStoredObjects(in: viewContext)
-            viewContext.saveIfNeeded()
-        }
-
+    public func reset(onCompletion: (() -> Void)?) {
         /// Delete all objects in the background context to avoid discrepancy with the view context
+        /// The view context will get updated automatically once the changes are saved to the persistent container.
         performAndSave({ storage in
-            guard let backgroundContext = storage as? NSManagedObjectContext else {
-                DDLogError("⛔️ CoreDataManager failed to reset due to unexpected storage type!")
-                return
-            }
+            let backgroundContext = storage as! NSManagedObjectContext
             /// persist self to complete deleting objects
             self.deleteAllStoredObjects(in: backgroundContext)
-            backgroundContext.reset()
         }, completion: {
             DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
-            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+            onCompletion?()
         }, on: .main)
     }
 
@@ -319,6 +299,37 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(storageName + ".sqlite")
+    }
+}
+
+// MARK: Helpers
+private extension CoreDataManager {
+
+    func saveStorageIfNeeded(_ storage: StorageType) {
+        let context = storage as! NSManagedObjectContext
+        guard context.hasChanges else {
+            return
+        }
+        do {
+            try context.save()
+        } catch {
+            dropDatabaseAndExit(with: error)
+        }
+    }
+
+    func dropDatabaseAndExit(with error: Error) {
+        var persistentStoreRemovalError: Error?
+        do {
+            try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, type: .sqlite, options: nil)
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        } catch {
+            persistentStoreRemovalError = error
+        }
+
+        let logProperties: [String: Any?] = ["originalError": error,
+                                             "persistentStoreRemovalError": persistentStoreRemovalError,
+                                             "message": "[CoreDataManager] Forced reset the database after corrupted store removal."]
+        crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
     }
 }
 

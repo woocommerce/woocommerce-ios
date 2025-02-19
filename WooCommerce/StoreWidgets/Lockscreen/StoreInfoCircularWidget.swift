@@ -30,6 +30,7 @@ private struct StoreInfoCircularView: View {
                 .fill(Color.black)
             Text(entryData.revenueCompact)
         }
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
@@ -45,13 +46,15 @@ private struct UnableToFetchView: View {
 }
 
 // MARK: - Previews
+#if DEBUG
+import class WooFoundation.CurrencySettings
 
 @available(iOSApplicationExtension 16.0, *)
 struct StoreInfoCircularWidget_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",
-                                           revenue: "$132.234",
-                                           revenueCompact: "$132",
+                                           revenue: StoreInfoFormatter.formattedAmountString(for: Decimal(123456789), with: CurrencySettings()),
+                                           revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: Decimal(123456789), with: CurrencySettings()),
                                            visitors: "67",
                                            orders: "23",
                                            conversion: "34%",
@@ -66,3 +69,4 @@ struct StoreInfoCircularWidget_Previews: PreviewProvider {
             .previewDisplayName("Unable to fetch")
     }
 }
+#endif

@@ -23,30 +23,31 @@ public final class MyStoreScreen: ScreenObject {
         return self
     }
 
-    func tapTimeframeTab(timeframeId: String) -> MyStoreScreen {
-        app.buttons[timeframeId].tap()
+    func tapTimeRangeOption(id: String) -> MyStoreScreen {
+        app.buttons["performance-time-range-menu"].tap()
+        app.buttons[id].tap()
 
         return self
     }
 
     @discardableResult
     public func goToThisWeekTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframeId: "period-data-thisWeek-tab")
+        return tapTimeRangeOption(id: "time-range-this-week")
     }
 
     @discardableResult
     public func goToThisMonthTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframeId: "period-data-thisMonth-tab")
+        return tapTimeRangeOption(id: "time-range-this-month")
     }
 
     @discardableResult
     public func goToThisYearTab() -> MyStoreScreen {
-        return tapTimeframeTab(timeframeId: "period-data-thisYear-tab")
+        return tapTimeRangeOption(id: "time-range-this-year")
     }
 
     func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
-        let textPredicate = NSPredicate(format: "label MATCHES %@", "Store revenue chart \(timeframe)")
-        XCTAssertTrue(app.images.containing(textPredicate).element.exists, "\(timeframe) chart not displayed")
+        let textPredicate = NSPredicate(format: "label MATCHES %@", "\(timeframe)")
+        XCTAssertTrue(app.staticTexts.containing(textPredicate).element.exists, "\(timeframe) chart not displayed")
 
         return self
     }
@@ -73,7 +74,7 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     public func tapChart() {
-        app.images["chart-image"].tap()
+        app.otherElements["store-stats-chart"].tap()
     }
 
     public func verifyRevenueUpdated(originalRevenue: String, updatedRevenue: String) {

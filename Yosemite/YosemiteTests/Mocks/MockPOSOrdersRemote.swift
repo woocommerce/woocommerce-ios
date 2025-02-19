@@ -1,9 +1,5 @@
 import Networking
 
-final class MockReceiptsOrderRemote: POSReceiptsRemoteProtocol {
-    func sendReceipt(siteID: Int64, orderID: Int64) async throws { }
-}
-
 final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var updatePOSOrderCalled: Bool = false
     var spyUpdatePOSOrder: Order?
@@ -16,10 +12,14 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     }
 
     var createPOSOrderCalled: Bool = false
+    var spyCreatePOSOrder: Order?
+    var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order {
         createPOSOrderCalled = true
+        spyCreatePOSOrder = order
+        spyCreatePOSOrderFields = fields
         return Order.fake()
     }
 }

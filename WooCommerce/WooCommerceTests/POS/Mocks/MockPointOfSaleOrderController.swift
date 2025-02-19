@@ -5,34 +5,35 @@ import Combine
 import struct Yosemite.Order
 
 final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
+    func collectCashPayment() async throws {
+        // no-op
+    }
+
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
         $orderState.eraseToAnyPublisher()
     }
     @Published var orderState: PointOfSaleInternalOrderState = .idle
     var orderStateToReturn: PointOfSaleInternalOrderState?
 
-    @Published var order: Order?
-
     var syncOrderWasCalled: Bool = false
     var spyCartProducts: [CartItem]?
     var spyRetryHandler: (() async -> Void)?
+    var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
+
+    @discardableResult
     func syncOrder(for cartProducts: [CartItem],
-                   retryHandler: @escaping () async -> Void) async {
+                   retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         syncOrderWasCalled = true
         spyCartProducts = cartProducts
         spyRetryHandler = retryHandler
 
         guard let orderStateToReturn else {
             orderState = .syncing
-            return
+            return syncOrderResultToReturn
         }
 
         orderState = orderStateToReturn
-        guard case .loaded(_, let orderToReturn) = orderState else {
-            order = nil
-            return
-        }
-        order = orderToReturn
+        return syncOrderResultToReturn
     }
 
     var clearOrderWasCalled: Bool = false

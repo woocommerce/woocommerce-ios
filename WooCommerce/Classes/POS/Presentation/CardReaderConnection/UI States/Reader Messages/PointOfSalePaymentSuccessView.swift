@@ -23,6 +23,7 @@ struct PointOfSalePaymentSuccessView: View {
                     successView
                     Spacer()
                 }
+                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : 8)
             }
         }
         .onAppear {
@@ -36,6 +37,8 @@ struct PointOfSalePaymentSuccessView: View {
     private var successView: some View {
         ZStack {
             VStack(alignment: .center, spacing: Constants.headerSpacing) {
+                Spacer()
+
                 successIcon
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                     .scaleEffect(isViewLoaded ? 1 : 0)
@@ -64,6 +67,8 @@ struct PointOfSalePaymentSuccessView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                 .opacity(isViewLoaded ? 1 : 0)
+
+                Spacer()
             }
             .multilineTextAlignment(.center)
 

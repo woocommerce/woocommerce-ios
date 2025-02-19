@@ -346,8 +346,9 @@ private extension TotalsView {
                                          sidePadding: 0)
             case .paymentSuccess:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: nil,
-                                         bottomPadding: nil)
+                                         topPadding: 0,
+                                         bottomPadding: nil,
+                                         sidePadding: 0)
             }
         }
     }

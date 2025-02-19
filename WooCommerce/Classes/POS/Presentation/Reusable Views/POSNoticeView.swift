@@ -10,8 +10,6 @@ struct POSNoticeView<HintContent: View>: View {
     private let onTap: (() -> Void)?
     private let hintContent: HintContent?
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     init(
         title: String,
         subtitle: String? = nil,

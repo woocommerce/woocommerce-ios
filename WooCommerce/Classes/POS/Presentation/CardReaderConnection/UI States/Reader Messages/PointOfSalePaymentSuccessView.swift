@@ -37,13 +37,15 @@ struct PointOfSalePaymentSuccessView: View {
 
     private var successView: some View {
         ZStack {
-            VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            VStack(alignment: .center, spacing: POSSpacing.none) {
                 Spacer()
 
                 successIcon
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                     .scaleEffect(isViewLoaded ? 1 : 0)
                     .opacity(isViewLoaded ? 1 : 0)
+
+                Spacer().frame(height: POSSpacing.xLarge)
 
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
@@ -61,6 +63,8 @@ struct PointOfSalePaymentSuccessView: View {
                             .opacity(isViewLoaded ? 1 : 0)
                     }
                 }
+
+                Spacer().frame(height: POSSpacing.xxLarge)
 
                 PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
                                       isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
@@ -112,8 +116,8 @@ private extension PointOfSalePaymentSuccessView {
         static let shadowOpacity: CGFloat = 0.16
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)
-        static let headerSpacing: CGFloat = 56
-        static let textSpacing: CGFloat = POSSpacing.medium
+        static let headerSpacing: CGFloat = POSSpacing.xLarge
+        static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }
 }

@@ -145,9 +145,8 @@ private extension ItemListState {
 private extension ItemListView {
     enum Constants {
         static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
-        static let itemListPadding: CGFloat = 16
-        static let bannerCardPadding: CGFloat = 16
-        static let bannerTextSpacing: CGFloat = 4
+        static let bannerCardPadding: CGFloat = POSPadding.medium
+        static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
     }
 
     enum BannerState {

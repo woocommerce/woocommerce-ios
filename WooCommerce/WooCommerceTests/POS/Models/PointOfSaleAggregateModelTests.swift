@@ -18,6 +18,9 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             // Then
             #expect(sut.orderStage == .building)
+
+            // Then
+            #expect(sut.orderStage != .building)
         }
 
         @available(iOS 17.0, *)

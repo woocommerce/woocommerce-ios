@@ -142,12 +142,12 @@ private extension PointOfSaleCollectCashView {
 private extension PointOfSaleCollectCashView {
     enum Constants {
         static let errorMessagePadding: CGFloat = 8
-        static let paddingWhenKeyboardIntersectsButton: CGFloat = 4
+        static let minimumPadding: CGFloat = 4
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if keyboardFrame.intersects(buttonFrame) {
-            return Constants.paddingWhenKeyboardIntersectsButton
+            return Constants.minimumPadding
         }
 
         return padding

@@ -726,16 +726,16 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     @MainActor
     func test_remotelyValidateAddress_sends_expected_address_to_validate() async {
         // Given
-        let expectedAddress = ShippingLabelAddress(company: "HEADQUARTERS",
-                                                   name: "JANE DOE",
-                                                   phone: "1-234-456-7890",
-                                                   country: "US",
-                                                   state: "NY",
-                                                   address1: "15 ALGONKIN ST STE 100",
-                                                   address2: "",
-                                                   city: "TICONDEROGA",
-                                                   postcode: "12883-1487")
-        var receivedAddress: ShippingLabelAddress?
+        let expectedAddress = WooShippingAddress(company: "HEADQUARTERS",
+                                                 name: "JANE DOE",
+                                                 phone: "1-234-456-7890",
+                                                 country: "US",
+                                                 state: "NY",
+                                                 address1: "15 ALGONKIN ST STE 100",
+                                                 address2: "",
+                                                 city: "TICONDEROGA",
+                                                 postcode: "12883-1487")
+        var receivedAddress: WooShippingAddress?
         let storageManager = MockStorageManager()
         let country = Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])
         storageManager.insertSampleCountries(readOnlyCountries: [country])

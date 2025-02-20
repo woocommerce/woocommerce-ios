@@ -49,8 +49,8 @@ private extension PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewMo
         )
 
         static let retry = NSLocalizedString(
-            "pointOfSale.cardPresent.validatingOrderError.retry",
-            value: "Retry",
+            "pointOfSale.cardPresent.validatingOrderError.tryAgain",
+            value: "Try again",
             comment: "Button title to retry order validation."
         )
 

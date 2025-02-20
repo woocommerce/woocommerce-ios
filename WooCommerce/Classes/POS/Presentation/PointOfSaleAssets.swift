@@ -1,6 +1,8 @@
 import Foundation
 
 enum PointOfSaleAssets: CaseIterable {
+    case error
+    case exclamationMark
     case magnifierNotFound
     case readyForPayment
     case readerConnectionScanning
@@ -9,11 +11,16 @@ enum PointOfSaleAssets: CaseIterable {
     case readerConnectionError
     case readerConnectionLowBattery
     case readerConnectionSuccess
+    case readerDisconnected
     case shoppingBags
     case successCheck
 
     var imageName: String {
         switch self {
+        case .error:
+            "pos-error"
+        case .exclamationMark:
+            "pos-exclamation-mark"
         case .magnifierNotFound:
             "pos-magnifier-not-found"
         case .readyForPayment:
@@ -30,6 +37,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-battery"
         case .readerConnectionSuccess:
             "pos-reader-connection-complete"
+        case .readerDisconnected:
+            "pos-reader-disconnected"
         case .shoppingBags:
             "shopping-bags"
         case .successCheck:

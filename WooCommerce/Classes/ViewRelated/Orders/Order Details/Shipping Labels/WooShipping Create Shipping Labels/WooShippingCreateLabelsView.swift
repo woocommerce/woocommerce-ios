@@ -136,6 +136,13 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+            .sheet(item: $viewModel.addressToEdit) { addressToEdit in
+                NavigationStack {
+                    WooShippingEditAddressView(viewModel: addressToEdit)
+                        .navigationTitle(Localization.BottomSheet.editDestination)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+            }
         }
     }
 }
@@ -229,13 +236,6 @@ private extension WooShippingCreateLabelsView {
             .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
-        .sheet(item: $viewModel.addressToEdit) { addressToEdit in
-            NavigationStack {
-                WooShippingEditAddressView(viewModel: addressToEdit)
-                    .navigationTitle(Localization.BottomSheet.editDestination)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
     }
 
     /// View showing the order details, such as order items and shipping costs.
@@ -344,6 +344,11 @@ private extension WooShippingCreateLabelsView {
             .padding(.vertical, 12)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+            .onTapGesture {
+                if !isDestinationAddressVerified {
+                    viewModel.editDestinationAddress()
+                }
+            }
         }
     }
 }

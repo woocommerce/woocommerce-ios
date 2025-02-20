@@ -19,6 +19,7 @@ struct PointOfSaleCollectCashView: View {
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero
+    @State private var shouldMinimizePadding: Bool = false
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
@@ -31,7 +32,7 @@ struct PointOfSaleCollectCashView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(13)) {
+            VStack(alignment: .center, spacing: conditionalPadding(8)) {
                 POSPageHeaderView(title: Localization.backNavigationTitle,
                                   subtitle: formattedOrderTotal,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
@@ -97,7 +98,9 @@ struct PointOfSaleCollectCashView: View {
             }
             .onReceive(Publishers.keyboardFrame) {
                 keyboardFrame = $0
+                shouldMinimizePadding = $0.intersects(buttonFrame)
             }
+            .animation(.default, value: shouldMinimizePadding)
         }
     }
 
@@ -146,7 +149,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        if keyboardFrame.intersects(buttonFrame) {
+        if shouldMinimizePadding {
             return Constants.minimumPadding
         }
 

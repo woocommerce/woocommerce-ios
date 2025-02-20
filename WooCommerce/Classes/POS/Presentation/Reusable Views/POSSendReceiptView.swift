@@ -16,6 +16,7 @@ struct POSSendReceiptView: View {
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero
+    @State private var shouldMinimizePadding: Bool = false
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
@@ -33,7 +34,7 @@ struct POSSendReceiptView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(8)) {
+                VStack(alignment: .center, spacing: conditionalPadding(62)) {
                     TextField("",
                               text: $textFieldInput,
                               prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
@@ -80,7 +81,9 @@ struct POSSendReceiptView: View {
             }
             .onReceive(Publishers.keyboardFrame) {
                 keyboardFrame = $0
+                shouldMinimizePadding = $0.intersects(buttonFrame)
             }
+            .animation(.default, value: shouldMinimizePadding)
         }
         .background(Color.posSurfaceBright)
     }
@@ -116,7 +119,7 @@ private extension POSSendReceiptView {
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        if keyboardFrame.intersects(buttonFrame) {
+        if shouldMinimizePadding {
             return Constants.minimumPadding
         }
         return padding

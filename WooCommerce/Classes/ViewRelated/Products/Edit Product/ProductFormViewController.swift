@@ -261,6 +261,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .draft)
     }
 
+    /// Handles the edge case when the user opens the product form of the same product whose background upload fails.
+    /// In this case, we show an alert about the error instead of presenting a modal of the same product.
+    func handleProductUploadError(_ error: ProductImageUploadErrorInfo) {
+        switch error.error {
+        case .failedSavingProductAfterImageUpload(let error):
+            displayProductSavingErrorAlert(error: error, onRetry: nil)
+        case .noActionHandlerFound, .noRemoteProductIDFound:
+            displayError(error: .unexpected)
+        case let .failedUploadingImage(asset, error):
+            displayImageUploadErrorAlert(error: error, for: asset)
+        }
+    }
+
     // MARK: Product preview action handling
 
     @objc private func saveDraftAndDisplayProductPreview() {
@@ -1062,17 +1075,26 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func displayProductSavingErrorAlert(error: ProductUpdateError, onRetry: @escaping () -> Void) {
+    func displayProductSavingErrorAlert(error: Error, onRetry: (() -> Void)?) {
+        let message: String = {
+            if let updateError = error as? ProductUpdateError,
+                let description = updateError.errorDescription {
+                return description
+            }
+            return error.localizedDescription
+        }()
         let alert = UIAlertController(title: Localization.ProductSavingError.title,
-                                      message: error.errorDescription,
+                                      message: message,
                                       preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.ProductSavingError.cancel, style: .cancel, handler: { _ in })
         alert.addAction(cancel)
 
-        let retry = UIAlertAction(title: Localization.ProductSavingError.retry, style: .default, handler: { _ in
-            onRetry()
-        })
-        alert.addAction(retry)
+        if let onRetry {
+            let retry = UIAlertAction(title: Localization.ProductSavingError.retry, style: .default, handler: { _ in
+                onRetry()
+            })
+            alert.addAction(retry)
+        }
 
         present(alert, animated: true, completion: nil)
     }

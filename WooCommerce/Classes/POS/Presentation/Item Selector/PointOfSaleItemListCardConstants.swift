@@ -4,7 +4,6 @@ import SwiftUI
 enum PointOfSaleItemListCardConstants {
     static let productCardSize: CGFloat = 112
     static let maximumProductCardSize: CGFloat = PointOfSaleItemListCardConstants.productCardSize * 2
-    static let textSpacing: CGFloat = 6
     static let cardSpacing: CGFloat = POSSpacing.none
     static let horizontalTextPadding: CGFloat = POSPadding.medium
     static let verticalTextPadding: CGFloat = POSPadding.small

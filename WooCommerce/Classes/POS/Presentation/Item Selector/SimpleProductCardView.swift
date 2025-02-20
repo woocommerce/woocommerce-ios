@@ -22,7 +22,7 @@ struct SimpleProductCardView: View {
                              scale: 1)
             .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text(product.name)
                     .lineLimit(2)
                     .foregroundStyle(Constants.titleColor)

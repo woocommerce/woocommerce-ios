@@ -70,8 +70,6 @@ struct POSSendReceiptView: View {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .frame(maxWidth: .infinity)
                     .disabled(isLoading)
-
-                    Spacer()
                 }
                 .padding([.horizontal])
                 .padding(.bottom, keyboardFrame.height)

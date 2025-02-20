@@ -5,7 +5,6 @@ struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel
     @StateObject private var posModalManager = POSModalManager()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
@@ -23,7 +22,6 @@ struct PointOfSaleEntryPointView: View {
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
 
         self._posModel = State(wrappedValue: posModel)
-        self.cardPresentPaymentService = cardPresentPaymentService
     }
 
     var body: some View {
@@ -37,9 +35,6 @@ struct PointOfSaleEntryPointView: View {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
             posModel.pointOfSaleClosed()
-            Task { [cardPresentPaymentService] in
-                try await cardPresentPaymentService.cancelPayment()
-            }
         }
     }
 }

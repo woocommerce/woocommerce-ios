@@ -165,6 +165,22 @@ private extension PointOfSaleAggregateModel {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
         }
     }
+
+    // Tracks when the order is created or updated successfully
+    // pdfdoF-6hn#comment-7625-p2
+    func trackOrderSyncState(_ result: Result<SyncOrderState, Error>) {
+        switch result {
+        case .success(let syncState):
+            switch syncState {
+            case .newOrder, .orderUpdated:
+                collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
+            default:
+                break
+            }
+        case .failure:
+            break
+        }
+    }
 }
 
 // MARK: - Card payments
@@ -242,6 +258,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func cancelCashPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState = .card(.idle)
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
@@ -250,8 +267,7 @@ extension PointOfSaleAggregateModel {
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
-        // TODO: Move to trackSuccessfulCashPayment() on #15151
-        collectOrderPaymentAnalyticsTracker.resetCheckoutTapCountTracker()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
     }
 
     @MainActor
@@ -262,7 +278,14 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
+        do {
+            try await orderController.sendReceipt(recipientEmail: emailAddress)
+            analytics.track(.receiptEmailSuccess)
+        } catch {
+            // Catch and re-throw in order to capture the error event, but still allow the UI to handle the error state.
+            analytics.track(.receiptEmailFailed)
+            throw error
+        }
     }
 
     @MainActor
@@ -453,9 +476,7 @@ extension PointOfSaleAggregateModel {
         let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
-        if case .success(.newOrder) = syncOrderResult {
-            collectOrderPaymentAnalyticsTracker.trackOrderCreationSuccess()
-        }
+        trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
     }
 }

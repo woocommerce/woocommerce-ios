@@ -4,6 +4,7 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @State private var width: CGFloat = 0
 
     init(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, animation: POSCardPresentPaymentInLineMessageAnimation) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -11,17 +12,21 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+        VStack(alignment: .center, spacing: 0) {
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
@@ -29,6 +34,9 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
                 Button(viewModel.tryAgainButtonViewModel.title,
@@ -40,6 +48,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
+            .frame(width: width * 0.5)
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
@@ -49,6 +58,9 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .measureWidth({ containerWidth in
+            width = containerWidth
+        })
     }
 }
 

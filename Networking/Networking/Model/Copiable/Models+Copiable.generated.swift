@@ -1,8 +1,10 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Codegen
 import Foundation
 import WooFoundation
+import struct Alamofire.JSONEncoding
+
 
 extension Networking.AIProduct {
     public func copy(

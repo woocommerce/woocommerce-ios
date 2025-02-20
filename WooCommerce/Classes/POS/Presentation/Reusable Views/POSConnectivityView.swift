@@ -53,7 +53,7 @@ private extension POSConnectivityView {
     enum Constants {
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.large.value
         static let height: CGFloat = 64
-        static let spacing: CGFloat = 16
+        static let spacing: CGFloat = POSSpacing.medium
         static let horizontalPadding: CGFloat = POSPadding.large
         static let verticalPadding: CGFloat = POSPadding.small
         static let connectivityAnimationDuration: CGFloat = 1.0

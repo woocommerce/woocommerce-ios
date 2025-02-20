@@ -64,7 +64,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
-    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
+    private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -75,7 +75,7 @@ protocol PointOfSaleAggregateModelProtocol {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
-         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
@@ -137,7 +137,6 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
-        analytics.track(.pointOfSaleClearCartTapped)
     }
 
     func addMoreToCart() {
@@ -280,7 +279,14 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
+        do {
+            try await orderController.sendReceipt(recipientEmail: emailAddress)
+            analytics.track(.receiptEmailSuccess)
+        } catch {
+            // Catch and re-throw in order to capture the error event, but still allow the UI to handle the error state.
+            analytics.track(.receiptEmailFailed)
+            throw error
+        }
     }
 
     @MainActor

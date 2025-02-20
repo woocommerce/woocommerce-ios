@@ -269,15 +269,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Validates the address remotely.
     @MainActor
     func remotelyValidateAddress() async {
-        let addressToValidate = ShippingLabelAddress(company: company.value,
-                                                     name: name.value,
-                                                     phone: phone.value,
-                                                     country: country.value,
-                                                     state: state.value,
-                                                     address1: address.value,
-                                                     address2: "",
-                                                     city: city.value,
-                                                     postcode: postalCode.value)
+        let addressToValidate = WooShippingAddress(company: company.value,
+                                                   name: name.value,
+                                                   phone: phone.value,
+                                                   country: country.value,
+                                                   state: state.value,
+                                                   address1: address.value,
+                                                   address2: "",
+                                                   city: city.value,
+                                                   postcode: postalCode.value)
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
@@ -459,7 +459,7 @@ private extension WooShippingEditAddressViewModel {
 
     /// Remotely validates the provided address.
     @MainActor
-    func remotelyValidateAddress(_ address: ShippingLabelAddress) async throws -> WooShippingAddressValidationSuccess {
+    func remotelyValidateAddress(_ address: WooShippingAddress) async throws -> WooShippingAddressValidationSuccess {
         try await withCheckedThrowingContinuation { continuation in
             isLoading = true
             let action = WooShippingAction.validateAddress(siteID: siteID,

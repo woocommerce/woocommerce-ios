@@ -27,13 +27,9 @@ extension WKWebView {
         return try URLEncoding.default.encode(request, with: parameters)
     }
 
-    func authenticateForWPComAndRedirect(to url: URL, credentials: Credentials?) {
+    func authenticateForWPComAndRedirect(to url: URL, credentials: Credentials?) throws {
         customUserAgent = UserAgent.defaultUserAgent
-        do {
-            try load(authenticatedPostData(with: credentials, redirectTo: url))
-        } catch {
-            DDLogError("⛔️ Cannot load the authenticated web view on WPCom")
-        }
+        try load(authenticatedPostData(with: credentials, redirectTo: url))
     }
 
     private func authenticatedPostData(with credentials: Credentials?, redirectTo url: URL) throws -> URLRequest {

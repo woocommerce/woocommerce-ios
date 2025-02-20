@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())

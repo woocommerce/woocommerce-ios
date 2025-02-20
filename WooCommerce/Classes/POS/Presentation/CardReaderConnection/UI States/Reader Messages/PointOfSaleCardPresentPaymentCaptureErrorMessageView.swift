@@ -23,7 +23,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                         .font(.posHeadingBold)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                    VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                    VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                         Text(viewModel.message)
                         Text(viewModel.nextStep)
                     }

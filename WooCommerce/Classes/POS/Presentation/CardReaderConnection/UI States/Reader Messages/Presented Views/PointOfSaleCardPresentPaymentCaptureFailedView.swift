@@ -13,7 +13,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(Localization.message)
                     Text(Localization.nextSteps)
                 }

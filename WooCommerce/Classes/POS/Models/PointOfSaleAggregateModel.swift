@@ -62,7 +62,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
-    private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
+    private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -73,7 +73,7 @@ protocol PointOfSaleAggregateModelProtocol {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
-         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService

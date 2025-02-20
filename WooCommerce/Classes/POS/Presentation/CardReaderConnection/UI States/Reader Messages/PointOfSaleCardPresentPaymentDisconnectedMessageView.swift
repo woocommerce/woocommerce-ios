@@ -4,6 +4,8 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
     private let connectCardReader: () -> Void
 
+    @State private var width: CGFloat = 0
+
     init(connectCardReader: @escaping () -> Void) {
         self.connectCardReader = connectCardReader
     }
@@ -30,17 +32,17 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
-            GeometryReader { geometry in
-                Button {
-                    connectCardReader()
-                } label: {
-                    Text(viewModel.connectReaderButtonTitle)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .frame(width: geometry.size.width * 0.5)
-                .frame(maxWidth: .infinity, alignment: .center)
+            Button {
+                connectCardReader()
+            } label: {
+                Text(viewModel.connectReaderButtonTitle)
             }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .frame(width: width * 0.5)
         }
+        .measureWidth({ containerWidth in
+            width = containerWidth
+        })
         .multilineTextAlignment(.center)
     }
 }

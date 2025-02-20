@@ -1630,6 +1630,7 @@
 		68ED2BD62ADD2C8C00ECA88D /* LineDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68ED2BD52ADD2C8C00ECA88D /* LineDetailView.swift */; };
 		68F151E12C0DA7910082AEC8 /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F151E02C0DA7910082AEC8 /* CartItem.swift */; };
 		68F68A502D6730E200BB9568 /* POSCollectOrderPaymentAnalyticsTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F68A4F2D6730DF00BB9568 /* POSCollectOrderPaymentAnalyticsTracking.swift */; };
+		68F68A522D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F68A512D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift */; };
 		68F896422D5E4323000B308B /* POSCollectOrderPaymentAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F896412D5E4321000B308B /* POSCollectOrderPaymentAnalytics.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -4784,6 +4785,7 @@
 		68ED2BD52ADD2C8C00ECA88D /* LineDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineDetailView.swift; sourceTree = "<group>"; };
 		68F151E02C0DA7910082AEC8 /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
 		68F68A4F2D6730DF00BB9568 /* POSCollectOrderPaymentAnalyticsTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalyticsTracking.swift; sourceTree = "<group>"; };
+		68F68A512D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCollectOrderPaymentAnalyticsTracker.swift; sourceTree = "<group>"; };
 		68F896412D5E4321000B308B /* POSCollectOrderPaymentAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalytics.swift; sourceTree = "<group>"; };
 		6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Woo_Watch_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7731,6 +7733,7 @@
 				200BA15A2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift */,
 				20FCBCE22CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift */,
 				207D2D222CFDCCBF00F79204 /* MockPOSOrderableItem.swift */,
+				68F68A512D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -17355,6 +17358,7 @@
 				20FCBCDF2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift in Sources */,
 				03D7985C2A94EC7700809B0E /* MockCollectOrderPaymentAnalyticsTracker.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,
+				68F68A522D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift in Sources */,
 				0235BFDB246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift in Sources */,
 				DE7B17F52C0DF02800A6C7D8 /* InboxEligibilityUseCaseTests.swift in Sources */,
 				020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */,

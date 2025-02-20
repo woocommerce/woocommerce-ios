@@ -15,7 +15,7 @@ private extension PointOfSaleCardPresentPaymentProcessingMessageViewModel {
 
         static let pleaseWait = NSLocalizedString(
             "pointOfSale.cardPresent.paymentProcessing.message",
-            value: "Please wait...",
+            value: "Please wait",
             comment: "Indicates to wait while payment is processing. Presented to users when payment collection starts"
         )
     }

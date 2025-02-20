@@ -4,9 +4,12 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+        VStack(alignment: .center, spacing: 0) {
             POSErrorExclamationMark()
                 .accessibilityAddTraits(.isHeader)
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(Localization.title)
@@ -20,6 +23,9 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
                 .font(.posBodyLargeRegular())
                 .foregroundStyle(Color.posOnSurface)
             }
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
             Button(Localization.understandButtonTitle,
                    action: {

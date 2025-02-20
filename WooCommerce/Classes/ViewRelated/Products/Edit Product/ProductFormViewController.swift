@@ -263,15 +263,30 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     /// Handles the edge case when the user opens the product form of the same product whose background upload fails.
     /// In this case, we show an alert about the error instead of presenting a modal of the same product.
-    func handleProductUploadError(_ error: ProductImageUploadErrorInfo) {
-        switch error.error {
+    func handleProductUploadError(_ errorInfo: ProductImageUploadErrorInfo) {
+        switch errorInfo.error {
         case .failedSavingProductAfterImageUpload(let error):
-            displayProductSavingErrorAlert(error: error, onRetry: nil)
+            displayProductSavingErrorAlert(error: error, onRetry: { [weak self] in
+                self?.retrySavingProductImages()
+            })
         case .noActionHandlerFound, .noRemoteProductIDFound:
             displayError(error: .unexpected)
         case let .failedUploadingImage(asset, error):
             displayImageUploadErrorAlert(error: error, for: asset)
         }
+    }
+
+    private func retrySavingProductImages() {
+        let key = ProductImageUploaderKey(siteID: viewModel.productModel.siteID,
+                                          productOrVariationID: .product(id: viewModel.productModel.siteID),
+                                          isLocalID: viewModel.productModel.existsRemotely)
+        productImageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: key, onProductSave: { [weak self] result in
+            if case .failure(let error) = result {
+                self?.handleProductUploadError(.init(siteID: key.siteID,
+                                                     productOrVariationID: key.productOrVariationID,
+                                                     error: .failedSavingProductAfterImageUpload(error: error)))
+            }
+        })
     }
 
     // MARK: Product preview action handling
@@ -1075,7 +1090,7 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func displayProductSavingErrorAlert(error: Error, onRetry: (() -> Void)?) {
+    func displayProductSavingErrorAlert(error: Error, onRetry: @escaping (() -> Void)) {
         let message: String = {
             if let updateError = error as? ProductUpdateError,
                 let description = updateError.errorDescription {
@@ -1089,12 +1104,10 @@ private extension ProductFormViewController {
         let cancel = UIAlertAction(title: Localization.ProductSavingError.cancel, style: .cancel, handler: { _ in })
         alert.addAction(cancel)
 
-        if let onRetry {
-            let retry = UIAlertAction(title: Localization.ProductSavingError.retry, style: .default, handler: { _ in
-                onRetry()
-            })
-            alert.addAction(retry)
-        }
+        let retry = UIAlertAction(title: Localization.ProductSavingError.retry, style: .default, handler: { _ in
+            onRetry()
+        })
+        alert.addAction(retry)
 
         present(alert, animated: true, completion: nil)
     }

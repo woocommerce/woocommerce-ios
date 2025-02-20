@@ -15,7 +15,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             // Then
             #expect(sut.orderStage == .building)
         }
@@ -26,7 +26,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             sut.addToCart(makeItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
@@ -46,7 +46,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             sut.addToCart(makeItem())
 
             // When
@@ -62,7 +62,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             sut.addToCart(makeItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
@@ -92,7 +92,7 @@ struct PointOfSaleAggregateModelTests {
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             try #require(sut.cart.isEmpty)
             let item = makeItem()
 
@@ -110,7 +110,7 @@ struct PointOfSaleAggregateModelTests {
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             let items = [makeItem(), makeItem(), makeItem()]
 
             // When
@@ -127,7 +127,7 @@ struct PointOfSaleAggregateModelTests {
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             let item = makeItem(name: "Item 1")
             let anotherItem = makeItem(name: "Item 2")
 
@@ -151,7 +151,7 @@ struct PointOfSaleAggregateModelTests {
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             let item = makeItem(name: "Item 1")
             let anotherItem = makeItem(name: "Item 2")
 
@@ -167,22 +167,6 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
-        @Test func removeAllItemsFromCart_when_tapped_then_tracks_event() {
-            // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
-
-            //When
-            sut.removeAllItemsFromCart()
-
-            // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "clear_cart_tapped" }) != nil)
-        }
-
-        @available(iOS 17.0, *)
         @Test(.disabled(
             """
             This test doesn't currently work; analytics extensions are not thread-safe,
@@ -195,7 +179,7 @@ struct PointOfSaleAggregateModelTests {
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             let item = makeItem()
 
             // When
@@ -223,7 +207,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
 
@@ -242,7 +226,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
             sut.addToCart(makeItem())
@@ -264,7 +248,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
             sut.removeAllItemsFromCart()
@@ -285,7 +269,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -306,7 +290,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: orderController,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             // When
             try await sut.sendReceipt(to: "")
@@ -325,7 +309,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: orderController,
-                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             do {
                 // When
@@ -336,6 +320,25 @@ struct PointOfSaleAggregateModelTests {
                 #expect(nsError.domain == expectedError.domain)
                 #expect(nsError.code == expectedError.code)
             }
+        }
+
+        @available(iOS 17.0, *)
+        @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
+
+            sut.addToCart(makeItem())
+
+            // When
+            sut.pointOfSaleClosed()
+
+            // Then
+            #expect(orderController.clearOrderWasCalled == true)
         }
     }
 
@@ -352,7 +355,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             // Then
             #expect(sut.paymentState == .card(.idle))
@@ -366,7 +369,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 paymentState: .card(.cardPaymentSuccessful))
 
             // When
@@ -384,7 +387,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
             try #require(sut.cardPresentPaymentInlineMessage != nil)
@@ -404,7 +407,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker(),
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 paymentState: .card(.cardPaymentSuccessful))
 
             // When
@@ -422,7 +425,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             cardPresentPaymentService.paymentEvent = .show(
                 eventDetails: .tapSwipeOrInsertCard(
@@ -445,7 +448,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             // When
             await sut.startCashPayment()
@@ -463,7 +466,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             // When
             await sut.startCashPayment()
@@ -480,7 +483,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             await sut.startCashPayment()
             #expect(sut.paymentState == .cash(.collectingCash))
 
@@ -499,7 +502,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             #expect(sut.orderStage == .building)
 
             await sut.checkOut()
@@ -528,7 +531,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             // When
             cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
@@ -549,7 +552,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             struct TestError: Error {}
 
             // When paymentIntentCreationError event is received
@@ -576,7 +579,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             struct TestError: Error {}
             await sut.checkOut()
 
@@ -606,7 +609,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             cardPresentPaymentService.connectedReader = nil
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
@@ -635,7 +638,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.01", orderTotalDecimal: 0.01)
 
@@ -654,7 +657,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.00", orderTotalDecimal: 0.0)
 
@@ -673,7 +676,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
@@ -703,7 +706,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
             await orderController.syncOrder(for: [], retryHandler: {})
 
@@ -728,7 +731,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .pluginNotActivated(plugin: .stripe))
             cardPresentPaymentService.paymentEvent = .idle
             try #require(sut.cardPresentPaymentOnboardingViewModel == nil)
@@ -761,7 +764,7 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
 
@@ -787,7 +790,7 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             sut.addToCart(makeItem())
 
@@ -807,7 +810,7 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             //When
             sut.connectCardReader()
@@ -825,7 +828,7 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
-                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
             //When
             sut.disconnectCardReader()
@@ -837,7 +840,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
             // Given
-            let analyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
+            let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: cardPresentPaymentService,
                                                 orderController: orderController,
@@ -853,10 +856,11 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func cancelCashPayment_when_invoked_then_tracks_expected_event() async throws {
             // Given
-            let analyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
+            let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: analyticsTracker)
             // When
             await sut.cancelCashPayment()

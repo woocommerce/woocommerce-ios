@@ -171,8 +171,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func cancelPayment() async throws {
-        let cancelPaymentTask: () -> Void = cancelPayment
-        cancelPaymentTask()
+        paymentTask?.cancel()
+        paymentTask = nil
 
         try await withCheckedThrowingContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation

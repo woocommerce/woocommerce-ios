@@ -22,20 +22,21 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: conditionalPadding(8)) {
-            POSPageHeaderView(title: Localization.emailReceiptNavigationText,
-                              backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
-                                                             action: {
-                withAnimation {
-                    isShowingSendReceiptView = false
-                    isTextFieldFocused = false
-                }
-            }))
-
+        ScrollView {
             VStack(alignment: .center, spacing: conditionalPadding(8)) {
-                TextField("",
-                          text: $textFieldInput,
-                          prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                POSPageHeaderView(title: Localization.emailReceiptNavigationText,
+                                  backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                                                 action: {
+                    withAnimation {
+                        isShowingSendReceiptView = false
+                        isTextFieldFocused = false
+                    }
+                }))
+
+                VStack(alignment: .center, spacing: conditionalPadding(8)) {
+                    TextField("",
+                              text: $textFieldInput,
+                              prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
                     .foregroundStyle(Color.posOnSurface)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .keyboardType(.emailAddress)
@@ -50,39 +51,40 @@ struct POSSendReceiptView: View {
                         sendReceipt()
                     }
 
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .font(POSFontStyle.posBodySmallRegular())
-                        .foregroundColor(.posError)
-                        .padding(.bottom, Constants.errorMessagePadding)
-                }
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .font(POSFontStyle.posBodySmallRegular())
+                            .foregroundColor(.posError)
+                            .padding(.bottom, Constants.errorMessagePadding)
+                    }
 
-                Button(action: {
-                    sendReceipt()
-                }, label: {
-                    Text(Localization.buttonTitle)
-                })
-                .measureFrame {
-                    buttonFrame = $0
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-                .frame(maxWidth: .infinity)
-                .disabled(isLoading)
+                    Button(action: {
+                        sendReceipt()
+                    }, label: {
+                        Text(Localization.buttonTitle)
+                    })
+                    .measureFrame {
+                        buttonFrame = $0
+                    }
+                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                    .frame(maxWidth: .infinity)
+                    .disabled(isLoading)
 
-                Spacer()
+                    Spacer()
+                }
+                .padding([.horizontal])
+                .padding(.bottom, keyboardFrame.height)
             }
-            .padding([.horizontal])
-            .padding(.bottom, keyboardFrame.height)
+            .animation(.easeInOut, value: errorMessage)
+            .onChange(of: textFieldInput) { _ in
+                errorMessage = nil
+            }
+            .onReceive(Publishers.keyboardFrame) {
+                keyboardFrame = $0
+            }
         }
         .background(Color.posSurfaceBright)
-        .animation(.easeInOut, value: errorMessage)
-        .onChange(of: textFieldInput) { _ in
-            errorMessage = nil
-        }
-        .onReceive(Publishers.keyboardFrame) {
-            keyboardFrame = $0
-        }
     }
 
     private func sendReceipt() {

@@ -34,6 +34,7 @@ struct PointOfSaleEntryPointView: View {
         .onDisappear {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
+            posModel.pointOfSaleClosed()
         }
     }
 }

@@ -64,5 +64,5 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func startNewCart() { }
 
-    func exitPointOfSaleTapped() { }
+    func pointOfSaleClosed() { }
 }

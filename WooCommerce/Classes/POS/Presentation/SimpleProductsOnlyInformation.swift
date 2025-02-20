@@ -30,7 +30,6 @@ struct SimpleProductsOnlyInformation: View {
                         .font(.posBodySmallRegular())
 
                     Button {
-                        posModel.exitPointOfSaleTapped()
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")

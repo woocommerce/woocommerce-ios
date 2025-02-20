@@ -323,7 +323,7 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
-        @Test func when_exitPointOfSaleTapped_then_order_is_cleared_up() async throws {
+        @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
@@ -335,7 +335,7 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makeItem())
 
             // When
-            sut.exitPointOfSaleTapped()
+            sut.pointOfSaleClosed()
 
             // Then
             #expect(orderController.clearOrderWasCalled == true)

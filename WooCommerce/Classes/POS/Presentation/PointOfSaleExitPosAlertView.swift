@@ -30,7 +30,6 @@ struct PointOfSaleExitPosAlertView: View {
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
                 ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)
-                posModel.exitPointOfSaleTapped()
                 dismiss()
             } label: {
                 Text(Localization.exitButton)

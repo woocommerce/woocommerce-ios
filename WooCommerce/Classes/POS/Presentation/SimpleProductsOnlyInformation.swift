@@ -12,6 +12,17 @@ struct SimpleProductsOnlyInformation: View {
 
     var body: some View {
         VStack(spacing: Constants.contentBlockSpacing) {
+            HStack {
+                Spacer()
+                Button {
+                    isPresented = false
+                } label: {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolMedium)
+                }
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
+            }
+
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
                     .font(.posHeadingBold)
@@ -19,9 +30,10 @@ struct SimpleProductsOnlyInformation: View {
                 Group {
                     Text(issueMessage)
                     Text(futureMessage)
-                        .padding(.bottom, Constants.textToModalBottomPadding)
                 }
                 .font(.posBodyLargeRegular())
+
+                Spacer().frame(height: POSSpacing.xLarge)
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(hintMessage)
@@ -47,7 +59,7 @@ struct SimpleProductsOnlyInformation: View {
             }) {
                 Text(Localization.okButtonTitle)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)
@@ -70,13 +82,12 @@ struct SimpleProductsOnlyInformation: View {
 private extension SimpleProductsOnlyInformation {
     enum Constants {
         static let modalFrameWidth: CGFloat = 896
-        static let modalContentPadding: CGFloat = 40
-        static let hintVerticalPadding: CGFloat = 24
-        static let hintHorizontalPadding: CGFloat = 40
+        static let modalContentPadding: CGFloat = POSSpacing.medium
+        static let hintVerticalPadding: CGFloat = POSSpacing.medium
+        static let hintHorizontalPadding: CGFloat = POSSpacing.medium
         static let hintBackgroundCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-        static let contentBlockSpacing: CGFloat = 40
-        static let textSpacing: CGFloat = 16
-        static let textToModalBottomPadding: CGFloat = 8
+        static let contentBlockSpacing: CGFloat = POSSpacing.xxLarge
+        static let textSpacing: CGFloat = POSSpacing.small
     }
 
     enum Localization {

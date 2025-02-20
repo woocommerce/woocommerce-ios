@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
             Image(decorative: viewModel.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -28,6 +28,12 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
             }
         }
         .multilineTextAlignment(.center)
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
+    enum Constants {
+        static let imageAndTextSpacing: CGFloat = 36
     }
 }
 

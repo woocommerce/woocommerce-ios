@@ -8,22 +8,24 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
-            POSErrorXMark()
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                Text(viewModel.title)
-                    .foregroundStyle(Color.posOnSurface)
-                    .font(.posHeadingBold)
-                    .accessibilityAddTraits(.isHeader)
-                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing) {
+                POSErrorXMark()
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .foregroundStyle(Color.posOnSurface)
+                        .font(.posHeadingBold)
+                        .accessibilityAddTraits(.isHeader)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
-                    Text(viewModel.message)
-                    Text(viewModel.nextStep)
+                    VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                        Text(viewModel.message)
+                        Text(viewModel.nextStep)
+                    }
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
-                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,

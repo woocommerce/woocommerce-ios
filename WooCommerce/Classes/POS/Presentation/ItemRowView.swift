@@ -46,10 +46,10 @@ struct ItemRowView: View {
                         .font(.posButtonSymbolMedium)
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .padding(.trailing, Constants.cardContentHorizontalPadding)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
         }
+        .padding(.trailing, Constants.cardContentHorizontalPadding)
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()

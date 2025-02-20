@@ -42,6 +42,9 @@ public protocol WooShippingRemoteProtocol {
                              address: WooShippingOriginAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
+    func verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -348,6 +351,24 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Verifies the destination address of an order.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - completion: Closure to be executed upon completion.
+    public func verifyDestinationAddress(siteID: Int64,
+                                         orderID: Int64,
+                                         completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
+        let path = Path.verifyOrder(orderID: orderID)
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingVerifyDestinationAddressMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -362,6 +383,9 @@ private extension WooShippingRemote {
         static let originAddresses = "address/origins"
         static let normalizeAddress = "address/normalize"
         static let updateOrigin = "address/update_origin"
+        static func verifyOrder(orderID: Int64) -> String {
+            "address/\(orderID)/verify_order"
+        }
     }
 
     enum ParameterKey {

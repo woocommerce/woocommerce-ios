@@ -135,7 +135,6 @@ extension PointOfSaleAggregateModel {
 
     func removeAllItemsFromCart() {
         cart.removeAll()
-        analytics.track(.pointOfSaleClearCartTapped)
     }
 
     func addMoreToCart() {
@@ -163,6 +162,22 @@ private extension PointOfSaleAggregateModel {
         // but a more complex logic will be needed for other cases
         if cart.count == 0 {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
+        }
+    }
+
+    // Tracks when the order is created or updated successfully
+    // pdfdoF-6hn#comment-7625-p2
+    func trackOrderSyncState(_ result: Result<SyncOrderState, Error>) {
+        switch result {
+        case .success(let syncState):
+            switch syncState {
+            case .newOrder, .orderUpdated:
+                collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
+            default:
+                break
+            }
+        case .failure:
+            break
         }
     }
 }
@@ -242,6 +257,7 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func cancelCashPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState = .card(.idle)
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
@@ -250,6 +266,7 @@ extension PointOfSaleAggregateModel {
 
     private func cashPaymentSuccess() {
         paymentState = .cash(.paymentSuccess)
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
     }
 
     @MainActor
@@ -260,7 +277,14 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
+        do {
+            try await orderController.sendReceipt(recipientEmail: emailAddress)
+            analytics.track(.receiptEmailSuccess)
+        } catch {
+            // Catch and re-throw in order to capture the error event, but still allow the UI to handle the error state.
+            analytics.track(.receiptEmailFailed)
+            throw error
+        }
     }
 
     @MainActor
@@ -365,6 +389,14 @@ private extension PointOfSaleAggregateModel {
                 let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
                                                               using: presentationStyleDeterminerDependencies)
 
+                if case .card(.acceptingCard) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
+                }
+
+                if case .card(.processingPayment) = newPaymentState {
+                    collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
+                }
+
                 return newPaymentState
             }
             .sink(receiveValue: { [weak self] paymentState in
@@ -438,10 +470,12 @@ private extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
+        collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
             await self?.checkOut()
         })
+        trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
     }
 }

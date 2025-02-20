@@ -18,61 +18,55 @@ struct POSSendReceiptView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: conditionalPadding(8)) {
-            HStack {
-                Button(action: {
-                    withAnimation {
-                        isShowingSendReceiptView = false
-                        isTextFieldFocused = false
-                    }
-                }, label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text(Localization.emailReceiptNavigationText)
-                    }
-                    .font(.posHeading)
-                    .foregroundColor(.posOnSurface)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-                    .accessibilityAddTraits(.isHeader)
-                })
-                Spacer()
-            }
-            .buttonStyle(.plain)
-            .disabled(isLoading)
+            POSPageHeaderView(title: Localization.emailReceiptNavigationText,
+                              backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                                             action: {
+                withAnimation {
+                    isShowingSendReceiptView = false
+                    isTextFieldFocused = false
+                }
+            }))
 
-            TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .multilineTextAlignment(.center)
-                .font(POSFontStyle.posBodyXLarge)
-                .focused()
-                .focused($isTextFieldFocused)
-                .padding()
-                .onSubmit {
-                    sendReceipt()
+            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+                TextField("",
+                          text: $textFieldInput,
+                          prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                    .foregroundStyle(Color.posOnSurface)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.center)
+                    .font(POSFontStyle.posHeadingRegular)
+                    .focused()
+                    .focused($isTextFieldFocused)
+                    .padding()
+                    .onSubmit {
+                        sendReceipt()
+                    }
+
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .font(POSFontStyle.posBodySmallRegular())
+                        .foregroundColor(.posError)
+                        .padding(.bottom, Constants.errorMessagePadding)
                 }
 
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .font(POSFontStyle.posBodyLargeRegular())
-                    .foregroundColor(.red)
-                    .padding(.bottom, Constants.errorMessagePadding)
+                Button(action: {
+                    sendReceipt()
+                }, label: {
+                    Text(Localization.buttonTitle)
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                .frame(maxWidth: .infinity)
+                .disabled(isLoading)
+
+                Spacer()
             }
-
-            Button(action: {
-                sendReceipt()
-            }, label: {
-                Text(Localization.buttonTitle)
-            })
-            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-            .frame(maxWidth: .infinity)
-            .disabled(isLoading)
-
-            Spacer()
+            .padding([.horizontal, .bottom])
         }
-        .padding([.horizontal, .bottom])
+        .background(Color.posSurfaceBright)
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
@@ -80,7 +74,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
+        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText

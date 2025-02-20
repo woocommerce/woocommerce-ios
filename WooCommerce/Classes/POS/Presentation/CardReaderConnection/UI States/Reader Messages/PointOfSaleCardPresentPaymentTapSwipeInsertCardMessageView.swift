@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
             Image(decorative: viewModel.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -14,20 +14,26 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .multilineTextAlignment(.center)
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
+    enum Constants {
+        static let imageAndTextSpacing: CGFloat = 36
     }
 }
 

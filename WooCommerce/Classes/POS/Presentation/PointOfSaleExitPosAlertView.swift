@@ -40,9 +40,9 @@ struct PointOfSaleExitPosAlertView: View {
 
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
-        static let titleBottomPadding: CGFloat = 20.0
-        static let bodyBottomPadding: CGFloat = 60.0
-        static let padding: CGFloat = POSPadding.xxLarge
+        static let titleBottomPadding: CGFloat = POSSpacing.xLarge
+        static let bodyBottomPadding: CGFloat = POSSpacing.xLarge
+        static let padding: CGFloat = POSPadding.medium
     }
 
     enum Localization {

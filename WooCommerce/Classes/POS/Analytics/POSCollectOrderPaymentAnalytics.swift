@@ -1,7 +1,7 @@
 import protocol WooFoundation.Analytics
 import Yosemite
 
-final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking, POSCollectOrderPaymentAnalyticsTracking {
+final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
     private var customerInteractionStarted: Double = 0

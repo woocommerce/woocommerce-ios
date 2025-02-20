@@ -278,7 +278,14 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
+        do {
+            try await orderController.sendReceipt(recipientEmail: emailAddress)
+            analytics.track(.receiptEmailSuccess)
+        } catch {
+            // Catch and re-throw in order to capture the error event, but still allow the UI to handle the error state.
+            analytics.track(.receiptEmailFailed)
+            throw error
+        }
     }
 
     @MainActor

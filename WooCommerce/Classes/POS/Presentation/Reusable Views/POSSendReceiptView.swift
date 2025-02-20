@@ -66,6 +66,7 @@ struct POSSendReceiptView: View {
             }
             .padding([.horizontal, .bottom])
         }
+        .background(Color.posSurfaceBright)
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
@@ -73,7 +74,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        ServiceLocator.analytics.track(.pointOfSaleEmailReceiptSendTapped)
+        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText

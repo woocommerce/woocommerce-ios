@@ -32,7 +32,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
-        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -51,7 +52,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     func test_error_alert_is_displayed_when_application_password_cannot_be_fetched() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: NetworkError.timeout())
-        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -75,7 +77,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let errorInfo = StorageEligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
         roleCheckUseCase.errorToReturn = .insufficientRole(info: errorInfo)
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
-                                                     roleEligibilityUseCase: roleCheckUseCase)
+                                                     roleEligibilityUseCase: roleCheckUseCase,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -97,7 +100,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         roleCheckUseCase.errorToReturn = .unknown(error: NetworkError.timeout())
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
-                                                     roleEligibilityUseCase: roleCheckUseCase)
+                                                     roleEligibilityUseCase: roleCheckUseCase,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -119,7 +123,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
                                                      roleEligibilityUseCase: roleCheckUseCase,
-                                                     stores: stores)
+                                                     stores: stores,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -148,7 +153,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
                                                      roleEligibilityUseCase: roleCheckUseCase,
-                                                     stores: stores)
+                                                     stores: stores,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When
@@ -179,7 +185,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: appPasswordUseCase,
                                                      roleEligibilityUseCase: roleCheckUseCase,
-                                                     stores: stores)
+                                                     stores: stores,
+                                                     previousViewController: nil)
         var isSuccess = false
 
         // When

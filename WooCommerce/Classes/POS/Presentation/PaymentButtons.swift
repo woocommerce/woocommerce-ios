@@ -8,16 +8,11 @@ struct PaymentsActionButtons: View {
 
     private let receiptEligibilityUseCase = ReceiptEligibilityUseCase()
 
-    private var shouldShowSendReceiptButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
-
     var body: some View {
         ZStack {
             VStack {
                 newOrderButton
                 sendReceiptButton
-                    .renderedIf(shouldShowSendReceiptButton)
             }
         }
     }
@@ -28,7 +23,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             Task { @MainActor in
-                ServiceLocator.analytics.track(.pointOfSaleEmailReceiptTapped)
+                ServiceLocator.analytics.track(.receiptEmailTapped)
                 await handleSendReceiptAction()
             }
         }, label: {

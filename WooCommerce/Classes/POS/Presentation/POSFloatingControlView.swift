@@ -40,6 +40,7 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     showDocumentation = true
+                    ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
                 } label: {
                     Label(
                         title: { Text(Localization.viewDocumentation) },
@@ -87,7 +88,12 @@ private extension POSFloatingControlView {
     }
 
     var fontColor: Color {
-        .posOnSurface
+        switch backgroundAppearance {
+        case .primary:
+            .posOnSurface
+        case .secondary:
+            Self.secondaryFontColor
+        }
     }
 }
 

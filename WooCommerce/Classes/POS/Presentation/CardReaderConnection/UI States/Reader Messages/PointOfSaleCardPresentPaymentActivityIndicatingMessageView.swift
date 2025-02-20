@@ -7,27 +7,34 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
-                .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                       height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+                .frame(width: Constants.headerDimension,
+                       height: Constants.headerDimension)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(title)
-                    .foregroundStyle(Color(.neutral(.shade40)))
+                    .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(message)
-                    .font(.posHeading)
-                    .foregroundStyle(Color(.neutral(.shade60)))
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .multilineTextAlignment(.center)
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentActivityIndicatingMessageView {
+    enum Constants {
+        static let headerDimension: CGFloat = 160
+        static let imageAndTextSpacing: CGFloat = 32
     }
 }
 

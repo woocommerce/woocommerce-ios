@@ -13,10 +13,21 @@ import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 
+enum SyncOrderState {
+    case newOrder
+    case orderUpdated
+    case orderNotChanged
+}
+
+enum SyncOrderStateError: Error {
+    case syncFailure
+}
+
 protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async
+    @discardableResult
+    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
@@ -51,16 +62,15 @@ protocol PointOfSaleOrderControllerProtocol {
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
 
-    @MainActor
+    @MainActor @discardableResult
     func syncOrder(for cartItems: [CartItem],
-                   retryHandler: @escaping () async -> Void) async {
+                   retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCartItems = cartItems.map {
             POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
         }
 
-        guard !orderState.isSyncing,
-              !posCartItems.matches(order: order) else {
-            return
+        guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
+            return .success(.orderNotChanged)
         }
 
         orderState = .syncing
@@ -74,6 +84,9 @@ protocol PointOfSaleOrderControllerProtocol {
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
             if isNewOrder {
                 analytics.track(.orderCreationSuccess)
+                return .success(.newOrder)
+            } else {
+                return .success(.orderUpdated)
             }
         } catch {
             if isNewOrder {
@@ -83,6 +96,7 @@ protocol PointOfSaleOrderControllerProtocol {
                     errorDescription: error.localizedDescription))
             }
             setOrderStateToError(error, retryHandler: retryHandler)
+            return .failure(SyncOrderStateError.syncFailure)
         }
     }
 

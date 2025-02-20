@@ -3,6 +3,16 @@
     {
       "filename" : "pos-reader-disconnected.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-reader-disconnected-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

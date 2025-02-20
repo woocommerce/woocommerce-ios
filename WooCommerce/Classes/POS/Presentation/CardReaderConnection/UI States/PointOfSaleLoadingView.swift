@@ -36,13 +36,6 @@ private extension PointOfSaleLoadingView {
     }
 }
 
-private extension PointOfSaleLoadingView {
-    enum Layout {
-        static let textSpacing: CGFloat = POSSpacing.medium
-        static let progressViewSpacing: CGFloat = 72
-    }
-}
-
 #Preview {
     PointOfSaleLoadingView()
 }

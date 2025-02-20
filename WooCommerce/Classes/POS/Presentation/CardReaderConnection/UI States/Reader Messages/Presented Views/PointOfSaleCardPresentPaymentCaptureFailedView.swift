@@ -42,7 +42,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 private extension PointOfSaleCardPresentPaymentCaptureFailedView {
     enum Layout {
         static let maxWidth: CGFloat = 896
-        static let contentPadding: CGFloat = 40
+        static let contentPadding: CGFloat = POSPadding.xxLarge
     }
 
     enum Localization {

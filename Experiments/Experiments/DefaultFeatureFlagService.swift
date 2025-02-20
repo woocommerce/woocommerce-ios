@@ -87,8 +87,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productGlobalUniqueIdentifierSupport:
             return true
-        case .sendReceiptsForPointOfSale:
-            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:

@@ -298,6 +298,45 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
+
+        @available(iOS 17.0, *)
+        @Test func sendReceipt_when_invoked_then_calls_controller() async throws {
+            // Given
+            let orderController = MockPointOfSaleOrderController()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: orderController,
+                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+
+            // When
+            try await sut.sendReceipt(to: "")
+
+            // Then
+            #expect(orderController.sendReceiptWasCalled == true)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func sendReceipt_when_invoked_with_error_then_returns_error() async throws {
+            // Given
+            let orderController = MockPointOfSaleOrderController()
+            orderController.shouldThrowReceiptError = true
+            let expectedError = NSError(domain: "some error", code: -1)
+
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: orderController,
+                                                collectOrderPaymentAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker())
+
+            do {
+                // When
+                try await sut.sendReceipt(to: "")
+            } catch {
+                // Then
+                let nsError = error as NSError
+                #expect(nsError.domain == expectedError.domain)
+                #expect(nsError.code == expectedError.code)
+            }
+        }
     }
 
     struct PaymentTests {

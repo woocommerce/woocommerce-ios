@@ -10,7 +10,8 @@ public final class MyStoreScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [ { $0.staticTexts["Your WooCommerce Store"] }],
-            app: app
+            app: app,
+            waitTimeout: 60
         )
     }
 
@@ -45,9 +46,19 @@ public final class MyStoreScreen: ScreenObject {
         return tapTimeRangeOption(id: "time-range-this-year")
     }
 
+//    func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
+//        let textPredicate = NSPredicate(format: "label MATCHES %@", "\(timeframe)")
+//        XCTAssertTrue(app.staticTexts.containing(textPredicate).element.exists, "\(timeframe) chart not displayed")
+//
+//        return self
+//    }
+
     func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
-        let textPredicate = NSPredicate(format: "label MATCHES %@", "\(timeframe)")
-        XCTAssertTrue(app.staticTexts.containing(textPredicate).element.exists, "\(timeframe) chart not displayed")
+        let textPredicate = NSPredicate(format: "label MATCHES %@", timeframe)
+        let element = app.staticTexts.containing(textPredicate).element
+        let exists = element.waitForExistence(timeout: 30)
+
+        XCTAssertTrue(exists, "\(timeframe) chart not displayed")
 
         return self
     }

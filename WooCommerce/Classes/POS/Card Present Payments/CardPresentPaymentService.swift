@@ -165,14 +165,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     func cancelPayment() {
-        paymentTask?.cancel()
-        paymentTask = nil
+        cancelPaymentTask()
     }
 
     @MainActor
     func cancelPayment() async throws {
-        paymentTask?.cancel()
-        paymentTask = nil
+        cancelPaymentTask()
 
         try await withCheckedThrowingContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
@@ -182,6 +180,11 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             }
             stores.dispatch(action)
         }
+    }
+
+    private func cancelPaymentTask() {
+        paymentTask?.cancel()
+        paymentTask = nil
     }
 }
 

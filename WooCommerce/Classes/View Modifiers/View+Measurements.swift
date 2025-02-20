@@ -51,6 +51,9 @@ extension View {
                     .onChange(of: proxy.size.height) { newHeight in
                         callback(proxy.frame(in: .global))
                     }
+                    .onChange(of: proxy.frame(in: .global)) { newHeight in
+                        callback(proxy.frame(in: .global))
+                    }
             }
         )
     }

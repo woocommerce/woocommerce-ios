@@ -131,8 +131,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleGetSupportTapped,
             WooAnalyticsStat.pointOfSaleSimpleProductsExplanationDialogShown,
             WooAnalyticsStat.pointOfSaleCreateNewOrderTapped,
-            WooAnalyticsStat.pointOfSaleEmailReceiptTapped,
-            WooAnalyticsStat.pointOfSaleEmailReceiptSendTapped,
+            WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
             WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
@@ -175,7 +174,9 @@ private extension TracksProvider {
             WooAnalyticsStat.cardPresentOnboardingCtaFailed,
 
             // Receipts
-            // TODO: 15058-gh
+            WooAnalyticsStat.receiptEmailTapped,
+            WooAnalyticsStat.receiptEmailSuccess,
+            WooAnalyticsStat.receiptEmailFailed,
 
             // Payments
             WooAnalyticsStat.collectPaymentCanceled,

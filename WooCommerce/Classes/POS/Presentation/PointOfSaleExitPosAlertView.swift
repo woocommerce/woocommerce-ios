@@ -42,7 +42,7 @@ private extension PointOfSaleExitPosAlertView {
     enum Constants {
         static let titleBottomPadding: CGFloat = 20.0
         static let bodyBottomPadding: CGFloat = 60.0
-        static let padding: CGFloat = 40.0
+        static let padding: CGFloat = POSPadding.xxLarge
     }
 
     enum Localization {

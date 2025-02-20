@@ -229,7 +229,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
             guard let self = self else { return }
             onProductSave(result)
-            if case let .failure(error) = result {
+            if case let .failure(error) = result,
+                statusUpdatesExcludedProductKeys.contains(key) == false {
                 self.errorsSubject.send(.init(siteID: key.siteID,
                                               productOrVariationID: key.productOrVariationID,
                                               error: .failedSavingProductAfterImageUpload(error: error)))

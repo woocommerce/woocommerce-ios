@@ -66,6 +66,7 @@ struct POSSendReceiptView: View {
             }
             .padding([.horizontal, .bottom])
         }
+        .background(Color.posSurfaceBright)
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil

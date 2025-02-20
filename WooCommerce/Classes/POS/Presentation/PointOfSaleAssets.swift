@@ -1,6 +1,7 @@
 import Foundation
 
 enum PointOfSaleAssets: CaseIterable {
+    case error
     case exclamationMark
     case magnifierNotFound
     case readyForPayment
@@ -16,6 +17,8 @@ enum PointOfSaleAssets: CaseIterable {
 
     var imageName: String {
         switch self {
+        case .error:
+            "pos-error"
         case .exclamationMark:
             "pos-exclamation-mark"
         case .magnifierNotFound:

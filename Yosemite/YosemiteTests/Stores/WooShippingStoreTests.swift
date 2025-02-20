@@ -212,8 +212,8 @@ final class WooShippingStoreTests: XCTestCase {
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             let action = WooShippingAction.loadLabelRates(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
-                                                          originAddress: ShippingLabelAddress.fake(),
-                                                          destinationAddress: ShippingLabelAddress.fake(),
+                                                          originAddress: WooShippingAddress.fake(),
+                                                          destinationAddress: WooShippingAddress.fake(),
                                                           packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
@@ -237,8 +237,8 @@ final class WooShippingStoreTests: XCTestCase {
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             let action = WooShippingAction.loadLabelRates(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
-                                                          originAddress: ShippingLabelAddress.fake(),
-                                                          destinationAddress: ShippingLabelAddress.fake(),
+                                                          originAddress: WooShippingAddress.fake(),
+                                                          destinationAddress: WooShippingAddress.fake(),
                                                           packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
@@ -619,7 +619,7 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
             let action = WooShippingAction.validateAddress(siteID: self.sampleSiteID,
-                                                           address: ShippingLabelAddress.fake()) { result in
+                                                           address: WooShippingAddress.fake()) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -640,7 +640,7 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
             let action = WooShippingAction.validateAddress(siteID: self.sampleSiteID,
-                                                           address: ShippingLabelAddress.fake()) { result in
+                                                           address: WooShippingAddress.fake()) { result in
                 promise(result)
             }
             store.onAction(action)

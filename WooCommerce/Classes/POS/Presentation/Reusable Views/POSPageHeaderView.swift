@@ -95,9 +95,9 @@ struct POSPageHeaderView<TrailingContent: View>: View {
 
 private enum Constants {
     static let backButtonIcon = "chevron.backward"
-    static let backButtonHorizontalPadding: CGFloat = 12
-    static let horizontalSpacing: CGFloat = 16
-    static let titleSubtitleSpacing: CGFloat = 4
+    static let backButtonHorizontalPadding: CGFloat = POSSpacing.xSmall + POSSpacing.small
+    static let horizontalSpacing: CGFloat = POSSpacing.medium
+    static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
 
 #Preview {

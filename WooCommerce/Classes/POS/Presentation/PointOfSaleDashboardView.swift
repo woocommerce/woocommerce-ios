@@ -168,7 +168,7 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let floatingControlBottomPadding: CGFloat = POSPadding.medium
-        static let floatingControlHorizontalOffset: CGFloat = 16
+        static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"

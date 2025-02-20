@@ -17,7 +17,7 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: conditionalPadding(POSPadding.small)) {
+        VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xxLarge)) {
             POSPageHeaderView(title: Localization.emailReceiptNavigationText,
                               backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                              action: {
@@ -27,7 +27,7 @@ struct POSSendReceiptView: View {
                 }
             }))
 
-            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.small)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xxLarge * 2)) {
                 TextField("",
                           text: $textFieldInput,
                           prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
@@ -100,7 +100,7 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
         if dynamicTypeSize.isAccessibilitySize {
-            return 0
+            return POSPadding.small
         } else if dynamicTypeSize >= .xLarge {
             return padding * 0.8
         } else {

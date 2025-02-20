@@ -26,7 +26,7 @@ struct PointOfSaleCollectCashView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(13)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.large)) {
                 POSPageHeaderView(title: Localization.backNavigationTitle,
                                   subtitle: formattedOrderTotal,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
@@ -37,7 +37,7 @@ struct PointOfSaleCollectCashView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(62)) {
+                VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xLarge * 2)) {
                     VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xSmall)) {
                         FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                             .focused($isTextFieldFocused)
@@ -137,7 +137,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? POSPadding.none : padding
+        dynamicTypeSize.isAccessibilitySize ? POSPadding.small : padding
     }
 
     private var backgroundColor: Color {

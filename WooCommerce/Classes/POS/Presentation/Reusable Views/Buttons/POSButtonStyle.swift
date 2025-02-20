@@ -148,9 +148,9 @@ private extension POSButtonSize {
     var padding: (vertical: CGFloat, horizontal: CGFloat) {
         switch self {
         case .normal:
-            (vertical: 24, horizontal: 24)
+            (vertical: POSPadding.large, horizontal: POSPadding.large)
         case .extraSmall:
-            (vertical: 8, horizontal: 16)
+            (vertical: POSPadding.small, horizontal: POSPadding.medium)
         }
     }
 

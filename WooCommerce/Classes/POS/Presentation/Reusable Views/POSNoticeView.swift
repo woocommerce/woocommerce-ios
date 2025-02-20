@@ -87,9 +87,9 @@ private enum Constants {
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     static let textSpacing: CGFloat = 4
     static let titleSpacing: CGFloat = 8
-    static let iconHorizontalPadding: CGFloat = 8
+    static let iconHorizontalPadding: CGFloat = POSPadding.small
     static let dismissIconPadding: CGFloat = 6
-    static let padding: CGFloat = 16
+    static let padding: CGFloat = POSPadding.medium
 }
 
 private enum Localization {

@@ -54,8 +54,8 @@ private extension POSConnectivityView {
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.large.value
         static let height: CGFloat = 64
         static let spacing: CGFloat = 16
-        static let horizontalPadding: CGFloat = 24
-        static let verticalPadding: CGFloat = 8
+        static let horizontalPadding: CGFloat = POSPadding.large
+        static let verticalPadding: CGFloat = POSPadding.small
         static let connectivityAnimationDuration: CGFloat = 1.0
     }
 

@@ -100,7 +100,7 @@ struct POSSendReceiptView: View {
 private extension POSSendReceiptView {
     enum Constants {
         static let buttonSpacing: CGFloat = 12
-        static let errorMessagePadding: CGFloat = 8
+        static let errorMessagePadding: CGFloat = POSPadding.small
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {

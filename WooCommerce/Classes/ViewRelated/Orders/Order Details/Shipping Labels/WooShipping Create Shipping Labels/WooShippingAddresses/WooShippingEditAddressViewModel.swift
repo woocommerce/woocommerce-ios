@@ -159,7 +159,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
 
     /// Closure called when a destination address is done being edited and the changes are confirmed.
-    private(set) var onDestinationAddressEdited: ((WooShippingAddress) -> Void)?
+    /// Returns the updated address and email address.
+    private(set) var onDestinationAddressEdited: ((WooShippingAddress, String?) -> Void)?
 
     init(type: AddressType,
          id: String,
@@ -180,7 +181,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          debounceDelayInSeconds: Double = 1,
          onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil,
-         onDestinationAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+         onDestinationAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -271,10 +272,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     convenience init(address: WooShippingAddress?,
+                     email: String?,
                      isVerified: Bool,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     onAddressEdited: ((WooShippingAddress) -> Void)? = nil) {
+                     onAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
         self.init(type: .destination,
                   id: UUID().uuidString,
                   name: address?.name ?? "",
@@ -284,7 +286,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   city: address?.city ?? "",
                   state: address?.state ?? "",
                   postalCode: address?.postcode ?? "",
-                  email: "",
+                  email: email ?? "",
                   phone: address?.phone ?? "",
                   isDefaultAddress: false,
                   showCompanyField: address?.company.isNotEmpty == true,

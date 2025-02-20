@@ -117,9 +117,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                          address2: "STE 100",
                                          city: "TICONDEROGA",
                                          postcode: "12883-1487")
+        let email = "TEST@EXAMPLE.COM"
 
         // When
         let viewModel = WooShippingEditAddressViewModel(address: address,
+                                                        email: email,
                                                         isVerified: false,
                                                         storageManager: storageManager)
 
@@ -132,9 +134,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state.value, address.state)
         XCTAssertEqual(viewModel.postalCode.value, address.postcode)
         XCTAssertEqual(viewModel.phone.value, address.phone)
-        XCTAssertEqual(viewModel.email.value, "")
+        XCTAssertEqual(viewModel.email.value, email)
         XCTAssertTrue(viewModel.showCompanyField)
-        XCTAssertEqual(viewModel.status, .missingInformation)
+        XCTAssertEqual(viewModel.status, .unverified)
         XCTAssertFalse(viewModel.showSaveAsDefault)
         XCTAssertEqual(viewModel.countries.count, 2, "Should include all countries for destination addresses")
     }

@@ -9,6 +9,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationAddress: WooShippingAddress?
+    private var destinationEmail: String?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
@@ -182,6 +183,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
+        self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedOriginAddress = selectedOriginAddress
         self.selectedPackage = selectedPackage
@@ -282,12 +284,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
         addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
-                                                        onAddressEdited: { [weak self] editedAddress in
+                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
             guard let self else {
                 return
             }
             destinationAddress = editedAddress
+            destinationEmail = editedEmail
             addressToEdit = nil // Dismisses address edit screen
         })
     }

@@ -321,6 +321,25 @@ struct PointOfSaleAggregateModelTests {
                 #expect(nsError.code == expectedError.code)
             }
         }
+
+        @available(iOS 17.0, *)
+        @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
+
+            sut.addToCart(makeItem())
+
+            // When
+            sut.pointOfSaleClosed()
+
+            // Then
+            #expect(orderController.clearOrderWasCalled == true)
+        }
     }
 
     struct PaymentTests {

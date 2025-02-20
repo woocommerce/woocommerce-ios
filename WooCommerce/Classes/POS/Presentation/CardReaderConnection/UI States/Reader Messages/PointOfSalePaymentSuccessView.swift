@@ -24,7 +24,7 @@ struct PointOfSalePaymentSuccessView: View {
                     Spacer()
                 }
                 .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : 8)
-                .background(Color.posSurface)
+                .background(Color.posSurfaceBright)
             }
         }
         .onAppear {
@@ -89,8 +89,6 @@ struct PointOfSalePaymentSuccessView: View {
         ZStack {
             Circle()
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
-                .shadow(color: Color(.wooCommerceEmerald(.shade80)).opacity(Constants.shadowOpacity),
-                        radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
                 .foregroundColor(.posSuccess)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)

@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Codegen
 import Foundation
@@ -59,7 +59,7 @@ extension Yosemite.POSSimpleProduct {
         productImageSource: NullableCopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         price: CopiableProp<String> = .copy,
-        productType: CopiableProp<ProductType> = .copy,
+        productType: CopiableProp<Networking.ProductType> = .copy,
         bundledItems: CopiableProp<[Networking.ProductBundleItem]> = .copy
     ) -> Yosemite.POSSimpleProduct {
         let id = id ?? self.id
@@ -86,9 +86,9 @@ extension Yosemite.POSSimpleProduct {
 
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
-        note: CopiableProp<Note> = .copy,
-        review: CopiableProp<ProductReview> = .copy,
-        product: CopiableProp<Product> = .copy
+        note: CopiableProp<Yosemite.Note> = .copy,
+        review: CopiableProp<Yosemite.ProductReview> = .copy,
+        product: CopiableProp<Yosemite.Product> = .copy
     ) -> Yosemite.ProductReviewFromNoteParcel {
         let note = note ?? self.note
         let review = review ?? self.review

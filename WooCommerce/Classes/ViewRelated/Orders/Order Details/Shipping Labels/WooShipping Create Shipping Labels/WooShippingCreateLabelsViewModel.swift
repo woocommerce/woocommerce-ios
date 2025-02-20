@@ -509,14 +509,8 @@ private extension Address {
     /// This prepares the address for use as a destination address in the shipping label.
     ///
     func toWooShippingAddress() -> WooShippingAddress {
-        // In this way we support localized name correctly,
-        // because the order is often reversed in a few Asian languages.
-        var components = PersonNameComponents()
-        components.givenName = firstName
-        components.familyName = lastName
-
         return WooShippingAddress(company: company ?? "",
-                                  name: PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: []),
+                                  name: fullName,
                                   phone: phone ?? "",
                                   country: country,
                                   state: state,

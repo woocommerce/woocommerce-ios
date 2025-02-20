@@ -12,7 +12,7 @@ struct PointOfSaleEntryPointView: View {
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let posModel = PointOfSaleAggregateModel(

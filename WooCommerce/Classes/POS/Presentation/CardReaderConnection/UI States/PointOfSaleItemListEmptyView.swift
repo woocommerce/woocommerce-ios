@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let baseItem: ItemListBaseItem
 
     init(base: ItemListBaseItem) {
@@ -32,6 +33,7 @@ struct PointOfSaleItemListEmptyView: View {
                 Spacer()
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
+            .padding(.bottom, floatingControlAreaSize.height)
         }
     }
 }

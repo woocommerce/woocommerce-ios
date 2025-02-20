@@ -4,6 +4,7 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @State private var width: CGFloat = 0
 
     init(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, animation: POSCardPresentPaymentInLineMessageAnimation) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -40,6 +41,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
+            .frame(width: width * 0.5)
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
@@ -49,6 +51,9 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .measureWidth({ containerWidth in
+            width = containerWidth
+        })
     }
 }
 

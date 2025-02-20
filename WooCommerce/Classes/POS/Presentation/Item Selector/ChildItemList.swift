@@ -107,10 +107,6 @@ private extension ChildItemList {
             comment: "Back button title in the child item list screen."
         )
     }
-
-    enum Constants {
-        static let itemListPadding: CGFloat = 16
-    }
 }
 
 #if DEBUG

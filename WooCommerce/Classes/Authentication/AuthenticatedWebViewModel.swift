@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import struct Yosemite.Site
 
 /// Optional conformance for a `AuthenticatedWebViewModel` implementation to reload a webview asynchronously.
 protocol WebviewReloadable {
@@ -70,4 +71,78 @@ extension AuthenticatedWebViewModel {
         }
         return false
     }
+
+    /// Checks for the appropriate authentication flow based on the current site and the URL to be loaded.
+    ///
+    func authenticationFlow(currentSite: Site,
+                            wpcomCredentialsAvailable: Bool,
+                            wporgCredentialsAvailable: Bool) -> WebViewAuthenticationFlow {
+        guard let initialURL else {
+            return .none
+        }
+
+        if wpcomCredentialsAvailable {
+            if let domain = initialURL.host, Constants.wpcomAcceptedDomains.contains(domain) {
+                return .wpcom
+            } else if currentSite.hasSSOEnabled,
+                      initialURL.absoluteString.hasPrefix(currentSite.url) {
+                return .jetpackSSO
+            }
+        }
+
+        if wporgCredentialsAvailable {
+            return .siteCredentials
+        } else {
+            return .none
+        }
+    }
+
+    /// Returns `true` if the response indicates an authentication failure and `false` otherwise.
+    ///
+    func isAuthenticationFailure(response: URLResponse,
+                                 currentSite: Site?,
+                                 authenticationFlow: WebViewAuthenticationFlow,
+                                 isFirstNavigation: Bool) -> Bool {
+        guard authenticationFlow != .none,
+              isFirstNavigation,
+              let currentSite,
+              let urlResponse = response as? HTTPURLResponse,
+              let url = urlResponse.url else {
+            return false
+        }
+
+        // if the authentication request fails
+        if Constants.errorResponseCodes ~= urlResponse.statusCode {
+            return true
+        }
+
+        let isAuthenticationFailure: Bool = {
+            switch authenticationFlow {
+            case .none:
+                return false
+            case .siteCredentials:
+                return url.absoluteString == currentSite.loginURL
+            case .jetpackSSO, .wpcom:
+                return url.absoluteString == WooConstants.URLs.loginWPCom.rawValue
+            }
+        }()
+
+        guard isAuthenticationFailure else {
+            return false
+        }
+
+        return true
+    }
+}
+
+enum WebViewAuthenticationFlow {
+    case wpcom
+    case jetpackSSO
+    case siteCredentials
+    case none
+}
+
+private enum Constants {
+    static let errorResponseCodes = 400...599
+    static let wpcomAcceptedDomains = ["wordpress.com", "wp.com", "jetpack.com", "woocommerce.com", "jetpack.wordpress.com"]
 }

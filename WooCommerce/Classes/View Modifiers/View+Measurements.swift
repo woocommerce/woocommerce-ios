@@ -20,4 +20,18 @@ extension View {
             }
         )
     }
+
+    func measureWidth(_ callback: @escaping (CGFloat) -> Void) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        callback(proxy.size.width)
+                    }
+                    .onChange(of: proxy.size.width) { newWidth in
+                        callback(newWidth)
+                    }
+            }
+        )
+    }
 }

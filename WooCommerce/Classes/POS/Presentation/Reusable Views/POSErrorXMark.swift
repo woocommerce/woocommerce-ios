@@ -4,7 +4,7 @@ struct POSErrorXMark: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     var body: some View {
-        Image(systemName: "xmark.circle.fill")
+        Image(decorative: PointOfSaleAssets.error.imageName)
             .font(.system(size: PointOfSaleCardPresentPaymentLayout.largeErrorIconSize))
             .foregroundStyle(Color.posAlert)
             .accessibilityHidden(true)

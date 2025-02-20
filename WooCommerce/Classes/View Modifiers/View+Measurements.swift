@@ -20,4 +20,22 @@ extension View {
             }
         )
     }
+
+    /// Measures the width of a view and calls the provided callback with the width value.
+    /// The callback is called both when the view first appears and whenever its height changes.
+    /// - Parameter callback: A closure that receives the measured width as a CGFloat.
+    /// - Returns: A modified view with width measurement capabilities.
+    func measureWidth(_ callback: @escaping (CGFloat) -> Void) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        callback(proxy.size.width)
+                    }
+                    .onChange(of: proxy.size.width) { newWidth in
+                        callback(newWidth)
+                    }
+            }
+        )
+    }
 }

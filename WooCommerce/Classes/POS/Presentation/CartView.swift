@@ -18,51 +18,29 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
-                HStack(spacing: Constants.cartHeaderElementSpacing) {
-                    backAddMoreButton
-                        .disabled(shouldPreventCartEditing)
-                        .shimmering(active: shouldPreventCartEditing)
-
-                    HStack {
-                        Text(Localization.cartTitle)
-                            .font(Constants.primaryFont)
+            POSPageHeaderView(title: Localization.cartTitle,
+                              backButtonConfiguration: backButtonConfiguration,
+                              trailingContent: {
+                DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
+                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
+                        Text(itemsInCartLabel)
+                            .font(Constants.itemsFont)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            .foregroundColor(.posOnSurface)
-                            .accessibilityAddTraits(.isHeader)
-
-                        Spacer()
-
-                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
-                            Text(itemsInCartLabel)
-                                .font(Constants.itemsFont)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                                .foregroundColor(Color.posOnSurfaceVariantLowest)
-                        }
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
                     }
-                    .accessibilityElement(children: .combine)
-                }
-
-                HStack {
-                    Spacer()
-                        .renderedIf(dynamicTypeSize.isAccessibilitySize)
 
                     Button {
                         posModel.removeAllItemsFromCart()
+                        ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
                     } label: {
                         Text(Localization.clearButtonTitle)
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     .renderedIf(shouldShowClearCartButton)
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-            .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+            })
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
             if posModel.cart.isNotEmpty {
@@ -202,7 +180,7 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     enum Constants {
-        static let primaryFont: POSFontStyle = .posHeading
+        static let primaryFont: POSFontStyle = .posHeadingBold
         static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
         static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let itemHorizontalPadding: CGFloat = 8
@@ -210,11 +188,10 @@ private extension CartView {
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let emptyViewImageTextSpacing: CGFloat = 30 // This should be 40 by designs, but the overlay technique means we have to tweak it
         static let cartHeaderSpacing: CGFloat = 8
-        static let backButtonSymbol: String = "chevron.backward"
         static let cartHeaderElementSpacing: CGFloat = 16
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = 16
-        static let cartItemSpacing: CGFloat = 16
+        static let cartItemSpacing: CGFloat = 8
     }
 
     enum Localization {
@@ -253,21 +230,16 @@ private extension CartView {
         .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 
-    @ViewBuilder
-    var backAddMoreButton: some View {
+    var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         switch posModel.orderStage {
         case .building:
-            EmptyView()
+            return nil
         case .finalizing:
-            Button {
+            let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
+            return .init(state: state, action: {
                 ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
-            } label: {
-                Image(systemName: Constants.backButtonSymbol)
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-            }
+            })
         }
     }
 

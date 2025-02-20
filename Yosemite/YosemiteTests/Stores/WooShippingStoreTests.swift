@@ -696,6 +696,52 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `verifyDestinationAddress`
+
+    func test_verifyDestinationAddress_returns_WooShippingVerifyDestinationAddressSuccess_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedResult = WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+                                                                        isTrivialNormalization: true,
+                                                                        isVerified: true)
+        remote.whenVerifyDestinationAddress(siteID: sampleSiteID, thenReturn: .success(expectedResult))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingVerifyDestinationAddressSuccess, Error> = waitFor { promise in
+            let action = WooShippingAction.verifyDestinationAddress(siteID: self.sampleSiteID,
+                                                                    orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let validationSuccess = try XCTUnwrap(result.get())
+        XCTAssertEqual(validationSuccess, expectedResult)
+    }
+
+    func test_verifyDestinationAddress_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = WooShippingAddressValidationError(addressError: "House number not found", generalError: nil, nameError: nil)
+        remote.whenVerifyDestinationAddress(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingVerifyDestinationAddressSuccess, Error> = waitFor { promise in
+            let action = WooShippingAction.verifyDestinationAddress(siteID: self.sampleSiteID,
+                                                                    orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? WooShippingAddressValidationError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

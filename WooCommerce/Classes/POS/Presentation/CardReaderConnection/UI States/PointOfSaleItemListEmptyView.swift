@@ -20,7 +20,7 @@ struct PointOfSaleItemListEmptyView: View {
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                 Text(title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .font(.posHeading)
+                    .font(. posHeadingBold)
                 Text(subtitle)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())

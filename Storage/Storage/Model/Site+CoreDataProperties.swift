@@ -28,6 +28,7 @@ extension Site {
     @NSManaged public var isAdmin: Bool
     @NSManaged public var canBlaze: Bool
     @NSManaged public var wasEcommerceTrial: Bool
+    @NSManaged public var hasSSOEnabled: Bool
 
 }
 

@@ -42,8 +42,29 @@ final class TotalsViewHelper {
 
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState) -> Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.acceptCashForPointOfSale) &&
-        orderState != .syncing &&
-        (paymentState == .card(.idle) || paymentState == .card(.acceptingCard) || paymentState == .card(.validatingOrderError))
+        guard orderState != .syncing,
+              case .card(let cardState) = paymentState else {
+            return false
+        }
+
+        switch cardState {
+        case .idle,
+             .validatingOrder,
+             .validatingOrderError,
+             .preparingReader,
+             .acceptingCard:
+            return true
+        default:
+            return false
+        }
+    }
+
+    func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
+        switch paymentState {
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
+            return false
+        default:
+            return true
+        }
     }
 }

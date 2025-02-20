@@ -85,8 +85,6 @@ struct PointOfSaleCollectCashView: View {
                     .frame(maxWidth: .infinity)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .disabled(isLoading)
-
-                    Spacer()
                 }
                 .padding([.horizontal])
                 .padding(.bottom, keyboardFrame.height)

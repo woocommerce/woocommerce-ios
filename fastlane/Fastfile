@@ -1324,7 +1324,7 @@ lane :test_without_building do |options|
     fail_build: true
   )
 
-  # Trainer sometimes fails to detect test failures, so we manually fail the lane if there are failures to make sure there are no false positives
+  # Trainer sometimes doesn't detect test failures, so we manually throw an error in the lane if there are failures to make sure there are no false positives
   UI.user_error!("Tests failed with #{tests_result[:number_of_failures]} failures.") if tests_result[:number_of_failures].positive?
 end
 

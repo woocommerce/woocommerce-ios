@@ -2,7 +2,6 @@ import Foundation
 
 enum PointOfSaleCardPresentPaymentLayout {
     static let headerSize: CGSize = .init(width: 156, height: 156)
-    static let headerSpacing: CGFloat = 72
     static let imageAndTextSpacing: CGFloat = POSSpacing.large
     static let textAndButtonSpacing: CGFloat = POSSpacing.xLarge
     static let textSpacing: CGFloat = POSSpacing.small

@@ -273,13 +273,13 @@ private extension TotalsView {
         static let primary = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: nil,
-            bottomPadding: 8
+            bottomPadding: POSPadding.small
         )
 
         static let outlined = PaymentViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
-            topPadding: 40,
-            bottomPadding: 40
+            topPadding: POSPadding.xxLarge,
+            bottomPadding: POSPadding.xxLarge
         )
 
         static let topAligned = PaymentViewLayout(
@@ -325,9 +325,9 @@ private extension TotalsView {
                 return .topAligned
             case .cardPaymentSuccessful:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: 0,
-                                         bottomPadding: 0,
-                                         sidePadding: 0)
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .idle,
                     .acceptingCard,
                     .validatingOrder,
@@ -344,14 +344,14 @@ private extension TotalsView {
             switch cashPaymentState {
             case .collectingCash:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: 0,
+                                         topPadding: POSPadding.none,
                                          bottomPadding: nil,
-                                         sidePadding: 0)
+                                         sidePadding: POSPadding.none)
             case .paymentSuccess:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: 0,
-                                         bottomPadding: 0,
-                                         sidePadding: 0)
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             }
         }
     }
@@ -385,14 +385,18 @@ fileprivate extension View {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let verticalSpacing: CGFloat = 56
-        static let buttonHorizontalPadding: CGFloat = 48
-        static let cashButtonBottomPadding: CGFloat = 16
+        static let buttonHorizontalPadding: CGFloat = POSPadding.medium
+        static let cashButtonBottomPadding: CGFloat = POSPadding.medium
 
-        static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
-        static let subtotalsVerticalSpacing: CGFloat = 8
-        static let totalVerticalSpacing: CGFloat = 16
-        static let totalsHorizontalSpacing: CGFloat = 24
+        static let totalsLineViewPadding: EdgeInsets = .init(
+            top: POSPadding.medium,
+            leading: POSPadding.large,
+            bottom: POSPadding.medium,
+            trailing: POSPadding.large
+        )
+        static let subtotalsVerticalSpacing: CGFloat = POSSpacing.small
+        static let totalVerticalSpacing: CGFloat = POSSpacing.medium
+        static let totalsHorizontalSpacing: CGFloat = POSSpacing.large
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
         static let totalTitleFont: POSFontStyle = .posHeadingBold
@@ -430,23 +434,6 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
-    }
-
-    private func dynamicVerticalSpacing(for size: DynamicTypeSize) -> CGFloat {
-        switch size {
-        case    .accessibility1,
-                .accessibility2,
-                .accessibility3,
-                .accessibility4,
-                .accessibility5:
-            return 0
-        case .xLarge, .xxLarge:
-            return Constants.verticalSpacing * 0.75
-        case .xxxLarge:
-            return Constants.verticalSpacing * 0.5
-        default:
-            return Constants.verticalSpacing
-        }
     }
 }
 

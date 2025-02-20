@@ -12,7 +12,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .center, spacing: POSSpacing.none) {
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 

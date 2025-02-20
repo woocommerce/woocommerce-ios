@@ -23,7 +23,7 @@ struct PointOfSalePaymentSuccessView: View {
                     successView
                     Spacer()
                 }
-                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : 8)
+                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
             }
         }

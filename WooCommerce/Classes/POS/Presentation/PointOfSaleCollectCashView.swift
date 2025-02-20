@@ -131,14 +131,13 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let buttonMinHeight: CGFloat = 32
         static let navigationButtonSpacing: CGFloat = POSSpacing.small
         static let navigationHeaderTopPadding: CGFloat = POSPadding.small
         static let errorMessagePadding: CGFloat = POSPadding.small
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 0 : padding
+        dynamicTypeSize.isAccessibilitySize ? POSPadding.none : padding
     }
 
     private var backgroundColor: Color {

@@ -17,7 +17,7 @@ struct POSSendReceiptView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: conditionalPadding(8)) {
+        VStack(alignment: .center, spacing: conditionalPadding(POSPadding.small)) {
             POSPageHeaderView(title: Localization.emailReceiptNavigationText,
                               backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                              action: {
@@ -27,7 +27,7 @@ struct POSSendReceiptView: View {
                 }
             }))
 
-            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.small)) {
                 TextField("",
                           text: $textFieldInput,
                           prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))

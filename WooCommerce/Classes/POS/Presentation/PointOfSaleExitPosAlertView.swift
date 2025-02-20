@@ -9,7 +9,7 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0 ) {
+        VStack(spacing: POSSpacing.none) {
             HStack {
                 Spacer()
                 Button {

@@ -61,8 +61,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         [name, company, country, address, city, state, postalCode, email, phone]
     }
 
-    /// Whether the phone number is required.
-    private let phoneNumberRequired: Bool
+    /// The origin address country code.
+    /// This is used to determine whether the phone number is required when editing a destination address.
+    private let originCountryCode: String?
 
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
@@ -131,7 +132,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Whether the address is in the US.
     var isUSAddress: Bool {
-        country.value == "US"
+        country.value == Constants.usCountryCode
     }
 
     /// States of the selected country.
@@ -176,7 +177,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          isDefaultAddress: Bool,
          showCompanyField: Bool,
          isVerified: Bool,
-         phoneNumberRequired: Bool,
+         originCountryCode: String? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          debounceDelayInSeconds: Double = 1,
@@ -202,11 +203,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.email = WooShippingAddressField(type: .email, value: email, required: true, validate: { newEmail in
             newEmail.isEmpty ? Localization.Validation.email : nil
         })
+        let phoneNumberRequired = Self.phoneNumberRequired(addressType: type,
+                                                           selectedCountryCode: country,
+                                                           selectedState: state,
+                                                           originCountryCode: originCountryCode)
         self.phone = WooShippingAddressField(type: .phone, value: phone, required: phoneNumberRequired, validate: { _ in return nil})
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
         self.originalAddressIsVerified = isVerified
-        self.phoneNumberRequired = phoneNumberRequired
+        self.originCountryCode = originCountryCode
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
@@ -247,6 +252,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         validateAddress()
     }
 
+    /// Used to initialize the view model with an origin address.
     convenience init(address: WooShippingOriginAddress,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -265,15 +271,16 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isDefaultAddress: address.defaultAddress,
                   showCompanyField: address.company.isNotEmpty,
                   isVerified: address.isVerified,
-                  phoneNumberRequired: true,
                   stores: stores,
                   storageManager: storageManager,
                   onOriginAddressEdited: onAddressEdited)
     }
 
+    /// Used to initialize the view model with a destination address.
     convenience init(address: WooShippingAddress?,
                      email: String?,
                      isVerified: Bool,
+                     originCountryCode: String?,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
@@ -291,7 +298,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   isDefaultAddress: false,
                   showCompanyField: address?.company.isNotEmpty == true,
                   isVerified: isVerified,
-                  phoneNumberRequired: false, // TODO: Check phone number requirements for destination address.
+                  originCountryCode: originCountryCode,
                   stores: stores,
                   storageManager: storageManager,
                   onDestinationAddressEdited: onAddressEdited)
@@ -388,7 +395,10 @@ extension WooShippingEditAddressViewModel {
     ///
     private var isPhoneNumberValid: Bool {
         guard phone.value.isNotEmpty else {
-            return !phoneNumberRequired
+            return !Self.phoneNumberRequired(addressType: addressType,
+                                             selectedCountryCode: country.value,
+                                             selectedState: state.value,
+                                             originCountryCode: originCountryCode)
         }
         guard isUSAddress else {
             return true
@@ -398,6 +408,27 @@ extension WooShippingEditAddressViewModel {
             return phoneDigits.count == 11
         } else {
             return phoneDigits.count == 10
+        }
+    }
+
+    /// Whether the phone number is required.
+    /// - Parameters:
+    ///   - addressType: Type of address being edited.
+    ///   - selectedCountryCode: Country code of the selected country for the address being edited.
+    ///   - selectedState: Selected state for the address being edited.
+    ///   - originCountryCode: Country code of the origin address.
+    private static func phoneNumberRequired(addressType: AddressType,
+                                            selectedCountryCode: String?,
+                                            selectedState: String?,
+                                            originCountryCode: String?) -> Bool {
+        if addressType == .origin {
+            return true
+        } else {
+            if selectedCountryCode == Constants.usCountryCode,
+               Constants.usMilitaryStates.contains(where: { $0 == selectedState }) {
+                return true
+            }
+            return originCountryCode != selectedCountryCode
         }
     }
 }
@@ -436,6 +467,13 @@ private extension WooShippingEditAddressViewModel {
                 country.setDisplayValue(selectedCountry.name)
                 selectedState = nil
                 state.required = stateRequired
+
+                // Update phone number requirement based on selected country.
+                phone.required = Self.phoneNumberRequired(addressType: addressType,
+                                                          selectedCountryCode: selectedCountry.code,
+                                                          selectedState: selectedState?.code,
+                                                          originCountryCode: originCountryCode)
+                phone.validateField()
             }
             .store(in: &cancellables)
     }
@@ -447,6 +485,13 @@ private extension WooShippingEditAddressViewModel {
                 guard let self else { return }
                 state.value = selectedState?.code ?? ""
                 state.setDisplayValue(selectedState?.name ?? "")
+
+                // Update phone number requirement based on selected state.
+                phone.required = Self.phoneNumberRequired(addressType: addressType,
+                                                          selectedCountryCode: country.value,
+                                                          selectedState: selectedState?.code,
+                                                          originCountryCode: originCountryCode)
+                phone.validateField()
             }
             .store(in: &cancellables)
     }
@@ -547,6 +592,14 @@ private extension WooShippingEditAddressViewModel {
             "FM", // Micronesia
             "MP" // Northern Mariana Islands
         ]
+
+        /// Country code for US - to check for international shipment
+        ///
+        static let usCountryCode = "US"
+
+        /// These US states are a special case because they represent military bases. They're considered "domestic",
+        /// but they require a Customs form to ship from/to them.
+        static let usMilitaryStates = ["AA", "AE", "AP"]
     }
 }
 

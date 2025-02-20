@@ -286,6 +286,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
                                                         email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
+                                                        originCountryCode: selectedOriginAddress?.country,
                                                         onAddressEdited: { [weak self] editedAddress, editedEmail in
             guard let self else {
                 return

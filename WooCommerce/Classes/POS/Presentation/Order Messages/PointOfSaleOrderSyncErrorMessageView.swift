@@ -33,10 +33,10 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
 
 private extension PointOfSaleOrderSyncErrorMessageView {
     enum Constants {
-        static let headerSpacing: CGFloat = 24
-        static let textSpacing: CGFloat = 16
         static let buttonSidePadding: CGFloat = 40
-        static let buttonBottomPadding: CGFloat = 16
+        static let headerSpacing: CGFloat = POSSpacing.large
+        static let textSpacing: CGFloat = POSSpacing.medium
+        static let buttonBottomPadding: CGFloat = POSPadding.medium
     }
 }
 

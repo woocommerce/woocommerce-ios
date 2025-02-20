@@ -34,7 +34,7 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
 private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView {
     enum Layout {
         static let headerSpacing: CGFloat = 48
-        static let textSpacing: CGFloat = 16
+        static let textSpacing: CGFloat = POSSpacing.medium
     }
 }
 

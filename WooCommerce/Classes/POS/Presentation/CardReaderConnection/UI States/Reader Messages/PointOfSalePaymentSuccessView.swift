@@ -64,7 +64,7 @@ struct PointOfSalePaymentSuccessView: View {
 
                 PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
                                       isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                 .opacity(isViewLoaded ? 1 : 0)
@@ -113,7 +113,7 @@ private extension PointOfSalePaymentSuccessView {
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)
         static let headerSpacing: CGFloat = 56
-        static let textSpacing: CGFloat = 16
+        static let textSpacing: CGFloat = POSSpacing.medium
         static let animationOffset: CGFloat = 100
     }
 }

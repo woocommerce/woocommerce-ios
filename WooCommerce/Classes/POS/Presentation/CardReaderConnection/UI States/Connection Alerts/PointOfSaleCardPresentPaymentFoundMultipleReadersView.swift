@@ -100,11 +100,20 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 
 private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     enum Layout {
-        static let padding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-        static let headerPadding: EdgeInsets = .init(top: 20, leading: 4, bottom: 20, trailing: 4)
-        static let buttonPadding: EdgeInsets = .init(top: 16, leading: 0, bottom: 16, trailing: 0)
-        static let horizontalSpacing: CGFloat = 16
-        static let rowVerticalPadding: CGFloat = 4
+        static let padding: EdgeInsets = .init(top: POSPadding.none,
+                                               leading: POSPadding.medium,
+                                               bottom: POSPadding.none,
+                                               trailing: POSPadding.medium)
+        static let headerPadding: EdgeInsets = .init(top: 20,
+                                                     leading: POSPadding.xSmall,
+                                                     bottom: 20,
+                                                     trailing: POSPadding.xSmall)
+        static let buttonPadding: EdgeInsets = .init(top: POSPadding.medium,
+                                                     leading: POSPadding.none,
+                                                     bottom: POSPadding.medium,
+                                                     trailing: POSPadding.none)
+        static let horizontalSpacing: CGFloat = POSSpacing.medium
+        static let rowVerticalPadding: CGFloat = POSPadding.xSmall
     }
 }
 

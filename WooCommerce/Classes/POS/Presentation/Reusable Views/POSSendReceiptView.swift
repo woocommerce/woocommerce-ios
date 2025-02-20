@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+import WooFoundation
 import class WordPressShared.EmailFormatValidator
 
 @available(iOS 17.0, *)
@@ -11,6 +13,9 @@ struct POSSendReceiptView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
+
+    @State private var buttonFrame: CGRect = .zero
+    @State private var keyboardFrame: CGRect = .zero
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
@@ -57,6 +62,9 @@ struct POSSendReceiptView: View {
                 }, label: {
                     Text(Localization.buttonTitle)
                 })
+                .measureFrame {
+                    buttonFrame = $0
+                }
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                 .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                 .frame(maxWidth: .infinity)
@@ -64,12 +72,16 @@ struct POSSendReceiptView: View {
 
                 Spacer()
             }
-            .padding([.horizontal, .bottom])
+            .padding([.horizontal])
+            .padding(.bottom, keyboardFrame.height)
         }
         .background(Color.posSurfaceBright)
         .animation(.easeInOut, value: errorMessage)
         .onChange(of: textFieldInput) { _ in
             errorMessage = nil
+        }
+        .onReceive(Publishers.keyboardFrame) {
+            keyboardFrame = $0
         }
     }
 
@@ -99,18 +111,15 @@ struct POSSendReceiptView: View {
 @available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
         static let errorMessagePadding: CGFloat = 8
+        static let minimumPadding: CGFloat = 4
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        if dynamicTypeSize.isAccessibilitySize {
-            return 0
-        } else if dynamicTypeSize >= .xLarge {
-            return padding * 0.8
-        } else {
-            return padding
+        if keyboardFrame.intersects(buttonFrame) {
+            return Constants.minimumPadding
         }
+        return padding
     }
 }
 

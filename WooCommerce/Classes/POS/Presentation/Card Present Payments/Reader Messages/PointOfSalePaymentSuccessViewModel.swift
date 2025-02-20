@@ -22,15 +22,15 @@ private extension PointOfSalePaymentSuccessViewModel {
         )
 
         static let messageCard = NSLocalizedString(
-            "pointOfSale.paymentSuccessful.message.card",
-            value: "A card payment of %1$@ was successfully made",
+            "pointOfSale.paymentSuccessful.message.card.1",
+            value: "A card payment of %1$@ was successfully made.",
             comment: "Message shown to users when payment is made. %1$@ is a placeholder for the order " +
             " total, e.g $10.50. Please include %1$@ in your formatted string"
         )
 
         static let messageCash = NSLocalizedString(
-            "pointOfSale.paymentSuccessful.message.cash",
-            value: "A cash payment of %1$@ was successfully made",
+            "pointOfSale.paymentSuccessful.message.cash.1",
+            value: "A cash payment of %1$@ was successfully made.",
             comment: "Message shown to users when payment is made. %1$@ is a placeholder for the order " +
             " total, e.g $10.50. Please include %1$@ in your formatted string"
         )

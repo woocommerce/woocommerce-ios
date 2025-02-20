@@ -104,9 +104,9 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
                                                leading: POSPadding.medium,
                                                bottom: POSPadding.none,
                                                trailing: POSPadding.medium)
-        static let headerPadding: EdgeInsets = .init(top: 20,
+        static let headerPadding: EdgeInsets = .init(top: POSPadding.medium,
                                                      leading: POSPadding.xSmall,
-                                                     bottom: 20,
+                                                     bottom: POSPadding.medium,
                                                      trailing: POSPadding.xSmall)
         static let buttonPadding: EdgeInsets = .init(top: POSPadding.medium,
                                                      leading: POSPadding.none,
@@ -118,10 +118,9 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 }
 
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentFoundMultipleReadersView(
         viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
                          selectionHandler: { _ in }),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

@@ -38,7 +38,7 @@ struct PointOfSaleCollectCashView: View {
                 }))
 
                 VStack(alignment: .center, spacing: conditionalPadding(62)) {
-                    VStack(alignment: .center, spacing: conditionalPadding(4)) {
+                    VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xSmall)) {
                         FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                             .focused($isTextFieldFocused)
                             .dynamicTypeSize(...DynamicTypeSize.accessibility1)

@@ -185,7 +185,7 @@ private extension AuthenticatedWebViewController {
     }
 
     /// Authentication logic differs depending on the destination URL and the current site.
-    /// More information: https://wp.me/pe5sF9-3Si
+    /// More information: pe5sF9-3Si-p2
     ///
     func startLoading() {
         guard let url = viewModel.initialURL else {

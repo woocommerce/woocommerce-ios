@@ -66,6 +66,7 @@ struct CartView: View {
                                 .transition(.opacity)
                             }
                         }
+                        .padding(.bottom, Constants.cartItemSpacing)
                         .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
                         .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
                         .background(GeometryReader { geometry in

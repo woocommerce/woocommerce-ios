@@ -577,6 +577,46 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    // MARK: Update destination address
+
+    func test_updateDestinationAddress_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/\(sampleOrderID)/update_destination", filename: "wooshipping-update-destination-success")
+
+        // When
+        let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
+            remote.updateDestinationAddress(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID,
+                                            address: WooShippingDestinationAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let addressUpdate = try XCTUnwrap(result.get())
+        XCTAssertEqual(addressUpdate.address, sampleDestinationAddress())
+        XCTAssertTrue(addressUpdate.isVerified)
+    }
+
+    func test_updateDestinationAddress_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/\(sampleOrderID)/update_destination", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
+            remote.updateDestinationAddress(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID,
+                                            address: WooShippingDestinationAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {
@@ -619,5 +659,20 @@ private extension WooShippingRemoteTests {
                                  email: "email@automattic.com",
                                  defaultAddress: true,
                                  isVerified: true)
+    }
+
+    func sampleDestinationAddress() -> WooShippingDestinationAddress {
+        WooShippingDestinationAddress(company: "ACME Corp",
+                                      address1: "789 Oak St",
+                                      address2: "Suite 100",
+                                      city: "Sometown",
+                                      state: "TX",
+                                      postcode: "54321",
+                                      country: "US",
+                                      phone: "555-0123",
+                                      name: "",
+                                      firstName: "John",
+                                      lastName: "Smith",
+                                      email: "john@example.com")
     }
 }

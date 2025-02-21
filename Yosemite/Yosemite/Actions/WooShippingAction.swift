@@ -75,4 +75,11 @@ public enum WooShippingAction: Action {
     case verifyDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   completion: (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void)
+
+    /// Update a destination address of an order.
+    ///
+    case updateDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  address: WooShippingDestinationAddress,
+                                  completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
 }

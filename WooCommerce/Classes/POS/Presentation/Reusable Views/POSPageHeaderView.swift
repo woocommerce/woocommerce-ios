@@ -95,7 +95,8 @@ struct POSPageHeaderView<TrailingContent: View>: View {
 
 private enum Constants {
     static let backButtonIcon = "chevron.backward"
-    static let backButtonHorizontalPadding: CGFloat = POSSpacing.xSmall + POSSpacing.small
+    /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
+    static let backButtonHorizontalPadding: CGFloat = 12
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }

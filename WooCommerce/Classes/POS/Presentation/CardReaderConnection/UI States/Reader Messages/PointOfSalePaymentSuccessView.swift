@@ -3,7 +3,6 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isShowingSendReceiptView: Bool = false
@@ -23,7 +22,7 @@ struct PointOfSalePaymentSuccessView: View {
                     successView
                     Spacer()
                 }
-                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : 8)
+                .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
             }
         }
@@ -37,13 +36,15 @@ struct PointOfSalePaymentSuccessView: View {
 
     private var successView: some View {
         ZStack {
-            VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            VStack(alignment: .center, spacing: POSSpacing.none) {
                 Spacer()
 
                 successIcon
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                     .scaleEffect(isViewLoaded ? 1 : 0)
                     .opacity(isViewLoaded ? 1 : 0)
+
+                Spacer().frame(height: POSSpacing.xLarge)
 
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
@@ -62,9 +63,11 @@ struct PointOfSalePaymentSuccessView: View {
                     }
                 }
 
+                Spacer().frame(height: POSSpacing.xxLarge)
+
                 PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
                                       isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: 0)
+                .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                 .opacity(isViewLoaded ? 1 : 0)
@@ -112,8 +115,7 @@ private extension PointOfSalePaymentSuccessView {
         static let shadowOpacity: CGFloat = 0.16
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)
-        static let headerSpacing: CGFloat = 56
-        static let textSpacing: CGFloat = 16
+        static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }
 }

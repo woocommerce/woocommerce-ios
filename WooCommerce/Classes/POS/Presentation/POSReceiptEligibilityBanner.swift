@@ -28,11 +28,11 @@ struct POSReceiptEligibilityBanner: View {
 
 private extension POSReceiptEligibilityBanner {
     enum Constants {
-        static let elementSpacing: CGFloat = 8
+        static let elementSpacing: CGFloat = POSSpacing.small
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.large.value
         static let imagesize: CGFloat = 40
-        static let imagePadding: CGFloat = 4
-        static let bannerPadding: CGFloat = 16
+        static let imagePadding: CGFloat = POSPadding.xSmall
+        static let bannerPadding: CGFloat = POSPadding.medium
     }
 
     enum Localization {

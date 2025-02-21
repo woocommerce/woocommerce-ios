@@ -339,6 +339,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(orderController.clearOrderWasCalled == true)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }
     }
 

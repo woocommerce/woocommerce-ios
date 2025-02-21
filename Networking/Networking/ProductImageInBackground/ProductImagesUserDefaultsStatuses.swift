@@ -40,26 +40,26 @@ final class ProductImagesUserDefaultsStatuses {
         setupObservers()
     }
 
-    func addStatus(_ status: ProductImageStatus) {
+    public func addStatus(_ status: ProductImageStatus) {
         var current = statusesSubject.value
         current.append(status)
         saveStatuses(current)
     }
 
-    func removeStatus(_ status: ProductImageStatus) {
+    public func removeStatus(_ status: ProductImageStatus) {
         let current = statusesSubject.value.filter { $0 != status }
         saveStatuses(current)
     }
 
-    func findStatus(where predicate: (ProductImageStatus) -> Bool) -> ProductImageStatus? {
+    public func findStatus(where predicate: (ProductImageStatus) -> Bool) -> ProductImageStatus? {
         statusesSubject.value.first(where: predicate)
     }
 
-    func getAllStatuses() -> [ProductImageStatus] {
+    public func getAllStatuses() -> [ProductImageStatus] {
         statusesSubject.value
     }
 
-    func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID?) -> [ProductImageStatus] {
+    public func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID?) -> [ProductImageStatus] {
         statusesSubject.value.filter {
             switch $0 {
             case .uploading(_, let sID, let pID),
@@ -71,17 +71,17 @@ final class ProductImagesUserDefaultsStatuses {
         }
     }
 
-    func clearAllStatuses() {
+    public func clearAllStatuses() {
         userDefaults.removeObject(forKey: key)
         userDefaults.synchronize()
         statusesSubject.send([])
     }
 
-    func setAllStatuses(_ statuses: [ProductImageStatus]) {
+    public func setAllStatuses(_ statuses: [ProductImageStatus]) {
         saveStatuses(statuses)
     }
 
-    func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
+    public func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
         var filtered = statusesSubject.value.filter {
             switch $0 {
             case .uploading(_, let sID, let pID),

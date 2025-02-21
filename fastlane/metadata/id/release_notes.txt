@@ -1,1 +1,0 @@
-Pembaruan ini menyempurnakan pustaka media dan proses login. Dapatkan aksesibilitas yang lebih baik pada tampilan terkait pajak dan penataan gambar produk yang lebih jelas dengan tag sampul untuk mempermudah pengelolaan toko. Perbarui sekarang untuk menikmati pengalaman WooCommerce yang lebih baik!

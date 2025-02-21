@@ -1,1 +1,0 @@
-In diesem Update wurden die Mediathek und das Anmeldeerlebnis verbessert. Die Zugänglichkeit in Steuer-Ansichten wurde optimiert und dank einer eindeutigeren Organisation von Produktbildern mithilfe von Cover-Schlagwörtern kannst du deinen Shop nun noch effizienter verwalten. Führe jetzt ein Update durch und profitiere von einem reibungsloseren WooCommerce-Erlebnis!

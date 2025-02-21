@@ -71,7 +71,8 @@ struct TotalsView: View {
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
-                                                                              paymentState: posModel.paymentState))
+                                                                              paymentState: posModel.paymentState,
+                                                                              cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
             case .error(let viewModel):

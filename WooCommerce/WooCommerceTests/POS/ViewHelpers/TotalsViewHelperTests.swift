@@ -47,28 +47,57 @@ struct TotalsViewHelperTests {
     }
 
     @Test(arguments: [
-        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.idle)),
-        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.validatingOrderError)),
-        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.preparingReader)),
-        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.acceptingCard))
+        (PointOfSalePaymentState.card(.validatingOrderError)),
+        (PointOfSalePaymentState.card(.acceptingCard))
     ])
     func test_shouldShowCollectCashPaymentButton_returns_true_for_supported_states(
-        orderState: PointOfSaleOrderState,
         paymentState: PointOfSalePaymentState) {
-            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: orderState,
-                                                                         paymentState: paymentState))
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",
+                                                                                                    orderTotal: "10",
+                                                                                                    taxTotal: "10",
+                                                                                                    orderTotalDecimal: 0)),
+                                                                          paymentState: paymentState,
+                                                                          cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))))
+    }
+
+    @Test
+    func test_shouldShowCollectCashPaymentButton_returns_true_for_idle_when_reader_disconnected() {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",
+                                                                                                    orderTotal: "10",
+                                                                                                    taxTotal: "10",
+                                                                                                    orderTotalDecimal: 0)),
+                                                                          paymentState: .card(.idle),
+                                                                          cardReaderConnectionStatus: .disconnected))
+    }
+
+    @Test
+    func test_shouldShowCollectCashPaymentButton_returns_true_for_idle_when_reader_connected_but_order_zero() {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "0",
+                                                                                                    orderTotal: "0",
+                                                                                                    taxTotal: "0",
+                                                                                                    orderTotalDecimal: 0)),
+                                                                          paymentState: .card(.idle),
+                                                                          cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))))
+    }
+
+    @Test
+    func test_shouldShowCollectCashPaymentButton_returns_false_for_idle_when_reader_connected_but_order_not_zero() {
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",
+                                                                                                    orderTotal: "10",
+                                                                                                    taxTotal: "10",
+                                                                                                    orderTotalDecimal: 10)),
+                                                                          paymentState: .card(.idle),
+                                                                          cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))) == false)
     }
 
     @Test(arguments: [
-        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.idle)),
-        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.validatingOrderError)),
-        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.preparingReader)),
-        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.acceptingCard))
+        (PointOfSalePaymentState.card(.validatingOrderError)),
+        (PointOfSalePaymentState.card(.acceptingCard))
     ])
     func test_shouldShowCollectCashPaymentButton_returns_false_when_order_syncing(
-        orderState: PointOfSaleOrderState,
         paymentState: PointOfSalePaymentState) {
-            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: orderState,
-                                                                         paymentState: paymentState) == false)
+            #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .syncing,
+                                                                         paymentState: paymentState,
+                                                                          cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))) == false)
     }
 }

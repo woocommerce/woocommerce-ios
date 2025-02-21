@@ -32,7 +32,7 @@ struct PointOfSaleCollectCashView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(8)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
                 POSPageHeaderView(title: Localization.backNavigationTitle,
                                   subtitle: formattedOrderTotal,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
@@ -43,8 +43,10 @@ struct PointOfSaleCollectCashView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(62)) {
-                    VStack(alignment: .center, spacing: conditionalPadding(4)) {
+                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    Spacer()
+
+                    VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
                         FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                             .focused($isTextFieldFocused)
                             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -68,9 +70,10 @@ struct PointOfSaleCollectCashView: View {
                             Text(errorMessage)
                                 .font(.posBodySmallRegular())
                                 .foregroundColor(.posError)
-                                .padding(.bottom, Constants.errorMessagePadding)
                         }
                     }
+
+                    Spacer()
 
                     Button(action: {
                         Task { @MainActor in
@@ -144,8 +147,7 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let errorMessagePadding: CGFloat = 8
-        static let minimumPadding: CGFloat = 4
+        static let minimumPadding: CGFloat = POSSpacing.xSmall
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {

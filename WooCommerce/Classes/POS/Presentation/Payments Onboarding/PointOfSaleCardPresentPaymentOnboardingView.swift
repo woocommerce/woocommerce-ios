@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 
 private extension PointOfSaleCardPresentPaymentOnboardingView {
     enum Constants {
-        static let verticalSpacing: CGFloat = 20.0
+        static let verticalSpacing: CGFloat = POSSpacing.large
     }
 
     enum Localization {

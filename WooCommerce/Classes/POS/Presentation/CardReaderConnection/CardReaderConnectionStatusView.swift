@@ -115,16 +115,16 @@ private extension CardReaderConnectionStatusView {
 @available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Constants {
-        static let buttonImageAndTextSpacing: CGFloat = 16
+        static let buttonImageAndTextSpacing: CGFloat = POSSpacing.medium
         static let imageDimension: CGFloat = 14
         static let progressIndicatorDimension: CGFloat = 10
         static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posBodyMediumRegular()
-        static let horizontalPadding: CGFloat = 24
-        static let disconnectedBorderAndContentSpacing: CGFloat = 16
+        static let horizontalPadding: CGFloat = POSPadding.large
+        static let disconnectedBorderAndContentSpacing: CGFloat = POSSpacing.medium
         static let disconnectedBorderCornerRadius: CGFloat = POSCornerRadiusStyle.small.value
         static let disconnectedBorderWidth: CGFloat = 2
-        static let disconnectedBorderInset: CGFloat = 8
+        static let disconnectedBorderInset: CGFloat = POSSpacing.small
     }
 }
 

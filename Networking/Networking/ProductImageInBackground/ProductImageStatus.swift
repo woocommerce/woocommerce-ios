@@ -8,7 +8,7 @@ import UIKit
 public enum ProductImageStatus: Equatable, Codable {
     /// An image asset is being uploaded.
     ///
-    case uploading(asset: ProductImageAssetType, siteID: Int64, productID: ProductOrVariationID?)
+    case uploading(asset: ProductImageAssetType, siteID: Int64, productID: ProductOrVariationID)
 
     /// The Product image exists remotely.
     ///
@@ -16,7 +16,7 @@ public enum ProductImageStatus: Equatable, Codable {
 
     /// An image asset upload failed.
     ///
-    case uploadFailure(asset: ProductImageAssetType, error: Error, siteID: Int64, productID: ProductOrVariationID?)
+    case uploadFailure(asset: ProductImageAssetType, error: Error, siteID: Int64, productID: ProductOrVariationID)
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -38,7 +38,7 @@ public enum ProductImageStatus: Equatable, Codable {
         case "uploading":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
             let sID = try container.decode(Int64.self, forKey: .siteID)
-            let pID = try container.decodeIfPresent(ProductOrVariationID.self, forKey: .productID)
+            let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
             self = .uploading(asset: asset, siteID: sID, productID: pID)
         case "remote":
             let image = try container.decode(ProductImage.self, forKey: .image)
@@ -48,9 +48,8 @@ public enum ProductImageStatus: Equatable, Codable {
         case "uploadFailure":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
             let errorMessage = try container.decode(String.self, forKey: .error)
-            let error = NSError(domain: "ProductImageStatus", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
             let sID = try container.decode(Int64.self, forKey: .siteID)
-            let pID = try container.decodeIfPresent(ProductOrVariationID.self, forKey: .productID)
+            let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
             let domain = try container.decode(String.self, forKey: .errorDomain)
             let code = try container.decode(Int.self, forKey: .errorCode)
             let userInfo = try container.decode([String: String]?.self, forKey: .errorUserInfo)
@@ -69,7 +68,7 @@ public enum ProductImageStatus: Equatable, Codable {
             try container.encode("uploading", forKey: .type)
             try container.encode(asset, forKey: .asset)
             try container.encode(siteID, forKey: .siteID)
-            try container.encodeIfPresent(productID, forKey: .productID)
+            try container.encode(productID, forKey: .productID)
         case .remote(let image, let siteID, let productID):
             try container.encode("remote", forKey: .type)
             try container.encode(image, forKey: .image)
@@ -79,13 +78,69 @@ public enum ProductImageStatus: Equatable, Codable {
             try container.encode("uploadFailure", forKey: .type)
             try container.encode(asset, forKey: .asset)
             try container.encode(siteID, forKey: .siteID)
-            try container.encodeIfPresent(productID, forKey: .productID)
+            try container.encode(productID, forKey: .productID)
 
             let errorMessage = error as NSError
             try container.encode(errorMessage.domain, forKey: .errorDomain)
             try container.encode(errorMessage.code, forKey: .errorCode)
             try container.encode(errorMessage.userInfo as? [String: String], forKey: .errorUserInfo)
         }
+    }
+
+    public var isUploading: Bool {
+        if case .uploading = self {
+            return true
+        }
+        return false
+    }
+
+    public var isUploadFailure: Bool {
+        if case .uploadFailure = self {
+            return true
+        }
+        return false
+    }
+
+    public var siteID: Int64 {
+        switch self {
+        case .uploading(_, let siteID, _),
+            .remote(_, let siteID, _),
+            .uploadFailure(_, _, let siteID, _):
+            return siteID
+        }
+    }
+
+    public var productOrVariationID: ProductOrVariationID {
+        switch self {
+        case .uploading(_, _, let productID),
+             .uploadFailure(_, _, _, let productID),
+             .remote(_, _, let productID):
+            return productID
+        }
+    }
+
+    public var assetType: ProductImageAssetType? {
+        switch self {
+        case .uploading(let asset, _, _),
+             .uploadFailure(let asset, _, _, _):
+            return asset
+        default:
+            return nil
+        }
+    }
+
+    public var error: Error? {
+        if case .uploadFailure(_, let errorDescription, _, _) = self {
+            return errorDescription
+        }
+        return nil
+    }
+
+    public var isLocalID: Bool {
+        if productOrVariationID.id == 0 {
+            return true
+        }
+        return false
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {

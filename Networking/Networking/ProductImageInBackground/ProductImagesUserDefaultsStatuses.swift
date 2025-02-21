@@ -20,9 +20,29 @@ public final class ProductImagesUserDefaultsStatuses {
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
 
-    var statusesPublisher: AnyPublisher<[ProductImageStatus], Never> {
+    public var statusesPublisher: AnyPublisher<[ProductImageStatus], Never> {
         statusesSubject
             .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    public var errorsPublisher: AnyPublisher<(siteID: Int64,
+                                              productOrVariationID: ProductOrVariationID?,
+                                              assetType: ProductImageAssetType?,
+                                              error: Error), Never> {
+        statusesSubject
+            .compactMap { statuses in
+                statuses.first { $0.isUploadFailure }
+            }
+            .compactMap { status in
+                if let error = status.error {
+                    return (siteID: status.siteID,
+                            productOrVariationID: status.productOrVariationID,
+                            assetType: status.assetType,
+                            error: error)
+                }
+                return nil
+            }
             .eraseToAnyPublisher()
     }
 
@@ -49,6 +69,21 @@ public final class ProductImagesUserDefaultsStatuses {
     public func removeStatus(_ status: ProductImageStatus) {
         let current = statusesSubject.value.filter { $0 != status }
         saveStatuses(current)
+    }
+
+    public func removeStatus(where predicate: (ProductImageStatus) -> Bool) {
+        let current = statusesSubject.value.filter { !predicate($0) }
+        saveStatuses(current)
+    }
+
+    public func updateStatus(_ status: ProductImageStatus) {
+        var current = statusesSubject.value
+        if let index = current.firstIndex(where: { $0 == status }) {
+            current[index] = status
+            saveStatuses(current)
+        } else {
+            addStatus(status)
+        }
     }
 
     public func findStatus(where predicate: (ProductImageStatus) -> Bool) -> ProductImageStatus? {
@@ -99,6 +134,7 @@ public final class ProductImagesUserDefaultsStatuses {
         do {
             let data = try encoder.encode(statuses)
             userDefaults.set(data, forKey: key)
+            userDefaults.synchronize()
             statusesSubject.send(statuses)
         } catch {
             print("Encoding error in ProductImagesUserDefaultsStatuses: \(error)")

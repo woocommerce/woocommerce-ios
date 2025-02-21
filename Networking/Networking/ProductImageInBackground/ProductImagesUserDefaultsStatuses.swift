@@ -26,7 +26,7 @@ public final class ProductImagesUserDefaultsStatuses {
             .eraseToAnyPublisher()
     }
 
-    init(userDefaults: UserDefaults = .standard,
+    public init(userDefaults: UserDefaults = .standard,
          key: String = "savedProductUploadImageStatuses",
          encoder: JSONEncoder = JSONEncoder(),
          decoder: JSONDecoder = JSONDecoder()) {

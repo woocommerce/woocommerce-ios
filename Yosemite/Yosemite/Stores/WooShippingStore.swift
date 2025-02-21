@@ -73,6 +73,8 @@ public final class WooShippingStore: Store {
             updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
         case let .verifyDestinationAddress(siteID, orderID, completion):
             verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
+        case let .updateDestinationAddress(siteID, orderID, address, completion):
+            updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         }
     }
 }
@@ -274,6 +276,13 @@ private extension WooShippingStore {
                                   orderID: Int64,
                                   completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
         remote.verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
+    }
+
+    func updateDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  address: WooShippingDestinationAddress,
+                                  completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
     }
 }
 

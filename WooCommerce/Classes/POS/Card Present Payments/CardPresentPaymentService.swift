@@ -170,8 +170,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func cancelPayment() async throws {
-        cancelPaymentTask()
-
         try await withCheckedThrowingContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, any Error>? = continuation
             let action = CardPresentPaymentAction.cancelPayment { result in

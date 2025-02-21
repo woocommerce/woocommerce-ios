@@ -64,7 +64,7 @@ def networking_pods
   alamofire
   cocoa_lumberjack
 
-  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
+  pod 'Sourcery', '~> 2.2.6', configuration: 'Debug'
   wordpress_shared
 
   # Used for HTML parsing

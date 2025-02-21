@@ -493,6 +493,9 @@ extension PointOfSaleAggregateModel {
             try await cardPresentPaymentService.cancelPayment()
         }
 
+        // Cancels payment task
+        cardPresentPaymentService.cancelPayment()
+
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         orderController.clearOrder()

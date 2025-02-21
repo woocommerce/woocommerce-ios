@@ -58,6 +58,7 @@ struct POSNoticeView<Content: View>: View {
                                 .accessibilityLabel(Localization.dismissAccessibilityLabel)
                         }
                     )
+                    .padding(Constants.dismissIconPadding)
                     Spacer()
                 }
             }
@@ -87,6 +88,7 @@ private enum Constants {
     static let textSpacing: CGFloat = POSSpacing.xSmall
     static let titleSpacing: CGFloat = POSSpacing.small
     static let iconHorizontalPadding: CGFloat = POSPadding.small
+    static let dismissIconPadding: CGFloat = 6
     static let padding: CGFloat = POSPadding.medium
 }
 

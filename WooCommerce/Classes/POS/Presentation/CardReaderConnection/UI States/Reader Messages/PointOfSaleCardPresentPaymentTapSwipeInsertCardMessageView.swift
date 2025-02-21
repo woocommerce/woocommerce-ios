@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
             Image(decorative: viewModel.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
@@ -31,12 +31,17 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     }
 }
 
+private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
+    enum Constants {
+        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
+    }
+}
+
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
             inputMethods: [.tap, .insert]
         ),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

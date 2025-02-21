@@ -75,9 +75,9 @@ private extension CardWaveProgressView {
     }
 
     enum Constants {
-        static let activeWaveColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade60)
+        static let activeWaveColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade50)
         static let inactiveWaveColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade40)
-        static let cardColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade20)
+        static let cardColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade5)
     }
 }
 

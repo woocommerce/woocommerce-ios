@@ -45,6 +45,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `updateOriginAddress`
     private var updateOriginAddress = [ResultKey: Result<WooShippingOriginAddressUpdate, Error>]()
 
+    /// The results to return based on the given arguments in `verifyDestinationAddress`
+    private var verifyDestinationAddress = [ResultKey: Result<WooShippingVerifyDestinationAddressSuccess, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
@@ -121,6 +124,13 @@ final class MockWooShippingRemote {
         let key = ResultKey(siteID: siteID)
         updateOriginAddress[key] = result
     }
+
+    /// Set the value passed to the `completion` block if `verifyDestinationAddress` is called.
+    func whenVerifyDestinationAddress(siteID: Int64,
+                                      thenReturn result: Result<WooShippingVerifyDestinationAddressSuccess, Error>) {
+        let key = ResultKey(siteID: siteID)
+        verifyDestinationAddress[key] = result
+    }
 }
 
 // MARK: - WooShippingRemoteProtocol
@@ -156,8 +166,8 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
@@ -202,8 +212,8 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: Networking.ShippingLabelAddress,
-                               destinationAddress: Networking.ShippingLabelAddress,
+                               originAddress: Networking.WooShippingAddress,
+                               destinationAddress: Networking.WooShippingAddress,
                                package: Networking.WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
@@ -267,7 +277,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func addressValidation(siteID: Int64,
-                           address: ShippingLabelAddress,
+                           address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -290,6 +300,21 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateOriginAddress[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.verifyDestinationAddress[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

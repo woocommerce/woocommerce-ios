@@ -88,7 +88,12 @@ private extension POSFloatingControlView {
     }
 
     var fontColor: Color {
-        .posOnSurface
+        switch backgroundAppearance {
+        case .primary:
+            .posOnSurface
+        case .secondary:
+            Self.secondaryFontColor
+        }
     }
 }
 

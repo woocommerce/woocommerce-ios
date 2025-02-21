@@ -69,14 +69,9 @@ private extension ChildItemList {
 
     @ViewBuilder
     var emptyView: some View {
-        ZStack {
-            VStack {
-                headerView
-                Spacer()
-            }
-
+        VStack {
+            headerView
             PointOfSaleItemListEmptyView(base: .parent(parentItem))
-                .zIndex(1)
         }
     }
 
@@ -106,10 +101,6 @@ private extension ChildItemList {
             value: "Back",
             comment: "Back button title in the child item list screen."
         )
-    }
-
-    enum Constants {
-        static let itemListPadding: CGFloat = 16
     }
 }
 

@@ -669,8 +669,8 @@ private extension WooShippingRemoteTests {
                                       state: "TX",
                                       postcode: "54321",
                                       country: "US",
-                                      phone: "12345678901",
-                                      name: "John Smith",
+                                      phone: "555-0123",
+                                      name: "",
                                       firstName: "John",
                                       lastName: "Smith",
                                       email: "john@example.com")

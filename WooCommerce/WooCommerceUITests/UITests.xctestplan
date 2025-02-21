@@ -20,8 +20,6 @@
 
     ],
     "maximumTestRepetitions" : 2,
-    "repeatInNewRunnerProcess" : true,
-    "testRepetitionMode" : "retryOnFailure",
     "uiTestingScreenshotsLifetime" : "keepAlways"
   },
   "testTargets" : [

@@ -1313,6 +1313,8 @@ lane :test_without_building do |options|
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
+    number_of_retries: 1,
+    output_remove_retry_attempts: true,
     # settings for XML test report generation via `trainer`
     output_types: '',
     fail_build: false

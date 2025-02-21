@@ -113,7 +113,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     private let errorsSubject: PassthroughSubject<ProductImageUploadErrorInfo, Never> = .init()
     private var statusUpdatesExcludedProductKeys: Set<Key> = []
     private var statusUpdatesSubscriptions: Set<AnyCancellable> = []
-    private var backgroundSubscriptions: Set<AnyCancellable> = []
     private var imageUploadSubscriptions: Set<AnyCancellable> = []
 
     private var actionHandlersByProduct: [Key: ProductImageActionHandler] = [:]
@@ -254,7 +253,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     func reset() {
         statusUpdatesExcludedProductKeys = []
         statusUpdatesSubscriptions = []
-        backgroundSubscriptions = []
         imageUploadSubscriptions = []
         activeUploadsPublisher = []
 
@@ -262,7 +260,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         imagesSaverByProduct = [:]
     }
 
-    private func scheduleUploadInProgressNotification() {
+    private func scheduleUploadInProgressNotificationIfNeeded() {
         guard !activeUploadsPublisher.isEmpty else { return }
 
         let notification = LocalNotification(scenario: .productImageBackgroundUpload)
@@ -274,9 +272,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     @objc private func appDidEnterBackground() {
-        if !activeUploadsPublisher.isEmpty {
-            self.scheduleUploadInProgressNotification()
-        }
+        self.scheduleUploadInProgressNotificationIfNeeded()
     }
 }
 

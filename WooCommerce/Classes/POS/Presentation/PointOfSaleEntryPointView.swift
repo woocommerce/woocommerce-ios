@@ -2,11 +2,15 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
-    @State private var posModel: PointOfSaleAggregateModel
+    @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
+    private let itemsController: PointOfSaleItemsControllerProtocol
+    private let cardPresentPaymentService: CardPresentPaymentFacade
+    private let orderController: PointOfSaleOrderControllerProtocol
+    private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
@@ -15,25 +19,39 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        let posModel = PointOfSaleAggregateModel(
-            itemsController: itemsController,
-            cardPresentPaymentService: cardPresentPaymentService,
-            orderController: orderController,
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-
-        self._posModel = State(wrappedValue: posModel)
+        self.itemsController = itemsController
+        self.cardPresentPaymentService = cardPresentPaymentService
+        self.orderController = orderController
+        self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
     }
 
     var body: some View {
-        PointOfSaleDashboardView()
+        Group {
+            if let posModel = posModel {
+                PointOfSaleDashboardView()
+                    .environment(posModel)
+            } else {
+                PointOfSaleLoadingView()
+            }
+        }
+        .task {
+            // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
+            // Confusingly, init can be called more than once, but `task` matches the lifecycle.
+            // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
+            posModel = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+        }
         .environmentObject(posModalManager)
-        .environment(posModel)
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }
         .onDisappear {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
+            posModel?.pointOfSaleClosed()
         }
     }
 }

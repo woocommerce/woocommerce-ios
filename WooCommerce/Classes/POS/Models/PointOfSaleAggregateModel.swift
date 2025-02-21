@@ -37,6 +37,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
+
+    func pointOfSaleClosed()
 }
 
 @available(iOS 17.0, *)
@@ -477,6 +479,29 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
+    }
+}
+
+// MARK: - Lifecycle
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func pointOfSaleClosed() {
+        // We cancel any payment to prevent the reader from remaining live and awaiting a card tap. Otherwise, it would
+        // wait until the timeout, which is 30-45 minutes. In that time, it uses more battery, and may result
+        // in a shopper paying for the wrong order.
+        Task { [cardPresentPaymentService] in
+            try await cardPresentPaymentService.cancelPayment()
+        }
+
+        // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
+        // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
+        orderController.clearOrder()
+
+        // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
+        // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
+        startPaymentOnCardReaderConnection?.cancel()
+        cardReaderDisconnection?.cancel()
+        cancellables.forEach { $0.cancel() }
     }
 }
 

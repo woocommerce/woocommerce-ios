@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-06 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-02-12 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -538,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "ניתן להוסיף מרחוק את הפרטים של הקבצים שניתנים להורדה המוצרים";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "להוסיף שיעורי מס באזור של מנהל המערכת. רק שיעורי מיסים עם פרטי מיקום יוצגו כאן.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "להוסיף את התיאור לקופון.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "להוסיף את השיעור לכל ההזמנות שנוצרו";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "להוסיף לאריזה חדשה";
@@ -712,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "אירעה שגיאה בגישה ל-Bluetooth – יש להפעיל Bluetooth ולנסות שוב";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "אירעה שגיאה בעת יצירת התפריט.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "אירעה שגיאה בעת מחיקת התפריט.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "אירעה שגיאה בעת הבאת התפריטים.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "אירעה שגיאה בעת עדכון התפריט.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "אירעה שגיאה בעת עיבוד הבקשה שלך: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "עסקה זהה נרשמה לאחרונה. אם ברצונך להמשיך, יש לנסות אמצעי תשלום אחר";
@@ -1214,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1297,9 +1275,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "אין אפשרות לאמת את ההתקנה של WooCommerce באתר שלך.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "לא הצלחת למצוא את מה שחיפשת?";
 
 /* Country option for a site address. */
 "Cape Verde" = "קייפ ורדה";
@@ -1779,9 +1754,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "להמשיך עם WordPress.com";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "המשך קריאה";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "להמשיך עם Apple";
 
@@ -1821,15 +1793,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "קוסטה ריקה";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "לא ניתן היה לבדוק רכישות באתר.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "אי אפשר לעקוב אחר האתר בכתובת שצוינה.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "אי אפשר לבטל את המעקב אחר האתר בכתובת שצוינה.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "לא ניתן היה להתחבר לאתר WordPress. אין אתר WordPress תקף בכתובת זו. בדוק את כתובת האתר (URL) שהזנת.";
@@ -2400,9 +2363,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "טיוטה";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "לגרור ולשחרר כדי לשנות את הסדר של התמונות";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "להגביר מכירות בחנות שלך בעזרת Blaze";
 
@@ -2474,9 +2434,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "יש לערוך את המצב או המחיר עבור מספר מוצרים בו-זמנית";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "לערוך את שיעורי המיסים במקטע מנהל המערכת";
 
 /* Country option for a site address. */
 "Egypt" = "מצרים";
@@ -3007,9 +2964,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "יש לבצע את השלבים הבאים כדי לחבר את אפליקציית Woo ישירות לחנות באמצעות הסיסמה של האפליקציה.\n\n1. ראשית, יש להתחבר עם פרטי הכניסה של האתר.\n\n2. כאשר הבקשה מופיעה, יש לאשר את החיבור באמצעות הקשה על כפתור האישור.";
 
-/* User role badge */
-"Follower" = "עוקב";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "שכחת סיסמה?";
 
@@ -3474,9 +3428,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "לכלול קבצים להורדה עם רכישות";
-
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "כלול באתר";
 
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "כולל מעקב של %1$@";
@@ -4137,9 +4088,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "Manage your subscription" = "לנהל את המינוי שלך";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "התאמות ידניות";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "החזר כספי ידני";
 
@@ -4148,9 +4096,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "יש לסרוק את הברקוד או קוד ה-QR עם מספר המעקב";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "דומיין ממופה";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "לסמן כ'הושלמה'";
@@ -4206,9 +4151,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Mayotte" = "מאיוט";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
 
 /* Title of the Menu tab */
 "Menu" = "תפריט";
@@ -5737,9 +5679,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the domain contact info form. */
 "Register domain" = "רישום הדומיין";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "דומיין רשום";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "מחיר רגיל";
 
@@ -6184,9 +6123,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "יש לבחור את סוג המוצר";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "לבחור שיעור מס";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "לבחור הכול";
 
@@ -6258,9 +6194,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "להגדיר שיעור מס חדש";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "להגדיר שיעור מס";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "להגדיר את Tap to Pay ב-iPhone";
@@ -6499,9 +6432,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Site Address title on the support form */
 "Site Address" = "כתובת האתר";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "Site Redirect";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "כתובת אתר";
@@ -7096,9 +7026,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "לא ניתן לטעון את ההזמנה!";
 
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "הסכום לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
 
@@ -7263,9 +7190,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "הסריאליזציה של התגובה נכשלה.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "השרת החזיר תשובה ריקה. בדרך כלל הדבר אומר שצריך להגדיל את מגבלת הזיכרון לאתר.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "גובה החבילה למשלוח של המוצר. ניתן לעריכה.";
 
@@ -7284,12 +7208,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "כתובת האתר שהזנת אינה עבור אתר ב-WordPress. כדי שנוכל להתחבר לאתר, האתר חייב להשתמש בפלטפורמה של WordPress.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "לא ניתן למחוק את האתר.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "לא ניתן היה לייצא את האתר.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "כמות המלאי של המוצר. ניתן לעריכה.";
@@ -7342,14 +7260,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "נראה שיש בעיה באתר שלך.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "אירעה בעיה בעת חסימת רשומות מהאתר שצוין.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "הייתה בעיה בתקשורת עם האתר הזה.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
@@ -7488,14 +7400,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "לא ניתן לסגור את חשבון המשתמש כל עוד יש לו מינויים פעילים.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "הפעולה הזאת תשנה את כתובת הלקוח למיקום של שיעור המס שבחרת.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "פעולה זו תיצור סוג עבור כל שילוב אפשרי של מאפייני הסוג (%d סוגים).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "הפעולה לא תשפיע על הזמנות שבוצעו באופן מקוון";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "נגמר הזמן הקצוב, אבל לא לדאוג: האבטחה שלך בעדיפות ראשונה אצלנו. יש לנסות שוב!";
@@ -7592,9 +7498,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "טונגה";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "נושא לא נמצא למזהה:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "סך כל ההזמנות";
 
@@ -7630,9 +7533,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "מספר מעקב %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "להעביר דומיין";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -8331,9 +8231,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "הצגת החנות שלך";
 
-/* User role badge */
-"Viewer" = "צופה";
-
 /* Label for total store views in the Analytics Hub */
 "Views" = "דפים נצפים";
 
@@ -8401,9 +8298,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "לא הצלחנו לעבד את בקשת הכניסה לאפליקציה";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "לא הצלחנו למצוא שיעורי מיסים";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "לא הצלחנו להתחבר לחנות שלך";
@@ -11047,6 +10941,36 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "האפשרות לשליחת ההערה באימייל ללקוח הופעלה";
 
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "ביטול";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "לערוך את שיעורי המס במקטע מנהל המערכת";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "להוסיף שיעורי מס באזור של מנהל המערכת. רק שיעורי מס עם פרטי מיקום יוצגו כאן.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "לא הצלחנו למצוא שיעורי מס";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "הפעולה לא תשפיע על הזמנות שבוצעו באופן מקוון";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "הפעולה הזאת תשנה את כתובת הלקוח למיקום של שיעור המס שבחרת.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "לא הצלחת למצוא את השיעור שחיפשת?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "להגדיר שיעור מס";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "לבחור שיעור מס";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "להוסיף את השיעור לכל ההזמנות שנוצרו";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "אין תקופה קודמת";
 
@@ -11733,7 +11657,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message" = "תשלום של %1$@ חויב בהצלחה";
+"pointOfSale.paymentSuccessful.message.card" = "תשלום בכרטיס של %1$@ חויב בהצלחה";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash" = "תשלום במזומן של %1$@ חויב בהצלחה";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "התשלום בוצע בהצלחה";
@@ -12134,6 +12061,9 @@ which should be translated separately and considered part of this sentence. */
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "להסיר מהמועדפים";
 
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "כיסוי";
+
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "ביטול";
 
@@ -12145,6 +12075,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "יש להמתין שכל ההעלאות יסתיימו לפני שינוי סדר התמונות.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "לגרור ולשחרר כדי לשנות את הסדר של התמונות. התמונה הראשונה תוגדר בתוך הכיסוי.";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "מוצר מומלץ";
@@ -12787,9 +12720,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "לא ידוע";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "כתובת URL לא ידועה";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "הכמות עודכנה: %@";
 
@@ -12969,6 +12899,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "יש לבחור חבילה כדי להציג את תעריפי המשלוח";
+
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "כתובת היעד חסרה";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "כתובת היעד לא מאומתת";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "כתובת היעד מאומתת";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "כתובת חסרה";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "כתובת לא מאומתת";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "הכתובת אושרה";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "נדרשת חתימה של אדם מבוגר";

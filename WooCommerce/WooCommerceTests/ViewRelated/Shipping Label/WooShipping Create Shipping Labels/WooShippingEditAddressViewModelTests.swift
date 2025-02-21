@@ -123,6 +123,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         email: email,
                                                         isVerified: false,
                                                         originCountryCode: "US",
+                                                        originStateCode: "CA",
                                                         storageManager: storageManager)
 
         // Then
@@ -248,7 +249,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.phone.required)
     }
 
-    func test_phone_number_not_required_for_destination_address_in_same_country_as_origin() {
+    func test_phone_number_not_required_for_destination_address_when_customs_form_not_required() {
         // Given
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
@@ -264,13 +265,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let viewModel = WooShippingEditAddressViewModel(address: address,
                                                         email: "",
                                                         isVerified: false,
-                                                        originCountryCode: address.country)
+                                                        originCountryCode: address.country,
+                                                        originStateCode: "CA")
 
         // Then
         XCTAssertFalse(viewModel.phone.required)
     }
 
-    func test_phone_number_required_for_destination_address_in_different_country_from_origin() {
+    func test_phone_number_required_for_destination_address_when_customs_form_required() {
         // Given
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
@@ -286,7 +288,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let viewModel = WooShippingEditAddressViewModel(address: address,
                                                         email: "",
                                                         isVerified: false,
-                                                        originCountryCode: "CA")
+                                                        originCountryCode: "CA",
+                                                        originStateCode: "BC")
 
         // Then
         XCTAssertTrue(viewModel.phone.required)

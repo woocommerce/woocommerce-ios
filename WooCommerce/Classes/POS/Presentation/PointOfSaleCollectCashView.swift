@@ -32,7 +32,7 @@ struct PointOfSaleCollectCashView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.large)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.medium)) {
                 POSPageHeaderView(title: Localization.backNavigationTitle,
                                   subtitle: formattedOrderTotal,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
@@ -43,7 +43,9 @@ struct PointOfSaleCollectCashView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xLarge * 2)) {
+                VStack(alignment: .center, spacing: conditionalPadding(POSPadding.medium)) {
+                    Spacer()
+
                     VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xSmall)) {
                         FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
                             .focused($isTextFieldFocused)
@@ -68,9 +70,10 @@ struct PointOfSaleCollectCashView: View {
                             Text(errorMessage)
                                 .font(.posBodySmallRegular())
                                 .foregroundColor(.posError)
-                                .padding(.bottom, Constants.errorMessagePadding)
                         }
                     }
+
+                    Spacer()
 
                     Button(action: {
                         Task { @MainActor in
@@ -144,7 +147,6 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let errorMessagePadding: CGFloat = POSPadding.small
         static let minimumPadding: CGFloat = POSPadding.xSmall
     }
 

@@ -8,7 +8,8 @@ import Combine
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
-    private let destinationAddress: WooShippingAddress?
+    private var destinationAddress: WooShippingAddress?
+    private var destinationEmail: String?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
@@ -79,6 +80,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
 
+    /// View model for address to edit.
+    /// Setting this property will navigate to the address edit screen.
+    @Published var addressToEdit: WooShippingEditAddressViewModel?
+
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
 
@@ -147,17 +152,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
               let destinationAddress = destinationAddress else {
             return false
         }
-        // Special case: Any shipment from/to military addresses must have Customs
-        if originAddress.country == Constants.usCountryCode,
-           Constants.usMilitaryStates.contains(where: { $0 == originAddress.state }) {
-            return true
-        }
-        if destinationAddress.country == Constants.usCountryCode,
-           Constants.usMilitaryStates.contains(where: { $0 == destinationAddress.state }) {
-            return true
-        }
-
-        return originAddress.country != destinationAddress.country
+        return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                originState: originAddress.state,
+                                                                destinationCountry: destinationAddress.country,
+                                                                destinationState: destinationAddress.state)
     }
 
     /// Initialize the view model without an existing shipping label.
@@ -178,6 +176,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
+        self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedOriginAddress = selectedOriginAddress
         self.selectedPackage = selectedPackage
@@ -272,6 +271,24 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
         customsForm = form
+    }
+
+    /// Sets the `addressToEdit` property for editing the destination address.
+    /// After the address is edited, the destination address is replaced with the updated address.
+    func editDestinationAddress() {
+        addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        email: destinationEmail,
+                                                        isVerified: destinationAddressStatus == .verified,
+                                                        originCountryCode: selectedOriginAddress?.country,
+                                                        originStateCode: selectedOriginAddress?.state,
+                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
+            guard let self else {
+                return
+            }
+            destinationAddress = editedAddress
+            destinationEmail = editedEmail
+            addressToEdit = nil // Dismisses address edit screen
+        })
     }
 }
 
@@ -454,16 +471,6 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Destination address missing",
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
-    }
-
-    enum Constants {
-        /// Country code for US - to check for international shipment
-        ///
-        static let usCountryCode = "US"
-
-        /// These US states are a special case because they represent military bases. They're considered "domestic",
-        /// but they require a Customs form to ship from/to them.
-        static let usMilitaryStates = ["AA", "AE", "AP"]
     }
 }
 

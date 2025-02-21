@@ -1314,7 +1314,6 @@ lane :test_without_building do |options|
     xctestrun: xctestrun_path,
     result_bundle: true,
     number_of_retries: 1,
-    output_remove_retry_attempts: true,
     # settings for XML test report generation via `trainer`
     output_types: '',
     fail_build: false
@@ -1322,6 +1321,7 @@ lane :test_without_building do |options|
 
   trainer(
     path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
+    output_remove_retry_attempts: true,
     fail_build: true
   )
 end

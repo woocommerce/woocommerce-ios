@@ -742,6 +742,55 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? WooShippingAddressValidationError, expectedError)
     }
+
+    // MARK: `updateDestinationAddress`
+
+    func test_updateDestinationAddress_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedAddressUpdate = WooShippingDestinationAddressUpdate(address: WooShippingDestinationAddress.fake(), isVerified: true)
+        remote.whenUpdatingDestinationAddress(siteID: sampleSiteID, thenReturn: .success(expectedAddressUpdate))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
+            let action = WooShippingAction.updateDestinationAddress(siteID: self.sampleSiteID,
+                                                                    orderID: self.sampleOrderID,
+                                                                    address: WooShippingDestinationAddress.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+
+        // Then
+        let actualAddressUpdate = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualAddressUpdate, expectedAddressUpdate)
+    }
+
+    func test_updateDestinationAddress_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenUpdatingDestinationAddress(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
+            let action = WooShippingAction.updateDestinationAddress(siteID: self.sampleSiteID,
+                                                                    orderID: self.sampleOrderID,
+                                                                    address: WooShippingDestinationAddress.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

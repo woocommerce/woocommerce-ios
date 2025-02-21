@@ -67,7 +67,6 @@ class ProductImagesUserDefaultsStatusesTests: XCTestCase {
 
     func test_publisher_should_emit_on_changes() {
         // Given
-        let expectation = XCTestExpectation(description: "Should emit 2 values")
         var receivedValues: [[ProductImageStatus]] = []
         let status = ProductImageStatus.uploadFailure(
             asset: .uiImage(image: .strokedCheckmark, filename: "test", altText: "test"),
@@ -76,28 +75,28 @@ class ProductImagesUserDefaultsStatusesTests: XCTestCase {
             productID: nil
         )
 
-        productImagesStatuses.statusesPublisher
-            .sink {
-                receivedValues.append($0)
-                if receivedValues.count == 2 {
-                    expectation.fulfill()
+        waitForExpectation(description: "Should emit 2 values", timeout: 1) { expectation in
+            productImagesStatuses.statusesPublisher
+                .sink {
+                    receivedValues.append($0)
+                    if receivedValues.count == 2 {
+                        expectation.fulfill()
+                    }
                 }
-            }
-            .store(in: &cancellables)
+                .store(in: &cancellables)
 
-        // When
-        productImagesStatuses.addStatus(status)
+            // When
+            productImagesStatuses.addStatus(status)
+        }
 
         // Then
-        wait(for: [expectation], timeout: 1)
         XCTAssertEqual(receivedValues, [[], [status]])
     }
 
     func test_external_update_should_trigger_internal_update() {
         // Given
-        let expectation = XCTestExpectation(description: "External change detection")
         let testDate = Date(timeIntervalSince1970: 1740050950)
-        
+
         let externalStatus = ProductImageStatus.remote(
             image: ProductImage(
                 imageID: 99,
@@ -109,45 +108,45 @@ class ProductImagesUserDefaultsStatusesTests: XCTestCase {
             ),
             siteID: siteID,
             productID: productVariationID)
-        
+
         var receivedValues: [[ProductImageStatus]] = []
-        
-        let cancellable = productImagesStatuses.statusesPublisher
-            .sink {
-                receivedValues.append($0)
-                if $0.count == 1 {
-                    expectation.fulfill()
+        var cancellable: AnyCancellable?
+
+        waitForExpectation(description: "External change detection", timeout: 2) { expectation in
+            cancellable = productImagesStatuses.statusesPublisher
+                .sink {
+                    receivedValues.append($0)
+                    if $0.count == 1 {
+                        expectation.fulfill()
+                    }
                 }
+
+            // When
+            do {
+                let externalEncoder = JSONEncoder()
+                externalEncoder.dateEncodingStrategy = .iso8601
+
+                let externalData = try externalEncoder.encode([externalStatus])
+                userDefaults.set(externalData, forKey: userDefaultsKey)
+
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: UserDefaults.didChangeNotification,
+                        object: self.userDefaults
+                    )
+                }
+            } catch {
+                XCTFail("Encoding failed: \(error)")
             }
-        
-        // When
-        do {
-            let externalEncoder = JSONEncoder()
-            externalEncoder.dateEncodingStrategy = .iso8601
-            
-            let externalData = try externalEncoder.encode([externalStatus])
-            userDefaults.set(externalData, forKey: userDefaultsKey)
-            
-            // 3. Forza notifica su main thread
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(
-                    name: UserDefaults.didChangeNotification,
-                    object: self.userDefaults
-                )
-            }
-        } catch {
-            XCTFail("Encoding failed: \(error)")
         }
-        
-        // Then
-        wait(for: [expectation], timeout: 2)
-        cancellable.cancel()
-        
-        
+
+        cancellable?.cancel()
+
         let savedStatuses = productImagesStatuses.getAllStatuses()
         XCTAssertEqual(savedStatuses.count, 1)
-        
-        if case .remote(let image, let receivedSiteID, let receivedProductID) = savedStatuses.first! {
+
+        if let firstStatus = savedStatuses.first,
+           case .remote(let image, let receivedSiteID, let receivedProductID) = firstStatus {
             XCTAssertEqual(Int(image.dateCreated.timeIntervalSince1970), 1740050950)
             XCTAssertEqual(receivedSiteID, siteID)
             XCTAssertEqual(receivedProductID, productVariationID)

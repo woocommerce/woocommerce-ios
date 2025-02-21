@@ -394,7 +394,7 @@ private extension TotalsView {
             bottom: POSPadding.medium,
             trailing: POSPadding.large
         )
-        static let subtotalsVerticalSpacing: CGFloat = POSSpacing.small
+        static let subtotalsVerticalSpacing: CGFloat = POSSpacing.medium
         static let totalVerticalSpacing: CGFloat = POSSpacing.medium
         static let totalsHorizontalSpacing: CGFloat = POSSpacing.large
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()

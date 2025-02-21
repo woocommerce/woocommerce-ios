@@ -3,7 +3,6 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
-    @Environment(\.colorScheme) var colorScheme
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isShowingSendReceiptView: Bool = false
@@ -116,7 +115,6 @@ private extension PointOfSalePaymentSuccessView {
         static let shadowOpacity: CGFloat = 0.16
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)
-        static let headerSpacing: CGFloat = POSSpacing.xLarge
         static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }

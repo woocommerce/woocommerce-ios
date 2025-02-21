@@ -181,14 +181,14 @@ private extension CartView {
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posHeadingBold
-        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let secondaryFont: POSFontStyle = .posBodyMediumRegular()
         static let itemsFont: POSFontStyle = .posBodySmallRegular()
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
         static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
         static let cartAnimation: Animation = .spring(duration: 0.2)
-        static let checkoutButtonVerticalPadding: CGFloat = POSSpacing.medium
+        static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
         static let cartItemSpacing: CGFloat = POSSpacing.small
     }
 

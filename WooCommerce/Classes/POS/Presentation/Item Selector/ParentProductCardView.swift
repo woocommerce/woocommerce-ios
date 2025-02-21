@@ -25,7 +25,7 @@ struct ParentProductCardView: View {
                              scale: 1)
             .frame(width: dimension, height: dimension)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(name)
                     .lineLimit(2)
                     .foregroundStyle(Constants.titleColor)

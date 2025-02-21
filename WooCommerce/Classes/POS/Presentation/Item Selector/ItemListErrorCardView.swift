@@ -12,7 +12,7 @@ struct ItemListErrorCardView: View {
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(errorState.title)
                     .lineLimit(2)
                     .foregroundStyle(Color.posOnSurface)

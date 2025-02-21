@@ -49,7 +49,6 @@ final class TotalsViewHelper {
 
         switch cardState {
         case .idle,
-             .validatingOrder,
              .validatingOrderError,
              .preparingReader,
              .acceptingCard:

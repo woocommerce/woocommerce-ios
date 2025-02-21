@@ -48,7 +48,6 @@ struct TotalsViewHelperTests {
 
     @Test(arguments: [
         (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.idle)),
-        (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.validatingOrder)),
         (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.validatingOrderError)),
         (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.preparingReader)),
         (PointOfSaleOrderState.idle, PointOfSalePaymentState.card(.acceptingCard))
@@ -60,10 +59,8 @@ struct TotalsViewHelperTests {
                                                                          paymentState: paymentState))
     }
 
-
     @Test(arguments: [
         (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.idle)),
-        (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.validatingOrder)),
         (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.validatingOrderError)),
         (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.preparingReader)),
         (PointOfSaleOrderState.syncing, PointOfSalePaymentState.card(.acceptingCard))

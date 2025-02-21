@@ -11,9 +11,11 @@
 - [*] Background image upload: Fix missing error notice in iPhones [https://github.com/woocommerce/woocommerce-ios/pull/15117]
 - [*] Background image upload: Show a notice when the user leaves product details while uploads are pending [https://github.com/woocommerce/woocommerce-ios/pull/15134]
 - [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
+- [*] Product Image Upload: Now, a local notification is scheduled if the app has some image uploads in progress and the app is sent into the background. [https://github.com/woocommerce/woocommerce-ios/pull/15166]
 - [Internal] Improve authentication logic for authenticated web view [https://github.com/woocommerce/woocommerce-ios/pull/15164]
 - [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 - [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [*] Product Images: Improve error handling for product saving [https://github.com/woocommerce/woocommerce-ios/pull/15210]
 - [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
 
 21.7

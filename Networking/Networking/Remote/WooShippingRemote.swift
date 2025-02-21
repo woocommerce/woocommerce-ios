@@ -10,8 +10,8 @@ public protocol WooShippingRemoteProtocol {
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
     func loadPackages(siteID: Int64,
@@ -20,8 +20,8 @@ public protocol WooShippingRemoteProtocol {
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
     func checkLabelStatus(siteID: Int64,
@@ -36,7 +36,7 @@ public protocol WooShippingRemoteProtocol {
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
     func addressValidation(siteID: Int64,
-                           address: ShippingLabelAddress,
+                           address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void)
     func updateOriginAddress(siteID: Int64,
                              address: WooShippingOriginAddress,
@@ -125,8 +125,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func loadLabelRates(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                packages: [ShippingLabelPackageSelected],
                                completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
@@ -206,8 +206,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func purchaseShippingLabel(siteID: Int64,
                                       orderID: Int64,
-                                      originAddress: ShippingLabelAddress,
-                                      destinationAddress: ShippingLabelAddress,
+                                      originAddress: WooShippingAddress,
+                                      destinationAddress: WooShippingAddress,
                                       package: WooShippingPackagePurchase,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         do {
@@ -304,7 +304,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - address: The address that should be verified.
     ///   - completion: Closure to be executed upon completion.
     public func addressValidation(siteID: Int64,
-                                  address: ShippingLabelAddress,
+                                  address: WooShippingAddress,
                                   completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
         do {
             let parameters = [

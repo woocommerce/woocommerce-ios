@@ -135,7 +135,8 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             remote.loadLabelRates(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
-                                  originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
+                                  originAddress: WooShippingAddress.fake(),
+                                  destinationAddress: WooShippingAddress.fake(),
                                   packages: [ShippingLabelPackageSelected.fake()]) { (result) in
                 promise(result)
             }
@@ -155,7 +156,8 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             remote.loadLabelRates(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
-                                  originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
+                                  originAddress: WooShippingAddress.fake(),
+                                  destinationAddress: WooShippingAddress.fake(),
                                   packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
@@ -270,8 +272,8 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
             remote.purchaseShippingLabel(siteID: self.sampleSiteID,
                                          orderID: self.sampleOrderID,
-                                         originAddress: ShippingLabelAddress.fake(),
-                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         originAddress: WooShippingAddress.fake(),
+                                         destinationAddress: WooShippingAddress.fake(),
                                          package: WooShippingPackagePurchase.fake()) { result in
                 promise(result)
             }
@@ -291,8 +293,8 @@ final class WooShippingRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
             remote.purchaseShippingLabel(siteID: self.sampleSiteID,
                                          orderID: self.sampleOrderID,
-                                         originAddress: ShippingLabelAddress.fake(),
-                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         originAddress: WooShippingAddress.fake(),
+                                         destinationAddress: WooShippingAddress.fake(),
                                          package: WooShippingPackagePurchase.fake()) { result in
                 promise(result)
             }
@@ -426,7 +428,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
             remote.addressValidation(siteID: self.sampleSiteID,
-                                     address: ShippingLabelAddress.fake()) { result in
+                                     address: WooShippingAddress.fake()) { result in
                 promise(result)
             }
         }
@@ -447,7 +449,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
             remote.addressValidation(siteID: self.sampleSiteID,
-                                     address: ShippingLabelAddress.fake()) { result in
+                                     address: WooShippingAddress.fake()) { result in
                 promise(result)
             }
         }
@@ -468,7 +470,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // When
         let result: Result<WooShippingAddressValidationSuccess, Error> = waitFor { promise in
             remote.addressValidation(siteID: self.sampleSiteID,
-                                     address: ShippingLabelAddress.fake()) { result in
+                                     address: WooShippingAddress.fake()) { result in
                 promise(result)
             }
         }
@@ -507,6 +509,67 @@ final class WooShippingRemoteTests: XCTestCase {
             remote.updateOriginAddress(siteID: self.sampleSiteID,
                                        address: WooShippingOriginAddress.fake(),
                                        isVerified: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: verifyDestinationAddress
+
+    func test_verifyDestinationAddress_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/\(sampleOrderID)/verify_order", filename: "wooshipping-verify-destination-success")
+
+        // When
+        let result: Result<WooShippingVerifyDestinationAddressSuccess, Error> = waitFor { promise in
+            remote.verifyDestinationAddress(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let validationResponse = try XCTUnwrap(result.get())
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(validationResponse.normalizedAddress)
+        XCTAssertFalse(validationResponse.isTrivialNormalization)
+        XCTAssertFalse(validationResponse.isTrivialNormalization)
+    }
+
+    func test_verifyDestinationAddress_returns_errors_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/\(sampleOrderID)/verify_order", filename: "wooshipping-verify-destination-error")
+
+        // When
+        let result: Result<WooShippingVerifyDestinationAddressSuccess, Error> = waitFor { promise in
+            remote.verifyDestinationAddress(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? WooShippingAddressValidationError)
+        XCTAssertEqual(error.addressError, "House number is missing")
+        XCTAssertEqual(error.generalError, "Address not found")
+        XCTAssertEqual(error.nameError, "Either Name or Company is required")
+    }
+
+    func test_verifyDestinationAddress_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "address/\(sampleOrderID)/verify_order", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingVerifyDestinationAddressSuccess, Error> = waitFor { promise in
+            remote.verifyDestinationAddress(siteID: self.sampleSiteID,
+                                            orderID: self.sampleOrderID) { result in
                 promise(result)
             }
         }

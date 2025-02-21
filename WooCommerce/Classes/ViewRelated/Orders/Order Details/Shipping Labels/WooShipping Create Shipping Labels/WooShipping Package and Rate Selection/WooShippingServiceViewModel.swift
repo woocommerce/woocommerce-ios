@@ -3,8 +3,8 @@ import Yosemite
 final class WooShippingServiceViewModel: ObservableObject {
     private let siteID: Int64
     private let orderID: Int64
-    private let originAddress: ShippingLabelAddress?
-    private let destinationAddress: ShippingLabelAddress?
+    private let originAddress: WooShippingAddress?
+    private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
 
     /// Whether the destination address is present and with non-empty fields.
@@ -36,8 +36,8 @@ final class WooShippingServiceViewModel: ObservableObject {
     let onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)?
 
     init(order: Order,
-         originAddress: ShippingLabelAddress?,
-         destinationAddress: ShippingLabelAddress?,
+         originAddress: WooShippingAddress?,
+         destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID

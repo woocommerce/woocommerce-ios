@@ -20,7 +20,9 @@ extension UIImage {
         return result
     }
 
-    private static func softwareUpdateProgressFill(progress: CGFloat) -> UIImage? {
+    private static func softwareUpdateProgressFill(
+        progress: CGFloat, fillColor: UIColor = Constants.progressColor
+    ) -> UIImage? {
         assert(progress >= 0 && progress <= 1)
         let progress = progress.clamped(to: 0...1)
 
@@ -32,7 +34,7 @@ extension UIImage {
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
-        context.setFillColor(Constants.progressColor.cgColor)
+        context.setFillColor(fillColor.cgColor)
         context.clip(to: clippingRect)
         context.addEllipse(in: rect.insetBy(dx: Constants.borderWidth, dy: Constants.borderWidth))
         context.drawPath(using: .fill)
@@ -49,6 +51,20 @@ extension UIImage {
             symbol
         ].compactMap { $0 }) ?? .init()
     }
+
+    static func posSoftwareUpdateProgress(progress: CGFloat) -> UIImage {
+        let symbol: UIImage =
+            progress == 1 ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow
+        let backgroundImage = UIImage.cardReaderUpdateProgressBackground
+            .withRenderingMode(.alwaysTemplate)
+            .withTintColor(UIColor(.posSecondary))
+        return .composite(
+            images: [
+                backgroundImage,
+                .softwareUpdateProgressFill(progress: progress, fillColor: UIColor(.posPrimary)),
+                symbol.withTintColor(UIColor(.posOnPrimary)),
+            ].compactMap { $0 }) ?? .init()
+    }
 }
 
 private enum Constants {
@@ -63,13 +79,24 @@ struct UpdateProgressImage_Previews: PreviewProvider {
 
         var body: some View {
             VStack {
-                Image(uiImage: UIImage.softwareUpdateProgress(progress: complete))
+                VStack {
+                    Text("Default Style")
+                        .font(.headline)
+                    Image(uiImage: UIImage.softwareUpdateProgress(progress: complete))
+                }
+
+                VStack {
+                    Text("POS Style")
+                        .font(.headline)
+                    Image(uiImage: UIImage.posSoftwareUpdateProgress(progress: complete))
+                }
+
                 Slider(value: $complete, in: 0...1)
             }
+            .padding()
         }
     }
     static var previews: some View {
         UpdateProgressImage()
-            .padding()
     }
 }

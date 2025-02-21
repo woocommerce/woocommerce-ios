@@ -10,8 +10,8 @@ public protocol WooShippingRemoteProtocol {
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
     func loadPackages(siteID: Int64,
@@ -20,8 +20,8 @@ public protocol WooShippingRemoteProtocol {
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
     func checkLabelStatus(siteID: Int64,
@@ -36,12 +36,15 @@ public protocol WooShippingRemoteProtocol {
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void)
     func addressValidation(siteID: Int64,
-                           address: ShippingLabelAddress,
+                           address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void)
     func updateOriginAddress(siteID: Int64,
                              address: WooShippingOriginAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
+    func verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -122,8 +125,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func loadLabelRates(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                packages: [ShippingLabelPackageSelected],
                                completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
@@ -203,8 +206,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func purchaseShippingLabel(siteID: Int64,
                                       orderID: Int64,
-                                      originAddress: ShippingLabelAddress,
-                                      destinationAddress: ShippingLabelAddress,
+                                      originAddress: WooShippingAddress,
+                                      destinationAddress: WooShippingAddress,
                                       package: WooShippingPackagePurchase,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         do {
@@ -301,7 +304,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - address: The address that should be verified.
     ///   - completion: Closure to be executed upon completion.
     public func addressValidation(siteID: Int64,
-                                  address: ShippingLabelAddress,
+                                  address: WooShippingAddress,
                                   completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
         do {
             let parameters = [
@@ -348,6 +351,24 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Verifies the destination address of an order.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - completion: Closure to be executed upon completion.
+    public func verifyDestinationAddress(siteID: Int64,
+                                         orderID: Int64,
+                                         completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
+        let path = Path.verifyOrder(orderID: orderID)
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = WooShippingVerifyDestinationAddressMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -362,6 +383,9 @@ private extension WooShippingRemote {
         static let originAddresses = "address/origins"
         static let normalizeAddress = "address/normalize"
         static let updateOrigin = "address/update_origin"
+        static func verifyOrder(orderID: Int64) -> String {
+            "address/\(orderID)/verify_order"
+        }
     }
 
     enum ParameterKey {

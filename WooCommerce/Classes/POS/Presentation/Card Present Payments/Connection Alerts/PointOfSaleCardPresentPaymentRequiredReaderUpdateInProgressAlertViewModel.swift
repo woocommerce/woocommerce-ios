@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
     let id = UUID()
 
     init(progress: Float, cancel: (() -> Void)?) {
-        self.image = Image(uiImage: .softwareUpdateProgress(progress: CGFloat(progress)))
+        self.image = Image(uiImage: .posSoftwareUpdateProgress(progress: CGFloat(progress)))
         self.progress = progress
         self.progressTitle = String(format: Localization.percentCompleteFormat, 100 * progress)
 

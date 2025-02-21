@@ -542,7 +542,7 @@ struct PointOfSaleAggregateModelTests {
                 Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
                 return
             }
-            #expect(viewModel.message == "A card payment of $52.30 was successfully made")
+            #expect(viewModel.message == "A card payment of $52.30 was successfully made.")
         }
 
         @available(iOS 17.0, *)

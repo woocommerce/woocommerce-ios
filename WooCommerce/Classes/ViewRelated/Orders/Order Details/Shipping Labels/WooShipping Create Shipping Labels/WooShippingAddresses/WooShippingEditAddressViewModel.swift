@@ -439,9 +439,10 @@ extension WooShippingEditAddressViewModel {
                                             selectedState: String?,
                                             originCountryCode: String?,
                                             originStateCode: String?) -> Bool {
-        if addressType == .origin {
+        switch addressType {
+        case .origin:
             return true
-        } else {
+        case .destination:
             return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originCountryCode,
                                                                     originState: originStateCode,
                                                                     destinationCountry: selectedCountryCode,

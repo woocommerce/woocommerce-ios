@@ -6,7 +6,7 @@ import Combine
 /// This class avoid KVO, and uses Combine to handle notifications, and efficiently checks for actual data changes.
 /// We're not using KVO, because `ProductImageStatus` use a swift type (enum), not compatible with Obj-C.
 ///
-final class ProductImagesUserDefaultsStatuses {
+public final class ProductImagesUserDefaultsStatuses {
     private let key: String
     private let userDefaults: UserDefaults
 

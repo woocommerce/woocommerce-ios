@@ -101,22 +101,18 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func deletePackage(siteID: Int64,
                               packageID: String,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
-        do {
-            let path = "\(Path.packages)/\(packageID)"
+        let path = "\(Path.packages)/\(packageID)"
 
-            let request = JetpackRequest(wooApiVersion: .wooShipping,
-                                         method: .delete,
-                                         siteID: siteID,
-                                         path: path,
-                                         parameters: nil,
-                                         availableAsRESTRequest: true)
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
 
-            let mapper = WooShippingCreatePackageMapper()
+        let mapper = WooShippingCreatePackageMapper()
 
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Loads shipping rates for a given order.
@@ -181,20 +177,16 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func loadAccountSettings(siteID: Int64,
                                     completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
-        do {
-            let path = Path.accountSettings
-            let request = JetpackRequest(wooApiVersion: .wooShipping,
-                                         method: .get,
-                                         siteID: siteID,
-                                         path: path,
-                                         availableAsRESTRequest: true)
+        let path = Path.accountSettings
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
 
-            let mapper = WooShippingAccountSettingsMapper(siteID: siteID)
+        let mapper = WooShippingAccountSettingsMapper(siteID: siteID)
 
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Initiates a shipping label purchase.

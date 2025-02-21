@@ -4,7 +4,6 @@ import SwiftUI
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
     let deepLinkNavigator: DeepLinkNavigator?
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     init(isPresented: Binding<Bool>,
          deepLinkNavigator: DeepLinkNavigator? = AppDelegate.shared.tabBarController) {
@@ -20,8 +19,9 @@ struct SimpleProductsOnlyInformation: View {
                     isPresented = false
                 } label: {
                     Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolMedium)
+                        .font(.posButtonSymbolLarge)
                 }
+                .padding(Constants.dismissIconPadding)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
 
@@ -34,26 +34,27 @@ struct SimpleProductsOnlyInformation: View {
                     Text(futureMessage)
                 }
                 .font(.posBodyLargeRegular())
-
-                Spacer().frame(height: POSSpacing.xLarge)
-
-                VStack(spacing: Constants.textSpacing) {
-                    Text(hintMessage)
-                        .font(.posBodySmallRegular())
-
-                    Button {
-                        deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
-                    } label: {
-                        Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posBodySmallRegular())
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Constants.hintVerticalPadding)
-                .padding(.horizontal, Constants.hintHorizontalPadding)
-                .background(Color(.posSurfaceDim))
-                .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             }
+            .foregroundStyle(Color.posOnSurface)
+            .multilineTextAlignment(.center)
+
+            VStack(spacing: Constants.textSpacing) {
+                Text(hintMessage)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurface)
+
+                Button {
+                    deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
+                } label: {
+                    Label(Localization.modalAction, systemImage: "plus")
+                        .font(.posBodySmallRegular())
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Constants.hintVerticalPadding)
+            .padding(.horizontal, Constants.hintHorizontalPadding)
+            .background(Color(.posSurfaceDim))
+            .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             .multilineTextAlignment(.center)
 
             Button(action: {
@@ -91,6 +92,7 @@ private extension SimpleProductsOnlyInformation {
         static let hintBackgroundCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let contentBlockSpacing: CGFloat = POSSpacing.xxLarge
         static let textSpacing: CGFloat = POSSpacing.small
+        static let dismissIconPadding: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 
     enum Localization {

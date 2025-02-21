@@ -24,7 +24,7 @@ struct POSSendReceiptView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xxLarge)) {
+            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
                 POSPageHeaderView(title: Localization.emailReceiptNavigationText,
                                   backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                                  action: {
@@ -34,30 +34,34 @@ struct POSSendReceiptView: View {
                     }
                 }))
 
-                VStack(alignment: .center, spacing: conditionalPadding(POSPadding.xxLarge * 2)) {
-                    TextField("",
-                              text: $textFieldInput,
-                              prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
-                    .foregroundStyle(Color.posOnSurface)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .keyboardType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .multilineTextAlignment(.center)
-                    .font(POSFontStyle.posHeadingRegular)
-                    .focused()
-                    .focused($isTextFieldFocused)
-                    .padding()
-                    .onSubmit {
-                        sendReceipt()
+                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    Spacer()
+
+                    VStack(alignment: .center, spacing: POSSpacing.xSmall) {
+                        TextField("",
+                                  text: $textFieldInput,
+                                  prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .multilineTextAlignment(.center)
+                        .font(POSFontStyle.posHeadingRegular)
+                        .focused()
+                        .focused($isTextFieldFocused)
+                        .onSubmit {
+                            sendReceipt()
+                        }
+
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(POSFontStyle.posBodySmallRegular())
+                                .foregroundColor(.posError)
+                        }
                     }
 
-                    if let errorMessage = errorMessage {
-                        Text(errorMessage)
-                            .font(POSFontStyle.posBodySmallRegular())
-                            .foregroundColor(.posError)
-                            .padding(.bottom, Constants.errorMessagePadding)
-                    }
+                    Spacer()
 
                     Button(action: {
                         sendReceipt()
@@ -114,8 +118,7 @@ struct POSSendReceiptView: View {
 @available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
-        static let errorMessagePadding: CGFloat = POSPadding.small
-        static let minimumPadding: CGFloat = POSPadding.xSmall
+        static let minimumPadding: CGFloat = POSSpacing.xSmall
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {

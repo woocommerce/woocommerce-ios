@@ -1,4 +1,6 @@
 import SwiftUI
+import Combine
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct PointOfSaleCollectCashView: View {
@@ -14,6 +16,10 @@ struct PointOfSaleCollectCashView: View {
     @State private var changeDueMessage: String?
 
     let orderTotal: String
+
+    @State private var buttonFrame: CGRect = .zero
+    @State private var keyboardFrame: CGRect = .zero
+    @State private var shouldMinimizePadding: Bool = false
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
@@ -73,14 +79,16 @@ struct PointOfSaleCollectCashView: View {
                     }, label: {
                         Text(Localization.markPaymentCompletedButtonTitle)
                     })
+                    .measureFrame {
+                        buttonFrame = $0
+                    }
                     .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                     .frame(maxWidth: .infinity)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .disabled(isLoading)
-
-                    Spacer()
                 }
-                .padding([.horizontal, .bottom])
+                .padding([.horizontal])
+                .padding(.bottom, keyboardFrame.height)
             }
             .background(backgroundColor)
             .animation(.easeInOut, value: errorMessage)
@@ -88,6 +96,11 @@ struct PointOfSaleCollectCashView: View {
             .onChange(of: textFieldAmountInput) { _ in
                 errorMessage = nil
             }
+            .onReceive(Publishers.keyboardFrame) {
+                keyboardFrame = $0
+                shouldMinimizePadding = $0.intersects(buttonFrame)
+            }
+            .animation(.default, value: shouldMinimizePadding)
         }
     }
 
@@ -131,13 +144,16 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let navigationButtonSpacing: CGFloat = POSSpacing.small
-        static let navigationHeaderTopPadding: CGFloat = POSPadding.small
         static let errorMessagePadding: CGFloat = POSPadding.small
+        static let minimumPadding: CGFloat = POSPadding.xSmall
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? POSPadding.small : padding
+        if shouldMinimizePadding {
+            return Constants.minimumPadding
+        }
+
+        return padding
     }
 
     private var backgroundColor: Color {

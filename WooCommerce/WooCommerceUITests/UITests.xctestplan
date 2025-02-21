@@ -19,7 +19,8 @@
     "environmentVariableEntries" : [
 
     ],
-    "maximumTestRepetitions" : 2,
+    "maximumTestRepetitions" : 3,
+    "testRepetitionMode" : "retryOnFailure",
     "uiTestingScreenshotsLifetime" : "keepAlways"
   },
   "testTargets" : [

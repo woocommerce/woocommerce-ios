@@ -1,99 +1,147 @@
 import Foundation
+import Combine
 
 /// Save product image upload statuses in User Defaults.
 /// This class is declared in the Networking layer because it will also be accessed by the background URLSession operations.
+/// This class avoid KVO, and uses Combine to handle notifications, and efficiently checks for actual data changes.
+/// We're not using KVO, because `ProductImageStatus` use a swift type (enum), not compatible with Obj-C.
 ///
 final class ProductImagesUserDefaultsStatuses {
-    private static let key = "savedProductUploadImageStatuses"
+    private let key: String
+    private let userDefaults: UserDefaults
 
-    static func addStatus(_ status: ProductImageStatus) {
-        var statuses = getAllStatuses()
-        statuses.append(status)
-        saveAllStatuses(statuses)
+    // Private internal instance for static methods
+    private static let internalInstance = ProductImagesUserDefaultsStatuses()
+
+    // Publisher for observing changes
+    private let statusesSubject: CurrentValueSubject<[ProductImageStatus], Never>
+    private var cancellables = Set<AnyCancellable>()
+
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+
+    var statusesPublisher: AnyPublisher<[ProductImageStatus], Never> {
+        statusesSubject
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
-    static func removeStatus(_ status: ProductImageStatus) {
-        var statuses = getAllStatuses()
-        statuses.removeAll(where: { $0 == status })
-        saveAllStatuses(statuses)
+    init(userDefaults: UserDefaults = .standard,
+         key: String = "savedProductUploadImageStatuses",
+         encoder: JSONEncoder = JSONEncoder(),
+         decoder: JSONDecoder = JSONDecoder()) {
+        self.key = key
+        self.userDefaults = userDefaults
+        self.encoder = encoder
+        self.decoder = decoder
+        self.encoder.dateEncodingStrategy = .iso8601
+        self.decoder.dateDecodingStrategy = .iso8601
+        self.statusesSubject = CurrentValueSubject(Self.loadStatuses(from: userDefaults, key: key, decoder: decoder))
+        setupObservers()
     }
 
-    static func findStatus(where predicate: (ProductImageStatus) -> Bool) -> ProductImageStatus? {
-        return getAllStatuses().first(where: predicate)
+    func addStatus(_ status: ProductImageStatus) {
+        var current = statusesSubject.value
+        current.append(status)
+        saveStatuses(current)
     }
 
-    static func getAllStatuses() -> [ProductImageStatus] {
-        guard let data = UserDefaults.standard.data(forKey: key) else {
-            return []
-        }
-        do {
-            let statuses = try JSONDecoder().decode([ProductImageStatus].self, from: data)
-            return statuses
-        } catch {
-            DDLogError("Error decoding saved product image statuses: \(error)")
-            return []
-        }
+    func removeStatus(_ status: ProductImageStatus) {
+        let current = statusesSubject.value.filter { $0 != status }
+        saveStatuses(current)
     }
 
-    static func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID?) -> [ProductImageStatus] {
-        return getAllStatuses().filter { status in
-            switch status {
-            case .remote(_, let sID, let pID):
-                if let filterProductID = productID {
-                    return sID == siteID && pID == filterProductID
-                } else {
-                    return false
-                }
+    func findStatus(where predicate: (ProductImageStatus) -> Bool) -> ProductImageStatus? {
+        statusesSubject.value.first(where: predicate)
+    }
+
+    func getAllStatuses() -> [ProductImageStatus] {
+        statusesSubject.value
+    }
+
+    func getAllStatuses(for siteID: Int64, productID: ProductOrVariationID?) -> [ProductImageStatus] {
+        statusesSubject.value.filter {
+            switch $0 {
             case .uploading(_, let sID, let pID),
-                 .uploadFailure(_, _, let sID, let pID):
-                if let filterProductID = productID {
-                    return sID == siteID && pID == filterProductID
-                } else {
-                    return sID == siteID && pID == nil
-                }
+                    .uploadFailure(_, _, let sID, let pID):
+                return sID == siteID && (productID == nil || pID == productID)
+            case .remote(_, let sID, let pID):
+                return sID == siteID && pID == productID
             }
         }
     }
 
-    static func clearAllStatuses() {
-        UserDefaults.standard.removeObject(forKey: key)
+    func clearAllStatuses() {
+        userDefaults.removeObject(forKey: key)
+        userDefaults.synchronize()
+        statusesSubject.send([])
     }
 
-    private static func saveAllStatuses(_ statuses: [ProductImageStatus]) {
+    func setAllStatuses(_ statuses: [ProductImageStatus]) {
+        saveStatuses(statuses)
+    }
+
+    func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
+        var filtered = statusesSubject.value.filter {
+            switch $0 {
+            case .uploading(_, let sID, let pID),
+                    .uploadFailure(_, _, let sID, let pID):
+                return sID != siteID || (productID != nil && pID != productID)
+            case .remote(_, let sID, let pID):
+                return sID != siteID || pID != productID
+            }
+        }
+        filtered.append(contentsOf: statuses)
+        saveStatuses(filtered)
+    }
+
+    private func saveStatuses(_ statuses: [ProductImageStatus]) {
         do {
-            let data = try JSONEncoder().encode(statuses)
-            UserDefaults.standard.set(data, forKey: key)
+            let data = try encoder.encode(statuses)
+            userDefaults.set(data, forKey: key)
+            statusesSubject.send(statuses)
         } catch {
-            DDLogError("Error encoding saved product image statuses: \(error)")
+            print("Encoding error in ProductImagesUserDefaultsStatuses: \(error)")
+        }
+    }
+
+    private static func loadStatuses(from userDefaults: UserDefaults, key: String, decoder: JSONDecoder = JSONDecoder()) -> [ProductImageStatus] {
+        guard let data = userDefaults.data(forKey: key) else { return [] }
+        do {
+            return try decoder.decode([ProductImageStatus].self, from: data)
+        } catch {
+            print("Decoding error in ProductImagesUserDefaultsStatuses: \(error)")
+            return []
         }
     }
 }
 
-extension ProductImagesUserDefaultsStatuses {
-    static func setAllStatuses(_ statuses: [ProductImageStatus]) {
-        saveAllStatuses(statuses)
+// Private utility methods to observe changes in UserDefaults
+private extension ProductImagesUserDefaultsStatuses {
+    func setupObservers() {
+        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification, object: userDefaults)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.checkForExternalUpdates()
+            }
+            .store(in: &cancellables)
     }
 
-    static func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
-        // Merge with existing, removing any old statuses for this site/product
-        var all = getAllStatuses().filter { st in
-            switch st {
-            case .remote(_, let sID, let pID):
-                if let filterProductID = productID {
-                    return !(sID == siteID && pID == filterProductID)
-                } else {
-                    return true
+    func checkForExternalUpdates() {
+        let newStatuses = Self.loadStatuses(from: userDefaults, key: key, decoder: decoder)
+
+        // Deep comparison
+        let hasChanges = !newStatuses.elementsEqual(statusesSubject.value) { lhs, rhs in
+                    switch (lhs, rhs) {
+                    case (.remote(let lImg, let lSite, let lProd), .remote(let rImg, let rSite, let rProd)):
+                        return lImg == rImg && lSite == rSite && lProd == rProd
+                    default:
+                        return lhs == rhs
+                    }
                 }
-            case .uploading(_, let sID, let pID),
-                 .uploadFailure(_, _, let sID, let pID):
-                if let filterProductID = productID {
-                    return !(sID == siteID && pID == filterProductID)
-                } else {
-                    return !(sID == siteID && pID == nil)
+
+                if hasChanges {
+                    statusesSubject.send(newStatuses)
                 }
-            }
-        }
-        all.append(contentsOf: statuses)
-        saveAllStatuses(all)
     }
 }

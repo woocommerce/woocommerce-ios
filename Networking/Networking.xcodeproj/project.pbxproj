@@ -519,6 +519,7 @@
 		45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */; };
 		45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ED4F11239E8C57004F1BE3 /* taxes-classes.json */; };
 		45ED4F14239E8F2E004F1BE3 /* TaxRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */; };
+		45EF74E92D668318006F55D5 /* ProductImagesUserDefaultsStatusesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EF74E82D668318006F55D5 /* ProductImagesUserDefaultsStatusesTests.swift */; };
 		57150E1524F462E600E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1424F462E600E81611 /* TestKit */; };
 		5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */; };
 		5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F7332460A8F00031CAAC /* CopiableTests.swift */; };
@@ -1724,6 +1725,7 @@
 		45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapperTest.swift; sourceTree = "<group>"; };
 		45ED4F11239E8C57004F1BE3 /* taxes-classes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "taxes-classes.json"; sourceTree = "<group>"; };
 		45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRemoteTests.swift; sourceTree = "<group>"; };
+		45EF74E82D668318006F55D5 /* ProductImagesUserDefaultsStatusesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesUserDefaultsStatusesTests.swift; sourceTree = "<group>"; };
 		5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		5726F7332460A8F00031CAAC /* CopiableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiableTests.swift; sourceTree = "<group>"; };
 		57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-missing-avatar-urls.json"; sourceTree = "<group>"; };
@@ -2698,6 +2700,14 @@
 			path = Refund;
 			sourceTree = "<group>";
 		};
+		45EF74E72D6682FF006F55D5 /* ProductImageInBackground */ = {
+			isa = PBXGroup;
+			children = (
+				45EF74E82D668318006F55D5 /* ProductImagesUserDefaultsStatusesTests.swift */,
+			);
+			path = ProductImageInBackground;
+			sourceTree = "<group>";
+		};
 		5726F72F2460A83D0031CAAC /* Copiable */ = {
 			isa = PBXGroup;
 			children = (
@@ -2943,6 +2953,7 @@
 				B518662820A09C5D00037A38 /* Remote */,
 				B519A3E82097A91800E2603A /* Requests */,
 				B57B1E6821C925160046E764 /* Validators */,
+				45EF74E72D6682FF006F55D5 /* ProductImageInBackground */,
 				B557D9F3209753AA005962F4 /* Info.plist */,
 			);
 			path = NetworkingTests;
@@ -5543,6 +5554,7 @@
 				EE8C202D2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift in Sources */,
 				CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */,
 				DE2E8EAD295418D8002E4B14 /* WordPressSiteRemoteTests.swift in Sources */,
+				45EF74E92D668318006F55D5 /* ProductImagesUserDefaultsStatusesTests.swift in Sources */,
 				CE070A3C2BBC577700017578 /* GiftCardStatsRemoteTests.swift in Sources */,
 				45D685FC23D0C739005F87D0 /* ProductSkuMapperTests.swift in Sources */,
 				CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */,

@@ -250,6 +250,10 @@ extension WooConstants {
         ///
         case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
 
+        /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
+        ///
+        case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
+
 #if DEBUG
         case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
 #else

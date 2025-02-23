@@ -68,12 +68,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
 
-    func testSignInForWPOrgReturnsVC() {
-        let vc = WordPressAuthenticator.signinForWPOrg()
-
-        XCTAssertTrue(vc is LoginSiteAddressViewController)
-    }
-
     func testShowLoginForJustWPComSetsMetaProperties() throws {
         let presenterSpy = ModalViewControllerPresentingSpy()
         let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
@@ -91,18 +85,6 @@ class WordPressAuthenticatorTests: XCTestCase {
 
         XCTAssertEqual(controller.loginFields.restrictToWPCom, true)
         XCTAssertEqual(controller.loginFields.username, "email-address@example.com")
-    }
-
-    func testShowLoginForSelfHostedSitePresentsCorrectVC() {
-        let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
-            return presenterSpy.presentedVC != nil
-        }), object: .none)
-
-        WordPressAuthenticator.showLoginForSelfHostedSite(presenterSpy)
-        wait(for: [expectation], timeout: timeout)
-
-        XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
 
     func testSignInForWPComWithLoginFieldsReturnsVC() throws {

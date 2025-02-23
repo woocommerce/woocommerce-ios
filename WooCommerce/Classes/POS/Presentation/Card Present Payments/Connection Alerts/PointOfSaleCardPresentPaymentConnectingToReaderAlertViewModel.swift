@@ -2,7 +2,7 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel: Hashable {
     let title = Localization.title
-    let imageName = PointOfSaleAssets.readerConnectionConnecting.imageName
+    let imageName = PointOfSaleAssets.readerConnection.imageName
     let instruction = Localization.instruction
 }
 

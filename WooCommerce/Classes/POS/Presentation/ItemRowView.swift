@@ -46,10 +46,10 @@ struct ItemRowView: View {
                         .font(.posButtonSymbolMedium)
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .padding(.trailing, Constants.cardContentHorizontalPadding)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
         }
+        .padding(.trailing, Constants.cardContentHorizontalPadding)
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
@@ -73,10 +73,10 @@ private extension ItemRowView {
     enum Constants {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
-        static let horizontalPadding: CGFloat = 16
-        static let horizontalElementSpacing: CGFloat = 16
-        static let cardContentHorizontalPadding: CGFloat = 16
-        static let itemTitleAndPriceSpacing: CGFloat = 4
+        static let horizontalPadding: CGFloat = POSPadding.medium
+        static let horizontalElementSpacing: CGFloat = POSSpacing.medium
+        static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
+        static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
         static let itemTitleFont: POSFontStyle = .posBodySmallBold
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()

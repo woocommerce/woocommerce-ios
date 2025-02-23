@@ -41,5 +41,12 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         clearOrderWasCalled = true
     }
 
-    func sendReceipt(recipientEmail: String) async { }
+    var shouldThrowReceiptError: Bool = false
+    var sendReceiptWasCalled: Bool = false
+    func sendReceipt(recipientEmail: String) async throws {
+        sendReceiptWasCalled = true
+        if shouldThrowReceiptError {
+            throw NSError(domain: "some error", code: -1)
+        }
+    }
 }

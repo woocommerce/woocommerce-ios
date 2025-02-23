@@ -500,6 +500,17 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.destinationAddressStatus, .missing)
         XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
+
+    func test_editDestinationAddress_sets_addressToEdit_view_model() throws {
+        // Given
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+
+        // When
+        viewModel.editDestinationAddress()
+
+        // Then
+        XCTAssertNotNil(viewModel.addressToEdit)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

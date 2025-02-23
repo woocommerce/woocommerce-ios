@@ -14,10 +14,14 @@ extension WooShippingOriginAddress {
         [fullName, company].compactMap { $0.isEmpty ? nil : $0 }.joined(separator: "\n")
     }
 
-    /// Returns the first and last name combined.
-    /// If only one name is present, that name is returned.
+    /// Returns the First + LastName combined according to language rules and Locale.
+    ///
     var fullName: String {
-        [firstName, lastName].compactMap { $0.isEmpty ? nil : $0 }.joined(separator: " ")
+        var components = PersonNameComponents()
+        components.givenName = firstName
+        components.familyName = lastName
+
+        return PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: [])
     }
 
     /// Returns the two Address Lines combined (if there are, effectively, two lines).

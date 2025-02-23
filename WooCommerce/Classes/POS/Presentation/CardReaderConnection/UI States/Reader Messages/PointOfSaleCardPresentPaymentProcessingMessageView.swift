@@ -6,13 +6,13 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.headerSpacing) {
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing) {
             ProgressView()
                 .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
-            VStack(alignment: .center, spacing: Layout.textSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnPrimaryContainer)
                     .font(.posBodyLargeRegular())
@@ -31,17 +31,9 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     }
 }
 
-private extension PointOfSaleCardPresentPaymentProcessingMessageView {
-    enum Layout {
-        static let headerSpacing: CGFloat = 48
-        static let textSpacing: CGFloat = 16
-    }
-}
-
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentProcessingMessageView(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel(),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

@@ -1,8 +1,6 @@
 import UIKit
 import SwiftUI
-import WordPressAuthenticator
 import SafariServices
-
 
 /// UI containing modals presented in the Card Present Payments flows.
 final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {

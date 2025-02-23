@@ -8,7 +8,7 @@ import UIKit
 public enum ProductImageStatus: Equatable, Codable {
     /// An image asset is being uploaded.
     ///
-    case uploading(asset: ProductImageAssetType, siteID: Int64, productID: ProductOrVariationID?)
+    case uploading(asset: ProductImageAssetType, siteID: Int64, productID: ProductOrVariationID)
 
     /// The Product image exists remotely.
     ///
@@ -16,7 +16,7 @@ public enum ProductImageStatus: Equatable, Codable {
 
     /// An image asset upload failed.
     ///
-    case uploadFailure(asset: ProductImageAssetType, error: Error, siteID: Int64, productID: ProductOrVariationID?)
+    case uploadFailure(asset: ProductImageAssetType, error: Error, siteID: Int64, productID: ProductOrVariationID)
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -34,7 +34,7 @@ public enum ProductImageStatus: Equatable, Codable {
         case "uploading":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
             let sID = try container.decode(Int64.self, forKey: .siteID)
-            let pID = try container.decodeIfPresent(ProductOrVariationID.self, forKey: .productID)
+            let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
             self = .uploading(asset: asset, siteID: sID, productID: pID)
         case "remote":
             let image = try container.decode(ProductImage.self, forKey: .image)
@@ -46,7 +46,7 @@ public enum ProductImageStatus: Equatable, Codable {
             let errorMessage = try container.decode(String.self, forKey: .error)
             let error = NSError(domain: "ProductImageStatus", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
             let sID = try container.decode(Int64.self, forKey: .siteID)
-            let pID = try container.decodeIfPresent(ProductOrVariationID.self, forKey: .productID)
+            let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
             self = .uploadFailure(asset: asset, error: error, siteID: sID, productID: pID)
         default:
             throw DecodingError.dataCorruptedError(forKey: .type,

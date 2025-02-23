@@ -53,7 +53,7 @@ final class ProductImageUploaderTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID.id),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()
@@ -71,7 +71,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID.id),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: []))
 
@@ -79,7 +79,9 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
-                promise(statuses)
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
             }
         }
         XCTAssertTrue(statuses.hasPendingUpload)

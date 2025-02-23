@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+21.9
+-----
+- [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
+
 21.8
 -----
 - [**] Shipping Labels: resolved issue preventing shipping labels from displaying in some orders when an error occurred during label creation. [https://github.com/woocommerce/woocommerce-ios/pull/15101]
@@ -14,7 +18,6 @@
 - [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
 - [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
 - [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
-- [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 
 21.7
 -----

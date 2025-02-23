@@ -38,22 +38,1770 @@
       }
     },
     {
-      "skippedTests" : [
-        "CardReaderConnectionControllerTests",
-        "InAppPurchaseStoreTests",
-        "InAppPurchaseStoreTests\/test_iap_supported_in_canada()",
-        "InAppPurchaseStoreTests\/test_iap_supported_in_us()",
-        "InAppPurchaseStoreTests\/test_load_products_fails_if_iap_unsupported()",
-        "InAppPurchaseStoreTests\/test_load_products_loads_products_response()",
-        "InAppPurchaseStoreTests\/test_purchase_product_completes_purchase()",
-        "InAppPurchaseStoreTests\/test_purchase_product_ensure_xcode_environment()",
-        "InAppPurchaseStoreTests\/test_purchase_product_handles_api_errors()",
-        "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
-        "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
-        "StorePerformanceViewModelTests\/test_dates_for_custom_range_are_correct_for_non_custom_time_range()",
-        "StripeCardReaderIntegrationTests",
-        "TopPerformersDashboardViewModelTests\/test_dates_for_custom_range_are_correct_for_non_custom_time_range()"
-      ],
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "EditStoreListViewModelTests"
+          },
+          {
+            "name" : "LearnMoreViewModelTests"
+          },
+          {
+            "name" : "LocationServiceTests"
+          },
+          {
+            "name" : "OrderCustomAmountsSectionViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleAggregateModelTests"
+          },
+          {
+            "name" : "PointOfSaleItemsControllerTests"
+          },
+          {
+            "name" : "PointOfSaleOrderControllerTests"
+          },
+          {
+            "name" : "POSCollectOrderPaymentAnalyticsTests"
+          },
+          {
+            "name" : "ReceiptEmailViewModelTests"
+          },
+          {
+            "name" : "TapToPayAwarenessMomentDeterminerTests"
+          },
+          {
+            "name" : "TapToPayEducationViewModelTests"
+          },
+          {
+            "name" : "ThresholdInfiniteScrollTriggerDeterminerTests"
+          },
+          {
+            "name" : "TotalsViewHelperTests"
+          }
+        ],
+        "xctestClasses" : [
+          {
+            "name" : "AccountCreationFormViewModelTests"
+          },
+          {
+            "name" : "AddAttributeOptionsViewModelTests"
+          },
+          {
+            "name" : "AddAttributeViewModelTests"
+          },
+          {
+            "name" : "AddCustomAmountViewModelTests"
+          },
+          {
+            "name" : "AddEditCouponViewModelTests"
+          },
+          {
+            "name" : "AddEditProductCategoryViewModelTests"
+          },
+          {
+            "name" : "AddManualCustomTrackingViewModelTests"
+          },
+          {
+            "name" : "AddManualTrackingViewModelTests"
+          },
+          {
+            "name" : "AddOnCrossreferenceTests"
+          },
+          {
+            "name" : "AddProductCoordinatorTests"
+          },
+          {
+            "name" : "AddProductImageCollectionViewCellTests"
+          },
+          {
+            "name" : "AddProductWithAIContainerViewModelTests"
+          },
+          {
+            "name" : "AddressWooTests"
+          },
+          {
+            "name" : "AdminRoleRequiredViewModelTests"
+          },
+          {
+            "name" : "AggregateDataHelperTests"
+          },
+          {
+            "name" : "AggregatedShippingLabelOrderItemsTests"
+          },
+          {
+            "name" : "AIToneVoiceViewModelTests"
+          },
+          {
+            "name" : "AnalyticsHubCustomizeViewModelTests"
+          },
+          {
+            "name" : "AnalyticsHubTimeRangeSelectionTests"
+          },
+          {
+            "name" : "AnalyticsHubViewModelTests"
+          },
+          {
+            "name" : "AnalyticsReportLinkViewModelTests"
+          },
+          {
+            "name" : "AnalyticsWebReportTests"
+          },
+          {
+            "name" : "AppCoordinatorTests"
+          },
+          {
+            "name" : "ApplicationLogViewModelTests"
+          },
+          {
+            "name" : "ApplicationPasswordDisabledViewModelTests"
+          },
+          {
+            "name" : "AppRatingManagerTests"
+          },
+          {
+            "name" : "AppStartupWaitingTimeTrackerTests"
+          },
+          {
+            "name" : "ArrayIndexPathTests"
+          },
+          {
+            "name" : "AsyncDictionaryTests"
+          },
+          {
+            "name" : "AttributeOptionListSelectorCommandTests"
+          },
+          {
+            "name" : "AttributePickerViewModelTests"
+          },
+          {
+            "name" : "AuthenticationManagerTests"
+          },
+          {
+            "name" : "AztecBlockquoteFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecBoldFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecHeaderFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecHorizontalRulerFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecInsertMoreFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecItalicFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecLinkFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecSourceCodeFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecStrikethroughFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecUnderlineFormatBarCommandTests"
+          },
+          {
+            "name" : "AztecUnorderedListFormatBarCommandTests"
+          },
+          {
+            "name" : "BarcodeScannerErrorNoticeFactoryTests"
+          },
+          {
+            "name" : "BarcodeScannerFrameScalerTests"
+          },
+          {
+            "name" : "BarcodeScannerItemFinderTests"
+          },
+          {
+            "name" : "BetaFeaturesConfigurationViewModelTests"
+          },
+          {
+            "name" : "BetaFeaturesTests"
+          },
+          {
+            "name" : "BillingAddressTableViewCellTests"
+          },
+          {
+            "name" : "BlazeAdDestinationSettingViewModelTests"
+          },
+          {
+            "name" : "BlazeAddParameterViewModelTests"
+          },
+          {
+            "name" : "BlazeAddPaymentMethodWebViewModelTests"
+          },
+          {
+            "name" : "BlazeBudgetSettingViewModelTests"
+          },
+          {
+            "name" : "BlazeCampaignCreationCoordinatorTests"
+          },
+          {
+            "name" : "BlazeCampaignCreationFormViewModelTests"
+          },
+          {
+            "name" : "BlazeCampaignDashboardViewModelTests"
+          },
+          {
+            "name" : "BlazeCampaignDetailWebViewModelTests"
+          },
+          {
+            "name" : "BlazeCampaignListItemCustomizationsTests"
+          },
+          {
+            "name" : "BlazeCampaignListViewModelTests"
+          },
+          {
+            "name" : "BlazeCampaignObjectivePickerViewModelTests"
+          },
+          {
+            "name" : "BlazeConfirmPaymentViewModelTests"
+          },
+          {
+            "name" : "BlazeCreateCampaignIntroViewModelTests"
+          },
+          {
+            "name" : "BlazeEditAdViewModelTests"
+          },
+          {
+            "name" : "BlazeEligibilityCheckerTests"
+          },
+          {
+            "name" : "BlazeLocalNotificationSchedulerTests"
+          },
+          {
+            "name" : "BlazePaymentMethodsViewModelTests"
+          },
+          {
+            "name" : "BlazeTargetDeviceViewModelTests"
+          },
+          {
+            "name" : "BlazeTargetLanguagePickerViewModelTests"
+          },
+          {
+            "name" : "BlazeTargetLocationPickerViewModelTests"
+          },
+          {
+            "name" : "BlazeTargetTopicPickerViewModelTests"
+          },
+          {
+            "name" : "BluetoothCardReaderSettingsConnectedViewModelTests"
+          },
+          {
+            "name" : "BoldableTextParserTests"
+          },
+          {
+            "name" : "BottomSheetPresenterTests"
+          },
+          {
+            "name" : "BulkUpdateOptionsModelTests"
+          },
+          {
+            "name" : "BulkUpdatePriceSettingsViewModelTests"
+          },
+          {
+            "name" : "BulkUpdatePriceViewControllerTests"
+          },
+          {
+            "name" : "BulkUpdateViewControllerTests"
+          },
+          {
+            "name" : "BulkUpdateViewModelTests"
+          },
+          {
+            "name" : "BundledProductsListViewModelTests"
+          },
+          {
+            "name" : "BundleWooTests"
+          },
+          {
+            "name" : "CardPresentConfigurationLoaderTests"
+          },
+          {
+            "name" : "CardPresentModalBluetoothRequiredTests"
+          },
+          {
+            "name" : "CardPresentModalConnectingFailedTests"
+          },
+          {
+            "name" : "CardPresentModalConnectingToReaderTests"
+          },
+          {
+            "name" : "CardPresentModalDisplayMessageTests"
+          },
+          {
+            "name" : "CardPresentModalErrorTests"
+          },
+          {
+            "name" : "CardPresentModalFoundReaderTests"
+          },
+          {
+            "name" : "CardPresentModalNonRetryableErrorTests"
+          },
+          {
+            "name" : "CardPresentModalProcessingTests"
+          },
+          {
+            "name" : "CardPresentModalScanningFailedTests"
+          },
+          {
+            "name" : "CardPresentModalScanningForReaderTests"
+          },
+          {
+            "name" : "CardPresentModalSuccessTests"
+          },
+          {
+            "name" : "CardPresentModalSuccessWithoutEmailTests"
+          },
+          {
+            "name" : "CardPresentModalTapCardTests"
+          },
+          {
+            "name" : "CardPresentPaymentOnboardingViewModelTests"
+          },
+          {
+            "name" : "CardPresentPaymentReceiptEmailCoordinatorTests"
+          },
+          {
+            "name" : "CardPresentPaymentRetryApproachTests"
+          },
+          {
+            "name" : "CardPresentPaymentsModalButtonViewModelTests"
+          },
+          {
+            "name" : "CardPresentPaymentsModalViewControllerTests"
+          },
+          {
+            "name" : "CardPresentPaymentsOnboardingIPPUsersRefresherTests"
+          },
+          {
+            "name" : "CardPresentPaymentsOnboardingUseCaseTests"
+          },
+          {
+            "name" : "CardPresentPluginsDataProviderTests"
+          },
+          {
+            "name" : "CardReaderConnectionControllerTests"
+          },
+          {
+            "name" : "CardReaderManualsViewModelTests"
+          },
+          {
+            "name" : "CardReaderSettingsKnownReadersStorageTests"
+          },
+          {
+            "name" : "CardReaderSettingsSearchingViewModelTests"
+          },
+          {
+            "name" : "CaseIterable_HelpersTests"
+          },
+          {
+            "name" : "CashPaymentTenderViewModelTests"
+          },
+          {
+            "name" : "CloseAccountCoordinatorTests"
+          },
+          {
+            "name" : "CollapsibleProductCardPriceSummaryViewModelTests"
+          },
+          {
+            "name" : "CollapsibleProductRowCardViewModelTests"
+          },
+          {
+            "name" : "Collection_ShippingLabelTests"
+          },
+          {
+            "name" : "CollectOrderPaymentUseCaseTests"
+          },
+          {
+            "name" : "ComponentSettingsViewModelTests"
+          },
+          {
+            "name" : "ComponentsListViewModelTests"
+          },
+          {
+            "name" : "ConfigurableBundleItemViewModelTests"
+          },
+          {
+            "name" : "ConfigurableBundleProductViewModelTests"
+          },
+          {
+            "name" : "ConfigurableVariableBundleAttributePickerViewModelTests"
+          },
+          {
+            "name" : "CountryCode_FlagEmojiTests"
+          },
+          {
+            "name" : "CountrySelectorViewModelTests"
+          },
+          {
+            "name" : "CouponAllowedEmailsViewModelTests"
+          },
+          {
+            "name" : "CouponAmountInputFormatterTests"
+          },
+          {
+            "name" : "CouponCodeInputFormatterTests"
+          },
+          {
+            "name" : "CouponDetailsViewModelTests"
+          },
+          {
+            "name" : "CouponInputTransformerTests"
+          },
+          {
+            "name" : "CouponLineDetailsViewModelTests"
+          },
+          {
+            "name" : "CouponListViewModelTests"
+          },
+          {
+            "name" : "CouponRestrictionsViewModelTests"
+          },
+          {
+            "name" : "CouponWooTests"
+          },
+          {
+            "name" : "CreateOrderAddressFormViewModelTests"
+          },
+          {
+            "name" : "CurrencyFormatterTests"
+          },
+          {
+            "name" : "CurrencySettingsTests"
+          },
+          {
+            "name" : "CustomerDetailViewModelTests"
+          },
+          {
+            "name" : "CustomerInfoTableViewCellTests"
+          },
+          {
+            "name" : "CustomerListViewModelTests"
+          },
+          {
+            "name" : "CustomerNoteTableViewCellTests"
+          },
+          {
+            "name" : "CustomerSearchUICommandTests"
+          },
+          {
+            "name" : "CustomerSelectorViewModelTests"
+          },
+          {
+            "name" : "CustomFieldEditorViewModelTests"
+          },
+          {
+            "name" : "CustomFieldsListViewModelTests"
+          },
+          {
+            "name" : "CustomFieldViewModelTests"
+          },
+          {
+            "name" : "CustomHelpCenterContentTests"
+          },
+          {
+            "name" : "DashboardCustomizationViewModelTests"
+          },
+          {
+            "name" : "DashboardTimestampStoreTests"
+          },
+          {
+            "name" : "DashboardViewModelTests"
+          },
+          {
+            "name" : "DataWooTests"
+          },
+          {
+            "name" : "DatePickerTableViewCellTests"
+          },
+          {
+            "name" : "DateWooTests"
+          },
+          {
+            "name" : "DecimalWooTests"
+          },
+          {
+            "name" : "DefaultConnectivityObserverTests"
+          },
+          {
+            "name" : "DefaultFavoriteProductsUseCaseTests"
+          },
+          {
+            "name" : "DefaultGoogleAdsEligibilityCheckerTests"
+          },
+          {
+            "name" : "DefaultImageServiceTests"
+          },
+          {
+            "name" : "DefaultProductFormTableViewModelTests"
+          },
+          {
+            "name" : "DefaultShareProductAIEligibilityCheckerTests"
+          },
+          {
+            "name" : "DefaultShippingValueLocalizerTests"
+          },
+          {
+            "name" : "DefaultThemeInstallerTests"
+          },
+          {
+            "name" : "DeveloperEmailCheckerTests"
+          },
+          {
+            "name" : "Dictionary_LoggingTests"
+          },
+          {
+            "name" : "DictionaryWooTests"
+          },
+          {
+            "name" : "DiscountTypeBottomSheetListSelectorCommandTests"
+          },
+          {
+            "name" : "DomainContactInfoFormViewModelTests"
+          },
+          {
+            "name" : "DomainSettingsViewModelTests"
+          },
+          {
+            "name" : "Double_RoundingTests"
+          },
+          {
+            "name" : "DoubleWooTests"
+          },
+          {
+            "name" : "DownloadableFileBottomSheetListSelectorCommandTests"
+          },
+          {
+            "name" : "EditableOrderShippingLineViewModelTests"
+          },
+          {
+            "name" : "EditableOrderViewModelTests"
+          },
+          {
+            "name" : "EditableProductVariationModelTests"
+          },
+          {
+            "name" : "EditAttributesViewModelTests"
+          },
+          {
+            "name" : "EditCustomerNoteViewModelTests"
+          },
+          {
+            "name" : "EditOrderAddressFormViewModelTests"
+          },
+          {
+            "name" : "EditOrderFormTests"
+          },
+          {
+            "name" : "EditProductCategoryListViewModelTests"
+          },
+          {
+            "name" : "EmptyListMessageWithActionTests"
+          },
+          {
+            "name" : "EmptyStateViewControllerTests"
+          },
+          {
+            "name" : "EnableAnalyticsViewModelTests"
+          },
+          {
+            "name" : "ErrorTopBannerFactoryTests"
+          },
+          {
+            "name" : "EUCustomsScenarioValidatorTests"
+          },
+          {
+            "name" : "ExtendedAddProductImageCollectionViewCellTests"
+          },
+          {
+            "name" : "FeatureAnnouncementCardViewModelTests"
+          },
+          {
+            "name" : "FeatureFlagTests"
+          },
+          {
+            "name" : "FeeOrDiscountLineDetailsViewModelTests"
+          },
+          {
+            "name" : "FeesInputTransformerTests"
+          },
+          {
+            "name" : "FilterOrderListViewModelTests"
+          },
+          {
+            "name" : "FilterProductCategoryListViewModelTests"
+          },
+          {
+            "name" : "FilterProductListViewModel_numberOfActiveFiltersTests"
+          },
+          {
+            "name" : "FilterProductListViewModelProductListFilterTests"
+          },
+          {
+            "name" : "FilterProductListViewModelTests"
+          },
+          {
+            "name" : "FirstProductCreatedViewModelTests"
+          },
+          {
+            "name" : "FormattableAmountTextFieldViewModelTests"
+          },
+          {
+            "name" : "FreeDomainSelectorViewModelTests"
+          },
+          {
+            "name" : "FreeTrialBannerViewModelTests"
+          },
+          {
+            "name" : "GenerateAllVariationsUseCaseTests"
+          },
+          {
+            "name" : "GenerateVariationUseCaseTests"
+          },
+          {
+            "name" : "GiftCardInputViewModelTests"
+          },
+          {
+            "name" : "GiftCardsReportCardViewModelTests"
+          },
+          {
+            "name" : "GoogleAdsCampaignCoordinatorTests"
+          },
+          {
+            "name" : "GoogleAdsCampaignReportCardViewModelTests"
+          },
+          {
+            "name" : "GoogleAdsDashboardCardViewModelTests"
+          },
+          {
+            "name" : "HelpAndSupportViewModelTests"
+          },
+          {
+            "name" : "HubMenuCoordinatorTests"
+          },
+          {
+            "name" : "HubMenuViewModelTests"
+          },
+          {
+            "name" : "IconsTests"
+          },
+          {
+            "name" : "ImageTextScannerTests"
+          },
+          {
+            "name" : "InAppPurchaseStoreTests"
+          },
+          {
+            "name" : "InboxDashboardCardViewModelTests"
+          },
+          {
+            "name" : "InboxEligibilityUseCaseTests"
+          },
+          {
+            "name" : "InboxNoteRowViewModelTests"
+          },
+          {
+            "name" : "InboxViewModelTests"
+          },
+          {
+            "name" : "InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests"
+          },
+          {
+            "name" : "InPersonPaymentsCashOnDeliveryToggleRowViewModelTests"
+          },
+          {
+            "name" : "InPersonPaymentsMenuViewModelTests"
+          },
+          {
+            "name" : "IntegerInputFormatterTests"
+          },
+          {
+            "name" : "IssueRefundViewModelTests"
+          },
+          {
+            "name" : "JCPJetpackInstallStepsViewModelTests"
+          },
+          {
+            "name" : "JetpackBenefitsViewModelTests"
+          },
+          {
+            "name" : "JetpackConnectionWebViewModelTests"
+          },
+          {
+            "name" : "JetpackErrorViewModelTests"
+          },
+          {
+            "name" : "JetpackInstallStepTests"
+          },
+          {
+            "name" : "JetpackSetupCoordinatorTests"
+          },
+          {
+            "name" : "JetpackSetupHostingControllerTests"
+          },
+          {
+            "name" : "JetpackSetupRequiredViewModelTests"
+          },
+          {
+            "name" : "JetpackSetupViewModelTests"
+          },
+          {
+            "name" : "JetpackSetupWebViewModelTests"
+          },
+          {
+            "name" : "JustInTimeMessageViewModelTests"
+          },
+          {
+            "name" : "KeyboardFrameObserverTests"
+          },
+          {
+            "name" : "KeyboardStateProviderTests"
+          },
+          {
+            "name" : "LastOrdersDashboardCardViewModelTests"
+          },
+          {
+            "name" : "LedgerTableViewCellTests"
+          },
+          {
+            "name" : "LegacyReceiptViewModelTests"
+          },
+          {
+            "name" : "LinkedProductListSelectorDataSourceTests"
+          },
+          {
+            "name" : "LinkedProductsViewModelTests"
+          },
+          {
+            "name" : "LocallyStoredStateNameRetrieverTests"
+          },
+          {
+            "name" : "LocalNotificationSchedulerTests"
+          },
+          {
+            "name" : "LoggedOutAppSettingsTests"
+          },
+          {
+            "name" : "MainTabBarControllerTests"
+          },
+          {
+            "name" : "MainTabViewModelTests"
+          },
+          {
+            "name" : "ManualTrackingViewControllerTests"
+          },
+          {
+            "name" : "MarkOrderAsReadUseCaseTests"
+          },
+          {
+            "name" : "MediaPickingCoordinatorTests"
+          },
+          {
+            "name" : "MostActiveCouponsCardViewModelTests"
+          },
+          {
+            "name" : "NewOrderInitialStatusResolverTests"
+          },
+          {
+            "name" : "NewTaxRateSelectorViewModelTests"
+          },
+          {
+            "name" : "NonAtomicSiteViewModelTests"
+          },
+          {
+            "name" : "NoteWooTests"
+          },
+          {
+            "name" : "NotWPAccountViewModelTests"
+          },
+          {
+            "name" : "NotWPErrorViewModelTests"
+          },
+          {
+            "name" : "NoWooErrorViewModelTests"
+          },
+          {
+            "name" : "NSAttributedString_AttributesTests"
+          },
+          {
+            "name" : "NSAttributedStringHelperTests"
+          },
+          {
+            "name" : "NSDecimalNumberWooTests"
+          },
+          {
+            "name" : "NSMutableAttributedStringHelperTests"
+          },
+          {
+            "name" : "NumberFormatter_LocalizedTests"
+          },
+          {
+            "name" : "NumberFormatterLocalizedOrNinetyNinePlusTests"
+          },
+          {
+            "name" : "Optional_StringTests"
+          },
+          {
+            "name" : "OrderAddOnListI1Tests"
+          },
+          {
+            "name" : "OrderAttributionInfo_OriginTests"
+          },
+          {
+            "name" : "OrderDateRangeFilterTests"
+          },
+          {
+            "name" : "OrderDetailsDataSourceTests"
+          },
+          {
+            "name" : "OrderDetailsViewControllerTests"
+          },
+          {
+            "name" : "OrderDetailsViewModelTests"
+          },
+          {
+            "name" : "OrderFulfillmentUseCaseTests"
+          },
+          {
+            "name" : "OrderListCellViewModelTests"
+          },
+          {
+            "name" : "OrderListSyncActionUseCaseTests"
+          },
+          {
+            "name" : "OrderListViewModelTests"
+          },
+          {
+            "name" : "OrderNoteWooTests"
+          },
+          {
+            "name" : "OrderNotificationViewModelTests"
+          },
+          {
+            "name" : "OrderPaymentDetailsViewModelTests"
+          },
+          {
+            "name" : "OrderRefundsOptionsDeterminerTests"
+          },
+          {
+            "name" : "OrderSearchUICommandTests"
+          },
+          {
+            "name" : "OrdersReportCardViewModelTests"
+          },
+          {
+            "name" : "OrdersRouteTests"
+          },
+          {
+            "name" : "OrderStatusListDataSourceTests"
+          },
+          {
+            "name" : "OrderStatusListViewModelTests"
+          },
+          {
+            "name" : "OrderTotalsCalculatorTests"
+          },
+          {
+            "name" : "OrderTrackingTableViewCellTests"
+          },
+          {
+            "name" : "PaginatedListViewControllerStateCoordinatorTests"
+          },
+          {
+            "name" : "PaginatedProductShippingClassListSelectorDataSourceTests"
+          },
+          {
+            "name" : "PaginationTrackerTests"
+          },
+          {
+            "name" : "PaidDomainSelectorDataProviderTests"
+          },
+          {
+            "name" : "PaymentCaptureOrchestratorTests"
+          },
+          {
+            "name" : "PaymentMethodsViewModelTests"
+          },
+          {
+            "name" : "PaymentReceiptEmailParameterDeterminerTests"
+          },
+          {
+            "name" : "PaymentsRouteTests"
+          },
+          {
+            "name" : "PluginDetailsViewModelTests"
+          },
+          {
+            "name" : "PluginListViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleAssetsTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentEventPresentationStyleTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentOnboardingViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests"
+          },
+          {
+            "name" : "PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests"
+          },
+          {
+            "name" : "POSEligibilityCheckerTests"
+          },
+          {
+            "name" : "PostSiteCredentialLoginCheckerTests"
+          },
+          {
+            "name" : "PriceFieldFormatterTests"
+          },
+          {
+            "name" : "PriceInputFormatterTests"
+          },
+          {
+            "name" : "PriceInputViewControllerTests"
+          },
+          {
+            "name" : "PriceInputViewModelTests"
+          },
+          {
+            "name" : "PrintShippingLabelCoordinatorTests"
+          },
+          {
+            "name" : "PrintShippingLabelViewModelTests"
+          },
+          {
+            "name" : "PrivacyBannerPresentationUseCaseTests"
+          },
+          {
+            "name" : "PrivacyBannerViewModelTest"
+          },
+          {
+            "name" : "Product_ProductFormTests"
+          },
+          {
+            "name" : "Product_ShippingTests"
+          },
+          {
+            "name" : "ProductAddOnViewModelTests"
+          },
+          {
+            "name" : "ProductBackordersSettingListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductCategoryListViewModelTests"
+          },
+          {
+            "name" : "ProductCategorySelectorViewModelTests"
+          },
+          {
+            "name" : "ProductCategoryViewModelBuilderTests"
+          },
+          {
+            "name" : "ProductCreationAIEligibilityCheckerTests"
+          },
+          {
+            "name" : "ProductCreationAIPromptProgressBarViewModelTests"
+          },
+          {
+            "name" : "ProductCreationAIStartingInfoViewModelTests"
+          },
+          {
+            "name" : "ProductDescriptionAICoordinatorTests"
+          },
+          {
+            "name" : "ProductDescriptionAITooltipUseCaseTests"
+          },
+          {
+            "name" : "ProductDescriptionGenerationViewModelTests"
+          },
+          {
+            "name" : "ProductDetailPreviewViewModelTests"
+          },
+          {
+            "name" : "ProductDetailsCellViewModelTests"
+          },
+          {
+            "name" : "ProductDetailsFactoryTests"
+          },
+          {
+            "name" : "ProductDownloadFileViewModelTests"
+          },
+          {
+            "name" : "ProductDownloadListViewModelTests"
+          },
+          {
+            "name" : "ProductDownloadSettingsViewModelTests"
+          },
+          {
+            "name" : "ProductFactoryTests"
+          },
+          {
+            "name" : "ProductFormActionsFactory_NonEmptyBottomSheetActionsTests"
+          },
+          {
+            "name" : "ProductFormActionsFactory_ProductCreationTests"
+          },
+          {
+            "name" : "ProductFormActionsFactory_ReadonlyProductTests"
+          },
+          {
+            "name" : "ProductFormActionsFactory_VisibilityTests"
+          },
+          {
+            "name" : "ProductFormActionsFactoryTests"
+          },
+          {
+            "name" : "ProductFormAIEligibilityCheckerTests"
+          },
+          {
+            "name" : "ProductFormBottomSheetListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductFormRemoteActionUseCaseTests"
+          },
+          {
+            "name" : "ProductFormViewController_ProductImageUploaderTests"
+          },
+          {
+            "name" : "ProductFormViewModel_ChangesTests"
+          },
+          {
+            "name" : "ProductFormViewModel_ObservablesTests"
+          },
+          {
+            "name" : "ProductFormViewModel_SaveTests"
+          },
+          {
+            "name" : "ProductFormViewModel_UpdatesTests"
+          },
+          {
+            "name" : "ProductFormViewModelTests"
+          },
+          {
+            "name" : "ProductImageActionHandlerTests"
+          },
+          {
+            "name" : "ProductImageCollectionViewCellTests"
+          },
+          {
+            "name" : "ProductImagePickerViewModelTests"
+          },
+          {
+            "name" : "ProductImagesProductIDUpdaterTests"
+          },
+          {
+            "name" : "ProductImagesSaverTests"
+          },
+          {
+            "name" : "ProductImageStatus_HelpersTests"
+          },
+          {
+            "name" : "ProductImageUploaderTests"
+          },
+          {
+            "name" : "ProductInputTransformerTests"
+          },
+          {
+            "name" : "ProductInventorySettingsViewModel_VariationTests"
+          },
+          {
+            "name" : "ProductInventorySettingsViewModelTests"
+          },
+          {
+            "name" : "ProductListMultiSelectorDataSourceTests"
+          },
+          {
+            "name" : "ProductListMultiSelectorSearchUICommandTests"
+          },
+          {
+            "name" : "ProductListViewModelTests"
+          },
+          {
+            "name" : "ProductLoaderViewControllerModelTests"
+          },
+          {
+            "name" : "ProductPasswordEligibilityUseCaseTests"
+          },
+          {
+            "name" : "ProductPriceSettingsValidatorTests"
+          },
+          {
+            "name" : "ProductPriceSettingsViewModel_ProductVariationTests"
+          },
+          {
+            "name" : "ProductPriceSettingsViewModelTests"
+          },
+          {
+            "name" : "ProductReviewsViewModelTests"
+          },
+          {
+            "name" : "ProductReviewTableViewCellTests"
+          },
+          {
+            "name" : "ProductRowViewModelTests"
+          },
+          {
+            "name" : "ProductSearchUICommandTests"
+          },
+          {
+            "name" : "ProductSelectorViewModelTests"
+          },
+          {
+            "name" : "ProductSettingsRowsTests"
+          },
+          {
+            "name" : "ProductSettingsSectionsTests"
+          },
+          {
+            "name" : "ProductSettingsViewModelTests"
+          },
+          {
+            "name" : "ProductSharingMessageGenerationViewModelTests"
+          },
+          {
+            "name" : "ProductShippingSettingsViewModel_ProductVariationTests"
+          },
+          {
+            "name" : "ProductShippingSettingsViewModelTests"
+          },
+          {
+            "name" : "ProductSKUBarcodeScannerCoordinatorTests"
+          },
+          {
+            "name" : "ProductsReportCardViewModelTests"
+          },
+          {
+            "name" : "ProductsSortOrderBottomSheetListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductsTabProductViewModel_VariationTests"
+          },
+          {
+            "name" : "ProductsTabProductViewModelTests"
+          },
+          {
+            "name" : "ProductStatusSettingListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductStepperViewModelTests"
+          },
+          {
+            "name" : "ProductStockDashboardCardViewModelTests"
+          },
+          {
+            "name" : "ProductStockStatusListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductsTopBannerFactoryTests"
+          },
+          {
+            "name" : "ProductSubscriptionPeriodPickerUseCaseTests"
+          },
+          {
+            "name" : "ProductTaxClassListSelectorDataSourceTests"
+          },
+          {
+            "name" : "ProductTaxStatusListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductTypeBottomSheetListSelectorCommandTests"
+          },
+          {
+            "name" : "ProductUIImageLoaderTests"
+          },
+          {
+            "name" : "ProductVariation_ProductFormTests"
+          },
+          {
+            "name" : "ProductVariationDetailsFactoryTests"
+          },
+          {
+            "name" : "ProductVariationFormActionsFactory_ReadonlyVariationTests"
+          },
+          {
+            "name" : "ProductVariationFormActionsFactoryTests"
+          },
+          {
+            "name" : "ProductVariationFormatterTests"
+          },
+          {
+            "name" : "ProductVariationFormViewModel_ChangesTests"
+          },
+          {
+            "name" : "ProductVariationFormViewModel_ImageUploaderTests"
+          },
+          {
+            "name" : "ProductVariationFormViewModel_ObservablesTests"
+          },
+          {
+            "name" : "ProductVariationFormViewModel_UpdatesTests"
+          },
+          {
+            "name" : "ProductVariationFormViewModelTests"
+          },
+          {
+            "name" : "ProductVariationGeneratorTests"
+          },
+          {
+            "name" : "ProductVariationLoadUseCaseTests"
+          },
+          {
+            "name" : "ProductVariationSelectorViewModelTests"
+          },
+          {
+            "name" : "ProductVariationsViewModelTests"
+          },
+          {
+            "name" : "ProductVisibilityTests"
+          },
+          {
+            "name" : "ProductWithQuantityStepperViewModelTests"
+          },
+          {
+            "name" : "Publisher_WithLatestFromTests"
+          },
+          {
+            "name" : "PushNotificationBackgroundSynchronizerTests"
+          },
+          {
+            "name" : "PushNotificationsManagerTests"
+          },
+          {
+            "name" : "PushNotificationTests"
+          },
+          {
+            "name" : "QuantityRulesViewModelTests"
+          },
+          {
+            "name" : "ReceiptActionCoordinatorTests"
+          },
+          {
+            "name" : "ReceiptEligibilityUseCaseTests"
+          },
+          {
+            "name" : "ReceiptViewModelTests"
+          },
+          {
+            "name" : "RefundConfirmationViewModelTests"
+          },
+          {
+            "name" : "RefundCreationUseCaseTests"
+          },
+          {
+            "name" : "RefundFeesDetailsViewModelTests"
+          },
+          {
+            "name" : "RefundItemQuantityListSelectorCommandTests"
+          },
+          {
+            "name" : "RefundItemsValuesCalculationUseCaseTests"
+          },
+          {
+            "name" : "RefundItemViewModelTests"
+          },
+          {
+            "name" : "RefundProductsTotalViewModelTests"
+          },
+          {
+            "name" : "RefundShippingCalculationUseCaseTests"
+          },
+          {
+            "name" : "RefundShippingDetailsViewModelTests"
+          },
+          {
+            "name" : "RefundShippingLabelViewModelTests"
+          },
+          {
+            "name" : "RefundSubmissionUseCaseTests"
+          },
+          {
+            "name" : "RemoteOrderSynchronizerTests"
+          },
+          {
+            "name" : "RenameAttributesViewModelTests"
+          },
+          {
+            "name" : "RequirementsCheckerTests"
+          },
+          {
+            "name" : "ResultsControllerUIKitTests"
+          },
+          {
+            "name" : "RevenueReportCardViewModelTests"
+          },
+          {
+            "name" : "ReviewAgeTests"
+          },
+          {
+            "name" : "ReviewOrderViewModelTests"
+          },
+          {
+            "name" : "ReviewReplyViewModelTests"
+          },
+          {
+            "name" : "ReviewsDashboardCardViewModelTests"
+          },
+          {
+            "name" : "ReviewsViewControllerTests"
+          },
+          {
+            "name" : "ReviewsViewModelTests"
+          },
+          {
+            "name" : "ReviewViewModelTests"
+          },
+          {
+            "name" : "RoleEligibilityUseCaseTests"
+          },
+          {
+            "name" : "RoleErrorViewModelTests"
+          },
+          {
+            "name" : "ScannerWooTests"
+          },
+          {
+            "name" : "ScrollWatcherTests"
+          },
+          {
+            "name" : "SequenceHelpersTests"
+          },
+          {
+            "name" : "ServiceLocatorTests"
+          },
+          {
+            "name" : "SessionManagerTests"
+          },
+          {
+            "name" : "SessionsReportCardViewModelTests"
+          },
+          {
+            "name" : "SettingsViewModelTests"
+          },
+          {
+            "name" : "ShareProductCoordinatorTests"
+          },
+          {
+            "name" : "ShippingInputFormatterTests"
+          },
+          {
+            "name" : "ShippingInputTransformerTests"
+          },
+          {
+            "name" : "ShippingLabelAddNewPackageViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelAddressFormViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelAddressTopBannerFactoryTests"
+          },
+          {
+            "name" : "ShippingLabelCarrierRowViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelCarriersViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelCustomPackageFormViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelCustomsFormInputViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelCustomsFormItemDetailsViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelCustomsFormListViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelFormViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelPackagesFormViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelPaperSizeListSelectorCommandTests"
+          },
+          {
+            "name" : "ShippingLabelPaymentMethodsViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelSinglePackageViewModelTests"
+          },
+          {
+            "name" : "ShippingLabelTrackingURLGeneratorTests"
+          },
+          {
+            "name" : "ShippingLineRowViewModelTests"
+          },
+          {
+            "name" : "ShippingLineSelectionDetailsViewModelTests"
+          },
+          {
+            "name" : "SimplePaymentsNoteViewModelTests"
+          },
+          {
+            "name" : "SimplePaymentsSummaryViewModelTests"
+          },
+          {
+            "name" : "Site_PluginsURLTests"
+          },
+          {
+            "name" : "SiteAddressTests"
+          },
+          {
+            "name" : "SiteCredentialLoginHostingViewControllerTests"
+          },
+          {
+            "name" : "SiteCredentialLoginUseCaseTests"
+          },
+          {
+            "name" : "SiteCredentialLoginViewModelTests"
+          },
+          {
+            "name" : "SiteSnapshotTrackerTests"
+          },
+          {
+            "name" : "StatsDataTextFormatterTests"
+          },
+          {
+            "name" : "StatsIntervalDataParserTests"
+          },
+          {
+            "name" : "StatsTimeRangeBarViewModelTests"
+          },
+          {
+            "name" : "StatusListTableViewCellTests"
+          },
+          {
+            "name" : "StorageEligibilityErrorInfoWooTests"
+          },
+          {
+            "name" : "StoreNameSetupViewModelTests"
+          },
+          {
+            "name" : "StoreOnboardingCoordinatorTests"
+          },
+          {
+            "name" : "StoreOnboardingLaunchStoreViewModelTests"
+          },
+          {
+            "name" : "StoreOnboardingTaskViewModelTests"
+          },
+          {
+            "name" : "StoreOnboardingViewHostingControllerTests"
+          },
+          {
+            "name" : "StoreOnboardingViewModelTests"
+          },
+          {
+            "name" : "StorePerformanceViewModelTests"
+          },
+          {
+            "name" : "StorePickerCoordinatorTests"
+          },
+          {
+            "name" : "StorePickerViewModelTests"
+          },
+          {
+            "name" : "StorePlanBannerPresenterTests"
+          },
+          {
+            "name" : "StorePlanSynchronizerTests"
+          },
+          {
+            "name" : "StoresManagerTests"
+          },
+          {
+            "name" : "StoreStatsChartViewModelTests"
+          },
+          {
+            "name" : "StoreStatsPeriodViewModelTests"
+          },
+          {
+            "name" : "StoreStatsUsageTracksEventEmitterTests"
+          },
+          {
+            "name" : "StringFormatterTests"
+          },
+          {
+            "name" : "StringHTMLTests"
+          },
+          {
+            "name" : "StringWooTests"
+          },
+          {
+            "name" : "StripeCardReaderIntegrationTests"
+          },
+          {
+            "name" : "SubscriptionExpiryViewModelTests"
+          },
+          {
+            "name" : "SubscriptionsViewModelTests"
+          },
+          {
+            "name" : "SubscriptionTrialViewModelTests"
+          },
+          {
+            "name" : "SummaryTableViewCellTests"
+          },
+          {
+            "name" : "SummaryTableViewCellViewModelTests"
+          },
+          {
+            "name" : "SupportDataSourcesTests"
+          },
+          {
+            "name" : "SupportFormViewModelTests"
+          },
+          {
+            "name" : "SurveyCoordinatingControllerTests"
+          },
+          {
+            "name" : "SurveyViewControllerTests"
+          },
+          {
+            "name" : "SwitchStoreNoticePresenterTests"
+          },
+          {
+            "name" : "SyncCoordinatorTests"
+          },
+          {
+            "name" : "SystemStatusReportViewModelTests"
+          },
+          {
+            "name" : "TapToPayEducationContactlessLimitViewModelTests"
+          },
+          {
+            "name" : "TapToPayReconnectionControllerTests"
+          },
+          {
+            "name" : "TaxEducationalDialogViewModelTests"
+          },
+          {
+            "name" : "TextFieldTextAlignmentTests"
+          },
+          {
+            "name" : "ThemeEligibilityUseCaseTests"
+          },
+          {
+            "name" : "ThemesCarouselViewModelTests"
+          },
+          {
+            "name" : "ThemeSettingViewModelTests"
+          },
+          {
+            "name" : "ThemesPreviewViewModelTests"
+          },
+          {
+            "name" : "TitleAndEditableValueTableViewCellTests"
+          },
+          {
+            "name" : "TitleAndEditableValueTableViewCellViewModelTests"
+          },
+          {
+            "name" : "TooltipPresenterTests"
+          },
+          {
+            "name" : "TopBannerViewTests"
+          },
+          {
+            "name" : "TopPerformersDashboardViewModelTests"
+          },
+          {
+            "name" : "TopPerformersPeriodViewModelTests"
+          },
+          {
+            "name" : "TopProductsFromCachedOrdersProviderTests"
+          },
+          {
+            "name" : "TotalRefundedCalculationUseCaseTests"
+          },
+          {
+            "name" : "TrackEventRequestNotificationHandlerTests"
+          },
+          {
+            "name" : "UIDeviceWooTests"
+          },
+          {
+            "name" : "UIStackView_SubviewsTests"
+          },
+          {
+            "name" : "UITableView_HelpersTests"
+          },
+          {
+            "name" : "UITableViewCellHelpersTests"
+          },
+          {
+            "name" : "ULAccountMismatchViewControllerTests"
+          },
+          {
+            "name" : "ULErrorViewControllerTests"
+          },
+          {
+            "name" : "UnitInputViewModelTests"
+          },
+          {
+            "name" : "UniversalLinkRouterTests"
+          },
+          {
+            "name" : "UpdateAnalyticsSettingsUseCaseTests"
+          },
+          {
+            "name" : "UpdateProductInventoryViewModelTests"
+          },
+          {
+            "name" : "UpgradesViewModelTests"
+          },
+          {
+            "name" : "URL_SurveyViewControllerTests"
+          },
+          {
+            "name" : "ValueOneTableViewCellTests"
+          },
+          {
+            "name" : "WaitingTimeTrackerTests"
+          },
+          {
+            "name" : "WCPayCardBrand_IconsTests"
+          },
+          {
+            "name" : "WeightFormatterTests"
+          },
+          {
+            "name" : "WhatsNewFactoryTests"
+          },
+          {
+            "name" : "WhatsNewViewModelTests"
+          },
+          {
+            "name" : "WooAnalyticsTests"
+          },
+          {
+            "name" : "WooConstantsTests"
+          },
+          {
+            "name" : "WooPaymentSetupWebViewModelTests"
+          },
+          {
+            "name" : "WooPaymentsPayoutsCurrencyOverviewViewModelTests"
+          },
+          {
+            "name" : "WooPaymentsPayoutsOverviewViewModelTests"
+          },
+          {
+            "name" : "WooSetupWebViewModelTests"
+          },
+          {
+            "name" : "WooShipping_ShippingLineViewModelTests"
+          },
+          {
+            "name" : "WooShippingAddCustomPackageViewModelTests"
+          },
+          {
+            "name" : "WooShippingAddPackageViewModelTests"
+          },
+          {
+            "name" : "WooShippingCreateLabelsViewModelTests"
+          },
+          {
+            "name" : "WooShippingCustomsFormViewModelTests"
+          },
+          {
+            "name" : "WooShippingCustomsItemViewModelTests"
+          },
+          {
+            "name" : "WooShippingEditAddressViewModelTests"
+          },
+          {
+            "name" : "WooShippingItemRowViewModelTests"
+          },
+          {
+            "name" : "WooShippingItemsDataSourceTests"
+          },
+          {
+            "name" : "WooShippingItemsViewModelTests"
+          },
+          {
+            "name" : "WooShippingNormalizeAddressViewModelTests"
+          },
+          {
+            "name" : "WooShippingOriginAddressListViewModelTests"
+          },
+          {
+            "name" : "WooShippingPostPurchaseViewModelTests"
+          },
+          {
+            "name" : "WooShippingServiceCardViewModelTests"
+          },
+          {
+            "name" : "WooShippingServiceViewModelTests"
+          },
+          {
+            "name" : "WooSubscriptionProductsEligibilityCheckerTests"
+          },
+          {
+            "name" : "WordPressComSiteInfoWooTests"
+          },
+          {
+            "name" : "WordPressMediaLibraryImagePickerCoordinatorTests"
+          },
+          {
+            "name" : "WordPressMediaLibraryPickerDataSourceTests"
+          },
+          {
+            "name" : "WordPressOrgCredentialsAuthenticatorTests"
+          },
+          {
+            "name" : "WPAdminTaxSettingsURLProviderTests"
+          },
+          {
+            "name" : "WPAdminWebViewModelTests"
+          },
+          {
+            "name" : "WPCom2FALoginViewModelTests"
+          },
+          {
+            "name" : "WPComEmailLoginViewModelTests"
+          },
+          {
+            "name" : "WPComMagicLinkViewModelTests"
+          },
+          {
+            "name" : "WPComPasswordLoginViewModelTests"
+          },
+          {
+            "name" : "WrongAccountErrorViewModelTests"
+          }
+        ]
+      },
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "B56DB3DC2049BFAA00D4AA8E",
@@ -61,6 +1809,111 @@
       }
     },
     {
+      "skippedTests" : [
+        "AccountCreationStoreTests",
+        "AccountStoreTests",
+        "AddOnGroupStoreTests",
+        "AnnouncementsStoreTests",
+        "AppAccountTokenTests",
+        "AppSettingsStoreTests",
+        "AppSettingsStoreTests_CardReaderSettings",
+        "AppSettingsStoreTests_OrdersSettings",
+        "AppSettingsStoreTests_ProductsFeatureSwitch",
+        "AppSettingsStoreTests_ProductsSettings",
+        "BlazeStoreTests",
+        "CardPresentConfigurationTests",
+        "CardPresentPaymentStoreTests",
+        "CommentStoreTests",
+        "CouponStoreTests",
+        "CustomerStoreTests",
+        "DataStoreTests",
+        "DispatcherTests",
+        "DomainStoreTests",
+        "EntityListenerTests",
+        "FeatureFlagStoreTests",
+        "FetchResultSnapshotsProviderTests",
+        "FileManager_URLTests",
+        "GoogleAdsStoreTests",
+        "InAppFeedbackCardVisibilityUseCaseTests",
+        "InboxNotesStoreTests",
+        "JetpackConnectionStoreTests",
+        "JetpackSettingsStoreTests",
+        "JustInTimeMessageStoreTests",
+        "LocalIDStoreTests",
+        "MediaDirectoryTests",
+        "MediaFileManagerTests",
+        "MediaImageExporterTests",
+        "MediaStoreTests",
+        "MediaTypeTests",
+        "Media_MediaTypeTests",
+        "Media_ProductImageTests",
+        "MetaDataStoreTests",
+        "NotificationCountStoreTests",
+        "NotificationStoreTests",
+        "OrderCardPresentPaymentEligibilityStoreTests",
+        "OrderNoteStoreTests",
+        "OrderStatsV4Interval_DateTests",
+        "OrderStatusStoreTests",
+        "OrderStoreTests",
+        "OrderStoreTests_FetchFilteredAndAllOrders",
+        "Order_CardPresentPaymentTests",
+        "OrdersUpsertUseCaseTests",
+        "PaymentGatewayStoreTests",
+        "PaymentIntent_ReceiptParametersTests",
+        "PaymentStoreTests",
+        "PointOfSaleItemServiceTests",
+        "ProductAttributeStoreTests",
+        "ProductAttributeTermStoreTests",
+        "ProductCategoryStoreTests",
+        "ProductReviewStoreTests",
+        "ProductShippingClassStoreTests",
+        "ProductStoreTests",
+        "ProductStoreTests_Validation",
+        "ProductStore_FilterProductsTests",
+        "ProductStore_ProductsSortOrderTests",
+        "ProductTagStoreTests",
+        "ProductVariationStoreTests",
+        "ReadOnlyConvertibleTests",
+        "ReceiptStoreTests",
+        "RefundStoreTests",
+        "ResultsControllerTests",
+        "ResultsController_FilterProductTests",
+        "ResultsController_StorageProductTests",
+        "RetrieveProductReviewFromNoteUseCaseTests",
+        "SettingStoreTests",
+        "ShipmentStoreTests",
+        "ShippingLabelStoreTests",
+        "ShippingMethodStoreTests",
+        "SiteNotificationCountFileContentsTests",
+        "SitePluginStoreTests",
+        "SitePostStoreTests",
+        "SiteStatsStoreErrorTests",
+        "SiteStoreTests",
+        "StatsStoreV4Tests",
+        "StatsTimeRangeTests",
+        "StorageShippingSettingsServiceTests",
+        "StoreOnboardingTasksStoreTests",
+        "StoreTests",
+        "SubscriptionStoreTests",
+        "SystemStatusStoreTests",
+        "TaxStoreTests",
+        "TelemetryStoreTests",
+        "TopEarnerStatsItem_ComparableTests",
+        "URL_MediaTests",
+        "UserStoreTests",
+        "User_RolesTests",
+        "WooPaymentsPayoutServiceTests",
+        "WooShippingStoreTests",
+        "WordPressThemeStoreTests",
+        "WordPressThemeStoreTests\/test_activateTheme_returns_activated_theme_on_success()",
+        "WordPressThemeStoreTests\/test_activateTheme_returns_error_on_failure()",
+        "WordPressThemeStoreTests\/test_installTheme_returns_error_on_failure()",
+        "WordPressThemeStoreTests\/test_installTheme_returns_installed_theme_on_success()",
+        "WordPressThemeStoreTests\/test_loadCurrentTheme_returns_error_on_failure()",
+        "WordPressThemeStoreTests\/test_loadCurrentTheme_returns_theme_on_success()",
+        "WordPressThemeStoreTests\/test_loadSuggestedThemes_returns_error_on_failure()",
+        "WordPressThemeStoreTests\/test_loadSuggestedThemes_returns_themes_on_success()"
+      ],
       "target" : {
         "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
         "identifier" : "B5C9DDFD2087FEC0006B910A",
@@ -68,6 +1921,7 @@
       }
     },
     {
+      "enabled" : false,
       "skippedTests" : [
         "InAppPurchasesOrderResultMapperTests",
         "InAppPurchasesOrderResultMapperTests\/test_iap_order_creation_is_decoded_from_json_response()",
@@ -91,6 +1945,27 @@
       }
     },
     {
+      "skippedTests" : [
+        "UIColor_Muriel_Tests",
+        "UIColor_Muriel_Tests\/testBlueColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testBlueColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testCeladonColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testCeladonColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testGrayColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testGrayColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testGreenColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testGreenColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testOrangeColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testOrangeColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testPinkColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testPinkColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testPurpleColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testPurpleColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testWooCommercePurpleColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testWooCommercePurpleColorWithShadeObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testYellowColorObtainedMatchesMurielSpec()",
+        "UIColor_Muriel_Tests\/testYellowColorWithShadeObtainedMatchesMurielSpec()"
+      ],
       "target" : {
         "containerPath" : "container:..\/WooFoundation\/WooFoundation.xcodeproj",
         "identifier" : "B9C9C63D283E703C001B879F",
@@ -98,6 +1973,21 @@
       }
     },
     {
+      "skippedTests" : [
+        "CoreDataIterativeMigratorTests",
+        "CoreDataIterativeMigrator_MigrationStepTests",
+        "CoreDataManagerTests",
+        "GeneralAppSettingsStorageTests",
+        "GeneralAppSettingsTests",
+        "GeneralStoreSettingsTests",
+        "ManagedObjectModelsInventoryTests",
+        "MappingModelTests",
+        "MigrationTests",
+        "NSManagedObjectContextStorageTests",
+        "NSManagedObjectStorageTests",
+        "StorageTypeDeletionsTests",
+        "StorageTypeExtensionsTests"
+      ],
       "target" : {
         "containerPath" : "container:..\/Storage\/Storage.xcodeproj",
         "identifier" : "B54CA5A120A4BBA600F38CD1",
@@ -105,6 +1995,7 @@
       }
     },
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
         "identifier" : "D88FDB0725DD216B00CB0DBD",

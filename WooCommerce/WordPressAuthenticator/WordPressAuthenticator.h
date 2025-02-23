@@ -47,9 +47,5 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 #import <WordPressAuthenticator/PostServiceRemoteOptions.h>
 #import <WordPressAuthenticator/SiteServiceRemoteWordPressComREST.h>
 #import <WordPressAuthenticator/ServiceRemoteWordPressXMLRPC.h>
-// Used in the tests
-#import <WordPressAuthenticator/TaxonomyServiceRemote.h>
 // Used _somewhere_ which I haven't followed up yet
 #import <WordPressAuthenticator/BlogServiceRemoteXMLRPC.h>
-#import <WordPressAuthenticator/TaxonomyServiceRemoteREST.h>
-#import <WordPressAuthenticator/TaxonomyServiceRemoteXMLRPC.h>

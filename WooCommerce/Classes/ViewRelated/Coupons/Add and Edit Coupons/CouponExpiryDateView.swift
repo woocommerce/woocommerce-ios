@@ -1,5 +1,4 @@
 import SwiftUI
-import WordPressAuthenticator
 
 /// View for selecting a date in SwiftUI.
 ///

@@ -1,0 +1,19 @@
+{
+  "data": {
+    "success": true,
+    "address": {
+      "company": "ACME Corp",
+      "city": "Sometown",
+      "state": "TX",
+      "postcode": "54321",
+      "country": "US",
+      "phone": "555-0123",
+      "email": "john@example.com",
+      "address_1": "789 Oak St",
+      "address_2": "Suite 100",
+      "first_name": "John",
+      "last_name": "Smith"
+    },
+    "isVerified": true
+  }
+}

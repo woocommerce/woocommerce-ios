@@ -1266,8 +1266,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Kan inte uppdatera produkter";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -3638,9 +3637,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Det verkar som att du inte har godkänt appanslutningen än. Är du säker på att du vill lämna sidan?";
 
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Det verkar som att Applikationslösenord är inaktiverat för din webbplats %@. Aktivera det om du vill använda WooCommerce-appen.";
-
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Det verkar som om din webbplats %@ är en enkel WordPress.com-webbplats som inte kan installera tillägg. Uppgradera ditt paket för att använda WooCommerce.";
 
@@ -3939,7 +3935,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Logga in med ett annat konto";
@@ -3976,9 +3971,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Logga in på ditt WordPress.com-konto med din e-postadress.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "Logga in med WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Logga in med ett annat konto";
@@ -5156,8 +5148,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Försök igen eller kontakta support för hjälp";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Försök igen.";
 
 /* Error message when Jetpack activation fails */
@@ -8438,9 +8429,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Vilken e-post ska jag använda för att logga in?";
 
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "Vad innebär applikationslösenord?";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Vad är Jetpack?";
@@ -11374,14 +11362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Försök att genomföra betalningen igen";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Vänta …";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Förbereder kort för betalning";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Förbereder";
@@ -11404,12 +11386,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Anslut till läsare";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "Anslut din läsare för att behandla den här betalningen.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
 
@@ -11427,9 +11403,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
 "pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kunde inte ta emot kortbetalning";
-
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Försök igen";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Fel vid kontroll av order";
@@ -11656,12 +11629,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card" = "En kortbetalning på %1$@ har genomförts";
-
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash" = "En kontantbetalning på %1$@ har genomförts";
-
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Betalning lyckades";
 
@@ -11755,12 +11722,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Avfärda";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
 
@@ -11768,13 +11729,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Visar endast enkla produkter";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "Visar endast enkla och variabla produkter";
@@ -11806,20 +11761,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "För att ta betalt för en icke-enkel produkt, lämna POS och skapa en ny beställning från fliken Beställningar.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "För att ta betalt för en produkt som inte stöds, lämna POS och skapa en ny beställning från fliken Beställningar.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "Endast enkla fysiska produkter kan användas med POS just nu.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";

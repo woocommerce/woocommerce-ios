@@ -4131,6 +4131,51 @@ extension Networking.WooShippingCustomPackage {
     }
 }
 
+extension Networking.WooShippingDestinationAddress {
+    public func copy(
+        company: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy
+    ) -> Networking.WooShippingDestinationAddress {
+        let company = company ?? self.company
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let state = state ?? self.state
+        let postcode = postcode ?? self.postcode
+        let country = country ?? self.country
+        let phone = phone ?? self.phone
+        let name = name ?? self.name
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let email = email ?? self.email
+
+        return Networking.WooShippingDestinationAddress(
+            company: company,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postcode: postcode,
+            country: country,
+            phone: phone,
+            name: name,
+            firstName: firstName,
+            lastName: lastName,
+            email: email
+        )
+    }
+}
+
 extension Networking.WooShippingOriginAddress {
     public func copy(
         id: CopiableProp<String> = .copy,

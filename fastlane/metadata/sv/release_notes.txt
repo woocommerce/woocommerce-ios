@@ -1,1 +1,0 @@
-Den här uppdateringen inkluderar förbättringar av mediabiblioteket och inloggningsupplevelsen. Du kommer att märka en förbättrad tillgänglighet i momsrelaterade vyer och tydligare produktbildsorganisering med omslagsetiketter som hjälper dig att hantera din butik. Uppdatera nu för en smidigare WooCommerce-upplevelse.

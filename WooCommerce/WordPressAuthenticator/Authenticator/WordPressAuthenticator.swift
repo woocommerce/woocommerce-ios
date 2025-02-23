@@ -91,12 +91,6 @@ import WordPressUI
                                                  displayStrings: displayStrings)
     }
 
-    // MARK: - Testing Support
-
-    class func isInitialized() -> Bool {
-        return privateInstance != nil
-    }
-
     // MARK: - Public Methods
 
     /// Indicates if the received URL is a WordPress.com Authentication Callback.
@@ -113,23 +107,6 @@ import WordPressUI
     }
 
     // MARK: - Helpers for presenting the login flow
-
-    /// Shows login UI from the given presenter view controller.
-    ///
-    /// - Parameters:
-    ///   - presenter: The view controller that presents the login UI.
-    ///   - animated: Whether the login UI is presented with animation.
-    ///   - showCancel: Whether a cancel CTA is shown on the login prologue screen.
-    ///   - restrictToWPCom: Whether only WordPress.com login is enabled.
-    ///   - onLoginButtonTapped: Called when the login button on the prologue screen is tapped.
-    ///   - onCompletion: Called when the login UI presentation completes.
-    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil, onCompletion: (() -> Void)? = nil) {
-        guard let loginViewController = loginUI(showCancel: showCancel, restrictToWPCom: restrictToWPCom, onLoginButtonTapped: onLoginButtonTapped) else {
-            return
-        }
-        presenter.present(loginViewController, animated: animated, completion: onCompletion)
-        trackOpenedLogin()
-    }
 
     /// Returns the view controller for the login flow.
     /// The caller is responsible for tracking `.openedLogin` event when displaying the view controller as in `showLogin`.
@@ -276,34 +253,6 @@ import WordPressUI
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
-    }
-
-    /// Used to present the new self-hosted login flow from BlogListViewController
-    @objc public class func showLoginForSelfHostedSite(_ presenter: UIViewController) {
-        defer {
-            trackOpenedLogin()
-        }
-
-        AuthenticatorAnalyticsTracker.shared.set(source: .selfHosted)
-
-        guard let controller = signinForWPOrg() else {
-            WPAuthenticatorLogError("WordPressAuthenticator: Failed to instantiate Site Address view controller.")
-            return
-        }
-
-        let navController = LoginNavigationController(rootViewController: controller)
-        navController.modalPresentationStyle = .fullScreen
-        presenter.present(navController, animated: true, completion: nil)
-    }
-
-    /// Returns a Site Address view controller: allows the user to log into a WordPress.org website.
-    ///
-    @objc public class func signinForWPOrg() -> UIViewController? {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            return LoginSiteAddressViewController.instantiate(from: .login)
-        }
-
-        return SiteAddressViewController.instantiate(from: .siteAddress)
     }
 
     /// Returns a Site Address view controller and triggers the protocol method `troubleshootSite` after fetching the site info.

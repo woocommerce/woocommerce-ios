@@ -1,1 +1,0 @@
-Questo aggiornamento introduce miglioramenti alla libreria multimediale e all'esperienza di accesso. Noterai miglioramenti nell'accessibilità delle viste sulle tasse e un'organizzazione delle immagini di prodotto più chiara, con tag di copertina per facilitare la gestione del negozio. Aggiorna ora per un'esperienza WooCommerce più fluida.

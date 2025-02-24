@@ -57,7 +57,7 @@ final class AgeTests: XCTestCase {
 
         let age = Age.from(startDate: dateFrom, toDate: dateTo, using: calendar)
 
-        XCTAssertEqual(age, .days)
+        XCTAssertEqual(age, .yesterday) // nope
     }
 
     func test_it_returns_days_if_the_dates_are_exactly_six_days_apart() {

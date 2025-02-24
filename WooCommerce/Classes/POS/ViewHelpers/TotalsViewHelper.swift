@@ -67,7 +67,7 @@ final class TotalsViewHelper {
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .card(.paymentError):
             return false
         default:
             return true

@@ -323,7 +323,10 @@ private extension TotalsView {
             case .validatingOrderError:
                 return .outlined
             case .paymentError:
-                return .topAligned
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: POSPadding.none,

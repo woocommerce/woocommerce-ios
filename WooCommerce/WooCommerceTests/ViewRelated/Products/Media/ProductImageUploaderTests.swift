@@ -66,7 +66,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let .updateProductImages(_, _, images, onCompletion) = action {
-                onCompletion(.success(.fake().copy(images: images)))
+                onCompletion(.success(.fake().copy(siteID: self.siteID, productID: self.productID.id, images: images)))
             }
         }
 

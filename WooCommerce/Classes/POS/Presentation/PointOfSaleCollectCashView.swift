@@ -159,7 +159,7 @@ private extension PointOfSaleCollectCashView {
     }
 
     private var backgroundColor: Color {
-        .posSurface
+        .posSurfaceBright
     }
 
     enum Localization {

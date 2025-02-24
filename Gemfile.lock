@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/fastlane/fastlane.git
-  revision: 6eb5fdd35b92d83a0e77b72539dca995f9fd11c7
+  revision: da7853fc0c4559faf37ff426029a100c1c870953
   branch: alisoftware/trainer/support-swift-testing
   specs:
     fastlane (2.226.0)

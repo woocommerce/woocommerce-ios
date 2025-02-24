@@ -1,7 +1,7 @@
 import protocol WooFoundation.Analytics
 import Yosemite
 
-final class POSCollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
+final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?
 
     private var customerInteractionStarted: Double = 0
@@ -125,16 +125,4 @@ private extension POSCollectOrderPaymentAnalytics {
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
     }
-}
-
-// Protocol conformance. These events are not needed for IPP, only for POS.
-// https://github.com/woocommerce/woocommerce-ios/issues/15149
-extension CollectOrderPaymentAnalytics {
-    func trackCustomerInteractionStarted() { }
-    func trackOrderSyncSuccess() { }
-    func trackCardReaderReady() { }
-    func trackCardReaderTapped() { }
-    func trackCheckoutTapped() { }
-    func resetCheckoutTapCountTracker() { }
-    func trackSuccessfulCashPayment() { }
 }

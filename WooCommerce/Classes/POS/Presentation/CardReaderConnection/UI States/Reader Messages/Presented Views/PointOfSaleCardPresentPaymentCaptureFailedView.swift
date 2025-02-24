@@ -4,7 +4,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .center, spacing: POSSpacing.none) {
             POSErrorExclamationMark()
                 .accessibilityAddTraits(.isHeader)
 
@@ -42,7 +42,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 private extension PointOfSaleCardPresentPaymentCaptureFailedView {
     enum Layout {
         static let maxWidth: CGFloat = 896
-        static let contentPadding: CGFloat = 40
+        static let contentPadding: CGFloat = POSPadding.xxLarge
     }
 
     enum Localization {

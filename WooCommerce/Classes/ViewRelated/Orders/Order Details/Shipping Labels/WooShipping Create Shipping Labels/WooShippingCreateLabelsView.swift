@@ -136,6 +136,13 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+            .sheet(item: $viewModel.addressToEdit) { addressToEdit in
+                NavigationStack {
+                    WooShippingEditAddressView(viewModel: addressToEdit)
+                        .navigationTitle(Localization.BottomSheet.editDestination)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+            }
         }
     }
 }
@@ -223,6 +230,10 @@ private extension WooShippingCreateLabelsView {
                 addressVerificationLabel
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            PencilEditButton {
+                viewModel.editDestinationAddress()
+            }
+            .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
     }
@@ -333,6 +344,11 @@ private extension WooShippingCreateLabelsView {
             .padding(.vertical, 12)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+            .onTapGesture {
+                if !isDestinationAddressVerified {
+                    viewModel.editDestinationAddress()
+                }
+            }
         }
     }
 }
@@ -427,6 +443,9 @@ private extension WooShippingCreateLabelsView {
                                                           value: "Purchase Label · %1$@",
                                                           comment: "Label for button to purchase the shipping label on the shipping label creation screen, " +
                                                           "including the label price. Reads like: 'Purchase Label · $7.63'")
+            static let editDestination = NSLocalizedString("wooShipping.createLabels.bottomSheet.editDestination",
+                                                          value: "Edit Destination",
+                                                          comment: "Title for the edit destination address screen in the shipping label creation flow")
         }
 
         enum AddressVerification {

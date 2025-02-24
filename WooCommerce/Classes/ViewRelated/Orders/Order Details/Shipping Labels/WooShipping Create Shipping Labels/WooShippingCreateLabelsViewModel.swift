@@ -8,7 +8,8 @@ import Combine
 final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
-    private let destinationAddress: ShippingLabelAddress?
+    private var destinationAddress: WooShippingAddress?
+    private var destinationEmail: String?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
@@ -62,7 +63,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     private(set) lazy var destinationAddressLines: [String]? = {
-        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: .newlines)
+        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
     }()
 
     /// Possible statuses for a Woo Shipping destination address.
@@ -78,6 +79,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
+
+    /// View model for address to edit.
+    /// Setting this property will navigate to the address edit screen.
+    @Published var addressToEdit: WooShippingEditAddressViewModel?
 
     /// Shipping lines for the order, with formatted amount.
     let shippingLines: [WooShipping_ShippingLineViewModel]
@@ -147,17 +152,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
               let destinationAddress = destinationAddress else {
             return false
         }
-        // Special case: Any shipment from/to military addresses must have Customs
-        if originAddress.country == Constants.usCountryCode,
-           Constants.usMilitaryStates.contains(where: { $0 == originAddress.state }) {
-            return true
-        }
-        if destinationAddress.country == Constants.usCountryCode,
-           Constants.usMilitaryStates.contains(where: { $0 == destinationAddress.state }) {
-            return true
-        }
-
-        return originAddress.country != destinationAddress.country
+        return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                originState: originAddress.state,
+                                                                destinationCountry: destinationAddress.country,
+                                                                destinationState: destinationAddress.state)
     }
 
     /// Initialize the view model without an existing shipping label.
@@ -178,6 +176,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.onLabelPurchase = onLabelPurchase
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
+        self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedOriginAddress = selectedOriginAddress
         self.selectedPackage = selectedPackage
@@ -210,7 +209,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddress = shippingLabel.destinationAddress
+        self.destinationAddress = shippingLabel.destinationAddress.toWooShippingAddress()
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
@@ -236,7 +235,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                          productIDs: itemsDataSource.items.map(\.productOrVariationID))
         let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
                                                              orderID: order.orderID,
-                                                             originAddress: selectedOriginAddress.toShippingLabelAddress(),
+                                                             originAddress: selectedOriginAddress.toWooShippingAddress(),
                                                              destinationAddress: destinationAddress,
                                                              package: packagePurchase) { [weak self] result in
             guard let self else { return }
@@ -272,6 +271,24 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
         customsForm = form
+    }
+
+    /// Sets the `addressToEdit` property for editing the destination address.
+    /// After the address is edited, the destination address is replaced with the updated address.
+    func editDestinationAddress() {
+        addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        email: destinationEmail,
+                                                        isVerified: destinationAddressStatus == .verified,
+                                                        originCountryCode: selectedOriginAddress?.country,
+                                                        originStateCode: selectedOriginAddress?.state,
+                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
+            guard let self else {
+                return
+            }
+            destinationAddress = editedAddress
+            destinationEmail = editedEmail
+            addressToEdit = nil // Dismisses address edit screen
+        })
     }
 }
 
@@ -331,7 +348,7 @@ private extension WooShippingCreateLabelsViewModel {
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
                 shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toShippingLabelAddress(),
+                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
                                                               destinationAddress: destinationAddress,
                                                               stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
@@ -388,57 +405,15 @@ private extension WooShippingCreateLabelsViewModel {
         return (name, currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description)
     }
 
-    // We generate the default origin address using the information
-    // of the logged Account and of the website.
-    static func getDefaultOriginAddress(accountSettings: AccountSettings?,
-                                        company: String?,
-                                        siteAddress: SiteAddress,
-                                        account: Account?,
-                                        userDefaults: UserDefaults) -> ShippingLabelAddress? {
-        let address = Address(firstName: accountSettings?.firstName ?? "",
-                              lastName: accountSettings?.lastName ?? "",
-                              company: company ?? "",
-                              address1: siteAddress.address,
-                              address2: siteAddress.address2,
-                              city: siteAddress.city,
-                              state: siteAddress.state,
-                              postcode: siteAddress.postalCode,
-                              country: siteAddress.countryCode.rawValue,
-                              phone: userDefaults[.storePhoneNumber] ?? "",
-                              email: account?.email)
-        return fromAddressToShippingLabelAddress(address: address)
-    }
-
     /// Gets the destination address as a `ShippingLabelAddress`.
     /// The order's billing phone is used as a fallback if there is no shipping phone.
     ///
-    static func getDestinationAddress(order: Order, address: Address?) -> ShippingLabelAddress? {
+    static func getDestinationAddress(order: Order, address: Address?) -> WooShippingAddress? {
         guard let phone = address?.phone, phone.isNotEmpty else {
             let destinationAddress = address?.copy(phone: order.billingAddress?.phone)
-            return fromAddressToShippingLabelAddress(address: destinationAddress)
+            return destinationAddress?.toWooShippingAddress()
         }
-        return fromAddressToShippingLabelAddress(address: address)
-    }
-
-    static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
-        guard let address = address else { return nil }
-
-        // In this way we support localized name correctly,
-        // because the order is often reversed in a few Asian languages.
-        var components = PersonNameComponents()
-        components.givenName = address.firstName
-        components.familyName = address.lastName
-
-        let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
-                                                        name: PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: []),
-                                                        phone: address.phone ?? "",
-                                                        country: address.country,
-                                                        state: address.state,
-                                                        address1: address.address1,
-                                                        address2: address.address2 ?? "",
-                                                        city: address.city,
-                                                        postcode: address.postcode)
-        return shippingLabelAddress
+        return address?.toWooShippingAddress()
     }
 
     static func getStoredAccountSettings() -> AccountSettings? {
@@ -497,32 +472,58 @@ private extension WooShippingCreateLabelsViewModel {
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
     }
-
-    enum Constants {
-        /// Country code for US - to check for international shipment
-        ///
-        static let usCountryCode = "US"
-
-        /// These US states are a special case because they represent military bases. They're considered "domestic",
-        /// but they require a Customs form to ship from/to them.
-        static let usMilitaryStates = ["AA", "AE", "AP"]
-    }
 }
 
 private extension WooShippingOriginAddress {
-    /// Converts the origin address to a `ShippingLabelAddress`.
+    /// Converts the origin address to a `WooShippingAddress`.
     ///
     /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.
     ///
-    func toShippingLabelAddress() -> ShippingLabelAddress {
-        ShippingLabelAddress(company: company,
-                             name: fullName ?? "",
-                             phone: phone,
-                             country: country,
-                             state: state,
-                             address1: address1,
-                             address2: address2,
-                             city: city,
-                             postcode: postcode)
+    func toWooShippingAddress() -> WooShippingAddress {
+        WooShippingAddress(company: company,
+                           name: fullName,
+                           phone: phone,
+                           country: country,
+                           state: state,
+                           address1: address1,
+                           address2: address2,
+                           city: city,
+                           postcode: postcode)
+    }
+}
+
+private extension ShippingLabelAddress {
+    /// Converts the address to a `WooShippingAddress`.
+    ///
+    /// This prepares the address for use as a destination address in the shipping label.
+    ///
+    func toWooShippingAddress() -> WooShippingAddress {
+        WooShippingAddress(company: company,
+                           name: name,
+                           phone: phone,
+                           country: country,
+                           state: state,
+                           address1: address1,
+                           address2: address2,
+                           city: city,
+                           postcode: postcode)
+    }
+}
+
+private extension Address {
+    /// Converts the address to a `WooShippingAddress`.
+    ///
+    /// This prepares the address for use as a destination address in the shipping label.
+    ///
+    func toWooShippingAddress() -> WooShippingAddress {
+        return WooShippingAddress(company: company ?? "",
+                                  name: fullName,
+                                  phone: phone ?? "",
+                                  country: country,
+                                  state: state,
+                                  address1: address1,
+                                  address2: address2 ?? "",
+                                  city: city,
+                                  postcode: postcode)
     }
 }

@@ -831,6 +831,12 @@ private extension MainTabBarController {
             presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
         }
 
+        if let productsSplitViewWrapperController = productsContainerController.wrappedController as? ProductsSplitViewWrapperController,
+           let productForm = productsSplitViewWrapperController.currentProductForm(for: error.productOrVariationID.id) {
+            // Ask the product form to display an alert about the error
+            return productForm.handleProductUploadError(error)
+        }
+
         let model: ProductLoaderViewController.Model = {
             switch error.productOrVariationID {
             case .product(let id):

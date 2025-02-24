@@ -33,16 +33,15 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
 
 private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
     enum Constants {
-        static let imageAndTextSpacing: CGFloat = 36
+        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
     }
 }
 
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
             inputMethods: [.tap, .insert]
         ),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

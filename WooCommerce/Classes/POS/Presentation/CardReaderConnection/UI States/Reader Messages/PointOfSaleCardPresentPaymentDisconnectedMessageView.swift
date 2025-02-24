@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .center, spacing: POSSpacing.none) {
             Image(decorative: PointOfSaleAssets.readerDisconnected.imageName)
 
             Spacer()

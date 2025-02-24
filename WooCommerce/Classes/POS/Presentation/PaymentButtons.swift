@@ -70,7 +70,7 @@ private extension PaymentsActionButtons {
 @available(iOS 17.0, *)
 private extension PaymentsActionButtons {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
+        static let buttonSpacing: CGFloat = POSSpacing.medium
     }
 
     enum Localization {

@@ -5,9 +5,7 @@ enum PointOfSaleAssets: CaseIterable {
     case exclamationMark
     case magnifierNotFound
     case readyForPayment
-    case readerConnectionScanning
-    case readerConnectionDoYouWantToConnect
-    case readerConnectionConnecting
+    case readerConnection
     case readerConnectionError
     case readerConnectionLowBattery
     case readerConnectionSuccess
@@ -25,12 +23,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-magnifier-not-found"
         case .readyForPayment:
             "pos-ready-for-payment"
-        case .readerConnectionScanning:
-            "pos-reader-connection-scanning"
-        case .readerConnectionDoYouWantToConnect:
-            "pos-reader-connection-do-you-want-to-connect"
-        case .readerConnectionConnecting:
-            "pos-reader-connection-connecting"
+        case .readerConnection:
+            "pos-reader-connection"
         case .readerConnectionError:
             "pos-reader-connection-error"
         case .readerConnectionLowBattery:

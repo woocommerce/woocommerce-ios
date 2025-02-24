@@ -93,7 +93,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             return XCTFail("Expected payment success message not found")
         }
 
-        XCTAssertEqual(viewModel.message, "A card payment of $200.50 was successfully made")
+        XCTAssertEqual(viewModel.message, "A card payment of $200.50 was successfully made.")
     }
 
     func test_presentationStyle_for_paymentCaptureError_is_message_paymentCaptureError_with_correctActions() {

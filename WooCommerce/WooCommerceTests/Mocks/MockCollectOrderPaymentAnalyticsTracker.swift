@@ -53,33 +53,4 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     func trackReceiptPrintFailed(error: Error) {
         // no-op
     }
-
-    func trackCustomerInteractionStarted() {
-        // no-op
-    }
-
-    func trackOrderSyncSuccess() {
-        // no-op
-    }
-
-    func trackCardReaderReady() {
-        // no-op
-    }
-
-    func trackCardReaderTapped() {
-        // no-op
-    }
-
-    var didCallTrackCheckoutTapped = false
-    func trackCheckoutTapped() {
-        didCallTrackCheckoutTapped = true
-    }
-
-    func resetCheckoutTapCountTracker() {
-        // no-op
-    }
-
-    func trackSuccessfulCashPayment() {
-        // no-op
-    }
 }

@@ -34,7 +34,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
 private extension PointOfSaleCardPresentPaymentActivityIndicatingMessageView {
     enum Constants {
         static let headerDimension: CGFloat = 160
-        static let imageAndTextSpacing: CGFloat = 32
+        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
     }
 }
 

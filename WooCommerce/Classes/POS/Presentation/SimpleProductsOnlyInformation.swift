@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
     let deepLinkNavigator: DeepLinkNavigator?
@@ -12,6 +13,18 @@ struct SimpleProductsOnlyInformation: View {
 
     var body: some View {
         VStack(spacing: Constants.contentBlockSpacing) {
+            HStack {
+                Spacer()
+                Button {
+                    isPresented = false
+                } label: {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .padding(Constants.dismissIconPadding)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
+            }
+
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
                     .font(.posHeadingBold)
@@ -19,27 +32,29 @@ struct SimpleProductsOnlyInformation: View {
                 Group {
                     Text(issueMessage)
                     Text(futureMessage)
-                        .padding(.bottom, Constants.textToModalBottomPadding)
                 }
                 .font(.posBodyLargeRegular())
-
-                VStack(spacing: Constants.textSpacing) {
-                    Text(hintMessage)
-                        .font(.posBodySmallRegular())
-
-                    Button {
-                        deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
-                    } label: {
-                        Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posBodySmallRegular())
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Constants.hintVerticalPadding)
-                .padding(.horizontal, Constants.hintHorizontalPadding)
-                .background(Color(.posSurfaceDim))
-                .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             }
+            .foregroundStyle(Color.posOnSurface)
+            .multilineTextAlignment(.center)
+
+            VStack(spacing: Constants.textSpacing) {
+                Text(hintMessage)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurface)
+
+                Button {
+                    deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
+                } label: {
+                    Label(Localization.modalAction, systemImage: "plus")
+                        .font(.posBodySmallRegular())
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Constants.hintVerticalPadding)
+            .padding(.horizontal, Constants.hintHorizontalPadding)
+            .background(Color(.posSurfaceDim))
+            .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
             .multilineTextAlignment(.center)
 
             Button(action: {
@@ -47,7 +62,7 @@ struct SimpleProductsOnlyInformation: View {
             }) {
                 Text(Localization.okButtonTitle)
             }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)
@@ -67,16 +82,17 @@ struct SimpleProductsOnlyInformation: View {
 }
 
 // Constants and Localization enums
+@available(iOS 17.0, *)
 private extension SimpleProductsOnlyInformation {
     enum Constants {
         static let modalFrameWidth: CGFloat = 896
-        static let modalContentPadding: CGFloat = 40
-        static let hintVerticalPadding: CGFloat = 24
-        static let hintHorizontalPadding: CGFloat = 40
+        static let modalContentPadding: CGFloat = POSSpacing.medium
+        static let hintVerticalPadding: CGFloat = POSSpacing.medium
+        static let hintHorizontalPadding: CGFloat = POSSpacing.medium
         static let hintBackgroundCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-        static let contentBlockSpacing: CGFloat = 40
-        static let textSpacing: CGFloat = 16
-        static let textToModalBottomPadding: CGFloat = 8
+        static let contentBlockSpacing: CGFloat = POSSpacing.xxLarge
+        static let textSpacing: CGFloat = POSSpacing.small
+        static let dismissIconPadding: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 
     enum Localization {
@@ -114,6 +130,7 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     SimpleProductsOnlyInformation(isPresented: .constant(true),
                                   deepLinkNavigator: nil)

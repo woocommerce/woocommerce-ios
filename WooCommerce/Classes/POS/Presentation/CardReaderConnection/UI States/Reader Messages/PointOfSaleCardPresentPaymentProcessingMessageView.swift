@@ -32,9 +32,8 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
 }
 
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentProcessingMessageView(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel(),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

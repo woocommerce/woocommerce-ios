@@ -13,7 +13,10 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                                    productOrVariationID: .product(id: productID.id),
                                                                    isLocalID: false),
@@ -53,7 +56,7 @@ final class ProductImageUploaderTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = ProductImageUploader(stores: stores)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID.id),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()
@@ -66,12 +69,12 @@ final class ProductImageUploaderTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let .updateProductImages(_, _, images, onCompletion) = action {
-                onCompletion(.success(.fake().copy(images: images)))
+                onCompletion(.success(.fake().copy(siteID: self.siteID, productID: self.productID.id, images: images)))
             }
         }
 
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID.id),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: []))
 
@@ -79,7 +82,9 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
-                promise(statuses)
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
             }
         }
         XCTAssertTrue(statuses.hasPendingUpload)
@@ -181,7 +186,10 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_replaceLocalID_replaces_productID_properly() {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let localProductID: Int64 = 0
         let remoteProductID = productID.id
         let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(), siteID: siteID, productID: productID),
@@ -214,7 +222,10 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_calling_replaceLocalID_with_nonExistent_localProductID_does_nothing() {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let localProductID: Int64 = 0
         let nonExistentProductID: Int64 = 999
         let remoteProductID = productID

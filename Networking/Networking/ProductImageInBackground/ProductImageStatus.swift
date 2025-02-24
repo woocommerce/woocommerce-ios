@@ -47,7 +47,6 @@ public enum ProductImageStatus: Equatable, Codable {
             self = .remote(image: image, siteID: sID, productID: pID)
         case "uploadFailure":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
-            let errorMessage = try container.decode(String.self, forKey: .error)
             let sID = try container.decode(Int64.self, forKey: .siteID)
             let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
             let domain = try container.decode(String.self, forKey: .errorDomain)
@@ -223,6 +222,20 @@ public enum ProductImageAssetType: Equatable, Codable {
             try container.encode(base64String, forKey: .imageData)
             try container.encode(filename, forKey: .filename)
             try container.encode(altText, forKey: .altText)
+        }
+    }
+
+    public static func == (lhs: ProductImageAssetType, rhs: ProductImageAssetType) -> Bool {
+        switch (lhs, rhs) {
+        case (.phAsset(let lAsset), .phAsset(let rAsset)):
+            return lAsset.localIdentifier == rAsset.localIdentifier
+        case (.uiImage(let lImage, let lFilename, let lAltText),
+              .uiImage(let rImage, let rFilename, let rAltText)):
+            return lImage.pngData() == rImage.pngData() &&
+                   lFilename == rFilename &&
+                   lAltText == rAltText
+        default:
+            return false
         }
     }
 }

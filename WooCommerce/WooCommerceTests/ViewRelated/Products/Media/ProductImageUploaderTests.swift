@@ -76,7 +76,6 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                originalImages: []))
 
         // When
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
                 if statuses.hasPendingUpload {
@@ -84,6 +83,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 }
             }
         }
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
                                                                          productOrVariationID: productID,

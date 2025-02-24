@@ -16,21 +16,21 @@ struct PointOfSaleItemListErrorView: View {
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 POSErrorExclamationMark(size: .large)
 
-                Spacer().frame(height: POSSpacing.large)
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
 
-                Spacer().frame(height: POSSpacing.small)
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
 
                 Text(error.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
 
-                Spacer().frame(height: POSSpacing.xxLarge)
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
                 Button(action: {
                     onRetry?()

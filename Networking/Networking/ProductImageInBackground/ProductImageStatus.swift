@@ -160,4 +160,18 @@ public enum ProductImageAssetType: Equatable, Codable {
             try container.encode(altText, forKey: .altText)
         }
     }
+
+    public static func == (lhs: ProductImageAssetType, rhs: ProductImageAssetType) -> Bool {
+        switch (lhs, rhs) {
+        case (.phAsset(let lAsset), .phAsset(let rAsset)):
+            return lAsset.localIdentifier == rAsset.localIdentifier
+        case (.uiImage(let lImage, let lFilename, let lAltText),
+              .uiImage(let rImage, let rFilename, let rAltText)):
+            return lImage.pngData() == rImage.pngData() &&
+                   lFilename == rFilename &&
+                   lAltText == rAltText
+        default:
+            return false
+        }
+    }
 }

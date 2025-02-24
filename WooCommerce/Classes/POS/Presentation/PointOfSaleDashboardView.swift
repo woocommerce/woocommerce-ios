@@ -77,6 +77,7 @@ struct PointOfSaleDashboardView: View {
         .posRootModal()
         .sheet(isPresented: $showSupport) {
             supportForm
+                .interactiveDismissDisabled(true)
         }
         .sheet(isPresented: $showDocumentation) {
             documentationView

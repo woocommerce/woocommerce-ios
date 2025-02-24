@@ -93,7 +93,6 @@ struct PointOfSaleCollectCashView: View {
                 .padding([.horizontal])
                 .padding(.bottom, keyboardFrame.height)
             }
-            .background(backgroundColor)
             .animation(.easeInOut, value: errorMessage)
             .animation(.easeInOut, value: changeDueMessage)
             .onChange(of: textFieldAmountInput) { _ in

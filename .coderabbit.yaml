@@ -15,7 +15,7 @@ reviews:
   changed_files_summary: true
   collapse_walkthrough: true
   auto_review:
-    enabled: true
+    enabled: false
     drafts: false
   finishing_touches:
     docstrings:

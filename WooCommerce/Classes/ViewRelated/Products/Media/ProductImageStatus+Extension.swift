@@ -5,7 +5,7 @@ extension Collection where Element == ProductImageStatus {
     var images: [ProductImage] {
         compactMap { status in
             switch status {
-            case .remote(let productImage, let siteID, let productID):
+            case .remote(let productImage, _, _):
                 return productImage
             default:
                 return nil
@@ -48,7 +48,7 @@ extension ProductImageStatus {
     ///
     var dragItemIdentifier: String {
         switch self {
-        case .uploading(let asset, let siteID, let productID):
+        case .uploading(let asset, _, _):
             switch asset {
                 case let .phAsset(asset):
                     return asset.identifier()
@@ -57,7 +57,7 @@ extension ProductImageStatus {
             }
         case .uploadFailure:
             return UUID().uuidString
-        case .remote(let image, let siteID, let productID):
+        case .remote(let image, _, _):
             return "\(image.imageID)"
         }
     }

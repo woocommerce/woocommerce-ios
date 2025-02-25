@@ -186,7 +186,7 @@ extension ProductImagesCollectionViewController {
         switch status {
         case .remote:
             break
-        case let .uploadFailure(asset, error, siteID, productID):
+        case let .uploadFailure(asset, error, _, _):
             return onFailedUploadSelected(asset, error)
         case .uploading:
             return

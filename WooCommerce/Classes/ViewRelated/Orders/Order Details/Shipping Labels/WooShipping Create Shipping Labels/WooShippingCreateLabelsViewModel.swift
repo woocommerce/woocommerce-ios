@@ -73,9 +73,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missing
     }
 
-    // TODO: Add support for updating the destination address status when it is edited or verified remotely.
+    // TODO: Add support for updating the destination address status when it is edited.
     /// The current destination address status.
-    @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
+    @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
@@ -383,6 +383,7 @@ private extension WooShippingCreateLabelsViewModel {
     func observeDestinationAddressStatus() {
         /// Set the notice when the destination address status changes.
         $destinationAddressStatus
+            .compactMap { $0 }
             .map { status in
                 switch status {
                 case .verified:

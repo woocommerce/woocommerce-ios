@@ -425,6 +425,7 @@
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		4507DDF42D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF32D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift */; };
 		4507DDF62D6E770500D2F3BC /* PHAssetMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF52D6E770500D2F3BC /* PHAssetMock.swift */; };
+		4507DDF82D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF72D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift */; };
 		450BFA6B2D52777500C2D1D7 /* WordPressMediaMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450BFA6A2D52777500C2D1D7 /* WordPressMediaMapperTests.swift */; };
 		450BFA6D2D52790E00C2D1D7 /* media-library-with-empty-sizes.json in Resources */ = {isa = PBXBuildFile; fileRef = 450BFA6C2D52790200C2D1D7 /* media-library-with-empty-sizes.json */; };
 		451274A625276C82009911FF /* product-variation.json in Resources */ = {isa = PBXBuildFile; fileRef = 451274A525276C82009911FF /* product-variation.json */; };
@@ -1642,6 +1643,7 @@
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		4507DDF32D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageAssetTypeCodableTests.swift; sourceTree = "<group>"; };
 		4507DDF52D6E770500D2F3BC /* PHAssetMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetMock.swift; sourceTree = "<group>"; };
+		4507DDF72D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductOrVariationIDCodableTests.swift; sourceTree = "<group>"; };
 		450BFA6A2D52777500C2D1D7 /* WordPressMediaMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaMapperTests.swift; sourceTree = "<group>"; };
 		450BFA6C2D52790200C2D1D7 /* media-library-with-empty-sizes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "media-library-with-empty-sizes.json"; sourceTree = "<group>"; };
 		451274A525276C82009911FF /* product-variation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation.json"; sourceTree = "<group>"; };
@@ -4067,6 +4069,7 @@
 				953477AA2CD678A500038AED /* MetaDataEncoderTests.swift */,
 				459824A22D6E5094003D8263 /* ProductImageStatusCodableTests.swift */,
 				4507DDF32D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift */,
+				4507DDF72D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift */,
 			);
 			path = Encoder;
 			sourceTree = "<group>";
@@ -5602,6 +5605,7 @@
 				45D685FC23D0C739005F87D0 /* ProductSkuMapperTests.swift in Sources */,
 				CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */,
 				74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */,
+				4507DDF82D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift in Sources */,
 				311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */,
 				DE02ABB72B563F3A008E0AC4 /* BlazePaymentInfoMapperTests.swift in Sources */,
 				2661547B242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift in Sources */,

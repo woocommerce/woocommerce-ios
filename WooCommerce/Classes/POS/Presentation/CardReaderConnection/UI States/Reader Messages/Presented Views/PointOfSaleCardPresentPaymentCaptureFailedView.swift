@@ -5,7 +5,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
-            POSErrorExclamationMark()
+            POSErrorExclamationMark(size: .large)
                 .accessibilityAddTraits(.isHeader)
 
             Spacer()

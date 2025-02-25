@@ -316,7 +316,7 @@ private extension ProductImageActionHandler {
             switch status {
             case .uploading(let uploadingAsset, let siteID, let productID):
                 return uploadingAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
-            case let .uploadFailure(failedAsset, _, _, _):
+            case .uploadFailure(let failedAsset, _, let siteID, let productID):
                 return failedAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
             case .remote:
                 return false

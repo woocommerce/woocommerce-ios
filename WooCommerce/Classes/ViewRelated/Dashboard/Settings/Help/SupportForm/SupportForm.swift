@@ -118,7 +118,7 @@ struct SupportForm: View {
                             .subheadlineStyle()
 
                         TextField("", text: $viewModel.siteAddress)
-                            .autocorrectionDisabled(true) // Disables autocorrect
+                            .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
                             .keyboardType(.URL)
                             .bodyStyle()

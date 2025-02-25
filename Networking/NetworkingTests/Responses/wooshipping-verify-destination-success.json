@@ -14,7 +14,6 @@
             "last_name": "YORK STORE",
             "email": "john.doe@example.com"
         },
-        "isTrivialNormalization": false,
         "isVerified": false
     }
 }

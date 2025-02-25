@@ -317,7 +317,7 @@ private extension ProductImageActionHandler {
             case .uploading(let uploadingAsset, let siteID, let productID):
                 return uploadingAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
             case let .uploadFailure(failedAsset, _, _, _):
-                return failedAsset == asset
+                return failedAsset == asset && siteID == self.siteID && productID == self.productOrVariationID
             case .remote:
                 return false
             }

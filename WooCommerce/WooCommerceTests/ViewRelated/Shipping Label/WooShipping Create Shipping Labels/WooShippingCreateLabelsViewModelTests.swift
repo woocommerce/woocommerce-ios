@@ -511,12 +511,51 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
         let order = Order.fake().copy(shippingAddress: address)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+                                                                               isTrivialNormalization: false,
+                                                                               isVerified: false)))
+            case .loadPackages, .loadOriginAddresses:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.destinationAddressStatus, .unverified)
+        XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
+    }
+
+    func test_destinationAddressStatus_verified_and_noticeLabel_set_for_verified_address() {
+        // Given
+        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let order = Order.fake().copy(shippingAddress: address)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case .loadPackages, .loadOriginAddresses:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddressStatus, .verified)
         XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
 
@@ -538,7 +577,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.destinationAddressStatus, .missing)

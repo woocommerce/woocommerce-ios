@@ -18,7 +18,7 @@ final class ProductImageUploaderTests: XCTestCase {
         let imageUploader = ProductImageUploader(stores: stores,
                                                  imagesProductIDUpdater: mockProductIDUpdater)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .productID,
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()

@@ -184,9 +184,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.debounceDuration = debounceDuration
 
-        // TODO: Check remotely to see if the destination address is verified.
-        destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
-
+        loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddressStatus()
         observeSelectedPackage()
@@ -320,6 +318,30 @@ private extension WooShippingCreateLabelsViewModel {
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Loads destination address of the order from remote.
+    ///
+    func loadDestinationAddress() {
+        let action = WooShippingAction.verifyDestinationAddress(siteID: order.siteID,
+                                                                orderID: order.orderID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let address):
+                destinationAddress = address.normalizedAddress
+                destinationAddressStatus = address.isVerified ? .verified : .unverified
+            case .failure(let error):
+                DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
+
+                if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
+                    destinationAddress = orderShippingAddress
+                    destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+                } else {
+                    destinationAddressStatus = .missing
+                }
             }
         }
         stores.dispatch(action)

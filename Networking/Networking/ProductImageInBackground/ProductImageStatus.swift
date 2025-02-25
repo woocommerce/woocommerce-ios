@@ -25,11 +25,15 @@ public enum ProductImageStatus: Equatable, Codable {
         case error
         case siteID
         case productID
+        case errorDomain
+        case errorCode
+        case errorUserInfo
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let typeString = try container.decode(String.self, forKey: .type)
+
         switch typeString {
         case "uploading":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
@@ -43,11 +47,12 @@ public enum ProductImageStatus: Equatable, Codable {
             self = .remote(image: image, siteID: sID, productID: pID)
         case "uploadFailure":
             let asset = try container.decode(ProductImageAssetType.self, forKey: .asset)
-            let errorMessage = try container.decode(String.self, forKey: .error)
-            let error = NSError(domain: "ProductImageStatus", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
             let sID = try container.decode(Int64.self, forKey: .siteID)
             let pID = try container.decode(ProductOrVariationID.self, forKey: .productID)
-            self = .uploadFailure(asset: asset, error: error, siteID: sID, productID: pID)
+            let domain = try container.decode(String.self, forKey: .errorDomain)
+            let code = try container.decode(Int.self, forKey: .errorCode)
+            let userInfo = try container.decode([String: String]?.self, forKey: .errorUserInfo)
+            self = .uploadFailure(asset: asset, error: NSError(domain: domain, code: code, userInfo: userInfo), siteID: sID, productID: pID)
         default:
             throw DecodingError.dataCorruptedError(forKey: .type,
                                                    in: container,
@@ -62,7 +67,7 @@ public enum ProductImageStatus: Equatable, Codable {
             try container.encode("uploading", forKey: .type)
             try container.encode(asset, forKey: .asset)
             try container.encode(siteID, forKey: .siteID)
-            try container.encodeIfPresent(productID, forKey: .productID)
+            try container.encode(productID, forKey: .productID)
         case .remote(let image, let siteID, let productID):
             try container.encode("remote", forKey: .type)
             try container.encode(image, forKey: .image)
@@ -71,10 +76,13 @@ public enum ProductImageStatus: Equatable, Codable {
         case .uploadFailure(let asset, let error, let siteID, let productID):
             try container.encode("uploadFailure", forKey: .type)
             try container.encode(asset, forKey: .asset)
-            let errorMessage = (error as NSError).localizedDescription
-            try container.encode(errorMessage, forKey: .error)
             try container.encode(siteID, forKey: .siteID)
-            try container.encodeIfPresent(productID, forKey: .productID)
+            try container.encode(productID, forKey: .productID)
+
+            let errorMessage = error as NSError
+            try container.encode(errorMessage.domain, forKey: .errorDomain)
+            try container.encode(errorMessage.code, forKey: .errorCode)
+            try container.encode(errorMessage.userInfo as? [String: String], forKey: .errorUserInfo)
         }
     }
 

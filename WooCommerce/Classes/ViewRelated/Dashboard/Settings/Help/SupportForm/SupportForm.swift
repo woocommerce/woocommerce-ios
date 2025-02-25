@@ -118,6 +118,8 @@ struct SupportForm: View {
                             .subheadlineStyle()
 
                         TextField("", text: $viewModel.siteAddress)
+                            .autocorrectionDisabled(true) // Disables autocorrect
+                            .textInputAutocapitalization(.never)
                             .keyboardType(.URL)
                             .bodyStyle()
                             .padding(insets: Layout.subjectInsets)

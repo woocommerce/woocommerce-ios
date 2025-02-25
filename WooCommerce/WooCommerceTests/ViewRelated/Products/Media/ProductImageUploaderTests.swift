@@ -228,7 +228,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                  imagesProductIDUpdater: mockProductIDUpdater)
         let localProductID: Int64 = 0
         let nonExistentProductID: Int64 = 999
-        let remoteProductID = productID
+        let remoteProductID = productID.id
         let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(), siteID: siteID, productID: productID),
                                                       .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID),
                                                       .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID)]
@@ -238,7 +238,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                         originalStatuses: originalStatuses)
 
         // When
-        imageUploader.replaceLocalID(siteID: siteID, localID: .product(id: nonExistentProductID), remoteID: remoteProductID.id)
+        imageUploader.replaceLocalID(siteID: siteID, localID: .product(id: nonExistentProductID), remoteID: remoteProductID)
 
         // Then
         // Ensure that trying to replace a non-existent product ID does nothing.

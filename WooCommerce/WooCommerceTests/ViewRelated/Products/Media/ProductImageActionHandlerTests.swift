@@ -26,8 +26,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: 0, productID: productID) }
-        let mockProduct = Product.fake().copy(siteID: 0, productID: productID.id, images: mockProductImages)
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,

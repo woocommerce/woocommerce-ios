@@ -6,10 +6,11 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
-            VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            VStack(alignment: .center, spacing: POSSpacing.none) {
                 Spacer()
-                POSErrorExclamationMark()
-                VStack(alignment: .center, spacing: Constants.textSpacing) {
+                POSErrorExclamationMark(size: .large)
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(viewModel.title)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
@@ -19,11 +20,12 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                         .font(.posBodyLargeRegular())
                         .padding([.leading, .trailing])
                 }
-                Spacer()
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
                 Button(viewModel.actionModel.title, action: viewModel.actionModel.handler)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)
+                Spacer()
             }
             .multilineTextAlignment(.center)
             Spacer()

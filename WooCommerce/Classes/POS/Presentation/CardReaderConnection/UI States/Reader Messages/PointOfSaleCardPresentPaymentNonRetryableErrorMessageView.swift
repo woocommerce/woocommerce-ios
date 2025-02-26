@@ -31,6 +31,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+            .frame(width: width * 0.5)
 
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)

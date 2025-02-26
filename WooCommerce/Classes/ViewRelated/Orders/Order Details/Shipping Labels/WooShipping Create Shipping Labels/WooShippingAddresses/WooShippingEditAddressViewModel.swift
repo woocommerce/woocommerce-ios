@@ -290,6 +290,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Used to initialize the view model with a destination address.
     convenience init(address: WooShippingAddress?,
+                     orderID: Int64,
                      email: String?,
                      isVerified: Bool,
                      originCountryCode: String?,
@@ -297,7 +298,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
-        self.init(type: .destination,
+        self.init(type: .destination(orderID: orderID),
                   id: UUID().uuidString,
                   name: address?.name ?? "",
                   company: address?.company ?? "",

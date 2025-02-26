@@ -62,7 +62,6 @@ struct AddressMapPickerView: View {
                     }
                 }
             }
-            .navigationTitle(Localization.mapPickerTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -118,7 +117,6 @@ struct AddressMapPickerView: View {
 @available(iOS 17, *)
 private extension AddressMapPickerView {
     enum Localization {
-        static let mapPickerTitle = NSLocalizedString("Pick Address", comment: "Title for the map address picker view")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
         static let useThisAddress = NSLocalizedString("Use This Address", comment: "Button to confirm selected address from map")
         static let searchPlaceholder = NSLocalizedString("Search for an address", comment: "Placeholder text for address search bar")

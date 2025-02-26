@@ -86,6 +86,62 @@ public enum ProductImageStatus: Equatable, Codable {
         }
     }
 
+    public var isUploading: Bool {
+        if case .uploading = self {
+            return true
+        }
+        return false
+    }
+
+    public var isUploadFailure: Bool {
+        if case .uploadFailure = self {
+            return true
+        }
+        return false
+    }
+
+    public var siteID: Int64 {
+        switch self {
+        case .uploading(_, let siteID, _),
+            .remote(_, let siteID, _),
+            .uploadFailure(_, _, let siteID, _):
+            return siteID
+        }
+    }
+
+    public var productOrVariationID: ProductOrVariationID {
+        switch self {
+        case .uploading(_, _, let productID),
+             .uploadFailure(_, _, _, let productID),
+             .remote(_, _, let productID):
+            return productID
+        }
+    }
+
+    public var assetType: ProductImageAssetType? {
+        switch self {
+        case .uploading(let asset, _, _),
+             .uploadFailure(let asset, _, _, _):
+            return asset
+        default:
+            return nil
+        }
+    }
+
+    public var error: Error? {
+        if case .uploadFailure(_, let errorDescription, _, _) = self {
+            return errorDescription
+        }
+        return nil
+    }
+
+    public var isLocalID: Bool {
+        if productOrVariationID.id == 0 {
+            return true
+        }
+        return false
+    }
+
     public static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case let (.uploading(lAsset, lSiteID, lProductID), .uploading(rAsset, rSiteID, rProductID)):

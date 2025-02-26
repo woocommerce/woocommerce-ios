@@ -93,6 +93,24 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     private func configureMap(with fields: AddressFormFields) {
+        // If fields are empty and we have location permission, use current location for the initial map region.
+        if fields.address1.isEmpty && fields.address2.isEmpty && fields.city.isEmpty {
+            let locationManager = CLLocationManager()
+            if locationManager.authorizationStatus == .authorizedWhenInUse ||
+                locationManager.authorizationStatus == .authorizedAlways,
+               let currentLocation = locationManager.location {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    region = MKCoordinateRegion(
+                        center: currentLocation.coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
+                    annotations = [MapAnnotation(coordinate: currentLocation.coordinate)]
+                }
+                return
+            }
+        }
+
         // Try to geocode the address if we have enough information
         if !fields.address1.isEmpty && !fields.city.isEmpty {
             let addressString = [
@@ -110,13 +128,14 @@ final class AddressMapPickerViewModel: NSObject {
                     return
                 }
 
-                DispatchQueue.main.async {
-                    self.region = MKCoordinateRegion(
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    region = MKCoordinateRegion(
                         center: location.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
-                    self.annotations = [MapAnnotation(coordinate: location.coordinate)]
-                    self.selectedPlaceAddress = self.formatAddressString(
+                    annotations = [MapAnnotation(coordinate: location.coordinate)]
+                    selectedPlaceAddress = formatAddressString(
                         address1: fields.address1,
                         address2: fields.address2,
                         city: fields.city,

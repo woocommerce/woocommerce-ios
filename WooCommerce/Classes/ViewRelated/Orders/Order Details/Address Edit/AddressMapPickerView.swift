@@ -23,6 +23,7 @@ struct AddressMapPickerView: View {
                     annotationItems: viewModel.annotations) { item in
                     MapMarker(coordinate: item.coordinate)
                 }
+                    .ignoresSafeArea()
 
                 // Search results list
                 VStack(spacing: 0) {

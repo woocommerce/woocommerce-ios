@@ -49,9 +49,9 @@ public final class MyStoreScreen: ScreenObject {
     func verifyStatsForTimeframeLoaded(timeframe: String) -> MyStoreScreen {
         let textPredicate = NSPredicate(format: "label MATCHES %@", timeframe)
         let element = app.staticTexts.containing(textPredicate).element
-        let exists = element.waitForExistence(timeout: 30)
+        let elementExists = element.waitForExistence(timeout: 30)
 
-        XCTAssertTrue(exists, "\(timeframe) chart not displayed")
+        XCTAssertTrue(elementExists, "\(timeframe) chart not displayed")
 
         return self
     }

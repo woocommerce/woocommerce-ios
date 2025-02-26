@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 21.8
+This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.
+
+## 21.7
+This update brings improvements to media library and login experience. You'll find enhanced accessibility in tax-related views and clearer product image organization with cover tags to help you manage your store. Update now for a smoother WooCommerce experience!
+
 ## 21.6
 Experience a refreshed WooCommerce app with an updated look that aligns with our new branding! We’ve also improved payment reliability—card reader updates now handle low battery issues better, and errors during payments and refunds are managed more smoothly. Enjoy a more seamless and polished experience in every transaction.
 

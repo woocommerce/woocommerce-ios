@@ -1,4 +1,4 @@
-#include "Common.xcconfig"
+#include "WooCommerce.common.xcconfig"
 #include "Version.public.xcconfig"
 
 // Use Apple Development/Distribution to support both iOS and Mac Catalyst targets

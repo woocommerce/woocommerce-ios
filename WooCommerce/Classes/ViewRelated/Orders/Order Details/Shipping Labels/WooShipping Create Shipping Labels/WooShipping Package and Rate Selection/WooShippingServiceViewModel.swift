@@ -3,9 +3,14 @@ import Yosemite
 final class WooShippingServiceViewModel: ObservableObject {
     private let siteID: Int64
     private let orderID: Int64
-    private let originAddress: ShippingLabelAddress?
-    private let destinationAddress: ShippingLabelAddress?
+    private let originAddress: WooShippingAddress?
+    private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
+
+    /// Whether the destination address is present and with non-empty fields.
+    var hasDestinationAddress: Bool {
+        destinationAddress?.formattedPostalAddress != nil
+    }
 
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
@@ -15,7 +20,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// State of loading shipping rates.
-    private(set) var loadingState: LabelRatesState = .empty
+    @Published private(set) var loadingState: LabelRatesState = .empty
 
     /// Available standard shipping rates.
     private var standardRates: [ShippingLabelCarrierRate] = []
@@ -31,8 +36,8 @@ final class WooShippingServiceViewModel: ObservableObject {
     let onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)?
 
     init(order: Order,
-         originAddress: ShippingLabelAddress?,
-         destinationAddress: ShippingLabelAddress?,
+         originAddress: WooShippingAddress?,
+         destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID
@@ -59,7 +64,7 @@ final class WooShippingServiceViewModel: ObservableObject {
 
     /// Retrieves shipping label rates for this shipment from remote.
     func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
-        guard let originAddress, let destinationAddress else {
+        guard let originAddress, let destinationAddress, hasDestinationAddress else {
             return updateLoadingState(to: .error)
         }
         updateLoadingState(to: .loading)

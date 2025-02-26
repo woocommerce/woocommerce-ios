@@ -13,25 +13,31 @@ struct PointOfSaleItemListErrorView: View {
     var body: some View {
         VStack {
             Spacer()
-            VStack(alignment: .center) {
-                POSErrorExclamationMark()
-                    .padding(.bottom)
+            VStack(alignment: .center, spacing: POSSpacing.none) {
+                POSErrorExclamationMark(size: .large)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+
                 Text(error.subtitle)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
                 Button(action: {
                     onRetry?()
                 }, label: {
                     Text(error.buttonText)
                 })
-                .buttonStyle(POSPrimaryButtonStyle())
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
                 .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
                 .padding([.leading, .trailing])
             }

@@ -528,14 +528,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Add Shipping Address";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "Add tax rates in admin. Only tax rates with location information will be shown here.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Add the description of the coupon.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "Add this rate to all created orders";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Add to new package";
@@ -769,21 +763,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "An error occurred accessing Bluetooth - please enable Bluetooth and try again.";
 
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "An error occurred creating the Menu.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "An error occurred deleting the Menu.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "An error occurred fetching the Menus.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "An error occurred updating the Menu.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "An error occurred while processing your request: ";
-
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "An HTTP error code %i was returned.";
 
@@ -979,6 +958,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Application Name";
+
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "What is Application Password?";
+
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "It seems that your site %1$@ has Application Password disabled. Please enable it to use the WooCommerce app.";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "Help";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "Retry";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "Log In With Another Account";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Quickly Launch WooCommerce";
@@ -2173,7 +2167,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -2247,8 +2240,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Cannot update products";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -2256,9 +2248,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Cannot verify your site's WooCommerce installation.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "Can’t find the rate you’re looking for?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Cape Verde";
@@ -2964,9 +2953,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the submit button on the account creation form. */
 "Continue" = "Continue";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "Continue reading";
-
 /* Title of the primary button on the store onboarding payments setup screen. */
 "Continue Setup" = "Continue Setup";
 
@@ -3012,15 +2998,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Costa Rica";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "Could not check site purchases.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "Could not follow the site at the address specified.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "Could not unfollow the site at the address specified.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered.";
@@ -3948,9 +3925,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "Draft";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Drag and drop to re-order photos";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Drive more sales to your store with Blaze.";
 
@@ -4022,9 +3996,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Edit Tax Rates in Admin";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "Edit tax rates in admin";
 
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Share your feedback";
@@ -4684,9 +4655,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button.";
-
-/* User role badge */
-"Follower" = "Follower";
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Forgot password?";
@@ -5372,9 +5340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Toggle field in the view for adding or editing a coupon's free shipping support. */
 "Include Free Shipping?" = "Include Free Shipping?";
 
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "Included with Site";
-
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "Includes %1$@ tracking";
 
@@ -5583,9 +5548,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "It seems that you have not approved the app connection yet. Are you sure you want to exit?";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce.";
@@ -5940,6 +5902,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Boost your sales";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "Your product images are still uploading in the background. Upload speed may be slower, and errors could occur. For best results, please keep the app open until uploads are complete.";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "Image Upload in Progress";
+
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Log files by created date";
 
@@ -5979,16 +5947,12 @@ which should be translated separately and considered part of this sentence. */
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Log In With Another Account";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Log in with another account";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "Log in with WordPress.com";
 
 /* Sign in instructions on the 'log in using email' screen.
    Sign in instructions on the 'log in using WordPress.com account' screen. */
@@ -6109,9 +6073,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Manage your subscription";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "Manual Offsets";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Manual Refund";
 
@@ -6126,9 +6087,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "Scan barcode or QR Code with tracking number";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "Mapped Domain";
 
 /* Alert button title - confirms and marks all reviews as read */
 "Mark all" = "Mark all";
@@ -6184,9 +6142,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "Media doesn't have an associated file to upload.";
 
 /* Menu option for taking an image or video with the device's camera. */
 "mediaSourceActionSheet.camera" = "Take a photo";
@@ -6551,6 +6506,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email note to customer On";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "Cancel";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "Edit tax rates in admin";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "Add tax rates in admin. Only tax rates with location information will be shown here.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "We couldn’t find any tax rates";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "This will not affect online orders";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "This will change the customer’s address to the location of the tax rate you select.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "Can’t find the rate you’re looking for?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "Set Tax Rate";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "Select a tax rate";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "Add this rate to all created orders";
 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
@@ -7663,8 +7648,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Please try again, or contact support for assistance";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Please try again.";
 
 /* Error message when Jetpack activation fails */
@@ -7743,6 +7727,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Payment cancelled on reader";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Connect your reader";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "Processing payment";
 
@@ -7800,17 +7787,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Try payment again";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Please wait...";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Processing payment";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Preparing card for payment";
-
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Getting ready";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Preparing reader for payment";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Insert card";
@@ -7830,12 +7814,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Ready for payment";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Connect to reader";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "To process this payment, please connect your reader.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Reader not connected";
 
@@ -7854,11 +7832,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
 "pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Unable to take card payment";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Retry";
-
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Error checking order";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Try again";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Please wait";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Dismiss";
@@ -8073,6 +8054,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Disconnecting";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "Documentation";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remove";
 
@@ -8083,7 +8067,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.orderSync.error.title" = "Couldn't load totals";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message" = "A payment of %1$@ was successfully made";
+"pointOfSale.paymentSuccessful.message.card.1" = "A card payment of %1$@ was successfully made.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "A cash payment of %1$@ was successfully made.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Payment successful";
@@ -8188,12 +8175,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Products";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Dismiss";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Other product types, such as variable and virtual, will become available in future updates.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Other product types will become available in future updates.";
 
@@ -8201,19 +8182,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Learn More";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "Only simple physical products are available with POS right now.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Only simple and variable non-downloadable products can be used with POS right now.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Showing simple products only";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "Showing simple and variable products only";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Products";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Dismiss";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options available";
@@ -8239,20 +8217,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Create an order in store management";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "To take payment for a non-simple product, exit POS and create a new order from the orders tab.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "To take payment for an unsupported product, exit POS and create a new order from the orders tab.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Other product types, such as variable and virtual, will be available in future updates.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "Other product types will be available in future updates.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "Only simple physical products can be used with POS right now.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Only simple and variable non-downloadable products can be used with POS right now.";
@@ -8697,11 +8666,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "The images are unavailable because your site is marked Private. You can change this by switching to Coming Soon mode.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "Discard";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "Retry";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "Image was not uploaded";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Mark as favorite";
 
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "Cancel";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "Retry";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "Product was not saved";
+
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Remove from favorite";
+
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "Cover";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Cancel";
@@ -8714,6 +8704,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Please wait until all uploads are finished before reordering images.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "Drag and drop to re-order photos. The first photo will be set as the cover.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "Discard";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "Retry";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "Image was not uploaded";
+
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "Image uploading will continue in the background";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Suggested product";
@@ -9097,9 +9102,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the domain contact info form. */
 "Register domain" = "Register domain";
-
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "Registered Domain";
 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Regular Price";
@@ -9539,9 +9541,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Select a product type";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "Select a tax rate";
-
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
 
@@ -9643,9 +9642,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "Set New Tax Rate";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "Set Tax Rate";
 
 /* Subtitle of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon. */
 "Set the fixed amount of the discount you want to offer." = "Set the fixed amount of the discount you want to offer.";
@@ -9951,9 +9947,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Site plan expired";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "Site Redirect";
 
 /* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements */
@@ -11015,9 +11008,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "The serialization of the response failed.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "The server returned an empty response. This usually means you need to increase the memory limit for your site.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "The shipping height for this product. Editable.";
 
@@ -11036,12 +11026,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "The site could not be deleted.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "The site could not be exported.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "The stock quantity for this product. Editable.";
@@ -11066,9 +11050,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "The trial payment could not be started, please try again, or contact support if this problem persists.";
-
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "The URL is missing a valid host.";
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "The variation couldn't be generated.";
@@ -11167,14 +11148,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "There was a problem blocking posts from the specified site.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "There was a problem communicating with the site.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "There was a problem removing the block for specified site.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "There was an error communicating with your site.";
@@ -11310,14 +11285,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "This Week";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "This will change the customer’s address to the location of the tax rate you select.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "This will create a variation for each and every possible combination of variation attributes (%d variations).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "This will not affect online orders";
 
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "This Year";
@@ -11420,9 +11389,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "Topic not found for id:";
-
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Add";
 
@@ -11473,9 +11439,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Tracking number %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "Transferred Domain";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -11878,9 +11841,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Unknown Software Version";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "unknown url";
-
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Unlimited";
 
@@ -12219,9 +12179,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "View your store";
 
-/* User role badge */
-"Viewer" = "Viewer";
-
 /* Title of the button to dismiss the view package photo screen. */
 "viewPackagePhoto.done" = "Done";
 
@@ -12343,9 +12300,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "We couldn't process your app login request";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "We couldn’t find any tax rates";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "We couldn’t log in into your store";
@@ -12497,9 +12451,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "What email do I use to sign in?";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "What is Application Password?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -12678,6 +12629,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Select a package to get shipping rates";
 
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "Destination address missing";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "Destination address unverified";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "Verified destination address";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "Missing address";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "Unverified address";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "Address verified";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Adult Signature Required";
 
@@ -12848,6 +12817,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Track shipment";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "We need to know where this package is going before we can show the available shipping rates.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Add a destination address to get shipping rates";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Shipping service";

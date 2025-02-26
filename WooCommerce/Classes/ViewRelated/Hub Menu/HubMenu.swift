@@ -36,7 +36,8 @@ struct HubMenu: View {
                        let receiptService = POSReceiptService(siteID: viewModel.siteID,
                                                               credentials: viewModel.credentials),
                        let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                          credentials: viewModel.credentials) {
+                                                          credentials: viewModel.credentials),
+                       #available(iOS 17.0, *) {
                         PointOfSaleEntryPointView(
                             itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
@@ -44,7 +45,8 @@ struct HubMenu: View {
                             },
                             cardPresentPaymentService: cardPresentPaymentService,
                             orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                        receiptService: receiptService))
+                                                                        receiptService: receiptService),
+                            collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker)
                     } else {
                         // TODO: When we have a singleton for the card payment service, this should not be required.
                         Text("Error creating card payment service")

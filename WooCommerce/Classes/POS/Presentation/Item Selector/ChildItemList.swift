@@ -2,10 +2,11 @@ import SwiftUI
 import Yosemite
 
 /// Displays a scrollable list of child items in POS.
+@available(iOS 17.0, *)
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
 
     private var state: ItemListState {
@@ -30,13 +31,8 @@ struct ChildItemList: View {
                 errorView(error: error)
             }
         }
-        .background(Color.posPrimaryBackground)
+        .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
-        .refreshable {
-            await Task {
-                await posModel.loadItems(base: .parent(parentItem))
-            }.value
-        }
         .task {
             guard state.items.isEmpty else {
                 return
@@ -46,20 +42,14 @@ struct ChildItemList: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ChildItemList {
     @ViewBuilder var headerView: some View {
-        HStack {
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundColor(.primary)
-            }
-            POSHeaderTitleView(title: title)
-            Spacer()
-        }
-        .padding(.horizontal, Constants.itemListPadding)
+        POSPageHeaderView(title: title,
+                          backButtonConfiguration: .init(state: .enabled,
+                                                         action: {
+            dismiss()
+        }))
     }
 
     @ViewBuilder
@@ -70,19 +60,18 @@ private extension ChildItemList {
             ItemList(state: state,
                      node: .parent(parentItem))
                 .transition(.opacity)
+                .refreshable {
+                    ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
+                    await posModel.refreshItems(base: .parent(parentItem))
+                }
         }
     }
 
     @ViewBuilder
     var emptyView: some View {
-        ZStack {
-            VStack {
-                headerView
-                Spacer()
-            }
-
+        VStack {
+            headerView
             PointOfSaleItemListEmptyView(base: .parent(parentItem))
-                .zIndex(1)
         }
     }
 
@@ -104,6 +93,7 @@ private extension ChildItemList {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ChildItemList {
     enum Localization {
         static let back = NSLocalizedString(
@@ -112,14 +102,11 @@ private extension ChildItemList {
             comment: "Back button title in the child item list screen."
         )
     }
-
-    enum Constants {
-        static let itemListPadding: CGFloat = 16
-    }
 }
 
 #if DEBUG
 
+@available(iOS 17.0, *)
 #Preview("Variable product child items") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),
@@ -161,11 +148,13 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
+@available(iOS 17.0, *)
 #Preview("Variable items load error") {
     let parentProduct = POSVariableParentProduct(
         id: .init(),
@@ -184,9 +173,10 @@ private extension ChildItemList {
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name)
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

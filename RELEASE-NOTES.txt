@@ -1,9 +1,36 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
+21.9
+-----
+
+
+21.8
+-----
+- [**] Shipping Labels: resolved issue preventing shipping labels from displaying in some orders when an error occurred during label creation. [https://github.com/woocommerce/woocommerce-ios/pull/15101]
+- [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/15088]
+- [*] Improved image loading in Blaze Campaign Creation: displays a redacted and shimmering effects when loading product image and falls back to a placeholder if no image is available. [https://github.com/woocommerce/woocommerce-ios/pull/15098]
+- [*] Product List: Display syncing animation on items with image upload in progress [https://github.com/woocommerce/woocommerce-ios/pull/15052]
+- [*] Background image upload: Fix issue showing uploaded images while saving is in progress [https://github.com/woocommerce/woocommerce-ios/pull/15107]
+- [*] Background image upload: Fix missing error notice in iPhones [https://github.com/woocommerce/woocommerce-ios/pull/15117]
+- [*] Background image upload: Show a notice when the user leaves product details while uploads are pending [https://github.com/woocommerce/woocommerce-ios/pull/15134]
+- [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
+- [*] Product Image Upload: Now, a local notification is scheduled if the app has some image uploads in progress and the app is sent into the background. [https://github.com/woocommerce/woocommerce-ios/pull/15166]
+- [Internal] Improve authentication logic for authenticated web view [https://github.com/woocommerce/woocommerce-ios/pull/15164]
+- [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
+- [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [*] Product Images: Improve error handling for product saving [https://github.com/woocommerce/woocommerce-ios/pull/15210]
+- [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
+
 21.7
 -----
+- [**] Fixed an issue with the WordPress Media Library not loading due to a decoding error in media details sizes. [https://github.com/woocommerce/woocommerce-ios/pull/15056]
+- [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+- [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
 - [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]
-- [x] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+- [*] Orders: Improved accessibility UI for Tax Rates related views [https://github.com/woocommerce/woocommerce-ios/pull/15043]
+- [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
+- [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
 
 21.6
 -----

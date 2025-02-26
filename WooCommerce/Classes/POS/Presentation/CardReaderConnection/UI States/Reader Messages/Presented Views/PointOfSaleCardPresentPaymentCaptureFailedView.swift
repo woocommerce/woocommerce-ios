@@ -4,28 +4,34 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
-            POSErrorExclamationMark()
+        VStack(alignment: .center, spacing: POSSpacing.none) {
+            POSErrorExclamationMark(size: .large)
                 .accessibilityAddTraits(.isHeader)
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(Localization.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(Localization.message)
                     Text(Localization.nextSteps)
                 }
-                .font(.posBodyRegular)
-                .foregroundStyle(Color.posPrimaryText)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
             }
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
             Button(Localization.understandButtonTitle,
                    action: {
                 isPresented = false
             })
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .multilineTextAlignment(.center)
         .padding(Layout.contentPadding)
@@ -36,7 +42,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 private extension PointOfSaleCardPresentPaymentCaptureFailedView {
     enum Layout {
         static let maxWidth: CGFloat = 896
-        static let contentPadding: CGFloat = 40
+        static let contentPadding: CGFloat = POSPadding.xxLarge
     }
 
     enum Localization {

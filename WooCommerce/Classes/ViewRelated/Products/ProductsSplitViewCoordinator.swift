@@ -65,6 +65,16 @@ final class ProductsSplitViewCoordinator: NSObject {
     func startProductCreation() {
         productsViewController.startProductCreation()
     }
+
+    /// Returns the product form of the given product ID being displayed on the secondary column if available.
+    func currentProductForm(for productID: Int64) -> ProductFormViewController<ProductFormViewModel>? {
+        if let contentType = contentTypes.last,
+            case let .productForm(product) = contentType,
+            product?.productID == productID {
+            return secondaryNavigationController.topViewController as? ProductFormViewController<ProductFormViewModel>
+        }
+        return nil
+    }
 }
 
 private extension ProductsSplitViewCoordinator {
@@ -230,6 +240,9 @@ private extension ProductsSplitViewCoordinator {
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
+            if let contentType = contentTypes.last, case let .productForm(product) = contentType, let product {
+                didDismissProductForm(product: product)
+            }
             contentTypes = []
             secondaryNavigationController.viewControllers = []
             return
@@ -268,6 +281,15 @@ private extension ProductsSplitViewCoordinator {
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
+    }
+
+    func didDismissProductForm(product: Product) {
+        let uploader = ServiceLocator.productImageUploader
+        let key = ProductImageUploaderKey(siteID: product.siteID,
+                                          productOrVariationID: .product(id: product.productID),
+                                          isLocalID: false)
+        uploader.startEmittingErrors(key: key)
+        uploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: ServiceLocator.noticePresenter)
     }
 }
 

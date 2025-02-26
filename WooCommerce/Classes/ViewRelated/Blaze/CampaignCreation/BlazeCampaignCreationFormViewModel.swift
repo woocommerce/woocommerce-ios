@@ -214,7 +214,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
 
-    @Published private var isLoadingProductImage: Bool = false
+    @Published private(set) var isLoadingProductImage: Bool = true
 
     var canEditAd: Bool {
         !isLoadingAISuggestions

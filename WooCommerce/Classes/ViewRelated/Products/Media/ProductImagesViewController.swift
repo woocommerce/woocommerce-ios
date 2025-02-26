@@ -48,6 +48,9 @@ final class ProductImagesViewController: UIViewController {
             imageStatuses: productImageStatuses,
             isDeletionEnabled: isDeletionEnabled,
             productUIImageLoader: productUIImageLoader,
+            onFailedUploadSelected: { [weak self] asset, error in
+                self?.displayImageUploadErrorAlert(error: error, for: asset)
+            },
             onDeletion: { [weak self] productImage in
                 self?.onDeletion(productImage: productImage)
             },
@@ -115,7 +118,7 @@ final class ProductImagesViewController: UIViewController {
         super.viewWillAppear(animated)
 
         if hasCheckedInitialProductImageStatuses == false {
-            initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
                 guard let self else {
                     return
                 }
@@ -188,7 +191,7 @@ private extension ProductImagesViewController {
     }
 
     func configureProductImagesObservation() {
-        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
                 return
             }
@@ -261,6 +264,25 @@ private extension ProductImagesViewController {
     func handleProductImageStatusesReordering(_ reorderedProductImageStatuses: [ProductImageStatus]) {
         hasMovedAnyImages = true
         productImageActionHandler.updateProductImageStatusesAfterReordering(reorderedProductImageStatuses)
+    }
+
+    func displayImageUploadErrorAlert(error: Error, for asset: ProductImageAssetType) {
+        let alert = UIAlertController(title: Localization.ImageUploadError.title,
+                                      message: error.localizedDescription,
+                                      preferredStyle: .alert)
+        let discard = UIAlertAction(title: Localization.ImageUploadError.discard, style: .destructive, handler: { [weak self] _ in
+            self?.productImageActionHandler.discardUpload(asset: asset)
+        })
+        alert.addAction(discard)
+
+        let retry = UIAlertAction(title: Localization.ImageUploadError.retry, style: .default, handler: { [weak self] _ in
+            ServiceLocator.analytics.track(.productImageUploadRetryButtonTapped)
+            self?.productImageActionHandler.discardUpload(asset: asset)
+            self?.productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        })
+        alert.addAction(retry)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -371,7 +393,28 @@ private extension ProductImagesViewController {
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
         static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed by variation",
                                                                  comment: "Helper text above photo list in Product images screen")
-        static let dragAndDropHelperText = NSLocalizedString("Drag and drop to re-order photos",
-                                                             comment: "Drag and drop helper text above photo list in Product images screen")
+        static let dragAndDropHelperText = NSLocalizedString(
+            "productImagesViewController.dragAndDropHelperText",
+            value: "Drag and drop to re-order photos. The first photo will be set as the cover.",
+            comment: "Drag and drop helper text above photo list in Product images screen"
+        )
+
+        enum ImageUploadError {
+            static let title = NSLocalizedString(
+                "productImagesViewController.imageUploadError.title",
+                value: "Image was not uploaded",
+                comment: "Title of the alert when there is an error uploading an image of a product."
+            )
+            static let discard = NSLocalizedString(
+                "productImagesViewController.imageUploadError.discard",
+                value: "Discard",
+                comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload."
+            )
+            static let retry = NSLocalizedString(
+                "productImagesViewController.imageUploadError.retry",
+                value: "Retry",
+                comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+            )
+        }
     }
 }

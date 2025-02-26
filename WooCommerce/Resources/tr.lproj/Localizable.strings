@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-28 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-02-11 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -538,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarına ait bilgileri uzaktan ekleyin";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "Yöneticide vergi oranlarını ekle. Yalnızca konum bilgisine sahip vergi oranları burada gösterilecek.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Kuponun açıklamasını ekleyin.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "Oluşturulan tüm siparişlere bu oranı ekle";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Yeni pakete ekle";
@@ -712,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Bluetooth'a erişimde bir hata oluştu - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "Menü oluşturulurken bir hata oluştu.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "Menü silinirken bir hata oluştu.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "Menüler getirilirken bir hata oluştu.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "Menü güncellenirken bir hata oluştu.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "İsteğiniz işlenirken bir hata oluştu: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Yakın zamanda benzer bir işlem gönderildi. Devam etmek istiyorsanız başka bir ödeme yöntemi deneyin";
@@ -1214,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1288,8 +1266,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Ürünler güncellenemiyor";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Resim yüklenemiyor";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -1297,9 +1274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Sitenizin WooCommerce kurulumu doğrulanamıyor.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "Aradığınız oranı bulamıyor musunuz?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Kapo Verde";
@@ -1779,9 +1753,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com ile devam et";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "Okumaya devam et";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "Apple ile devam et";
 
@@ -1821,15 +1792,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Kostarika";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "Site alımları kontrol edilemiyor.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "Belirtilen adresteki site takip edilemedi.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "Belirtilen adresteki site takipten çıkarılamadı.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "WordPress sitesine bağlanılamadı. Bu adreste geçerli WordPress sitesi yok. Girdiğiniz site adresini (URL) kontrol edin.";
@@ -2400,9 +2362,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "Taslak";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Fotoğrafların sıralamasını değiştirmek için sürükle bırak";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Blaze ile mağazanızda daha fazla satış yapın";
 
@@ -2474,9 +2433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Tek seferde birden fazla ürün için durum veya fiyat düzenle";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "Yöneticide vergi oranlarını düzenle";
 
 /* Country option for a site address. */
 "Egypt" = "Mısır";
@@ -3007,9 +2963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Bir uygulama şifresi kullanarak Woo uygulamasını doğrudan mağazanıza bağlamak için şu adımları takip edin.\n\n1. İlk olarak site kimlik bilgilerinizi kullanarak oturum açın.\n\n2. Sizden istendiğinde onay düğmesine dokunarak bağlantıyı onaylayın.";
 
-/* User role badge */
-"Follower" = "Takipçi";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Şifrenizi mi unuttunuz?";
 
@@ -3475,9 +3428,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "Satın alma işlemlerine indirilebilir dosyaları ekle";
 
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "Site ile beraber";
-
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "%1$@ izleme içerir";
 
@@ -3686,9 +3636,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Görünüşe göre henüz uygulama bağlantısını onaylamadınız. Çıkış yapmak istediğinizden emin misiniz?";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "%@ sitenizde Uygulama Şifresi devre dışı bırakılmış görünüyor. WooCommerce uygulamasını kullanmak için lütfen Uygulama Şifresini etkinleştirin.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Görünüşe göre %@ siteniz, eklenti yüklenemeyen basit bir Wordpress.com sitesi. WooCommerce kullanabilmek için lütfen paketinizi yükseltin.";
@@ -3988,7 +3935,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Başka Bir Hesapla Oturum Açın";
@@ -4025,9 +3971,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "E-posta adresinizle WordPress.com hesabınızda oturum açın.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "WordPress.com'la oturum aç";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Başka Bir Hesapla Oturum Açın";
@@ -4137,9 +4080,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Aboneliğinizi yönetin";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "Özel saat farkı";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Manuel Para İadesi";
 
@@ -4148,9 +4088,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "Takip numarasını içeren barkodu veya QR kodu tarayın";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "Alan adını yönet";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Tamamlandı Olarak İşaretle";
@@ -4206,9 +4143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "Medyada karşıya yüklenecek ilişkili dosya bulunmuyor.";
 
 /* Title of the Menu tab */
 "Menu" = "Menü";
@@ -5214,8 +5148,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Lütfen tekrar deneyin veya yardım için destek birimine başvurun";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Lütfen yeniden deneyin.";
 
 /* Error message when Jetpack activation fails */
@@ -5737,9 +5670,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the domain contact info form. */
 "Register domain" = "Alan adını kaydet";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "Kayıtlı alan adı";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Normal Fiyat";
 
@@ -6184,9 +6114,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Bir ürün türü seç";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "Bir vergi oranı seç";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "Tümünü seç";
 
@@ -6258,9 +6185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "Yeni Vergi Oranı Belirle";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "Vergi Oranını Belirle";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Tap to Pay on iPhone'u kurun";
@@ -6499,9 +6423,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Site Address title on the support form */
 "Site Address" = "Site Adresi";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "Site yönlendirme";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "Site adresi";
@@ -7096,9 +7017,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Sipariş yüklenemedi!";
 
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "URL'de geçerli ana bilgisayar yok.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone özelliği için tutar desteklenmiyor. Lütfen bir donanım okuyucu veya başka bir ödeme yöntemi deneyin.";
 
@@ -7263,9 +7181,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "Yanıtın serileştirilmesi başarısız oldu.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Sunucu boş bir yanıt döndü. Bu genellikle sitenizin hafıza limitini arttırmanız gerektiği anlamına gelir.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "Bu ürünün gönderim yüksekliği. Düzenlenebilir.";
 
@@ -7284,12 +7199,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Bu adresteki site bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress kullanılmalıdır.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "Site silinemedi.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "Bu site dışarı aktarılamaz.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Bu ürünün stok miktarı Düzenlenebilir.";
@@ -7342,14 +7251,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Görünüşe göre sitenizde bir sorun oluştu.\n\nDaha fazla yardım almak için lütfen barındırma sağlayıcınızla iletişime geçin.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "Belirlenen sitenin yazıları engellenirken hata oluştu.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Siteyle iletişimde bir sorun oluştu.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Sitenizle iletişim kurmada bir hata yaşandı:";
@@ -7488,14 +7391,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Aktif abonelikleri olduğundan, kullanıcı hesabı kapatılamadı.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "Bu, müşterinin adresini seçtiğiniz vergi oranının konumuna değiştirecektir.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Bu işlem, varyasyon niteliklerinin her olası kombinasyonu için bir varyasyon oluşturur. (%d varyasyon)";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "Bu durum çevrimiçi siparişleri etkilemeyecek";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Süre doldu, ancak endişelenmenize gerek yok. Güvenliğiniz önceliğimizdir. Lütfen yeniden deneyin!";
@@ -7592,9 +7489,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "Kimlik için konu bulunamadı:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Toplam Sipariş";
 
@@ -7630,9 +7524,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Takip numarası: %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "Aktarılan Alan Adı";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -8331,9 +8222,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "Mağazanızı görüntüleme";
 
-/* User role badge */
-"Viewer" = "İzleyici";
-
 /* Label for total store views in the Analytics Hub */
 "Views" = "Gösterimler";
 
@@ -8401,9 +8289,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Uygulamada oturum açma isteğinizi işleme koyamadık";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "Hiçbir vergi oranı bulamadık.";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "Sitenizde oturum açamadık";
@@ -8543,9 +8428,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Giriş yapmak için hangi e-postayı kullanmam gerek?";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "Uygulama Şifresi Nedir?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -9873,6 +9755,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Cihazı kontrol ediyor";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Tekrar dene";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "İptal et";
 
@@ -10895,6 +10780,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Mağaza senkronize ediliyor...";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "İlk satışınızdan milyonlarca gelire kadar Woo yanınızda. Satıcıların neden 3.9 milyon mağazayı desteklemek için bize güvendiğini öğrenin.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "Sizinle birlikte büyüyen e-ticaret platformu";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "Elle para iadesi";
 
@@ -11037,6 +10928,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Notu müşteriye e-posta ile gönderme Açık";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "İptal Et";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "Yöneticide vergi oranlarını düzenle";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "Yöneticide vergi oranlarını ekle. Yalnızca konum bilgisine sahip vergi oranları burada gösterilecek.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "Hiçbir vergi oranı bulamadık.";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "Bu durum çevrimiçi siparişleri etkilemeyecek";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "Bu, müşterinin adresini seçtiğiniz vergi oranının konumuna değiştirecektir.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "Aradığınız oranı bulamıyor musunuz?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "Vergi Oranını Belirle";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "Bir vergi oranı seç";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "Oluşturulan tüm siparişlere bu oranı ekle";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "önceki dönem yok";
@@ -11441,14 +11362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Ödemeyi tekrar dene";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Lütfen bekleyin...";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Ödeme işleniyor";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Ödeme için kart hazırlanıyor";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Hazırlanıyor";
@@ -11471,12 +11386,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Ödemeye hazır";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Okuyucuya bağlan";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "Bu ödemeyi işlemek için lütfen okuyucunuzu bağlayın.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Okuyucu bağlanmadı";
 
@@ -11489,8 +11398,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Hazırlanıyor";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Tekrar dene";
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Sipariş toplamı, bir karttan tahsil edebileceğiniz minimum tutarın altında (%1$@). Bunun yerine nakit ödeme alabilirsiniz.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kart ödemesi alınamadı";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Sipariş kontrol edilirken bir hata oluştu";
@@ -11624,8 +11536,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Okuyucunuzun yazılımı güncellenemedi";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Okuyucunun pil şarj düzeyi %.0f%% olduğundan okuyucu güncellenemedi. Lütfen okuyucuyu şarj edip ardından yeniden deneyin.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "İptal Et";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Okuyucunun pili zayıf olduğundan okuyucu güncellenemedi. Lütfen okuyucuyu şarj edip ardından yeniden deneyin.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Tekrar dene";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Lütfen okuyucuyu şarj edin";
@@ -11707,6 +11628,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Toplamlar yüklenemedi";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Ödeme başarılı";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Gönder";
@@ -11798,12 +11722,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Ürünler";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Kapat";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Değişken ve sanal gibi diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
 
@@ -11811,13 +11729,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Daha Fazla Bilgi Edinin";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "Şu anda POS ile yalnızca basit fiziksel ürünler kullanılabiliyor.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Şu anda POS ile yalnızca basit ürünler ve varyasyonlu indirilemeyen ürünler kullanılabiliyor.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Yalnızca basit ürünler gösteriliyor";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "Yalnızca basit ve varyasyonlu ürünler gösteriliyor";
@@ -11849,20 +11761,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Mağaza yönetiminde sipariş oluşturun";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "Temel olmayan bir ürünün ödemesini almak için POS'tan çıkın ve siparişler sekmesinden yeni sipariş oluşturun.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "Desteklenmeyen bir ürünün ödemesini almak için POS'tan çıkın ve siparişler sekmesinden yeni sipariş oluşturun.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Değişken ve sanal gibi diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "Diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "Şu anda POS ile yalnızca basit fiziksel ürünler kullanılabiliyor.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Şu anda POS ile yalnızca basit ürünler ve varyasyonlu indirilemeyen ürünler kullanılabiliyor.";
@@ -11893,6 +11796,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Toplam";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Lütfen Satış Noktası'na daha fazla alan sağlamak için ekranınızın bölünmesini ayarlayın.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Satış Noktası bu ekran genişliğinde desteklenmiyor.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Kapat";
@@ -12098,6 +12007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Favorilerden kaldır";
 
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "Kapak";
+
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "İptal Et";
 
@@ -12109,6 +12021,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Görselleri yeniden sıralamadan önce tüm yüklemelerin tamamlanmasını bekleyin.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "Fotoğrafların sıralamasını değiştirmek için sürükleyip bırakın. İlk fotoğraf kapak olarak ayarlanır.";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Önerilen ürün";
@@ -12751,9 +12666,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "bilinmeyor";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "bilinmeyen url";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Miktar güncellendi: %@";
 
@@ -12933,6 +12845,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Gönderim ücretleri almak için bir paket seçin";
+
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "Hedef adresi yok";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "Hedef adresi doğrulanmamış";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "Doğrulanmış hedef adresi";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "Adres yok";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "Doğrulanmamış adres";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "Adres doğrulandı";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Yetişkin İmzası Gerekli";
@@ -13228,6 +13158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote when a required value is missing */
 "wooShipping.customs.valueRequiredWarning" = "Değer gerekli";
 
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Tamam";
+
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Açıklama";
 
@@ -13254,6 +13187,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "Birim başına ağırlık";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "İptal Et";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Girilen Adresi Onayla";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Önerilen Adresi Onayla";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Girdiğiniz";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Girilen adresi biraz değiştirdik.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Doğruysa teslimatın doğru yapılması için lütfen önerilen adresi kullanın.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Önerilen";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Adresi doğrulayın";
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(varsayılan)";

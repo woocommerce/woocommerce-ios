@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-27 16:54:06+0000 */
+/* Translation-Revision-Date: 2025-02-10 17:54:12+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -538,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "إضافة معلومات الملفات القابلة للتنزيل للمنتجات عن بُعد";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "أضف معدلات الضرائب ضمن المسؤول. لن تظهر سوى معدلات الضرائب التي تتضمن معلومات عن الموقع هنا.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "أضف وصف القسيمة.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "إضافة هذا المعدل إلى كل الطلبات التي تم إنشاؤها";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "إضافة إلى الحزمة الجديدة";
@@ -712,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "حدث خطأ في أثناء الوصول إلى البلوتوث - يرجى تمكين البلوتوث والمحاولة مجددًا";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "حدث خطأ أثناء إنشاء القائمة.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "حدث خطأ أثناء حذف القائمة.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "حدث خطأ أثناء إحضار القوائم.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "حدث خطأ أثناء تحديث القائمة.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "حدث خطأ أثناء معالجة طلبك: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "تم إرسال معاملة مماثلة مؤخرًا. إذا كنت ترغب في المواصلة، فقم بتجربة وسائل دفع أخرى";
@@ -1214,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1288,8 +1266,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "يتعذر تحديث المنتجات";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "تعذر تحميل الصورة";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -1297,9 +1274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "يتعذر التحقُّق من تثبيت WooCommerce الخاص بموقعك.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "ألا تستطيع إيجاد المعدل الذي تبحث عنه؟";
 
 /* Country option for a site address. */
 "Cape Verde" = "الرأس الأخضر";
@@ -1779,9 +1753,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "المتابعة باستخدام ووردبريس.كوم";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "الاستمرار بالقراءة";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "الاستمرار باستخدام Apple";
 
@@ -1821,15 +1792,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "كوستاريكا";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "تعذر التحقق من عمليات شراء الموقع.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "تعذرت متابعة الموقع على العنوان المحدد.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "تعذر إلغاء متابعة الموقع في العنوان المحدد.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "تعذر الاتصال بموقع وردبرس. لا يوجد موقع وردبرس صالح على هذا العنوان. تحقَّق من عنوان الموقع (URL) الذي أدخلته.";
@@ -2400,9 +2362,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "مسودة";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "السحب والإفلات لإعادة ترتيب الصور";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "جذب مزيد من المبيعات إلى متجرك باستخدام Blaze";
 
@@ -2474,9 +2433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "تحرير الحالة أو السعر للعديد من المنتجات في المرة الواحدة";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "تحرير معدلات الضريبة ضمن المسؤول";
 
 /* Country option for a site address. */
 "Egypt" = "مصر";
@@ -3007,9 +2963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "اتبع هذه الخطوات لربط بتطبيق Woo مباشرة بمتجرك باستخدام كلمة مرور التطبيق.\n \n1. أولاً، سجِّل الدخول باستخدام صلاحيات الموقع الخاصة بك.\n\n2. عند المطالبة بذلك، وافق على الربط من خلال النقر على زر التأكيد.";
 
-/* User role badge */
-"Follower" = "متابع";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "هل نسيت كلمة المرور؟";
 
@@ -3475,9 +3428,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "تضمين الملفات القابلة للتنزيل مع المشتريات";
 
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "تم التضمين مع الموقع";
-
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "يتضمن تعقُّب %1$@";
 
@@ -3686,9 +3636,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "يبدو أنك لم توافق على ربط التطبيق حتى الآن. هل تريد بالتأكيد الإنهاء؟";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "يبدو أن ميزة كلمة مرور التطبيق معطّلة في موقع %@ الخاص بك. يرجى تمكينها لاستخدام تطبيق WooCommerce.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "يبدو أن موقعك %@ عبارة عن موقع ووردبريس.كوم بسيط يتعذر عليه تثبيت إضافات. يرجى ترقية خطتك لاستخدام WooCommerce.";
@@ -3988,7 +3935,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "تسجيل الدخول باستخدام حساب آخر";
@@ -4025,9 +3971,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "سجِّل الدخول إلى حساب وردبرس.كوم الخاص بك باستخدام عنوان بريدك الإلكتروني.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "تسجيل دخول باستخدام WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "تسجيل الدخول باستخدام حساب آخر";
@@ -4137,9 +4080,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "Manage your subscription" = "إدارة اشتراكك";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "تعديلات يدويّة";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "عملية رد المبالغ المدفوعة يدويًا";
 
@@ -4148,9 +4088,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "مسح الرمز الشريطي أو رمز الاستجابة السريعة ضوئيًا باستخدام رقم التتبع";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "النطاق المعيّن";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "وضع علامة بأنه مكتمل";
@@ -4206,9 +4143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Mayotte" = "مايوت";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "لا تحتوي وسائل التواصل على ملف مرتبط لرفعه.";
 
 /* Title of the Menu tab */
 "Menu" = "القائمة";
@@ -5214,8 +5148,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "ترجى المحاولة مجددًا أو الاتصال بالدعم للحصول على المساعدة";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
 
 /* Error message when Jetpack activation fails */
@@ -5737,9 +5670,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the domain contact info form. */
 "Register domain" = "تسجيل نطاق";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "النطاق المُسجل";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "السعر العادي";
 
@@ -6184,9 +6114,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "تحديد نوع المنتج";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "تحديد معدل الضريبة";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "تحديد الكل";
 
@@ -6258,9 +6185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "تعيين معدل الضريبة الجديد";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "تعيين معدل الضريبة";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "إعداد ميزة Tap to Pay على iPhone";
@@ -6499,9 +6423,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Site Address title on the support form */
 "Site Address" = "عنوان الموقع";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "إعادة توجيه الموقع";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "عنوان الموقع";
@@ -7096,9 +7017,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "تعذر تحميل الطلب!";
 
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "المبلغ غير مدعوم لميزة \"الضغط للدفع على iPhone\" - ترجى تجربة قارئ الأجهزة أو طريقة دفع أخرى.";
 
@@ -7263,9 +7181,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "فشل إنشاء تسلسل الاستجابة.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "أرجع الخادم استجابة فارغة. يعني ذلك عادة أنك بحاجة إلى زيادة الحد الأقصى لذاكرة موقعك.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "ارتفاع شحنة هذا المنتج. قابل للتحرير.";
 
@@ -7284,12 +7199,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "الموقع الموجود على هذا العنوان ليس موقع وردبرس. لكي نتصل بالموقع، يجب أن يستخدم وردبرس.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "تعذر حذف الموقع.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "تعذر تصدير الموقع.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "كمية المخزون لهذا المنتج. قابل للتحرير.";
@@ -7342,14 +7251,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "يبدو أن هناك مشكلة في موقعك.\n\nيرجى الاتصال بمزوّد خدمة الاستضافة لديك للحصول على مزيد من المساعدة.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "حدثت مشكلة أثناء حظر المقالات من الموقع المحدد.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "حدثت مشكلة في أثناء الاتصال بالموقع.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "حدثت مشكلة أثناء إزالة حظر الموقع المحدد.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "حدث خطأ في أثناء الاتصال بموقعك.";
@@ -7488,14 +7391,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "لا يمكن إغلاق حساب المستخدم هذا ومازالت عليه اشتراكات نشطة.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "سيؤدي ذلك إلى تغيير عنوان العميل إلى موقع معدل الضريبة الذي تحدِّده.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "سيؤدي ذلك إلى إنشاء تباين جديد لكل المجموعات المحتملة من سمات التباين (%d من التباينات).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "لن يؤثر ذلك في الطلبات على الإنترنت";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "انتهى الوقت، لكن لا داعي للقلق، فأمانك هو أولويتنا. يرجى المحاولة مرة أخرى!";
@@ -7592,9 +7489,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "تونغا";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "لم يتم العثور على موضوع من المُعرّف:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "إجمالي الطلبات";
 
@@ -7630,9 +7524,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "رقم التعقب %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "النطاق المنقول";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -8331,9 +8222,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "عرض متجرك";
 
-/* User role badge */
-"Viewer" = "المشاهد";
-
 /* Label for total store views in the Analytics Hub */
 "Views" = "مشاهدات";
 
@@ -8401,9 +8289,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "تتعذر علينا معالجة طلب تسجيل الدخول إلى تطبيقك";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "يتعذر علينا إيجاد أي معدلات ضرائب";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "تعذر علينا تسجيل الدخول إلى متجرك";
@@ -8543,9 +8428,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "ما المقصود بكلمة مرور التطبيق؟";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -9873,6 +9755,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "التحقق من الجهاز";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "المحاولة مجددًا";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "إلغاء";
 
@@ -10895,6 +10780,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "جارٍ مزامنة المتجر...";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "بدءًا من أول عملية بيع لك وصولاً إلى الملايين في الإيرادات، يكون Woo بجوارك. تعرّف على سبب ثقة التجار بنا لتشغيل 3.9 ملايين متجر.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "منصة للتجارة الإلكترونية تتطور معك";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "عملية استرداد الأموال اليدوية";
 
@@ -11037,6 +10928,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "إرسال الملاحظة عبر البريد الإلكتروني إلى العميل قيد التشغيل";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "إلغاء";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "تحرير معدلات الضريبة ضمن المسؤول";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "أضف معدلات الضرائب ضمن المسؤول. لن تظهر سوى معدلات الضرائب التي تتضمن معلومات عن الموقع هنا.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "يتعذر علينا إيجاد أي معدلات ضرائب";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "لن يؤثر ذلك في الطلبات على الإنترنت";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "سيؤدي ذلك إلى تغيير عنوان العميل إلى موقع معدل الضريبة الذي تحدِّده.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "ألا تستطيع إيجاد المعدل الذي تبحث عنه؟";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "تعيين معدل الضريبة";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "تحديد معدل الضريبة";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "إضافة هذا المعدل إلى كل الطلبات التي تم إنشاؤها";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "لا توجد فترة سابقة";
@@ -11441,14 +11362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "محاولة الدفع مجددًا";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "يرجى الانتظار...";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "معالجة الدفع";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "بطاقة التحضير للدفع";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "الاستعداد";
@@ -11471,12 +11386,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "مستعد للدفع";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "الربط بالقارئ";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "لمتابعة عملية الدفع هذه، يرجى ربط القارئ الخاص بك.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "لم يتم ربط القارئ";
 
@@ -11489,8 +11398,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "الاستعداد";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "إعادة المحاولة";
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "إجمالي الطلبات أقل من الحد الأدنى للمبلغ الذي يمكنك شحن البطاقة به، وهو %1$@. يمكنك قبول الدفع نقدًا بدلاً من ذلك.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "يتعذر قبول الدفع بالبطاقة";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "خطأ في أثناء التحقق من الطلب";
@@ -11624,8 +11536,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "يتعذر علينا تحديث برنامج القارئ الخاص بك";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "فشل تحديث القارئ لأن البطارية مشحونة بنسبة %.0f%%. يرجى شحن القارئ ثم المحاولة مجددًا.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "إلغاء";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "فشل تحديث القارئ بسبب انخفاض مستوى البطارية. يرجى شحن القارئ ثم المحاولة مجددًا.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "المحاولة مجددًا";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "يرجى شحن القارئ";
@@ -11707,6 +11628,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "تعذر تحميل الإجماليات";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "نجح الدفع";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "إرسال";
@@ -11798,12 +11722,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "المنتجات";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "تجاهل";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "أما أنواع المنتجات الأخرى، مثل: المنتجات المتغيرة والظاهرية، ستصبح متوفرة في التحديثات المستقبلية.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "أما أنواع المنتجات الأخرى، فستصبح التحديثات المستقبلية متوفرة.";
 
@@ -11811,13 +11729,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "التعرُّف على المزيد";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "لا تتوفر سوى المنتجات المادية البسيطة التي تتضمن نقاط بيع الآن.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "لا يمكن استخدام سوى المنتجات غير القابلة للتنزيل البسيطة والمتغيرة التي تتضمن نقطة بيع الآن.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "إظهار المنتجات البسيطة فقط";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "إظهار المنتجات البسيطة والمتغيرة فقط";
@@ -11849,20 +11761,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "إنشاء طلب في إدارة المتجر";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "لتلقي دفعة مقابل منتج غير بسيط، اخرج من نقطة البيع وأنشئ طلبًا جديدًا من علامة تبويب الطلبات.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "لتلقي دفعة مقابل منتج غير مدعوم، اخرج من نقطة البيع وأنشئ طلبًا جديدًا من علامة تبويب الطلبات.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "أما أنواع المنتجات الأخرى، مثل: المنتجات المتغيرة والظاهرية، ستتوفر في التحديثات المستقبلية.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "أما أنواع المنتجات الأخرى، فستتوفر في التحديثات المستقبلية.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "لا يمكن استخدام إلا المنتجات المادية البسيطة التي تتضمن نقطة بيع الآن.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "لا يمكن استخدام سوى المنتجات غير القابلة للتنزيل البسيطة والمتغيرة التي تتضمن نقطة بيع الآن.";
@@ -11893,6 +11796,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "الإجمالي";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "يرجى ضبط تقسيم الشاشة لديك لإعطاء نقطة البيع مساحة أكبر.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "نقطة البيع غير مدعومة في عرض الشاشة هذا.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "إغلاق";
@@ -12098,6 +12007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "الإزالة من المفضلة";
 
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "غلاف";
+
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "إلغاء";
 
@@ -12109,6 +12021,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "يرجى الانتظار حتى تنتهي كل عمليات الرفع قبل إعادة ترتيب الصور";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "السحب والإفلات لإعادة ترتيب الصور. سيتم تعيين الصورة الأولى كالغلاف.";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "المنتج المقترح";
@@ -12751,9 +12666,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "غير معروف";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "عنوان url غير معروف";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "تم تحديث الكمية: %@";
 
@@ -12933,6 +12845,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "تحديد طرد للحصول على أسعار الشحن";
+
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "عنوان الوجهة مفقود";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "لم يتم التحقق من عنوان الوجهة";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "عنوان الوجهة المتحقق منه";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "عنوان مفقود";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "عنوان غير متحقق منه";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "تم التحقق من العنوان";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "يلزم توقيع شخص بالغ";
@@ -13228,6 +13158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote when a required value is missing */
 "wooShipping.customs.valueRequiredWarning" = "القيمة مطلوبة";
 
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "تم";
+
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "وصف";
 
@@ -13254,6 +13187,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "الوزن لكل وحدة";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "إلغاء";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "تأكيد العنوان الذي تم إدخاله";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "تأكيد العنوان المقترح";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "الذي أدخلته";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "لقد أجرينا تعديلاً طفيفًا على العنوان الذي تم إدخاله.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "إذا كان صحيحًا، فيرجى استخدام العنوان المقترح لضمان التوصيل الدقيق.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "مقترح";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "تأكيد العنوان";
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(افتراضي)";

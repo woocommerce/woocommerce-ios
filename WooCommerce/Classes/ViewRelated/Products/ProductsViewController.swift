@@ -159,6 +159,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }()
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let imageUploader = ServiceLocator.productImageUploader
+    private var activeUploadIds: [Int64] = []
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
@@ -255,6 +257,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
         observeSelectedProductToAutoScrollWhenProductChanges()
+        observePendingImageUploads()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -1013,6 +1016,27 @@ private extension ProductsViewController {
             .store(in: &subscriptions)
     }
 
+    func observePendingImageUploads() {
+        imageUploader.activeUploads
+            .sink { [weak self] keys in
+                guard let self else { return }
+                let oldIDs = activeUploadIds
+                activeUploadIds = keys
+                    .filter { $0.siteID == self.siteID }
+                    .map { $0.productOrVariationID.id }
+
+                var indexPathsToReload: [IndexPath] = []
+                for (index, object) in resultsController.fetchedObjects.enumerated() {
+                    if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
+                        indexPathsToReload.append(IndexPath(row: index, section: 0))
+                    }
+                }
+
+                tableView.reloadRows(at: indexPathsToReload, with: .none)
+            }
+            .store(in: &subscriptions)
+    }
+
     func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
         selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
         selectedProductListener?.onUpsert = { [weak self] product in
@@ -1091,7 +1115,9 @@ extension ProductsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         let product = resultsController.object(at: indexPath)
-        let viewModel = ProductsTabProductViewModel(product: product)
+
+        let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
+        let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell

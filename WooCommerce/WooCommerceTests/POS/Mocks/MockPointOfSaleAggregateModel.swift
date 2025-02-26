@@ -3,6 +3,7 @@ import Foundation
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
+@available(iOS 17.0, *)
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
 
@@ -62,4 +63,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func addMoreToCart() { }
 
     func startNewCart() { }
+
+    func pointOfSaleClosed() { }
 }

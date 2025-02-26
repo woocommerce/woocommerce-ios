@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleLoadingView: View {
+    @State private var waitingTimeTracker: WaitingTimeTracker?
+
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
@@ -13,13 +15,24 @@ struct PointOfSaleLoadingView: View {
             .multilineTextAlignment(.center)
             Spacer()
         }
+        .onAppear {
+            trackTimeOnAppear()
+        }
+        .onDisappear {
+            trackElapsedTimeOnDisappear()
+        }
     }
 }
 
 private extension PointOfSaleLoadingView {
-    enum Layout {
-        static let textSpacing: CGFloat = 16
-        static let progressViewSpacing: CGFloat = 72
+    func trackTimeOnAppear() {
+        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
+    }
+
+    func trackElapsedTimeOnDisappear() {
+        if let waitingTimeTracker = waitingTimeTracker {
+            waitingTimeTracker.end(using: .milliseconds)
+        }
     }
 }
 

@@ -300,7 +300,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Updates the user roles for the default Store site.
     ///
-    func updateDefaultRoles(_ roles: [User.Role]) {
+    func updateDefaultRoles(_ roles: [Yosemite.User.Role]) {
         sessionManager.defaultRoles = roles
     }
 
@@ -534,6 +534,26 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
+    ///  Implements a retry logic for fetching the store information i.e. `store_id` to reduce the chances of it being missing.
+    ///  We use three attempts with an exponential backoff.
+    ///
+    @MainActor
+    func fetchSystemInformationAndRetryIfFails(siteID: Int64,
+                                               retryCount: Int = 0) async -> SystemInformation? {
+        guard retryCount <= 3 else {
+            return nil
+        }
+
+        let waitTime = Int(pow(Double(2), Double(retryCount)))
+        try? await Task.sleep(for: .seconds(waitTime))
+
+        if let info = await synchronizeSystemInformation(siteID: siteID) {
+            return info
+        } else {
+            return await fetchSystemInformationAndRetryIfFails(siteID: siteID, retryCount: retryCount + 1)
+        }
+    }
+
     /// Synchronizes all system information for the store with specified ID.
     /// When finished, loads the store uuid into the session.
     ///
@@ -646,7 +666,7 @@ private extension DefaultStoresManager {
         Task { @MainActor in
             // Order statuses and system plugins syncing are required outside of snapshot tracking.
             async let orderStatuses = retrieveOrderStatus(with: siteID)
-            async let systemInformation = synchronizeSystemInformation(siteID: siteID)
+            async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
 
             trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
         }

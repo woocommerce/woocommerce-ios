@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-28 16:54:06+0000 */
+/* Translation-Revision-Date: 2025-02-10 15:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -538,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Добавляйте информацию о загружаемых файлах удаленно";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "Добавьте налоговые ставки в консоли. Будут показаны только налоговые ставки с информацией о местоположении.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Добавьте описание купона.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "Добавить эту ставку ко всем созданным заказам";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Добавить в новую упаковку";
@@ -712,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "При получении доступа к Bluetooth возникла ошибка. Включите Bluetooth и повторите попытку";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "При создании меню произошла ошибка.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "При удалении меню произошла ошибка.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "При получении меню произошла ошибка.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "При обновлении меню произошла ошибка.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "Возникла ошибка при обработке вашего запроса:";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Недавно была выполнена такая же транзакция. Чтобы продолжить, попробуйте другой способ платежа";
@@ -1214,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1288,8 +1266,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Не удается обновить продукты";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Невозможно загрузить изображение";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -1297,9 +1274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Не удалось подтвердить установку WooCommerce на сайте.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "Не можете найти налоговую ставку?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Кабо-Верде";
@@ -1779,9 +1753,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Продолжить с WordPress.com";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "Читать дальше";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "Продолжить с Apple";
 
@@ -1821,15 +1792,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Коста-Рика";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "Не удалось проверить покупки.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "Не удалось подписаться на веб-сайт по указанному адресу.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "Не удалось отменить подписку на веб-сайт по указанному адресу.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Не удалось подключиться к сайту WordPress. По указанному адресу нет действующего сайта WordPress. Проверьте адрес сайта (URL-адрес).";
@@ -2400,9 +2362,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "Черновик";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Перетащите фотографии, чтобы изменить их порядок";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Повышайте продажи в своём магазине с помощью Blaze";
 
@@ -2474,9 +2433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Редактирование статуса или цены нескольких товаров за раз";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "Изменить налоговые ставки в консоли";
 
 /* Country option for a site address. */
 "Egypt" = "Египет";
@@ -3007,9 +2963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Следуйте этой процедуре, чтобы напрямую подключить приложение Woo к вашему магазину при помощи пароля приложения.\n\n1. Сначала войдите с учётными данными вашего сайта.\n\n2. Когда появится запрос, подтвердите подключение, нажав кнопку подтверждения.";
 
-/* User role badge */
-"Follower" = "Читатель";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Забыли пароль?";
 
@@ -3475,9 +3428,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "Добавлять к покупкам скачиваемый файл";
 
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "Предоставляется вместе с сайтом";
-
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "Включает отслеживание %1$@";
 
@@ -3686,9 +3636,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Похоже, вы ещё не одобрили соединение с приложением. Вы уверены, что хотите выйти?";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Кажется, на вашем сайте %@ отключён пароль приложения. Включите его, чтобы использовать приложение WooCommerce.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Похоже, ваш сайт %@ является простым сайтом WordPress.com, на котором нельзя устанавливать плагины. Обновите тарифный план для использования WooCommerce.";
@@ -3988,7 +3935,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Войдите с помощью другой учётной записи";
@@ -4025,9 +3971,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Войдите в учётную запись WordPress.com с помощью адреса эл. почты.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "Войти через WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Войдите с помощью другой учётной записи";
@@ -4137,9 +4080,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Управление подпиской";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "Вручную";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Возврат вручную";
 
@@ -4148,9 +4088,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "Сканировать штрихкод или QR-код с номером для отслеживания";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "Привязанный домен";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Пометить как завершённый";
@@ -4206,9 +4143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Mayotte" = "Майотта";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "Мультимедиа объект не имеет ассоциированного файла для загрузки.";
 
 /* Title of the Menu tab */
 "Menu" = "Меню";
@@ -5214,8 +5148,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Повторите попытку или обратитесь в службу поддержки";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Повторите попытку.";
 
 /* Error message when Jetpack activation fails */
@@ -5737,9 +5670,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the domain contact info form. */
 "Register domain" = "Зарегистрировать домен";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "Зарегистрированный домен";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Базовая цена";
 
@@ -6184,9 +6114,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Выбрать тип товара";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "Выбрать налоговую ставку";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "Выбрать всё";
 
@@ -6258,9 +6185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "Указать новую налоговую ставку";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "Указать налоговую ставку";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Настройте Tap to Pay on iPhone";
@@ -6499,9 +6423,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Site Address title on the support form */
 "Site Address" = "Адрес сайта";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "Перенаправление сайта";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "Адрес сайта";
@@ -7096,9 +7017,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Невозможно загрузить заказ!";
 
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
 
@@ -7263,9 +7181,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "Сериализация ответа не удалась.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта. Сервером был дан пустой ответ. Обычно это означает, что необходимо повысить лимит памяти для сайта.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "Высота доставляемого товара Можно редактировать.";
 
@@ -7284,12 +7199,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Сайт по этому адресу не относится к платформе WordPress. Чтобы выполнить подключение к сайту, он должен работать на WordPress.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "Не удалось удалить сайт.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "Не удалось экспортировать сайт.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Количество товара на складе. Можно редактировать.";
@@ -7342,14 +7251,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Похоже, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "При блокировке записей на указанном веб-сайте произошла ошибка.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Возникла проблема при подключении к сайту.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "При снятии блокировки для указанного веб-сайта произошла ошибка.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Во время обмена данными с вашим веб-сайтом произошла ошибка.";
@@ -7488,14 +7391,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Эту учетную запись пользователя нельзя закрыть, если есть активные подписки.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "Адрес клиента будет изменён на место, где действует выбранная вами налоговая ставка.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Будет создан вариант для каждой возможной комбинации атрибутов (всего: %d).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "Это не затронет онлайн-заказы";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Время вышло, но не волнуйтесь, ваша безопасность — наш приоритет. Пожалуйста, попробуйте еще раз!";
@@ -7592,9 +7489,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "Тонга";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "Тема не найдена для id:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Общее число заказов";
 
@@ -7630,9 +7524,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Номер для отслеживания %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "Перенесенный домен";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -8331,9 +8222,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "Перейти в магазин";
 
-/* User role badge */
-"Viewer" = "Обозреватель";
-
 /* Label for total store views in the Analytics Hub */
 "Views" = "Просмотры";
 
@@ -8401,9 +8289,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Не удалось обработать запрос на вход в приложение";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "Налоговые ставки не найдены";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "Не удалось войти в ваш магазин";
@@ -8543,9 +8428,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Какой адрес эл. почты я использую для входа?";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "Что такое пароль приложения?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -9873,6 +9755,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Проверка устройства";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Повторите попытку";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Отмена";
 
@@ -10895,6 +10780,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Синхронизация магазина…";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "От первой продажи до миллионной выручки Woo — ваш помощник. Узнайте, почему продавцы создали на нашей платформе 3,9 млн магазинов.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "Платформа электронной коммерции, которая растёт вместе с вами";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "возврат вручную";
 
@@ -11037,6 +10928,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Отправить примечание клиенту по электронной почте Вкл.";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "Отмена";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "Изменить налоговые ставки в консоли";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "Добавьте налоговые ставки в консоли. Будут показаны только налоговые ставки с информацией о местоположении.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "Налоговые ставки не найдены";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "Это не затронет онлайн-заказы";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "Адрес клиента будет изменён на адрес, где действует выбранная вами налоговая ставка.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "Не можете найти нужную налоговую ставку?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "Установить налоговую ставку";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "Выбрать налоговую ставку";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "Добавить эту ставку ко всем созданным заказам";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
@@ -11441,14 +11362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Повторить платёж";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Подождите…";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Обработка платежа";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Подготовка карты к оплате";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Подготовка";
@@ -11471,12 +11386,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Готово к оплате";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Подключиться к устройству чтения";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "Для обработки этого платежа подключите устройство чтения.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Устройство чтения не подключено";
 
@@ -11489,8 +11398,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Подготовка";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Повторить попытку";
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Общая сумма заказа меньше минимально допустимой суммы оплаты картой (%1$@) Можно оплатить заказ наличными.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Оплата банковскими картами не принимается";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Ошибка при проверке заказа";
@@ -11624,8 +11536,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Не удалось обновить ПО вашего платёжного терминала";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Не удалось обновить платёжный терминал, так как уровень заряда аккумулятора составляет %.0f%%. Зарядите аккумулятор платёжного терминала и повторите попытку.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Отмена";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Не удалось обновить платёжный терминал из-за низкого заряда аккумулятора. Зарядите аккумулятор платёжного терминала и повторите попытку.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Повторите попытку";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Необходимо зарядить платёжный терминал";
@@ -11707,6 +11628,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Ошибка при загрузке итоговой суммы";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Платёж выполнен";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Отправить";
@@ -11798,12 +11722,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Товары";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Закрыть";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Другие типы товаров, в частности виртуальные и вариативные товары, станут доступны в ближайших обновлениях.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Другие типы товаров станут доступны в ближайших обновлениях.";
 
@@ -11811,13 +11729,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Подробнее";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "В данный момент POS поддерживает только простые материальные товары.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "В данный момент в режиме POS поддерживаются только товары, не подлежащие загрузке: простые и с вариантами.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Показаны только простые товары";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "Показаны только простые товары и товары с вариантами";
@@ -11849,20 +11761,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Создать заказ в разделе «Управление магазином»";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "Чтобы принять платёж за товар, не относящийся к простым, выйдите из режима POS и создайте новый заказ в таблице заказов.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "Чтобы принять платёж за товар, относящийся к неподдерживаемой категории, выйдите из режима POS и создайте новый заказ в таблице заказов.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Другие типы товаров, в частности виртуальные и вариативные товары, станут доступны в ближайших обновлениях.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "Другие типы товаров станут доступны в ближайших обновлениях.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "В данный момент в режиме POS поддерживаются только простые материальные товары.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "В данный момент в режиме POS поддерживаются только товары, не подлежащие загрузке: простые и с вариантами.";
@@ -11893,6 +11796,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Итого";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Настройте разделённый экран, чтобы места для режима «Пункт продажи» было больше.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Режим «Пункт продажи» не поддерживается при данной ширине экрана.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Закрыть";
@@ -12098,6 +12007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Удалить из избранного";
 
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "Обложка";
+
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Отмена";
 
@@ -12109,6 +12021,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Прежде чем изменять порядок изображений, дождитесь завершения всех загрузок.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "Перетаскивайте фотографии, чтобы изменить их порядок. Первая из фотографий будет отображаться в качестве обложки.";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Рекомендуемый товар";
@@ -12751,9 +12666,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "неизвестный URL";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Количество обновлено: %@";
 
@@ -12933,6 +12845,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Выберите посылку, чтобы узнать тарифы";
+
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "Адрес назначения не указан";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "Адрес назначения не подтверждён";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "Адрес назначения подтверждён";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "Адрес не указан";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "Неподтверждённый адрес";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "Адрес подтверждён";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Требуется подпись совершеннолетнего лица";
@@ -13228,6 +13158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote when a required value is missing */
 "wooShipping.customs.valueRequiredWarning" = "Стоимость (обязательно)";
 
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Готово";
+
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Описание";
 
@@ -13254,6 +13187,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "Вес на единицу";
+
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "Отмена";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Подтвердить введённый адрес";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Подтвердить предложенный адрес";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Что вы указали";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Мы немного изменили введённый адрес.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Если предложенный адрес верен, воспользуйтесь им, чтобы обеспечить точную доставку.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Предложено";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Подтвердить адрес";
 
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(по умолчанию)";

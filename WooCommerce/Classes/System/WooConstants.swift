@@ -246,8 +246,14 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for the order creation feedback survey (full order creation and simple payments)
+        /// URL for Point of Sale documentation
         ///
+        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
+
+        /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
+        ///
+        case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
+
 #if DEBUG
         case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
 #else

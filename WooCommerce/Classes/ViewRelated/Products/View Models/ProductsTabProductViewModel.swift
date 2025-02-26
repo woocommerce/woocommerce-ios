@@ -25,11 +25,13 @@ struct ProductsTabProductViewModel {
     let detailsAttributedString: NSAttributedString
     let isSelected: Bool
     let isDraggable: Bool
+    let hasPendingUploads: Bool
 
     // Dependency for configuring the view.
     let imageService: ImageService
 
     init(product: Product,
+         hasPendingUploads: Bool = false,
          productVariation: ProductVariation? = nil,
          isSelected: Bool = false,
          isDraggable: Bool = false,
@@ -41,6 +43,7 @@ struct ProductsTabProductViewModel {
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
+        self.hasPendingUploads = hasPendingUploads
         detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown)
 
         self.imageService = imageService

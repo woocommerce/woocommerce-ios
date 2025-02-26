@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-03 14:23:49+0000 */
+/* Translation-Revision-Date: 2025-02-11 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -538,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "Lägg till momssatser i adminpanelen. Endast momssatser med platsinformation kommer att visas här.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Lägg till beskrivningen för rabattkoden";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "Lägg till den här momssatsen till alla skapade beställningar";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Lägg till i nytt paket";
@@ -712,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "Ett fel uppstod vid skapandet av menyn.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "Ett fel uppstod vid raderingen av menyn.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "Ett fel uppstod vid hämtningen av menyerna.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "Ett fel uppstod vid uppdateringen av menyn.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "Ett fel inträffade när din begäran behandlades:";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "En identisk transaktion skickades nyligen. Om du vill fortsätta, prova en annan betalningsmetod";
@@ -1214,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1288,8 +1266,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Kan inte uppdatera produkter";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -1297,9 +1274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Det gick inte att verifiera din webbplats WooCommerce-installation.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "Kan du inte hitta satsen du letar efter?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Kap Verde";
@@ -1779,9 +1753,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Fortsätt med WordPress.com";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "Fortsätt läsa";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "Fortsätt med Apple";
 
@@ -1821,15 +1792,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Costa Rica";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "Kunde in te kontrollera webbplatsens inköp.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "Det gick inte att börja följa webbplatsen på angiven adress.";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "Det gick inte att sluta följa webbplatsen på angiven adress.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Det gick inte att ansluta till WordPress-webbplatsen. Det finns ingen giltig WordPress-webbplats på den här adressen. Kontrollera webbplatsadressen (URL:en) som du angav.";
@@ -2400,9 +2362,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "Utkast";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Dra och släpp för att ändra ordning på foton";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Få mer försäljning i din butik med marknadsföring";
 
@@ -2474,9 +2433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Redigera status eller pris för flera produkter samtidigt";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "Redigera momssatser i adminpanelen";
 
 /* Country option for a site address. */
 "Egypt" = "Egypten";
@@ -3007,9 +2963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Följ dessa steg för att ansluta Woo-appen direkt till din butik med ett applikationslösenord.\n\n1. Börja med att logga in med dina webbplatsautentiseringsuppgifter.\n\n2. När du uppmanas till det, godkänn anslutningen genom att trycka på bekräftelseknappen.";
 
-/* User role badge */
-"Follower" = "Följare";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Glömt lösenordet?";
 
@@ -3475,9 +3428,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "Inkludera nedladdningsbara filer med köp";
 
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "Ingår i webbplatsen";
-
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "Inkluderar %1$@-spårning";
 
@@ -3686,9 +3636,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Det verkar som att du inte har godkänt appanslutningen än. Är du säker på att du vill lämna sidan?";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Det verkar som att Applikationslösenord är inaktiverat för din webbplats %@. Aktivera det om du vill använda WooCommerce-appen.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Det verkar som om din webbplats %@ är en enkel WordPress.com-webbplats som inte kan installera tillägg. Uppgradera ditt paket för att använda WooCommerce.";
@@ -3988,7 +3935,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Logga in med ett annat konto";
@@ -4025,9 +3971,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Logga in på ditt WordPress.com-konto med din e-postadress.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "Logga in med WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Logga in med ett annat konto";
@@ -4137,9 +4080,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Hantera din prenumeration";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "Manuella offset-värden";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Manuell återbetalning";
 
@@ -4148,9 +4088,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "Skanna streckkod eller QR-kod med spårningsnummer";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "Ompekad domän";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Markera som slutförd";
@@ -4206,9 +4143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "Valt media har ingen tillhörande fil som kan laddas upp.";
 
 /* Title of the Menu tab */
 "Menu" = "Meny";
@@ -5214,8 +5148,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Försök igen eller kontakta support för hjälp";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Försök igen.";
 
 /* Error message when Jetpack activation fails */
@@ -5737,9 +5670,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the domain contact info form. */
 "Register domain" = "Registrera domän";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "Registrerad domän";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Ordinarie pris";
 
@@ -6184,9 +6114,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Välj en produkttyp";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "Välj en momssats";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "Markera alla";
 
@@ -6258,9 +6185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "Ange ny momssats";
-
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "Ange momssats";
 
 /* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
@@ -6499,9 +6423,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Site Address title on the support form */
 "Site Address" = "Webbplatsadress";
-
-/* Describes a site redirect domain */
-"Site Redirect" = "Omdirigera webbplats";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "Webbplatsadress";
@@ -7096,9 +7017,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Det gick inte att hämta beställningen!";
 
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "Det finns ingen gilitg värd för webbadressen.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Beloppet stöds inte för Tryck för att betala på iPhone – prova en maskinvaruläsare eller en annan betalningsmetod.";
 
@@ -7263,9 +7181,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "Serialiseringen av svaret misslyckades.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Servern skickade tillbaka ett tomt svar. Detta betyder vanligtvis att du behöver öka minnesgränsen för din webbplats.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "Frakthöjden för den här produkten. Redigerbar.";
 
@@ -7284,12 +7199,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Webbplatsen på den här adressen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "Webbplatsen kunde inte raderas.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "Webbplatsen kunde inte exporteras.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Lagermängden för den här produkten. Redigerbar.";
@@ -7342,14 +7251,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "Det gick inte att blockera inlägg från angiven webbplats.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Det var ett problem att kommunicera med webbplatsen.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "Blockeringar för angiven webbplats kunde inte tas bort.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Ett fel uppstod vid kommunikationen med din webbplats.";
@@ -7488,14 +7391,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Detta användarkonto kan inte avslutas eftersom det har aktiva abonnemang.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "Detta kommer att ändra kundens adress till platsen för den momssats du väljer.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Detta kommer skapa en variation för varje möjlig kombination av variationsattribut (%d variationer).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "Detta kommer inte att påverka onlinebeställningar";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Tiden är ute, men oroa dig inte, din säkerhet är vår prioritet. Försök igen!";
@@ -7592,9 +7489,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "Ämnet inte funnet för ID:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Totalt antal ordrar";
 
@@ -7630,9 +7524,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Spårningsnummer %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "Överförd domän";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -8331,9 +8222,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of one of the hub menu options */
 "View your store" = "Visa din butik";
 
-/* User role badge */
-"Viewer" = "Läsare";
-
 /* Label for total store views in the Analytics Hub */
 "Views" = "Visningar";
 
@@ -8401,9 +8289,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Vi kunde inte behandla din begäran om inloggning i appen";
-
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "Vi kunde inte hitta några momssatser";
 
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "Vi kunde inte logga in i din butik";
@@ -8543,9 +8428,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Vilken e-post ska jag använda för att logga in?";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "Vad innebär applikationslösenord?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
@@ -10898,6 +10780,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Synkroniserar butik...";
 
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "Woo finns med dig hela vägen, från din första försäljning till miljoner i intäkter. Se varför handlare förlitar sig på oss för att driva 3,9 miljoner butiker.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "E-handelsplattformen som växer tillsammans med dig";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
 
@@ -11040,6 +10928,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "E-postavisering till kund på";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "Avbryt";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "Redigera momssatser i adminpanelen";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "Lägg till momssatser i adminpanelen. Endast momssatser med platsinformation kommer att visas här.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "Vi kunde inte hitta några momssatser";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "Detta kommer inte att påverka onlinebeställningar";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "Detta kommer att ändra kundens adress till platsen för den momssats du väljer.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "Kan du inte hitta satsen du letar efter?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "Ange momssats";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "Välj en momssats";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "Lägg till den här momssatsen till alla skapade beställningar";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "Ingen föregående period";
@@ -11444,14 +11362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Försök att genomföra betalningen igen";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Vänta …";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Förbereder kort för betalning";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Förbereder";
@@ -11474,12 +11386,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Anslut till läsare";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "Anslut din läsare för att behandla den här betalningen.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
 
@@ -11492,8 +11398,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Förbereder";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Försök igen";
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Det totala beställningsbeloppet understiger minimibeloppet för kortdebitering, vilket är %1$@. Du kan ta emot en kontantbetalning istället.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Kunde inte ta emot kortbetalning";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Fel vid kontroll av order";
@@ -11627,8 +11536,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Vi kunde inte uppdatera din läsares programvara";
 
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batteri endast är laddat till %.0f%%. Ladda läsaren och försök sedan igen.";
+
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Avbryt";
+
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "En läsaruppdatering misslyckades eftersom läsarens batterinivå är låg. Ladda läsaren och försök sedan igen.";
 
 /* Button to retry the reader search when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Försök igen";
@@ -11714,8 +11629,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message" = "En betalning på %1$@ gjordes";
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Betalning lyckades";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Skicka";
@@ -11807,12 +11722,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Avfärda";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar.";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
 
@@ -11820,13 +11729,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Visar endast enkla produkter";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title.simpleAndVariable" = "Visar endast enkla och variabla produkter";
@@ -11858,20 +11761,11 @@ which should be translated separately and considered part of this sentence. */
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "För att ta betalt för en icke-enkel produkt, lämna POS och skapa en ny beställning från fliken Beställningar.";
-
 /* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.hint.variableAndSimple" = "För att ta betalt för en produkt som inte stöds, lämna POS och skapa en ny beställning från fliken Beställningar.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
-
 /* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
 "pos.simpleProductsModal.message.future.variableAndSimple" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
-
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "Endast enkla fysiska produkter kan användas med POS just nu.";
 
 /* Message in the simple products information modal in POS when variable products are supported */
 "pos.simpleProductsModal.message.issue.variableAndSimple" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
@@ -11902,6 +11796,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Totalt";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Justera din skärmdelning för att ge Försäljningsplats mer utrymme.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Försäljningsplats stöds inte med den här skärmbredden.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";
@@ -12107,6 +12007,9 @@ which should be translated separately and considered part of this sentence. */
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Ta bort från favorit";
 
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "Omslag";
+
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Avbryt";
 
@@ -12118,6 +12021,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Vänta tills alla uppladdningar har slutförts innan du ändrar ordning på bilderna.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "Dra och släpp för att ändra ordning på foton. Det första fotot kommer att utgöra omslaget.";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Föreslagen produkt";
@@ -12760,9 +12666,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "okänt";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "okänd URL";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Antal uppdaterat: %@";
 
@@ -12942,6 +12845,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Välj ett paket för att få fraktavgifter";
+
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "Destinationsadressen saknas";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "Destinationsadress ej verifierad";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "Verifierad destinationsadress";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "Saknar adress";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "Overifierad adress";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "Adress verifierad";
 
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Måste signeras av en vuxen";
@@ -13278,6 +13199,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
 "wooShipping.normalizeAddress.enteredAddressLabel" = "Vad du angav";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Vi har ändrat den adress du angav en aning.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Använd den föreslagna adressen om den stämmer för att försäkra tillfredsställande leverans.";
 
 /* Label for the suggested address when normalizing an address for a Woo Shipping label */
 "wooShipping.normalizeAddress.suggestedAddressLabel" = "Föreslagen";

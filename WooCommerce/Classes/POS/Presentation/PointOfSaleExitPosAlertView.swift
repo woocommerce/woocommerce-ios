@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding private var isPresented: Bool
@@ -9,39 +10,40 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0 ) {
+        VStack(spacing: Constants.verticalSpacing) {
             HStack {
                 Spacer()
                 Button {
                     isPresented = false
                 } label: {
-                    Image(systemName: "xmark")
-                        .font(.posButtonSymbol)
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
                 }
-                .foregroundColor(Color.posTertiaryText)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
             }
             Text(Localization.exitTitle)
-                .font(.posTitleEmphasized)
-                .padding(.bottom, Constants.titleBottomPadding)
+                .font(.posHeadingBold)
+                .foregroundColor(Color.posOnSurface)
             Text(Localization.exitBody)
-                .font(.posBodyRegular)
-                .padding(.bottom, Constants.bodyBottomPadding)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(Color.posOnSurface)
             Button {
+                ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
             } label: {
                 Text(Localization.exitButton)
             }
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .padding(Constants.padding)
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
-        static let titleBottomPadding: CGFloat = 20.0
-        static let bodyBottomPadding: CGFloat = 60.0
-        static let padding: CGFloat = 40.0
+        static let verticalSpacing: CGFloat = POSSpacing.xLarge
+        static let padding: CGFloat = POSPadding.medium
     }
 
     enum Localization {
@@ -62,3 +64,10 @@ private extension PointOfSaleExitPosAlertView {
         )
     }
 }
+
+#if DEBUG
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleExitPosAlertView(isPresented: .constant(true))
+}
+#endif

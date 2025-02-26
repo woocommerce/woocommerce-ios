@@ -24,6 +24,18 @@ final class SiteListMapperTests: XCTestCase {
         XCTAssertFalse(site.wasEcommerceTrial)
         XCTAssertEqual(site.plan, "business-bundle")
     }
+
+    func test_site_hasSSOEnabled_is_parsed_successfully() throws {
+        // Given
+        let sites = mapLoadSiteListResponse()
+
+        // Then
+        let first = try XCTUnwrap(sites[safe: 0])
+        XCTAssertTrue(first.hasSSOEnabled)
+
+        let second = try XCTUnwrap(sites[safe: 1])
+        XCTAssertFalse(second.hasSSOEnabled)
+    }
 }
 
 private extension SiteListMapperTests {

@@ -754,6 +754,7 @@
 		31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayReaderLocation+ReaderLocation.swift"; sourceTree = "<group>"; };
 		31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StripeAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Yosemite.xcconfig; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxStore.swift; sourceTree = "<group>"; };
 		45010694239A6CDE00E24722 /* TaxAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxAction.swift; sourceTree = "<group>"; };
@@ -1910,6 +1911,7 @@
 				B56C1EBC20EABD1C00D749F9 /* Tools */,
 				B546CCF12093636A007CDA5F /* Yosemite.h */,
 				B5C9DDF92087FEC0006B910A /* Info.plist */,
+				3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */,
 			);
 			path = Yosemite;
 			sourceTree = "<group>";
@@ -2218,7 +2220,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0930;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
 					B5C9DDF42087FEC0006B910A = {
@@ -2854,6 +2856,7 @@
 /* Begin XCBuildConfiguration section */
 		1A9690382359D99E0061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2891,6 +2894,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2899,7 +2903,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2947,6 +2950,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = YosemiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2963,6 +2967,7 @@
 		};
 		B5C9DE072087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3000,6 +3005,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -3014,7 +3020,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -3028,6 +3033,7 @@
 		};
 		B5C9DE082087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3065,6 +3071,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -3073,7 +3080,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -3149,6 +3155,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = YosemiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3169,6 +3176,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = YosemiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

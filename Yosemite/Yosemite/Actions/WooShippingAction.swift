@@ -18,8 +18,8 @@ public enum WooShippingAction: Action {
     ///
     case loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 
@@ -37,8 +37,8 @@ public enum WooShippingAction: Action {
     ///
     case purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
                                backendProcessingDelay: TimeInterval = 2.0,
                                pollingDelay: TimeInterval = 1.0,
@@ -60,7 +60,7 @@ public enum WooShippingAction: Action {
     /// Validate a shipping address.
     ///
     case validateAddress(siteID: Int64,
-                         address: ShippingLabelAddress,
+                         address: WooShippingAddress,
                          completion: (Result<WooShippingAddressValidationSuccess, Error>) -> Void)
 
     /// Update an origin address.
@@ -69,4 +69,17 @@ public enum WooShippingAction: Action {
                              address: WooShippingOriginAddress,
                              isVerified: Bool,
                              completion: (Result<WooShippingOriginAddressUpdate, Error>) -> Void)
+
+    /// Verify destination address of an order.
+    ///
+    case verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void)
+
+    /// Update a destination address of an order.
+    ///
+    case updateDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  address: WooShippingDestinationAddress,
+                                  completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
 }

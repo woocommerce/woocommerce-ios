@@ -1,15 +1,17 @@
 import Combine
 import UIKit
 import WebKit
+import Yosemite
 import class Networking.UserAgent
 import struct WordPressAuthenticator.WordPressOrgCredentials
-import enum Yosemite.Credentials
 
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
 final class AuthenticatedWebViewController: UIViewController {
 
+    private let currentSite: Site?
     private let viewModel: AuthenticatedWebViewModel
+    private let authenticationFlow: WebViewAuthenticationFlow
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView(style: .medium)
@@ -45,12 +47,15 @@ final class AuthenticatedWebViewController: UIViewController {
 
     private let wpcomCredentials: Credentials?
 
+    private var isFirstNavigation = true
 
-    init(viewModel: AuthenticatedWebViewModel, extraCredentials: Credentials? = nil) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         viewModel: AuthenticatedWebViewModel,
+         extraCredentials: Credentials? = nil) {
         self.viewModel = viewModel
-        let currentCredentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        let currentCredentials = stores.sessionManager.defaultCredentials
 
-        self.siteCredentials = {
+        let siteCredentials: WordPressOrgCredentials? = {
             if case let .wporg(username, password, siteAddress) = extraCredentials {
                 return WordPressOrgCredentials(username: username,
                                                password: password,
@@ -65,7 +70,7 @@ final class AuthenticatedWebViewController: UIViewController {
             return nil
         }()
 
-        self.wpcomCredentials = {
+        let wpcomCredentials: Credentials? = {
             if case .wpcom = extraCredentials {
                 return extraCredentials
             } else if case .wpcom = currentCredentials {
@@ -73,6 +78,21 @@ final class AuthenticatedWebViewController: UIViewController {
             }
             return nil
         }()
+
+        let currentSite = stores.sessionManager.defaultSite
+
+        self.authenticationFlow = {
+            guard let currentSite else {
+                return WebViewAuthenticationFlow.none
+            }
+            return viewModel.authenticationFlow(currentSite: currentSite,
+                                                wpcomCredentialsAvailable: wpcomCredentials != nil,
+                                                wporgCredentialsAvailable: siteCredentials != nil)
+        }()
+        self.currentSite = currentSite
+        self.wpcomCredentials = wpcomCredentials
+        self.siteCredentials = siteCredentials
+
         super.init(nibName: nil, bundle: nil)
 
         if let initialURL = viewModel.initialURL,
@@ -93,6 +113,7 @@ final class AuthenticatedWebViewController: UIViewController {
         configureWebView()
         configureActivityIndicator()
         configureProgressBar()
+        observeWebView()
         startLoading()
     }
 
@@ -144,7 +165,7 @@ private extension AuthenticatedWebViewController {
         ])
     }
 
-    func startLoading() {
+    func observeWebView() {
         webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in
                 if progress == 1 {
@@ -157,42 +178,98 @@ private extension AuthenticatedWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                guard let self else { return }
-                let initialURL = self.viewModel.initialURL
-                // avoids infinite loop if the initial url happens to be the nonce retrieval path.
-                if url?.absoluteString.contains(WKWebView.wporgNoncePath) == true,
-                   initialURL?.absoluteString.contains(WKWebView.wporgNoncePath) != true {
-                    self.loadContent()
-                } else {
-                    self.viewModel.handleRedirect(for: url)
-                }
+                guard let url else { return }
+                self?.handleRedirect(for: url)
             }
             .store(in: &subscriptions)
+    }
 
-        if let siteCredentials, let request = try? webView.authenticateForWPOrg(with: siteCredentials) {
-            webView.load(request)
-        } else {
-            loadContent()
+    /// Authentication logic differs depending on the destination URL and the current site.
+    /// More information: pe5sF9-3Si-p2
+    ///
+    func startLoading() {
+        guard let url = viewModel.initialURL else {
+            return
+        }
+
+        switch authenticationFlow {
+        case .wpcom:
+            authenticateWPComAndLoadContent(url: url)
+        case .jetpackSSO:
+            authenticateSSOAndLoadContent(url: url)
+        case .siteCredentials:
+            authenticateUsingSiteCredentialsAndLoadContent(url: url)
+        case .none:
+            loadContent(url: url)
         }
     }
 }
 
 // MARK: - Helper methods
 private extension AuthenticatedWebViewController {
-    func loadContent() {
-        guard let url = viewModel.initialURL else {
+    func authenticateWPComAndLoadContent(url: URL) {
+        guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
+            return loadContent(url: url)
+        }
+        do {
+            try webView.authenticateForWPComAndRedirect(to: url, credentials: wpcomCredentials)
+        } catch {
+            loadContent(url: url)
+        }
+    }
+
+    func authenticateSSOAndLoadContent(url: URL) {
+        let tempURL = WooConstants.URLs.wpcomTempRedirectURL.asURL()
+        authenticateWPComAndLoadContent(url: tempURL)
+    }
+
+    func authenticateUsingSiteCredentialsAndLoadContent(url: URL) {
+        guard let siteCredentials, let request = try? webView.authenticateForWPOrg(with: siteCredentials) else {
+            return loadContent(url: url)
+        }
+        webView.load(request)
+    }
+
+    func loadContent(url: URL) {
+        let request = URLRequest(url: url)
+        webView.load(request)
+    }
+
+    func handleRedirect(for url: URL) {
+        guard let initialURL = viewModel.initialURL else {
             return
         }
 
-        /// Authenticate for WP.com automatically if credentials are available.
-        ///
-        if let wpcomCredentials, case .wpcom = wpcomCredentials {
-            webView.authenticateForWPComAndRedirect(to: url, credentials: wpcomCredentials)
-        } else {
-            let request = URLRequest(url: url)
-            webView.load(request)
+        switch url.absoluteString {
+        case WooConstants.URLs.wpcomTempRedirectURL.rawValue:
+            guard let currentSite, let host = URL(string: currentSite.url)?.host else {
+                return loadContent(url: initialURL)
+            }
+            let cookie = HTTPCookie(properties: [
+                .domain: host,
+                .path: "/",
+                .name: Constants.ssoRedirectCookieName,
+                .value: initialURL.absoluteString,
+            ])
+
+            let queryItem = URLQueryItem(name: Constants.actionParam, value: Constants.jetpackSSOAction)
+            guard let cookie, let loginURL = URL(string: currentSite.loginURL)?.appending(queryItems: [queryItem]) else {
+                return loadContent(url: initialURL)
+            }
+            webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+            loadContent(url: loginURL)
+
+        default:
+            if url.absoluteString.contains(WKWebView.wporgNoncePath) == true,
+               initialURL.absoluteString.contains(WKWebView.wporgNoncePath) != true {
+                // Site credentials login completes, now proceed to load the initial URL.
+                loadContent(url: initialURL)
+            } else {
+                viewModel.handleRedirect(for: url)
+            }
         }
     }
+
 }
 
 extension AuthenticatedWebViewController: WKNavigationDelegate {
@@ -204,7 +281,19 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        defer {
+            isFirstNavigation = false
+        }
         let response = navigationResponse.response
+        if let initialURL = viewModel.initialURL,
+           viewModel.isAuthenticationFailure(response: response,
+                                             currentSite: currentSite,
+                                             authenticationFlow: authenticationFlow,
+                                             isFirstNavigation: isFirstNavigation) {
+            /// When automatic authentication fails, cancel the navigation and redirect to the original URL instead.
+            loadContent(url: initialURL)
+            return .cancel
+        }
         return await viewModel.decidePolicy(for: response)
     }
 
@@ -242,5 +331,13 @@ extension AuthenticatedWebViewController: WKUIDelegate {
             webView.load(navigationAction.request)
         }
         return nil
+    }
+}
+
+private extension AuthenticatedWebViewController {
+    enum Constants {
+        static let actionParam = "action"
+        static let jetpackSSOAction = "jetpack-sso"
+        static let ssoRedirectCookieName = "jetpack_sso_redirect_to"
     }
 }

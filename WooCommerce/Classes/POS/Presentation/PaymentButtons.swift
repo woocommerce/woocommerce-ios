@@ -1,66 +1,53 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PaymentsActionButtons: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
     private let receiptEligibilityUseCase = ReceiptEligibilityUseCase()
-
-    private var shouldShowSendReceiptButton: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sendReceiptsForPointOfSale)
-    }
 
     var body: some View {
         ZStack {
             VStack {
                 newOrderButton
                 sendReceiptButton
-                    .renderedIf(shouldShowSendReceiptButton)
             }
         }
     }
 }
 
+@available(iOS 17.0, *)
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             Task { @MainActor in
+                ServiceLocator.analytics.track(.receiptEmailTapped)
                 await handleSendReceiptAction()
             }
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
-                    .font(Constants.buttonFont)
             }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryText)
-        .background(Color.clear)
-        .overlay {
-            RoundedRectangle(cornerRadius: Constants.buttonCornerRadius)
-                        .stroke(Color.posPrimaryText, lineWidth: 1.0)
-        }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
     }
 
     var newOrderButton: some View {
         Button(action: {
+            ServiceLocator.analytics.track(.pointOfSaleCreateNewOrderTapped)
             posModel.startNewCart()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.newOrder)
-                    .font(Constants.buttonFont)
             }
-            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.buttonPadding)
-        .foregroundColor(Color.posPrimaryTextInverted)
-        .background(Color.posPrimaryButtonBackground)
-        .cornerRadius(Constants.buttonCornerRadius)
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
     }
 }
 
+@available(iOS 17.0, *)
 private extension PaymentsActionButtons {
     func handleSendReceiptAction() async {
         let isEligible = await checkReceiptEligibility()
@@ -80,12 +67,10 @@ private extension PaymentsActionButtons {
     }
 }
 
+@available(iOS 17.0, *)
 private extension PaymentsActionButtons {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
+        static let buttonSpacing: CGFloat = POSSpacing.medium
     }
 
     enum Localization {
@@ -101,12 +86,14 @@ private extension PaymentsActionButtons {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

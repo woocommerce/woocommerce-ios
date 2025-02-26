@@ -8,19 +8,19 @@ struct ItemListErrorCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSErrorExclamationMark(size: 48)
+            POSErrorExclamationMark(size: .small)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(errorState.title)
                     .lineLimit(2)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(errorState.subtitle)
-                    .foregroundStyle(Color.posSecondaryText)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(Constants.itemDetailFont)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
@@ -34,12 +34,12 @@ struct ItemListErrorCardView: View {
                 Text(errorState.buttonText)
                     .font(Constants.itemTitleFont)
             }
-            .buttonStyle(POSTertiaryButtonStyle())
-            .frame(maxWidth: Constants.accessoryButtonMaxWidth * scale)
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .fixedSize(horizontal: true, vertical: false)
             .padding(Constants.accessoryButtonPadding * (1 / scale))
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posSecondaryBackground)
+        .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
 }

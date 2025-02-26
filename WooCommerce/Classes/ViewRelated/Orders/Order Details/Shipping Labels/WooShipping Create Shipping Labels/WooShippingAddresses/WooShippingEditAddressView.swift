@@ -166,7 +166,7 @@ struct WooShippingEditAddressView: View {
                             break
                         }
                     }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isRemotelyValidating))
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()
@@ -429,8 +429,7 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 isDefaultAddress: true,
                                                 showCompanyField: false,
-                                                isVerified: true,
-                                                phoneNumberRequired: true))
+                                                isVerified: true))
 }
 
 #Preview("With Company") {
@@ -447,6 +446,5 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 isDefaultAddress: false,
                                                 showCompanyField: true,
-                                                isVerified: false,
-                                                phoneNumberRequired: true))
+                                                isVerified: false))
 }

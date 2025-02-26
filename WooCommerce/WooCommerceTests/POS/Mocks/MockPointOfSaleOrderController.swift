@@ -18,18 +18,22 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var syncOrderWasCalled: Bool = false
     var spyCartProducts: [CartItem]?
     var spyRetryHandler: (() async -> Void)?
+    var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
+
+    @discardableResult
     func syncOrder(for cartProducts: [CartItem],
-                   retryHandler: @escaping () async -> Void) async {
+                   retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         syncOrderWasCalled = true
         spyCartProducts = cartProducts
         spyRetryHandler = retryHandler
 
         guard let orderStateToReturn else {
             orderState = .syncing
-            return
+            return syncOrderResultToReturn
         }
 
         orderState = orderStateToReturn
+        return syncOrderResultToReturn
     }
 
     var clearOrderWasCalled: Bool = false
@@ -37,5 +41,12 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         clearOrderWasCalled = true
     }
 
-    func sendReceipt(recipientEmail: String) async { }
+    var shouldThrowReceiptError: Bool = false
+    var sendReceiptWasCalled: Bool = false
+    func sendReceipt(recipientEmail: String) async throws {
+        sendReceiptWasCalled = true
+        if shouldThrowReceiptError {
+            throw NSError(domain: "some error", code: -1)
+        }
+    }
 }

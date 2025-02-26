@@ -610,7 +610,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_validateAddress_returns_WooShippingAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedResult = WooShippingAddressValidationSuccess(normalizedAddress: WooShippingAddress.fake(),
+        let expectedResult = WooShippingAddressValidationSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                  originalAddress: WooShippingAddress.fake(),
                                                                  isTrivialNormalization: true)
         remote.whenAddressValidation(siteID: sampleSiteID, thenReturn: .success(expectedResult))
@@ -702,7 +702,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_verifyDestinationAddress_returns_WooShippingVerifyDestinationAddressSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedResult = WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+        let expectedResult = WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                         isTrivialNormalization: true,
                                                                         isVerified: true)
         remote.whenVerifyDestinationAddress(siteID: sampleSiteID, thenReturn: .success(expectedResult))

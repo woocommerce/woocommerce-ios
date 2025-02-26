@@ -983,7 +983,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                        country: suggestedAddress.country,
                                                        phone: originAddress.phone,
                                                        firstName: suggestedAddress.fullName,
-                                                       lastName: suggestedAddress.lastName,
+                                                       lastName: "",
                                                        email: originAddress.email,
                                                        defaultAddress: originAddress.defaultAddress,
                                                        isVerified: true)

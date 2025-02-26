@@ -7,6 +7,8 @@ import protocol Yosemite.StoresManager
 import enum Yosemite.ProductImageStatus
 import enum Yosemite.ProductImageAssetType
 import enum Yosemite.ProductOrVariationID
+import class Networking.ProductImageStatusStorage
+import protocol Experiments.FeatureFlagService
 
 /// Information about a background product image upload error.
 struct ProductImageUploadErrorInfo {
@@ -87,12 +89,48 @@ protocol ProductImageUploaderProtocol {
 
 /// Supports background image upload and product images update after the user leaves the product form.
 final class ProductImageUploader: ProductImageUploaderProtocol {
+
+    let userDefaultsStatuses: ProductImageStatusStorage?
+
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> {
-        errorsSubject.eraseToAnyPublisher()
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            let upstream = userDefaultsStatuses?.errorsPublisher
+                ?? Empty<(siteID: Int64,
+                          productOrVariationID: ProductOrVariationID?,
+                          assetType: ProductImageAssetType?,
+                          error: Error), Never>().eraseToAnyPublisher()
+            return upstream.compactMap { errorItem in
+                guard let productOrVariationID = errorItem.productOrVariationID,
+                      let assetType = errorItem.assetType else { return nil }
+                return ProductImageUploadErrorInfo(
+                    siteID: errorItem.siteID,
+                    productOrVariationID: productOrVariationID,
+                    error: .failedUploadingImage(asset: assetType, error: errorItem.error)
+                )
+            }
+            .eraseToAnyPublisher()
+        } else {
+            return errorsSubject.eraseToAnyPublisher()
+        }
     }
 
     var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
-        $activeUploadsPublisher.eraseToAnyPublisher()
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            return userDefaultsStatuses?.statusesPublisher
+                .map { statuses in
+                    statuses.compactMap { status -> ProductImageUploaderKey? in
+                        if status.isUploading {
+                            return ProductImageUploaderKey(siteID: status.siteID,
+                                                           productOrVariationID: status.productOrVariationID,
+                                                           isLocalID: status.isLocalID)
+                        }
+                        return nil
+                    }
+                }
+                .eraseToAnyPublisher() ?? Empty().eraseToAnyPublisher()
+        } else {
+            return $activeUploadsPublisher.eraseToAnyPublisher()
+        }
     }
 
     typealias Key = ProductImageUploaderKey
@@ -108,12 +146,25 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     @Published private var activeUploadsPublisher: [ProductImageUploaderKey] = []
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
     private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
 
+    private var cancellables = Set<AnyCancellable>()
+
     init(stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
         self.stores = stores
+        self.featureFlagService = featureFlagService
         self.imagesProductIDUpdater = imagesProductIDUpdater
+
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            self.userDefaultsStatuses = ProductImageStatusStorage()
+            observeStatuses()
+        } else {
+            self.userDefaultsStatuses = nil
+        }
+
         // Observe when the app enters background.
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appDidEnterBackground),
@@ -170,9 +221,17 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
-        if activeUploadsPublisher.contains(key) {
-            let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
-            noticePresenter.enqueue(notice: notice)
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            if let statuses = userDefaultsStatuses?.getAllStatuses(for: key.siteID, productID: key.productOrVariationID),
+               statuses.contains(where: { $0.isUploading }) {
+                let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
+                noticePresenter.enqueue(notice: notice)
+            }
+        } else {
+            if activeUploadsPublisher.contains(key) {
+                let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
+                noticePresenter.enqueue(notice: notice)
+            }
         }
     }
 
@@ -248,13 +307,31 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     }
 
     private func scheduleUploadInProgressNotificationIfNeeded() {
-        guard !activeUploadsPublisher.isEmpty else { return }
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            userDefaultsStatuses?.statusesPublisher
+                .map { statuses in
+                    statuses.filter { $0.isUploading }
+                }
+                .sink { uploadingStatuses in
+                    if !uploadingStatuses.isEmpty {
+                        let notification = LocalNotification(scenario: .productImageBackgroundUpload)
+                        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+                        Task {
+                            await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
+                                                                                                                         trigger: trigger, remoteFeatureFlag: nil)
+                        }
+                    }
+                }
+                .store(in: &cancellables)
+        } else {
+            guard !activeUploadsPublisher.isEmpty else { return }
 
-        let notification = LocalNotification(scenario: .productImageBackgroundUpload)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        Task {
-            await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
-                                                                                                         trigger: trigger, remoteFeatureFlag: nil)
+            let notification = LocalNotification(scenario: .productImageBackgroundUpload)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            Task {
+                await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
+                                                                                                             trigger: trigger, remoteFeatureFlag: nil)
+            }
         }
     }
 
@@ -278,16 +355,41 @@ private extension ProductImageUploader {
         }
     }
 
+    private func observeStatuses() {
+        userDefaultsStatuses?.statusesPublisher
+            .sink { [weak self] statuses in
+                guard let self = self else { return }
+
+                // Handle errors
+                if let failureStatus = statuses.first(where: { $0.isUploadFailure }),
+                   let error = failureStatus.error {
+                    let errorInfo = ProductImageUploadErrorInfo(
+                        siteID: failureStatus.siteID,
+                        productOrVariationID: failureStatus.productOrVariationID,
+                        error: .failedUploadingImage(asset: failureStatus.assetType!, error: error)
+                    )
+                    self.errorsSubject.send(errorInfo)
+                }
+            }
+            .store(in: &cancellables)
+    }
+
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else { return }
 
-            if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
-                activeUploadsPublisher.append(key)
-            } else if activeUploadsPublisher.contains(key), !productImageStatuses.hasPendingUpload {
-                /// When all pending uploads are completed or removed,
-                /// remove the key from active uploads
-                removeProductFromActiveUploads(key: key)
+            if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+                // Update the states in userDefaultsStatuses
+                self.userDefaultsStatuses?.setAllStatuses(productImageStatuses, for: key.siteID, productID: key.productOrVariationID)
+            }
+            else {
+                if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
+                    activeUploadsPublisher.append(key)
+                } else if activeUploadsPublisher.contains(key), !productImageStatuses.hasPendingUpload {
+                    /// When all pending uploads are completed or removed,
+                    /// remove the key from active uploads
+                    removeProductFromActiveUploads(key: key)
+                }
             }
         }
         statusUpdatesSubscriptions.insert(observationToken)
@@ -302,7 +404,15 @@ private extension ProductImageUploader {
                                                             productOrVariationID: key.productOrVariationID,
                                                             error: .failedUploadingImage(asset: asset, error: error))
                 if statusUpdatesExcludedProductKeys.contains(key) == false {
-                    errorsSubject.send(infoError)
+                    if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+                        let failedStatus = ProductImageStatus.uploadFailure(asset: asset,
+                                                                            error: error,
+                                                                            siteID: key.siteID,
+                                                                            productID: key.productOrVariationID)
+                        self.userDefaultsStatuses?.updateStatus(failedStatus)
+                    } else {
+                        errorsSubject.send(infoError)
+                    }
                 }
             }
         }
@@ -310,7 +420,15 @@ private extension ProductImageUploader {
     }
 
     func removeProductFromActiveUploads(key: Key) {
-        activeUploadsPublisher.removeAll(where: { $0 == key })
+        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+            userDefaultsStatuses?.removeStatus(where: { status in
+                status.siteID == key.siteID &&
+                status.productOrVariationID == key.productOrVariationID &&
+                status.isUploading
+            })
+        } else {
+            activeUploadsPublisher.removeAll(where: { $0 == key })
+        }
     }
 }
 

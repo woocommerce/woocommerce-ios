@@ -229,7 +229,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.storageManager = storageManager
         self.debounceDelay = debounceDelayInSeconds
         self.onOriginAddressEdited = onOriginAddressEdited
-
+        self.onDestinationAddressEdited = onDestinationAddressEdited
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
             guard let self, self.company.value.isEmpty else {

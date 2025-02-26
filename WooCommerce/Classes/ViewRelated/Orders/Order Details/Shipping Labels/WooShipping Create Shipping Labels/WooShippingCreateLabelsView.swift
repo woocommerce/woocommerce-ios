@@ -312,13 +312,16 @@ private extension WooShippingCreateLabelsView {
     }
 
     /// View showing the address verification status for a destination address.
+    @ViewBuilder
     var addressVerificationLabel: some View {
-        HStack(spacing: 4) {
-            Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
-            Text(Localization.AddressVerification.label(for: viewModel.destinationAddressStatus))
+        if let destinationAddressStatus = viewModel.destinationAddressStatus {
+            HStack(spacing: 4) {
+                Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
+                Text(Localization.AddressVerification.label(for: destinationAddressStatus))
+            }
+            .font(.subheadline)
+            .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
         }
-        .font(.subheadline)
-        .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
     }
 
     /// View showing a notice about the destination address verification status.

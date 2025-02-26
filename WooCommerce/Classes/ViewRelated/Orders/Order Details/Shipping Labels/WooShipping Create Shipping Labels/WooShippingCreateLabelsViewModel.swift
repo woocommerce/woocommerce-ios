@@ -73,9 +73,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missing
     }
 
-    // TODO: Add support for updating the destination address status when it is edited or verified remotely.
+    // TODO: Add support for updating the destination address status when it is edited.
     /// The current destination address status.
-    @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
+    @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
@@ -184,9 +184,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.debounceDuration = debounceDuration
 
-        // TODO: Check remotely to see if the destination address is verified.
-        destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
-
+        loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddressStatus()
         observeSelectedPackage()
@@ -324,6 +322,30 @@ private extension WooShippingCreateLabelsViewModel {
         }
         stores.dispatch(action)
     }
+
+    /// Loads destination address of the order from remote.
+    ///
+    func loadDestinationAddress() {
+        let action = WooShippingAction.verifyDestinationAddress(siteID: order.siteID,
+                                                                orderID: order.orderID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let address):
+                destinationAddress = address.normalizedAddress
+                destinationAddressStatus = address.isVerified ? .verified : .unverified
+            case .failure(let error):
+                DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
+
+                if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
+                    destinationAddress = orderShippingAddress
+                    destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+                } else {
+                    destinationAddressStatus = .missing
+                }
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: Utils
@@ -361,6 +383,7 @@ private extension WooShippingCreateLabelsViewModel {
     func observeDestinationAddressStatus() {
         /// Set the notice when the destination address status changes.
         $destinationAddressStatus
+            .compactMap { $0 }
             .map { status in
                 switch status {
                 case .verified:

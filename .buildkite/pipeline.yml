@@ -119,6 +119,7 @@ steps:
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     # if: build.branch == 'trunk' || build.branch =~ /^release\//
+    parallelism: 2
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -131,6 +132,7 @@ steps:
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     # if: build.branch == 'trunk' || build.branch =~ /^release\//
+    parallelism: 2
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

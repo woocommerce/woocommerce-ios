@@ -9,7 +9,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
-            POSErrorExclamationMark()
+            POSErrorExclamationMark(size: .large)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()

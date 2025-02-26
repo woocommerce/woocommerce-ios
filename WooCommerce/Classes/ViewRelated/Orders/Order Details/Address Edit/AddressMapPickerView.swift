@@ -39,12 +39,17 @@ struct AddressMapPickerView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(result.title)
                                         .font(.body)
+                                        .foregroundStyle(Color(uiColor: .textLink))
                                     Text(result.subtitle)
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundStyle(Color(uiColor: .textSubtle))
                                 }
                             }
+                            .listRowInsets(EdgeInsets())
+                            .padding()
                         }
+                        .listStyle(.plain)
+                        .padding(.top, 0)
                     } else if viewModel.selectedPlaceAddress.isNotEmpty {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(viewModel.selectedPlaceAddress)

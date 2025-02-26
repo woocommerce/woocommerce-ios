@@ -328,7 +328,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
-                                                                      suggestedAddress: validation.normalizedAddress,
+                                                                      suggestedAddress: validation.normalizedAddress.toWooShippingAddress(),
                                                                       onConfirm: { [weak self] confirmedAddress in
                 guard let self else { return }
                 if addressType == .origin {

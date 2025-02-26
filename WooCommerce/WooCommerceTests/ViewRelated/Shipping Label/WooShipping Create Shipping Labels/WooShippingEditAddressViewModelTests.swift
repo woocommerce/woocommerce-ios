@@ -937,15 +937,16 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                                  firstName: "JANE",
                                                                  lastName: "DOE",
                                                                  email: "TEXT@EXAMPLE.COM")
-        let suggestedAddress = WooShippingAddress(company: "HEADQUARTERS",
-                                                  name: "JANE DOE",
-                                                  phone: "123-456-7890",
-                                                  country: "US",
-                                                  state: "NY",
-                                                  address1: "15 ALGONKIN ST STE 100",
-                                                  address2: "",
-                                                  city: "TICONDEROGA",
-                                                  postcode: "12883-1487")
+        let suggestedAddress = WooShippingNormalizedAddress(company: "HEADQUARTERS",
+                                                            firstName: "JANE",
+                                                            lastName: "DOE",
+                                                            phone: "123-456-7890",
+                                                            country: "US",
+                                                            state: "NY",
+                                                            address1: "15 ALGONKIN ST STE 100",
+                                                            address2: "",
+                                                            city: "TICONDEROGA",
+                                                            postcode: "12883-1487")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(address: originAddress, stores: stores)
 
@@ -976,8 +977,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                        postcode: suggestedAddress.postcode,
                                                        country: suggestedAddress.country,
                                                        phone: originAddress.phone,
-                                                       firstName: suggestedAddress.name,
-                                                       lastName: "",
+                                                       firstName: suggestedAddress.fullName,
+                                                       lastName: suggestedAddress.lastName,
                                                        email: originAddress.email,
                                                        defaultAddress: originAddress.defaultAddress,
                                                        isVerified: true)

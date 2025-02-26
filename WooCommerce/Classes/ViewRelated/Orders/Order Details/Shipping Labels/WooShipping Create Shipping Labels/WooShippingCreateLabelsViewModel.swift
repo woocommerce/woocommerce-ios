@@ -275,6 +275,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
         addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        orderID: order.orderID,
                                                         email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
@@ -331,7 +332,7 @@ private extension WooShippingCreateLabelsViewModel {
             guard let self else { return }
             switch result {
             case .success(let address):
-                destinationAddress = address.normalizedAddress
+                destinationAddress = address.normalizedAddress.toWooShippingAddress()
                 destinationAddressStatus = address.isVerified ? .verified : .unverified
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")

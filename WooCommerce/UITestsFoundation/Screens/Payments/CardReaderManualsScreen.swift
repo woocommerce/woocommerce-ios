@@ -34,10 +34,13 @@ public final class CardReaderManualsScreen: ScreenObject {
 
     @discardableResult
     public func verifyChipperManualLoadedInWebView() throws -> Self {
-        let chipperManualPredicate = NSPredicate(format: "label CONTAINS[c] %@", "ChipperTM 2X BT")
+//        let chipperManualPredicate = NSPredicate(format: "label CONTAINS[c] %@", "ChipperTM 2X BT")
+        let chipperManualPredicate = NSPredicate(format: "label CONTAINS[c] %@", "TO FAIL TEST")
         let chipperManualText = app.webViews.textViews.containing(chipperManualPredicate).element
 
-        XCTAssert(chipperManualText.waitForExistence(timeout: 30), "Chipper manual not displayed on WebView!")
+//        XCTAssert(chipperManualText.waitForExistence(timeout: 30), "Chipper manual not displayed on WebView!")
+        XCTAssert(chipperManualText.waitForExistence(timeout: 5), "Chipper manual not displayed on WebView!")
+
         return self
     }
 }

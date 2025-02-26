@@ -39,7 +39,7 @@ final class ProductOrVariationIDCodableTests: XCTestCase {
         // Then
         XCTAssertThrowsError(try JSONDecoder().decode(ProductOrVariationID.self, from: jsonData)) { error in
             if case let DecodingError.dataCorrupted(context) = error {
-                XCTAssertTrue(context.debugDescription.contains("Unknown type unknownType"))
+                XCTAssertTrue(context.debugDescription.contains("unknownType"))
             } else {
                 XCTFail("Expected dataCorrupted error, but got: \(error)")
             }

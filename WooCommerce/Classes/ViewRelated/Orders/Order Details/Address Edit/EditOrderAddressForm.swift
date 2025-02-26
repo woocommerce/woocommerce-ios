@@ -332,12 +332,10 @@ struct SingleAddressForm: View {
                         Image(systemName: "map")
                         Text(Localization.pickOnMap)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
                 }
-                .buttonStyle(.bordered)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
             }
 
             Group {
@@ -456,6 +454,7 @@ private enum Constants {
     static let dividerPadding: CGFloat = 16
     static let horizontalPadding: CGFloat = 16
     static let verticalPadding: CGFloat = 7
+    static let mapPickerButtonVerticalPadding: CGFloat = 16
 }
 
 private enum Localization {
@@ -490,7 +489,7 @@ private enum Localization {
     static let hintOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
     static let hintSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
 
-    static let pickOnMap = NSLocalizedString("Pick on Map", comment: "Button to open map address picker")
+    static let pickOnMap = NSLocalizedString("Search Address on Map", comment: "Button to open map address picker")
 }
 
 #if DEBUG

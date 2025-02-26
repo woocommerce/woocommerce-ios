@@ -56,28 +56,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     private func formatPlacemarkAddress(_ placemark: MKPlacemark) -> String {
-        var components: [String] = []
-        if let street = placemark.thoroughfare {
-            if let number = placemark.subThoroughfare {
-                components.append("\(number) \(street)")
-            } else {
-                components.append(street)
-            }
-        }
-        if let city = placemark.locality {
-            components.append(city)
-        }
-        if let state = placemark.administrativeArea {
-            components.append(state)
-        }
-        if let postalCode = placemark.postalCode {
-            components.append(postalCode)
-        }
-        if let country = placemark.country {
-            components.append(country)
-        }
-
-        return components.joined(separator: ", ")
+        placemark.postalAddress?.formatted(as: .mailingAddress) ?? ""
     }
 
     private func configureLocationServices() {
@@ -113,14 +92,14 @@ final class AddressMapPickerViewModel: NSObject {
 
         // Try to geocode the address if we have enough information
         if !fields.address1.isEmpty && !fields.city.isEmpty {
-            let addressString = [
-                fields.address1,
-                fields.address2,
-                fields.city,
-                fields.state,
-                fields.postcode,
-                fields.country
-            ].filter { !$0.isEmpty }.joined(separator: ", ")
+            let addressString = formatAddressString(
+                address1: fields.address1,
+                address2: fields.address2,
+                city: fields.city,
+                state: fields.state,
+                postcode: fields.postcode,
+                country: fields.country
+            )
 
             CLGeocoder().geocodeAddressString(addressString) { [weak self] placemarks, error in
                 guard let self,
@@ -135,14 +114,7 @@ final class AddressMapPickerViewModel: NSObject {
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
                     annotations = [MapAnnotation(coordinate: location.coordinate)]
-                    selectedPlaceAddress = formatAddressString(
-                        address1: fields.address1,
-                        address2: fields.address2,
-                        city: fields.city,
-                        state: fields.state,
-                        postcode: fields.postcode,
-                        country: fields.country
-                    )
+                    selectedPlaceAddress = addressString
                 }
             }
         }
@@ -189,25 +161,25 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     func updateFields(_ fields: inout AddressFormFields) {
-        guard let place = selectedPlace else { return }
+        guard let place = selectedPlace,
+              let address = place.postalAddress else {
+            return
+        }
 
-        fields.address1 = [place.subThoroughfare, place.thoroughfare]
-            .compactMap { $0 }
-            .joined(separator: " ")
-
-        fields.city = place.locality ?? ""
-        fields.postcode = place.postalCode ?? ""
-        fields.country = place.isoCountryCode ?? ""
-        if let country = countryByCode(place.isoCountryCode ?? "") {
+        fields.address1 = address.street
+        fields.city = address.city
+        fields.postcode = address.postalCode
+        fields.country = address.isoCountryCode
+        if let country = countryByCode(address.isoCountryCode) {
             fields.selectedCountry = country
-            if let state = country.states.first(where: { $0.code == place.administrativeArea }) {
+            if let state = country.states.first(where: { $0.code == address.state }) {
                 fields.selectedState = state
             } else {
-                fields.state = place.administrativeArea ?? ""
+                fields.state = address.state
             }
         } else {
-            fields.country = place.isoCountryCode ?? ""
-            fields.state = place.administrativeArea ?? ""
+            fields.country = address.isoCountryCode
+            fields.state = address.state
         }
     }
 

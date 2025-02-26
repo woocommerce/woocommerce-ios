@@ -14,7 +14,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     enum AddressType {
         case origin
-        case destination
+        case destination(orderID: Int64)
     }
 
     /// Type of address being edited.
@@ -38,7 +38,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
-        addressType == .origin
+        switch addressType {
+        case .origin:
+            return true
+        case .destination:
+            return false
+        }
     }
 
     /// Whether to show the company field by default.
@@ -353,7 +358,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Updates the origin address remotely with the provided (normalized) address and other edits.
     private func updateConfirmedOriginAddress(_ address: WooShippingAddress) {
-        guard addressType == .origin else {
+        guard case .origin = addressType else {
             return
         }
 

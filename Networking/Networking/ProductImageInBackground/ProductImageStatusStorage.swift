@@ -25,7 +25,7 @@ public final class ProductImageStatusStorage {
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
-    
+
     public var errorsPublisher: AnyPublisher<[(siteID: Int64,
                                                productOrVariationID: ProductOrVariationID?,
                                                assetType: ProductImageAssetType?,

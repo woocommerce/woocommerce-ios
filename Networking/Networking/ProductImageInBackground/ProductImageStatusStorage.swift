@@ -26,22 +26,22 @@ public final class ProductImageStatusStorage {
             .eraseToAnyPublisher()
     }
 
-    public var errorsPublisher: AnyPublisher<(siteID: Int64,
-                                              productOrVariationID: ProductOrVariationID?,
-                                              assetType: ProductImageAssetType?,
-                                              error: Error), Never> {
+    public var errorsPublisher: AnyPublisher<[(siteID: Int64,
+                                               productOrVariationID: ProductOrVariationID?,
+                                               assetType: ProductImageAssetType?,
+                                               error: Error)], Never> {
         statusesSubject
-            .compactMap { statuses in
-                statuses.first { $0.isUploadFailure }
-            }
-            .compactMap { status in
-                if let error = status.error {
-                    return (siteID: status.siteID,
-                            productOrVariationID: status.productOrVariationID,
-                            assetType: status.asset,
-                            error: error)
+            .map { statuses in
+                statuses.compactMap { status in
+                    if status.isUploadFailure, let error = status.error {
+                        return (siteID: status.siteID,
+                                productOrVariationID: status.productOrVariationID,
+                                assetType: status.assetType,
+                                error: error)
+                    } else {
+                        return nil
+                    }
                 }
-                return nil
             }
             .eraseToAnyPublisher()
     }
@@ -116,7 +116,7 @@ public final class ProductImageStatusStorage {
         saveStatuses(statuses)
     }
 
-    public func setAllStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
+    public func appendStatuses(_ statuses: [ProductImageStatus], for siteID: Int64, productID: ProductOrVariationID?) {
         var filtered = statusesSubject.value.filter {
             switch $0 {
             case .uploading(_, let sID, let pID),

@@ -45,7 +45,7 @@ final class ProductImageAssetTypeCodableTests: XCTestCase {
         }
     }
 
-    func test_decoding_unknown_asset_type_throwsError() throws {
+    func test_decoding_unknown_asset_type_throws_error() throws {
         // Given
         let jsonData = """
         {

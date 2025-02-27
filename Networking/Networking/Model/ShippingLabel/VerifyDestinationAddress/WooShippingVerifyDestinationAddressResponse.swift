@@ -16,7 +16,6 @@ internal struct WooShippingVerifyDestinationAddressResponse: Equatable {
         if let errors {
             result = .failure(errors)
         } else if let normalizedAddress,
-                  let isTrivialNormalization,
                   let isVerified {
             result = .success(.init(normalizedAddress: normalizedAddress,
                                     isTrivialNormalization: isTrivialNormalization,

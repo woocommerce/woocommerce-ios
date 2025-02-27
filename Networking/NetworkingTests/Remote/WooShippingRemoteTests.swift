@@ -536,8 +536,8 @@ final class WooShippingRemoteTests: XCTestCase {
         let validationResponse = try XCTUnwrap(result.get())
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(validationResponse.normalizedAddress)
-        XCTAssertFalse(validationResponse.isTrivialNormalization)
-        XCTAssertFalse(validationResponse.isTrivialNormalization)
+        let isTrivialNormalization = try XCTUnwrap(validationResponse.isTrivialNormalization)
+        XCTAssertFalse(isTrivialNormalization)
     }
 
     func test_verifyDestinationAddress_returns_errors_on_failure() throws {

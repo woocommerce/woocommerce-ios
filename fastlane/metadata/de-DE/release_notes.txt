@@ -1,0 +1,1 @@
+Mit diesem Update wird ein kritisches Problem behoben, das bei einigen Bestellungen die Anzeige von Versandetiketten verhindert. Zu den Verbesserungen zählen ein besseres Erlebnis beim Hochladen von Produktbildern und das Erstellen von Blaze-Kampagnen. Außerdem können Händler jetzt Lieblingsprodukte markieren und filtern, um den Zugriff zu erleichtern.

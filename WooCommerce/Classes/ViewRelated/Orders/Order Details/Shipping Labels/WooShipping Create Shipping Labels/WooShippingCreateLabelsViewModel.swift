@@ -62,9 +62,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var originAddress: String = ""
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    private(set) lazy var destinationAddressLines: [String]? = {
+    var destinationAddressLines: [String]? {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
-    }()
+    }
 
     /// Possible statuses for a Woo Shipping destination address.
     enum DestinationAddressStatus {

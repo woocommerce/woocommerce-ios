@@ -406,7 +406,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                                     postcode: address.postcode,
                                                     country: address.country,
                                                     phone: address.phone,
-                                                    name: name.value,
+                                                    name: address.name,
                                                     firstName: "",
                                                     lastName: "",
                                                     email: email.value)

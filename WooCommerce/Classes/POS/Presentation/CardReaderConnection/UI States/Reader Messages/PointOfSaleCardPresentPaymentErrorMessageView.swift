@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
-            .frame(width: width * 0.5)
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
@@ -44,7 +44,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .frame(width: width * 0.5)
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
         }

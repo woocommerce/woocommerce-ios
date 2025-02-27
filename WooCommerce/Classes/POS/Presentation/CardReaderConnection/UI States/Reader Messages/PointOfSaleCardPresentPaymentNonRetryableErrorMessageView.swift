@@ -31,7 +31,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
-            .frame(width: width * 0.5)
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
@@ -39,7 +39,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
                    action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .frame(width: width * 0.5)
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
         }

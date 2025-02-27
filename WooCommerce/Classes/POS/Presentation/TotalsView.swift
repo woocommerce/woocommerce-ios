@@ -37,7 +37,7 @@ struct TotalsView: View {
                                 }
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
-                                .background(backgroundColor)
+                                .background(backgroundColor.ignoresSafeArea(.all))
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                                 .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
                                 .geometryGroup()
@@ -95,7 +95,7 @@ struct TotalsView: View {
         case .card(.processingPayment):
             .posPrimary
         case .cash(.collectingCash):
-            .posSurface
+            .posSurfaceBright
         default:
             .clear
         }

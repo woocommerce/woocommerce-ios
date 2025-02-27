@@ -4,7 +4,7 @@ import Yosemite
 /// View model for `ApplicationPasswordAuthorizationWebViewController`.
 ///
 final class ApplicationPasswordAuthorizationViewModel {
-    private let siteURL: String
+    let siteURL: String
     private let stores: StoresManager
 
     init(siteURL: String,

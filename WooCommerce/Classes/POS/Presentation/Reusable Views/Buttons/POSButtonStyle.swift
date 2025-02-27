@@ -148,9 +148,9 @@ private extension POSButtonSize {
     var padding: (vertical: CGFloat, horizontal: CGFloat) {
         switch self {
         case .normal:
-            (vertical: 24, horizontal: 24)
+            (vertical: POSPadding.large, horizontal: POSPadding.large)
         case .extraSmall:
-            (vertical: 8, horizontal: 16)
+            (vertical: POSPadding.small, horizontal: POSPadding.medium)
         }
     }
 
@@ -193,7 +193,7 @@ private extension POSButtonSize {
 struct POSButtonStyle_Previews: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
                 previewSection(title: "Filled Buttons - Normal",
                                variant: .filled, size: .normal)
 
@@ -211,7 +211,7 @@ struct POSButtonStyle_Previews: View {
                 loadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     Text("Long Text Examples")
                         .font(.headline)
 
@@ -227,7 +227,7 @@ struct POSButtonStyle_Previews: View {
     }
 
     private func previewSection(title: String, variant: POSButtonVariant, size: POSButtonSize) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(title)
                 .font(.headline)
 
@@ -251,7 +251,7 @@ struct POSButtonStyle_Previews: View {
     }
 
     private func loadingPreviewSection(title: String, size: POSButtonSize) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(title)
                 .font(.headline)
 

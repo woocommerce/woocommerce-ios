@@ -77,6 +77,7 @@ struct PointOfSaleDashboardView: View {
         .posRootModal()
         .sheet(isPresented: $showSupport) {
             supportForm
+                .interactiveDismissDisabled(true)
         }
         .sheet(isPresented: $showDocumentation) {
             documentationView
@@ -119,7 +120,8 @@ private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {
@@ -167,8 +169,8 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let floatingControlBottomPadding: CGFloat = 16
-        static let floatingControlHorizontalOffset: CGFloat = 16
+        static let floatingControlBottomPadding: CGFloat = POSPadding.medium
+        static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"

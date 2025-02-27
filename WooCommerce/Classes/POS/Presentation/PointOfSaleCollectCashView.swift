@@ -1,8 +1,11 @@
 import SwiftUI
+import Combine
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -15,6 +18,10 @@ struct PointOfSaleCollectCashView: View {
 
     let orderTotal: String
 
+    @State private var buttonFrame: CGRect = .zero
+    @State private var keyboardFrame: CGRect = .zero
+    @State private var shouldMinimizePadding: Bool = false
+
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
@@ -25,70 +32,85 @@ struct PointOfSaleCollectCashView: View {
                                                                                       allowNegativeNumber: false)
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(13)) {
-                POSPageHeaderView(title: Localization.backNavigationTitle,
-                                  subtitle: formattedOrderTotal,
-                                  backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
-                                                                 action: {
-                    Task { @MainActor in
-                        await posModel.cancelCashPayment()
-                        isTextFieldFocused = false
-                    }
-                }))
-
-                VStack(alignment: .center, spacing: conditionalPadding(62)) {
-                    VStack(alignment: .center, spacing: conditionalPadding(4)) {
-                        FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                            .focused($isTextFieldFocused)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                            .onSubmit {
-                                Task { @MainActor in
-                                    await submitCashAmount()
-                                }
-                            }
-                            .onChange(of: textFieldViewModel.amount) { newValue in
-                                textFieldAmountInput = newValue
-                                updateChangeDueMessage()
-                            }
-
-                        if let changeDue = changeDueMessage {
-                            Text(changeDue)
-                                .font(.posBodySmallRegular())
-                                .foregroundColor(.posOnSurfaceVariantLowest)
-                        }
-
-                        if let errorMessage = errorMessage {
-                            Text(errorMessage)
-                                .font(.posBodySmallRegular())
-                                .foregroundColor(.posError)
-                                .padding(.bottom, Constants.errorMessagePadding)
-                        }
-                    }
-
-                    Button(action: {
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    POSPageHeaderView(title: Localization.backNavigationTitle,
+                                      subtitle: formattedOrderTotal,
+                                      backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                                                     action: {
                         Task { @MainActor in
-                            await submitCashAmount()
+                            await posModel.cancelCashPayment()
+                            isTextFieldFocused = false
                         }
-                    }, label: {
-                        Text(Localization.markPaymentCompletedButtonTitle)
-                    })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-                    .frame(maxWidth: .infinity)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .disabled(isLoading)
+                    }))
 
-                    Spacer()
+                    VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                        Spacer()
+
+                        VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
+                            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+                                .focused($isTextFieldFocused)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                                .onSubmit {
+                                    Task { @MainActor in
+                                        await submitCashAmount()
+                                    }
+                                }
+                                .onChange(of: textFieldViewModel.amount) { newValue in
+                                    textFieldAmountInput = newValue
+                                    updateChangeDueMessage()
+                                }
+
+                            if let changeDue = changeDueMessage {
+                                Text(changeDue)
+                                    .font(.posBodySmallRegular())
+                                    .foregroundColor(.posOnSurfaceVariantLowest)
+                            }
+
+                            if let errorMessage = errorMessage {
+                                Text(errorMessage)
+                                    .font(.posBodySmallRegular())
+                                    .foregroundColor(.posError)
+                            }
+                        }
+
+                        Spacer()
+
+                        Button(action: {
+                            Task { @MainActor in
+                                await submitCashAmount()
+                            }
+                        }, label: {
+                            Text(Localization.markPaymentCompletedButtonTitle)
+                        })
+                        .measureFrame {
+                            buttonFrame = $0
+                        }
+                        .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                        .frame(maxWidth: .infinity)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                        .disabled(isLoading)
+                    }
+                    .padding([.horizontal])
+                    .padding(.bottom, max(keyboardFrame.height - geometry.safeAreaInsets.bottom,
+                                          floatingControlAreaSize.height) + Constants.bottomPadding
+                    )
                 }
-                .padding([.horizontal, .bottom])
-            }
-            .background(backgroundColor)
-            .animation(.easeInOut, value: errorMessage)
-            .animation(.easeInOut, value: changeDueMessage)
-            .onChange(of: textFieldAmountInput) { _ in
-                errorMessage = nil
+                .frame(minHeight: geometry.size.height)
+                .animation(.easeInOut, value: errorMessage)
+                .animation(.easeInOut, value: changeDueMessage)
+                .onChange(of: textFieldAmountInput) { _ in
+                    errorMessage = nil
+                }
+                .onReceive(Publishers.keyboardFrame) {
+                    keyboardFrame = $0
+                    shouldMinimizePadding = $0.intersects(buttonFrame)
+                }
+                .animation(.default, value: shouldMinimizePadding)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func markComplete() async throws {
@@ -131,18 +153,20 @@ private extension PointOfSaleCollectCashView {
 @available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
-        static let buttonMinHeight: CGFloat = 32
-        static let navigationButtonSpacing: CGFloat = 8
-        static let navigationHeaderTopPadding: CGFloat = 8
-        static let errorMessagePadding: CGFloat = 8
+        static let minimumPadding: CGFloat = POSSpacing.xSmall
+        static let bottomPadding: CGFloat = POSPadding.medium
     }
 
     private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 0 : padding
+        if shouldMinimizePadding {
+            return Constants.minimumPadding
+        }
+
+        return padding
     }
 
     private var backgroundColor: Color {
-        .posSurface
+        .posSurfaceBright
     }
 
     enum Localization {

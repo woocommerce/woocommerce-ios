@@ -65,6 +65,16 @@ final class ProductsSplitViewCoordinator: NSObject {
     func startProductCreation() {
         productsViewController.startProductCreation()
     }
+
+    /// Returns the product form of the given product ID being displayed on the secondary column if available.
+    func currentProductForm(for productID: Int64) -> ProductFormViewController<ProductFormViewModel>? {
+        if let contentType = contentTypes.last,
+            case let .productForm(product) = contentType,
+            product?.productID == productID {
+            return secondaryNavigationController.topViewController as? ProductFormViewController<ProductFormViewModel>
+        }
+        return nil
+    }
 }
 
 private extension ProductsSplitViewCoordinator {

@@ -26,7 +26,7 @@ struct PointOfSaleUnsupportedWidthView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.center)
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, POSPadding.medium)
 
             Spacer()
         }

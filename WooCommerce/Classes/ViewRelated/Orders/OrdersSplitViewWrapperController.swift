@@ -34,7 +34,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
             return
         }
 
-        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+        // workaround - delay to ensure the transition to the secondary column works after switching stores
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
+            presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
+        }
     }
 
     func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {

@@ -33,6 +33,7 @@ struct CartView: View {
 
                     Button {
                         posModel.removeAllItemsFromCart()
+                        ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
                     } label: {
                         Text(Localization.clearButtonTitle)
                     }
@@ -180,17 +181,15 @@ private extension CartView {
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posHeadingBold
-        static let secondaryFont: POSFontStyle = .posBodyLargeRegular()
+        static let secondaryFont: POSFontStyle = .posBodyMediumRegular()
         static let itemsFont: POSFontStyle = .posBodySmallRegular()
-        static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
-        static let emptyViewImageTextSpacing: CGFloat = 30 // This should be 40 by designs, but the overlay technique means we have to tweak it
-        static let cartHeaderSpacing: CGFloat = 8
-        static let cartHeaderElementSpacing: CGFloat = 16
+        static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
+        static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
         static let cartAnimation: Animation = .spring(duration: 0.2)
-        static let checkoutButtonVerticalPadding: CGFloat = 16
-        static let cartItemSpacing: CGFloat = 8
+        static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
+        static let cartItemSpacing: CGFloat = POSSpacing.small
     }
 
     enum Localization {

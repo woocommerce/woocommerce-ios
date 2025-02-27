@@ -4,11 +4,16 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @State private var width: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+        VStack(alignment: .center, spacing: POSSpacing.none) {
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posOnSurface)
@@ -16,7 +21,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
@@ -25,12 +30,18 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
+            Spacer()
+                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
                    action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
+        .measureWidth({ containerWidth in
+            width = containerWidth
+        })
     }
 }
 

@@ -41,21 +41,36 @@ final class TotalsViewHelper {
     }
 
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
-                                            paymentState: PointOfSalePaymentState) -> Bool {
+                                            paymentState: PointOfSalePaymentState,
+                                            cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
         guard orderState != .syncing,
               case .card(let cardState) = paymentState else {
             return false
         }
 
+        if cardReaderConnectionStatus == .disconnected {
+            return true
+        }
+
+        if case let .loaded(totals) = orderState, totals.orderTotalDecimal.isZero {
+            return true
+        }
+
         switch cardState {
-        case .idle,
-             .validatingOrder,
-             .validatingOrderError,
-             .preparingReader,
+        case .validatingOrderError,
              .acceptingCard:
             return true
         default:
             return false
+        }
+    }
+
+    func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
+        switch paymentState {
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .cash(.collectingCash):
+            return false
+        default:
+            return true
         }
     }
 }

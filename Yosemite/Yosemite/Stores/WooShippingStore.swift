@@ -71,6 +71,10 @@ public final class WooShippingStore: Store {
             validateAddress(siteID: siteID, address: address, completion: completion)
         case let .updateOriginAddress(siteID, address, isVerified, completion):
             updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
+        case let .verifyDestinationAddress(siteID, orderID, completion):
+            verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
+        case let .updateDestinationAddress(siteID, orderID, address, completion):
+            updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         }
     }
 }
@@ -109,8 +113,8 @@ private extension WooShippingStore {
 
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
-                        originAddress: ShippingLabelAddress,
-                        destinationAddress: ShippingLabelAddress,
+                        originAddress: WooShippingAddress,
+                        destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         remote.loadLabelRates(siteID: siteID,
@@ -142,8 +146,8 @@ private extension WooShippingStore {
 
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
-                               originAddress: ShippingLabelAddress,
-                               destinationAddress: ShippingLabelAddress,
+                               originAddress: WooShippingAddress,
+                               destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
@@ -256,7 +260,7 @@ private extension WooShippingStore {
     }
 
     func validateAddress(siteID: Int64,
-                         address: ShippingLabelAddress,
+                         address: WooShippingAddress,
                          completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
         remote.addressValidation(siteID: siteID, address: address, completion: completion)
     }
@@ -266,6 +270,19 @@ private extension WooShippingStore {
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
         remote.updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
+    }
+
+    func verifyDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
+        remote.verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
+    }
+
+    func updateDestinationAddress(siteID: Int64,
+                                  orderID: Int64,
+                                  address: WooShippingDestinationAddress,
+                                  completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
     }
 }
 

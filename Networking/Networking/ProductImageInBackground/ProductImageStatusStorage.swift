@@ -38,7 +38,7 @@ public final class ProductImageStatusStorage {
                 if let error = status.error {
                     return (siteID: status.siteID,
                             productOrVariationID: status.productOrVariationID,
-                            assetType: status.assetType,
+                            assetType: status.asset,
                             error: error)
                 }
                 return nil

@@ -370,7 +370,7 @@ private extension ProductImageUploader {
                     let errorInfo = ProductImageUploadErrorInfo(
                         siteID: failureStatus.siteID,
                         productOrVariationID: failureStatus.productOrVariationID,
-                        error: .failedUploadingImage(asset: failureStatus.assetType!, error: error)
+                        error: .failedUploadingImage(asset: failureStatus.asset!, error: error)
                     )
                     self.errorsSubject.send(errorInfo)
                 }

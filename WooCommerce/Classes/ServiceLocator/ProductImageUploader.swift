@@ -95,20 +95,24 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
             let upstream = userDefaultsStatuses?.errorsPublisher
-                ?? Empty<(siteID: Int64,
-                          productOrVariationID: ProductOrVariationID?,
-                          assetType: ProductImageAssetType?,
-                          error: Error), Never>().eraseToAnyPublisher()
-            return upstream.compactMap { errorItem in
-                guard let productOrVariationID = errorItem.productOrVariationID,
-                      let assetType = errorItem.assetType else { return nil }
-                return ProductImageUploadErrorInfo(
-                    siteID: errorItem.siteID,
-                    productOrVariationID: productOrVariationID,
-                    error: .failedUploadingImage(asset: assetType, error: errorItem.error)
-                )
-            }
-            .eraseToAnyPublisher()
+                ?? Empty<[(siteID: Int64,
+                           productOrVariationID: ProductOrVariationID?,
+                           assetType: ProductImageAssetType?,
+                           error: Error)], Never>().eraseToAnyPublisher()
+            return upstream
+                .flatMap { errorItems in
+                    errorItems.publisher
+                        .compactMap { errorItem in
+                            guard let productOrVariationID = errorItem.productOrVariationID,
+                                  let assetType = errorItem.assetType else { return nil }
+                            return ProductImageUploadErrorInfo(
+                                siteID: errorItem.siteID,
+                                productOrVariationID: productOrVariationID,
+                                error: .failedUploadingImage(asset: assetType, error: errorItem.error)
+                            )
+                        }
+                }
+                .eraseToAnyPublisher()
         } else {
             return errorsSubject.eraseToAnyPublisher()
         }
@@ -380,7 +384,7 @@ private extension ProductImageUploader {
 
             if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                 // Update the states in userDefaultsStatuses
-                self.userDefaultsStatuses?.setAllStatuses(productImageStatuses, for: key.siteID, productID: key.productOrVariationID)
+                self.userDefaultsStatuses?.appendStatuses(productImageStatuses, for: key.siteID, productID: key.productOrVariationID)
             }
             else {
                 if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {

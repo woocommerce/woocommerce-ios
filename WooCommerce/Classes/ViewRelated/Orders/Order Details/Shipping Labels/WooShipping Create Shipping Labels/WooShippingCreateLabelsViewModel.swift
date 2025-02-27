@@ -6,6 +6,17 @@ import Combine
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
+    enum ContentState {
+        case loading
+        case ready
+        case failure(error: LoadingError)
+    }
+
+    enum LoadingError: Error {
+        case accountSettings
+        case originAddress
+    }
+
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationAddress: WooShippingAddress?
@@ -15,6 +26,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var debounceDuration: Double = 1
 
     let order: Order
+
+    @Published private(set) var state = ContentState.loading
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -211,6 +224,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
+    }
+
+    func retryLoadingData(for error: LoadingError) {
+        // TODO
     }
 
     /// Handles package selection for the shipping label.

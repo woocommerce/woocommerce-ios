@@ -44,89 +44,18 @@ struct WooShippingCreateLabelsView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Layout.verticalSpacing) {
-                    if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                        WooShippingPostPurchaseView(viewModel: postPurchase)
-                    }
-
-                    WooShippingItems(viewModel: viewModel.items)
-
-                    WooShippingHazmat(enabled: !viewModel.canViewLabel)
-
-                    WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
-                                          customsFormViewModel: viewModel.customsFormViewModel)
-                        .padding(.bottom, 16)
-                        .renderedIf(viewModel.customsFormRequired)
-
-                    if viewModel.canViewLabel {
-                        EmptyView()
-                    } else if let package = viewModel.selectedPackage,
-                              let shippingService = viewModel.shippingService {
-                        WooShippingSelectedPackageView(package: package,
-                                                       totalWeight: $viewModel.shipmentWeight,
-                                                       updateSelectedPackage: viewModel.selectPackage)
-                        WooShippingServiceView(viewModel: shippingService)
-                    } else {
-                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
-                    }
+            Group {
+                switch viewModel.state {
+                case .loading:
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                case .ready:
+                    mainForm
+                case .failure(let error):
+                    errorState(with: error)
                 }
-                .padding(16)
+                mainForm
             }
-            .safeAreaInset(edge: .bottom) {
-                ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
-                    isShipmentDetailsExpanded = isExpanded
-                }) {
-                    VStack {
-                        collapsedBottomSheet
-                            .renderedIf(!isShipmentDetailsExpanded)
-                        bottomSheetPurchaseActions
-                            .renderedIf(!viewModel.canViewLabel)
-                    }
-                    .padding(.horizontal, Layout.bottomSheetPadding)
-                } expandableContent: {
-                    VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
-                        if isiPhonePortrait {
-                            Text(Localization.BottomSheet.orderDetails)
-                                .footnoteStyle()
-                        }
-                        CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
-                            shipFromAddress
-                            Divider()
-                            shipToAddress
-                        }
-                        .font(.subheadline)
-                        .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
-
-                        // Always use a VStack in iPhone portrait orientation.
-                        // CollapsibleHStack will use an HStack even if some text is truncated.
-                        if isiPhonePortrait {
-                            VStack(spacing: Layout.bottomSheetPadding) {
-                                orderDetails
-                                Divider()
-                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
-                                shipmentDetails
-                            }
-                        } else {
-                            HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                                orderDetails
-                                Divider()
-                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
-                                shipmentDetails
-                            }
-                        }
-                    }
-                    .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
-                }
-                .ignoresSafeArea(edges: .horizontal)
-                .sheet(isPresented: $isOriginAddressListPresented) {
-                    WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
-                }
-            }
-            .shippingWeightUnit(viewModel.weightUnit)
-            .shippingDimensionsUnit(viewModel.dimensionsUnit)
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -148,6 +77,101 @@ struct WooShippingCreateLabelsView: View {
 }
 
 private extension WooShippingCreateLabelsView {
+    var mainForm: some View {
+        ScrollView {
+            VStack(spacing: Layout.verticalSpacing) {
+                if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
+                    WooShippingPostPurchaseView(viewModel: postPurchase)
+                }
+
+                WooShippingItems(viewModel: viewModel.items)
+
+                WooShippingHazmat(enabled: !viewModel.canViewLabel)
+
+                WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
+                                      customsFormViewModel: viewModel.customsFormViewModel)
+                    .padding(.bottom, 16)
+                    .renderedIf(viewModel.customsFormRequired)
+
+                if viewModel.canViewLabel {
+                    EmptyView()
+                } else if let package = viewModel.selectedPackage,
+                          let shippingService = viewModel.shippingService {
+                    WooShippingSelectedPackageView(package: package,
+                                                   totalWeight: $viewModel.shipmentWeight,
+                                                   updateSelectedPackage: viewModel.selectPackage)
+                    WooShippingServiceView(viewModel: shippingService)
+                } else {
+                    WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
+                }
+            }
+            .padding(16)
+        }
+        .safeAreaInset(edge: .bottom) {
+            ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+                isShipmentDetailsExpanded = isExpanded
+            }) {
+                VStack {
+                    collapsedBottomSheet
+                        .renderedIf(!isShipmentDetailsExpanded)
+                    bottomSheetPurchaseActions
+                        .renderedIf(!viewModel.canViewLabel)
+                }
+                .padding(.horizontal, Layout.bottomSheetPadding)
+            } expandableContent: {
+                VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
+                    if isiPhonePortrait {
+                        Text(Localization.BottomSheet.orderDetails)
+                            .footnoteStyle()
+                    }
+                    CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
+                        shipFromAddress
+                        Divider()
+                        shipToAddress
+                    }
+                    .font(.subheadline)
+                    .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
+
+                    // Always use a VStack in iPhone portrait orientation.
+                    // CollapsibleHStack will use an HStack even if some text is truncated.
+                    if isiPhonePortrait {
+                        VStack(spacing: Layout.bottomSheetPadding) {
+                            orderDetails
+                            Divider()
+                                .padding(.trailing, Layout.bottomSheetPadding * -1)
+                            shipmentDetails
+                        }
+                    } else {
+                        HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
+                            orderDetails
+                            Divider()
+                                .padding(.trailing, Layout.bottomSheetPadding * -1)
+                            shipmentDetails
+                        }
+                    }
+                }
+                .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
+            }
+            .ignoresSafeArea(edges: .horizontal)
+            .sheet(isPresented: $isOriginAddressListPresented) {
+                WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+        }
+        .shippingWeightUnit(viewModel.weightUnit)
+        .shippingDimensionsUnit(viewModel.dimensionsUnit)
+    }
+
+    func errorState(with error: WooShippingCreateLabelsViewModel.LoadingError) -> some View {
+        VStack {
+            Text("Unable to load data")
+            Button("Retry") {
+                viewModel.retryLoadingData(for: error)
+            }
+        }
+    }
+
     /// View for elements only displayed on the collapsed bottom sheet.
     var collapsedBottomSheet: some View {
         VStack {

@@ -63,7 +63,7 @@ final class ProductImageAssetTypeCodableTests: XCTestCase {
         }
     }
 
-    func test_invalid_Base64Data_for_UIImage_throwsError() throws {
+    func test_invalid_base64Data_for_UIImage_throws_error() throws {
         // Given
         let jsonData = """
         {

@@ -282,12 +282,6 @@ private extension TotalsView {
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
-
-        static let topAligned = PaymentViewLayout(
-            backgroundColor: .clear,
-            topPadding: 96,
-            bottomPadding: 96
-        )
     }
 
     private var isShowingPaymentView: Bool {

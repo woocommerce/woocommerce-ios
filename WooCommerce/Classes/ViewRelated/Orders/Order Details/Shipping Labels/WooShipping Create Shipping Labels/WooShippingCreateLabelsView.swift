@@ -51,8 +51,8 @@ struct WooShippingCreateLabelsView: View {
                         .progressViewStyle(.circular)
                 case .ready:
                     mainForm
-                case .failure(let error):
-                    errorState(with: error)
+                case .missingRequiredData:
+                    missingDataState
                 }
                 mainForm
             }
@@ -163,11 +163,13 @@ private extension WooShippingCreateLabelsView {
         .shippingDimensionsUnit(viewModel.dimensionsUnit)
     }
 
-    func errorState(with error: WooShippingCreateLabelsViewModel.LoadingError) -> some View {
+    var missingDataState: some View {
         VStack {
-            Text("Unable to load data")
-            Button("Retry") {
-                viewModel.retryLoadingData(for: error)
+            Text(Localization.missingDataError)
+            Button(Localization.retryCTA) {
+                Task {
+                    await viewModel.loadRequiredData()
+                }
             }
         }
     }
@@ -496,5 +498,16 @@ private extension WooShippingCreateLabelsView {
                                                    value: "Missing address",
                                                    comment: "Label when an address is missing on the shipping label creation screen")
         }
+
+        static let missingDataError = NSLocalizedString(
+            "wooShipping.createLabels.missingDataError",
+            value: "We are unable to load required data for creating shipping labels",
+            comment: "Error message when loading required data failed on the shipping label creation screen"
+        )
+        static let retryCTA = NSLocalizedString(
+            "wooShipping.createLabels.retryCTA",
+            value: "Retry",
+            comment: "Button to retry loading data on the shipping label creation screen"
+        )
     }
 }

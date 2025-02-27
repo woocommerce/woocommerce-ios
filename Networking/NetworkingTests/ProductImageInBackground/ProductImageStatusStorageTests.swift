@@ -170,7 +170,7 @@ class ProductImageStatusStorageTests: XCTestCase {
         productImagesStatuses.addStatus(oldStatus)
 
         // When
-        productImagesStatuses.setAllStatuses([newStatus], for: siteID, productID: productID)
+        productImagesStatuses.appendStatuses([newStatus], for: siteID, productID: productID)
 
         // Then
         let allStatuses = productImagesStatuses.getAllStatuses()
@@ -308,43 +308,68 @@ class ProductImageStatusStorageTests: XCTestCase {
         XCTAssertTrue(statuses.contains(newStatus2))
     }
 
-    func test_errorsPublisher_should_emit_on_upload_failure() {
+    func test_errorsPublisher_should_emit_all_error_statuses() {
         // Given
         let expectation = self.expectation(description: "Error emission")
-        var receivedError: (siteID: Int64, productOrVariationID: ProductOrVariationID?, assetType: ProductImageAssetType?, error: Error)?
+        var receivedErrorInfos: [(siteID: Int64, productOrVariationID: ProductOrVariationID?, assetType: ProductImageAssetType?, error: Error)] = []
 
-        let failureStatus = ProductImageStatus.uploadFailure(
-            asset: .uiImage(image: .strokedCheckmark, filename: "error", altText: "error"),
-            error: NSError(domain: "TestDomain", code: 123),
+        let failureStatus1 = ProductImageStatus.uploadFailure(asset: .uiImage(image: .strokedCheckmark, filename: "error1", altText: "error1"),
+            error: NSError(domain: "TestDomain1", code: 123),
             siteID: siteID,
             productID: productID
         )
 
-        let cancellable = productImagesStatuses.errorsPublisher
-            .sink { errorInfo in
-                receivedError = errorInfo
-                expectation.fulfill()
-            }
+        let failureStatus2 = ProductImageStatus.uploadFailure(asset: .uiImage(image: .strokedCheckmark,
+                                                                              filename: "error2",
+                                                                              altText: "error2"),
+            error: NSError(domain: "TestDomain2", code: 456),
+            siteID: siteID,
+            productID: productVariationID
+        )
 
-        // When
-        productImagesStatuses.addStatus(failureStatus)
+        productImagesStatuses.addStatus(failureStatus1)
+        productImagesStatuses.addStatus(failureStatus2)
+
+        productImagesStatuses.errorsPublisher
+            .sink { errorInfos in
+                receivedErrorInfos = errorInfos
+                if receivedErrorInfos.count == 2 {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
 
         waitForExpectations(timeout: 1, handler: nil)
-        cancellable.cancel()
 
         // Then
-        XCTAssertNotNil(receivedError)
-        if let errorInfo = receivedError {
-            XCTAssertEqual(errorInfo.siteID, siteID)
-            XCTAssertEqual(errorInfo.productOrVariationID, productID)
-            if case .uiImage = errorInfo.assetType! {
-                // Asset type is uiImage as expected
-            } else {
-                XCTFail("Asset type is not uiImage")
+        XCTAssertEqual(receivedErrorInfos.count, 2)
+
+        if let errorInfo1 = receivedErrorInfos.first(where: { info in
+            let nsError = info.error as NSError
+            return nsError.domain == "TestDomain1" && nsError.code == 123
+        }) {
+            XCTAssertEqual(errorInfo1.siteID, siteID)
+            XCTAssertEqual(errorInfo1.productOrVariationID, productID)
+            guard case .uiImage = errorInfo1.assetType else {
+                XCTFail("Expected asset type to be .uiImage")
+                return
             }
-            let nsError = errorInfo.error as NSError
-            XCTAssertEqual(nsError.domain, "TestDomain")
-            XCTAssertEqual(nsError.code, 123)
+        } else {
+            XCTFail("Did not receive failureStatus1 error info")
+        }
+
+        if let errorInfo2 = receivedErrorInfos.first(where: { info in
+            let nsError = info.error as NSError
+            return nsError.domain == "TestDomain2" && nsError.code == 456
+        }) {
+            XCTAssertEqual(errorInfo2.siteID, siteID)
+            XCTAssertEqual(errorInfo2.productOrVariationID, productVariationID)
+            guard case .uiImage = errorInfo2.assetType else {
+                XCTFail("Expected asset type to be .uiImage")
+                return
+            }
+        } else {
+            XCTFail("Did not receive failureStatus2 error info")
         }
     }
 

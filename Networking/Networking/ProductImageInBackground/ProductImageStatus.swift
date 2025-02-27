@@ -118,7 +118,7 @@ public enum ProductImageStatus: Equatable, Codable {
         }
     }
 
-    public var assetType: ProductImageAssetType? {
+    public var asset: ProductImageAssetType? {
         switch self {
         case .uploading(let asset, _, _),
              .uploadFailure(let asset, _, _, _):
@@ -129,8 +129,8 @@ public enum ProductImageStatus: Equatable, Codable {
     }
 
     public var error: Error? {
-        if case .uploadFailure(_, let errorDescription, _, _) = self {
-            return errorDescription
+        if case .uploadFailure(_, let error, _, _) = self {
+            return error
         }
         return nil
     }

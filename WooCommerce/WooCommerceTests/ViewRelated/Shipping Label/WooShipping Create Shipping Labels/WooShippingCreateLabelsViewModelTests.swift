@@ -41,6 +41,114 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates.count, 1)
     }
 
+    func test_state_is_loading_initially() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.state, .loading)
+    }
+
+    func test_state_is_missingRequiredData_when_store_settings_are_missing() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = NetworkError.notFound(response: nil)
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.failure(error))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.state != .loading
+        }
+        XCTAssertEqual(viewModel.state, .missingRequiredData)
+    }
+
+    func test_state_is_missingRequiredData_when_origin_addresses_are_missing() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = NetworkError.notFound(response: nil)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.failure(error))
+            case .loadAccountSettings(_, let completion):
+                completion(.failure(error))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService()
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.state != .loading
+        }
+        XCTAssertEqual(viewModel.state, .missingRequiredData)
+        XCTAssertEqual(viewModel.dimensionsUnit, shippingSettingsService.dimensionUnit)
+        XCTAssertEqual(viewModel.weightUnit, shippingSettingsService.weightUnit)
+    }
+
+    func test_state_is_ready_when_loading_required_data_succeeds() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = NetworkError.notFound(response: nil)
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.state != .loading
+        }
+        XCTAssertEqual(viewModel.state, .ready)
+        XCTAssertEqual(viewModel.dimensionsUnit, settings.storeOptions.dimensionUnit)
+        XCTAssertEqual(viewModel.weightUnit, settings.storeOptions.weightUnit)
+        XCTAssertEqual(viewModel.originAddresses.addresses, [originAddress])
+    }
+
     func test_customsFormRequired_when_origin_and_destination_in_US_then_returns_false() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",

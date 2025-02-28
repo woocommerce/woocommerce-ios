@@ -5,6 +5,12 @@ import WooFoundation
 import Yosemite
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
+    private let settings = WooShippingAccountSettings(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
+                                                                                              dimensionUnit: "cm",
+                                                                                              weightUnit: "g",
+                                                                                              originCountry: "VN"),
+                                                      accountSettings: .fake())
+
     func test_inits_with_expected_values_for_shipping_label_creation() {
         // Given
         let order = Order.fake()
@@ -157,7 +163,9 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.originAddresses.addresses.count, 1)
+        waitUntil {
+            viewModel.originAddresses.addresses.count == 1
+        }
         XCTAssertEqual(viewModel.originAddresses.selectedAddressID, originAddress.id)
     }
 
@@ -175,6 +183,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case .loadOriginAddresses(_, let completion):
                 completion(.success(originAddresses))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -186,6 +196,9 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
 
         // Then
+        waitUntil {
+            viewModel.originAddresses.addresses.count > 0
+        }
         XCTAssertEqual("123 Main Street, San Francisco CA 12345, US", viewModel.originAddress)
     }
 
@@ -209,7 +222,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                   address1: "123 Main Street",
                                                                   city: "San Francisco",
                                                                   postcode: "12345")
-        let order = Order.fake()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -217,6 +229,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddresses,
                                                                                isTrivialNormalization: nil,
                                                                                isVerified: true)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
             default:
@@ -256,6 +270,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
                 break
             default:
@@ -287,6 +303,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(ShippingLabel.fake()))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
                 break
             default:
@@ -473,6 +491,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 switch action {
                 case let .loadLabelRates(_, _, _, _, packages, _):
                     promise(packages.first?.weight)
+                case .loadAccountSettings(_, let completion):
+                    completion(.success(self.settings))
+                case .loadOriginAddresses(_, let completion):
+                    completion(.success([]))
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -518,6 +540,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
                                                                                isTrivialNormalization: false,
                                                                                isVerified: false)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
             default:
@@ -544,6 +568,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
                                                                                isTrivialNormalization: nil,
                                                                                isVerified: true)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
             default:
@@ -569,6 +595,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(WooShippingAddressValidationError(addressError: nil,
                                                                       generalError: nil,
                                                                       nameError: nil)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
             case .loadPackages, .loadOriginAddresses:
                 break
             default:

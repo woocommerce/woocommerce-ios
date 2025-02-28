@@ -96,7 +96,7 @@ private extension WooShippingCreateLabelsView {
 
                 WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                       customsFormViewModel: viewModel.customsFormViewModel)
-                    .padding(.bottom, Layout.mainFormPadding)
+                    .padding(.bottom, Layout.contentSpacing)
                     .renderedIf(viewModel.customsFormRequired)
 
                 if viewModel.canViewLabel {
@@ -111,7 +111,7 @@ private extension WooShippingCreateLabelsView {
                     WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                 }
             }
-            .padding(Layout.mainFormPadding)
+            .padding(Layout.contentSpacing)
         }
     }
 
@@ -169,7 +169,7 @@ private extension WooShippingCreateLabelsView {
     }
 
     var missingDataState: some View {
-        VStack {
+        VStack(spacing: Layout.contentSpacing) {
             Image(uiImage: .grayErrorIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -416,7 +416,7 @@ private extension WooShippingCreateLabelsView {
         static let rowHeight: CGFloat = 32
         static let chevronSize: CGFloat = 30
         static let ellipsisWidth: CGFloat = 22
-        static let mainFormPadding: CGFloat = 16
+        static let contentSpacing: CGFloat = 16
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
         static let errorIconSize: CGFloat = 86

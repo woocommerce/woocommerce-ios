@@ -1440,7 +1440,7 @@ private extension ProductFormViewController {
     }
 
     func resetProductImages() {
-        productImageActionHandler.resetProductImages(to: viewModel.productModel)
+        productImageActionHandler.resetProductImages(to: viewModel.originalProductModel)
     }
 }
 

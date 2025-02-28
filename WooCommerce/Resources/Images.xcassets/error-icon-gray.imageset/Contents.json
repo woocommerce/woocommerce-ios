@@ -3,6 +3,16 @@
     {
       "filename" : "error-icon-gray.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "error-icon-gray-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

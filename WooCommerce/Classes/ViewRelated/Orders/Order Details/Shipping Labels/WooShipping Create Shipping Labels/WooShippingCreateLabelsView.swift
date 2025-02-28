@@ -55,6 +55,13 @@ struct WooShippingCreateLabelsView: View {
                     missingDataState
                 }
             }
+            .safeAreaInset(edge: .bottom) {
+                if viewModel.state == .ready {
+                    expandableBottomSheet
+                }
+            }
+            .shippingWeightUnit(viewModel.weightUnit)
+            .shippingDimensionsUnit(viewModel.dimensionsUnit)
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -89,7 +96,7 @@ private extension WooShippingCreateLabelsView {
 
                 WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                       customsFormViewModel: viewModel.customsFormViewModel)
-                    .padding(.bottom, 16)
+                    .padding(.bottom, Layout.mainFormPadding)
                     .renderedIf(viewModel.customsFormRequired)
 
                 if viewModel.canViewLabel {
@@ -104,68 +111,68 @@ private extension WooShippingCreateLabelsView {
                     WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                 }
             }
-            .padding(16)
+            .padding(Layout.mainFormPadding)
         }
-        .safeAreaInset(edge: .bottom) {
-            ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
-                isShipmentDetailsExpanded = isExpanded
-            }) {
-                VStack {
-                    collapsedBottomSheet
-                        .renderedIf(!isShipmentDetailsExpanded)
-                    bottomSheetPurchaseActions
-                        .renderedIf(!viewModel.canViewLabel)
-                }
-                .padding(.horizontal, Layout.bottomSheetPadding)
-            } expandableContent: {
-                VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
-                    if isiPhonePortrait {
-                        Text(Localization.BottomSheet.orderDetails)
-                            .footnoteStyle()
-                    }
-                    CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
-                        shipFromAddress
-                        Divider()
-                        shipToAddress
-                    }
-                    .font(.subheadline)
-                    .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
+    }
 
-                    // Always use a VStack in iPhone portrait orientation.
-                    // CollapsibleHStack will use an HStack even if some text is truncated.
-                    if isiPhonePortrait {
-                        VStack(spacing: Layout.bottomSheetPadding) {
-                            orderDetails
-                            Divider()
-                                .padding(.trailing, Layout.bottomSheetPadding * -1)
-                            shipmentDetails
-                        }
-                    } else {
-                        HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                            orderDetails
-                            Divider()
-                                .padding(.trailing, Layout.bottomSheetPadding * -1)
-                            shipmentDetails
-                        }
+    var expandableBottomSheet: some View {
+        ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+            isShipmentDetailsExpanded = isExpanded
+        }) {
+            VStack {
+                collapsedBottomSheet
+                    .renderedIf(!isShipmentDetailsExpanded)
+                bottomSheetPurchaseActions
+                    .renderedIf(!viewModel.canViewLabel)
+            }
+            .padding(.horizontal, Layout.bottomSheetPadding)
+        } expandableContent: {
+            VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
+                if isiPhonePortrait {
+                    Text(Localization.BottomSheet.orderDetails)
+                        .footnoteStyle()
+                }
+                CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
+                    shipFromAddress
+                    Divider()
+                    shipToAddress
+                }
+                .font(.subheadline)
+                .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
+
+                // Always use a VStack in iPhone portrait orientation.
+                // CollapsibleHStack will use an HStack even if some text is truncated.
+                if isiPhonePortrait {
+                    VStack(spacing: Layout.bottomSheetPadding) {
+                        orderDetails
+                        Divider()
+                            .padding(.trailing, Layout.bottomSheetPadding * -1)
+                        shipmentDetails
+                    }
+                } else {
+                    HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
+                        orderDetails
+                        Divider()
+                            .padding(.trailing, Layout.bottomSheetPadding * -1)
+                        shipmentDetails
                     }
                 }
-                .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
             }
-            .ignoresSafeArea(edges: .horizontal)
-            .sheet(isPresented: $isOriginAddressListPresented) {
-                WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
+            .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
         }
-        .shippingWeightUnit(viewModel.weightUnit)
-        .shippingDimensionsUnit(viewModel.dimensionsUnit)
+        .ignoresSafeArea(edges: .horizontal)
+        .sheet(isPresented: $isOriginAddressListPresented) {
+            WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
     }
 
     var missingDataState: some View {
         VStack {
             Image(uiImage: .grayErrorIcon)
             Text(Localization.missingDataError)
+                .multilineTextAlignment(.center)
             Button(Localization.retryCTA) {
                 Task {
                     await viewModel.loadRequiredData()
@@ -406,6 +413,7 @@ private extension WooShippingCreateLabelsView {
         static let rowHeight: CGFloat = 32
         static let chevronSize: CGFloat = 30
         static let ellipsisWidth: CGFloat = 22
+        static let mainFormPadding: CGFloat = 16
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
         static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
@@ -501,7 +509,7 @@ private extension WooShippingCreateLabelsView {
 
         static let missingDataError = NSLocalizedString(
             "wooShipping.createLabels.missingDataError",
-            value: "We are unable to load required data for creating shipping labels",
+            value: "We are unable to load required data",
             comment: "Error message when loading required data failed on the shipping label creation screen"
         )
         static let retryCTA = NSLocalizedString(

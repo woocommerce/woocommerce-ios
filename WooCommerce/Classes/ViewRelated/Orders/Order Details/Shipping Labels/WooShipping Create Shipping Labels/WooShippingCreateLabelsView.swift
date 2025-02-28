@@ -171,6 +171,9 @@ private extension WooShippingCreateLabelsView {
     var missingDataState: some View {
         VStack {
             Image(uiImage: .grayErrorIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
             Text(Localization.missingDataError)
                 .multilineTextAlignment(.center)
             Button(Localization.retryCTA) {
@@ -416,6 +419,7 @@ private extension WooShippingCreateLabelsView {
         static let mainFormPadding: CGFloat = 16
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
+        static let errorIconSize: CGFloat = 86
         static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
                                          dark: .withColorStudio(.green, shade: .shade40)))
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),

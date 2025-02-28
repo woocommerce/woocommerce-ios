@@ -47,9 +47,9 @@ public final class ProductImageStatusStorage {
     }
 
     public init(userDefaults: UserDefaults = .standard,
-         key: String = "savedProductUploadImageStatuses",
-         encoder: JSONEncoder = JSONEncoder(),
-         decoder: JSONDecoder = JSONDecoder()) {
+                key: String = "savedProductUploadImageStatuses",
+                encoder: JSONEncoder = JSONEncoder(),
+                decoder: JSONDecoder = JSONDecoder()) {
         self.key = key
         self.userDefaults = userDefaults
         self.encoder = encoder

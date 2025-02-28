@@ -6,7 +6,7 @@ class ProductImageStatusStorageTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
     private var userDefaults: UserDefaults!
     private let userDefaultsKey: String = "productImageStatusStorageTests"
-    private var productImagesStatuses: ProductImageStatusStorage!
+    private var storage: ProductImageStatusStorage!
 
     private let siteID: Int64 = 1234
     private let productID: ProductOrVariationID = .product(id: 3456)
@@ -16,7 +16,7 @@ class ProductImageStatusStorageTests: XCTestCase {
         super.setUp()
         userDefaults = UserDefaults.standard
         userDefaults.removeObject(forKey: userDefaultsKey)
-        productImagesStatuses = ProductImageStatusStorage(userDefaults: userDefaults, key: userDefaultsKey)
+        storage = ProductImageStatusStorage(userDefaults: userDefaults, key: userDefaultsKey)
     }
 
     override func tearDown() {
@@ -27,7 +27,7 @@ class ProductImageStatusStorageTests: XCTestCase {
     // MARK: - Test Cases
 
     func test_init_with_empty_storage_should_have_empty_statuses() {
-        XCTAssertTrue(productImagesStatuses.getAllStatuses().isEmpty)
+        XCTAssertTrue(storage.getAllStatuses().isEmpty)
     }
 
     func test_addStatus_should_persist_new_status() {
@@ -39,10 +39,10 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                   productID: productID)
 
         // When
-        productImagesStatuses.addStatus(status)
+        storage.addStatus(status)
 
         // Then
-        XCTAssertEqual(productImagesStatuses.getAllStatuses(), [status])
+        XCTAssertEqual(storage.getAllStatuses(), [status])
     }
 
     func test_removeStatus_should_delete_existing_status() {
@@ -55,14 +55,14 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                    alt: ""),
                                                siteID: siteID,
                                                productID: productID)
-        productImagesStatuses.addStatus(status)
-        XCTAssertEqual(productImagesStatuses.getAllStatuses().count, 1)
+        storage.addStatus(status)
+        XCTAssertEqual(storage.getAllStatuses().count, 1)
 
         // When
-        productImagesStatuses.removeStatus(status)
+        storage.removeStatus(status)
 
         // Then
-        XCTAssertTrue(productImagesStatuses.getAllStatuses().isEmpty)
+        XCTAssertTrue(storage.getAllStatuses().isEmpty)
     }
 
     func test_publisher_should_emit_on_changes() {
@@ -76,7 +76,7 @@ class ProductImageStatusStorageTests: XCTestCase {
         )
 
         waitForExpectation(description: "Should emit 2 values", timeout: 1) { expectation in
-            productImagesStatuses.statusesPublisher
+            storage.statusesPublisher
                 .sink {
                     receivedValues.append($0)
                     if receivedValues.count == 2 {
@@ -86,7 +86,7 @@ class ProductImageStatusStorageTests: XCTestCase {
                 .store(in: &cancellables)
 
             // When
-            productImagesStatuses.addStatus(status)
+            storage.addStatus(status)
         }
 
         // Then
@@ -113,7 +113,7 @@ class ProductImageStatusStorageTests: XCTestCase {
         var cancellable: AnyCancellable?
 
         waitForExpectation(description: "External change detection", timeout: 2) { expectation in
-            cancellable = productImagesStatuses.statusesPublisher
+            cancellable = storage.statusesPublisher
                 .sink {
                     receivedValues.append($0)
                     if $0.count == 1 {
@@ -142,7 +142,7 @@ class ProductImageStatusStorageTests: XCTestCase {
 
         cancellable?.cancel()
 
-        let savedStatuses = productImagesStatuses.getAllStatuses()
+        let savedStatuses = storage.getAllStatuses()
         XCTAssertEqual(savedStatuses.count, 1)
 
         if let firstStatus = savedStatuses.first,
@@ -167,20 +167,20 @@ class ProductImageStatusStorageTests: XCTestCase {
             siteID: siteID,
             productID: productID
         )
-        productImagesStatuses.addStatus(oldStatus)
+        storage.addStatus(oldStatus)
 
         // When
-        productImagesStatuses.appendStatuses([newStatus], for: siteID, productID: productID)
+        storage.appendStatuses([newStatus], for: siteID, productID: productID)
 
         // Then
-        let allStatuses = productImagesStatuses.getAllStatuses()
+        let allStatuses = storage.getAllStatuses()
         XCTAssertEqual(allStatuses.count, 1)
         XCTAssertEqual(allStatuses.first, newStatus)
     }
 
     func test_updateStatus_should_add_status_if_not_present() {
         // Given
-        XCTAssertTrue(productImagesStatuses.getAllStatuses().isEmpty)
+        XCTAssertTrue(storage.getAllStatuses().isEmpty)
 
         // When
         let status = ProductImageStatus.uploading(asset: .uiImage(image: .strokedCheckmark,
@@ -188,10 +188,10 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                   altText: nil),
                                                   siteID: siteID,
                                                   productID: productID)
-        productImagesStatuses.updateStatus(status)
+        storage.updateStatus(status)
 
         // Then
-        let statuses = productImagesStatuses.getAllStatuses()
+        let statuses = storage.getAllStatuses()
         XCTAssertEqual(statuses.count, 1)
         XCTAssertEqual(statuses.first, status)
     }
@@ -203,14 +203,14 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                   altText: nil),
                                                   siteID: siteID,
                                                   productID: productID)
-        productImagesStatuses.addStatus(status)
-        XCTAssertEqual(productImagesStatuses.getAllStatuses().count, 1)
+        storage.addStatus(status)
+        XCTAssertEqual(storage.getAllStatuses().count, 1)
 
         // When
-        productImagesStatuses.updateStatus(status)
+        storage.updateStatus(status)
 
         // Then
-        let statuses = productImagesStatuses.getAllStatuses()
+        let statuses = storage.getAllStatuses()
         XCTAssertEqual(statuses.count, 1)
         XCTAssertEqual(statuses.first, status)
     }
@@ -230,12 +230,12 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                          alt: "Alt text"),
                                                      siteID: siteID,
                                                      productID: productID)
-        productImagesStatuses.addStatus(uploadingStatus)
-        productImagesStatuses.addStatus(remoteStatus)
-        XCTAssertEqual(productImagesStatuses.getAllStatuses().count, 2)
+        storage.addStatus(uploadingStatus)
+        storage.addStatus(remoteStatus)
+        XCTAssertEqual(storage.getAllStatuses().count, 2)
 
         // When
-        productImagesStatuses.removeStatus { status in
+        storage.removeStatus { status in
             if case .uploading = status {
                 return true
             }
@@ -243,7 +243,7 @@ class ProductImageStatusStorageTests: XCTestCase {
         }
 
         // Then
-        let statuses = productImagesStatuses.getAllStatuses()
+        let statuses = storage.getAllStatuses()
         XCTAssertEqual(statuses.count, 1)
         XCTAssertEqual(statuses.first, remoteStatus)
     }
@@ -263,15 +263,15 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                     alt: "alt"),
                                                 siteID: siteID,
                                                 productID: productID)
-        productImagesStatuses.addStatus(status1)
-        productImagesStatuses.addStatus(status2)
-        XCTAssertEqual(productImagesStatuses.getAllStatuses().count, 2)
+        storage.addStatus(status1)
+        storage.addStatus(status2)
+        XCTAssertEqual(storage.getAllStatuses().count, 2)
 
         // When
-        productImagesStatuses.clearAllStatuses()
+        storage.clearAllStatuses()
 
         // Then
-        XCTAssertTrue(productImagesStatuses.getAllStatuses().isEmpty)
+        XCTAssertTrue(storage.getAllStatuses().isEmpty)
     }
 
     func test_setAllStatuses_should_replace_all_statuses() {
@@ -281,8 +281,8 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                          altText: nil),
                                                           siteID: siteID,
                                                           productID: productID)
-        productImagesStatuses.addStatus(initialStatus)
-        XCTAssertEqual(productImagesStatuses.getAllStatuses().count, 1)
+        storage.addStatus(initialStatus)
+        XCTAssertEqual(storage.getAllStatuses().count, 1)
 
         // When
         let newStatus1 = ProductImageStatus.remote(image: ProductImage(imageID: 30,
@@ -299,10 +299,10 @@ class ProductImageStatusStorageTests: XCTestCase {
             siteID: siteID,
             productID: productID
         )
-        productImagesStatuses.setAllStatuses([newStatus1, newStatus2])
+        storage.setAllStatuses([newStatus1, newStatus2])
 
         // Then
-        let statuses = productImagesStatuses.getAllStatuses()
+        let statuses = storage.getAllStatuses()
         XCTAssertEqual(statuses.count, 2)
         XCTAssertTrue(statuses.contains(newStatus1))
         XCTAssertTrue(statuses.contains(newStatus2))
@@ -327,10 +327,10 @@ class ProductImageStatusStorageTests: XCTestCase {
             productID: productVariationID
         )
 
-        productImagesStatuses.addStatus(failureStatus1)
-        productImagesStatuses.addStatus(failureStatus2)
+        storage.addStatus(failureStatus1)
+        storage.addStatus(failureStatus2)
 
-        productImagesStatuses.errorsPublisher
+        storage.errorsPublisher
             .sink { errorInfos in
                 receivedErrorInfos = errorInfos
                 if receivedErrorInfos.count == 2 {
@@ -388,11 +388,11 @@ class ProductImageStatusStorageTests: XCTestCase {
                                                                          alt: "alt"),
                                                      siteID: siteID,
                                                      productID: productVariationID)
-        productImagesStatuses.addStatus(uploadingStatus)
-        productImagesStatuses.addStatus(remoteStatus)
+        storage.addStatus(uploadingStatus)
+        storage.addStatus(remoteStatus)
 
         // When
-        let foundStatus = productImagesStatuses.findStatus { status in
+        let foundStatus = storage.findStatus { status in
             if case .remote(_, _, let pID) = status, pID == productVariationID {
                 return true
             }

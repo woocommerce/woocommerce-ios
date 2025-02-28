@@ -54,7 +54,6 @@ struct WooShippingCreateLabelsView: View {
                 case .missingRequiredData:
                     missingDataState
                 }
-                mainForm
             }
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -165,6 +164,7 @@ private extension WooShippingCreateLabelsView {
 
     var missingDataState: some View {
         VStack {
+            Image(uiImage: .grayErrorIcon)
             Text(Localization.missingDataError)
             Button(Localization.retryCTA) {
                 Task {

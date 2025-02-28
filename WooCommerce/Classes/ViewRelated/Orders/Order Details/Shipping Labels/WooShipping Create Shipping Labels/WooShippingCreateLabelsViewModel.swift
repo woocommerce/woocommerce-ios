@@ -73,7 +73,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missing
     }
 
-    // TODO: Add support for updating the destination address status when it is edited.
     /// The current destination address status.
     @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
 
@@ -286,6 +285,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             destinationAddress = editedAddress
             destinationEmail = editedEmail
+            destinationAddressStatus = .verified
             addressToEdit = nil // Dismisses address edit screen
         })
     }

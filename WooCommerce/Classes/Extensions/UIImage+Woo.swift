@@ -411,6 +411,11 @@ extension UIImage {
         return UIImage(named: "error-big-icon")!
     }
 
+    /// Gray error icon
+    static var grayErrorIcon: UIImage {
+        return UIImage(named: "error-icon-gray")!
+    }
+
     /// Blaze success image
     ///
     static var blazeSuccessImage: UIImage {

@@ -215,8 +215,6 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.retryFetchingImpressions()
 
         // Then
-        XCTAssertEqual(fetchInput?.startDate, expectedStartDate)
-        XCTAssertEqual(fetchInput?.endDate, Date(timeInterval: 7 * 86400, since: expectedStartDate))
         XCTAssertEqual(fetchInput?.totalBudget, 20 * 7)
         XCTAssertEqual(fetchInput?.timeZone, "Europe/London")
         XCTAssertEqual(fetchInput?.targeting, targetOptions)

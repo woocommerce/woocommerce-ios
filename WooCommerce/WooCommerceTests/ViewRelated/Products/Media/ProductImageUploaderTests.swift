@@ -732,7 +732,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(isNoticeTriggered)
     }
 
-    // MARK: - Tests with Feature Flag Enabled
+    // MARK: - Tests with background image upload feature flag enabled
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving_with_flag_enabled() {
         // Given

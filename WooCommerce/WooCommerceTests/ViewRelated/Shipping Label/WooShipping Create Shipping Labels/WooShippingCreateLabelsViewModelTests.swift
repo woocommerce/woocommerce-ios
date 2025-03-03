@@ -325,11 +325,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_order_destination_address_is_loaded_from_remote_and_set_as_destination_address() {
         // Given
-        let destinationAddresses = WooShippingAddress.fake().copy(country: "US",
-                                                                  state: "CA",
-                                                                  address1: "123 Main Street",
-                                                                  city: "San Francisco",
-                                                                  postcode: "12345")
+        let destinationAddresses = WooShippingNormalizedAddress.fake().copy(country: "US",
+                                                                            state: "CA",
+                                                                            address1: "123 Main Street",
+                                                                            city: "San Francisco",
+                                                                            postcode: "12345")
+        let order = Order.fake()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -347,7 +348,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
 
         // Then
         let expectedAddressLines = [destinationAddresses.address1,
@@ -645,7 +646,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .verifyDestinationAddress(_, _, let completion):
-                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                                isTrivialNormalization: false,
                                                                                isVerified: false)))
             case .loadAccountSettings(_, let completion):
@@ -673,7 +674,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .verifyDestinationAddress(_, _, let completion):
-                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                                isTrivialNormalization: nil,
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):

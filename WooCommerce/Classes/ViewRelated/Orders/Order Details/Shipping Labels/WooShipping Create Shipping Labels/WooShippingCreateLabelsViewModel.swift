@@ -72,9 +72,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var originAddress: String = ""
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    private(set) lazy var destinationAddressLines: [String]? = {
+    var destinationAddressLines: [String]? {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
-    }()
+    }
 
     /// Possible statuses for a Woo Shipping destination address.
     enum DestinationAddressStatus {
@@ -83,7 +83,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missing
     }
 
-    // TODO: Add support for updating the destination address status when it is edited.
     /// The current destination address status.
     @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
 
@@ -305,6 +304,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
         addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        orderID: order.orderID,
                                                         email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
@@ -315,6 +315,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             destinationAddress = editedAddress
             destinationEmail = editedEmail
+            destinationAddressStatus = .verified
             addressToEdit = nil // Dismisses address edit screen
         })
     }
@@ -385,7 +386,7 @@ private extension WooShippingCreateLabelsViewModel {
             guard let self else { return }
             switch result {
             case .success(let address):
-                destinationAddress = address.normalizedAddress
+                destinationAddress = address.normalizedAddress.toWooShippingAddress()
                 destinationAddressStatus = address.isVerified ? .verified : .unverified
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")

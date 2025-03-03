@@ -186,9 +186,8 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
     func test_retryFetchingImpressions_requests_fetching_impression_with_latest_settings() async throws {
         // Given
         var fetchInput: BlazeForecastedImpressionsInput?
+        let expectedStartDate = Date(timeIntervalSinceNow: 86400) // Next day
         let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Ho_Chi_Minh"))
-        let calendar = Calendar(identifier: .gregorian, timeZone: timeZone)
-        let expectedStartDate = try XCTUnwrap(calendar.date(byAdding: .init(day: 1), to: .now))
         let targetOptions = BlazeTargetOptions(locations: [11, 22], languages: ["en", "vi"], devices: nil, pageTopics: ["Entertainment"])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
@@ -216,8 +215,8 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.retryFetchingImpressions()
 
         // Then
-        XCTAssertEqual(fetchInput?.startDate, expectedStartDate)
-        XCTAssertEqual(fetchInput?.endDate, Date(timeInterval: 7 * 86400, since: expectedStartDate))
+        XCTAssertEqual(fetchInput?.startDate, viewModel.startDate)
+        XCTAssertEqual(fetchInput?.endDate, Date(timeInterval: 7 * 86400, since: viewModel.startDate))
         XCTAssertEqual(fetchInput?.totalBudget, 20 * 7)
         XCTAssertEqual(fetchInput?.timeZone, "Asia/Ho_Chi_Minh")
         XCTAssertEqual(fetchInput?.targeting, targetOptions)

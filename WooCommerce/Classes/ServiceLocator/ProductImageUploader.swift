@@ -364,15 +364,17 @@ private extension ProductImageUploader {
             .sink { [weak self] statuses in
                 guard let self = self else { return }
 
-                // Handle errors
-                if let failureStatus = statuses.first(where: { $0.isUploadFailure }),
-                   let error = failureStatus.error {
-                    let errorInfo = ProductImageUploadErrorInfo(
-                        siteID: failureStatus.siteID,
-                        productOrVariationID: failureStatus.productOrVariationID,
-                        error: .failedUploadingImage(asset: failureStatus.asset!, error: error)
-                    )
-                    self.errorsSubject.send(errorInfo)
+                // Handle all the errors
+                let failureStatuses = statuses.filter({ $0.isUploadFailure })
+                for failureStatus in failureStatuses {
+                    if let error = failureStatus.error, let asset = failureStatus.asset {
+                        let errorInfo = ProductImageUploadErrorInfo(
+                            siteID: failureStatus.siteID,
+                            productOrVariationID: failureStatus.productOrVariationID,
+                            error: .failedUploadingImage(asset: asset, error: error)
+                        )
+                        self.errorsSubject.send(errorInfo)
+                    }
                 }
             }
             .store(in: &cancellables)

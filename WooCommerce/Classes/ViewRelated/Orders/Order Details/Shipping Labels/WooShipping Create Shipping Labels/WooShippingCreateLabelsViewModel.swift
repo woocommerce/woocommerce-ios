@@ -244,7 +244,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            if originAddresses.addresses.isEmpty {
+            if originAddresses.addresses.isEmpty || originAddress.isEmpty {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }

@@ -244,7 +244,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            if originAddresses.addresses.isEmpty && originAddress.isEmpty {
+            if originAddress.isEmpty {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }
@@ -252,7 +252,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
 
         if isMissingStoreSettings ||
-            originAddresses.addresses.isEmpty {
+            originAddress.isEmpty {
             state = .missingRequiredData
         } else {
             state = .ready

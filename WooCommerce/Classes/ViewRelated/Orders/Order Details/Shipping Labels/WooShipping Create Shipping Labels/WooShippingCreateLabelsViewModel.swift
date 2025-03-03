@@ -2,10 +2,18 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
+import struct Networking.WooShippingAccountSettings
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
+    enum ContentState {
+        case loading
+        case ready
+        case missingRequiredData
+    }
+
+    private let shippingSettingsService: ShippingSettingsService
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationAddress: WooShippingAddress?
@@ -15,6 +23,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var debounceDuration: Double = 1
 
     let order: Order
+
+    @Published private(set) var state = ContentState.loading
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -113,6 +123,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return currencyFormatter.formatAmount(Decimal(amount))
     }
 
+    private var isMissingStoreSettings: Bool {
+        weightUnit.isEmpty && dimensionsUnit.isEmpty
+    }
+
     /// Whether to mark the order as complete after the label is purchased.
     @Published var markOrderComplete: Bool = false
 
@@ -128,10 +142,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var isPurchasingLabel: Bool = false
 
     /// Unit to use for weight measurements.
-    @Published var weightUnit: String = ServiceLocator.shippingSettingsService.weightUnit ?? ""
+    @Published var weightUnit = ""
 
     /// Unit to use for dimensions measurements.
-    @Published var dimensionsUnit: String = ServiceLocator.shippingSettingsService.dimensionUnit ?? ""
+    @Published var dimensionsUnit = ""
 
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
@@ -163,6 +177,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          selectedPackage: WooShippingPackageDataRepresentable? = nil,
          selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          userDefaults: UserDefaults = .standard,
          stores: StoresManager = ServiceLocator.stores,
          itemsDataSource: WooShippingItemsDataSource? = nil,
@@ -182,25 +197,29 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.selectedRate = selectedRate
         self.stores = stores
         self.debounceDuration = debounceDuration
+        self.shippingSettingsService = shippingSettingsService
 
         loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddressStatus()
         observeSelectedPackage()
         observeForLabelRates()
-        loadStoreOptions()
         loadPackages()
-        loadOriginAddresses()
+        Task {
+            await loadRequiredData()
+        }
     }
 
     /// Initialize the view model from an existing shipping label.
     init(order: Order,
          shippingLabel: ShippingLabel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.shippingLabel = shippingLabel
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.shippingSettingsService = shippingSettingsService
         self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
@@ -210,6 +229,34 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
+        Task {
+            await loadRequiredData()
+        }
+    }
+
+    @MainActor
+    func loadRequiredData() async {
+        state = .loading
+        await withTaskGroup(of: Void.self) { group in
+            if isMissingStoreSettings {
+                group.addTask {
+                    await self.loadStoreOptions()
+                }
+            }
+
+            if originAddress.isEmpty {
+                group.addTask {
+                    await self.loadOriginAddresses()
+                }
+            }
+        }
+
+        if isMissingStoreSettings ||
+            originAddress.isEmpty {
+            state = .missingRequiredData
+        } else {
+            state = .ready
+        }
     }
 
     /// Handles package selection for the shipping label.
@@ -249,23 +296,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
-    /// Updates store options (weight and dimensions units) with remote settings.
-    func loadStoreOptions() {
-        guard let siteID = stores.sessionManager.defaultStoreID else { return }
-
-        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                guard let self else { return }
-                weightUnit = settings.storeOptions.weightUnit
-                dimensionsUnit = settings.storeOptions.dimensionUnit
-            case .failure(let error):
-                DDLogError("⛔️ Error loading account settings: \(error)")
-            }
-        }
-        stores.dispatch(action)
-    }
-
     func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
         customsForm = form
     }
@@ -293,6 +323,26 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
 // MARK: Remote
 private extension WooShippingCreateLabelsViewModel {
+
+    /// Updates store options (weight and dimensions units) with remote settings or fall back to cache results if failed.
+    @MainActor
+    func loadStoreOptions() async {
+        let settings: WooShippingAccountSettings? = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadAccountSettings(siteID: order.siteID) { result in
+                switch result {
+                case .success(let settings):
+                    continuation.resume(returning: settings)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading account settings: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+        weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
+        dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+    }
+
     /// Syncs packages to use for shipping label from remote.
     ///
     func loadPackages() {
@@ -306,22 +356,26 @@ private extension WooShippingCreateLabelsViewModel {
 
     /// Syncs origin addresses to use for shipping label from remote.
     ///
-    func loadOriginAddresses() {
-        let action = WooShippingAction.loadOriginAddresses(siteID: order.siteID) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let addresses):
-                selectedOriginAddress = addresses.first(where: \.defaultAddress)
-                originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
-                                                                        selectedAddressID: selectedOriginAddress?.id)
-                originAddresses.onSelect = { [weak self] selectedAddress in
-                    self?.selectedOriginAddress = selectedAddress
+    @MainActor
+    func loadOriginAddresses() async {
+        let addresses = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadOriginAddresses(siteID: order.siteID) { result in
+                switch result {
+                case .success(let addresses):
+                    continuation.resume(returning: addresses)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
+                    continuation.resume(returning: [])
                 }
-            case .failure(let error):
-                DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
             }
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
+        selectedOriginAddress = addresses.first(where: \.defaultAddress)
+        originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                selectedAddressID: selectedOriginAddress?.id)
+        originAddresses.onSelect = { [weak self] selectedAddress in
+            self?.selectedOriginAddress = selectedAddress
+        }
     }
 
     /// Loads destination address of the order from remote.

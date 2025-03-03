@@ -90,16 +90,11 @@ protocol ProductImageUploaderProtocol {
 /// Supports background image upload and product images update after the user leaves the product form.
 final class ProductImageUploader: ProductImageUploaderProtocol {
 
-    let userDefaultsStatuses: ProductImageStatusStorage?
+    let userDefaultsStatuses: ProductImageStatusStorage
 
     var errors: AnyPublisher<ProductImageUploadErrorInfo, Never> {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            let upstream = userDefaultsStatuses?.errorsPublisher
-                ?? Empty<[(siteID: Int64,
-                           productOrVariationID: ProductOrVariationID?,
-                           assetType: ProductImageAssetType?,
-                           error: Error)], Never>().eraseToAnyPublisher()
-            return upstream
+            return userDefaultsStatuses.errorsPublisher
                 .flatMap { errorItems in
                     errorItems.publisher
                         .compactMap { errorItem in
@@ -120,7 +115,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     var activeUploads: AnyPublisher<[ProductImageUploaderKey], Never> {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            return userDefaultsStatuses?.statusesPublisher
+            return userDefaultsStatuses.statusesPublisher
                 .map { statuses in
                     statuses.compactMap { status -> ProductImageUploaderKey? in
                         if status.isUploading {
@@ -131,7 +126,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                         return nil
                     }
                 }
-                .eraseToAnyPublisher() ?? Empty().eraseToAnyPublisher()
+                .eraseToAnyPublisher()
         } else {
             return $activeUploadsPublisher.eraseToAnyPublisher()
         }
@@ -161,12 +156,10 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.imagesProductIDUpdater = imagesProductIDUpdater
+        self.userDefaultsStatuses = ProductImageStatusStorage()
 
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            self.userDefaultsStatuses = ProductImageStatusStorage()
             observeStatuses()
-        } else {
-            self.userDefaultsStatuses = nil
         }
 
         // Observe when the app enters background.
@@ -226,8 +219,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            if let statuses = userDefaultsStatuses?.getAllStatuses(for: key.siteID, productID: key.productOrVariationID),
-               statuses.contains(where: { $0.isUploading }) {
+            let statuses = userDefaultsStatuses.getAllStatuses(for: key.siteID, productID: key.productOrVariationID)
+            if statuses.contains(where: { $0.isUploading }) {
                 let notice = Notice(title: Localization.backgroundUploadNoticeTitle)
                 noticePresenter.enqueue(notice: notice)
             }
@@ -312,7 +305,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private func scheduleUploadInProgressNotificationIfNeeded() {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            userDefaultsStatuses?.statusesPublisher
+            userDefaultsStatuses.statusesPublisher
                 .map { statuses in
                     statuses.filter { $0.isUploading }
                 }
@@ -360,7 +353,7 @@ private extension ProductImageUploader {
     }
 
     private func observeStatuses() {
-        userDefaultsStatuses?.statusesPublisher
+        userDefaultsStatuses.statusesPublisher
             .sink { [weak self] statuses in
                 guard let self = self else { return }
 
@@ -386,7 +379,7 @@ private extension ProductImageUploader {
 
             if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                 // Update the states in userDefaultsStatuses
-                self.userDefaultsStatuses?.appendStatuses(productImageStatuses, for: key.siteID, productID: key.productOrVariationID)
+                self.userDefaultsStatuses.appendStatuses(productImageStatuses, for: key.siteID, productID: key.productOrVariationID)
             }
             else {
                 if !activeUploadsPublisher.contains(key), productImageStatuses.hasPendingUpload {
@@ -415,7 +408,7 @@ private extension ProductImageUploader {
                                                                             error: error,
                                                                             siteID: key.siteID,
                                                                             productID: key.productOrVariationID)
-                        self.userDefaultsStatuses?.updateStatus(failedStatus)
+                        self.userDefaultsStatuses.updateStatus(failedStatus)
                     } else {
                         errorsSubject.send(infoError)
                     }
@@ -427,7 +420,7 @@ private extension ProductImageUploader {
 
     func removeProductFromActiveUploads(key: Key) {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            userDefaultsStatuses?.removeStatus(where: { status in
+            userDefaultsStatuses.removeStatus(where: { status in
                 status.siteID == key.siteID &&
                 status.productOrVariationID == key.productOrVariationID &&
                 status.isUploading

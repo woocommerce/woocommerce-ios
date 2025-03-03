@@ -186,8 +186,9 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
     func test_retryFetchingImpressions_requests_fetching_impression_with_latest_settings() async throws {
         // Given
         var fetchInput: BlazeForecastedImpressionsInput?
-        let expectedStartDate = Date(timeIntervalSinceNow: 86400) // Next day
         let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Ho_Chi_Minh"))
+        let calendar = Calendar(identifier: .gregorian, timeZone: timeZone)
+        let expectedStartDate = try XCTUnwrap(calendar.date(byAdding: .init(day: 1), to: .now))
         let targetOptions = BlazeTargetOptions(locations: [11, 22], languages: ["en", "vi"], devices: nil, pageTopics: ["Entertainment"])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,

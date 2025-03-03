@@ -862,7 +862,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(mockImageUploader.resetWasCalled, "Reset should be called")
     }
 
-    func test_replaceLocalID_updates_storage_when_flag_enabled() {
+    func test_replaceLocalID_is_called_when_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
         let mockImageUploader = MockProductImageUploader()

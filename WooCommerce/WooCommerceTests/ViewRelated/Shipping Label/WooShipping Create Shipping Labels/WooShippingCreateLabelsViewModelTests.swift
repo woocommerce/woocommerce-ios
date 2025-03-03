@@ -118,8 +118,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_state_is_ready_when_loading_required_data_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let error = NetworkError.notFound(response: nil)
-        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+        let originAddress = WooShippingOriginAddress(id: "default_address",
+                                               company: "HEADQUARTERS",
+                                               address1: "15 ALGONKIN ST",
+                                               address2: "STE 100",
+                                               city: "TICONDEROGA",
+                                               state: "NY",
+                                               postcode: "12883-1487",
+                                               country: "US",
+                                               phone: "223-456-7890",
+                                               firstName: "JANE",
+                                               lastName: "DOE",
+                                               email: "TEST@EXAMPLE.COM",
+                                               defaultAddress: true,
+                                               isVerified: false)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -141,7 +153,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.state != .loading
+            viewModel.state != .loading && viewModel.originAddress.isNotEmpty
         }
         XCTAssertEqual(viewModel.state, .ready)
         XCTAssertEqual(viewModel.dimensionsUnit, settings.storeOptions.dimensionUnit)
@@ -305,7 +317,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.originAddresses.addresses.count > 0
+            viewModel.originAddress.isNotEmpty
         }
         XCTAssertEqual("123 Main Street, San Francisco CA 12345, US", viewModel.originAddress)
     }
@@ -512,6 +524,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             switch action {
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -542,6 +558,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(ShippingLabel.fake()))
             case let .loadLabelRates(_, _, _, _, _, completion):
                 completion(.success([]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+                break
             default:
                 XCTFail("Unexpected action: \(action)")
             }

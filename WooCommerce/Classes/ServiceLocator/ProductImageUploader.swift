@@ -405,15 +405,14 @@ private extension ProductImageUploader {
                                                             productOrVariationID: key.productOrVariationID,
                                                             error: .failedUploadingImage(asset: asset, error: error))
                 if statusUpdatesExcludedProductKeys.contains(key) == false {
-                    if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-                        let failedStatus = ProductImageStatus.uploadFailure(asset: asset,
-                                                                            error: error,
-                                                                            siteID: key.siteID,
-                                                                            productID: key.productOrVariationID)
-                        self.imageStatusStorage.updateStatus(failedStatus)
-                    } else {
+                    if !self.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
+                        // Only send the error directly if `backgroundProductImageUpload` feature flag is disabled
+                        // Otherwise, if backgroundProductImageUpload if enabled, the error will be handled through the storage in observeStatuses()
                         errorsSubject.send(infoError)
                     }
+                    // To keep in mind
+                    // Do not update storage here as the action handler will update its status
+                    // which will trigger `observeStatusUpdates` to do the storage update
                 }
             }
         }

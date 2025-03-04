@@ -189,10 +189,6 @@ public enum FeatureFlag: Int {
     ///
     case productGlobalUniqueIdentifierSupport
 
-    /// Adds support for  sending receipts after the payment for POS
-    ///
-    case sendReceiptsForPointOfSale
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker

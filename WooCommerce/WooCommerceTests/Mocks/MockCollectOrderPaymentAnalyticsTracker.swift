@@ -15,7 +15,7 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
 
     var didCallTrackSuccessfulPayment = false
     var spyTrackSuccessfulPaymentCapturedPaymentData: CardPresentCapturedPaymentData? = nil
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         didCallTrackSuccessfulPayment = true
         spyTrackSuccessfulPaymentCapturedPaymentData = capturedPaymentData
     }
@@ -51,10 +51,6 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
     }
 
     func trackReceiptPrintFailed(error: Error) {
-        // no-op
-    }
-
-    func trackCustomerInteractionStarted() {
         // no-op
     }
 }

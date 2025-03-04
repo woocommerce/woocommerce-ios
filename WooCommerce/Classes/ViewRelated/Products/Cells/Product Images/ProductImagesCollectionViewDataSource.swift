@@ -51,16 +51,16 @@ private extension ProductImagesCollectionViewDataSource {
 
     func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
-        case .remote(let image):
+        case .remote(let image, _, _):
             configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
-        case .uploading(let asset):
+        case .uploading(let asset, _, _):
             switch asset {
                 case .phAsset(let asset):
                     configureUploadingImageCell(cell, asset: asset)
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
-        case let .uploadFailure(asset, _):
+        case let .uploadFailure(asset, _, _, _):
             switch asset {
                 case .phAsset(let asset):
                     configureFailedImageCell(cell, asset: asset)

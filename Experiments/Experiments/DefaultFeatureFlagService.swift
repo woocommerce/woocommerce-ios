@@ -84,10 +84,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .blazeCampaignObjective:
             return true
         case .favoriteProducts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productGlobalUniqueIdentifierSupport:
             return true
-        case .sendReceiptsForPointOfSale:
+        case .productGlobalUniqueIdentifierSupport:
             return true
         case .hideSitesInStorePicker:
             return true

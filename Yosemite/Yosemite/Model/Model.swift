@@ -195,6 +195,9 @@ public typealias WooShippingPackagePurchase = Networking.WooShippingPackagePurch
 public typealias WooShippingPredefinedSavedOption = Networking.WooShippingPredefinedSavedOption
 public typealias WooShippingOriginAddress = Networking.WooShippingOriginAddress
 public typealias WooShippingOriginAddressUpdate = Networking.WooShippingOriginAddressUpdate
+public typealias WooShippingVerifyDestinationAddressSuccess = Networking.WooShippingVerifyDestinationAddressSuccess
+public typealias WooShippingDestinationAddress = Networking.WooShippingDestinationAddress
+public typealias WooShippingDestinationAddressUpdate = Networking.WooShippingDestinationAddressUpdate
 public typealias WPComPlan = Networking.WPComPlan
 public typealias WPComSitePlan = Networking.WPComSitePlan
 public typealias LoadSiteCurrentPlanError = Networking.LoadSiteCurrentPlanError
@@ -241,6 +244,9 @@ public typealias WCAnalyticsStatsTotals = Networking.WCAnalyticsStatsTotals
 public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
 public typealias MetaData = Networking.MetaData
+public typealias ProductImageStatus = Networking.ProductImageStatus
+public typealias ProductImageAssetType = Networking.ProductImageAssetType
+public typealias ProductOrVariationID = Networking.ProductOrVariationID
 
 // MARK: - Exported Storage Symbols
 

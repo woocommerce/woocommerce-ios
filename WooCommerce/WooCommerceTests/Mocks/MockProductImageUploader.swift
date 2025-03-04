@@ -15,6 +15,7 @@ final class MockProductImageUploader {
     var startEmittingErrorsWasCalled = false
     var stopEmittingErrorsWasCalled = false
     var resetWasCalled = false
+    var sendBackgroundUploadNoticeIfNeededWasCalled = false
 
     private var onProductSaveResult: Result<[ProductImage], Error>?
     private var hasUnsavedChangesOnImages = false
@@ -64,7 +65,6 @@ extension MockProductImageUploader: ProductImageUploaderProtocol {
     }
 
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
-        // no-op
     }
 
     func reset() {

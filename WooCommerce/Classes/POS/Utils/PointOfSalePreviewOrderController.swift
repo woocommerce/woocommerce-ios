@@ -12,8 +12,9 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
         OrderFactory.newOrder(currency: .USD)
     )
 
-    func syncOrder(for cartProducts: [CartItem],
-                   retryHandler: @escaping () async -> Void) async { }
+    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
+        return .success(.newOrder)
+    }
 
     func sendReceipt(recipientEmail: String) async throws { }
 

@@ -48,7 +48,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
 
             VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
                 Text(title)
-                    .font(.posHeading)
+                    .font(.posHeadingBold)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -61,7 +61,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(.posOnSurfaceVariantHighest)
+                        .foregroundColor(.posOnSurface)
                 }
             }
 
@@ -85,7 +85,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }
-            .disabled(configuration.state == .disabled)
+            .disabled(configuration.state == .disabled || configuration.state == .shimmering)
             .if(configuration.state == .shimmering) { view in
                 view.shimmering()
             }
@@ -95,9 +95,10 @@ struct POSPageHeaderView<TrailingContent: View>: View {
 
 private enum Constants {
     static let backButtonIcon = "chevron.backward"
+    /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
     static let backButtonHorizontalPadding: CGFloat = 12
-    static let horizontalSpacing: CGFloat = 16
-    static let titleSubtitleSpacing: CGFloat = 4
+    static let horizontalSpacing: CGFloat = POSSpacing.medium
+    static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
 
 #Preview {

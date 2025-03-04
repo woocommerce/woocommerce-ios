@@ -19,7 +19,6 @@ struct TotalsView: View {
     }
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         HStack {
@@ -33,13 +32,9 @@ struct TotalsView: View {
                         if isShowingPaymentView {
                             paymentView
                                 .font(.title)
-                                .padding([.leading, .trailing],
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.sidePadding)
-                                .padding(.bottom,
-                                         dynamicTypeSize.isAccessibilitySize ? nil :
-                                            cardReaderViewLayout.bottomPadding)
-                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
+                                .if(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState)) {
+                                    $0.paymentViewPadding(layout: cardReaderViewLayout)
+                                }
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor)
@@ -60,6 +55,7 @@ struct TotalsView: View {
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
 
                     Spacer()
+                        .renderedIf(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState))
 
                     Button(action: {
                         Task { @MainActor in
@@ -75,7 +71,8 @@ struct TotalsView: View {
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
                     .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
-                                                                              paymentState: posModel.paymentState))
+                                                                              paymentState: posModel.paymentState,
+                                                                              cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
             case .error(let viewModel):
@@ -95,8 +92,6 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         switch posModel.paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess):
-            .posSurfaceContainerLowest
         case .card(.processingPayment):
             .posPrimary
         case .cash(.collectingCash):
@@ -231,10 +226,15 @@ private extension TotalsView {
                     posModel.connectCardReader()
                 }
             } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                HStack(alignment: .center) {
-                    Spacer()
+                switch inlinePaymentMessage {
+                case .paymentSuccess:
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                    Spacer()
+                default:
+                    HStack(alignment: .center) {
+                        Spacer()
+                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                        Spacer()
+                    }
                 }
             }
         case .cash(let cashPaymentState):
@@ -246,14 +246,10 @@ private extension TotalsView {
                 }
             case .paymentSuccess:
                 if case .loaded(let total) = posModel.orderState {
-                    HStack(alignment: .center) {
-                        Spacer()
-                        PointOfSaleCardPresentPaymentInLineMessage(
-                            messageType: .paymentSuccess(
-                                viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                                 paymentMethod: .cash)))
-                        Spacer()
-                    }
+                    PointOfSaleCardPresentPaymentInLineMessage(
+                        messageType: .paymentSuccess(
+                            viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                             paymentMethod: .cash)))
                 }
             }
         }
@@ -266,18 +262,25 @@ private extension TotalsView {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
-        let sidePadding: CGFloat = 8
+        let sidePadding: CGFloat
+
+        init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
+            self.backgroundColor = backgroundColor
+            self.topPadding = topPadding
+            self.bottomPadding = bottomPadding
+            self.sidePadding = sidePadding
+        }
 
         static let primary = PaymentViewLayout(
             backgroundColor: .clear,
             topPadding: nil,
-            bottomPadding: 8
+            bottomPadding: POSPadding.small
         )
 
         static let outlined = PaymentViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
-            topPadding: 40,
-            bottomPadding: 40
+            topPadding: POSPadding.xxLarge,
+            bottomPadding: POSPadding.xxLarge
         )
 
         static let topAligned = PaymentViewLayout(
@@ -321,12 +324,16 @@ private extension TotalsView {
                 return .outlined
             case .paymentError:
                 return .topAligned
+            case .cardPaymentSuccessful:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .idle,
                     .acceptingCard,
                     .validatingOrder,
                     .preparingReader,
-                    .processingPayment,
-                    .cardPaymentSuccessful:
+                    .processingPayment:
                 if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
                                                                     paymentState: cardPaymentState) {
                     return .outlined
@@ -334,11 +341,44 @@ private extension TotalsView {
                     return .primary
                 }
             }
-        case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: nil,
-                                     bottomPadding: nil)
+        case .cash(let cashPaymentState):
+            switch cashPaymentState {
+            case .collectingCash:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: nil,
+                                         sidePadding: POSPadding.none)
+            case .paymentSuccess:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
+            }
         }
+    }
+}
+
+@available(iOS 17.0, *)
+extension TotalsView {
+    fileprivate struct PaymentViewPaddingModifier: ViewModifier {
+        @Environment(\.dynamicTypeSize) var dynamicTypeSize
+        let layout: PaymentViewLayout
+
+        func body(content: Content) -> some View {
+            content.padding(
+                [.leading, .trailing],
+                dynamicTypeSize.isAccessibilitySize ? nil : layout.sidePadding
+            )
+            .padding(.bottom, dynamicTypeSize.isAccessibilitySize ? nil : layout.bottomPadding)
+            .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : layout.topPadding)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+fileprivate extension View {
+    func paymentViewPadding(layout: TotalsView.PaymentViewLayout) -> some View {
+        modifier(TotalsView.PaymentViewPaddingModifier(layout: layout))
     }
 }
 
@@ -346,18 +386,22 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let verticalSpacing: CGFloat = 56
-        static let buttonHorizontalPadding: CGFloat = 48
-        static let cashButtonBottomPadding: CGFloat = 24
+        static let buttonHorizontalPadding: CGFloat = POSPadding.medium
+        static let cashButtonBottomPadding: CGFloat = POSPadding.medium
 
-        static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
-        static let subtotalsVerticalSpacing: CGFloat = 8
-        static let totalVerticalSpacing: CGFloat = 16
-        static let totalsHorizontalSpacing: CGFloat = 24
+        static let totalsLineViewPadding: EdgeInsets = .init(
+            top: POSPadding.medium,
+            leading: POSPadding.large,
+            bottom: POSPadding.medium,
+            trailing: POSPadding.large
+        )
+        static let subtotalsVerticalSpacing: CGFloat = POSSpacing.medium
+        static let totalVerticalSpacing: CGFloat = POSSpacing.medium
+        static let totalsHorizontalSpacing: CGFloat = POSSpacing.large
         static let subtotalTitleFont: POSFontStyle = .posBodyLargeRegular()
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
-        static let totalTitleFont: POSFontStyle = .posHeading
-        static let totalAmountFont: POSFontStyle = .posHeading
+        static let totalTitleFont: POSFontStyle = .posHeadingBold
+        static let totalAmountFont: POSFontStyle = .posHeadingBold
         static let separatorColor: Color = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
@@ -391,23 +435,6 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
-    }
-
-    private func dynamicVerticalSpacing(for size: DynamicTypeSize) -> CGFloat {
-        switch size {
-        case    .accessibility1,
-                .accessibility2,
-                .accessibility3,
-                .accessibility4,
-                .accessibility5:
-            return 0
-        case .xLarge, .xxLarge:
-            return Constants.verticalSpacing * 0.75
-        case .xxxLarge:
-            return Constants.verticalSpacing * 0.5
-        default:
-            return Constants.verticalSpacing
-        }
     }
 }
 

@@ -1,9 +1,9 @@
 import Foundation
 
 enum PointOfSaleReaderConnectionModalLayout {
-    static var contentButtonSpacing: CGFloat = 24
-    static var imageTextSpacing: CGFloat = 24
-    static var textSpacing: CGFloat = 16
-    static var buttonSpacing: CGFloat = 24
-    static var contentPadding: CGFloat = 40
+    static var contentButtonSpacing: CGFloat = POSSpacing.large
+    static var imageTextSpacing: CGFloat = POSSpacing.large
+    static var textSpacing: CGFloat = POSSpacing.medium
+    static var buttonSpacing: CGFloat = POSSpacing.large
+    static var contentPadding: CGFloat = POSPadding.xxLarge
 }

@@ -33,6 +33,11 @@ final class ProductsSplitViewWrapperController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+
+    /// Returns the product form of the given product ID being displayed if available.
+    func currentProductForm(for productID: Int64) -> ProductFormViewController<ProductFormViewModel>? {
+        coordinator.currentProductForm(for: productID)
+    }
 }
 
 private extension ProductsSplitViewWrapperController {

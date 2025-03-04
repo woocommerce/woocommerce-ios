@@ -23,8 +23,8 @@ private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewMode
         )
 
         static let collectPayment =  NSLocalizedString(
-            "pointOfSale.cardPresent.readerNotConnected.button.title",
-            value: "Connect to reader",
+            "pointOfSale.cardPresent.connectReader.button.title",
+            value: "Connect your reader",
             comment: "Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA."
         )
     }

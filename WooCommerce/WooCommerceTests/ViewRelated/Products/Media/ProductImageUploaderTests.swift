@@ -3,25 +3,48 @@ import Combine
 import Photos
 import XCTest
 import Yosemite
+import Networking
 
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
-    private let productID: Int64 = 606
+    private let productID = ProductOrVariationID.product(id: 606)
     private var errorsSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
     private var activeUploadsSubscription: AnyCancellable?
+    private var mockFeatureFlagService: MockFeatureFlagService!
+    private var storage: ProductImageStatusStorage!
+
+    override func setUp() {
+        super.setUp()
+        mockFeatureFlagService = MockFeatureFlagService()
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+        storage = ProductImageStatusStorage(userDefaults: .standard)
+    }
+
+    override func tearDown() {
+        mockFeatureFlagService = nil
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+        storage = nil
+        super.tearDown()
+    }
+
+    // MARK: - Tests with Feature Flag Disabled
 
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()
 
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: .product(id: productID.id),
                                                                           isLocalID: false),
                                                                originalImages: []))
 
@@ -34,16 +57,16 @@ final class ProductImageUploaderTests: XCTestCase {
         }
         XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                         productOrVariationID: .product(id: productID),
+                                                                         productOrVariationID: .product(id: productID.id),
                                                                          isLocalID: false),
                                                               originalImages: []))
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: siteID,
-                                                                                 productOrVariationID: .product(id: productID),
+                                                                                 productOrVariationID: .product(id: productID.id),
                                                                                  isLocalID: false)) { _ in }
 
         // Then
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: .product(id: productID.id),
                                                                           isLocalID: false),
                                                                originalImages: []))
     }
@@ -51,9 +74,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_hasUnsavedChangesOnImages_stays_false_after_uploading_and_saving_successfully() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()
@@ -66,12 +90,12 @@ final class ProductImageUploaderTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let .updateProductImages(_, _, images, onCompletion) = action {
-                onCompletion(.success(.fake().copy(images: images)))
+                onCompletion(.success(.fake().copy(siteID: self.siteID, productID: self.productID.id, images: images)))
             }
         }
 
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: []))
 
@@ -79,17 +103,19 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
-                promise(statuses)
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
             }
         }
         XCTAssertTrue(statuses.hasPendingUpload)
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                         productOrVariationID: .product(id: productID),
+                                                                         productOrVariationID: productID,
                                                                          isLocalID: false),
                                                               originalImages: []))
         let resultOfSavedImages = waitFor { promise in
             imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: self.siteID,
-                                                                                     productOrVariationID: .product(id: self.productID),
+                                                                                     productOrVariationID: self.productID,
                                                                                      isLocalID: false)) { result in
                 promise(result)
             }
@@ -97,7 +123,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: [.fake().copy(imageID: 645)]))
         XCTAssertTrue(resultOfSavedImages.isSuccess)
@@ -108,9 +134,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_when_saving_product_twice_the_latest_images_are_saved() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
         let asset = PHAsset()
@@ -122,7 +149,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: []))
 
@@ -138,13 +165,13 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                         productOrVariationID: .product(id: productID),
+                                                                         productOrVariationID: productID,
                                                                          isLocalID: false), originalImages: []))
 
         // The first save.
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key:
                 .init(siteID: self.siteID,
-                      productOrVariationID: .product(id: self.productID),
+                      productOrVariationID: self.productID,
                       isLocalID: false)) { result in
             XCTFail("The product save callback should not be triggered after another save request.")
         }
@@ -161,7 +188,7 @@ final class ProductImageUploaderTests: XCTestCase {
             // The second save.
             imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key:
                     .init(siteID: self.siteID,
-                          productOrVariationID: .product(id: self.productID),
+                          productOrVariationID: self.productID,
                           isLocalID: false)) { result in
                 promise(result)
             }
@@ -171,7 +198,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
-                                                                          productOrVariationID: .product(id: productID),
+                                                                          productOrVariationID: productID,
                                                                           isLocalID: false),
                                                                originalImages: [.fake().copy(imageID: 606), .fake().copy(imageID: 645)]))
         XCTAssertTrue(resultOfSavedImages.isSuccess)
@@ -181,12 +208,16 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_replaceLocalID_replaces_productID_properly() {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let localProductID: Int64 = 0
-        let remoteProductID = productID
-        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: .phAsset(asset: PHAsset())),
-                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
+        let remoteProductID = productID.id
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(), siteID: siteID, productID: productID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID)]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -214,13 +245,17 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_calling_replaceLocalID_with_nonExistent_localProductID_does_nothing() {
         // Given
-        let imageUploader = ProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 imagesProductIDUpdater: mockProductIDUpdater)
         let localProductID: Int64 = 0
         let nonExistentProductID: Int64 = 999
-        let remoteProductID = productID
-        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: .phAsset(asset: PHAsset())),
-                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
+        let remoteProductID = productID.id
+        let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake(), siteID: siteID, productID: productID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()), siteID: siteID, productID: productID)]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -242,9 +277,10 @@ final class ProductImageUploaderTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let mockProductIDUpdater = MockProductImagesProductIDUpdater()
         let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService,
                                                  imagesProductIDUpdater: mockProductIDUpdater)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
 
@@ -270,7 +306,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: siteID,
-                                                                                 productOrVariationID: .product(id: productID),
+                                                                                 productOrVariationID: productID,
                                                                                  isLocalID: false)) { result in }
 
         // Then
@@ -284,9 +320,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_actionHandler_error_is_emitted_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
@@ -309,7 +346,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         assertEqual([.init(siteID: siteID,
-                           productOrVariationID: .product(id: productID),
+                           productOrVariationID: productID,
                            error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
@@ -317,9 +354,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_savingProductImages_error_is_emitted_when_saving_images_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: false),
                                                         originalStatuses: [])
 
@@ -343,7 +381,7 @@ final class ProductImageUploaderTests: XCTestCase {
             }
         }
         imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: siteID,
-                                                                                 productOrVariationID: .product(id: productID),
+                                                                                 productOrVariationID: productID,
                                                                                  isLocalID: false)) { result in }
         var errors: [ProductImageUploadErrorInfo] = []
         let _: Void = waitFor { promise in
@@ -355,7 +393,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         assertEqual([.init(siteID: siteID,
-                           productOrVariationID: .product(id: productID),
+                           productOrVariationID: productID,
                            error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }
@@ -363,9 +401,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_errors_are_not_emitted_when_image_upload_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
@@ -391,9 +430,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_error_is_emitted_after_stopEmittingErrors_with_a_different_product_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
@@ -420,7 +460,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         assertEqual([.init(siteID: siteID,
-                           productOrVariationID: .product(id: productID),
+                           productOrVariationID: productID,
                            error: .failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
@@ -428,9 +468,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_error_is_not_emitted_after_stopEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
@@ -442,7 +483,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // When
         imageUploader.stopEmittingErrors(key: .init(siteID: siteID,
-                                                    productOrVariationID: .product(id: productID),
+                                                    productOrVariationID: productID,
                                                     isLocalID: true))
 
         var errors: [ProductImageUploadErrorInfo] = []
@@ -459,7 +500,8 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_calling_replaceLocalID_updates_excluded_product_from_status_updates() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let localProductID: Int64 = 0
         let nonExistentProductID: Int64 = 999
         let remoteProductID = productID
@@ -474,7 +516,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                     isLocalID: true))
         imageUploader.replaceLocalID(siteID: siteID,
                                      localID: .product(id: nonExistentProductID),
-                                     remoteID: remoteProductID)
+                                     remoteID: remoteProductID.id)
 
         var errors: [ProductImageUploadErrorInfo] = []
         _ = imageUploader.errors.sink { error in
@@ -497,9 +539,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_error_is_emitted_after_stop_and_startEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
@@ -511,10 +554,10 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // When
         imageUploader.stopEmittingErrors(key: .init(siteID: siteID,
-                                                    productOrVariationID: .product(id: productID),
+                                                    productOrVariationID: productID,
                                                     isLocalID: true))
         imageUploader.startEmittingErrors(key: .init(siteID: siteID,
-                                                     productOrVariationID: .product(id: productID),
+                                                     productOrVariationID: productID,
                                                      isLocalID: true))
 
         var errors: [ProductImageUploadErrorInfo] = []
@@ -529,7 +572,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Then
         assertEqual([.init(siteID: siteID,
-                           productOrVariationID: .product(id: productID),
+                           productOrVariationID: productID,
                            error: ProductImageUploaderError.failedUploadingImage(asset: asset, error: error))],
                     errors)
     }
@@ -539,9 +582,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_image_upload_error_is_not_emitted_after_reset() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let actionHandler = imageUploader.actionHandler(key: .init(siteID: siteID,
-                                                                   productOrVariationID: .product(id: productID),
+                                                                   productOrVariationID: productID,
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
@@ -581,9 +625,10 @@ final class ProductImageUploaderTests: XCTestCase {
 
     func test_product_is_removed_from_activeUploads_when_upload_completes() {
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let key = ProductImageUploaderKey(siteID: siteID,
-                                          productOrVariationID: .product(id: productID),
+                                          productOrVariationID: productID,
                                           isLocalID: false)
         let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
 
@@ -613,12 +658,13 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let key = ProductImageUploaderKey(siteID: siteID,
-                                          productOrVariationID: .product(id: productID),
+                                          productOrVariationID: productID,
                                           isLocalID: false)
         let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
-        let productFormDataModel = EditableProductModel(product: .fake().copy(siteID: siteID, productID: productID, images: []))
+        let productFormDataModel = EditableProductModel(product: .fake().copy(siteID: siteID, productID: productID.id, images: []))
 
         var activeUploads: [ProductImageUploaderKey] = []
         activeUploadsSubscription = imageUploader.activeUploads
@@ -647,9 +693,10 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_background_upload_notice_is_sent_when_there_are_active_uploads() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = ProductImageUploader(stores: stores)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
         let key = ProductImageUploaderKey(siteID: siteID,
-                                          productOrVariationID: .product(id: productID),
+                                          productOrVariationID: productID,
                                           isLocalID: false)
         let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
 
@@ -681,6 +728,265 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
         XCTAssertTrue(isNoticeTriggered)
+    }
+
+    // MARK: - Tests with background image upload feature flag enabled
+
+    func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving_with_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+        let mockImageUploader = MockProductImageUploader()
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                         productOrVariationID: productID,
+                                         isLocalID: false)
+
+        // When
+        mockImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
+        XCTAssertTrue(mockImageUploader.hasUnsavedChangesOnImages(key: key, originalImages: []))
+
+        // Then
+        mockImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: false)
+        XCTAssertFalse(mockImageUploader.hasUnsavedChangesOnImages(key: key, originalImages: [.fake().copy(imageID: 123)]))
+    }
+
+    func test_error_is_published_through_storage_with_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+
+        let asset = ProductImageAssetType.phAsset(asset: PHAsset())
+        let error = NSError(domain: "test", code: 123)
+        let expectedError = ProductImageUploadErrorInfo(
+            siteID: siteID,
+            productOrVariationID: productID,
+            error: .failedUploadingImage(asset: asset, error: error)
+        )
+
+        let errorsSubject = PassthroughSubject<ProductImageUploadErrorInfo, Never>()
+        let mockImageUploader = MockProductImageUploader(errors: errorsSubject.eraseToAnyPublisher())
+
+        var receivedErrors: [ProductImageUploadErrorInfo] = []
+        errorsSubscription = mockImageUploader.errors.sink { error in
+            receivedErrors.append(error)
+        }
+
+        // When - simulate an error in the storage
+        errorsSubject.send(expectedError)
+
+        // Then
+        XCTAssertEqual(receivedErrors.count, 1)
+        XCTAssertEqual(receivedErrors.first?.siteID, siteID)
+        XCTAssertEqual(receivedErrors.first?.productOrVariationID, productID)
+        if case let .failedUploadingImage(receivedAsset, receivedError) = receivedErrors.first?.error {
+            XCTAssertEqual(receivedAsset, asset)
+            XCTAssertEqual((receivedError as NSError).domain, error.domain)
+            XCTAssertEqual((receivedError as NSError).code, error.code)
+        } else {
+            XCTFail("Expected failedUploadingImage error")
+        }
+    }
+
+    func test_activeUploads_are_tracked_through_storage_with_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+
+        _ = CurrentValueSubject<[ProductImageUploaderKey], Never>([])
+        let mockImageUploader = MockProductImageUploader()
+        mockImageUploader.activeUploadsKeys = []
+
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = mockImageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
+
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                         productOrVariationID: productID,
+                                         isLocalID: false)
+
+        // When - simulate an uploading status
+        mockImageUploader.activeUploadsKeys = [key]
+
+        // Then
+        XCTAssertEqual(activeUploads.count, 1)
+        XCTAssertEqual(activeUploads.first?.siteID, key.siteID)
+        XCTAssertEqual(activeUploads.first?.productOrVariationID, key.productOrVariationID)
+        XCTAssertEqual(activeUploads.first?.isLocalID, key.isLocalID)
+
+        // When - simulate completion of upload
+        mockImageUploader.activeUploadsKeys = []
+
+        // Then
+        XCTAssertEqual(activeUploads.count, 0)
+    }
+
+    func test_background_upload_notice_is_sent_when_there_are_active_uploads_with_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
+
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: productID,
+                                          isLocalID: false)
+
+        let noticePresenter = MockNoticePresenter()
+        var isNoticeTriggered = false
+        noticePresenter.onNoticeQueued = { _ in
+            isNoticeTriggered = true
+        }
+
+        // Monitor active uploads
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
+
+        // Verify that there are no uploads at the beginning
+        XCTAssertEqual(storage.getAllStatuses().count, 0, "Storage should be empty at the beginning")
+
+        // When - No active uploads
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+
+        // Then
+        XCTAssertFalse(isNoticeTriggered, "No notice should be triggered when there are no active uploads")
+
+        // Reset the notice flag
+        isNoticeTriggered = false
+
+        // Create an uploading status directly in storage
+        let uploadingStatus = ProductImageStatus.uploading(
+            asset: .uiImage(image: .checkmark, filename: "test", altText: "alt_test"),
+            siteID: siteID,
+            productID: productID
+        )
+        storage.addStatus(uploadingStatus)
+
+        // Wait for the active upload to be registered
+        waitUntil(timeout: 3) {
+            activeUploads.contains(key)
+        }
+
+        // When - With active uploads
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+
+        // Then
+        XCTAssertTrue(isNoticeTriggered, "Notice should be triggered when there are active uploads")
+    }
+
+    func test_reset_clears_storage_state_with_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                featureFlagService: mockFeatureFlagService)
+
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                        productOrVariationID: productID,
+                                        isLocalID: false)
+
+        // Configure the store to keep uploads in progress. Don't call completion to keep it in uploading state.
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case .uploadMedia = action {
+            }
+        }
+
+        // Add a status to storage by uploading an image
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+
+        // Wait for the upload to be registered
+        let uploadStatus = waitFor { promise in
+            actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
+            }
+        }
+
+        // Verify we have a pending upload
+        XCTAssertTrue(uploadStatus.hasPendingUpload)
+
+        // Set up subscription to track active uploads
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
+
+        // Wait for the active upload to be registered
+        waitUntil() {
+            activeUploads.contains { $0 == key }
+        }
+
+        // When
+        imageUploader.reset()
+
+        // Then - Active uploads should be cleared
+        waitUntil(timeout: 3) {
+            activeUploads.isEmpty
+        }
+    }
+
+    func test_replaceLocalID_is_called_when_flag_enabled() {
+        // Given
+        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                               featureFlagService: mockFeatureFlagService)
+
+        let localProductID: Int64 = 0
+        let remoteProductID: Int64 = 606
+        let localID = ProductOrVariationID.product(id: localProductID)
+        let localKey = ProductImageUploaderKey(siteID: siteID,
+                                             productOrVariationID: localID,
+                                             isLocalID: true)
+
+        // Configure the store to keep uploads in progress. Don't call completion to keep it in uploading state.
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case .uploadMedia = action {
+            }
+        }
+
+        // Set up initial conditions with a local product ID
+        let localActionHandler = imageUploader.actionHandler(key: localKey, originalStatuses: [])
+
+        // Upload an image using the local product ID
+        localActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+
+        // Wait for the upload to be registered
+        let uploadStatus = waitFor { promise in
+            localActionHandler.addUpdateObserver(self) { statuses in
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
+            }
+        }
+
+        // Verify we have a pending upload
+        XCTAssertTrue(uploadStatus.hasPendingUpload)
+
+        // When
+        imageUploader.replaceLocalID(siteID: siteID,
+                                   localID: localID,
+                                   remoteID: remoteProductID)
+
+        // Then
+        // The key with the remote product ID should now have active uploads
+        let remoteKey = ProductImageUploaderKey(siteID: siteID,
+                                              productOrVariationID: .product(id: remoteProductID),
+                                              isLocalID: false)
+
+        // Get action handler with the remote key
+        let remoteActionHandler = imageUploader.actionHandler(key: remoteKey, originalStatuses: [])
+
+        // Check if the remote action handler has the pending upload
+        let remoteStatus = waitFor { promise in
+            remoteActionHandler.addUpdateObserver(self) { statuses in
+                promise(statuses)
+            }
+        }
+
+        XCTAssertTrue(remoteStatus.hasPendingUpload,
+                     "The action handler for the remote product ID should have pending uploads")
     }
 }
 

@@ -3,7 +3,8 @@ import SwiftUI
 /// iOS type style definitions for POS
 /// 1qcjzXitBHU7xPnpCOWnNM-fi-23_7310
 enum POSFontStyle {
-    case posHeading
+    case posHeadingBold
+    case posHeadingRegular
     case posBodyXLarge
     case posBodyLargeBold
     case posBodyLargeRegular(underline: Bool = false)
@@ -19,8 +20,10 @@ enum POSFontStyle {
 
     fileprivate func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
-        case .posHeading:
+        case .posHeadingBold:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
+        case .posHeadingRegular:
+            Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .regular)
         case .posBodyXLarge:
             Font.system(
                 size: scaledValue(FontSize.bodyXLarge, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge),
@@ -137,8 +140,10 @@ extension UIContentSizeCategory {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
             Group {
-                Text("Title Emphasized")
-                    .font(.posHeading)
+                Text("Heading Bold")
+                    .font(.posHeadingBold)
+                Text("Heading Regular")
+                    .font(.posHeadingRegular)
                 Text("Body Extra Large")
                     .font(.posBodyXLarge)
                 Text("Body Large Bold")

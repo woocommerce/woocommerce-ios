@@ -22,8 +22,8 @@ final class MockFeatureFlagService: FeatureFlagService {
     var viewEditCustomFieldsInProductsAndOrders: Bool
     var favoriteProducts: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
-    var receiptsForPOS: Bool
     var hideSitesInStorePicker: Bool
+    var backgroundProductImageUpload: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -45,8 +45,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
-         receiptsForPOS: Bool = false,
-         hideSitesInStorePicker: Bool = false) {
+         hideSitesInStorePicker: Bool = false,
+         backgroundProductImageUpload: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -67,8 +67,8 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
-        self.receiptsForPOS = receiptsForPOS
         self.hideSitesInStorePicker = hideSitesInStorePicker
+        self.backgroundProductImageUpload = backgroundProductImageUpload
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -113,10 +113,10 @@ final class MockFeatureFlagService: FeatureFlagService {
             return favoriteProducts
         case .productGlobalUniqueIdentifierSupport:
             return isProductGlobalUniqueIdentifierSupported
-        case .sendReceiptsForPointOfSale:
-            return receiptsForPOS
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
+        case .backgroundProductImageUpload:
+            return backgroundProductImageUpload
         default:
             return false
         }

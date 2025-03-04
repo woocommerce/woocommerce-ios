@@ -29,8 +29,8 @@ private extension PointOfSaleOrderSyncErrorMessageViewModel {
         )
 
         static let actionTitle = NSLocalizedString(
-            "pointOfSale.orderSync.error.retry",
-            value: "Retry",
+            "pointOfSale.orderSync.error.tryAgain",
+            value: "Try again",
             comment: "Button title to retry synchronizing order and calculating order totals"
         )
     }

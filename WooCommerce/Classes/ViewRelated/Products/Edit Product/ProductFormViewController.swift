@@ -261,6 +261,34 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         saveProduct(status: .draft)
     }
 
+    /// Handles the edge case when the user opens the product form of the same product whose background upload fails.
+    /// In this case, we show an alert about the error instead of presenting a modal of the same product.
+    func handleProductUploadError(_ errorInfo: ProductImageUploadErrorInfo) {
+        switch errorInfo.error {
+        case .failedSavingProductAfterImageUpload(let error):
+            displayProductSavingErrorAlert(error: error, onRetry: { [weak self] in
+                self?.retrySavingProductImages()
+            })
+        case .noActionHandlerFound, .noRemoteProductIDFound:
+            displayError(error: .unexpected)
+        case let .failedUploadingImage(asset, error):
+            displayImageUploadErrorAlert(error: error, for: asset)
+        }
+    }
+
+    private func retrySavingProductImages() {
+        let key = ProductImageUploaderKey(siteID: viewModel.productModel.siteID,
+                                          productOrVariationID: .product(id: viewModel.productModel.siteID),
+                                          isLocalID: viewModel.productModel.existsRemotely)
+        productImageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: key, onProductSave: { [weak self] result in
+            if case .failure(let error) = result {
+                self?.handleProductUploadError(.init(siteID: key.siteID,
+                                                     productOrVariationID: key.productOrVariationID,
+                                                     error: .failedSavingProductAfterImageUpload(error: error)))
+            }
+        })
+    }
+
     // MARK: Product preview action handling
 
     @objc private func saveDraftAndDisplayProductPreview() {
@@ -996,7 +1024,9 @@ private extension ProductFormViewController {
 
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
-                    self?.displayError(error: error)
+                    self?.displayProductSavingErrorAlert(error: error, onRetry: {
+                        self?.saveProductRemotely(status: status, onCompletion: onCompletion)
+                    })
                     onCompletion(.failure(error))
                 }
             case .success:
@@ -1060,15 +1090,30 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
+    func displayProductSavingErrorAlert(error: Error, onRetry: @escaping (() -> Void)) {
+        let message: String = {
+            if let updateError = error as? ProductUpdateError,
+                let description = updateError.errorDescription {
+                return description
+            }
+            return error.localizedDescription
+        }()
+        let alert = UIAlertController(title: Localization.ProductSavingError.title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: Localization.ProductSavingError.cancel, style: .cancel, handler: { _ in })
+        alert.addAction(cancel)
+
+        let retry = UIAlertAction(title: Localization.ProductSavingError.retry, style: .default, handler: { _ in
+            onRetry()
+        })
+        alert.addAction(retry)
+
+        present(alert, animated: true, completion: nil)
+    }
+
     func displayWebViewForProductInStore() {
         guard let url = URL(string: product.permalink) else {
-            return
-        }
-
-        let stores = ServiceLocator.stores
-        guard let site = stores.sessionManager.defaultSite,
-            stores.shouldAuthenticateAdminPage(for: site) else {
-            WebviewHelper.launch(url.absoluteString, with: self)
             return
         }
 
@@ -2176,6 +2221,24 @@ private enum Localization {
             "productFormViewController.imageUploadError.retry",
             value: "Retry",
             comment: "Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload."
+        )
+    }
+
+    enum ProductSavingError {
+        static let title = NSLocalizedString(
+            "productFormViewController.productSavingError.title",
+            value: "Product was not saved",
+            comment: "Title of the alert when there is an error saving a product"
+        )
+        static let cancel = NSLocalizedString(
+            "productFormViewController.productSavingError.cancel",
+            value: "Cancel",
+            comment: "Button on the alert when there is an error saving a product. Tapping the button should cancel the saving."
+        )
+        static let retry = NSLocalizedString(
+            "productFormViewController.productSavingError.retry",
+            value: "Retry",
+            comment: "Button on the alert when there is an error saving a product. Tapping the button should retry the saving."
         )
     }
 }

@@ -8,7 +8,7 @@ struct ItemListErrorCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSErrorExclamationMark(size: 48)
+            POSErrorExclamationMark(size: .small)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
 
@@ -35,7 +35,7 @@ struct ItemListErrorCardView: View {
                     .font(Constants.itemTitleFont)
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .frame(maxWidth: Constants.accessoryButtonMaxWidth * scale)
+            .fixedSize(horizontal: true, vertical: false)
             .padding(Constants.accessoryButtonPadding * (1 / scale))
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)

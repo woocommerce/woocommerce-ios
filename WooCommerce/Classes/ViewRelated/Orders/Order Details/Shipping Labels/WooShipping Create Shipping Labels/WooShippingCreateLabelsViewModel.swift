@@ -309,7 +309,24 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     func editSelectedOriginAddress() {
-        // TODO
+        guard let selectedOriginAddress else {
+            return
+        }
+        addressToEdit = WooShippingEditAddressViewModel(address: selectedOriginAddress, onAddressEdited: { [weak self] editedAddress in
+            guard let self, let index = originAddresses.addresses.firstIndex(where: { $0.id == editedAddress.id }) else {
+                return
+            }
+            var addresses = originAddresses.addresses
+            addresses.remove(at: index)
+            addresses.insert(editedAddress, at: index)
+            self.selectedOriginAddress = editedAddress
+            originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                    selectedAddressID: editedAddress.id)
+            originAddresses.onSelect = { [weak self] selectedAddress in
+                self?.selectedOriginAddress = selectedAddress
+            }
+            addressToEdit = nil // Dismisses address edit screen
+        })
     }
 
     /// Sets the `addressToEdit` property for editing the destination address.

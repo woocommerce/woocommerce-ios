@@ -235,13 +235,12 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                                                  uploadID: uploadID,
                                                                  onCompletion: onCompletion)
                 } else {
-                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
-                                                                                  productID: self.productOrVariationID.id,
-                                                                                  mediaAsset: asset,
-                                                                                  altText: nil,
-                                                                                  filename: nil,
-                                                                                  uploadID: uploadID,
-                                                                                  onCompletion: onCompletion)
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: asset,
+                                                     altText: nil,
+                                                     filename: nil,
+                                                     onCompletion: onCompletion)
                 }
                 case .uiImage(let image, let filename, let altText):
                 if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
@@ -253,13 +252,12 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                                                  uploadID: uploadID,
                                                                  onCompletion: onCompletion)
                 } else {
-                    action = MediaAction.uploadMediaInBackground(siteID: self.siteID,
-                                                                                  productID: self.productOrVariationID.id,
-                                                                                  mediaAsset: image,
-                                                                                  altText: altText,
-                                                                                  filename: filename,
-                                                                                  uploadID: uploadID,
-                                                                                  onCompletion: onCompletion)
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: image,
+                                                     altText: altText,
+                                                     filename: filename,
+                                                     onCompletion: onCompletion)
                 }
             }
             self.stores.dispatch(action)

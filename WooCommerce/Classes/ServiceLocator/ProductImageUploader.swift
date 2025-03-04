@@ -299,6 +299,8 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         imageUploadSubscriptions = []
         activeUploadsPublisher = []
 
+        imageStatusStorage.clearAllStatuses()
+
         actionHandlersByProduct = [:]
         imagesSaverByProduct = [:]
     }

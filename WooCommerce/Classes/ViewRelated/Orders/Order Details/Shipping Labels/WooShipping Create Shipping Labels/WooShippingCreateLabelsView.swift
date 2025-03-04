@@ -190,10 +190,18 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
-            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel)
-                .onTapGesture {
-                    // TODO: Start address editing/verification flow if needed (if destination address is unverified).
+
+            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel,
+                                      isVerified: isDestinationAddressVerified,
+                                      onDismiss: {
+                withAnimation {
+                    viewModel.destinationAddressStatusNoticeLabel = nil
                 }
+            }, onTap: {
+                if !isDestinationAddressVerified {
+                    viewModel.editDestinationAddress()
+                }
+            })
         }
     }
 
@@ -363,34 +371,29 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
-    /// View showing a notice about the destination address verification status.
+    /// View showing a notice about an address verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String?) -> some View {
-        if let label = viewModel.destinationAddressStatusNoticeLabel {
+    func addressVerificationNotice(with label: String?,
+                                   isVerified: Bool,
+                                   onDismiss: @escaping () -> Void,
+                                   onTap: @escaping () -> Void) -> some View {
+        if let label {
             HStack(spacing: 8) {
-                Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
+                Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
                 Text(label)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Button {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                } label: {
+                Button(action: onDismiss) {
                     Image(systemName: "xmark")
-                        .renderedIf(!isDestinationAddressVerified)
+                        .renderedIf(!isVerified)
                 }
             }
             .font(.subheadline)
-            .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
+            .foregroundStyle(isVerified ? Layout.green : Layout.red)
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
-            .onTapGesture {
-                if !isDestinationAddressVerified {
-                    viewModel.editDestinationAddress()
-                }
-            }
+            .onTapGesture(perform: onTap)
         }
     }
 }

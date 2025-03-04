@@ -257,25 +257,37 @@ private extension WooShippingCreateLabelsView {
         HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
+
             if viewModel.canViewLabel,
                let addressLines = viewModel.originAddressLines {
                 AddressLinesView(addressLines: addressLines)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                Button {
-                    isOriginAddressListPresented = true
-                } label: {
-                    HStack {
-                        Text(viewModel.originAddress)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Image(systemName: "ellipsis")
-                            .frame(width: Layout.ellipsisWidth)
-                            .bold()
+                VStack(alignment: .leading) {
+                    Button {
+                        isOriginAddressListPresented = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.originAddress)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "ellipsis")
+                                .frame(width: Layout.ellipsisWidth)
+                                .bold()
+                        }
+                    }
+                    .buttonStyle(TextButtonStyle())
+
+                    if viewModel.isOriginAddressUnverified {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.circle")
+                            Text(Localization.AddressVerification.unverified)
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Layout.red)
                     }
                 }
-                .buttonStyle(TextButtonStyle())
             }
         }
         .padding(Layout.bottomSheetPadding)

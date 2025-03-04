@@ -68,6 +68,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Address to ship from (store address).
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
+    /// Whether the origin address is unverified.
+    var isOriginAddressUnverified: Bool {
+        selectedOriginAddress?.isVerified == false
+    }
+
     /// Address to ship from (store address), formatted for display.
     @Published private(set) var originAddress: String = ""
 

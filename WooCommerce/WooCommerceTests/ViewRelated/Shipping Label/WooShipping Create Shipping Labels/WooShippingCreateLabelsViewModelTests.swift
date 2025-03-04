@@ -161,6 +161,105 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddresses.addresses, [originAddress])
     }
 
+    func test_origin_unverified_state_is_correct() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress(id: "default_address",
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+        XCTAssertFalse(viewModel.isOriginAddressUnverified)
+        XCTAssertNil(viewModel.originAddressUnverifiedNoticeLabel)
+
+        // Then
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertTrue(viewModel.isOriginAddressUnverified)
+        XCTAssertNotNil(viewModel.originAddressUnverifiedNoticeLabel)
+    }
+
+    func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress(id: "default_address",
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // When
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        viewModel.editSelectedOriginAddress()
+
+        // Then
+        XCTAssertNotNil(viewModel.addressToEdit)
+        XCTAssertEqual(viewModel.addressToEdit?.company.value, originAddress.company)
+        XCTAssertEqual(viewModel.addressToEdit?.address.value, originAddress.combinedAddress)
+        XCTAssertEqual(viewModel.addressToEdit?.city.value, originAddress.city)
+        XCTAssertEqual(viewModel.addressToEdit?.country.value, originAddress.country)
+        XCTAssertEqual(viewModel.addressToEdit?.phone.value, originAddress.phone)
+        XCTAssertEqual(viewModel.addressToEdit?.name.value, originAddress.fullName)
+        XCTAssertEqual(viewModel.addressToEdit?.email.value, originAddress.email)
+        XCTAssertEqual(viewModel.addressToEdit?.isDefaultAddress, originAddress.defaultAddress)
+    }
+
     func test_customsFormRequired_when_origin_and_destination_in_US_then_returns_false() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",

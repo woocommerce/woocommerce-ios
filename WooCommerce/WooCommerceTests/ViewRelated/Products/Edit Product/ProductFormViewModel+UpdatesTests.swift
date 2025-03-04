@@ -358,7 +358,11 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 }
 
 extension ProductImageActionHandler {
-    convenience init(siteID: Int64, product: ProductFormDataModel) {
-        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
+    convenience init(siteID: Int64, product: ProductFormDataModel, featureFlag: MockFeatureFlagService? = nil) {
+        guard let featureFlagUnwrapped = featureFlag else {
+            self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
+            return
+        }
+        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses, featureFlagService: featureFlagUnwrapped)
     }
 }

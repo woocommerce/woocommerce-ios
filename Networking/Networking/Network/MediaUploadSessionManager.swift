@@ -13,7 +13,6 @@ enum BackgroundUploadError: Error {
     case decodingError
 }
 
-//TODO: cleanup all prints added for debug reason.
 /// Session Manager for media upload in background
 ///
 public final class MediaUploadSessionManager: NSObject {
@@ -69,7 +68,7 @@ public final class MediaUploadSessionManager: NSObject {
                 try? FileManager.default.removeItem(at: tempFileURL)
             }
         } catch {
-            print("failed upload", error)
+            DDLogError("⛔️ MediaUploadSessionManager- Failed image upload while creating temp file: \(error)")
             completion(.failure(error))
         }
     }
@@ -79,7 +78,6 @@ public final class MediaUploadSessionManager: NSObject {
     }
 }
 
-//TODO: cleanup all prints added for debug reason.
 extension MediaUploadSessionManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession,
                            dataTask: URLSessionDataTask,
@@ -95,7 +93,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
                            task: URLSessionTask,
                            didCompleteWithError error: Error?) {
         guard let uploadID = task.taskDescription else {
-            print("urlSession task completed without an upload identifier. Task identifier: \(task.taskIdentifier)")
+            DDLogDebug("MediaUploadSessionManager- task completed without an upload identifier. Task identifier: \(task.taskIdentifier)")
             return
         }
         defer {
@@ -103,48 +101,47 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         }
 
         if let error = error {
-            print("Upload failure for task (\(uploadID)): encountered error: \(error.localizedDescription)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): encountered error: \(error.localizedDescription)")
             notifyCompletion(.failure(error), for: uploadID)
             return
         }
 
         guard let httpResponse = task.response as? HTTPURLResponse else {
-            print("Upload failure for task (\(uploadID)): response is not a valid HTTPURLResponse. Actual response: \(String(describing: task.response))")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): response is not a valid HTTPURLResponse. Actual response: \(String(describing: task.response))")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }
 
         guard let data = taskResponseData[task.taskIdentifier] else {
-            print("Upload failure for task (\(uploadID)): missing response data for task with identifier \(task.taskIdentifier)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): missing response data for task with identifier \(task.taskIdentifier)")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }
 
         if !(200...299).contains(httpResponse.statusCode) {
-            print("Upload failure for task (\(uploadID)): unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }
 
         // Use MediaMapper to parse response
         if let jsonString = String(data: data, encoding: .utf8) {
-            print("Response data for task (\(uploadID)) as JSON: \(jsonString)")
         } else {
-            print("Failed to convert response data to JSON string for task (\(uploadID))")
+            DDLogError("⛔️ MediaUploadSessionManager- Failed to convert response data to JSON string for task (\(uploadID))")
         }
         let mapper = WordPressMediaMapper()
         do {
             let media = try mapper.map(response: data)
             notifyCompletion(.success(media.toMedia()), for: uploadID)
         } catch {
-            print("Upload failure for task (\(uploadID)): error mapping media: \(error.localizedDescription)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): error mapping media: \(error.localizedDescription)")
             notifyCompletion(.failure(error), for: uploadID)
         }
     }
 
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         DispatchQueue.main.async { [weak self] in
-            print("Background URL session did finish events. Invoking completion handler.")
+            DDLogDebug("MediaUploadSessionManager- Background URL session did finish events. Invoking completion handler.")
             self?.backgroundCompletionHandler?()
             self?.backgroundCompletionHandler = nil
         }
@@ -152,7 +149,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
 
     private func notifyCompletion(_ result: Result<Media, Error>, for uploadID: String) {
         DispatchQueue.main.async { [weak self] in
-            print("Notifying completion for task (\(uploadID)) with result: \(result)")
+            DDLogError("⛔️ MediaUploadSessionManager- Notifying completion for task (\(uploadID)) with result: \(result)")
             guard let self = self else { return }
             self.completionHandlers[uploadID]?(result)
             self.completionHandlers.removeValue(forKey: uploadID)

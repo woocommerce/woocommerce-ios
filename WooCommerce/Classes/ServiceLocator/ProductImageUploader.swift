@@ -307,21 +307,17 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private func scheduleUploadInProgressNotificationIfNeeded() {
         if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            imageStatusStorage.statusesPublisher
-                .map { statuses in
-                    statuses.filter { $0.isUploading }
+            let statuses = imageStatusStorage.getAllStatuses()
+            let hasUploadingStatuses = statuses.contains { $0.isUploading }
+
+            if hasUploadingStatuses {
+                let notification = LocalNotification(scenario: .productImageBackgroundUpload)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+                Task {
+                    await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
+                                                                                                                trigger: trigger, remoteFeatureFlag: nil)
                 }
-                .sink { uploadingStatuses in
-                    if !uploadingStatuses.isEmpty {
-                        let notification = LocalNotification(scenario: .productImageBackgroundUpload)
-                        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-                        Task {
-                            await LocalNotificationScheduler(pushNotesManager: ServiceLocator.pushNotesManager).schedule(notification: notification,
-                                                                                                                         trigger: trigger, remoteFeatureFlag: nil)
-                        }
-                    }
-                }
-                .store(in: &cancellables)
+            }
         } else {
             guard !activeUploadsPublisher.isEmpty else { return }
 

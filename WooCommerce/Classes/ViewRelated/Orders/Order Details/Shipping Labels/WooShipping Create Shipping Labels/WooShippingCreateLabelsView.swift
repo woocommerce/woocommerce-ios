@@ -394,6 +394,21 @@ private extension WooShippingCreateLabelsView {
     }
 }
 
+private struct AddressLinesView: View {
+    let addressLines: [String]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(addressLines, id: \.self) { addressLine in
+                Text(addressLine)
+                    .if(addressLine == addressLines.first) { line in
+                        line.bold()
+                    }
+            }
+        }
+    }
+}
+
 // MARK: Store Options
 extension EnvironmentValues {
     @Entry var shippingWeightUnit: String = ServiceLocator.shippingSettingsService.weightUnit ?? ""

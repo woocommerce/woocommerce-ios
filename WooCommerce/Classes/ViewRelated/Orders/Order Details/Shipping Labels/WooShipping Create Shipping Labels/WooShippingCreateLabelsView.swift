@@ -231,20 +231,26 @@ private extension WooShippingCreateLabelsView {
         HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
-            Button {
-                isOriginAddressListPresented = true
-            } label: {
-                HStack {
-                    Text(viewModel.originAddress)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "ellipsis")
-                        .frame(width: Layout.ellipsisWidth)
-                        .bold()
+            if viewModel.canViewLabel,
+               let addressLines = viewModel.originAddressLines {
+                AddressLinesView(addressLines: addressLines)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Button {
+                    isOriginAddressListPresented = true
+                } label: {
+                    HStack {
+                        Text(viewModel.originAddress)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "ellipsis")
+                            .frame(width: Layout.ellipsisWidth)
+                            .bold()
+                    }
                 }
+                .buttonStyle(TextButtonStyle())
             }
-            .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
     }
@@ -256,20 +262,17 @@ private extension WooShippingCreateLabelsView {
                 .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
             VStack(alignment: .leading) {
                 if let addressLines = viewModel.destinationAddressLines {
-                    ForEach(addressLines, id: \.self) { addressLine in
-                        Text(addressLine)
-                            .if(addressLine == addressLines.first) { line in
-                                line.bold()
-                            }
-                    }
+                    AddressLinesView(addressLines: addressLines)
                 }
                 addressVerificationLabel
+                    .renderedIf(!viewModel.canViewLabel)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             PencilEditButton {
                 viewModel.editDestinationAddress()
             }
             .buttonStyle(TextButtonStyle())
+            .renderedIf(!viewModel.canViewLabel)
         }
         .padding(Layout.bottomSheetPadding)
     }
@@ -387,6 +390,21 @@ private extension WooShippingCreateLabelsView {
                 if !isDestinationAddressVerified {
                     viewModel.editDestinationAddress()
                 }
+            }
+        }
+    }
+}
+
+private struct AddressLinesView: View {
+    let addressLines: [String]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(addressLines, id: \.self) { addressLine in
+                Text(addressLine)
+                    .if(addressLine == addressLines.first) { line in
+                        line.bold()
+                    }
             }
         }
     }

@@ -71,6 +71,11 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+            .sheet(isPresented: $isOriginAddressListPresented) {
+                WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
             .sheet(item: $viewModel.addressToEdit) { addressToEdit in
                 NavigationStack {
                     WooShippingEditAddressView(viewModel: addressToEdit)
@@ -161,11 +166,6 @@ private extension WooShippingCreateLabelsView {
             .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
         }
         .ignoresSafeArea(edges: .horizontal)
-        .sheet(isPresented: $isOriginAddressListPresented) {
-            WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
     }
 
     var missingDataState: some View {

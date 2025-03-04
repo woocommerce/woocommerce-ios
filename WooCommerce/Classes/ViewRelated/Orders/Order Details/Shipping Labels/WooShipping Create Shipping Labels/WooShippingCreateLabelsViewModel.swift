@@ -76,6 +76,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         originAddress.components(separatedBy: ", ")
     }
 
+    /// This property can be set to display a notice with the provided label about the origin address status.
+    @Published var originAddressUnverifiedNoticeLabel: String?
+
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
@@ -305,6 +308,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         customsForm = form
     }
 
+    func editSelectedOriginAddress() {
+        // TODO
+    }
+
     /// Sets the `addressToEdit` property for editing the destination address.
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
@@ -429,6 +436,13 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
+                originAddressUnverifiedNoticeLabel = {
+                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                        return Localization.OriginAddressStatus.unverified
+                    }
+                    return nil
+                }()
+
                 shippingService = WooShippingServiceViewModel(order: order,
                                                               originAddress: selectedOriginAddress?.toWooShippingAddress(),
                                                               destinationAddress: destinationAddress,
@@ -542,6 +556,14 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+
+        enum OriginAddressStatus {
+            static let unverified = NSLocalizedString(
+                "wooShipping.createLabels.addressVerification.originUnverified",
+                value: "Origin address unverified",
+                comment: "Notice when a origin address is unverified on the shipping label creation screen"
+            )
+        }
 
         enum DestinationAddressStatus {
             static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",

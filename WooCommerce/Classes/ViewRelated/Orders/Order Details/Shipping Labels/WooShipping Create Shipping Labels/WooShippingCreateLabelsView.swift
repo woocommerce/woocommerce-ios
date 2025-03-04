@@ -191,17 +191,35 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel,
-                                      isVerified: isDestinationAddressVerified,
-                                      onDismiss: {
-                withAnimation {
-                    viewModel.destinationAddressStatusNoticeLabel = nil
-                }
-            }, onTap: {
-                if !isDestinationAddressVerified {
-                    viewModel.editDestinationAddress()
-                }
-            })
+            // Unverified notice for origin address
+            if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                          isVerified: false,
+                                          onDismiss: {
+                    withAnimation {
+                        viewModel.originAddressUnverifiedNoticeLabel = nil
+                    }
+                },
+                                          onTap: {
+                    viewModel.editSelectedOriginAddress()
+                })
+            }
+
+            // Verification notice for destination address
+            if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
+                                          isVerified: isDestinationAddressVerified,
+                                          onDismiss: {
+                    withAnimation {
+                        viewModel.destinationAddressStatusNoticeLabel = nil
+                    }
+                },
+                                          onTap: {
+                    if !isDestinationAddressVerified {
+                        viewModel.editDestinationAddress()
+                    }
+                })
+            }
         }
     }
 
@@ -373,28 +391,26 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing a notice about an address verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String?,
+    func addressVerificationNotice(with label: String,
                                    isVerified: Bool,
                                    onDismiss: @escaping () -> Void,
                                    onTap: @escaping () -> Void) -> some View {
-        if let label {
-            HStack(spacing: 8) {
-                Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
-                Text(label)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .renderedIf(!isVerified)
-                }
+        HStack(spacing: 8) {
+            Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
+            Text(label)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .renderedIf(!isVerified)
             }
-            .font(.subheadline)
-            .foregroundStyle(isVerified ? Layout.green : Layout.red)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
-            .onTapGesture(perform: onTap)
         }
+        .font(.subheadline)
+        .foregroundStyle(isVerified ? Layout.green : Layout.red)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+        .onTapGesture(perform: onTap)
     }
 }
 

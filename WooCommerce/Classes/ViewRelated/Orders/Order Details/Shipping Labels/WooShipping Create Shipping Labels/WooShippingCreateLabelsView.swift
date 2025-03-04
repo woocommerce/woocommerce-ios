@@ -264,12 +264,14 @@ private extension WooShippingCreateLabelsView {
                     }
                 }
                 addressVerificationLabel
+                    .renderedIf(!viewModel.canViewLabel)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             PencilEditButton {
                 viewModel.editDestinationAddress()
             }
             .buttonStyle(TextButtonStyle())
+            .renderedIf(!viewModel.canViewLabel)
         }
         .padding(Layout.bottomSheetPadding)
     }

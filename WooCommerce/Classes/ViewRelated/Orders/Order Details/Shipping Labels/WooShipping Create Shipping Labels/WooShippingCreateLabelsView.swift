@@ -256,12 +256,7 @@ private extension WooShippingCreateLabelsView {
                 .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
             VStack(alignment: .leading) {
                 if let addressLines = viewModel.destinationAddressLines {
-                    ForEach(addressLines, id: \.self) { addressLine in
-                        Text(addressLine)
-                            .if(addressLine == addressLines.first) { line in
-                                line.bold()
-                            }
-                    }
+                    AddressLinesView(addressLines: addressLines)
                 }
                 addressVerificationLabel
                     .renderedIf(!viewModel.canViewLabel)

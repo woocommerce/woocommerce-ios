@@ -68,6 +68,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Address to ship from (store address).
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
+    /// Whether the origin address is unverified.
+    var isOriginAddressUnverified: Bool {
+        selectedOriginAddress?.isVerified == false
+    }
+
     /// Address to ship from (store address), formatted for display.
     @Published private(set) var originAddress: String = ""
 
@@ -75,6 +80,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     var originAddressLines: [String]? {
         originAddress.components(separatedBy: ", ")
     }
+
+    /// This property can be set to display a notice with the provided label about the origin address status.
+    @Published var originAddressUnverifiedNoticeLabel: String?
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
@@ -305,6 +313,27 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         customsForm = form
     }
 
+    func editSelectedOriginAddress() {
+        guard let selectedOriginAddress else {
+            return
+        }
+        addressToEdit = WooShippingEditAddressViewModel(address: selectedOriginAddress, onAddressEdited: { [weak self] editedAddress in
+            guard let self, let index = originAddresses.addresses.firstIndex(where: { $0.id == editedAddress.id }) else {
+                return
+            }
+            var addresses = originAddresses.addresses
+            addresses.remove(at: index)
+            addresses.insert(editedAddress, at: index)
+            self.selectedOriginAddress = editedAddress
+            originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                    selectedAddressID: editedAddress.id)
+            originAddresses.onSelect = { [weak self] selectedAddress in
+                self?.selectedOriginAddress = selectedAddress
+            }
+            addressToEdit = nil // Dismisses address edit screen
+        })
+    }
+
     /// Sets the `addressToEdit` property for editing the destination address.
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
@@ -429,6 +458,13 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
+                originAddressUnverifiedNoticeLabel = {
+                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                        return Localization.OriginAddressStatus.unverified
+                    }
+                    return nil
+                }()
+
                 shippingService = WooShippingServiceViewModel(order: order,
                                                               originAddress: selectedOriginAddress?.toWooShippingAddress(),
                                                               destinationAddress: destinationAddress,
@@ -542,6 +578,14 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+
+        enum OriginAddressStatus {
+            static let unverified = NSLocalizedString(
+                "wooShipping.createLabels.addressVerification.originUnverified",
+                value: "Origin address unverified",
+                comment: "Notice when a origin address is unverified on the shipping label creation screen"
+            )
+        }
 
         enum DestinationAddressStatus {
             static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",

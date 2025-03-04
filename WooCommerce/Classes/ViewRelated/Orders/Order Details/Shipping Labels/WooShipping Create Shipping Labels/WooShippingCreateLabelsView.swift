@@ -71,6 +71,11 @@ struct WooShippingCreateLabelsView: View {
                     }
                 }
             }
+            .sheet(isPresented: $isOriginAddressListPresented) {
+                WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
             .sheet(item: $viewModel.addressToEdit) { addressToEdit in
                 NavigationStack {
                     WooShippingEditAddressView(viewModel: addressToEdit)
@@ -161,11 +166,6 @@ private extension WooShippingCreateLabelsView {
             .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
         }
         .ignoresSafeArea(edges: .horizontal)
-        .sheet(isPresented: $isOriginAddressListPresented) {
-            WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
     }
 
     var missingDataState: some View {
@@ -190,10 +190,36 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
-            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel)
-                .onTapGesture {
-                    // TODO: Start address editing/verification flow if needed (if destination address is unverified).
-                }
+
+            // Unverified notice for origin address
+            if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                          isVerified: false,
+                                          onDismiss: {
+                    withAnimation {
+                        viewModel.originAddressUnverifiedNoticeLabel = nil
+                    }
+                },
+                                          onTap: {
+                    viewModel.editSelectedOriginAddress()
+                })
+            }
+
+            // Verification notice for destination address
+            if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
+                                          isVerified: isDestinationAddressVerified,
+                                          onDismiss: {
+                    withAnimation {
+                        viewModel.destinationAddressStatusNoticeLabel = nil
+                    }
+                },
+                                          onTap: {
+                    if !isDestinationAddressVerified {
+                        viewModel.editDestinationAddress()
+                    }
+                })
+            }
         }
     }
 
@@ -231,25 +257,37 @@ private extension WooShippingCreateLabelsView {
         HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
+
             if viewModel.canViewLabel,
                let addressLines = viewModel.originAddressLines {
                 AddressLinesView(addressLines: addressLines)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                Button {
-                    isOriginAddressListPresented = true
-                } label: {
-                    HStack {
-                        Text(viewModel.originAddress)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Image(systemName: "ellipsis")
-                            .frame(width: Layout.ellipsisWidth)
-                            .bold()
+                VStack(alignment: .leading) {
+                    Button {
+                        isOriginAddressListPresented = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.originAddress)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "ellipsis")
+                                .frame(width: Layout.ellipsisWidth)
+                                .bold()
+                        }
+                    }
+                    .buttonStyle(TextButtonStyle())
+
+                    if viewModel.isOriginAddressUnverified {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.circle")
+                            Text(Localization.AddressVerification.unverified)
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Layout.red)
                     }
                 }
-                .buttonStyle(TextButtonStyle())
             }
         }
         .padding(Layout.bottomSheetPadding)
@@ -363,35 +401,28 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
-    /// View showing a notice about the destination address verification status.
+    /// View showing a notice about an address verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String?) -> some View {
-        if let label = viewModel.destinationAddressStatusNoticeLabel {
-            HStack(spacing: 8) {
-                Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
-                Text(label)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Button {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                } label: {
-                    Image(systemName: "xmark")
-                        .renderedIf(!isDestinationAddressVerified)
-                }
-            }
-            .font(.subheadline)
-            .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
-            .onTapGesture {
-                if !isDestinationAddressVerified {
-                    viewModel.editDestinationAddress()
-                }
+    func addressVerificationNotice(with label: String,
+                                   isVerified: Bool,
+                                   onDismiss: @escaping () -> Void,
+                                   onTap: @escaping () -> Void) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
+            Text(label)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .renderedIf(!isVerified)
             }
         }
+        .font(.subheadline)
+        .foregroundStyle(isVerified ? Layout.green : Layout.red)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+        .onTapGesture(perform: onTap)
     }
 }
 

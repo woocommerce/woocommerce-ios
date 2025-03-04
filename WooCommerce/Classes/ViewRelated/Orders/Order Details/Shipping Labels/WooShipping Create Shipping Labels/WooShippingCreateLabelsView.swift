@@ -231,20 +231,26 @@ private extension WooShippingCreateLabelsView {
         HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
-            Button {
-                isOriginAddressListPresented = true
-            } label: {
-                HStack {
-                    Text(viewModel.originAddress)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "ellipsis")
-                        .frame(width: Layout.ellipsisWidth)
-                        .bold()
+            if viewModel.canViewLabel,
+               let addressLines = viewModel.originAddressLines {
+                AddressLinesView(addressLines: addressLines)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Button {
+                    isOriginAddressListPresented = true
+                } label: {
+                    HStack {
+                        Text(viewModel.originAddress)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "ellipsis")
+                            .frame(width: Layout.ellipsisWidth)
+                            .bold()
+                    }
                 }
+                .buttonStyle(TextButtonStyle())
             }
-            .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
     }

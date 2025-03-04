@@ -71,6 +71,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Address to ship from (store address), formatted for display.
     @Published private(set) var originAddress: String = ""
 
+    /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
+    var originAddressLines: [String]? {
+        originAddress.components(separatedBy: ", ")
+    }
+
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")

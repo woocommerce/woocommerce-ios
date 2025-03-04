@@ -65,12 +65,6 @@ extension MockProductImageUploader: ProductImageUploaderProtocol {
     }
 
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
-        sendBackgroundUploadNoticeIfNeededWasCalled = true
-
-        // It actually sends a notification if there are active uploads for this key.
-        if activeUploadsKeys.contains(where: { $0 == key }) {
-            noticePresenter.enqueue(notice: Notice(title: "Test Notice"))
-        }
     }
 
     func reset() {

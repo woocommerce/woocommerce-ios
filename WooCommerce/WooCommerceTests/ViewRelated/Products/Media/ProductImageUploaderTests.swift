@@ -12,20 +12,18 @@ final class ProductImageUploaderTests: XCTestCase {
     private var assetUploadSubscription: AnyCancellable?
     private var activeUploadsSubscription: AnyCancellable?
     private var mockFeatureFlagService: MockFeatureFlagService!
-    private var testStorageKey = "product_image_uploader_tests_storage"
     private var storage: ProductImageStatusStorage!
 
     override func setUp() {
         super.setUp()
         mockFeatureFlagService = MockFeatureFlagService()
-        // Clear UserDefaults for the test key
-        UserDefaults.standard.removeObject(forKey: testStorageKey)
-        storage = ProductImageStatusStorage(userDefaults: .standard, key: testStorageKey)
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+        storage = ProductImageStatusStorage(userDefaults: .standard)
     }
 
     override func tearDown() {
         mockFeatureFlagService = nil
-        UserDefaults.standard.removeObject(forKey: testStorageKey)
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
         storage = nil
         super.tearDown()
     }
@@ -823,61 +821,172 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_background_upload_notice_is_sent_when_there_are_active_uploads_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-
-        let mockImageUploader = MockProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                 featureFlagService: mockFeatureFlagService)
 
         let key = ProductImageUploaderKey(siteID: siteID,
-                                         productOrVariationID: productID,
-                                         isLocalID: false)
+                                          productOrVariationID: productID,
+                                          isLocalID: false)
 
         let noticePresenter = MockNoticePresenter()
+        var isNoticeTriggered = false
+        noticePresenter.onNoticeQueued = { _ in
+            isNoticeTriggered = true
+        }
+
+        // Monitor active uploads
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
+
+        // Verify that there are no uploads at the beginning
+        XCTAssertEqual(storage.getAllStatuses().count, 0, "Storage should be empty at the beginning")
 
         // When - No active uploads
-        mockImageUploader.activeUploadsKeys = []
-        mockImageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
 
         // Then
-        XCTAssertTrue(mockImageUploader.sendBackgroundUploadNoticeIfNeededWasCalled)
+        XCTAssertFalse(isNoticeTriggered, "No notice should be triggered when there are no active uploads")
 
-        // Reset flag for next check
-        mockImageUploader.sendBackgroundUploadNoticeIfNeededWasCalled = false
+        // Reset the notice flag
+        isNoticeTriggered = false
+
+        // Create an uploading status directly in storage
+        let uploadingStatus = ProductImageStatus.uploading(
+            asset: .uiImage(image: .checkmark, filename: "test", altText: "alt_test"),
+            siteID: siteID,
+            productID: productID
+        )
+        storage.addStatus(uploadingStatus)
+
+        // Wait for the active upload to be registered
+        waitUntil(timeout: 3) {
+            activeUploads.contains(key)
+        }
 
         // When - With active uploads
-        mockImageUploader.activeUploadsKeys = [key]
-        mockImageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
+        imageUploader.sendBackgroundUploadNoticeIfNeeded(key: key, using: noticePresenter)
 
         // Then
-        XCTAssertTrue(mockImageUploader.sendBackgroundUploadNoticeIfNeededWasCalled)
+        XCTAssertTrue(isNoticeTriggered, "Notice should be triggered when there are active uploads")
     }
 
     func test_reset_clears_storage_state_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-        let mockImageUploader = MockProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                featureFlagService: mockFeatureFlagService)
+
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                        productOrVariationID: productID,
+                                        isLocalID: false)
+
+        // Configure the store to keep uploads in progress. Don't call completion to keep it in uploading state.
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case .uploadMedia = action {
+            }
+        }
+
+        // Add a status to storage by uploading an image
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+
+        // Wait for the upload to be registered
+        let uploadStatus = waitFor { promise in
+            actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
+            }
+        }
+
+        // Verify we have a pending upload
+        XCTAssertTrue(uploadStatus.hasPendingUpload)
+
+        // Set up subscription to track active uploads
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
+
+        // Wait for the active upload to be registered
+        waitUntil() {
+            activeUploads.contains { $0 == key }
+        }
 
         // When
-        mockImageUploader.reset()
+        imageUploader.reset()
 
-        // Then
-        XCTAssertTrue(mockImageUploader.resetWasCalled, "Reset should be called")
+        // Then - Active uploads should be cleared
+        waitUntil(timeout: 3) {
+            activeUploads.isEmpty
+        }
     }
 
     func test_replaceLocalID_is_called_when_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-        let mockImageUploader = MockProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                               featureFlagService: mockFeatureFlagService)
 
         let localProductID: Int64 = 0
-        let remoteProductID = productID.id
+        let remoteProductID: Int64 = 606
         let localID = ProductOrVariationID.product(id: localProductID)
+        let localKey = ProductImageUploaderKey(siteID: siteID,
+                                             productOrVariationID: localID,
+                                             isLocalID: true)
+
+        // Configure the store to keep uploads in progress. Don't call completion to keep it in uploading state.
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case .uploadMedia = action {
+            }
+        }
+
+        // Set up initial conditions with a local product ID
+        let localActionHandler = imageUploader.actionHandler(key: localKey, originalStatuses: [])
+
+        // Upload an image using the local product ID
+        localActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+
+        // Wait for the upload to be registered
+        let uploadStatus = waitFor { promise in
+            localActionHandler.addUpdateObserver(self) { statuses in
+                if statuses.hasPendingUpload {
+                    promise(statuses)
+                }
+            }
+        }
+
+        // Verify we have a pending upload
+        XCTAssertTrue(uploadStatus.hasPendingUpload)
 
         // When
-        mockImageUploader.replaceLocalID(siteID: siteID,
-                                        localID: localID,
-                                        remoteID: remoteProductID)
+        imageUploader.replaceLocalID(siteID: siteID,
+                                   localID: localID,
+                                   remoteID: remoteProductID)
 
         // Then
-        XCTAssertTrue(mockImageUploader.replaceLocalIDWasCalled, "Replace local ID should be called")
+        // The key with the remote product ID should now have active uploads
+        let remoteKey = ProductImageUploaderKey(siteID: siteID,
+                                              productOrVariationID: .product(id: remoteProductID),
+                                              isLocalID: false)
+
+        // Get action handler with the remote key
+        let remoteActionHandler = imageUploader.actionHandler(key: remoteKey, originalStatuses: [])
+
+        // Check if the remote action handler has the pending upload
+        let remoteStatus = waitFor { promise in
+            remoteActionHandler.addUpdateObserver(self) { statuses in
+                promise(statuses)
+            }
+        }
+
+        XCTAssertTrue(remoteStatus.hasPendingUpload,
+                     "The action handler for the remote product ID should have pending uploads")
     }
 }
 

@@ -250,15 +250,6 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     func test_it_sets_correct_error_state_when_total_shipment_weight_is_zero() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
-            switch action {
-            case let .loadLabelRates(_, _, _, _, _, completion):
-                completion(.failure(NetworkError.timeout()))
-            default:
-                XCTFail("Received unexpected action: \(action)")
-            }
-        }
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: WooShippingAddress.fake(),
                                                     destinationAddress: sampleDestinationAddress(),

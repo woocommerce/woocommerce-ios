@@ -126,11 +126,17 @@ extension WooShippingServiceViewModel {
     }
 
     /// States for label rates.
-    enum LabelRatesState {
+    enum LabelRatesState: Equatable {
         case empty
         case loading
         case loaded
-        case error
+        case error(_ error: Error)
+    }
+
+    enum Error: Swift.Error {
+        case missingDestinationAddress
+        case missingTotalShippingWeight
+        case failedLoadingLabelRates
     }
 }
 

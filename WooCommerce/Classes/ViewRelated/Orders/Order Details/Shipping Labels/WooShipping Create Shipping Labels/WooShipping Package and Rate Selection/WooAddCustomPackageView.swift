@@ -163,11 +163,15 @@ struct WooAddCustomPackageView: View {
                 .scrollDismissesKeyboard(.interactively)
                 .disabled(isSavingPackage)
                 .alert(Localization.SavingPackageError.title, isPresented: $showingSavingError, actions: {
-                    Button(Localization.SavingPackageError.cancel) {}
-                    Button(Localization.SavingPackageError.proceed) {
+                    Button(role: .cancel) {} label: {
+                        Text(Localization.SavingPackageError.cancel)
+                    }
+                    Button {
                         Task {
                             await addPackageButtonTapped()
                         }
+                    } label: {
+                        Text(Localization.SavingPackageError.proceed)
                     }
                 }, message: {
                     Text(Localization.SavingPackageError.message)

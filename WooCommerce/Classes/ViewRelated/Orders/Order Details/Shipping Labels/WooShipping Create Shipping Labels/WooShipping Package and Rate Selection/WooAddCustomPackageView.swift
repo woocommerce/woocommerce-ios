@@ -12,8 +12,7 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    @State private var isSavingPackage: Bool = false
-    @State private var isAddingPackage: Bool = false
+    @State private var isSavingPackage = false
     @State private var showingSavingError = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
@@ -131,14 +130,10 @@ struct WooAddCustomPackageView: View {
                         else {
                             Spacer()
                             Button(selectionButtonText) {
-                                Task { @MainActor in
-                                    isAddingPackage = true
-                                    await addPackageButtonTapped()
-                                    isAddingPackage = false
-                                }
+                                confirmPackage()
                             }
                             .disabled(selectionButtonDisabled)
-                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
+                            .buttonStyle(PrimaryButtonStyle())
                             .padding(.bottom)
                         }
                     }
@@ -167,9 +162,7 @@ struct WooAddCustomPackageView: View {
                         Text(Localization.SavingPackageError.cancel)
                     }
                     Button {
-                        Task {
-                            await addPackageButtonTapped()
-                        }
+                        confirmPackage()
                     } label: {
                         Text(Localization.SavingPackageError.proceed)
                     }
@@ -203,17 +196,11 @@ struct WooAddCustomPackageView: View {
 
     // MARK: - actions
 
-    @MainActor
-    private func addPackageButtonTapped() async {
-        let packageDataResult = await viewModel.addPackageAction()
-        // call addPackageAction with data
-        switch packageDataResult {
-        case .success(let data):
-            addPackageAction(data)
-        case .failure(let failure):
-            // show failure
-            DDLogError("⛔️ Error adding package: \(failure)")
+    private func confirmPackage() {
+        guard let packageData = viewModel.packageData else {
+            return
         }
+        addPackageAction(packageData)
     }
 
     @MainActor

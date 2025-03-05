@@ -9,11 +9,6 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
 
-    /// Whether the destination address is present and with non-empty fields.
-    var hasDestinationAddress: Bool {
-        destinationAddress?.formattedPostalAddress != nil
-    }
-
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
@@ -21,6 +16,10 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
+    /// Whether the destination address is present and with non-empty fields.
+    private var hasDestinationAddress: Bool {
+        destinationAddress?.formattedPostalAddress != nil
+    }
 
     /// Selected shipping service package.
     private(set) var selectedPackage: ShippingLabelPackageSelected?

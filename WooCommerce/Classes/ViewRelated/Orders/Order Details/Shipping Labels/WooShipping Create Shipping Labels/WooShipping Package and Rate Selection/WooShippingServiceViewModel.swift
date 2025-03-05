@@ -77,7 +77,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         }
 
         guard selectedPackage.weight > 0 else {
-            return updateLoadingState(to: .error(Error.missingTotalShippingWeight))
+            return updateLoadingState(to: .error(Error.missingShipmentWeight))
         }
 
         updateLoadingState(to: .loading)
@@ -139,7 +139,7 @@ extension WooShippingServiceViewModel {
 
     enum Error: Swift.Error {
         case missingDestinationAddress
-        case missingTotalShippingWeight
+        case missingShipmentWeight
         case failedLoadingLabelRates
     }
 }

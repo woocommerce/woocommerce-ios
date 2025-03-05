@@ -29,7 +29,7 @@ struct WooShippingServiceView: View {
                 case WooShippingServiceViewModel.Error.missingDestinationAddress:
                     MissingDataStateView(title: Localization.noDestinationAddressTitle,
                                          message: Localization.noDestinationAddressMessage)
-                case WooShippingServiceViewModel.Error.missingTotalShippingWeight:
+                case WooShippingServiceViewModel.Error.missingShipmentWeight:
                     MissingDataStateView(title: Localization.noWeightTitle,
                                          message: Localization.noWeightMessage)
                 case WooShippingServiceViewModel.Error.failedLoadingLabelRates:

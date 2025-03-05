@@ -187,7 +187,7 @@ private extension WooShippingServiceView {
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "
                                                               + "failed on the shipping label creation screen")
-        static let retryCTA = NSLocalizedString("wooShipping.createLabels.retryCTA",
+        static let retryCTA = NSLocalizedString("wooShipping.createLabels.rates.retryCTA",
                                                 value: "Retry",
                                                 comment: "Button to retry loading data on the shipping label creation screen")
     }

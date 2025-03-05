@@ -1,5 +1,7 @@
 import Yosemite
 
+/// Provides view data for `WooShippingServiceView`.
+///
 final class WooShippingServiceViewModel: ObservableObject {
     private let siteID: Int64
     private let orderID: Int64

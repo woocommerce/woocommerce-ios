@@ -136,7 +136,6 @@ private struct WooShippingServiceCardListView: View {
     }
 }
 
-private extension WooShippingServiceView {
 fileprivate extension WooShippingServiceView {
     enum Layout {
         static let padding: CGFloat = 16
@@ -159,10 +158,19 @@ private extension WooShippingServiceView {
                                                                  comment: "Title displayed when no destination address is provided " +
                                                                  "in the shipping label creation screen.")
         static let noDestinationAddressMessage = NSLocalizedString("wooShipping.createLabels.rates.noDestinationAddressMessage",
-                                                                 value: "We need to know where this package is going " +
+                                                                   value: "We need to know where this package is going " +
                                                                    "before we can show the available shipping rates.",
-                                                                 comment: "Message displayed when no destination address is provided " +
+                                                                   comment: "Message displayed when no destination address is provided " +
                                                                    "in the shipping label creation screen.")
+        static let noWeightTitle = NSLocalizedString("wooShipping.createLabels.rates.noWeightTitle",
+                                                     value: "Add shipment weight to get shipping rates",
+                                                     comment: "Title displayed when no shipment weight is provided " +
+                                                     "in the shipping label creation screen.")
+        static let noWeightMessage = NSLocalizedString("wooShipping.createLabels.rates.noWeightMessage",
+                                                       value: "We need to know the shipment weight " +
+                                                       "before we can show the available shipping rates.",
+                                                       comment: "Message displayed when no shipment weight is provided " +
+                                                       "in the shipping label creation screen.")
         static let failedLoadingDataError = NSLocalizedString("wooShipping.createLabels.rates.failedLoadingDataError",
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "

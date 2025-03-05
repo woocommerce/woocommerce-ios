@@ -69,6 +69,27 @@ struct WooShippingServiceView: View {
             .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
             .padding(.vertical, Layout.padding)
         }
+
+private struct MissingDataStateView: View {
+    let title: String
+    let message: String
+
+    var body: some View {
+        VStack(spacing: WooShippingServiceView.Layout.placeholderPadding) {
+            Image(uiImage: .wooShippingRatesPlaceholder)
+            VStack(spacing: WooShippingServiceView.Layout.innerSpacing) {
+                Text(title)
+                    .font(.subheadline)
+                    .bold()
+                Text(message)
+                    .subheadlineStyle()
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .multilineTextAlignment(.center)
+        .padding(WooShippingServiceView.Layout.placeholderPadding)
+        .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
+        .padding(.vertical, WooShippingServiceView.Layout.padding)
     }
 }
 
@@ -88,6 +109,7 @@ private struct WooShippingServiceCardListView: View {
 }
 
 private extension WooShippingServiceView {
+fileprivate extension WooShippingServiceView {
     enum Layout {
         static let padding: CGFloat = 16
         static let innerSpacing: CGFloat = 8

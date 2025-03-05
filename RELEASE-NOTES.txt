@@ -4,6 +4,7 @@
 21.9
 -----
 - [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
+- [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 
 
 21.8

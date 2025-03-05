@@ -84,6 +84,20 @@ struct WooShippingServiceView: View {
         .padding(WooShippingServiceView.Layout.placeholderPadding)
     }
 
+    var progressView: some View {
+        VStack(spacing: Layout.placeholderPadding) {
+            Image(uiImage: .wooShippingRatesPlaceholder)
+
+            ProgressView()
+                .progressViewStyle(.circular)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(Layout.placeholderPadding)
+        .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
+        .padding(.vertical, Layout.padding)
+    }
+}
+
 private struct MissingDataStateView: View {
     let title: String
     let message: String

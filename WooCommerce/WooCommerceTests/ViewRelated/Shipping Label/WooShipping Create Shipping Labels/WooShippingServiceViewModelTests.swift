@@ -7,7 +7,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
-    private var samplePackageID = "default_box"
+    private static let samplePackageID = "default_box"
+    private var samplePackage = ShippingLabelPackageSelected.fake().copy(id: samplePackageID, weight: 5)
 
     override func setUp() {
         super.setUp()
@@ -41,7 +42,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: self.samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
 
         // Then
         XCTAssertEqual(viewModel.loadingState, .loaded)
@@ -110,10 +111,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake())
+        viewModel.loadLabelRates(for: samplePackage)
 
         // Then
-        XCTAssertEqual(viewModel.loadingState, .error)
+        XCTAssertEqual(viewModel.loadingState, .error(.failedLoadingLabelRates))
         XCTAssertTrue(viewModel.serviceTabs.isEmpty)
     }
 
@@ -126,7 +127,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(standardRate, signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -144,7 +145,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: sampleSignatureRates().first, adultSignatureRate: nil)
 
         // Then
@@ -162,7 +163,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: sampleAdultSignatureRates().first)
 
         // Then
@@ -183,7 +184,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -198,7 +199,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.sortShipping(by: .price)
 
         // Then
@@ -215,7 +216,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.sortShipping(by: .deliveryTime)
 
         // Then
@@ -249,7 +250,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
 private extension WooShippingServiceViewModelTests {
     func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
-        [ShippingLabelCarriersAndRates(packageID: samplePackageID,
+        [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                        defaultRates: sampleStandardRates(),
                                        signatureRequired: sampleSignatureRates(),
                                        adultSignatureRequired: sampleAdultSignatureRates())]

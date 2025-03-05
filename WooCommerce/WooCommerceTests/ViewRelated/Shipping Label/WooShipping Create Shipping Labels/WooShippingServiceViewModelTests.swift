@@ -225,15 +225,27 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
-    func test_hasDestinationAddress_true_when_destination_address_is_complete() {
+    func test_it_sets_correct_error_state_when_destination_address_is_missing() {
         // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.failure(NetworkError.timeout()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: WooShippingAddress.fake(),
-                                                    destinationAddress: sampleDestinationAddress(),
+                                                    destinationAddress: WooShippingAddress.fake(),
                                                     stores: stores)
 
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
         // Then
-        XCTAssertTrue(viewModel.hasDestinationAddress)
+        XCTAssertEqual(viewModel.loadingState, .error(.missingDestinationAddress))
     }
 
     func test_hasDestinationAddress_false_when_destination_address_is_empty() {

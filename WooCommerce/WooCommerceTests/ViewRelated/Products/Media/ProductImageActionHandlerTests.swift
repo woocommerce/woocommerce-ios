@@ -4,12 +4,29 @@ import TestKit
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import Networking
 
 final class ProductImageActionHandlerTests: XCTestCase {
     private var productImageStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
     private let siteID: Int64 = 1234
     private let productID = ProductOrVariationID.product(id: 5678)
+    private var mockFeatureFlagService: MockFeatureFlagService!
+    private var storage: ProductImageStatusStorage!
+
+    override func setUp() {
+        super.setUp()
+        mockFeatureFlagService = MockFeatureFlagService()
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+        storage = ProductImageStatusStorage(userDefaults: .standard)
+    }
+
+    override func tearDown() {
+        mockFeatureFlagService = nil
+        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+        storage = nil
+        super.tearDown()
+    }
 
     func test_uploading_media_successfully() {
         let mockMedia = createMockMedia()
@@ -31,7 +48,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -87,7 +105,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -129,7 +148,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: .fake())
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         // When
         let mediaMetadata: (filename: String?, altText: String?) = waitFor { promise in
@@ -156,7 +176,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockImage = UIImage()
 
         // When
@@ -184,7 +205,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
@@ -225,7 +247,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         // Media items to upload to site media library.
         let mockMedia1 = Media(mediaID: 134, date: Date(),
@@ -275,7 +298,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -312,7 +336,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -357,7 +382,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let expectation = self.expectation(description: "Wait for status update")
         expectation.expectedFulfillmentCount = 1
@@ -405,7 +431,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let dummyImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         let mockProduct = Product.fake().copy(siteID: siteID, productID: localProductID.id, images: [dummyImage])
         let model = EditableProductModel(product: mockProduct)
-        let handler = ProductImageActionHandler(siteID: siteID, product: model)
+        let handler = ProductImageActionHandler(siteID: siteID,
+                                                product: model,
+                                                featureFlag: mockFeatureFlagService)
 
         // Simulate an upload with a status .uploading, with the current productID (localProductID)
         let mockAsset = PHAsset()

@@ -61,6 +61,17 @@ struct WooShippingServiceView: View {
                         .bold()
                     Text(Localization.noDestinationAddressMessage)
                         .subheadlineStyle()
+    var errorState: some View {
+        VStack(spacing: Layout.padding) {
+            Image(uiImage: .grayErrorIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(Localization.failedLoadingDataError)
+                .multilineTextAlignment(.center)
+            Button(Localization.retryCTA) {
+                if let package = viewModel.selectedPackage {
+                    viewModel.loadLabelRates(for: package)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .center)
@@ -69,6 +80,9 @@ struct WooShippingServiceView: View {
             .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
             .padding(.vertical, Layout.padding)
         }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(WooShippingServiceView.Layout.placeholderPadding)
+    }
 
 private struct MissingDataStateView: View {
     let title: String
@@ -114,6 +128,7 @@ fileprivate extension WooShippingServiceView {
         static let padding: CGFloat = 16
         static let innerSpacing: CGFloat = 8
         static let placeholderPadding: CGFloat = 32
+        static let errorIconSize: CGFloat = 86
     }
 }
 
@@ -134,5 +149,12 @@ private extension WooShippingServiceView {
                                                                    "before we can show the available shipping rates.",
                                                                  comment: "Message displayed when no destination address is provided " +
                                                                    "in the shipping label creation screen.")
+        static let failedLoadingDataError = NSLocalizedString("wooShipping.createLabels.rates.failedLoadingDataError",
+                                                              value: "We are unable to load shipping rates",
+                                                              comment: "Error message when loading shipping label rates "
+                                                              + "failed on the shipping label creation screen")
+        static let retryCTA = NSLocalizedString("wooShipping.createLabels.retryCTA",
+                                                value: "Retry",
+                                                comment: "Button to retry loading data on the shipping label creation screen")
     }
 }

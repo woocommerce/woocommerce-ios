@@ -15,18 +15,18 @@ final class ProductImageActionHandlerTests: XCTestCase {
     private var storage: ProductImageStatusStorage!
 
     override func setUp() {
-        super.setUp()
-        mockFeatureFlagService = MockFeatureFlagService()
-        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
-        storage = ProductImageStatusStorage(userDefaults: .standard)
-    }
+            super.setUp()
+            mockFeatureFlagService = MockFeatureFlagService()
+            UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+            storage = ProductImageStatusStorage(userDefaults: .standard)
+        }
 
-    override func tearDown() {
-        mockFeatureFlagService = nil
-        UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
-        storage = nil
-        super.tearDown()
-    }
+        override func tearDown() {
+            mockFeatureFlagService = nil
+            UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+            storage = nil
+            super.tearDown()
+        }
 
     func test_uploading_media_successfully() {
         let mockMedia = createMockMedia()

@@ -4,12 +4,29 @@ import TestKit
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import Networking
 
 final class ProductImageActionHandlerTests: XCTestCase {
     private var productImageStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
     private let siteID: Int64 = 1234
     private let productID = ProductOrVariationID.product(id: 5678)
+    private var mockFeatureFlagService: MockFeatureFlagService!
+    private var storage: ProductImageStatusStorage!
+
+    override func setUp() {
+            super.setUp()
+            mockFeatureFlagService = MockFeatureFlagService()
+            UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+            storage = ProductImageStatusStorage(userDefaults: .standard)
+        }
+
+        override func tearDown() {
+            mockFeatureFlagService = nil
+            UserDefaults.standard.removeObject(forKey: "savedProductUploadImageStatuses")
+            storage = nil
+            super.tearDown()
+        }
 
     func test_uploading_media_successfully() {
         let mockMedia = createMockMedia()
@@ -31,7 +48,73 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
+
+        let mockAsset = PHAsset()
+        let expectedStatusUpdates: [[ProductImageStatus]] = [
+            mockRemoteProductImageStatuses,
+            [.uploading(asset: .phAsset(asset: mockAsset), siteID: siteID, productID: productID)] + mockRemoteProductImageStatuses,
+            [.remote(image: mockUploadedProductImage,
+                     siteID: siteID,
+                     productID: productID)] + mockRemoteProductImageStatuses
+        ]
+
+        let waitForStatusUpdates = self.expectation(description: "Wait for status updates from image upload")
+        waitForStatusUpdates.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { productImageStatuses in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                waitForStatusUpdates.fulfill()
+            }
+        }
+
+        let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
+        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { (asset, result) in
+            guard case let .success(productImage) = result else {
+                return XCTFail()
+            }
+            XCTAssertTrue(Thread.current.isMainThread)
+            XCTAssertEqual(asset, .phAsset(asset: mockAsset))
+            XCTAssertEqual(productImage, mockUploadedProductImage)
+            waitForAssetUpload.fulfill()
+        }
+
+        // When
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
+    }
+
+    func test_uploading_media_successfully_if_feature_flag_enabled() {
+        let mockMedia = createMockMedia()
+        let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
+                                                    dateCreated: mockMedia.date,
+                                                    dateModified: mockMedia.date,
+                                                    src: mockMedia.src,
+                                                    name: mockMedia.name,
+                                                    alt: mockMedia.alt)
+        let mockStoresManager = MockMediaStoresManager(media: mockMedia, sessionManager: SessionManager.testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
+
+        let model = EditableProductModel(product: mockProduct)
+        mockFeatureFlagService.backgroundProductImageUpload = true
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -87,7 +170,58 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
+
+        let mockAsset = PHAsset()
+        let expectedStatusUpdates: [[ProductImageStatus]] = [
+            mockRemoteProductImageStatuses,
+            [.uploading(asset: .phAsset(asset: mockAsset),
+                        siteID: siteID,
+                        productID: productID)] + mockRemoteProductImageStatuses,
+            [.uploadFailure(asset: .phAsset(asset: mockAsset),
+                            error: MediaActionError.unknown,
+                            siteID: siteID,
+                            productID: productID)] + mockRemoteProductImageStatuses
+        ]
+
+        let expectation = self.expectation(description: "Wait for image upload")
+        expectation.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { productImageStatuses in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
+    }
+
+    func test_uploading_media_unsuccessfully_if_feature_flag_enabled() {
+        let mockStoresManager = MockMediaStoresManager(media: nil, sessionManager: SessionManager.testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
+
+        let model = EditableProductModel(product: mockProduct)
+        mockFeatureFlagService.backgroundProductImageUpload = true
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -129,12 +263,42 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: .fake())
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         // When
         let mediaMetadata: (filename: String?, altText: String?) = waitFor { promise in
             mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
                 guard case let .uploadMedia(_, _, mediaAsset, altText, filename, _) = action else {
+                    return XCTFail("Unexpected media action: \(action)")
+                }
+                XCTAssertTrue(mediaAsset is UIImage)
+                promise((filename: filename, altText: altText))
+            }
+
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: .init(), filename: "woocommerce.jpg", altText: "cool product"))
+        }
+
+        // Then
+        XCTAssertEqual(mediaMetadata.filename, "woocommerce.jpg")
+        XCTAssertEqual(mediaMetadata.altText, "cool product")
+    }
+
+    func test_uploading_UIImage_passes_filename_and_altText_to_MediaAction_in_background() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let model = EditableProductModel(product: .fake())
+        mockFeatureFlagService.backgroundProductImageUpload = true
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
+
+        // When
+        let mediaMetadata: (filename: String?, altText: String?) = waitFor { promise in
+            mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
+                guard case let .uploadMediaInBackground(_, _, mediaAsset, altText, filename, _, _) = action else {
                     return XCTFail("Unexpected media action: \(action)")
                 }
                 XCTAssertTrue(mediaAsset is UIImage)
@@ -156,7 +320,35 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
+        let mockImage = UIImage()
+
+        // When
+        let statuses: [ProductImageStatus] = waitFor { promise in
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"))
+            self.productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { productImageStatuses in
+                XCTAssertTrue(Thread.current.isMainThread)
+                promise(productImageStatuses)
+            }
+        }
+
+        // Then
+        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"),
+                                          siteID: siteID,
+                                          productID: productID)])
+    }
+
+    func test_uploading_UIImage_adds_uploading_status_with_UIImage_asset_type_in_background() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
+        mockFeatureFlagService.backgroundProductImageUpload = true
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockImage = UIImage()
 
         // When
@@ -184,7 +376,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
@@ -225,7 +418,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         // Media items to upload to site media library.
         let mockMedia1 = Media(mediaID: 134, date: Date(),
@@ -275,7 +469,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -312,7 +507,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -357,7 +553,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
         let expectation = self.expectation(description: "Wait for status update")
         expectation.expectedFulfillmentCount = 1
@@ -398,47 +595,188 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
     }
 
-    func test_updateProductID_propagates_to_existing_upload_statuses() {
+    func test_productImageStatuses_are_updated_correctly_after_discard_upload_in_background() {
         // Given
-        let localProductID = ProductOrVariationID.product(id: 0)
-        let remoteProductID = productID
-        let dummyImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
-        let mockProduct = Product.fake().copy(siteID: siteID, productID: localProductID.id, images: [dummyImage])
-        let model = EditableProductModel(product: mockProduct)
-        let handler = ProductImageActionHandler(siteID: siteID, product: model)
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
 
-        // Simulate an upload with a status .uploading, with the current productID (localProductID)
-        let mockAsset = PHAsset()
-        handler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+        let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
+        mockFeatureFlagService.backgroundProductImageUpload = true
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
+                                                                  product: model,
+                                                                  featureFlag: mockFeatureFlagService)
 
-        waitUntil {
-            handler.productImageStatuses.first.map {
-                switch $0 {
-                case .uploading(_, let site, let productID):
-                    return site == self.siteID && productID == localProductID
-                default:
-                    return false
-                }
-            } ?? false
+        let uploadError = MediaActionError.unknown
+        mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
+            guard case let .uploadMediaInBackground(_, _, _, _, _, _, completion) = action else {
+                return XCTFail("Unexpected media action: \(action)")
+            }
+            completion(.failure(uploadError))
+        }
+
+        let expectation = self.expectation(description: "Wait for status update")
+        expectation.expectedFulfillmentCount = 1
+
+        let mockImage = UIImage()
+        let expectedStatusUpdates: [[ProductImageStatus]] = [
+            [],
+            [.uploading(asset: .uiImage(image: mockImage, filename: nil, altText: nil),
+                        siteID: siteID,
+                        productID: productID)],
+            [.uploadFailure(asset: .uiImage(image: mockImage, filename: nil, altText: nil),
+                            error: MediaActionError.unknown,
+                            siteID: siteID,
+                            productID: productID)]
+        ]
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { productImageStatuses in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count == expectedStatusUpdates.count {
+                expectation.fulfill()
+            }
         }
 
         // When
-        // update of productID from locale to remote one
-        handler.updateProductID(remoteProductID)
+        let uiAsset = ProductImageAssetType.uiImage(image: mockImage, filename: nil, altText: nil)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: uiAsset)
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        // the new state should contain the remoteProductID
-        waitUntil(timeout: Constants.expectationTimeout) {
-            handler.productImageStatuses.first.map {
-                switch $0 {
-                case .uploading(_, _, let productID):
-                    return productID == remoteProductID
-                default:
-                    return false
-                }
-            } ?? false
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedStatusUpdates.last)
+
+        // When
+        productImageActionHandler.discardUpload(asset: uiAsset)
+
+        // Then
+        waitUntil {
+            productImageActionHandler.productImageStatuses == []
         }
     }
+
+    func test_updateProductID_propagates_to_existing_upload_statuses() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let testFeatureFlag = MockFeatureFlagService()
+        testFeatureFlag.backgroundProductImageUpload = false
+
+        let localProductID = ProductOrVariationID.product(id: 0)
+        let remoteProductID = productID
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: localProductID.id)
+        let model = EditableProductModel(product: mockProduct)
+
+        let handler = ProductImageActionHandler(siteID: siteID,
+                                                product: model,
+                                                featureFlag: testFeatureFlag)
+
+        // Start the upload
+        let mockAsset = PHAsset()
+        handler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        // Wait until the upload status has the local product ID
+        waitUntil(timeout: Constants.expectationTimeout) {
+            handler.productImageStatuses.contains { status in
+                if case .uploading(_, _, let pID) = status, pID == localProductID {
+                    return true
+                }
+                return false
+            }
+        }
+
+        // Verify that the initial status contains localProductID
+        XCTAssertTrue(handler.productImageStatuses.contains { status in
+            if case .uploading(_, _, let pID) = status, pID == localProductID {
+                return true
+            }
+            return false
+        })
+
+        // When - Update the productID
+        handler.updateProductID(remoteProductID)
+
+        // Then: Wait until the upload status is updated with remote product ID
+        waitUntil(timeout: Constants.expectationTimeout) {
+            handler.productImageStatuses.contains { status in
+                if case .uploading(_, _, let pID) = status, pID == remoteProductID {
+                    return true
+                }
+                return false
+            }
+        }
+
+        // Verify that the final status contains remoteProductID
+        XCTAssertTrue(handler.productImageStatuses.contains { status in
+            if case .uploading(_, _, let pID) = status, pID == remoteProductID {
+                return true
+            }
+            return false
+        })
+    }
+
+    func test_updateProductID_propagates_to_existing_upload_statuses_in_background() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let testFeatureFlag = MockFeatureFlagService()
+        testFeatureFlag.backgroundProductImageUpload = true
+
+        let localProductID = ProductOrVariationID.product(id: 0)
+        let remoteProductID = productID
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: localProductID.id)
+        let model = EditableProductModel(product: mockProduct)
+
+        let handler = ProductImageActionHandler(siteID: siteID,
+                                                product: model,
+                                                featureFlag: testFeatureFlag)
+
+        // Start the upload
+        let mockAsset = PHAsset()
+        handler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        // Wait until the upload status has the local product ID
+        waitUntil(timeout: Constants.expectationTimeout) {
+            handler.productImageStatuses.contains { status in
+                if case .uploading(_, _, let pID) = status, pID == localProductID {
+                    return true
+                }
+                return false
+            }
+        }
+
+        // Verify that the initial status contains localProductID
+        XCTAssertTrue(handler.productImageStatuses.contains { status in
+            if case .uploading(_, _, let pID) = status, pID == localProductID {
+                return true
+            }
+            return false
+        })
+
+        // When - Update the productID
+        handler.updateProductID(remoteProductID)
+
+        // Then - Wait until the upload status is updated with remote product ID
+        waitUntil(timeout: Constants.expectationTimeout) {
+            handler.productImageStatuses.contains { status in
+                if case .uploading(_, _, let pID) = status, pID == remoteProductID {
+                    return true
+                }
+                return false
+            }
+        }
+
+        // Verify that the final status contains remoteProductID
+        XCTAssertTrue(handler.productImageStatuses.contains { status in
+            if case .uploading(_, _, let pID) = status, pID == remoteProductID {
+                return true
+            }
+            return false
+        })
+    }
+
 }
 
 private extension ProductImageActionHandlerTests {

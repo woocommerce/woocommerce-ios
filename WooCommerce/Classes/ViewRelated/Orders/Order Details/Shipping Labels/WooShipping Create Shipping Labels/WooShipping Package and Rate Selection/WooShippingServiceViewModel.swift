@@ -73,8 +73,13 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.selectedPackage = selectedPackage
 
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
-            return updateLoadingState(to: .error)
+            return updateLoadingState(to: .error(Error.missingDestinationAddress))
         }
+
+        guard selectedPackage.weight > 0 else {
+            return updateLoadingState(to: .error(Error.missingTotalShippingWeight))
+        }
+
         updateLoadingState(to: .loading)
         let action = WooShippingAction.loadLabelRates(siteID: siteID,
                                                       orderID: orderID,
@@ -86,7 +91,7 @@ final class WooShippingServiceViewModel: ObservableObject {
             case let .success(rates):
                 guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }) else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
-                    updateLoadingState(to: .error)
+                    updateLoadingState(to: .error(Error.failedLoadingLabelRates))
                     return
                 }
                 standardRates = rates.defaultRates
@@ -95,7 +100,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                 updateLoadingState(to: .loaded)
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
-                updateLoadingState(to: .error)
+                updateLoadingState(to: .error(Error.failedLoadingLabelRates))
             }
         }
         stores.dispatch(action)

@@ -21,6 +21,10 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
+
+    /// Selected shipping service package.
+    private(set) var selectedPackage: ShippingLabelPackageSelected?
+
     /// State of loading shipping rates.
     @Published private(set) var loadingState: LabelRatesState = .empty
 
@@ -66,6 +70,9 @@ final class WooShippingServiceViewModel: ObservableObject {
 
     /// Retrieves shipping label rates for this shipment from remote.
     func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+        // Store the selected package for retrying if error occurs
+        self.selectedPackage = selectedPackage
+
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
             return updateLoadingState(to: .error)
         }

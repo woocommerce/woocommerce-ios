@@ -104,10 +104,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         let result: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
             let action = WooShippingAction.createPackage(siteID: siteID,
                                                          customPackage: customPackage,
-                                                         predefinedOption: nil) { [weak self] result in
+                                                         predefinedOption: nil) { result in
                 switch result {
                 case let .success(packages):
-                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
+                    guard let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
                         return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                     }
                     let packageData = WooShippingPackageData(id: savedPackage.id,

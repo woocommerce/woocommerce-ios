@@ -14,53 +14,70 @@ struct WooShippingServiceView: View {
     }
 
     var body: some View {
-        if viewModel.hasDestinationAddress {
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(Localization.shippingService)
-                        .headlineStyle()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Menu {
-                        ForEach(WooShippingServiceViewModel.SortOrder.allCases, id: \.self) { option in
-                            Button {
-                                viewModel.sortShipping(by: option)
-                            } label: {
-                                HStack {
-                                    Text(option.displayName)
-                                    if viewModel.sortOrder == option {
-                                        Image(uiImage: .checkmarkStyledImage)
-                                    }
-                                }
-                            }
-                        }
+        VStack(alignment: .leading) {
+            headerView
+
+            switch viewModel.loadingState {
+            case .empty:
+                EmptyView()
+            case .loading:
+                progressView
+            case .loaded:
+                contentView
+            case .error(let error):
+                switch error {
+                case WooShippingServiceViewModel.Error.missingDestinationAddress:
+                    MissingDataStateView(title: Localization.noDestinationAddressTitle,
+                                         message: Localization.noDestinationAddressMessage)
+                case WooShippingServiceViewModel.Error.missingTotalShippingWeight:
+                    MissingDataStateView(title: Localization.noWeightTitle,
+                                         message: Localization.noWeightMessage)
+                case WooShippingServiceViewModel.Error.failedLoadingLabelRates:
+                    errorState
+                }
+            }
+        }
+        .padding(.vertical, Layout.padding)
+    }
+
+    var headerView: some View {
+        HStack {
+            Text(Localization.shippingService)
+                .headlineStyle()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Menu {
+                ForEach(WooShippingServiceViewModel.SortOrder.allCases, id: \.self) { option in
+                    Button {
+                        viewModel.sortShipping(by: option)
                     } label: {
                         HStack {
-                            Text(Localization.sortBy)
-                            Image(systemName: "chevron.up.chevron.down")
+                            Text(option.displayName)
+                            if viewModel.sortOrder == option {
+                                Image(uiImage: .checkmarkStyledImage)
+                            }
                         }
-                        .foregroundStyle(Color(.primary))
                     }
                 }
-                TopTabView(tabs: carriers,
-                           tabsContainerHorizontalPadding: 16,
-                           unselectedStateColor: .secondary,
-                           tabsNameFont: .subheadline.bold(),
-                           tabItemContentHorizontalPadding: 6,
-                           tabItemContentVerticalPadding: 12)
-                .redacted(reason: viewModel.loadingState == .loading ? .placeholder : [])
-                .shimmering(active: viewModel.loadingState == .loading)
-                .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView
+            } label: {
+                HStack {
+                    Text(Localization.sortBy)
+                    Image(systemName: "chevron.up.chevron.down")
+                }
+                .foregroundStyle(Color(.primary))
             }
-            .padding(.vertical, Layout.padding)
-        } else {
-            VStack(spacing: Layout.placeholderPadding) {
-                Image(uiImage: .wooShippingRatesPlaceholder)
-                VStack(spacing: Layout.innerSpacing) {
-                    Text(Localization.noDestinationAddressTitle)
-                        .font(.subheadline)
-                        .bold()
-                    Text(Localization.noDestinationAddressMessage)
-                        .subheadlineStyle()
+        }
+    }
+
+    var contentView: some View {
+        TopTabView(tabs: carriers,
+                   tabsContainerHorizontalPadding: 16,
+                   unselectedStateColor: .secondary,
+                   tabsNameFont: .subheadline.bold(),
+                   tabItemContentHorizontalPadding: 6,
+                   tabItemContentVerticalPadding: 12)
+        .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView
+    }
+
     var errorState: some View {
         VStack(spacing: Layout.padding) {
             Image(uiImage: .grayErrorIcon)
@@ -74,11 +91,6 @@ struct WooShippingServiceView: View {
                     viewModel.loadLabelRates(for: package)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .multilineTextAlignment(.center)
-            .padding(Layout.placeholderPadding)
-            .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
-            .padding(.vertical, Layout.padding)
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(WooShippingServiceView.Layout.placeholderPadding)

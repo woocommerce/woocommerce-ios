@@ -152,11 +152,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
+         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater(),
+         imageStatusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.imagesProductIDUpdater = imagesProductIDUpdater
-        self.imageStatusStorage = ProductImageStatusStorage()
+        self.imageStatusStorage = imageStatusStorage
 
         // Observe when the app enters background.
         NotificationCenter.default.addObserver(self,

@@ -104,6 +104,22 @@ struct WooShippingPostPurchaseView: View {
                 .footnoteStyle()
         }
         .padding(.vertical)
+        .alert(Localization.PrintingLabelError.title, isPresented: $showingPrintingError, actions: {
+            Button(role: .cancel) {} label: {
+                Text(Localization.PrintingLabelError.cancel)
+            }
+            Button {
+                Task { @MainActor in
+                    await printLabel()
+                }
+            } label: {
+                Text(Localization.PrintingLabelError.retry)
+            }
+        }, message: {
+            Text(Localization.PrintingLabelError.message)
+        })
+    }
+}
 
 private extension WooShippingPostPurchaseView {
     func printLabel() async {

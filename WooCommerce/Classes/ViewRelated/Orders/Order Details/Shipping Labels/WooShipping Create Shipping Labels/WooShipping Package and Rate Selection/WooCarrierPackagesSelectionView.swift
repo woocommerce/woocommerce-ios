@@ -110,7 +110,7 @@ struct WooCarrierPackagesSelectionView: View {
                            tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             } else if viewModel.isLoadingPackages {
                 // Loading state
-                ProgressView().progressViewStyle(.circular)
+                loadingStateView
             } else if viewModel.packageLoadingError != nil {
                 // Error state
                 loadingPackagesErrorView
@@ -118,7 +118,7 @@ struct WooCarrierPackagesSelectionView: View {
                 // No packages loaded
                 emptyStateView
             }
-            
+
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
                 WooCarrierPackagesView(carrierTab: selectedCarrierTab,
                                        selectedPackageId: $viewModel.selectedCarriersPackageId,
@@ -145,6 +145,9 @@ struct WooCarrierPackagesSelectionView: View {
             }
             .padding()
         }
+        .task {
+            await viewModel.loadPackages()
+        }
     }
 }
 
@@ -166,8 +169,17 @@ private extension WooCarrierPackagesSelectionView {
         return WooShippingAddPackageView.Localization.addPackage
     }
 
+    @ViewBuilder
+    var loadingStateView: some View {
+        Spacer()
+        ProgressView()
+            .progressViewStyle(.circular)
+        Spacer()
+    }
+
     var loadingPackagesErrorView: some View {
         VStack(spacing: Layout.contentSpacing) {
+            Spacer()
             Image(uiImage: .grayErrorIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -179,11 +191,13 @@ private extension WooCarrierPackagesSelectionView {
                     await viewModel.loadPackages()
                 }
             }
+            Spacer()
         }
     }
 
     var emptyStateView: some View {
         VStack(spacing: Layout.contentSpacing) {
+            Spacer()
             Image(uiImage: .deliveryIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -195,6 +209,8 @@ private extension WooCarrierPackagesSelectionView {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.ctaPadding)
+            Spacer()
         }
 
     }
@@ -211,6 +227,7 @@ private extension WooCarrierPackagesSelectionView {
     enum Layout {
         static let contentSpacing: CGFloat = 16
         static let errorIconSize: CGFloat = 86
+        static let ctaPadding: CGFloat = 60
     }
 
     enum Localization {

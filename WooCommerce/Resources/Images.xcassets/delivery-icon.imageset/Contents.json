@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "woo-shipping-rates-placeholder.pdf",
+      "filename" : "delivery-icon-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,15 +11,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "woo-shipping-rates-placeholder-dark.pdf",
+      "filename" : "delivery-icon-dark.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

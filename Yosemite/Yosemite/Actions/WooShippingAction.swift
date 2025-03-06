@@ -26,7 +26,7 @@ public enum WooShippingAction: Action {
     /// Fetch list of packages.
     ///
     case loadPackages(siteID: Int64,
-                      completion: (Result<WooShippingPackagesResponse, WooShippingLoadPackagesError>) -> Void)
+                      completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
 
     /// Fetch list of packages.
     ///

@@ -2848,6 +2848,24 @@ extension Networking.WooShippingDestinationAddress {
         )
     }
 }
+extension Networking.WooShippingNormalizedAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingNormalizedAddress {
+        .init(
+            company: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            phone: .fake(),
+            country: .fake(),
+            state: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            postcode: .fake()
+        )
+    }
+}
 extension Networking.WooShippingOriginAddress {
     /// Returns a "ready to use" type filled with fake values.
     ///

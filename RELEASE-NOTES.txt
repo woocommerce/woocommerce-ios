@@ -3,6 +3,7 @@
 
 21.9
 -----
+- [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
 
 
 21.8

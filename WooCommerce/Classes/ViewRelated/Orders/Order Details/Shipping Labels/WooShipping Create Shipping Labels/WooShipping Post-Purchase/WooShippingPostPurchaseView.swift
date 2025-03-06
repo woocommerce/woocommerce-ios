@@ -4,6 +4,7 @@ struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
     @State private var isPrintingLabel = false
+    @State private var showingPrintingError = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -37,10 +38,8 @@ struct WooShippingPostPurchaseView: View {
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                 }
                 Button {
-                    isPrintingLabel = true
                     Task { @MainActor in
-                        await viewModel.printLabel()
-                        isPrintingLabel = false
+                        await printLabel()
                     }
                 } label: {
                     Text(Localization.printButton)
@@ -105,6 +104,17 @@ struct WooShippingPostPurchaseView: View {
                 .footnoteStyle()
         }
         .padding(.vertical)
+
+private extension WooShippingPostPurchaseView {
+    func printLabel() async {
+        isPrintingLabel = true
+        do {
+            try await viewModel.printLabel()
+        } catch {
+            showingPrintingError = true
+            DDLogError("Error generating shipping label document for printing: \(error)")
+        }
+        isPrintingLabel = false
     }
 }
 

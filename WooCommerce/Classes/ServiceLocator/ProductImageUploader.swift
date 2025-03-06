@@ -158,10 +158,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         self.imagesProductIDUpdater = imagesProductIDUpdater
         self.imageStatusStorage = ProductImageStatusStorage()
 
-        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            observeStatuses()
-        }
-
         // Observe when the app enters background.
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appDidEnterBackground),
@@ -350,27 +346,6 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatuses() {
-        imageStatusStorage.statusesPublisher
-            .sink { [weak self] statuses in
-                guard let self = self else { return }
-
-                // Handle all the errors
-                let failureStatuses = statuses.filter({ $0.isUploadFailure })
-                for failureStatus in failureStatuses {
-                    if let error = failureStatus.error, let asset = failureStatus.asset {
-                        let errorInfo = ProductImageUploadErrorInfo(
-                            siteID: failureStatus.siteID,
-                            productOrVariationID: failureStatus.productOrVariationID,
-                            error: .failedUploadingImage(asset: asset, error: error)
-                        )
-                        self.errorsSubject.send(errorInfo)
-                    }
-                }
-            }
-            .store(in: &cancellables)
-    }
-
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else { return }
@@ -403,7 +378,6 @@ private extension ProductImageUploader {
                 if statusUpdatesExcludedProductKeys.contains(key) == false {
                     if !self.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                         // Only send the error directly if `backgroundProductImageUpload` feature flag is disabled
-                        // Otherwise, if backgroundProductImageUpload if enabled, the error will be handled through the storage in observeStatuses()
                         errorsSubject.send(infoError)
                     }
                     // To keep in mind

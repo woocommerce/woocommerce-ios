@@ -83,12 +83,15 @@ struct WooCarrierPackagesSelectionView: View {
     }
 
     @ObservedObject private var viewModel: WooShippingAddPackageViewModel
-    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addingCustomPackageHandler: () -> Void
 
     init(viewModel: WooShippingAddPackageViewModel,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         addingCustomPackageHandler: @escaping () -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
+        self.addingCustomPackageHandler = addingCustomPackageHandler
     }
 
     var body: some View {
@@ -189,7 +192,7 @@ private extension WooCarrierPackagesSelectionView {
                 .multilineTextAlignment(.center)
                 .bold()
             Button(Localization.createCustomPackageCTA) {
-                // TODO: navigate to custom package tab
+                addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
         }

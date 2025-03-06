@@ -219,7 +219,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeDestinationAddress()
         observeSelectedPackage()
         observeForLabelRates()
-        loadPackages()
         Task {
             await loadRequiredData()
         }
@@ -377,17 +376,6 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
-    }
-
-    /// Syncs packages to use for shipping label from remote.
-    ///
-    func loadPackages() {
-        let action = WooShippingAction.loadPackages(siteID: order.siteID) { result in
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.

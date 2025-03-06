@@ -56,13 +56,9 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
 
     /// Fetches the shipping label in the selected paper size and presents the print dialog.
     @MainActor
-    func printLabel() async {
-        do {
-            let printData = try await requestPrintData()
-            presentPrintDialog(with: printData)
-        } catch {
-            DDLogError("Error generating shipping label document for printing: \(error)")
-        }
+    func printLabel() async throws {
+        let printData = try await requestPrintData()
+        presentPrintDialog(with: printData)
     }
 }
 

@@ -16,7 +16,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let shippingSettingsService: ShippingSettingsService
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
-    private var destinationAddress: WooShippingAddress?
     private var destinationEmail: String?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
@@ -67,6 +66,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address).
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
+
+    /// Address to ship to (customer address),
+    @Published private var destinationAddress: WooShippingAddress?
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {
@@ -214,7 +216,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         loadDestinationAddress()
         observeSelectedOriginAddress()
-        observeDestinationAddressStatus()
+        observeDestinationAddress()
         observeSelectedPackage()
         observeForLabelRates()
         loadPackages()
@@ -475,8 +477,8 @@ private extension WooShippingCreateLabelsViewModel {
             .store(in: &subscriptions)
     }
 
-    /// Observes the destination address status and updates the notice label.
-    func observeDestinationAddressStatus() {
+    /// Observes the destination address to update UI and shipping service.
+    func observeDestinationAddress() {
         /// Set the notice when the destination address status changes.
         $destinationAddressStatus
             .compactMap { $0 }
@@ -498,6 +500,25 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+
+        /// Observe destination address and update the shipping service.
+        $destinationAddress
+            .sink { [weak self] destinationAddress in
+                guard let self else { return }
+                let shippingService = WooShippingServiceViewModel(order: order,
+                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
+                                                              destinationAddress: destinationAddress,
+                                                              stores: stores) { [weak self] selectedRate in
+                    self?.selectedRate = selectedRate
+                }
+                self.shippingService = shippingService
+                if let selectedPackage {
+                    shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage,
+                                                                                         weight: Double(shipmentWeight) ?? 0,
+                                                                                         shipmentID: shipmentID))
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Observes the selected package and shipment weight and requests the available shipping rates.

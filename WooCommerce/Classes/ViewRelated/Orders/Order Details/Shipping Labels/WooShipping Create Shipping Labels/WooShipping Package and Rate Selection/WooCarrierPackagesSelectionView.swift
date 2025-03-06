@@ -145,9 +145,6 @@ struct WooCarrierPackagesSelectionView: View {
             }
             .padding()
         }
-        .task {
-            await viewModel.loadPackages()
-        }
     }
 }
 

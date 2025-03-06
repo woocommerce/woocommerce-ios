@@ -89,10 +89,7 @@
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="1000" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="a2d-le-aKc">
-                                            <rect key="frame" x="0.0" y="92" width="320" height="277"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" id="gTk-ha-fYx"/>
-                                            </constraints>
+                                            <rect key="frame" x="16" y="92" width="288" height="277"/>
                                             <string key="text">Qui eum est quo et recusandae ut. Hic cupiditate nobis et pariatur quidem dolorum. Doloribus est tempora ipsam eius. Quos ab et aspernatur velit corporis aut rem.</string>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -139,7 +136,9 @@
                                         </stackView>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="a2d-le-aKc" secondAttribute="trailing" constant="16" id="2sE-aM-cg8"/>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" id="PDa-3m-ZOR"/>
+                                        <constraint firstItem="a2d-le-aKc" firstAttribute="leading" secondItem="Fpu-CN-1IB" secondAttribute="leading" constant="16" id="S1x-6u-6tn"/>
                                         <constraint firstAttribute="trailing" secondItem="A0z-Ng-wf9" secondAttribute="trailing" constant="16" id="bma-eJ-xbp"/>
                                         <constraint firstItem="A0z-Ng-wf9" firstAttribute="leading" secondItem="Fpu-CN-1IB" secondAttribute="leading" constant="16" id="oOI-nb-mf8"/>
                                         <constraint firstItem="kzF-p3-hX2" firstAttribute="width" secondItem="Fpu-CN-1IB" secondAttribute="width" id="qq8-bi-UI8"/>

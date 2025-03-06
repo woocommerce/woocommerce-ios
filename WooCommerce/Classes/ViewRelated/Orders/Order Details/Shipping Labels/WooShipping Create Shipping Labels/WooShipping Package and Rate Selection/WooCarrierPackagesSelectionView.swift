@@ -112,7 +112,8 @@ struct WooCarrierPackagesSelectionView: View {
                 // Error state
                 loadingPackagesErrorView
             } else {
-                // TODO: Empty state
+                // No packages loaded
+                emptyStateView
             }
             
             if let selectedCarrierTab = viewModel.selectedCarrierTab {
@@ -178,6 +179,23 @@ private extension WooCarrierPackagesSelectionView {
         }
     }
 
+    var emptyStateView: some View {
+        VStack(spacing: Layout.contentSpacing) {
+            Image(uiImage: .deliveryIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(Localization.emptyStateMessage)
+                .multilineTextAlignment(.center)
+                .bold()
+            Button(Localization.createCustomPackageCTA) {
+                // TODO: navigate to custom package tab
+            }
+            .buttonStyle(PrimaryButtonStyle())
+        }
+
+    }
+
     func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
         guard let selectedPackage = viewModel.selectedCarriersPackage  else { return }
@@ -202,6 +220,16 @@ private extension WooCarrierPackagesSelectionView {
             "wooShipping.packagesSelectionView.retryCTA",
             value: "Retry",
             comment: "Button to retry loading carrier packages in the shipping label creation flow"
+        )
+        static let emptyStateMessage = NSLocalizedString(
+            "wooShipping.packagesSelectionView.emptyStateMessage",
+            value: "No carrier information found",
+            comment: "Message when there are no carrier packages loaded in the shipping label creation flow"
+        )
+        static let createCustomPackageCTA = NSLocalizedString(
+            "wooShipping.packagesSelectionView.createCustomPackageCTA",
+            value: "Create a custom package",
+            comment: "Button to navigate to the custom package screen in the shipping label creation flow"
         )
     }
 }

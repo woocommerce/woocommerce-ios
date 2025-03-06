@@ -732,21 +732,69 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - Tests with background image upload feature flag enabled
 
-    func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving_with_flag_enabled() {
+    func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving_with_flag_enabled() throws {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-        let mockImageUploader = MockProductImageUploader()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let mockProductIDUpdater = MockProductImagesProductIDUpdater()
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                featureFlagService: mockFeatureFlagService,
+                                                imagesProductIDUpdater: mockProductIDUpdater)
         let key = ProductImageUploaderKey(siteID: siteID,
-                                         productOrVariationID: productID,
-                                         isLocalID: false)
+                                        productOrVariationID: productID,
+                                        isLocalID: false)
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+        let asset = PHAsset()
 
-        // When
-        mockImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
-        XCTAssertTrue(mockImageUploader.hasUnsavedChangesOnImages(key: key, originalImages: []))
+        // Initial state - no unsaved changes
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: key, originalImages: []),
+                     "Should not have unsaved changes initially")
 
-        // Then
-        mockImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: false)
-        XCTAssertFalse(mockImageUploader.hasUnsavedChangesOnImages(key: key, originalImages: [.fake().copy(imageID: 123)]))
+        // When - Upload an image
+        let uploadedMedia = Media.fake().copy(mediaID: 645)
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(uploadedMedia))
+            }
+        }
+
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+
+        // Wait for the upload to be processed
+        let _ = waitFor { promise in
+            actionHandler.addUpdateObserver(self) { statuses in
+                if statuses.count > 0 {
+                    promise(statuses)
+                }
+            }
+        }
+
+        // Verify upload created unsaved changes
+        XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: key, originalImages: []),
+                    "Should have unsaved changes after uploading an image")
+
+        // When - Save the product with new images
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .updateProductImages(_, _, images, onCompletion) = action {
+                onCompletion(.success(.fake().copy(siteID: self.siteID, productID: self.productID.id, images: images)))
+            }
+        }
+
+        let saveResult: Result<[ProductImage], Error> = waitFor { promise in
+            imageUploader.saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
+                promise(result)
+            }
+        }
+
+        // Then - Verify save succeeded and changes are no longer unsaved
+        XCTAssertTrue(saveResult.isSuccess, "Product save should succeed")
+        if case .success(let images) = saveResult {
+            XCTAssertEqual(images.count, 1, "Should have saved one image")
+            XCTAssertEqual(images.first?.imageID, uploadedMedia.mediaID, "Saved image should match uploaded media")
+        }
+
+        XCTAssertFalse(imageUploader.hasUnsavedChangesOnImages(key: key, originalImages: [.fake().copy(imageID: 645)]),
+                      "Should not have unsaved changes after saving")
     }
 
     func test_error_is_published_through_storage_with_flag_enabled() {

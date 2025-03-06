@@ -433,7 +433,7 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(type: .destination,
+    WooShippingEditAddressView(viewModel: .init(type: .destination(orderID: 123),
                                                 id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",

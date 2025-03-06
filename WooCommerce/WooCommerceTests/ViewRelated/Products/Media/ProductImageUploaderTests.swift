@@ -836,34 +836,60 @@ final class ProductImageUploaderTests: XCTestCase {
     func test_activeUploads_are_tracked_through_storage_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-
-        _ = CurrentValueSubject<[ProductImageUploaderKey], Never>([])
-        let mockImageUploader = MockProductImageUploader()
-        mockImageUploader.activeUploadsKeys = []
-
-        var activeUploads: [ProductImageUploaderKey] = []
-        activeUploadsSubscription = mockImageUploader.activeUploads.sink { keys in
-            activeUploads = keys
-        }
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let imageUploader = ProductImageUploader(stores: stores,
+                                                featureFlagService: mockFeatureFlagService)
 
         let key = ProductImageUploaderKey(siteID: siteID,
                                          productOrVariationID: productID,
                                          isLocalID: false)
 
-        // When - simulate an uploading status
-        mockImageUploader.activeUploadsKeys = [key]
+        // Set up subscription to track active uploads
+        var activeUploads: [ProductImageUploaderKey] = []
+        activeUploadsSubscription = imageUploader.activeUploads.sink { keys in
+            activeUploads = keys
+        }
 
-        // Then
+        // Initially there should be no active uploads
+        XCTAssertTrue(activeUploads.isEmpty)
+
+        // When - Upload an image to create an active upload
+        let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
+
+        // Configure the stores manager to not complete the upload immediately
+        // so we can verify the upload is tracked as active
+        var uploadCompletion: ((Result<Media, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: MediaAction.self) { action in
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
+                uploadCompletion = onCompletion
+                // Don't call completion yet to keep the upload "in progress"
+            }
+        }
+
+        // Start the upload
+        let mockAsset = PHAsset()
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        // Wait for the upload to be reflected in the active uploads
+        waitUntil() {
+            activeUploads.contains { $0 == key }
+        }
+
+        // Verify the upload is being tracked
         XCTAssertEqual(activeUploads.count, 1)
         XCTAssertEqual(activeUploads.first?.siteID, key.siteID)
         XCTAssertEqual(activeUploads.first?.productOrVariationID, key.productOrVariationID)
-        XCTAssertEqual(activeUploads.first?.isLocalID, key.isLocalID)
 
-        // When - simulate completion of upload
-        mockImageUploader.activeUploadsKeys = []
+        // When - Complete the upload
+        uploadCompletion?(.success(.fake().copy(mediaID: 999)))
 
-        // Then
-        XCTAssertEqual(activeUploads.count, 0)
+        // Then - Wait for the active upload to be removed
+        waitUntil() {
+            activeUploads.isEmpty
+        }
+
+        // Verify all uploads are finished
+        XCTAssertTrue(activeUploads.isEmpty)
     }
 
     func test_background_upload_notice_is_sent_when_there_are_active_uploads_with_flag_enabled() {

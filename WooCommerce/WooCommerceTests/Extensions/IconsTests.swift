@@ -233,7 +233,7 @@ final class IconsTests: XCTestCase {
     }
 
     func test_giftIcon_is_not_nil() {
-        XCTAssertNil(UIImage.giftIcon)
+        XCTAssertNotNil(UIImage.giftIcon)
     }
 
     func test_fixed_cart_discount_icon_is_not_nil() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-24 15:54:04+0000 */
+/* Translation-Revision-Date: 2025-02-25 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -8974,6 +8974,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "O que é a senha do aplicativo?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "Parece que a senha do aplicativo está desativada para o seu site %1$@. Ative-a para usar o aplicativo do WooCommerce.";
+
 /* Button that will navigate to the support area */
 "applicationPasswordDisabled.helpButtonTitle" = "Ajuda";
 
@@ -8981,7 +8984,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "applicationPasswordDisabled.retry.buttonTitle" = "Tentar novamente";
 
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
-"applicationPasswordDisabled.secondaryButtonTitle" = "Faça login com outra conta";
+"applicationPasswordDisabled.secondaryButtonTitle" = "Fazer login com outra conta";
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Quer começar uma nova loja?";
@@ -10790,7 +10793,7 @@ which should be translated separately and considered part of this sentence. */
 "localNotification.BlazeNoCampaignReminder.title" = "Impulsione suas vendas";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
-"localNotification.ProductImageUploader.message" = "Suas imagens de produtos ainda estão fazendo upload em segundo plano. A velocidade de upload pode ser mais lenta e podem ocorrer erros. Para obter melhores resultados, mantenha o aplicativo aberto até que os uploads sejam concluídos.";
+"localNotification.ProductImageUploader.message" = "O upload das suas imagens de produtos está ocorrendo em segundo plano. A velocidade de upload pode ser mais lenta e talvez ocorram erros. Para obter melhores resultados, mantenha o aplicativo aberto até que os uploads sejam concluídos.";
 
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Upload de imagem em andamento";
@@ -11432,7 +11435,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Erro ao validar o pedido";
 
 /* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Tente novamente";
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Tentar novamente";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Aguarde";
@@ -11663,10 +11666,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.orderSync.error.title" = "Não foi possível carregar o total";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "Um pagamento de %1$@ com cartão foi feito com sucesso";
+"pointOfSale.paymentSuccessful.message.card.1" = "Um pagamento de %1$@ com cartão foi feito com sucesso.";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "Um pagamento de %1$@ em dinheiro foi feito com sucesso";
+"pointOfSale.paymentSuccessful.message.cash.1" = "Um pagamento de %1$@ em dinheiro foi feito com sucesso.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Pagamento bem-sucedido";
@@ -12050,7 +12053,7 @@ which should be translated separately and considered part of this sentence. */
 "productFormViewController.imageUploadError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error uploading an image of a product. */
-"productFormViewController.imageUploadError.title" = "Imagem enviada";
+"productFormViewController.imageUploadError.title" = "Imagem não enviada";
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Marcar como favorito";
@@ -12062,7 +12065,7 @@ which should be translated separately and considered part of this sentence. */
 "productFormViewController.productSavingError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error saving a product */
-"productFormViewController.productSavingError.title" = "Produto salvo";
+"productFormViewController.productSavingError.title" = "Produto não salvo";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Remover dos favoritos";
@@ -12095,7 +12098,7 @@ which should be translated separately and considered part of this sentence. */
 "productImagesViewController.imageUploadError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error uploading an image of a product. */
-"productImagesViewController.imageUploadError.title" = "Imagem enviada";
+"productImagesViewController.imageUploadError.title" = "Imagem não enviada";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Produto sugerido";
@@ -13108,10 +13111,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Rastrear envio";
 
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
-"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Precisamos saber para onde este pacote vai antes de podermos mostrar as taxas de envio disponíveis.";
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Precisamos saber o destino do pacote para mostrar as taxas de envio disponíveis.";
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
-"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Adicione um endereço de destino para obter as taxas de envio";
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Adicione um endereço de destino para conferir as taxas de envio";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Serviço de envio";

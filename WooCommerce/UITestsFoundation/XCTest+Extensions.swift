@@ -24,6 +24,11 @@ extension XCUIElement {
 
     func enterText(text: String) -> Void {
         self.tap()
+
+        if self.buttons["AutoFill"].exists {
+            self.buttons["AutoFill"].tap()
+        }
+
         self.typeText(text)
     }
 }

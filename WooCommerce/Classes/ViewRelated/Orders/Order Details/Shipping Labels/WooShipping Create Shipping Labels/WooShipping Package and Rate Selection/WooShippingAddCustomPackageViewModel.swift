@@ -64,7 +64,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                                       packageType: packageType.rawValue)
     }
 
-    private func preparePackageData() -> WooShippingPackageDataRepresentable? {
+    var packageData: WooShippingPackageDataRepresentable? {
         guard validateCustomPackageInputFields() else { return nil }
 
         return packageDataFromCurrentData
@@ -76,23 +76,11 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         case failure(Swift.Error)
     }
 
-    func addPackageAction(package: WooShippingPackageDataRepresentable? = nil) async -> Result<WooShippingPackageDataRepresentable, Error> {
-        guard let packageData = package ?? preparePackageData() else {
-            return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
-        }
-
-        // TODO: use WooShippingAction to POST the package to backend
-        // - if successful, return the package data
-        // - if not, return error
-
-        return .success(packageData)
-    }
-
     @MainActor
     /// Saves custom package as template remotely.
     ///
     func savePackageAsTemplateAction() async -> Result<WooShippingPackageDataRepresentable, Error> {
-        guard let packageData = preparePackageData() else {
+        guard let packageData else {
             return .failure(WooShippingAddCustomPackageViewModel.Error.packageDataNotValid)
         }
 
@@ -104,10 +92,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         let result: Result<WooShippingPackageDataRepresentable, Error> = await withCheckedContinuation { continuation in
             let action = WooShippingAction.createPackage(siteID: siteID,
                                                          customPackage: customPackage,
-                                                         predefinedOption: nil) { [weak self] result in
+                                                         predefinedOption: nil) { result in
                 switch result {
                 case let .success(packages):
-                    guard let self, let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
+                    guard let savedPackage = packages.customPackages.first(where: { $0.name == customPackage.name }) else {
                         return continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
                     }
                     let packageData = WooShippingPackageData(id: savedPackage.id,

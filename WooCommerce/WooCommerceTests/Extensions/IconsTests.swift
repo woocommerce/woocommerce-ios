@@ -224,6 +224,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.bigErrorIcon)
     }
 
+    func test_grayErrorIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.grayErrorIcon)
+    }
+
+    func test_deliveryIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.deliveryIcon)
+    }
+
     func test_fixed_cart_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.fixedCartDiscountIcon)
     }

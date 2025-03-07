@@ -2,19 +2,28 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
+import struct Networking.WooShippingAccountSettings
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
+    enum ContentState {
+        case loading
+        case ready
+        case missingRequiredData
+    }
+
+    private let shippingSettingsService: ShippingSettingsService
     private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
-    private var destinationAddress: WooShippingAddress?
     private var destinationEmail: String?
     private let stores: StoresManager
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
     let order: Order
+
+    @Published private(set) var state = ContentState.loading
 
     /// The purchased shipping label.
     @Published private var shippingLabel: ShippingLabel?
@@ -58,13 +67,29 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Address to ship from (store address).
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
+    /// Address to ship to (customer address),
+    @Published private var destinationAddress: WooShippingAddress?
+
+    /// Whether the origin address is unverified.
+    var isOriginAddressUnverified: Bool {
+        selectedOriginAddress?.isVerified == false
+    }
+
     /// Address to ship from (store address), formatted for display.
     @Published private(set) var originAddress: String = ""
 
+    /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
+    var originAddressLines: [String]? {
+        originAddress.components(separatedBy: ", ")
+    }
+
+    /// This property can be set to display a notice with the provided label about the origin address status.
+    @Published var originAddressUnverifiedNoticeLabel: String?
+
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
-    private(set) lazy var destinationAddressLines: [String]? = {
+    var destinationAddressLines: [String]? {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
-    }()
+    }
 
     /// Possible statuses for a Woo Shipping destination address.
     enum DestinationAddressStatus {
@@ -73,9 +98,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missing
     }
 
-    // TODO: Add support for updating the destination address status when it is edited or verified remotely.
     /// The current destination address status.
-    @Published private(set) var destinationAddressStatus: DestinationAddressStatus = .unverified
+    @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
@@ -114,6 +138,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return currencyFormatter.formatAmount(Decimal(amount))
     }
 
+    private var isMissingStoreSettings: Bool {
+        weightUnit.isEmpty && dimensionsUnit.isEmpty
+    }
+
     /// Whether to mark the order as complete after the label is purchased.
     @Published var markOrderComplete: Bool = false
 
@@ -129,10 +157,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var isPurchasingLabel: Bool = false
 
     /// Unit to use for weight measurements.
-    @Published var weightUnit: String = ServiceLocator.shippingSettingsService.weightUnit ?? ""
+    @Published var weightUnit = ""
 
     /// Unit to use for dimensions measurements.
-    @Published var dimensionsUnit: String = ServiceLocator.shippingSettingsService.dimensionUnit ?? ""
+    @Published var dimensionsUnit = ""
 
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
@@ -164,6 +192,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          selectedPackage: WooShippingPackageDataRepresentable? = nil,
          selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          userDefaults: UserDefaults = .standard,
          stores: StoresManager = ServiceLocator.stores,
          itemsDataSource: WooShippingItemsDataSource? = nil,
@@ -183,27 +212,28 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.selectedRate = selectedRate
         self.stores = stores
         self.debounceDuration = debounceDuration
+        self.shippingSettingsService = shippingSettingsService
 
-        // TODO: Check remotely to see if the destination address is verified.
-        destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
-
+        loadDestinationAddress()
         observeSelectedOriginAddress()
-        observeDestinationAddressStatus()
+        observeDestinationAddress()
         observeSelectedPackage()
         observeForLabelRates()
-        loadStoreOptions()
-        loadPackages()
-        loadOriginAddresses()
+        Task {
+            await loadRequiredData()
+        }
     }
 
     /// Initialize the view model from an existing shipping label.
     init(order: Order,
          shippingLabel: ShippingLabel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.shippingLabel = shippingLabel
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.shippingSettingsService = shippingSettingsService
         self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
@@ -213,6 +243,34 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
+        Task {
+            await loadRequiredData()
+        }
+    }
+
+    @MainActor
+    func loadRequiredData() async {
+        state = .loading
+        await withTaskGroup(of: Void.self) { group in
+            if isMissingStoreSettings {
+                group.addTask {
+                    await self.loadStoreOptions()
+                }
+            }
+
+            if originAddress.isEmpty {
+                group.addTask {
+                    await self.loadOriginAddresses()
+                }
+            }
+        }
+
+        if isMissingStoreSettings ||
+            originAddress.isEmpty {
+            state = .missingRequiredData
+        } else {
+            state = .ready
+        }
     }
 
     /// Handles package selection for the shipping label.
@@ -252,31 +310,36 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
-    /// Updates store options (weight and dimensions units) with remote settings.
-    func loadStoreOptions() {
-        guard let siteID = stores.sessionManager.defaultStoreID else { return }
-
-        let action = WooShippingAction.loadAccountSettings(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let settings):
-                guard let self else { return }
-                weightUnit = settings.storeOptions.weightUnit
-                dimensionsUnit = settings.storeOptions.dimensionUnit
-            case .failure(let error):
-                DDLogError("⛔️ Error loading account settings: \(error)")
-            }
-        }
-        stores.dispatch(action)
-    }
-
     func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
         customsForm = form
+    }
+
+    func editSelectedOriginAddress() {
+        guard let selectedOriginAddress else {
+            return
+        }
+        addressToEdit = WooShippingEditAddressViewModel(address: selectedOriginAddress, onAddressEdited: { [weak self] editedAddress in
+            guard let self, let index = originAddresses.addresses.firstIndex(where: { $0.id == editedAddress.id }) else {
+                return
+            }
+            var addresses = originAddresses.addresses
+            addresses.remove(at: index)
+            addresses.insert(editedAddress, at: index)
+            self.selectedOriginAddress = editedAddress
+            originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                    selectedAddressID: editedAddress.id)
+            originAddresses.onSelect = { [weak self] selectedAddress in
+                self?.selectedOriginAddress = selectedAddress
+            }
+            addressToEdit = nil // Dismisses address edit screen
+        })
     }
 
     /// Sets the `addressToEdit` property for editing the destination address.
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
         addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        orderID: order.orderID,
                                                         email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
@@ -287,6 +350,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             destinationAddress = editedAddress
             destinationEmail = editedEmail
+            destinationAddressStatus = .verified
             addressToEdit = nil // Dismisses address edit screen
         })
     }
@@ -294,32 +358,69 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
 // MARK: Remote
 private extension WooShippingCreateLabelsViewModel {
-    /// Syncs packages to use for shipping label from remote.
-    ///
-    func loadPackages() {
-        let action = WooShippingAction.loadPackages(siteID: order.siteID) { result in
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+
+    /// Updates store options (weight and dimensions units) with remote settings or fall back to cache results if failed.
+    @MainActor
+    func loadStoreOptions() async {
+        let settings: WooShippingAccountSettings? = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadAccountSettings(siteID: order.siteID) { result in
+                switch result {
+                case .success(let settings):
+                    continuation.resume(returning: settings)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading account settings: \(error)")
+                    continuation.resume(returning: nil)
+                }
             }
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
+        weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
+        dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
     ///
-    func loadOriginAddresses() {
-        let action = WooShippingAction.loadOriginAddresses(siteID: order.siteID) { [weak self] result in
+    @MainActor
+    func loadOriginAddresses() async {
+        let addresses = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadOriginAddresses(siteID: order.siteID) { result in
+                switch result {
+                case .success(let addresses):
+                    continuation.resume(returning: addresses)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
+                    continuation.resume(returning: [])
+                }
+            }
+            stores.dispatch(action)
+        }
+        selectedOriginAddress = addresses.first(where: \.defaultAddress)
+        originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                selectedAddressID: selectedOriginAddress?.id)
+        originAddresses.onSelect = { [weak self] selectedAddress in
+            self?.selectedOriginAddress = selectedAddress
+        }
+    }
+
+    /// Loads destination address of the order from remote.
+    ///
+    func loadDestinationAddress() {
+        let action = WooShippingAction.verifyDestinationAddress(siteID: order.siteID,
+                                                                orderID: order.orderID) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let addresses):
-                selectedOriginAddress = addresses.first(where: \.defaultAddress)
-                originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
-                                                                        selectedAddressID: selectedOriginAddress?.id)
-                originAddresses.onSelect = { [weak self] selectedAddress in
-                    self?.selectedOriginAddress = selectedAddress
-                }
+            case .success(let address):
+                destinationAddress = address.normalizedAddress.toWooShippingAddress()
+                destinationAddressStatus = address.isVerified ? .verified : .unverified
             case .failure(let error):
-                DDLogError("⛔️ Error loading origin addresses for Woo Shipping labels: \(error)")
+                DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
+
+                if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
+                    destinationAddress = orderShippingAddress
+                    destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+                } else {
+                    destinationAddressStatus = .missing
+                }
             }
         }
         stores.dispatch(action)
@@ -347,6 +448,13 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
+                originAddressUnverifiedNoticeLabel = {
+                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                        return Localization.OriginAddressStatus.unverified
+                    }
+                    return nil
+                }()
+
                 shippingService = WooShippingServiceViewModel(order: order,
                                                               originAddress: selectedOriginAddress?.toWooShippingAddress(),
                                                               destinationAddress: destinationAddress,
@@ -357,10 +465,11 @@ private extension WooShippingCreateLabelsViewModel {
             .store(in: &subscriptions)
     }
 
-    /// Observes the destination address status and updates the notice label.
-    func observeDestinationAddressStatus() {
+    /// Observes the destination address to update UI and shipping service.
+    func observeDestinationAddress() {
         /// Set the notice when the destination address status changes.
         $destinationAddressStatus
+            .compactMap { $0 }
             .map { status in
                 switch status {
                 case .verified:
@@ -379,6 +488,25 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+
+        /// Observe destination address and update the shipping service.
+        $destinationAddress
+            .sink { [weak self] destinationAddress in
+                guard let self else { return }
+                let shippingService = WooShippingServiceViewModel(order: order,
+                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
+                                                              destinationAddress: destinationAddress,
+                                                              stores: stores) { [weak self] selectedRate in
+                    self?.selectedRate = selectedRate
+                }
+                self.shippingService = shippingService
+                if let selectedPackage {
+                    shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage,
+                                                                                         weight: Double(shipmentWeight) ?? 0,
+                                                                                         shipmentID: shipmentID))
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Observes the selected package and shipment weight and requests the available shipping rates.
@@ -459,6 +587,14 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+
+        enum OriginAddressStatus {
+            static let unverified = NSLocalizedString(
+                "wooShipping.createLabels.addressVerification.originUnverified",
+                value: "Origin address unverified",
+                comment: "Notice when a origin address is unverified on the shipping label creation screen"
+            )
+        }
 
         enum DestinationAddressStatus {
             static let verified = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationVerified",

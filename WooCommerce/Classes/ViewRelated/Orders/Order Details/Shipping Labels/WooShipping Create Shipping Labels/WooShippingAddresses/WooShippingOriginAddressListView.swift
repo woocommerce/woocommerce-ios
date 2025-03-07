@@ -21,8 +21,18 @@ struct WooShippingOriginAddressListView: View {
                                     .bold()
                             }
                         }
+
                         if let formattedAddress = address.formattedPostalAddress {
                             Text(formattedAddress)
+                        }
+
+                        if !address.isVerified {
+                            HStack(spacing: 4) {
+                                Image(systemName: "exclamationmark.circle")
+                                Text(Localization.unverified)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(Constants.red)
                         }
                     }
                     Spacer()
@@ -63,6 +73,8 @@ private extension WooShippingOriginAddressListView {
     enum Constants {
         static let verticalSpacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
+        static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
+                                       dark: .withColorStudio(.red, shade: .shade40)))
     }
 }
 
@@ -78,6 +90,9 @@ private extension WooShippingOriginAddressListView {
         static let editOrigin = NSLocalizedString("wooShipping.originAddresses.editOrigin",
                                                     value: "Edit Origin",
                                                     comment: "Title for the edit origin address screen in the shipping label creation flow")
+        static let unverified = NSLocalizedString("wooShipping.originAddresses.unverified",
+                                                  value: "Unverified address",
+                                                  comment: "Label when an address is unverified on the shipping label creation screen")
     }
 }
 

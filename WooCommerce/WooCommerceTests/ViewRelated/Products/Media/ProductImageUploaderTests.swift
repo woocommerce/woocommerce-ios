@@ -993,7 +993,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // Add a status to storage by uploading an image
         let actionHandler = imageUploader.actionHandler(key: key, originalStatuses: [])
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: .checkmark, filename: "test", altText: "alt_test"))
 
         // Wait for the upload to be registered
         let uploadStatus = waitFor { promise in

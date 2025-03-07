@@ -14,16 +14,16 @@ final class ProductImageUploaderTests: XCTestCase {
     private var mockFeatureFlagService: MockFeatureFlagService!
     private var storage: ProductImageStatusStorage!
     private var testDefaults: UserDefaults!
-    private let userDefaultsKey = UUID().uuidString
+    private var testUserDefaultsName: String!
 
     override func setUp() {
         super.setUp()
         mockFeatureFlagService = MockFeatureFlagService()
 
         // Create a truly unique UserDefaults instance for each test run
-        let testUserDefaultsName = "test.\(UUID().uuidString)"
+        testUserDefaultsName = "test.\(UUID().uuidString)"
         testDefaults = UserDefaults(suiteName: testUserDefaultsName)!
-        storage = ProductImageStatusStorage(userDefaults: testDefaults)
+        storage = ProductImageStatusStorage(userDefaults: testDefaults, key: testUserDefaultsName)
     }
 
     override func tearDown() {
@@ -44,8 +44,9 @@ final class ProductImageUploaderTests: XCTestCase {
         mockFeatureFlagService = nil
 
         // Remove the UserDefaults suite
-        testDefaults.removeSuite(named: userDefaultsKey)
+        testDefaults.removeSuite(named: testUserDefaultsName)
         testDefaults = nil
+        testUserDefaultsName = nil
 
         super.tearDown()
     }

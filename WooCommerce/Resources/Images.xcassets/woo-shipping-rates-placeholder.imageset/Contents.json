@@ -3,6 +3,16 @@
     {
       "filename" : "woo-shipping-rates-placeholder.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "woo-shipping-rates-placeholder-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

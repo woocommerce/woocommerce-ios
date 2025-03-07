@@ -69,6 +69,7 @@ struct WooShippingAddPackageView: View {
         .task {
             await packagesViewModel.loadPackages()
         }
+        .notice($packagesViewModel.notice)
     }
 
     // MARK: UI components

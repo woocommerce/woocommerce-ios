@@ -43,12 +43,12 @@ public enum MediaAction: Action {
     /// Uploads an exportable media asset to the site's WP Media Library using background URLSession.
     ///
     case uploadMediaInBackground(siteID: Int64,
-                               productID: Int64,
-                               mediaAsset: ExportableAsset,
-                               altText: String?,
-                               filename: String?,
-                               uploadID: String,
-                               onCompletion: (Result<Media, Error>) -> Void)
+                                 productID: Int64,
+                                 mediaAsset: ExportableAsset,
+                                 altText: String?,
+                                 filename: String?,
+                                 uploadID: String,
+                                 onCompletion: (Result<Media, Error>) -> Void)
 
     /// Uploads a local file to the site's WP Media Library.
     ///

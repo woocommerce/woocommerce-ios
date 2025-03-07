@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-11 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-02-25 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -8971,6 +8971,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "图标";
 
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "什么是应用程序密码？";
+
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "您的站点 %1$@ 似乎已禁用应用程序密码。 请启用该功能以使用 WooCommerce 应用程序。";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "帮助";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "重试";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "使用其他账户登录";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "开设新商店？";
 
@@ -10777,6 +10792,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "提高您的销售额";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "您的产品图片仍在后台上传。 上传速度可能较慢，并且可能会出现错误。 为获得最佳效果，请保持应用程序处于打开状态，直至上传完成。";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "正在上传图片";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "正在同步商店…";
 
@@ -11305,6 +11326,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "读卡器付款已取消";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "连接您的读卡器";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "正在处理付款";
 
@@ -11368,6 +11392,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "正在准备";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "正在准备付款用读卡器";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "插入银行卡";
 
@@ -11406,6 +11433,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "检查订单时出错";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "请重试";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "请稍候";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "忽略";
@@ -11620,6 +11653,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "正在断开连接";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "文档";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";
 
@@ -11628,6 +11664,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "无法加载总计";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "已成功完成 %1$@ 的银行卡付款。";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "已成功完成 %1$@ 的现金付款。";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "付款成功";
@@ -11736,6 +11778,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "产品";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "忽略";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "可用选项";
@@ -12001,8 +12046,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "图片不可用，因为您的站点已标记为“私人”。 您可以切换至“即将推出”模式来更改此设置。";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "放弃";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "重试";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "图片未上传";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "标记为收藏";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "取消";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "重试";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "产品未保存";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "从收藏中移除";
@@ -12019,11 +12082,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "照片";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "图片将在后台继续上传";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "请等待所有图片上传完成后，再对其进行重新排序。";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "拖放照片以重新排序。 第一张照片将设为封面。";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "放弃";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "重试";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "图片未上传";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "建议产品";
@@ -13034,6 +13109,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "跟踪货物";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "我们需要先了解此包裹的目的地，然后才能显示可用的运费。";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "添加目标地址以查看运费";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "运输服务";

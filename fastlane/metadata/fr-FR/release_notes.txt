@@ -1,0 +1,1 @@
+Cette mise à jour résout un problème critique qui empêchait l’affichage des étiquettes d’expédition dans certaines commandes. Parmi les améliorations figurent une meilleure expérience de chargement des images de produits et de création de campagnes Blaze. En outre, les commerçants peuvent désormais marquer et filtrer leurs produits favoris pour y accéder plus facilement.

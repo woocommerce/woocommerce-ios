@@ -1,0 +1,1 @@
+Pembaruan ini menyelesaikan masalah kritis yang menyebabkan label pengiriman tidak dapat ditampilkan di beberapa pesanan. Peningkatannya meliputi pengalaman yang lebih baik dalam mengunggah gambar produk dan membuat kampanye Blaze. Selain itu, penjual kini dapat menandai dan menyaring produk favorit untuk mempermudah akses.

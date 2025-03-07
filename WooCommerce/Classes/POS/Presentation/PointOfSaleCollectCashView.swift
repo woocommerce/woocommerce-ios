@@ -99,7 +99,6 @@ struct PointOfSaleCollectCashView: View {
                 }
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
-                .animation(.easeInOut, value: changeDueMessage)
                 .onChange(of: textFieldAmountInput) { _ in
                     errorMessage = nil
                 }

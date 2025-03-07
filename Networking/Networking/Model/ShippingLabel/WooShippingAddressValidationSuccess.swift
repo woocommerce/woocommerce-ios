@@ -5,7 +5,7 @@ import Codegen
 /// Represents Shipping Label Address that has been validated by the WooCommerce Shipping extension.
 ///
 public struct WooShippingAddressValidationSuccess: Equatable {
-    public let normalizedAddress: WooShippingAddress
+    public let normalizedAddress: WooShippingNormalizedAddress
     public let originalAddress: WooShippingAddress
 
     /// When sending an address to normalize to the server, if the response has the is_trivial_normalization property set to true,
@@ -15,7 +15,7 @@ public struct WooShippingAddressValidationSuccess: Equatable {
     ///
     public let isTrivialNormalization: Bool
 
-    public init(normalizedAddress: WooShippingAddress, originalAddress: WooShippingAddress, isTrivialNormalization: Bool) {
+    public init(normalizedAddress: WooShippingNormalizedAddress, originalAddress: WooShippingAddress, isTrivialNormalization: Bool) {
         self.normalizedAddress = normalizedAddress
         self.originalAddress = originalAddress
         self.isTrivialNormalization = isTrivialNormalization

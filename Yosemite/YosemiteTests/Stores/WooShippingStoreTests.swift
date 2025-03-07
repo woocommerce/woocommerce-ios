@@ -261,7 +261,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -313,11 +313,11 @@ final class WooShippingStoreTests: XCTestCase {
         // Given
         let remote = MockWooShippingRemote()
         let expectedError = NetworkError.notFound()
-        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(WooShippingLoadPackagesError.loadingFailed(error: expectedError)))
+        remote.whenLoadPackages(siteID: sampleSiteID, thenReturn: .failure(expectedError))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = waitFor { promise in
+        let result: Result<WooShippingPackagesResponse, Error> = waitFor { promise in
             let action = WooShippingAction.loadPackages(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -327,7 +327,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error, WooShippingLoadPackagesError.loadingFailed(error: expectedError))
+        XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
     // MARK: `purchaseShippingLabel`
@@ -610,7 +610,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_validateAddress_returns_WooShippingAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedResult = WooShippingAddressValidationSuccess(normalizedAddress: WooShippingAddress.fake(),
+        let expectedResult = WooShippingAddressValidationSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                  originalAddress: WooShippingAddress.fake(),
                                                                  isTrivialNormalization: true)
         remote.whenAddressValidation(siteID: sampleSiteID, thenReturn: .success(expectedResult))
@@ -702,7 +702,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_verifyDestinationAddress_returns_WooShippingVerifyDestinationAddressSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedResult = WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingAddress.fake(),
+        let expectedResult = WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
                                                                         isTrivialNormalization: true,
                                                                         isVerified: true)
         remote.whenVerifyDestinationAddress(siteID: sampleSiteID, thenReturn: .success(expectedResult))

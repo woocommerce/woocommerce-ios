@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-21 17:36:05+0000 */
+/* Translation-Revision-Date: 2025-02-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -8974,6 +8974,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "Vad är applikationslösenord?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "Det verkar som att Applikationslösenord är inaktiverat för din webbplats %1$@. Aktivera detta om du vill använda WooCommerce-appen.";
+
 /* Button that will navigate to the support area */
 "applicationPasswordDisabled.helpButtonTitle" = "Hjälp";
 
@@ -10789,6 +10792,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Öka din försäljning";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "Dina produktbilder laddas fortfarande upp i bakgrunden. Uppladdningshastigheten kan vara långsammare och det kan uppstå fel. För bästa resultat, behåll appen öppen tills uppladdningarna är klara.";
+
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Bilduppladdning pågår";
 
@@ -11659,6 +11665,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "En kortbetalning på %1$@ har genomförts.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "En kontantbetalning på %1$@ har genomförts.";
+
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Betalning lyckades";
 
@@ -12034,6 +12046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Bilderna är inte tillgängliga, eftersom din webbplats är satt som Privat. Du kan ändra detta genom att växla till läget Kommer snart.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "Kassera";
+
 /* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
 "productFormViewController.imageUploadError.retry" = "Försök igen";
 
@@ -12067,11 +12082,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "Foton";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "Bilduppladdningen kommer att fortsätta i bakgrunden";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Vänta tills alla uppladdningar har slutförts innan du ändrar ordning på bilderna.";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "Dra och släpp för att ändra ordning på foton. Det första fotot kommer att utgöra omslaget.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "Kassera";
 
 /* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
 "productImagesViewController.imageUploadError.retry" = "Försök igen";
@@ -13088,6 +13109,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Spåra försändelse";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Vi måste veta vart det här paketet ska innan vi kan visa de tillgängliga fraktpriserna.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Lägg till en destinationsadress för att få fraktpriser";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Frakttjänst";

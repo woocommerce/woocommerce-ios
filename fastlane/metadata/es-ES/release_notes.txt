@@ -1,0 +1,1 @@
+Con esta actualización se resuelve un problema crítico que impedía que las etiquetas de envío se mostraran en algunos pedidos. Las mejoras incluyen una mejor experiencia para subir imágenes de productos y crear campañas de Blaze. Además, los vendedores ahora pueden marcar y filtrar productos favoritos para acceder más fácilmente.

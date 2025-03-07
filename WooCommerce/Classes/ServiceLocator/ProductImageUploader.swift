@@ -100,6 +100,17 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                         .compactMap { errorItem in
                             guard let productOrVariationID = errorItem.productOrVariationID,
                                   let assetType = errorItem.assetType else { return nil }
+
+                            // Create key to check against excluded keys
+                            let key = Key(siteID: errorItem.siteID,
+                                          productOrVariationID: productOrVariationID,
+                                          isLocalID: productOrVariationID.id == 0)
+
+                            // Skip error if it's for a product being edited
+                            guard !self.statusUpdatesExcludedProductKeys.contains(key) else {
+                                return nil
+                            }
+
                             return ProductImageUploadErrorInfo(
                                 siteID: errorItem.siteID,
                                 productOrVariationID: productOrVariationID,
@@ -109,7 +120,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                 }
                 .eraseToAnyPublisher()
         } else {
-            return errorsSubject.eraseToAnyPublisher()
+            return errorsSubject
+                .filter { info in
+                    let key = Key(siteID: info.siteID,
+                                  productOrVariationID: info.productOrVariationID,
+                                  isLocalID: info.productOrVariationID.id == 0)
+                    return !self.statusUpdatesExcludedProductKeys.contains(key)
+                }
+                .eraseToAnyPublisher()
         }
     }
 

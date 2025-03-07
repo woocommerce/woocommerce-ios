@@ -87,7 +87,10 @@ struct WooShippingAddPackageView: View {
             })
         case .saved:
             WooSavedPackagesSelectionView(viewModel: packagesViewModel,
-                                          addPackageAction: addPackageAction)
+                                          addPackageAction: addPackageAction,
+                                          addingCustomPackageHandler: {
+                packagesViewModel.selectedPackageType = .custom
+            })
         }
     }
 }

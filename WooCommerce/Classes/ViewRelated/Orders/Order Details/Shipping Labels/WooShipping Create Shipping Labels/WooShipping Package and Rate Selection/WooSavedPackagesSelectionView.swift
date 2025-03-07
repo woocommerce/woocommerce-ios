@@ -102,11 +102,15 @@ extension WooShippingPackageDataRepresentable {
 
 struct WooSavedPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooShippingAddPackageViewModel
-    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addingCustomPackageHandler: () -> Void
 
-    init(viewModel: WooShippingAddPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+    init(viewModel: WooShippingAddPackageViewModel,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         addingCustomPackageHandler: @escaping () -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
+        self.addingCustomPackageHandler = addingCustomPackageHandler
     }
 
     var body: some View {
@@ -192,7 +196,7 @@ private extension WooSavedPackagesSelectionView {
                 .multilineTextAlignment(.center)
                 .bold()
             Button(Localization.createCustomPackageCTA) {
-                // TODO: navigate to custom package
+                addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, Layout.ctaPadding)

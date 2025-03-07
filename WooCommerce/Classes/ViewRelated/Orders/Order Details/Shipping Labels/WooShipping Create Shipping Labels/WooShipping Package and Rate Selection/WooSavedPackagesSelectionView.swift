@@ -184,7 +184,7 @@ private extension WooSavedPackagesSelectionView {
     var emptyStateView: some View {
         VStack(spacing: Layout.contentSpacing) {
             Spacer()
-            Image(uiImage: .deliveryIcon)
+            Image(uiImage: .giftIcon)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)

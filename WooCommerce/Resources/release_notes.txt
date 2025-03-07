@@ -1,1 +1,2 @@
-This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.
+- [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
+- [*] Improved accessibility on login flow [https://github.com/woocommerce/woocommerce-ios/pull/15281]

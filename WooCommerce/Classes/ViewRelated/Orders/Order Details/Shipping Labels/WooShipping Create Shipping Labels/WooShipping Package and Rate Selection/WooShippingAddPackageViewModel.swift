@@ -39,6 +39,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
     @Published private(set) var isLoadingPackages: Bool = false
     @Published private(set) var packageLoadingError: Error?
+    @Published var notice: Notice?
 
     /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
     let previousSelectedPackage: WooShippingPackageDataRepresentable?
@@ -240,6 +241,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
                     self?.starredCarriersPackages.remove(packageID)
+                    self?.notice = Notice(title: Localization.savingPackageFailure,
+                                          feedbackType: .error,
+                                          actionTitle: Localization.savingPackageRetry,
+                                          actionHandler: {
+                        self?.starUnstarPackage(packageID, carrierID: carrierID)
+                    })
                 }
             }
             stores.dispatch(createAction)
@@ -290,6 +297,21 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }
 
         stores.dispatch(deleteAction)
+    }
+}
+
+extension WooShippingAddPackageViewModel {
+    enum Localization {
+        static let savingPackageFailure = NSLocalizedString(
+            "wooShippingAddPackageViewModel.savingPackageFailure",
+            value: "Unable to save package",
+            comment: "Message on a notice when saving a package fails in the shipping creation flow"
+        )
+        static let savingPackageRetry = NSLocalizedString(
+            "wooShippingAddPackageViewModel.savingPackageRetry",
+            value: "Retry",
+            comment: "Button to retry saving a package fails in the shipping creation flow"
+        )
     }
 }
 

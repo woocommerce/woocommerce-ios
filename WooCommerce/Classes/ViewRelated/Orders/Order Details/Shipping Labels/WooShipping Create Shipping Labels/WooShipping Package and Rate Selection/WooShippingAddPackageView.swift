@@ -66,6 +66,9 @@ struct WooShippingAddPackageView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
+        .task {
+            await packagesViewModel.loadPackages()
+        }
     }
 
     // MARK: UI components
@@ -78,7 +81,10 @@ struct WooShippingAddPackageView: View {
                                     addPackageAction: addPackageAction)
         case .carrier:
             WooCarrierPackagesSelectionView(viewModel: packagesViewModel,
-                                            addPackageAction: addPackageAction)
+                                            addPackageAction: addPackageAction,
+                                            addingCustomPackageHandler: {
+                packagesViewModel.selectedPackageType = .custom
+            })
         case .saved:
             WooSavedPackagesSelectionView(viewModel: packagesViewModel,
                                           addPackageAction: addPackageAction)

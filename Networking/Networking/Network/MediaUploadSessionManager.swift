@@ -107,19 +107,24 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         }
 
         guard let httpResponse = task.response as? HTTPURLResponse else {
-            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): response is not a valid HTTPURLResponse. Actual response: \(String(describing: task.response))")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): " +
+                       "response is not a valid HTTPURLResponse. Actual response: " +
+                       "\(String(describing: task.response))")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }
 
         guard let data = taskResponseData[task.taskIdentifier] else {
-            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): missing response data for task with identifier \(task.taskIdentifier)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): " +
+                       "missing response data for task with identifier \(task.taskIdentifier)")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }
 
         if !(200...299).contains(httpResponse.statusCode) {
-            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
+            DDLogError("⛔️ MediaUploadSessionManager- Upload failure for task (\(uploadID)): " +
+                       "unexpected HTTP status code \(httpResponse.statusCode). " +
+                       "Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
             notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: uploadID)
             return
         }

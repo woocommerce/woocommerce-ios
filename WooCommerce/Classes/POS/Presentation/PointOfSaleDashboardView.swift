@@ -77,6 +77,7 @@ struct PointOfSaleDashboardView: View {
         .posRootModal()
         .sheet(isPresented: $showSupport) {
             supportForm
+                .interactiveDismissDisabled(true)
         }
         .sheet(isPresented: $showDocumentation) {
             documentationView
@@ -119,7 +120,8 @@ private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {

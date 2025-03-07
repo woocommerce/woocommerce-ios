@@ -100,6 +100,17 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                         .compactMap { errorItem in
                             guard let productOrVariationID = errorItem.productOrVariationID,
                                   let assetType = errorItem.assetType else { return nil }
+
+                            // Create key to check against excluded keys
+                            let key = Key(siteID: errorItem.siteID,
+                                          productOrVariationID: productOrVariationID,
+                                          isLocalID: productOrVariationID.id == 0)
+
+                            // Skip error if it's for a product being edited
+                            guard !self.statusUpdatesExcludedProductKeys.contains(key) else {
+                                return nil
+                            }
+
                             return ProductImageUploadErrorInfo(
                                 siteID: errorItem.siteID,
                                 productOrVariationID: productOrVariationID,
@@ -109,7 +120,14 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
                 }
                 .eraseToAnyPublisher()
         } else {
-            return errorsSubject.eraseToAnyPublisher()
+            return errorsSubject
+                .filter { info in
+                    let key = Key(siteID: info.siteID,
+                                  productOrVariationID: info.productOrVariationID,
+                                  isLocalID: info.productOrVariationID.id == 0)
+                    return !self.statusUpdatesExcludedProductKeys.contains(key)
+                }
+                .eraseToAnyPublisher()
         }
     }
 
@@ -152,15 +170,12 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater()) {
+         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater(),
+         imageStatusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.imagesProductIDUpdater = imagesProductIDUpdater
-        self.imageStatusStorage = ProductImageStatusStorage()
-
-        if featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
-            observeStatuses()
-        }
+        self.imageStatusStorage = imageStatusStorage
 
         // Observe when the app enters background.
         NotificationCenter.default.addObserver(self,
@@ -350,27 +365,6 @@ private extension ProductImageUploader {
         }
     }
 
-    private func observeStatuses() {
-        imageStatusStorage.statusesPublisher
-            .sink { [weak self] statuses in
-                guard let self = self else { return }
-
-                // Handle all the errors
-                let failureStatuses = statuses.filter({ $0.isUploadFailure })
-                for failureStatus in failureStatuses {
-                    if let error = failureStatus.error, let asset = failureStatus.asset {
-                        let errorInfo = ProductImageUploadErrorInfo(
-                            siteID: failureStatus.siteID,
-                            productOrVariationID: failureStatus.productOrVariationID,
-                            error: .failedUploadingImage(asset: asset, error: error)
-                        )
-                        self.errorsSubject.send(errorInfo)
-                    }
-                }
-            }
-            .store(in: &cancellables)
-    }
-
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else { return }
@@ -403,7 +397,6 @@ private extension ProductImageUploader {
                 if statusUpdatesExcludedProductKeys.contains(key) == false {
                     if !self.featureFlagService.isFeatureFlagEnabled(.backgroundProductImageUpload) {
                         // Only send the error directly if `backgroundProductImageUpload` feature flag is disabled
-                        // Otherwise, if backgroundProductImageUpload if enabled, the error will be handled through the storage in observeStatuses()
                         errorsSubject.send(infoError)
                     }
                     // To keep in mind

@@ -14,7 +14,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     enum AddressType {
         case origin
-        case destination
+        case destination(orderID: Int64)
     }
 
     /// Type of address being edited.
@@ -38,7 +38,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Whether to show the "save as default" toggle, to save the address as the default origin address.
     var showSaveAsDefault: Bool {
-        addressType == .origin
+        switch addressType {
+        case .origin:
+            return true
+        case .destination:
+            return false
+        }
     }
 
     /// Whether to show the company field by default.
@@ -224,7 +229,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.storageManager = storageManager
         self.debounceDelay = debounceDelayInSeconds
         self.onOriginAddressEdited = onOriginAddressEdited
-
+        self.onDestinationAddressEdited = onDestinationAddressEdited
         // Set validation rules for fields that rely on instance properties.
         self.name.validate = { [weak self] newName in
             guard let self, self.company.value.isEmpty else {
@@ -285,6 +290,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Used to initialize the view model with a destination address.
     convenience init(address: WooShippingAddress?,
+                     orderID: Int64,
                      email: String?,
                      isVerified: Bool,
                      originCountryCode: String?,
@@ -292,7 +298,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
-        self.init(type: .destination,
+        self.init(type: .destination(orderID: orderID),
                   id: UUID().uuidString,
                   name: address?.name ?? "",
                   company: address?.company ?? "",
@@ -328,11 +334,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
-                                                                      suggestedAddress: validation.normalizedAddress,
+                                                                      suggestedAddress: validation.normalizedAddress.toWooShippingAddress(),
                                                                       onConfirm: { [weak self] confirmedAddress in
                 guard let self else { return }
-                if addressType == .origin {
+                switch addressType {
+                case .origin:
                     updateConfirmedOriginAddress(confirmedAddress)
+                case .destination(let orderID):
+                    updateConfirmedDestinationAddress(for: orderID,
+                                                      with: confirmedAddress)
                 }
             })
         } catch let error as WooShippingAddressValidationError {
@@ -353,7 +363,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Updates the origin address remotely with the provided (normalized) address and other edits.
     private func updateConfirmedOriginAddress(_ address: WooShippingAddress) {
-        guard addressType == .origin else {
+        guard case .origin = addressType else {
             return
         }
 
@@ -380,6 +390,35 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             } catch {
                 // TODO: Display error if origin address update fails.
                 DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
+            }
+        }
+    }
+
+    /// Updates the destination address remotely with the provided (normalized) address and other edits.
+    private func updateConfirmedDestinationAddress(for orderID: Int64,
+                                                   with address: WooShippingAddress) {
+        // Merge the provided (normalized) address with the edited address fields.
+        let address = WooShippingDestinationAddress(company: address.company,
+                                                    address1: address.address1,
+                                                    address2: address.address2,
+                                                    city: address.city,
+                                                    state: address.state,
+                                                    postcode: address.postcode,
+                                                    country: address.country,
+                                                    phone: address.phone,
+                                                    name: address.name,
+                                                    firstName: "",
+                                                    lastName: "",
+                                                    email: email.value)
+
+        Task { @MainActor in
+            do {
+                let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
+                                                                                   with: address)
+                onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
+            } catch {
+                // TODO: Display error if destination address update fails.
+                DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
             }
         }
     }
@@ -573,6 +612,28 @@ private extension WooShippingEditAddressViewModel {
             let action = WooShippingAction.updateOriginAddress(siteID: siteID,
                                                                address: address,
                                                                isVerified: address.isVerified) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(result):
+                    continuation.resume(returning: result.address)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+                isLoading = false
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Updates a destination address remotely.
+    @MainActor
+    func updateDestinationAddress(for orderID: Int64,
+                                  with address: WooShippingDestinationAddress) async throws -> WooShippingDestinationAddress {
+        return try await withCheckedThrowingContinuation { continuation in
+            isLoading = true
+            let action = WooShippingAction.updateDestinationAddress(siteID: siteID,
+                                                                    orderID: orderID,
+                                                                    address: address) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case let .success(result):

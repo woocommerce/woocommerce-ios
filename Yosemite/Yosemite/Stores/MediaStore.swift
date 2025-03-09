@@ -242,7 +242,9 @@ private extension MediaStore {
                 // Start background upload
                 backgroundUploader.uploadMedia(request: request,
                                                mediaItem: uploadableMedia,
-                                               uploadID: uploadID) { result in
+                                               uploadID: uploadID,
+                                               siteID: siteID,
+                                               productID: productID) { result in
                     // Removes local media after the upload API request.
                     if shouldRemoveFileUponCompletion {
                         do {

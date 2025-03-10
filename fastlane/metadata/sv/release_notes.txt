@@ -1,0 +1,1 @@
+Den här uppdateringen åtgärdar ett kritiskt problem som förhindrade att fraktetiketter visades i vissa beställningar. Förbättringarna inkluderar en bättre upplevelse för att ladda upp produktbilder och skapa Blaze-kampanjer. Dessutom kan handlare nu markera och filtrera favoritprodukter för enklare åtkomst.

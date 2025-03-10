@@ -69,7 +69,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_printLabel_fetches_label_data_from_remote() async {
+    func test_printLabel_fetches_label_data_from_remote() async throws {
         // Given
         var printData: ShippingLabelPrintData?
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -86,7 +86,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), stores: stores)
 
         // When
-        await viewModel.printLabel()
+        try await viewModel.printLabel()
 
         // Then
         XCTAssertNotNil(printData)

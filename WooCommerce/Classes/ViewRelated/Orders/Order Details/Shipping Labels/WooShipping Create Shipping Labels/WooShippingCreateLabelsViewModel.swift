@@ -607,6 +607,18 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Destination address missing",
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
+
+        enum LabelPurchaseError {
+            static let title = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.title",
+                                                   value: "Error purchasing shipping label.",
+                                                   comment: "Title of the notice when purchasing a shipping label fails")
+            static let message = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.message",
+                                                   value: "We are unable to purchase the shipping label. Please try again.",
+                                                   comment: "Message in the notice when purchasing a shipping label fails")
+            static let retry = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.retry",
+                                                   value: "Retry",
+                                                   comment: "Button to retry label purchase when an error occurs")
+        }
     }
 }
 

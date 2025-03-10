@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-24 15:54:04+0000 */
+/* Translation-Revision-Date: 2025-02-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -10793,7 +10793,7 @@ which should be translated separately and considered part of this sentence. */
 "localNotification.BlazeNoCampaignReminder.title" = "Deine Verkaufszahlen erhöhen";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
-"localNotification.ProductImageUploader.message" = "Deine Produktbilder werden noch im Hintergrund hochgeladen. Die Upload-Geschwindigkeit kann langsamer sein, und es können Fehler auftreten. Die besten Ergebnisse erzielst du, wenn du die App geöffnet lässt, bis die Uploads abgeschlossen sind.";
+"localNotification.ProductImageUploader.message" = "Deine Produktbilder werden noch im Hintergrund hochgeladen. Die Upload-Geschwindigkeit kann langsamer sein und es können Fehler auftreten. Die besten Ergebnisse erzielst du, wenn du die App geöffnet lässt, bis die Uploads abgeschlossen sind.";
 
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Bild wird hochgeladen";
@@ -11780,7 +11780,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.title" = "Produkte";
 
 /* Accessibility label for button to dismiss a notice banner */
-"pos.noticeView.dismiss.button.accessibiltyLabel" = "Verwerfen";
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Schließen";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Verfügbare Optionen";
@@ -12083,7 +12083,7 @@ which should be translated separately and considered part of this sentence. */
 "productImagePickerView.title" = "Fotos";
 
 /* No comment provided by engineer. */
-"productImageUploader.backgroundUploadNotice.title" = "Bilder werden im Hintergrund hochgeladen";
+"productImageUploader.backgroundUploadNotice.title" = "Der Upload der Bilder wird im Hintergrund fortgesetzt";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Warte, bis alle Uploads abgeschlossen sind, bevor du die Bilder neu anordnest.";

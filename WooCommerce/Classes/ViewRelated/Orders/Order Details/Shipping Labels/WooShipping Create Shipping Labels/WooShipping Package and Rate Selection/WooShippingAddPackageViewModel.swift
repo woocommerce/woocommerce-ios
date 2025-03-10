@@ -38,6 +38,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
+    @Published private(set) var packageLoadingError: Error?
 
     /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
     let previousSelectedPackage: WooShippingPackageDataRepresentable?
@@ -131,28 +132,27 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - loading
 
     @MainActor
-    @discardableResult
-    func loadPackages() async -> Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> {
+    func loadPackages() async {
         guard !isLoadingPackages else {
-            return .failure(WooShippingLoadPackagesError.loadingInProgress)
+            return
         }
 
         isLoadingPackages = true
+        packageLoadingError = nil
 
-        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = await withCheckedContinuation { continuation in
-            let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-                continuation.resume(returning: result)
+        do {
+            _ = try await withCheckedThrowingContinuation { continuation in
+                let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(loadPackagesAction)
             }
-            stores.dispatch(loadPackagesAction)
-        }
-
-        if case .failure(let error) = result {
+        } catch {
             DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+            packageLoadingError = error
         }
 
         isLoadingPackages = false
-
-        return result
     }
 
     // transform packages

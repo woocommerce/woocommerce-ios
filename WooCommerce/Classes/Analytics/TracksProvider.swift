@@ -139,6 +139,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleCashPaymentTapped,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,

@@ -21,6 +21,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
+    @Published var labelPurchaseErrorNotice: Notice?
+
     let order: Order
 
     @Published private(set) var state = ContentState.loading
@@ -285,6 +287,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             return
         }
         isPurchasingLabel = true
+        labelPurchaseErrorNotice = nil
+
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipmentID,
                                                          package: fromPackageDataToPackageSelected(selectedPackage,
                                                                                                    weight: Double(shipmentWeight) ?? 0,
@@ -304,6 +308,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 self.shippingLabel = shippingLabel
                 postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
             case .failure(let error):
+                self.labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
+                                                       message: Localization.LabelPurchaseError.message,
+                                                       feedbackType: .error,
+                                                       actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
+                    self?.purchaseLabel()
+                }
                 DDLogError("⛔️ Error purchasing shipping label: \(error)")
             }
         }

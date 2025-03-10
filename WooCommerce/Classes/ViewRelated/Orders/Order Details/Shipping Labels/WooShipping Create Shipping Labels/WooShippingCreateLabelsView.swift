@@ -83,6 +83,7 @@ struct WooShippingCreateLabelsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
+            .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
         }
     }
 }

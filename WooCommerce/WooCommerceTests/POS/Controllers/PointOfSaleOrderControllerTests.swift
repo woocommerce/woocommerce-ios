@@ -406,6 +406,51 @@ struct PointOfSaleOrderControllerTests {
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
         }
+
+        @MainActor
+        @available(iOS 17.0, *)
+        @Test func collectCashPayment_when_failure_tracks_correct_event() async throws {
+            // Given
+            // In order to test the order controller failure we need to succeed first in both having a site and creating a successful order
+            // which requires quite a bit of setup:
+            let sampleSiteID: Int64 = 1234
+            let mockStores = MockStoresManager(sessionManager: .testingInstance)
+            mockStores.sessionManager.setStoreId(sampleSiteID)
+
+            let mockOrderService = MockPOSOrderService()
+            let mockAnalyticsProvider = MockAnalyticsProvider()
+            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
+
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: MockReceiptService(),
+                                                 stores: mockStores,
+                                                 analytics: mockAnalytics)
+
+            let orderItem = OrderItem.fake()
+            let fakeOrder = Order.fake().copy(items: [orderItem])
+            mockOrderService.orderToReturn = fakeOrder
+            await sut.syncOrder(for: [makeItem()], retryHandler: {})
+
+            // When
+            let completionResult: Bool = await withCheckedContinuation { continuation in
+                mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                    switch action {
+                    case let .updateOrder(_, _, _, _, onCompletion):
+                        onCompletion(.failure(NSError(domain: "oops", code: -1)))
+                        continuation.resume(returning: true)
+                    default:
+                        #expect(Bool(false), "Unexpected action \(action)")
+                    }
+                }
+                Task { @MainActor in
+                    try await sut.collectCashPayment()
+                }
+            }
+
+            // Then
+            #expect(completionResult == true)
+            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
+        }
     }
 }
 

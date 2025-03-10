@@ -81,6 +81,32 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_load_packages_updates_packageLoadingError_when_failed() async {
+        // Given
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID,
+                                                       stores: mockStores)
+
+        let expectedError = NSError(domain: "test", code: 400)
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadPackages(receivedSiteID, completion):
+                completion(.failure(expectedError))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        XCTAssertNil(viewModel.packageLoadingError)
+
+        // When
+        await viewModel.loadPackages()
+
+        // Then
+        XCTAssertEqual(viewModel.packageLoadingError as? NSError, expectedError)
+    }
+
+    @MainActor
     func test_remove_saved_package_dispatches_deletePackage_action() {
         // Given
         let siteID: Int64 = 1234

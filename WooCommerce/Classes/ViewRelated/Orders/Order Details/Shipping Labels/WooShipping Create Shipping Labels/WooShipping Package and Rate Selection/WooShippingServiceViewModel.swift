@@ -1,5 +1,7 @@
 import Yosemite
 
+/// Provides view data for `WooShippingServiceView`.
+///
 final class WooShippingServiceViewModel: ObservableObject {
     private let siteID: Int64
     private let orderID: Int64
@@ -7,17 +9,20 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
 
-    /// Whether the destination address is present and with non-empty fields.
-    var hasDestinationAddress: Bool {
-        destinationAddress?.formattedPostalAddress != nil
-    }
-
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
+
+    /// Whether the destination address is present and with non-empty fields.
+    private var hasDestinationAddress: Bool {
+        destinationAddress?.formattedPostalAddress != nil
+    }
+
+    /// Selected shipping service package.
+    private(set) var selectedPackage: ShippingLabelPackageSelected?
 
     /// State of loading shipping rates.
     @Published private(set) var loadingState: LabelRatesState = .empty
@@ -64,9 +69,17 @@ final class WooShippingServiceViewModel: ObservableObject {
 
     /// Retrieves shipping label rates for this shipment from remote.
     func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+        // Store the selected package for retrying if error occurs
+        self.selectedPackage = selectedPackage
+
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
-            return updateLoadingState(to: .error)
+            return updateLoadingState(to: .error(Error.missingDestinationAddress))
         }
+
+        guard selectedPackage.weight > 0 else {
+            return updateLoadingState(to: .error(Error.missingShipmentWeight))
+        }
+
         updateLoadingState(to: .loading)
         let action = WooShippingAction.loadLabelRates(siteID: siteID,
                                                       orderID: orderID,
@@ -78,7 +91,7 @@ final class WooShippingServiceViewModel: ObservableObject {
             case let .success(rates):
                 guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }) else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
-                    updateLoadingState(to: .error)
+                    updateLoadingState(to: .error(Error.failedLoadingLabelRates))
                     return
                 }
                 standardRates = rates.defaultRates
@@ -87,7 +100,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                 updateLoadingState(to: .loaded)
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
-                updateLoadingState(to: .error)
+                updateLoadingState(to: .error(Error.failedLoadingLabelRates))
             }
         }
         stores.dispatch(action)
@@ -117,11 +130,17 @@ extension WooShippingServiceViewModel {
     }
 
     /// States for label rates.
-    enum LabelRatesState {
+    enum LabelRatesState: Equatable {
         case empty
         case loading
         case loaded
-        case error
+        case error(_ error: Error)
+    }
+
+    enum Error: Swift.Error {
+        case missingDestinationAddress
+        case missingShipmentWeight
+        case failedLoadingLabelRates
     }
 }
 

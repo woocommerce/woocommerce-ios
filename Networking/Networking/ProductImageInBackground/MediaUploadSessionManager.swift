@@ -27,8 +27,8 @@ public final class MediaUploadSessionManager: NSObject {
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
-    private var completionHandlers: [String: (Result<Media, Error>) -> Void] = [:]
     private var taskResponseData: [Int: Data] = [:]
+    private var uploadCompletionClosures: [String: (Result<Media, Error>) -> Void] = [:]
     private var backgroundCompletionHandler: (() -> Void)?
     weak var delegate: MediaUploadSessionManagerDelegate?
 
@@ -49,7 +49,7 @@ public final class MediaUploadSessionManager: NSObject {
                             productID: Int64,
                             asset: ProductImageAssetType? = nil,
                             completion: @escaping (Result<Media, Error>) -> Void) {
-        completionHandlers[uploadID] = completion
+        uploadCompletionClosures[uploadID] = completion
 
         // Extract authentication headers if present
         var authHeaders: [String: String]?
@@ -137,7 +137,7 @@ public final class MediaUploadSessionManager: NSObject {
         let productOrVariationID = uploadStatus.productOrVariationID
         let assetType = uploadStatus.asset
 
-        // We need to extract the productID, which is the actual post ID to use
+        // Extract the productID, which is the actual post ID to use
         let productID: Int64
         switch productOrVariationID {
         case .product(let id):
@@ -203,11 +203,6 @@ public final class MediaUploadSessionManager: NSObject {
             })
 
             statusStorage.addStatus(remoteStatus)
-        }
-
-        // After updating a media item, check if we can update the product with all images
-        if let productID = extractProductID(from: productOrVariationID) {
-            checkAndUpdateProductWithAllImages(productID: productID, siteID: siteID, authHeaders: authHeaders)
         }
     }
 
@@ -360,10 +355,6 @@ public final class MediaUploadSessionManager: NSObject {
             statusStorage.updateStatus(failureStatus)
         }
 
-        if let completion = completionHandlers[uploadID] {
-            completion(.failure(error))
-        }
-
         // After a failure, check if we need to update the product
         if let status = statusStorage.findStatus(where: { status in
             if case .uploading = status {
@@ -375,6 +366,13 @@ public final class MediaUploadSessionManager: NSObject {
             // We don't have auth headers here, but that's okay because checkAndUpdateProductWithAllImages
             // will only proceed with updateProductWithImages if auth headers are provided
             checkAndUpdateProductWithAllImages(productID: productID, siteID: status.siteID, authHeaders: nil)
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            if let self = self, let completion = self.uploadCompletionClosures[uploadID] {
+                completion(.failure(error))
+                self.uploadCompletionClosures.removeValue(forKey: uploadID)
+            }
         }
     }
 
@@ -410,7 +408,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         // Handle updateProductID tasks separately
         if uploadID.hasPrefix("updateProductID-") {
             let originalUploadID = String(uploadID.dropFirst("updateProductID-".count))
-            handleUpdateProductIDTaskCompletion(task: task, error: error, originalUploadID: originalUploadID)
+            handleUpdateProductIDTaskCompletion(task: task, error: error, originalUploadID: originalUploadID, authHeaders: authHeaders)
             return
         }
 
@@ -439,13 +437,15 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         }
 
         guard let data = taskResponseData[task.taskIdentifier] else {
-            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)): missing response data for task with identifier \(task.taskIdentifier)")
+            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
+                       " missing response data for task with identifier \(task.taskIdentifier)")
             handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)
             return
         }
 
         if !(200...299).contains(httpResponse.statusCode) {
-            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)): unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
+            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
+                       " unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
             handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)
             return
         }
@@ -454,7 +454,8 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         if let jsonString = String(data: data, encoding: .utf8) {
             DDLogDebug("MediaUploadSessionManager-[MediaUpload]- Successful upload response: \(jsonString)")
         } else {
-            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Failed to convert response data to JSON string for task (\(uploadID))")
+            DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- " +
+                       "Failed to convert response data to JSON string for task (\(uploadID))")
         }
 
         let mapper = WordPressMediaMapper()
@@ -471,7 +472,10 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         }
     }
 
-    private func handleUpdateProductIDTaskCompletion(task: URLSessionTask, error: Error?, originalUploadID: String) {
+    private func handleUpdateProductIDTaskCompletion(task: URLSessionTask,
+                                                     error: Error?,
+                                                     originalUploadID: String,
+                                                     authHeaders: [String: String]?) {
         if let error = error {
             DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Product update failure for task (\(originalUploadID)): \(error.localizedDescription)")
             return
@@ -488,9 +492,37 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         }
 
         DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Product update successful for upload ID: \(originalUploadID)")
+
+        let uploadingStatuses = statusStorage.getAllStatuses().filter { status in
+            if case .remote(_, _, _) = status {
+                return true
+            }
+            return false
+        }
+
+        guard let matchedStatus = uploadingStatuses.first(where: { status in
+            if case .remote(_, let sID, let pID) = status {
+                let uploadInProgress = statusStorage.findStatus(where: { st in
+                    if case .uploading = st {
+                        return true
+                    }
+                    return false
+                })
+                return sID > 0 && pID != nil && uploadInProgress == nil
+            }
+            return false
+        }) else { return }
+
+        let siteID = matchedStatus.siteID
+        let productOrVariationID = matchedStatus.productOrVariationID
+        guard let productID = extractProductID(from: productOrVariationID) else { return }
+
+        checkAndUpdateProductWithAllImages(productID: productID, siteID: siteID, authHeaders: authHeaders)
     }
 
-    private func handleUpdateProductWithImagesTaskCompletion(task: URLSessionTask, error: Error?, productID: Int64) {
+    private func handleUpdateProductWithImagesTaskCompletion(task: URLSessionTask,
+                                                             error: Error?,
+                                                             productID: Int64) {
         defer {
             taskResponseData.removeValue(forKey: task.taskIdentifier)
         }
@@ -548,10 +580,12 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
 
     private func notifyCompletion(_ result: Result<Media, Error>, for uploadID: String) {
         DispatchQueue.main.async { [weak self] in
-            DDLogDebug("MediaUploadSessionManager-[Completion]- Notifying completion for task (\(uploadID)) with result: \(result)")
             guard let self = self else { return }
-            self.completionHandlers[uploadID]?(result)
-            self.completionHandlers.removeValue(forKey: uploadID)
+            DDLogDebug("MediaUploadSessionManager-[Completion]- Notifying completion for task (\(uploadID)) with result: \(result)")
+            if let completion = self.uploadCompletionClosures[uploadID] {
+                completion(result)
+                self.uploadCompletionClosures.removeValue(forKey: uploadID)
+            }
             self.delegate?.mediaUploadSessionManager(self, didCompleteUpload: uploadID, withResult: result)
         }
     }

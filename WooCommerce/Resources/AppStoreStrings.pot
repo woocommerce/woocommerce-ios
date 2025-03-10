@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v21.8-whats-new"
+msgctxt "v21.9-whats-new"
 msgid ""
-"This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.\n"
+"We're dedicated to enhancing your WooCommerce app experience! We've ironed out the issues related to discarding images during uploads in the Product Form. Plus, we've ramped up our login flow accessibility to make your journey smoother and more intuitive. Enjoy the fresh update and newly polished features!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

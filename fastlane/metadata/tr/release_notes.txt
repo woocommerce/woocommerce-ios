@@ -1,0 +1,1 @@
+Bu güncelleme, gönderim etiketlerinin bazı siparişlerde görüntülenmesini engelleyen kritik bir sorunu çözer. Geliştirmeler; ürün görsellerini yüklemek ve Blaze kampanyaları oluşturmak için daha iyi bir deneyim içerir. Ayrıca satıcılar artık favori ürünleri daha kolay erişilmesi için işaretleyebilir ve filtreleyebilir.

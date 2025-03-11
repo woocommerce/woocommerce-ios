@@ -92,10 +92,22 @@ private struct ItemListRow: View {
                 SimpleProductCardView(product: product)
             })
         case let .variableParentProduct(parentProduct):
-            NavigationLink(value: item) {
-                ParentProductCardView(name: parentProduct.name,
-                                      imageSource: parentProduct.productImageSource,
-                                      detailText: Localization.variationsAvailable)
+            if #available(iOS 18.0, *) {
+                NavigationLink(value: item) {
+                    ParentProductCardView(name: parentProduct.name,
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
+                }
+            } else {
+                // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
+                // we still have to use the NavigationView approach here.
+                NavigationLink(destination: {
+                    ChildItemList(parentItem: item, title: parentProduct.name)
+                }) {
+                    ParentProductCardView(name: parentProduct.name,
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
+                }
             }
         case let .variation(variation):
             Button(action: {

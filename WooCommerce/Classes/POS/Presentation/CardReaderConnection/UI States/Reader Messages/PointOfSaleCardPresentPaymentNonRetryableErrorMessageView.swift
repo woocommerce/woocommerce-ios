@@ -8,6 +8,8 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
+            Spacer()
+
             POSErrorXMark()
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
@@ -29,6 +31,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
@@ -36,9 +39,12 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
                    action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .dynamicWidthScaling(containerWidth: width)
+
+            Spacer()
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

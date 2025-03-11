@@ -69,6 +69,7 @@ struct WooShippingCreateLabelsView: View {
                     Button(viewModel.canViewLabel ? Localization.close : Localization.cancel) {
                         dismiss()
                     }
+                    .disabled(viewModel.isPurchasingLabel)
                 }
             }
             .sheet(isPresented: $isOriginAddressListPresented) {

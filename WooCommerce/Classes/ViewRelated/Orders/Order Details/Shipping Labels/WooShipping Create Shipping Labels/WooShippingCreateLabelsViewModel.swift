@@ -175,16 +175,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Check for the need of customs form
     ///
-    var customsFormRequired: Bool {
-        guard let originAddress = selectedOriginAddress,
-              let destinationAddress = destinationAddress else {
-            return false
-        }
-        return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
-                                                                originState: originAddress.state,
-                                                                destinationCountry: destinationAddress.country,
-                                                                destinationState: destinationAddress.state)
-    }
+    @Published private(set) var customsFormRequired: Bool = false
+
+    @Published var itnMissingNoticeLabel: String?
 
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
@@ -219,6 +212,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeDestinationAddress()
         observeSelectedPackage()
         observeForLabelRates()
+        observeForCustomsForm()
         Task {
             await loadRequiredData()
         }
@@ -520,6 +514,29 @@ private extension WooShippingCreateLabelsViewModel {
                 shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage, weight: Double(weight) ?? 0, shipmentID: shipmentID))
             }
             .store(in: &subscriptions)
+    }
+
+    func observeForCustomsForm() {
+        $selectedOriginAddress.combineLatest($destinationAddress)
+            .map { (originAddress, destinationAddress) -> Bool in
+                guard let originAddress, let destinationAddress else {
+                    return false
+                }
+                return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                        originState: originAddress.state,
+                                                                        destinationCountry: destinationAddress.country,
+                                                                        destinationState: destinationAddress.state)
+            }
+            .assign(to: &$customsFormRequired)
+
+        customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
+            .map { (isMissingITN, customsFormRequired) -> String? in
+                if customsFormRequired, isMissingITN {
+                    return "ITN is required"
+                }
+                return nil
+            }
+            .assign(to: &$itnMissingNoticeLabel)
     }
 
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.

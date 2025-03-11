@@ -262,12 +262,12 @@ extension WooConstants {
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
-        case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+        case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/in-person-payments-stripe/#collect-order-payment"
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the WCPay plugin
         ///
         case wcPayCashOnDeliveryLearnMore =
-                "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
+                "https://woocommerce.com/document/getting-started-with-in-person-payments-woopayments/#collect-order-payment"
 
         /// URL for creating a store.
         case storeCreation = "https://woocommerce.com/start"

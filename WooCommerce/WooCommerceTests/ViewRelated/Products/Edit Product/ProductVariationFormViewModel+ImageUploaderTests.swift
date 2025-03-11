@@ -8,6 +8,8 @@ import Yosemite
 final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var subscriptions: Set<AnyCancellable> = []
+    private let siteID: Int64 = 1234
+    private let productID = ProductOrVariationID.product(id: 5678)
 
     override func setUp() {
         super.setUp()
@@ -23,7 +25,9 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         // Given
         let productVariation = ProductVariation.fake().copy(status: .published)
         let model = EditableProductVariationModel(productVariation: productVariation)
-        let productImageActionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: .phAsset(asset: PHAsset()))])
+        let productImageActionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: .phAsset(asset: PHAsset()),
+                                                                                                        siteID: siteID,
+                                                                                                        productID: productID)])
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: storesManager)

@@ -261,6 +261,33 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.loadingState, .error(.missingShipmentWeight))
     }
+
+    func test_when_loadLabelRates_receives_empty_rates_it_sets_error_state() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let emptyRates = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
+                                                        defaultRates: [],
+                                                        signatureRequired: [],
+                                                        adultSignatureRequired: [])]
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success(emptyRates))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable))
+    }
 }
 
 private extension WooShippingServiceViewModelTests {

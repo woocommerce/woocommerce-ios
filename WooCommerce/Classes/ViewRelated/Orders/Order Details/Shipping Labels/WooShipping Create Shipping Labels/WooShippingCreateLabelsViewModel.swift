@@ -532,7 +532,7 @@ private extension WooShippingCreateLabelsViewModel {
         customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
             .map { (isMissingITN, customsFormRequired) -> String? in
                 if customsFormRequired, isMissingITN {
-                    return "ITN is required"
+                    return Localization.itnMissing
                 }
                 return nil
             }
@@ -624,6 +624,12 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Destination address missing",
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
+
+        static let itnMissing = NSLocalizedString(
+            "wooShipping.createLabels.itnMissing",
+            value: "ITN is required.",
+            comment: "Notice when a International Transaction Number is missing on the shipping label creation screen"
+        )
     }
 }
 

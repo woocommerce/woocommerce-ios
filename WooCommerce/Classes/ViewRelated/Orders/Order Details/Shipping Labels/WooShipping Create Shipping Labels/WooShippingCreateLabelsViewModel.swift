@@ -21,6 +21,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
+    @Published var labelPurchaseErrorNotice: Notice?
+
     let order: Order
 
     @Published private(set) var state = ContentState.loading
@@ -285,6 +287,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             return
         }
         isPurchasingLabel = true
+        labelPurchaseErrorNotice = nil
+
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipmentID,
                                                          package: fromPackageDataToPackageSelected(selectedPackage,
                                                                                                    weight: Double(shipmentWeight) ?? 0,
@@ -304,6 +308,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 self.shippingLabel = shippingLabel
                 postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
             case .failure(let error):
+                self.labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
+                                                       message: Localization.LabelPurchaseError.message,
+                                                       feedbackType: .error,
+                                                       actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
+                    self?.purchaseLabel()
+                }
                 DDLogError("⛔️ Error purchasing shipping label: \(error)")
             }
         }
@@ -606,6 +616,18 @@ private extension WooShippingCreateLabelsViewModel {
             static let missing = NSLocalizedString("wooShipping.createLabels.addressVerification.destinationMissing",
                                                               value: "Destination address missing",
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
+        }
+
+        enum LabelPurchaseError {
+            static let title = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.title",
+                                                   value: "Error purchasing shipping label.",
+                                                   comment: "Title of the notice when purchasing a shipping label fails")
+            static let message = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.message",
+                                                   value: "We are unable to purchase the shipping label. Please try again.",
+                                                   comment: "Message in the notice when purchasing a shipping label fails")
+            static let retry = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.retry",
+                                                   value: "Retry",
+                                                   comment: "Button to retry label purchase when an error occurs")
         }
     }
 }

@@ -37,6 +37,8 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var showingCustomsForm = false
+
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
@@ -82,6 +84,9 @@ struct WooShippingCreateLabelsView: View {
                         .navigationTitle(Localization.BottomSheet.editDestination)
                         .navigationBarTitleDisplayMode(.inline)
                 }
+            }
+            .sheet(isPresented: $showingCustomsForm) {
+                WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
             }
         }
     }
@@ -231,7 +236,7 @@ private extension WooShippingCreateLabelsView {
                     }
                 },
                                           onTap: {
-                    // TODO: present customs form
+                    showingCustomsForm = true
                 })
             }
         }

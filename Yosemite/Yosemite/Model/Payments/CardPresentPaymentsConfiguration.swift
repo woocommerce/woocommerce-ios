@@ -46,7 +46,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public init(country: CountryCode, shouldAllowTapToPayInUK: Bool = false) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
-        case .US, .PR:
+        case .US:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],
@@ -55,6 +55,22 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedReaders: [.chipper, .stripeM2, .appleBuiltIn],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
+                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+            )
+        case .PR:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.USD],
+                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                supportedReaders: [.chipper, .stripeM2],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "9.0.0"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),

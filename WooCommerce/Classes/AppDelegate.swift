@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import Storage
 import class Networking.UserAgent
-import class Networking.MediaUploadSessionManager
+import class Yosemite.MediaUploadSessionManager
 import Experiments
 import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics

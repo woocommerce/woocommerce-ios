@@ -3,18 +3,22 @@ import Foundation
 
 /// Mapper: Product
 ///
-struct ProductMapper: Mapper {
+public struct ProductMapper: Mapper {
 
     /// Site Identifier associated to the product that will be parsed.
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Endpoints.
     ///
-    let siteID: Int64
+    public let siteID: Int64
 
+    /// Public initializer
+    public init(siteID: Int64) {
+        self.siteID = siteID
+    }
 
     /// (Attempts) to convert a dictionary into Product.
     ///
-    func map(response: Data) throws -> Product {
+    public func map(response: Data) throws -> Product {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

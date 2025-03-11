@@ -343,4 +343,4 @@ public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingS
 
 // MARK: - Internal ReadOnly Models
 
-typealias UploadableMedia = Networking.UploadableMedia
+public typealias UploadableMedia = Networking.UploadableMedia

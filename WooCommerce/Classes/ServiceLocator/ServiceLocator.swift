@@ -4,7 +4,6 @@ import Experiments
 import Storage
 import Yosemite
 import Hardware
-import class Networking.MediaUploadSessionManager
 import WooFoundation
 import WordPressShared
 

@@ -168,44 +168,31 @@ public final class MediaUploadSessionManager: NSObject {
         components.queryItems = parameters.map { URLQueryItem(name: $0.key, value: $0.value) }
         request.url = components.url
 
+        // Create a productImage object to use when updating the status after task completion
+        let productImage = ProductImage(
+            imageID: wpMedia.mediaID,
+            dateCreated: wpMedia.date,
+            dateModified: nil,
+            src: wpMedia.src,
+            name: wpMedia.title?.rendered,
+            alt: wpMedia.alt)
+
         // The authentication should be handled by the background session
         let task = backgroundSession.dataTask(with: request)
+        // Store information needed for completion in task description
+        let mediaInfo = [
+            "uploadID": uploadID,
+            "assetType": assetType != nil ? "hasAsset" : "noAsset",
+            "productID": "\(productID)",
+            "siteID": "\(siteID)"
+        ]
+        let mediaInfoData = try? JSONSerialization.data(withJSONObject: mediaInfo)
+        let mediaInfoString = mediaInfoData?.base64EncodedString() ?? ""
+        
         // Store authentication headers in task description for later use, using a specific prefix to differentiate updateProductID calls
-        let taskDescription = "updateProductID-\(uploadID)" + (authHeaders != nil ? "|auth=\(encodeHeaders(authHeaders!))" : "")
+        let taskDescription = "updateProductID-\(uploadID)-\(mediaInfoString)" + (authHeaders != nil ? "|auth=\(encodeHeaders(authHeaders!))" : "")
         task.taskDescription = taskDescription
         task.resume()
-
-        // Update the status to remote FIRST
-        if let asset = assetType {
-            let productImage = ProductImage(
-                imageID: wpMedia.mediaID,
-                dateCreated: wpMedia.date,
-                dateModified: nil,
-                src: wpMedia.src,
-                name: wpMedia.title?.rendered,
-                alt: wpMedia.alt)
-
-            let remoteStatus = ProductImageStatus.remote(
-                image: productImage,
-                siteID: siteID,
-                productID: productOrVariationID
-            )
-
-            // Remove uploading status and add remote status
-            statusStorage.removeStatus(where: { existingStatus in
-                if case .uploading(let uploadingAsset, let uploadingSiteID, let uploadingProductID) = existingStatus,
-                   uploadingAsset == asset &&
-                   uploadingSiteID == siteID &&
-                   uploadingProductID == productOrVariationID {
-                    return true
-                }
-                return false
-            })
-
-            statusStorage.addStatus(remoteStatus)
-            
-            // THEN wait until the association request completes before checking if all uploads are done
-        }
     }
 
     /// Extracts a product ID from a ProductOrVariationID
@@ -388,8 +375,13 @@ public final class MediaUploadSessionManager: NSObject {
             return false
         }
 
-        if let uploadStatus = uploadingStatuses.first,
+        // Update status to failure if we can find a matching status
+        if let uploadStatus = uploadingStatuses.first(where: { $0.asset != nil }),
            let asset = uploadStatus.asset {
+            
+            // Get the product ID for later check
+            let productID = extractProductID(from: uploadStatus.productOrVariationID) ?? 0
+            let siteID = uploadStatus.siteID
 
             // Update status to failure
             let failureStatus = ProductImageStatus.uploadFailure(
@@ -400,17 +392,11 @@ public final class MediaUploadSessionManager: NSObject {
             )
 
             statusStorage.updateStatus(failureStatus)
-        }
-
-        // After a failure, check if all uploads for the product are now complete
-        if let status = statusStorage.findStatus(where: { status in
-            if case .uploading = status {
-                return true
+            
+            // After marking as failure, check if all uploads are complete
+            if productID > 0 {
+                checkAndUpdateProductIfAllUploadsComplete(productID: productID, siteID: siteID, authHeaders: nil)
             }
-            return false
-        }),
-        let productID = extractProductID(from: status.productOrVariationID) {
-            checkAndUpdateProductIfAllUploadsComplete(productID: productID, siteID: status.siteID, authHeaders: nil)
         }
 
         DispatchQueue.main.async { [weak self] in
@@ -521,8 +507,47 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
                                                      error: Error?,
                                                      originalUploadID: String,
                                                      authHeaders: [String: String]?) {
+        // Extract media information from task description if available
+        var mediaInfo: [String: String]?
+        let descriptionComponents = task.taskDescription?.components(separatedBy: "-")
+        if descriptionComponents?.count ?? 0 >= 3, let infoBase64 = descriptionComponents?[2].components(separatedBy: "|").first,
+           let infoData = Data(base64Encoded: infoBase64),
+           let info = try? JSONSerialization.jsonObject(with: infoData) as? [String: String] {
+            mediaInfo = info
+        }
+        
+        let uploadID = mediaInfo?["uploadID"] ?? originalUploadID
+        let siteIDStr = mediaInfo?["siteID"] ?? "0"
+        let productIDStr = mediaInfo?["productID"] ?? "0"
+        let siteID = Int64(siteIDStr) ?? 0
+        let productID = Int64(productIDStr) ?? 0
+        let hasAsset = mediaInfo?["assetType"] == "hasAsset"
+        
         if let error = error {
             DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Product update failure for task (\(originalUploadID)): \(error.localizedDescription)")
+            
+            // On failure, update the status to failure if we can find it
+            if let status = statusStorage.findStatus(where: { status in
+                if case .uploading(_, let sSiteID, let sProdID) = status,
+                   sSiteID == siteID,
+                   let extractedID = extractProductID(from: sProdID),
+                   extractedID == productID {
+                    return true
+                }
+                return false
+            }) {
+                // If we found the status, mark it as failure
+                if let asset = status.asset {
+                    let failureStatus = ProductImageStatus.uploadFailure(
+                        asset: asset,
+                        error: error,
+                        siteID: siteID,
+                        productID: status.productOrVariationID
+                    )
+                    statusStorage.updateStatus(failureStatus)
+                }
+            }
+            
             return
         }
 
@@ -535,38 +560,56 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
 
         DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Product update successful for upload ID: \(originalUploadID)")
         
-        // Find all remote statuses
-        let allStatuses = statusStorage.getAllStatuses()
-        let remoteStatuses = allStatuses.filter { status in
-            if case .remote = status {
+        // First find the matching status to update it to remote
+        if hasAsset, let status = statusStorage.findStatus(where: { status in
+            if case .uploading(_, let sSiteID, let sProdID) = status,
+               sSiteID == siteID,
+               let extractedID = extractProductID(from: sProdID),
+               extractedID == productID {
                 return true
             }
             return false
-        }
-        
-        // Group remote statuses by product and site ID using a string key
-        var productSiteGroups: [String: [(productID: Int64, siteID: Int64)]] = [:]
-        
-        for status in remoteStatuses {
-            let prodID: Int64
-            switch status.productOrVariationID {
-            case .product(let id): prodID = id
-            case .variation(let parentID, _): prodID = parentID
+        }), let asset = status.asset, let data = taskResponseData[task.taskIdentifier] {
+            // Try to decode the response to get the media details
+            let mapper = WordPressMediaMapper()
+            do {
+                let wpMedia = try mapper.map(response: data)
+                
+                // Create a product image from the media response
+                let productImage = ProductImage(
+                    imageID: wpMedia.mediaID,
+                    dateCreated: wpMedia.date,
+                    dateModified: nil,
+                    src: wpMedia.src,
+                    name: wpMedia.title?.rendered,
+                    alt: wpMedia.alt)
+                
+                // Update status to remote
+                let remoteStatus = ProductImageStatus.remote(
+                    image: productImage,
+                    siteID: siteID,
+                    productID: status.productOrVariationID
+                )
+                
+                // Remove uploading status and add remote status
+                statusStorage.removeStatus(where: { existingStatus in
+                    if case .uploading(let uploadingAsset, let uploadingSiteID, let uploadingProductID) = existingStatus,
+                       uploadingAsset == asset &&
+                       uploadingSiteID == siteID &&
+                       uploadingProductID == status.productOrVariationID {
+                        return true
+                    }
+                    return false
+                })
+                
+                statusStorage.addStatus(remoteStatus)
+            } catch {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Failed to parse media response: \(error)")
             }
-            
-            let key = "\(status.siteID)-\(prodID)"
-            var group = productSiteGroups[key] ?? []
-            group.append((productID: prodID, siteID: status.siteID))
-            productSiteGroups[key] = group
         }
         
-        // Check each unique product-site combination
-        for (_, entries) in productSiteGroups {
-            // Just take the first entry since all entries in the same group have the same productID and siteID
-            if let first = entries.first {
-                checkAndUpdateProductIfAllUploadsComplete(productID: first.productID, siteID: first.siteID, authHeaders: authHeaders)
-            }
-        }
+        // After updating status, check if all uploads for this product are complete
+        checkAndUpdateProductIfAllUploadsComplete(productID: productID, siteID: siteID, authHeaders: authHeaders)
     }
 
     private func handleUpdateProductWithImagesTaskCompletion(task: URLSessionTask,

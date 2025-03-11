@@ -69,6 +69,7 @@ struct WooShippingCreateLabelsView: View {
                     Button(viewModel.canViewLabel ? Localization.close : Localization.cancel) {
                         dismiss()
                     }
+                    .disabled(viewModel.isPurchasingLabel)
                 }
             }
             .sheet(isPresented: $isOriginAddressListPresented) {
@@ -83,6 +84,7 @@ struct WooShippingCreateLabelsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
+            .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
         }
     }
 }
@@ -116,6 +118,7 @@ private extension WooShippingCreateLabelsView {
                     WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
                 }
             }
+            .disabled(viewModel.isPurchasingLabel)
             .padding(Layout.contentSpacing)
         }
     }
@@ -278,6 +281,7 @@ private extension WooShippingCreateLabelsView {
                         }
                     }
                     .buttonStyle(TextButtonStyle())
+                    .disabled(viewModel.isPurchasingLabel)
 
                     if viewModel.isOriginAddressUnverified {
                         HStack(spacing: 4) {
@@ -311,6 +315,7 @@ private extension WooShippingCreateLabelsView {
             }
             .buttonStyle(TextButtonStyle())
             .renderedIf(!viewModel.canViewLabel)
+            .disabled(viewModel.isPurchasingLabel)
         }
         .padding(Layout.bottomSheetPadding)
     }

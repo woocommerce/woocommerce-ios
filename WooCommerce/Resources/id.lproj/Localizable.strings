@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-01-14 09:54:10+0000 */
+/* Translation-Revision-Date: 2025-02-25 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -264,29 +264,14 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Tersedia sebagai standar dalam WooCommerce Payments (batasan berlaku). Penyedia jasa pembayaran lainnya mungkin memerlukan ekstensi tambahan.";
 
-/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order" = "1. Buat pesanan";
-
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Hanya tersedia di Amerika Serikat - ekstensi tambahan diperlukan bagi negara-negara lain.";
-
-/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
-"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Ketuk “Terima Pembayaran” dan pilih “Ketuk untuk Bayar di iPhone”.";
-
-/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
-"3. Present your iPhone to the customer." = "3. Tunjukkan iPhone Anda kepada pelanggan.";
 
 /* Tutorial steps on the application password tutorial screen */
 "3. When the connection is complete, you will be logged in to your store." = "3. Setelah koneksi selesai, Anda akan login ke toko Anda.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4–6 menit";
-
-/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
-"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Pelanggan Anda memegang kartunya secara horizontal di atas iPhone Anda, di atas simbol nirsentuh.";
-
-/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
-"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Setelah tanda centang “Selesai” terlihat, toko Anda akan memproses pembayaran dan transaksi akan selesai.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -342,12 +327,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Pemulihan keranjang terbengkalai";
-
-/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
-"About Tap to Pay" = "Tentang Ketuk untuk Bayar";
-
-/* Navigation title for the About Tap to Pay on iPhone Screen. */
-"About Tap to Pay on iPhone" = "Tentang Ketuk untuk Bayar di iPhone";
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Tentang aplikasi";
@@ -559,14 +538,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Tambahkan info 'file yang dapat diunduh' untuk produk dari jarak jauh";
 
-/* Description for the empty state on the Tax Rates selector screen */
-"Add tax rates in admin. Only tax rates with location information will be shown here." = "Tambahkan tarif pajak di admin. Hanya tarif pajak dengan informasi lokasi yang akan ditunjukkan di sini.";
-
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Tambahkan deskripsi kupon.";
-
-/* Body for the action to store selected tax rate */
-"Add this rate to all created orders" = "Tambahkan tarif ini ke semua pesanan yang dibuat";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Tambah ke paket baru";
@@ -733,21 +706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when Bluetooth is not enabled for this application. */
 "An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Terjadi error saat mengakses Bluetooth - aktifkan Bluetooth dan coba lagi";
-
-/* An error description explaining that a Menu could not be created. */
-"An error occurred creating the Menu." = "Kesalahan terjadi ketika membuat Menu.";
-
-/* An error description explaining that a Menu could not be deleted. */
-"An error occurred deleting the Menu." = "Kesalahan terjadi ketika menghapus Menu.";
-
-/* An error description explaining that Menus could not be fetched. */
-"An error occurred fetching the Menus." = "Kesalahan terjadi ketika menarik Menu.";
-
-/* An error description explaining that a Menu could not be updated. */
-"An error occurred updating the Menu." = "Kesalahan terjadi ketika memperbarui Menu.";
-
-/* Used when a remote response doesn't have a specific message for a specific request */
-"An error occurred while processing your request: " = "Terjadi error saat mencoba memproses permintaan Anda: ";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Transaksi yang identik dilakukan baru-baru ini. Jika ingin melanjutkan, coba metode pembayaran lainnya";
@@ -1235,7 +1193,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
-   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel prompt for user information.
@@ -1266,7 +1223,6 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "Batalkan";
 
@@ -1298,28 +1254,19 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Tidak dapat menambahkan paket";
 
-/* Order gift card error notice message when the gift card cannot be applied.
-   Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "Tidak dapat menerapkan kartu hadiah pada pesanan";
-
-/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
-"Cannot apply gift card to order error: %1$@" = "Error tidak dapat menerapkan kartu hadiah pada pesanan: %1$@";
-
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Tidak dapat menduplikasi produk";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Informasi tentang WP-Admin situs Anda tidak dapat ditemukan. Mohon ulangi.";
 
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
-   The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Tidak dapat memperbarui Produk";
 
 /* Title of the notice when there is an error updating selected products */
 "Cannot update products" = "Tidak dapat memperbarui produk";
 
-/* The title of the alert when there is an error uploading an image
-   Title of the alert when there is an error uploading image(s) */
+/* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Tidak dapat mengunggah gambar";
 
 /* Error message displayed when failed to check for Jetpack connection. */
@@ -1327,9 +1274,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Tidak dapat memverifikasi instalasi WooCommerce situs Anda.";
-
-/* Text to prompt the user to edit tax rates in the web */
-"Can’t find the rate you’re looking for?" = "Tarif yang Anda cari tidak ada?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Cape Verde";
@@ -1610,7 +1554,7 @@ which should be translated separately and considered part of this sentence. */
 "Colombia" = "Kolombia";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
-"Come back soon for more tips and insights on growing your store" = "Segera kembali untuk belajar lebih banyak tips dan wawasan untuk mengembangkan toko Anda";
+"Come back soon for more tips and insights on growing your store." = "Segera kembali untuk belajar lebih banyak tips dan wawasan untuk mengembangkan toko Anda";
 
 /* Country option for a site address. */
 "Comoros" = "Komoro";
@@ -1809,9 +1753,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Lanjutkan Dengan WordPress.com";
 
-/* Part of a prompt suggesting that there is more content for the user to read. */
-"Continue reading" = "Lanjutkan membaca";
-
 /* Button title. Tapping begins log in using Apple. */
 "Continue with Apple" = "Lanjutkan dengan Apple";
 
@@ -1851,18 +1792,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Kosta Rika";
-
-/* Message shown when site purchases API failed */
-"Could not check site purchases." = "Tidak dapat memeriksa pembelian situs.";
-
-/* Error message informing the user that there was a problem subscribing to a site or feed. */
-"Could not follow the site at the address specified." = "Tidak dapat mengikuti situs pada lokasi yang ditentukan.";
-
-/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Could not launch your store" = "Tidak dapat meluncurkan toko Anda";
-
-/* Error message informing the user that there was a problem unsubscribing to a site or feed. */
-"Could not unfollow the site at the address specified." = "Tidak dapat membatalkan mengikuti situs pada alamat yang ditetapkan.";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Tidak dapat terhubung ke situs WordPress. Tidak ada situs WordPress yang valid di alamat ini. Periksa alamat situs (URL) yang Anda masukkan.";
@@ -1972,9 +1901,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Create Order iOS Shortcut */
 "Create order" = "Buat pesanan";
-
-/* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "Buat label pengiriman dari perangkat Anda!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Buat variasi pertama Anda";
@@ -2261,7 +2187,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
@@ -2342,7 +2267,6 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
-   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2438,11 +2362,8 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's draft status */
 "Draft" = "Konsep";
 
-/* Drag and drop helper text above photo list in Product images screen */
-"Drag and drop to re-order photos" = "Tarik dan lepas untuk mengurutkan foto";
-
 /* Subtitle of the empty state of the Blaze campaign list view */
-"Drive more sales to your store with Blaze" = "Tingkatkan penjualan toko Anda dengan Blaze";
+"Drive more sales to your store with Blaze." = "Tingkatkan penjualan toko Anda dengan Blaze";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplikat";
@@ -2512,9 +2433,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Edit status atau harga untuk lebih dari satu produk pada saat bersamaan";
-
-/* Title of the button that prompts the user to edit tax rates in the web */
-"Edit tax rates in admin" = "Edit tarif pajak di admin";
 
 /* Country option for a site address. */
 "Egypt" = "Mesir";
@@ -2900,7 +2818,7 @@ which should be translated separately and considered part of this sentence. */
 "Explore" = "Telusuri";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"Explore how you can increase your store sales" = "Cari tahu bagaimana Anda dapat meningkatkan penjualan toko Anda";
+"Explore how you can increase your store sales." = "Cari tahu bagaimana Anda dapat meningkatkan penjualan toko Anda";
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Eksternal\/Afiliasi";
@@ -3044,9 +2962,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tutorial steps on the application password tutorial screen */
 "Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Ikuti langkah-langkah berikut untuk menghubungkan aplikasi Woo secara langsung dengan toko Anda menggunakan kata sandi aplikasi.\n\n1. Pertama, login dengan kredensial situs Anda.\n\n2. Jika diminta, setujui koneksi dengan mengetuk tombol konfirmasi.";
-
-/* User role badge */
-"Follower" = "Pengikut";
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Lupa kata sandi?";
@@ -3209,18 +3124,10 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "Kode kartu hadiah";
 
-/* Order gift card error notice message when the gift card is invalid.
-   Order gift card error notice title when the gift card is invalid. */
-"Gift card is invalid" = "Kartu hadiah tidak valid";
-
-/* Order gift card error notice title when the gift card is invalid. */
-"Gift card is not applied" = "Kartu hadiah tidak diterapkan";
-
 /* No comment provided by engineer. */
 "Gift cards" = "Kartu hadiah";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
    Title on the navigation bar for the products feedback survey */
@@ -3418,9 +3325,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Bagaimana kami dapat meningkatkan layanan?";
 
-/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
-"How it works" = "Ini cara kerjanya";
-
 /* Country option for a site address. */
 "Hungary" = "Hungaria";
 
@@ -3501,16 +3405,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Pembayaran Langsung";
 
-/* Main prompt for the screen to select the preferred provider for In-Person Payments */
-"In-Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Pembayaran Langsung dapat diproses melalui penyedia pembayaran berikut. Penyedia mana yang ingin Anda gunakan?";
-
-/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
-"In-Person Payments is currently unavailable" = "Pembayaran Langsung saat ini tidak tersedia";
-
-/* Title for the error screen when the merchant's payment account has been rejected. */
-"In-Person Payments isn't available for this store" = "Pembayaran Langsung tidak tersedia untuk toko ini";
-
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Pembelian dalam aplikasi";
 
@@ -3533,9 +3427,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "Termasuk file yang dapat diunduh dengan pembelian";
-
-/* Describes a standard *.wordpress.com site domain */
-"Included with Site" = "Disertakan dengan Situs";
 
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
 "Includes %1$@ tracking" = "Termasuk pelacakan %1$@";
@@ -3643,12 +3534,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "Pengenal Tidak Valid";
 
-/* The title of the alert when there is an error with the package name */
-"Invalid Package Name" = "Nama Paket Tidak Valid";
-
-/* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "SKU Produk Tidak Valid";
-
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Alamat Situs Tak Sah";
 
@@ -3667,9 +3552,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Titik akhir tidak valid";
 
-/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
-"Invalid gift card error: %1$@" = "Error kartu hadiah tidak valid: %1$@";
-
 /* No comment provided by engineer. */
 "Invalid username" = "Nama pengguna tidak sah";
 
@@ -3684,6 +3566,24 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing external inventory.
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Persediaan";
+
+/* Main prompt for the screen to select the preferred provider for In-Person Payments
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "Pembayaran Langsung dapat diproses melalui penyedia pembayaran berikut. Penyedia mana yang ingin Anda gunakan?";
+
+/* Title for the error screen when the merchant's payment account is restricted because it's under reviw
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments is currently unavailable" = "Pembayaran Langsung saat ini tidak tersedia";
+
+/* Title for the error screen when the merchant's payment account has been rejected.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"In‑Person Payments isn't available for this store" = "Pembayaran Langsung tidak tersedia untuk toko ini";
 
 /* Country option for a site address. */
 "Iran" = "Iran";
@@ -3736,9 +3636,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the unfinished application password alert */
 "It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Sepertinya Anda belum menyetujui koneksi aplikasi. Anda yakin ingin keluar?";
-
-/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
-"It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Sepertinya Kata Sandi Aplikasi situs Anda, %@, dalam kondisi nonaktif. Aktifkan Kata Sandi untuk menggunakan aplikasi WooCommerce";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Sepertinya situs %@ Anda adalah situs WordPress.com sederhana yang tidak dapat menginstal plugin. Upgrade paket Anda untuk dapat menggunakan WooCommerce.";
@@ -4038,7 +3935,6 @@ which should be translated separately and considered part of this sentence. */
    Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with a site address that does not have WooCommerce
    Action button that will restart the login flow.Presented when the user tries to log in to the app with a simple WP.com site.
-   Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled.
    Button to restart the login flow.
    Button to trigger connection to another account in store picker */
 "Log In With Another Account" = "Login Dengan Akun Lain";
@@ -4075,9 +3971,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Login ke akun WordPress.com Anda dengan alamat email.";
-
-/* Button that will navigate to the authentication flow with WP.com */
-"Log in with WordPress.com" = "Log masuk dengan WordPress.com";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log in with another account" = "Login Dengan Akun Lain";
@@ -4187,9 +4080,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Kelola langganan Anda";
 
-/* Section name for manual offsets in time zone selector */
-"Manual Offsets" = "Offset Manual";
-
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Pengembalian Dana Manual";
 
@@ -4198,9 +4088,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
 "ManualTrackingViewController.scanView.titleView" = "Pindai barcode atau Kode QR dengan nomor pelacakan";
-
-/* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
-"Mapped Domain" = "Domain Dipetakan";
 
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Tandai Selesai";
@@ -4256,9 +4143,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
-
-/* Error message to show to users when trying to upload a media object with no local file associated */
-"Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
 
 /* Title of the Menu tab */
 "Menu" = "Menu";
@@ -4318,9 +4202,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Mongolia" = "Mongolia";
-
-/* Caption displayed in promotional screens shown during the login flow. */
-"Monitor and approve your product reviews" = "Pantau dan setujui ulasan produk Anda";
 
 /* Country option for a site address. */
 "Montenegro" = "Montenegro";
@@ -4686,8 +4567,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information.
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -4730,9 +4610,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Hanya pemilik situs yang dapat mengelola metode pembayaran label pengiriman. Hubungi %1$@ (%2$@) untuk mengelola metode pembayaran.";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"Oops, some unexpected errors happened." = "Waduh, terjadi error tak terduga.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Buka pengaturan perangkat";
@@ -5144,9 +5021,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Pastikan ponsel Anda memenuhi persyaratan berikut: iPhone XS atau yang lebih baru, dengan iOS 16.7 atau yang lebih tinggi. Hubungi dukungan jika error ini muncul pada perangkat yang didukung.";
 
-/* Order gift card error notice message when the gift card is invalid. */
-"Please check the remaining balance of the gift card." = "Harap periksa sisa saldo kartu hadiah.";
-
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Pastikan bahwa ID Apple Anda valid, lalu coba lagi. Diperlukan ID Apple yang valid untuk menerima Ketentuan Layanan Apple";
 
@@ -5274,8 +5148,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Silakan coba lagi atau hubungi dukungan untuk mendapatkan bantuan.";
 
-/* Account creation error when an unexpected error occurs.
-   The message of the alert when there is an error uploading an image */
+/* Account creation error when an unexpected error occurs. */
 "Please try again." = "Harap coba lagi.";
 
 /* Error message when Jetpack activation fails */
@@ -5797,9 +5670,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain contact info form. */
 "Register domain" = "Daftarkan domain";
 
-/* Describes a domain that was registered with WordPress.com */
-"Registered Domain" = "Domain Terdaftar";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Harga Normal";
 
@@ -5896,9 +5766,6 @@ which should be translated separately and considered part of this sentence. */
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Wajib";
-
-/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
-"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Memerlukan iPhone XS atau yang lebih baru dengan iOS %1$@ atau yang lebih baru. Simbol Nirsentuh adalah merek dagang yang dimiliki oleh dan digunakan dengan izin EMVCo, LLC.";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Log Aktivitas";
@@ -6012,9 +5879,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
-
-/* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "SKU telah digunakan oleh produk lain";
 
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
@@ -6250,9 +6114,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Pilih jenis produk";
 
-/* Title for the tax rate selector section */
-"Select a tax rate" = "Pilih tarif pajak";
-
 /* Title of a button that selects all products for bulk update */
 "Select all" = "Pilih semua";
 
@@ -6325,11 +6186,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to set a new tax rate to an order */
 "Set New Tax Rate" = "Atur Tarif Pajak Baru";
 
-/* Navigation title for the tax rate selector */
-"Set Tax Rate" = "Atur Tarif Pajak";
-
-/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
-   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
 "Set Up Tap to Pay on iPhone" = "Atur fitur Ketuk untuk Bayar di iPhone";
 
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
@@ -6400,8 +6257,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Bagikan URL";
 
-/* Title of the feedback action button on the In-Person Payments feedback banner
-   Title of the feedback button in the action sheet. */
+/* Title of the feedback action button on the In-Person Payments feedback banner */
 "Share feedback" = "Bagikan masukan";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
@@ -6568,9 +6424,6 @@ which should be translated separately and considered part of this sentence. */
 /* Site Address title on the support form */
 "Site Address" = "Alamat Situs";
 
-/* Describes a site redirect domain */
-"Site Redirect" = "Pengalihan Situs";
-
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "Alamat situs";
 
@@ -6640,9 +6493,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Maaf, tapi nama pengguna Anda mengandung frase tak sah %@.";
-
-/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Maaf, penghapusan gambar pada variasi produk didukung pada WooCommerce 4.7 atau yang lebih baru. Silakan perbarui situs Anda.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Maaf, alamat situs hanya dapat mengandung huruf kecil (a-z) dan angka saja.";
@@ -6978,9 +6828,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Ketuk untuk Bayar di iPhone sudah siap";
 
-/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
-"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Dengan Ketuk untuk Bayar di iPhone, Anda dapat menerima semua jenis pembayaran nirsentuh – dari kartu debit dan kredit fisik, sampai Apple Pay dan dompet digital lainnya – tanpa perlu membeli pembaca kartu fisik.";
-
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Ketuk untuk menyisipkan Penggaris Horizontal";
 
@@ -7146,14 +6993,20 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "That username is not allowed." = "Nama pengguna itu tidak diijinkan.";
 
-/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
-"The %1$@ extension cannot be in test mode for In-Person Payments. Please disable test mode." = "Ekstensi %1$@ tidak dapat dipakai dalam mode pengujian untuk Pembayaran Langsung. Nonaktifkan mode pengujian.";
+/* Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension cannot be in test mode for In‑Person Payments. Please disable test mode." = "Ekstensi %1$@ tidak dapat dipakai dalam mode pengujian untuk Pembayaran Langsung. Nonaktifkan mode pengujian.";
 
-/* Error message when a Card Present Payments extension is not activated */
-"The %1$@ extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "Ekstensi %1$@ sudah diinstal di toko Anda tetapi belum diaktifkan. Harap aktifkan terlebih dahulu untuk menerima Pembayaran Langsung.";
+/* Error message when a Card Present Payments extension is not activated
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"The %1$@ extension is installed on your store but not activated. Please activate it to accept In‑Person Payments" = "Ekstensi %1$@ sudah diinstal di toko Anda tetapi belum diaktifkan. Harap aktifkan terlebih dahulu untuk menerima Pembayaran Langsung.";
 
-/* Error message when a Card Present Payments extension is installed but the version is not supported */
-"The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "Ekstensi %1$@ diinstal di toko Anda, tetapi perlu diperbarui agar dapat mendukung Pembayaran Langsung. Silakan perbarui ke versi terbaru.";
+/* Error message when a Card Present Payments extension is installed but the version is not supported
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "Ekstensi %1$@ diinstal di toko Anda, tetapi perlu diperbarui agar dapat mendukung Pembayaran Langsung. Silakan perbarui ke versi terbaru.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "Koneksi Bluetooth dengan pembaca kartu tiba-tiba terputus";
@@ -7163,9 +7016,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Pesanan tidak dapat dimuat!";
-
-/* Error message describing a problem with a URL. */
-"The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Jumlah ini tidak didukung oleh Ketuk untuk Bayar di iPhone. Coba gunakan perangkat keras pembaca atau metode pembayaran lainnya.";
@@ -7263,20 +7113,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Domain yang dibeli akan mengalihkan pengguna ke alamat utama Anda.";
 
-/* Caption displayed in the simplified prologue screen */
-"The ecommerce platform that grows with you" = "Platform e-commerce yang tumbuh bersama Anda";
-
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Saat pertama kali menggunakan Ketuk untuk Bayar di iPhone, Anda akan diarahkan untuk menerima Ketentuan Layanan Apple.";
-
-/* Order gift card error thrown when the gift card is not applied. */
-"The gift card is not applied." = "Kartu hadiah tidak diterapkan.";
-
-/* The message of the alert when another custom package has the same name */
-"The new custom package name is not unique." = "Nama paket khusus baru tidak unik.";
-
-/* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "Nama paket layanan baru tidak unik.";
 
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "Nilai pembayaran melewati batas untuk kartu yang dimasukkan. Coba gunakan metode pembayaran lainnya.";
@@ -7343,9 +7181,6 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when the response couldn't be serialized. */
 "The serialization of the response failed." = "Serialisasi respons gagal.";
 
-/* No comment provided by engineer. */
-"The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Server memberi respon kosong. Biasanya ini berarti Anda perlu meningkatkan batas memori situs Anda.";
-
 /* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
 "The shipping height for this product. Editable." = "Tinggi pengiriman untuk produk ini. Dapat disunting.";
 
@@ -7364,12 +7199,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown a URL does not point to an existing site.
    Error message shown when a URL does not point to an existing site. */
 "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Situs di alamat ini bukan situs WordPress. Agar kami dapat menghubungkannya, situs harus menggunakan WordPress.";
-
-/* Message shown when site deletion API failed */
-"The site could not be deleted." = "Situs tidak dapat dihapus.";
-
-/* Message shown when site export API failed */
-"The site could not be exported." = "Situs tidak dapat diekspor.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Kuantitas stok untuk produk ini. Dapat disunting.";
@@ -7401,11 +7230,17 @@ which should be translated separately and considered part of this sentence. */
 /* The error message shown if the app can't show a theme demo. */
 "ThemesPreviewView.errorLoadingThemeDemo" = "Tidak dapat merender demo untuk tema ini. Coba tema lain.";
 
-/* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
-"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Ada persyaratan yang tertunda untuk akun Anda. Penuhi persyaratan tersebut selambat-lambatnya %1$@ agar dapat tetap menerima Pembayaran Langsung.";
+/* Error message when because there are pending requirements in the merchant's
+In-Person Payments account.
+%1$d will contain the localized deadline (e.g. August 11, 2021)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In‑Person Payments." = "Ada persyaratan yang tertunda untuk akun Anda. Penuhi persyaratan tersebut selambat-lambatnya %1$@ agar dapat tetap menerima Pembayaran Langsung.";
 
-/* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
-"There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Ada persyaratan yang tertunda untuk akun Anda. Penuhi persyaratan tersebut agar dapat tetap menerima Pembayaran Langsung.";
+/* Error message when there are pending requirements in the merchant's payment account (without a known deadline)
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"There are pending requirements for your account. Please complete those requirements to keep accepting In‑Person Payments." = "Ada persyaratan yang tertunda untuk akun Anda. Penuhi persyaratan tersebut agar dapat tetap menerima Pembayaran Langsung.";
 
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Terjadi masalah dengan koneksi Jetpack toko Anda. Sambungkan Jetpack kembali atau hubungi kami dan kami akan senang membantu Anda!";
@@ -7416,14 +7251,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message when we there is a generic error in the recovery tool */
 "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Tampaknya situs Anda mengalami masalah.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
 
-/* Error message informing the user that there was a problem blocking posts from a site from their reader. */
-"There was a problem blocking posts from the specified site." = "Terjadi kesalahan saat memblokir pos dari situs yang telah ditentukan.";
-
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Ada kendala saat berkomunikasi dengan situs.";
-
-/* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
-"There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
 
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Terjadi error saat berkomunikasi dengan situs Anda.";
@@ -7489,9 +7318,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "Bulan Ini";
-
-/* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "SKU ini digunakan pada produk lain atau tidak valid.";
 
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "Minggu Ini";
@@ -7565,14 +7391,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "Akun pengguna berikut tidak dapat ditutup jika memiliki langganan aktif.";
 
-/* Explanatory text for the tax rate selector */
-"This will change the customer’s address to the location of the tax rate you select." = "Langkah ini akan mengganti alamat pelanggan menjadi lokasi tarif pajak yang Anda pilih.";
-
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Ini akan membuat variasi untuk setiap kemungkinan kombinasi atribut variasi (%d variasi).";
-
-/* Footnote for the action to store selected tax rate */
-"This will not affect online orders" = "Hal ini tidak akan memengaruhi pesanan online.";
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Waktu habis, tetapi jangan khawatir, keamanan Anda menjadi prioritas kami. Coba lagi!";
@@ -7604,7 +7424,7 @@ which should be translated separately and considered part of this sentence. */
 "To add a Product Discount, please remove all Coupons from your order" = "Untuk menambahkan Diskon Produk, silakan hapus semua Kupon dari pesanan Anda";
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Untuk menambahkan variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first." = "Untuk menambahkan variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Untuk menutup akun ini sekarang juga, hubungi tim dukungan kami.";
@@ -7669,9 +7489,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
-/* Used when a Reader Topic is not found for a specific id */
-"Topic not found for id:" = "Topik tidak ditemukan untuk ID:";
-
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Total Pesanan";
 
@@ -7707,9 +7524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Nomor pelacakan %@";
-
-/* Describes a domain that was transferred from elsewhere to wordpress.com */
-"Transferred Domain" = "Domain yang Ditransfer";
 
 /* Display label for the review's trash status
    Move a comment to the trash */
@@ -7786,8 +7600,7 @@ which should be translated separately and considered part of this sentence. */
 "Try a test order" = "Coba pesanan uji coba";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
-   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
 "Try again" = "Coba lagi";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
@@ -8053,8 +7866,10 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Tidak dapat memperbarui harga";
 
-/* Title for the error screen when In-Person Payments is unavailable */
-"Unable to verify In-Person Payments for this store" = "Tidak dapat memverifikasi Pembayaran Langsung untuk toko ini";
+/* Title for the error screen when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"Unable to verify In‑Person Payments for this store" = "Tidak dapat memverifikasi Pembayaran Langsung untuk toko ini";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Tidak dapat memverifikasi alamat email. Silakan coba lagi nanti.";
@@ -8068,9 +7883,7 @@ which should be translated separately and considered part of this sentence. */
 /* Undo Action */
 "Undo" = "Urungkan";
 
-/* The message of the alert when there is an unexpected error adding the package
-   The message of the alert when there is an unexpected error updating the product
-   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+/* The message of the alert when there is an unexpected error adding the package */
 "Unexpected error" = "Kesalahan tak terduga";
 
 /* Country option for a site address. */
@@ -8394,9 +8207,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
 
-/* Title of the feedback banner on the coupon list screen */
-"View and edit coupons" = "Lihat dan edit kupon";
-
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Lihat pengaturan untuk file yang dapat diunduh";
 
@@ -8411,9 +8221,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of one of the hub menu options */
 "View your store" = "Lihat toko Anda";
-
-/* User role badge */
-"Viewer" = "Pemirsa";
 
 /* Label for total store views in the Analytics Hub */
 "Views" = "Kunjungan";
@@ -8447,8 +8254,10 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis dan Futuna";
 
-/* Error message when the merchant's payment account has been rejected */
-"We are sorry but we can't support In-Person Payments for this store." = "Maaf, kami tidak dapat mendukung Pembayaran Langsung untuk toko ini.";
+/* Error message when the merchant's payment account has been rejected
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We are sorry but we can't support In‑Person Payments for this store." = "Maaf, kami tidak dapat mendukung Pembayaran Langsung untuk toko ini.";
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Kami berusaha agar Anda bisa lebih mudah melihat add-on produk dari perangkat Anda! Untuk sekarang, Anda akan dapat melihat add-on untuk pesanan Anda. Anda dapat membuat dan menyunting add-on ini pada dasbor web Anda.";
@@ -8481,26 +8290,31 @@ which should be translated separately and considered part of this sentence. */
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Kami tidak dapat memproses permintaan login aplikasi Anda";
 
-/* Title for the empty state on the Tax Rates selector screen */
-"We couldn’t find any tax rates" = "Kami tidak dapat menemukan tarif pajak";
-
 /* Title for the application password tutorial screen */
 "We couldn’t log in into your store" = "Tidak dapat login ke toko Anda";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments in %1$@" = "Kami tidak mendukung Pembayaran Langsung di %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in %1$@" = "Kami tidak mendukung Pembayaran Langsung di %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments in your country" = "Kami tidak mendukung Pembayaran Langsung di negara Anda.";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments in your country" = "Kami tidak mendukung Pembayaran Langsung di negara Anda.";
 
-/* Title for the error screen when In-Person Payments is not supported in a specific country */
-"We don’t support In-Person Payments with Stripe in %1$@" = "Kami tidak mendukung Pembayaran Langsung dengan Stripe di %1$@";
+/* Title for the error screen when In-Person Payments is not supported in a specific country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in %1$@" = "Kami tidak mendukung Pembayaran Langsung dengan Stripe di %1$@";
 
-/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country */
-"We don’t support In-Person Payments with Stripe in your country" = "Kami tidak mendukung Pembayaran Langsung dengan Stripe di negara Anda";
+/* Title for the error screen when In-Person Payments is not supported because we don't know the name of the country
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We don’t support In‑Person Payments with Stripe in your country" = "Kami tidak mendukung Pembayaran Langsung dengan Stripe di negara Anda";
 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We enable you to process them effortlessly." = "Kami membuat Anda bisa memprosesnya dengan mudah.";
@@ -8513,9 +8327,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
 "We encountered an error loading plan information" = "Terjadi error ketika memuat informasi paket";
-
-/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
-"We found that the store has already launched." = "Kami mendapati bahwa toko telah diluncurkan.";
 
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Kami menghentikan sementara toko Anda. Anda dapat membeli paket lain dengan masuk ke WordPress.com via browser.";
@@ -8577,8 +8388,10 @@ which should be translated separately and considered part of this sentence. */
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Maaf, kami tidak menemukan apa pun untuk pencarian “%@”";
 
-/* Generic error message when In-Person Payments is unavailable */
-"We're sorry, we were unable to verify In-Person Payments for this store." = "Maaf, kami tidak dapat memverifikasi Pembayaran Langsung untuk toko ini.";
+/* Generic error message when In-Person Payments is unavailable
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"We're sorry, we were unable to verify In‑Person Payments for this store." = "Maaf, kami tidak dapat memverifikasi Pembayaran Langsung untuk toko ini.";
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
@@ -8613,21 +8426,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Kami akan menggunaakan data tersebut untuk menyetel pengaturan terkait pengiriman, pajak, dan pembayaran.";
 
-/* Content of the feedback banner on the coupon list screen */
-"We’ve been working on making it possible to view and edit coupons from your device!" = "Kini Anda dapat melihat dan mengedit kupon dengan perangkat Anda!";
-
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Email apa yang saya gunakan untuk masuk?";
-
-/* Button that will navigate to a web page explaining Application Password */
-"What is Application Password?" = "Apa itu Kata Sandi Aplikasi?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Apa itu Jetpack?";
-
-/* Main heading for the About Tap to Pay on iPhone screen */
-"What is Tap to Pay on iPhone?" = "Apa Itu Ketuk untuk Bayar di iPhone?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Apa itu diskon Layanan WooCommerce?";
@@ -8801,9 +8605,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions guiding the merchant to manage a site's plan upgrade. */
 "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "Anda dapat mengelola langganan di iPhone di Pengaturan → Nama Anda → Langganan";
 
-/* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Sekarang Anda dapat membuat label pengiriman untuk semua pesanan fisik langsung dari perangkat Anda dengan plugin WooCommerce Shipping gratis. Ketuk Buat Label Pengiriman untuk mencoba fitur beta kami!";
-
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Anda hanya dapat menambahkan langganan variabel di dasbor web";
 
@@ -8837,8 +8638,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Ada pesanan baru! 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
-"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Anda memiliki setidaknya satu persyaratan yang terlambat di akun Anda. Harap penuhi persyaratan tersebut untuk dapat terus menggunakan Pembayaran Langsung.";
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "Anda memiliki setidaknya satu persyaratan yang terlambat di akun Anda. Harap penuhi persyaratan tersebut untuk dapat terus menggunakan Pembayaran Langsung.";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "Anda harus memberikan deskripsi yang spesifik dan jelas untuk tiap item.";
@@ -8852,8 +8655,10 @@ which should be translated separately and considered part of this sentence. */
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Tampaknya Anda telah menginstal plugin seluler dari DudaMobile yang membuat aplikasi tidak dapat tersambung ke blog Anda";
 
-/* Error message when the merchant's payment account is under review */
-"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Anda akan dapat menerima Pembayaran Langsung segera setelah kami selesai meninjau akun Anda.";
+/* Error message when the merchant's payment account is under review
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You'll be able to accept In‑Person Payments as soon as we finish reviewing your account." = "Anda akan dapat menerima Pembayaran Langsung segera setelah kami selesai meninjau akun Anda.";
 
 /* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
 "You're in a free trial" = "Anda dalam periode percobaan gratis";
@@ -8958,14 +8763,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Masa percobaan Anda telah berakhir.";
 
-/* Error message when WooCommerce Payments is not installed */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Anda perlu menginstal ekstensi WooCommerce Payments gratis di toko Anda untuk menerima Pembayaran Langsung.";
+/* Error message when WooCommerce Payments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Anda perlu menginstal ekstensi WooCommerce Payments gratis di toko Anda untuk menerima Pembayaran Langsung.";
 
 /* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
 "You’re almost there" = "Hampir selesai.";
 
-/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
-"You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "Hampir jadi! Harap selesaikan penyiapan %1$@ untuk mulai menerima Pembayaran Langsung.";
+/* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Hampir jadi! Harap selesaikan penyiapan %1$@ untuk mulai menerima Pembayaran Langsung.";
 
 /* Country option for a site address. */
 "Zambia" = "Zambia";
@@ -9161,6 +8970,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ikon";
+
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "Apa itu Kata Sandi Aplikasi?";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "Bantuan";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "Coba lagi";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "Login dengan Akun Lain";
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Membuat toko baru?";
@@ -9946,6 +9767,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.builtIn.modalCheckingDeviceSupport.title" = "Memeriksa perangkat";
 
+/* Button title to retry the card reader software update when the reader is low on battery. */
+"cardPresent.modal.updateFailed.lowBattery.retry.button.title" = "Coba lagi";
+
 /* Label for a cancel button */
 "cardPresent.modalScanningForReader.cancelButton" = "Batal";
 
@@ -10063,6 +9887,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
+
+/* Error message when the cash amount entered is less than the order total. */
+"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Jumlah harus lebih dari atau sama dengan jumlah total.";
+
+/* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
+"collectcashviewhelper.changedue" = "Kembalian terutang: %1$@";
+
+/* Error message when the system fails to collect a cash payment. */
+"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Pilih produk untuk kampanye Blaze.";
@@ -10520,9 +10353,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when updating notification settings fails when saving the store list for the store picker */
 "editStoreListView.errorUpdatingNotificationSettings" = "Terjadi error saat memperbarui pengaturan pemberitahuan. Harap coba lagi.";
 
-/* Footer of the Other Stores section on the Edit Store List view */
-"editStoreListView.otherStoresFooter" = "Toko yang tidak terpilih tidak akan muncul di pemilih toko";
-
 /* Header of the Other Stores section on the Edit Store List view */
 "editStoreListView.otherStoresHeader" = "Toko lain";
 
@@ -10534,6 +10364,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Edit Store List view */
 "editStoreListView.title" = "Toko yang Dapat Dilihat";
+
+/* Footer of the Other Stores section on the Edit Store List view */
+"editStoreListView.unselectedStoresNote" = "Toko yang tidak dipilih tidak akan muncul di pemilih toko dan tidak akan mendapat pemberitahuan pesanan baru atau ulasan produk.";
 
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Bagikan feedback Anda";
@@ -10604,6 +10437,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Produk Favorit";
+
+/* Apply button on the Filter History view */
+"filterHistoryView.apply" = "Terapkan";
+
+/* Cancel button on the Filter History view */
+"filterHistoryView.cancel" = "Batalkan";
+
+/* Button to clear all history on the Filter History view */
+"filterHistoryView.clearHistory" = "Bersihkan Riwayat";
+
+/* Message to confirm clearing all history on the Filter History view */
+"filterHistoryView.clearHistoryConfirmation" = "Anda yakin ingin menghapus semua riwayat filter?";
+
+/* Label on the empty state of the Filter History view */
+"filterHistoryView.emptyState" = "Tidak ada filter sebelumnya";
+
+/* Header label of the Filter History view */
+"filterHistoryView.recent" = "Terbaru";
+
+/* Title of the Filter History view */
+"filterHistoryView.title" = "Riwayat Filter";
 
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Riwayat penyaringan";
@@ -10935,8 +10789,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Tingkatkan penjualan Anda";
 
-/* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "Woo siap mendukung Anda melalui seluruh proses bisnis Anda. Inilah alasan kami dipercaya para penjual untuk mendukung 3,9 juta toko online mereka.";
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "Gambar produk masih diunggah di latar belakang. Kecepatan pengunggahan mungkin menurun, dan error bisa terjadi. Untuk hasil terbaik, tetap buka aplikasi hingga pengunggahan selesai.";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "Pengunggahan Gambar Sedang Berlangsung";
+
+/* Label indicating that the store is being synced in the Jetpack setup flow */
+"loginJetpackSetupCoordinator.syncingStore" = "Menyinkronkan toko ...";
+
+/* Subtitle displayed in the prologue screen */
+"loginPrologue.subtitle" = "Sejak merintis hingga menuai, Woo senantiasa menyertai bisnis Anda. Inilah alasan kami dipercaya oleh 3,9 juta toko untuk mendukung penjualan mereka.";
+
+/* Caption displayed in the simplified prologue screen */
+"loginPrologue.title" = "Platform e-commerce yang tumbuh bersama Anda";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "pengembalian dana manual";
@@ -11080,6 +10946,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email catatan ke pelanggan Aktif";
+
+/* Cancel button title for the tax rate selector */
+"newTaxRateSelectorView.cancelButton" = "Batalkan";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"newTaxRateSelectorView.editTaxRatesInWpAdminButtonTitle" = "Edit tarif pajak di admin";
+
+/* Description for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateDescription" = "Tambahkan tarif pajak di admin. Hanya tarif pajak dengan informasi lokasi yang akan ditunjukkan di sini.";
+
+/* Title for the empty state on the Tax Rates selector screen */
+"newTaxRateSelectorView.emptyStateTitle" = "Kami tidak dapat menemukan tarif pajak";
+
+/* Footnote for the action to store selected tax rate */
+"newTaxRateSelectorView.fixedBottomPanelFootnote" = "Hal ini tidak akan memengaruhi pesanan online";
+
+/* Explanatory text for the tax rate selector */
+"newTaxRateSelectorView.infoText" = "Langkah ini akan mengganti alamat pelanggan menjadi lokasi dengan tarif pajak yang Anda pilih.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"newTaxRateSelectorView.listFooterResultsSectionTitle" = "Tarif yang Anda cari tidak ada?";
+
+/* Navigation title for the tax rate selector */
+"newTaxRateSelectorView.navigationTitle" = "Atur Tarif Pajak";
+
+/* Title for the tax rate selector section */
+"newTaxRateSelectorView.taxRatesSectionTitle" = "Pilih tarif pajak";
+
+/* Body for the action to store selected tax rate */
+"newTaxRateSelectorView.taxRfixedBottomPanelBodyatesSectionTitle" = "Tambahkan tarif ini ke semua pesanan yang dibuat";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "tidak ada periode sebelumnya";
@@ -11427,6 +11323,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Pembayaran dibatalkan pada pembaca kartu";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Hubungkan ke pembaca";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "Memproses pembayaran";
 
@@ -11484,23 +11383,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentIntentCreationError.tryPaymentAgain.button.title" = "Coba lagi pembayaran";
 
-/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.paymentProcessing.message" = "Harap tunggu...";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Memproses pembayaran";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.cardPresent.paymentSuccessful.message" = "Pembayaran senilai %1$@ berhasil dilakukan";
-
-/* Title shown to users when payment is made successfully. */
-"pointOfSale.cardPresent.paymentSuccessful.title" = "Pembayaran berhasil!";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "Mempersiapkan kartu pembayaran";
-
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Menyiapkan";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Menyiapkan perangkat pembaca kartu untuk pembayaran";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Masukkan kartu";
@@ -11520,14 +11410,11 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Siap untuk pembayaran";
 
-/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
-"pointOfSale.cardPresent.readerNotConnected.button.title" = "Sambungkan ke pembaca";
-
-/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
-"pointOfSale.cardPresent.readerNotConnected.instruction" = "Untuk memproses pembayaran ini, hubungkan pembaca.";
-
 /* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
 "pointOfSale.cardPresent.readerNotConnected.title" = "Pembaca tidak terhubung";
+
+/* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
+"pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Untuk memproses pembayaran ini, hubungkan ke perangkat pembaca kartu atau pilih tunai.";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Memeriksa pesanan";
@@ -11535,11 +11422,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Menyiapkan";
 
-/* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.retry" = "Coba lagi";
+/* Error message when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.description" = "Total pesanan kurang dari jumlah minimal pembayaran dengan kartu, yaitu %1$@. Sebagai gantinya, Anda dapat menggunakan pembayaran tunai.";
+
+/* Error title when the order amount is below the minimum amount allowed for a card payment on POS. */
+"pointOfSale.cardPresent.validatingOrderError.belowMinimumAmount.title" = "Tidak dapat menerima pembayaran kartu";
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Terjadi error saat memeriksa pesanan";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Coba lagi";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Harap tunggu";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Tutup";
@@ -11670,14 +11566,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users when updating the card reader software fails */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Pembaruan perangkat lunak pembaca gagal karena daya baterai pembaca %.0f%%. Isi daya pembaca di atas 50%% sebelum mencoba lagi.";
+/* Message presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo.1" = "Pembaruan pembaca gagal karena baterai hanya %.0f%%. Isi daya pembaca lalu coba lagi.";
 
 /* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Batal";
 
-/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
-"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Pembaruan perangkat lunak pembaca gagal karena daya baterai pembaca rendah. Isi daya pembaca di atas 50% sebelum mencoba lagi.";
+/* Message presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo.1" = "Pembaruan pembaca gagal karena baterai lemah. Isi daya pembaca lalu coba lagi.";
+
+/* Button to retry the reader search when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.retryButton.title" = "Coba lagi";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Isi daya pembaca";
@@ -11727,6 +11626,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to mark a cash payment as completed */
 "pointOfSale.cashview.button.markpaymentcompleted.title" = "Tandai pembayaran selesai";
 
+/* Error message when the system fails to collect a cash payment. */
+"pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
 
@@ -11748,6 +11650,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Memutuskan sambungan";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "Dokumentasi";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Hapus";
 
@@ -11756,6 +11661,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Tidak bisa memuat total";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "Pembayaran dengan kartu senilai %1$@ berhasil dilakukan.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "Pembayaran tunai senilai %1$@ berhasil dilakukan.";
+
+/* Title shown to users when payment is made successfully. */
+"pointOfSale.paymentSuccessful.title" = "Pembayaran berhasil";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Kirim";
@@ -11809,58 +11723,94 @@ which should be translated separately and considered part of this sentence. */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadButtonTitle" = "Coba lagi";
+"pos.itemList.failedToLoadProductsButtonTitle" = "Coba lagi";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Coba lagi";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Terjadi error saat memuat produk.";
+
+/* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadProductsNextPageTitle" = "Gagal memuat item lain";
 
 /* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadSubtitle" = "Ingin mencoba sekali lagi?";
+"pos.itemList.failedToLoadProductsSubtitle" = "Ingin mencoba sekali lagi?";
 
 /* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadTitle" = "Terjadi error saat memuat produk";
+"pos.itemList.failedToLoadProductsTitle" = "Terjadi error saat memuat produk";
+
+/* Text for the button appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsButtonTitle" = "Coba lagi";
+
+/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Coba lagi";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Terjadi error saat memuat variasi.";
+
+/* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
+"pos.itemList.failedToLoadVariationsNextPageTitle" = "Gagal memuat item lain";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsSubtitle" = "Ingin mencoba sekali lagi?";
+
+/* Text appearing on the item list screen when there's an error loading variations. */
+"pos.itemList.failedToLoadVariationsTitle" = "Error saat memuat variasi";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produk";
 
-/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
-"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Tutup";
-
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint" = "Jenis produk lain, seperti variabel dan virtual, akan tersedia dalam pembaruan mendatang.";
+"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
 
 /* Link to more information within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.learnMoreHint" = "Baca selengkapnya";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle" = "Hanya produk fisik sederhana yang tersedia dengan POS saat ini.";
+"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title" = "Menunjukkan produk sederhana saja";
+"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Hanya menampilkan produk sederhana dan bervariasi";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produk";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Abaikan";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
 
 /* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
 
 /* Subtitle text on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS saat ini hanya mendukung produk sederhana.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS saat ini hanya mendukung produk sederhana dan bervariasi.";
 
 /* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "Produk yang didukung tidak ditemukan";
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Tidak ada produk yang didukung.";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Untuk menambahkan produk, keluar dari POS, kemudian edit produk ini di tab Produk.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS hanya mendukung variasi bukan unduhan yang sudah diaktifkan.";
+
+/* Text appearing on screen when there are no variations to load. */
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Tidak ada variasi yang didukung.";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
 
-/* Hint in the simple products information modal in POS */
-"pos.simpleProductsModal.hint" = "Untuk memproses pembayaran atas produk non-sederhana, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
+/* Hint in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.hint.variableAndSimple" = "Untuk memproses pembayaran atas produk yang tidak didukung, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
 
-/* Message in the simple products information modal in POS, explaining future plans */
-"pos.simpleProductsModal.message.future" = "Jenis produk lain, seperti variabel dan virtual, akan tersedia dalam pembaruan mendatang.";
+/* Message in the simple products information modal in POS, explaining future plans when variable products are supported */
+"pos.simpleProductsModal.message.future.variableAndSimple" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
 
-/* Message in the simple products information modal in POS */
-"pos.simpleProductsModal.message.issue" = "Saat ini, hanya produk fisik sederhana yang dapat menggunakan POS.";
+/* Message in the simple products information modal in POS when variable products are supported */
+"pos.simpleProductsModal.message.issue.variableAndSimple" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
 
 /* Title for the OK button on the simple products information modal in POS */
 "pos.simpleProductsModal.ok.button.title" = "Oke";
@@ -11888,6 +11838,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Total";
+
+/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.detail" = "Sesuaikan pemisah layar Anda untuk memberikan lebih banyak ruang bagi Point of Sale.";
+
+/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
+"pos.unsupportedWidth.title" = "Point of Sale tidak didukung pada lebar layar ini.";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Tutup";
@@ -11960,21 +11916,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text detection failed error message on the starting information screen. */
 "productCreationAIStartingInfoViewModel.textDetectionFailed" = "Terjadi error saat memindai foto. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
-
-/* Description in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.description" = "Boleh minta waktunya sebentar? Bantu kami memperbaiki fitur berbantuan AI dengan feedback cepat.";
-
-/* Start Survey button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.startTheSurvey" = "Mulai Survei";
-
-/* Title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationView.title" = "Kami menghargai masukan Anda!";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.dontShowItAgain" = "Jangan Tampilkan Lagi";
-
-/* Dismiss button title in Product Creation AI survey confirmation view. */
-"productCreationAISurveyConfirmationViewModel.remindMeLater" = "Ingatkan Saya Nanti";
 
 /* Category label for other product creation types */
 "productCreationCategory.other" = "Lainnya";
@@ -12102,11 +12043,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Gambar tidak tersedia karena situs Anda ditandai Privat. Anda dapat mengubahnya dengan beralih ke mode Segera Hadir.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "Buang";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "Coba lagi";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "Gambar tidak diunggah";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Tandai sebagai favorit";
 
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "Batalkan";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "Coba lagi";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "Produk tidak disimpan";
+
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Hapus dari favorit";
+
+/* Label indicating the cover image of a product */
+"productImageCollectionViewCell.tagLabel.text" = "Sampul";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Batal";
@@ -12117,8 +12079,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "Foto";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "Pengunggahan gambar akan dilanjutkan di latar belakang";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Tunggu hingga semua selesai diunggah sebelum menyusun ulang gambar.";
+
+/* Drag and drop helper text above photo list in Product images screen */
+"productImagesViewController.dragAndDropHelperText" = "Seret dan lepas untuk mengurutkan ulang foto. Foto pertama akan menjadi sampul.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "Buang";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "Coba lagi";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "Gambar tidak diunggah";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Saran produk";
@@ -12131,9 +12108,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
-
-/* The message of the alert when there is an error updating the product global unique identifier */
-"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Masukkan angka dan tanda hubung (-) saja.";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Interval penagihan";
@@ -12764,9 +12738,6 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "tidak diketahui";
 
-/* Used when the response doesn't have a valid url to display */
-"unknown url" = "url tidak diketahui";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Jumlah diperbarui: %@";
 
@@ -12947,6 +12918,24 @@ which should be translated separately and considered part of this sentence. */
 /* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderTitle" = "Pilih paket untuk melihat tarif pengiriman";
 
+/* Notice when a destination address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationMissing" = "Alamat tujuan tidak ada";
+
+/* Notice when a destination address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationUnverified" = "Alamat tujuan tidak terverifikasi";
+
+/* Notice when a destination address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.destinationVerified" = "Alamat tujuan terverifikasi";
+
+/* Label when an address is missing on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.missing" = "Alamat tidak ada.";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.unverified" = "Alamat tidak terverifikasi";
+
+/* Label when an address is verified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.verified" = "Alamat terverifikasi";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Tanda Tangan Orang Dewasa Wajib Diisi";
 
@@ -12988,6 +12977,90 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
+
+/* Button to add a company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.addCompany" = "Tambahkan perusahaan";
+
+/* Button label indicating the address is missing information for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.addMissingInformation" = "Tambahkan Informasi yang Kurang";
+
+/* Label for the address field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.address" = "Alamat";
+
+/* Button to cancel editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.cancel" = "Batalkan";
+
+/* Label for the city field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.city" = "Kota";
+
+/* Button to close the address editing view in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.close" = "Tutup";
+
+/* Label for the company field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.company" = "Perusahaan";
+
+/* Label for the country field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.country" = "Negara";
+
+/* Label for the default address toggle in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.defaultAddress" = "Simpan sebagai alamat asal default";
+
+/* Button to dismiss the keyboard */
+"wooShipping.createLabels.editAddress.done" = "Selesai";
+
+/* Label for the email field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.email" = "Alamat Email";
+
+/* Label when the address is missing information in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.missingInformation" = "Informasi kurang";
+
+/* Label for the name field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.name" = "Nama";
+
+/* Text indicating that a field is optional */
+"wooShipping.createLabels.editAddress.optional" = "Opsional";
+
+/* Label for the phone field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.phone" = "Telepon";
+
+/* Label for the postal code field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.postalCode" = "Kode pos";
+
+/* Label for the state field when editing an address in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.state" = "Negara bagian";
+
+/* Label when the address is unverified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.unverified" = "Alamat tidak terverifikasi";
+
+/* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
+"wooShipping.createLabels.editAddress.validateAddress" = "Lakukan Validasi dan Simpan";
+
+/* Validation message when the address field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.address" = "Sertakan alamat yang valid.";
+
+/* Validation message when the city field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.city" = "Sertakan kota yang valid.";
+
+/* Validation message when the country field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.country" = "Harap pilih negara.";
+
+/* Validation message when the email field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.email" = "Sertakan alamat email yang valid.";
+
+/* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Sertakan nama atau nama perusahaan yang valid.";
+
+/* Validation message when the phone field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.phone" = "Sertakan nomor telepon yang valid.";
+
+/* Validation message when the postal code field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.postalCode" = "Sertakan kode pos yang valid.";
+
+/* Validation message when the state field is empty in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.state" = "Sertakan negara bagian yang valid.";
+
+/* Label when the address has been verified in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.verified" = "Alamat terverifikasi";
 
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ item";
@@ -13033,6 +13106,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Lacak pengiriman";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Kami perlu mengetahui tujuan paket ini sebelum dapat menampilkan tarif pengiriman yang tersedia.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Tambahkan alamat tujuan untuk mendapatkan tarif pengiriman";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Layanan pengiriman";
@@ -13085,6 +13164,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button in navigation bar to dismiss the screen */
 "wooShipping.customs.cancel" = "Batal";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetails" = "Detail Isi";
+
+/* Footnote for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.contentDetailsFootnote" = "Mohon jelaskan jenis barang yang dimuat paket ini";
+
 /* Title for the Content Type menu in the Shipping Customs Form */
 "wooShipping.customs.contentType" = "Jenis Isi";
 
@@ -13112,6 +13197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Info selengkapnya tentang ITN";
 
+/* Customs validation warning for the ITN field */
+"wooShipping.customs.itnValidation" = "Masukkan ITN yang valid";
+
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Rincian Produk";
 
@@ -13130,6 +13218,12 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for shipping restriction type sanitary */
 "wooShipping.customs.restrictionType.sanitary" = "Pemeriksaan Sanitasi\/Fitosanitasi";
 
+/* Title for the Content Details text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetails" = "Detail Batasan";
+
+/* Footnote for the Restriction Type text field in the Shipping Customs Form */
+"wooShipping.customs.restrictionTypeDetailsFootnote" = "Mohon jelaskan jenis batasan untuk paket ini";
+
 /* Info label for a toggle to return the package to a sender if necessary toggle */
 "wooShipping.customs.returnToSenderMessage" = "Kembalikan ke pengirim jika paket dapat diantar";
 
@@ -13138,6 +13232,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Customs screen */
 "wooShipping.customs.title" = "Bea cukai";
+
+/* Footnote when a required value is missing */
+"wooShipping.customs.valueRequiredWarning" = "Nilai wajib diisi";
+
+/* Button to dismiss the countries menu */
+"wooShipping.customsItems.countries.done" = "Selesai";
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Deskripsi";
@@ -13154,6 +13254,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the origin country text field */
 "wooShipping.customsItems.originCountry" = "Negara Asal";
 
+/* Warning text when the shipping customs tariff number is not valid */
+"wooShipping.customsItems.tariffNumberRulesWarning" = "Nomor tarif harus terdiri atas 6 hingga 12 digit";
+
 /* Title for the customs items value per unit text field for customs items */
 "wooShipping.customsItems.valuePerUnit" = "Nilai per unit";
 
@@ -13163,8 +13266,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the customs items weight per unit text field for customs items */
 "wooShipping.customsItems.weightPerUnit" = "Berat per unit";
 
+/* Button to cancel normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.cancel" = "Batalkan";
+
+/* Button to confirm the entered address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmEnteredAddress" = "Konfirmasi Alamat yang Dimasukkan";
+
+/* Button to confirm the suggested address for a Woo Shipping label */
+"wooShipping.normalizeAddress.confirmSuggestedAddress" = "Konfirmasi Alamat yang Disarankan";
+
+/* Label for the address the merchant entered when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.enteredAddressLabel" = "Yang Anda masukkan";
+
+/* Informational text when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.modifiedAddressInfo" = "Kami sedikit mengubah alamat yang dimasukkan.";
+
+/* Prompt to select the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.selectAddressPrompt" = "Jika sudah benar, gunakan alamat yang disarankan untuk memastikan pengantaran akurat.";
+
+/* Label for the suggested address when normalizing an address for a Woo Shipping label */
+"wooShipping.normalizeAddress.suggestedAddressLabel" = "Disarankan";
+
+/* Title for the address normalization screen for a Woo Shipping label */
+"wooShipping.normalizeAddress.title" = "Konfirmasi alamat";
+
 /* Indicates that the address is the default origin address  on the shipping label creation screen */
 "wooShipping.originAddresses.defaultAddress" = "(default)";
+
+/* Title for the edit origin address screen in the shipping label creation flow */
+"wooShipping.originAddresses.editOrigin" = "Edit Alamat Asal";
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Dikirim Dari";

@@ -1,3 +1,4 @@
+import Combine
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -15,6 +16,10 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
 
+    var reloadUIRequests: AnyPublisher<Void, Never> {
+        reloadUINeeded.eraseToAnyPublisher()
+    }
+
     var resynchronizeModels: (() -> Void) = {}
 
     private var lastSearchQueryByFilter: [ProductSearchFilter: String] = [:]
@@ -26,6 +31,12 @@ final class ProductSearchUICommand: SearchUICommand {
     private let isSearchProductsBySKUEnabled: Bool
     private let onProductSelection: (Product) -> Void
     private let onCancel: () -> Void
+
+    private let imageUploader = ServiceLocator.productImageUploader
+    private var activeUploadIds: [Int64] = []
+    private var activeUploadSubscription: AnyCancellable?
+
+    private let reloadUINeeded = PassthroughSubject<Void, Never>()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -39,6 +50,8 @@ final class ProductSearchUICommand: SearchUICommand {
         self.isSearchProductsBySKUEnabled = isSearchProductsBySKUEnabled
         self.onProductSelection = onProductSelection
         self.onCancel = onCancel
+
+        observePendingImageUploads()
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
@@ -94,11 +107,12 @@ final class ProductSearchUICommand: SearchUICommand {
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
+        viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
-        ProductsTabProductViewModel(product: model, isSKUShown: true)
+        let hasPendingUploads = activeUploadIds.contains(where: { $0 ==  model.productID })
+        return ProductsTabProductViewModel(product: model, hasPendingUploads: hasPendingUploads, isSKUShown: true)
     }
 
     /// Synchronizes the Products matching a given Keyword
@@ -163,6 +177,17 @@ final class ProductSearchUICommand: SearchUICommand {
 }
 
 private extension ProductSearchUICommand {
+    func observePendingImageUploads() {
+        activeUploadSubscription = imageUploader.activeUploads
+            .sink { [weak self] keys in
+                guard let self else { return }
+                activeUploadIds = keys
+                    .filter { $0.siteID == self.siteID }
+                    .map { $0.productOrVariationID.id }
+                reloadUINeeded.send(())
+            }
+    }
+
     func showResults(filter: ProductSearchFilter) {
         guard filter != self.filter else {
             return

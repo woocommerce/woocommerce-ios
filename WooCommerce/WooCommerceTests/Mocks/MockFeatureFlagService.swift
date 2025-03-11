@@ -12,7 +12,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
-    var isBackendReceiptsEnabled: Bool
     var sideBySideViewForOrderForm: Bool
     var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isPointOfSaleEnabled: Bool
@@ -23,9 +22,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var viewEditCustomFieldsInProductsAndOrders: Bool
     var favoriteProducts: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
-    var isSendReceiptAfterPaymentEnabled: Bool
-    var tapToPayEducation: Bool
-    var receiptsForPOS: Bool
     var hideSitesInStorePicker: Bool
 
     init(isInboxOn: Bool = false,
@@ -38,7 +34,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
@@ -49,9 +44,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
-         isSendReceiptAfterPaymentEnabled: Bool = false,
-         tapToPayEducation: Bool = false,
-         receiptsForPOS: Bool = false,
          hideSitesInStorePicker: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
@@ -63,7 +55,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
@@ -74,9 +65,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
-        self.isSendReceiptAfterPaymentEnabled = isSendReceiptAfterPaymentEnabled
-        self.tapToPayEducation = tapToPayEducation
-        self.receiptsForPOS = receiptsForPOS
         self.hideSitesInStorePicker = hideSitesInStorePicker
     }
 
@@ -102,8 +90,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .backendReceipts:
-            return isBackendReceiptsEnabled
         case .sideBySideViewForOrderForm:
             return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:
@@ -124,12 +110,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return favoriteProducts
         case .productGlobalUniqueIdentifierSupport:
             return isProductGlobalUniqueIdentifierSupported
-        case .sendReceiptAfterPayment:
-            return isSendReceiptAfterPaymentEnabled
-        case .tapToPayEducation:
-            return tapToPayEducation
-        case .sendReceiptsForPointOfSale:
-            return receiptsForPOS
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         default:

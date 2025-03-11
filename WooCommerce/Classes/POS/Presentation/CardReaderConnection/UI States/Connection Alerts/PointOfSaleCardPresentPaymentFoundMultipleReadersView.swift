@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     var body: some View {
         VStack {
             Text(Localization.headline)
-                .font(.posTitleEmphasized)
+                .font(.posHeadingBold)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
 
@@ -27,7 +27,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             List(readerIDs, id: \.self) { readerID in
                 readerRow(readerID: readerID)
                 .listRowSeparator(.hidden)
-                .listRowBackground(Color.posPrimaryBackground)
+                .listRowBackground(Color.posSurface)
             }
             .listStyle(.plain)
 
@@ -36,7 +36,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             }) {
                 Text(Localization.cancel)
             }
-            .buttonStyle(POSSecondaryButtonStyle())
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
@@ -48,12 +48,12 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func readerRow(readerID: String) -> some View {
         HStack {
             Text(readerID)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
             Button(Localization.connect) {
                 connect(readerID)
             }
-            .buttonStyle(POSTextButtonStyle())
+            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
         }
         .padding(.vertical, Layout.rowVerticalPadding)
     }
@@ -64,7 +64,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
             Text(Localization.scanningLabel)
-                .font(.posBodyRegular)
+                .font(.posBodyLargeRegular())
             Spacer()
         }
     }
@@ -100,19 +100,27 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 
 private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     enum Layout {
-        static let padding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-        static let headerPadding: EdgeInsets = .init(top: 20, leading: 4, bottom: 20, trailing: 4)
-        static let buttonPadding: EdgeInsets = .init(top: 16, leading: 0, bottom: 16, trailing: 0)
-        static let horizontalSpacing: CGFloat = 16
-        static let rowVerticalPadding: CGFloat = 4
+        static let padding: EdgeInsets = .init(top: POSPadding.none,
+                                               leading: POSPadding.medium,
+                                               bottom: POSPadding.none,
+                                               trailing: POSPadding.medium)
+        static let headerPadding: EdgeInsets = .init(top: POSPadding.medium,
+                                                     leading: POSPadding.xSmall,
+                                                     bottom: POSPadding.medium,
+                                                     trailing: POSPadding.xSmall)
+        static let buttonPadding: EdgeInsets = .init(top: POSPadding.medium,
+                                                     leading: POSPadding.none,
+                                                     bottom: POSPadding.medium,
+                                                     trailing: POSPadding.none)
+        static let horizontalSpacing: CGFloat = POSSpacing.medium
+        static let rowVerticalPadding: CGFloat = POSPadding.xSmall
     }
 }
 
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentFoundMultipleReadersView(
         viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
                          selectionHandler: { _ in }),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Codegen
 import Foundation
@@ -46,36 +46,6 @@ extension WooCommerce.AggregateOrderItem {
             attributes: attributes,
             addOns: addOns,
             parent: parent
-        )
-    }
-}
-
-extension WooCommerce.ItemsStackState {
-    func copy(
-        root: CopiableProp<ItemListState> = .copy,
-        itemStates: CopiableProp<[POSItem: ItemListState]> = .copy
-    ) -> WooCommerce.ItemsStackState {
-        let root = root ?? self.root
-        let itemStates = itemStates ?? self.itemStates
-
-        return WooCommerce.ItemsStackState(
-            root: root,
-            itemStates: itemStates
-        )
-    }
-}
-
-extension WooCommerce.ItemsViewState {
-    func copy(
-        containerState: CopiableProp<ItemsContainerState> = .copy,
-        itemsStack: CopiableProp<ItemsStackState> = .copy
-    ) -> WooCommerce.ItemsViewState {
-        let containerState = containerState ?? self.containerState
-        let itemsStack = itemsStack ?? self.itemsStack
-
-        return WooCommerce.ItemsViewState(
-            containerState: containerState,
-            itemsStack: itemsStack
         )
     }
 }

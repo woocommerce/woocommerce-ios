@@ -4,11 +4,13 @@ import protocol Networking.ProductVariationsRemoteProtocol
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
+import enum Alamofire.AFError
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
+    case requestCancelled
     case unknown
 }
 
@@ -19,24 +21,20 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
     private let variationRemote: ProductVariationsRemoteProtocol
-    private let isVariableProductsFeatureEnabled: Bool
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network, isVariableProductsFeatureEnabled: Bool) {
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
         self.variationRemote = ProductVariationsRemote(network: network)
-        self.isVariableProductsFeatureEnabled = isVariableProductsFeatureEnabled
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?,
-                            isVariableProductsFeatureEnabled: Bool) {
+                            credentials: Credentials?) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  isVariableProductsFeatureEnabled: isVariableProductsFeatureEnabled)
+                  network: AlamofireNetwork(credentials: credentials))
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -45,52 +43,52 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
-        let productTypes: [ProductType] = isVariableProductsFeatureEnabled ?
-        [.simple, .variable] : [.simple]
-        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
-        let products = pagedProducts.items
+        let productTypes: [ProductType] = [.simple, .variable]
+        do {
+            let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+            let products = pagedProducts.items
 
-        if pageNumber != 1 && products.count == 0 {
-            return .init(items: [], hasMorePages: false)
+            if pageNumber != 1 && products.count == 0 {
+                return .init(items: [], hasMorePages: false)
+            }
+
+            return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleItemServiceError.requestCancelled
         }
-
-        let eligibilityCriteria: [(Product) -> Bool] = [
-            isNotVirtual,
-            isNotDownloadable,
-            hasPrice
-        ]
-        let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
-
-        return .init(items: mapProductsToPOSItems(products: filteredProducts), hasMorePages: pagedProducts.hasMorePages)
     }
 
     public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let pagedVariations = try await variationRemote
-            .loadVariationsForPointOfSale(for: siteID,
-                                          parentProductID: parentProduct.productID,
-                                          pageNumber: pageNumber)
-        let variations = pagedVariations.items
+        do {
+            let pagedVariations = try await variationRemote
+                .loadVariationsForPointOfSale(for: siteID,
+                                              parentProductID: parentProduct.productID,
+                                              pageNumber: pageNumber)
+            let variations = pagedVariations.items
             // Remove this when WC version 9.7 has significant adoption in POS stores.
-            .filter { !$0.downloadable }
-        return .init(
-            items: variations.compactMap({ variation in
-                let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
-                    for: variation,
-                    from: parentProduct.allAttributes,
-                    separator: ", "
-                )
-                return POSItem
-                    .variation(.init(id: UUID(),
-                                     name: variationName,
-                                     formattedPrice: currencyFormatter.formatAmount(variation.price) ?? "-",
-                                     price: variation.price,
-                                     productImageSource: variation.image?.src,
-                                     productID: variation.productID,
-                                     variationID: variation.productVariationID,
-                                     parentProductName: parentProduct.name))
-            }),
-            hasMorePages: pagedVariations.hasMorePages
-        )
+                .filter { !$0.downloadable }
+            return .init(
+                items: variations.compactMap({ variation in
+                    let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
+                        for: variation,
+                        from: parentProduct.allAttributes,
+                        separator: ", "
+                    )
+                    return POSItem
+                        .variation(.init(id: UUID(),
+                                         name: variationName,
+                                         formattedPrice: formatPrice(variation.price),
+                                         price: variation.price,
+                                         productImageSource: variation.image?.src,
+                                         productID: variation.productID,
+                                         variationID: variation.productVariationID,
+                                         parentProductName: parentProduct.name))
+                }),
+                hasMorePages: pagedVariations.hasMorePages
+            )
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleItemServiceError.requestCancelled
+        }
     }
 
     // Maps result to POSItem, and populate the output with:
@@ -98,14 +96,13 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     // - Product thumbnail, if any.
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         return products.compactMap { product in
-            let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
 
             switch product.productType {
                 case .simple:
                     return .simpleProduct(POSSimpleProduct(id: UUID(),
                                                            name: product.name,
-                                                           formattedPrice: formattedPrice,
+                                                           formattedPrice: formatPrice(product.price),
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
                                                            price: product.price))
@@ -122,24 +119,9 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             }
         }
     }
-}
 
-private extension PointOfSaleItemService {
-    func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
-        return products.filter { product in
-            criteria.allSatisfy { $0(product) }
-        }
-    }
-
-    func isNotVirtual(product: Product) -> Bool {
-        !product.virtual
-    }
-
-    func isNotDownloadable(product: Product) -> Bool {
-        !product.downloadable
-    }
-
-    func hasPrice(product: Product) -> Bool {
-        !product.price.isEmpty
+    private func formatPrice(_ price: String) -> String {
+        let zeroOrPlaceholder = currencyFormatter.formatAmount("0") ?? "-"
+        return currencyFormatter.formatAmount(price) ?? zeroOrPlaceholder
     }
 }

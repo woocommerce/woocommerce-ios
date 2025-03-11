@@ -26,23 +26,26 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
             passedForm = form
         })
 
-        viewModel.restrictionType = .quarantine
-        viewModel.contentType = .gift
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
         viewModel.returnToSenderIfNotDelivered = false
+        viewModel.contentType = .other
+        viewModel.contentExplanation = "explanation test"
+        viewModel.restrictionType = .other
+        viewModel.restrictionDetails = "restriction details"
 
         viewModel.itemsViewModels.first?.description = "Test Item"
         viewModel.itemsViewModels.first?.valuePerUnit = "10"
         viewModel.itemsViewModels.first?.weightPerUnit = "5"
         viewModel.itemsViewModels.first?.hsTariffNumber = "123456"
-        viewModel.itemsViewModels.first?.originCountry = WooShippingCustomsCountry(code: "US", name: "United States")
 
         // When
         viewModel.onDismiss()
 
         // Then
-        XCTAssertEqual(passedForm?.restrictionType, .quarantine)
-        XCTAssertEqual(passedForm?.contentsType, .gift)
+        XCTAssertEqual(passedForm?.restrictionType, .other)
+        XCTAssertEqual(passedForm?.restrictionComments, viewModel.restrictionDetails)
+        XCTAssertEqual(passedForm?.contentsType, .other)
+        XCTAssertEqual(passedForm?.contentExplanation, viewModel.contentExplanation)
         XCTAssertEqual(passedForm?.itn, viewModel.internationalTransactionNumber)
         XCTAssertEqual(passedForm?.nonDeliveryOption, .abandon)
 
@@ -53,7 +56,6 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertEqual(passedForm?.items.first?.value, Double(viewModel.itemsViewModels.first?.valuePerUnit ?? "0"))
         XCTAssertEqual(passedForm?.items.first?.weight, Double(viewModel.itemsViewModels.first?.weightPerUnit ?? "0"))
         XCTAssertEqual(passedForm?.items.first?.hsTariffNumber, viewModel.itemsViewModels.first?.hsTariffNumber)
-        XCTAssertEqual(passedForm?.items.first?.originCountry, viewModel.itemsViewModels.first?.originCountry.name)
     }
 
     func test_onDismiss_when_calls_onCompletion_with_invalid_hsTariffNumber_then_returns_empty() {
@@ -72,6 +74,31 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(passedForm?.items.first?.hsTariffNumber.isEmpty ?? false)
+    }
+
+    func test_onDismiss_when_calls_onCompletion_with_content_and_restriction_not_other_then_returns_empty() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        var passedForm: ShippingLabelCustomsForm?
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { form in
+            passedForm = form
+        })
+
+        viewModel.contentType = .documents
+        viewModel.contentExplanation = "content explanation"
+
+        viewModel.restrictionType = .quarantine
+        viewModel.restrictionDetails = "restriction details"
+
+        // When
+        viewModel.onDismiss()
+
+        // Then
+        XCTAssertEqual(passedForm?.contentsType, .documents)
+        XCTAssertEqual(passedForm?.restrictionType, .quarantine)
+        XCTAssertEqual(passedForm?.contentExplanation, "")
+        XCTAssertEqual(passedForm?.restrictionComments, "")
     }
 
     func test_onDismiss_when_calls_onCompletion_with_invalid_itn_then_returns_empty() {
@@ -208,10 +235,54 @@ class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
 
-        debugPrint("viewModel.itemsViewModels", viewModel.itemsViewModels)
-
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+
+        XCTAssertTrue(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_content_type_is_other_but_details_are_empty_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.contentType = .other
+        viewModel.contentExplanation = ""
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_restriction_type_is_other_but_details_are_empty_then_returns_false() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.restrictionType = .other
+        viewModel.restrictionDetails = ""
+
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
+    }
+
+    func test_requiredInformationIsEntered_when_required_data_is_entered_then_returns_true() {
+        // Given
+        let orderItems = [MockOrderItem.sampleItem(productID: 123, quantity: 2), MockOrderItem.sampleItem()]
+
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(items: orderItems), onCompletion: { _ in })
+
+        viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
+        viewModel.restrictionType = .other
+        viewModel.restrictionDetails = "test"
+        viewModel.contentType = .other
+        viewModel.contentExplanation = "test"
+        viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
+        viewModel.internationalTransactionNumberIsRequired = true
 
         XCTAssertTrue(viewModel.requiredInformationIsEntered)
     }

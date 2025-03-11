@@ -4,16 +4,64 @@
 -----
 - [*] Payments: Puerto Rico is now available in the list of countries that are supported by in-person payments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
 
+22.0
+-----
+
+
+21.9
+-----
+- [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
+- [*] Improved accessibility on login flow [https://github.com/woocommerce/woocommerce-ios/pull/15281]
+
+
+21.8
+-----
+- [**] Shipping Labels: resolved issue preventing shipping labels from displaying in some orders when an error occurred during label creation. [https://github.com/woocommerce/woocommerce-ios/pull/15101]
+- [*] Now "Suggested by AI" label is visible in dark mode in Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/15088]
+- [*] Improved image loading in Blaze Campaign Creation: displays a redacted and shimmering effects when loading product image and falls back to a placeholder if no image is available. [https://github.com/woocommerce/woocommerce-ios/pull/15098]
+- [*] Product List: Display syncing animation on items with image upload in progress [https://github.com/woocommerce/woocommerce-ios/pull/15052]
+- [*] Background image upload: Fix issue showing uploaded images while saving is in progress [https://github.com/woocommerce/woocommerce-ios/pull/15107]
+- [*] Background image upload: Fix missing error notice in iPhones [https://github.com/woocommerce/woocommerce-ios/pull/15117]
+- [*] Background image upload: Show a notice when the user leaves product details while uploads are pending [https://github.com/woocommerce/woocommerce-ios/pull/15134]
+- [*] Filters applied in product selector no longer affect the main product list screen. [https://github.com/woocommerce/woocommerce-ios/pull/14764]
+- [*] Product Image Upload: Now, a local notification is scheduled if the app has some image uploads in progress and the app is sent into the background. [https://github.com/woocommerce/woocommerce-ios/pull/15166]
+- [Internal] Improve authentication logic for authenticated web view [https://github.com/woocommerce/woocommerce-ios/pull/15164]
+- [*] Better error messages if Application Password login is disabled on user's website. [https://github.com/woocommerce/woocommerce-ios/pull/15031]
+- [**] Product Images: Update error handling [https://github.com/woocommerce/woocommerce-ios/pull/15105]
+- [*] Product Images: Improve error handling for product saving [https://github.com/woocommerce/woocommerce-ios/pull/15210]
+- [*] Merchants can mark and filter favorite products for quicker access. [https://github.com/woocommerce/woocommerce-ios/pull/14597]
+
+21.7
+-----
+- [**] Fixed an issue with the WordPress Media Library not loading due to a decoding error in media details sizes. [https://github.com/woocommerce/woocommerce-ios/pull/15056]
+- [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+- [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
+- [*] Payments: Update learn more links to open Stripe-specific docs when using that gateway [https://github.com/woocommerce/woocommerce-ios/pull/15035]
+- [*] Orders: Improved accessibility UI for Tax Rates related views [https://github.com/woocommerce/woocommerce-ios/pull/15043]
+- [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
+- [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
+
+21.6
+-----
+- [*] Payments: improve retry handling when card reader updates fail due to low battery [https://github.com/woocommerce/woocommerce-ios/pull/14990]
+- [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
+- [***] Updated the app look and feel to match the new WooCommerce branding [https://github.com/woocommerce/woocommerce-ios/pull/14825]
+
 21.5
 -----
 - [*] Blaze: if the AI is unable to provide suggestions in the creation form, the form will now automatically use product information to ensure all fields of the preview are populated. [https://github.com/woocommerce/woocommerce-ios/pull/14868]
 - [Internal] [*] Improved handling of the navigation to the Woo Installation screen post Jetpack setup [https://github.com/woocommerce/woocommerce-ios/pull/14837]
 - [*] Receipts: Email receipts can now be sent to customers after failed payments using WooCommerce Stripe 9.1.0+. [https://github.com/woocommerce/woocommerce-ios/pull/14864].
+- [*] Order Creation: orders are always created using the store's currency, not the user's [https://github.com/woocommerce/woocommerce-ios/pull/14907]
 - [*] Dashboard: Updated the drag gesture on the Performance chart to show stats instantly. [https://github.com/woocommerce/woocommerce-ios/pull/14906]
+- [*] Product Form: Support previewing products on coming-soon stores. [https://github.com/woocommerce/woocommerce-ios/pull/14931]
+- [*] Jetpack Setup: Fix issue setting up Jetpack for JCP sites when authenticated without WPCom and removing application password after completion [https://github.com/woocommerce/woocommerce-ios/pull/14929]
 - [Internal] Removed feedback survey for Store Setup feature [https://github.com/woocommerce/woocommerce-ios/pull/14888]
 - [Internal] Removed feedback survey for shipping label creation [https://github.com/woocommerce/woocommerce-ios/pull/14889]
 - [Internal] Removed feedback survey for product creation AI [https://github.com/woocommerce/woocommerce-ios/pull/14890]
 - [Internal] Removed feedback survey for coupons list [https://github.com/woocommerce/woocommerce-ios/pull/14891]
+- [Internal] Core Data: Attempt recovery from corrupted database [https://github.com/woocommerce/woocommerce-ios/pull/14961]
+- [*] Updated the Stripe Gateway setup URL to point to the appropriate settings page. [https://github.com/woocommerce/woocommerce-ios/pull/14964]
 
 21.4
 -----

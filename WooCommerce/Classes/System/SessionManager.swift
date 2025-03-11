@@ -219,9 +219,9 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword() {
+    func deleteApplicationPassword(using credentials: Credentials?) {
         let useCase: ApplicationPasswordUseCase? = {
-            switch loadCredentials() {
+            switch credentials ?? loadCredentials() {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,

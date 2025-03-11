@@ -18,13 +18,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
-                        .font(POSFontStyle.posTitleEmphasized)
+                        .font(POSFontStyle.posHeadingBold)
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     if let errorDetails = viewModel.errorDetails {
                         Text(errorDetails)
-                            .font(POSFontStyle.posBodyRegular)
+                            .font(POSFontStyle.posBodyLargeRegular())
                             .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                     }
                 }
@@ -35,7 +35,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(POSPrimaryButtonStyle())
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,

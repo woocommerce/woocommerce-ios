@@ -141,7 +141,7 @@ struct ProductSelectorView: View {
                 .background(Color(.listForeground(modal: false)).ignoresSafeArea())
 
             case .empty:
-                EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
+                EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
                     .frame(maxHeight: .infinity)
             case .loading:
                 List(viewModel.ghostRows) { rowViewModel in

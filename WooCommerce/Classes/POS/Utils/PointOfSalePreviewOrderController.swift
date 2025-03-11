@@ -4,19 +4,17 @@ import struct Yosemite.Order
 import Combine
 
 class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
-    var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> = Just(
-        .loaded(
-            .init(cartTotal: "$10.50",
-                  orderTotal: "$12.00",
-                  taxTotal: "$1.50"),
-            OrderFactory.emptyNewOrder
-        )
-    ).eraseToAnyPublisher()
+    var orderState: PointOfSaleInternalOrderState = .loaded(
+        .init(cartTotal: "$10.50",
+              orderTotal: "$12.00",
+              taxTotal: "$1.50",
+              orderTotalDecimal: 12.00),
+        OrderFactory.newOrder(currency: .USD)
+    )
 
-    var order: Yosemite.Order?
-
-    func syncOrder(for cartProducts: [CartItem],
-                   retryHandler: @escaping () async -> Void) async { }
+    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
+        return .success(.newOrder)
+    }
 
     func sendReceipt(recipientEmail: String) async throws { }
 

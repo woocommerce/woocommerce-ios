@@ -12,7 +12,12 @@ struct WooShippingEditAddressView: View {
     @ObservedObject var viewModel: WooShippingEditAddressViewModel
 
     /// Tracks the focused address field.
-    @FocusState private var focusedField: AddressField?
+    @FocusState private var focusedField: WooShippingAddressFieldType?
+
+    /// Tracks the previously focused address field.
+    ///
+    /// Used to validate the field when the focus changes.
+    @State private var previousFocusedField: WooShippingAddressFieldType?
 
     @Environment(\.dismiss) private var dismiss
 
@@ -22,9 +27,11 @@ struct WooShippingEditAddressView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: Constants.verticalSpacing) {
-                AddressTextField(field: .name, text: $viewModel.name, required: viewModel.isRequired(.name), focused: $focusedField)
+                AddressTextField(field: viewModel.name,
+                                 focused: $focusedField)
                 if viewModel.showCompanyField {
-                    AddressTextField(field: .company, text: $viewModel.company, required: viewModel.isRequired(.company), focused: $focusedField)
+                    AddressTextField(field: viewModel.company,
+                                     focused: $focusedField)
                 } else {
                     Button {
                         withAnimation {
@@ -37,26 +44,32 @@ struct WooShippingEditAddressView: View {
                     .font(.subheadline)
                     .bold()
                 }
-                AddressSelection(field: .country, selected: viewModel.selectedCountry?.name ?? "", required: viewModel.isRequired(.country)) {
+                AddressSelection(field: viewModel.country) {
                     isPresentingCountrySelector = true
                 }
                 .padding(.top, Constants.extraPadding)
-                AddressTextField(field: .address, text: $viewModel.address, required: viewModel.isRequired(.address), focused: $focusedField)
-                AddressTextField(field: .city, text: $viewModel.city, required: viewModel.isRequired(.city), focused: $focusedField)
+                AddressTextField(field: viewModel.address,
+                                 focused: $focusedField)
+                AddressTextField(field: viewModel.city,
+                                 focused: $focusedField)
                 AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Constants.innerSpacing) {
                     if viewModel.statesOfSelectedCountry.isNotEmpty {
-                        AddressSelection(field: .state, selected: viewModel.selectedState?.name ?? " ", required: viewModel.isRequired(.state)) {
+                        AddressSelection(field: viewModel.state) {
                             isPresentingStateSelector = true
                         }
                     } else {
-                        AddressTextField(field: .state, text: $viewModel.state, required: viewModel.isRequired(.state), focused: $focusedField)
+                        AddressTextField(field: viewModel.state,
+                                         focused: $focusedField)
                     }
-                    AddressTextField(field: .postalCode, text: $viewModel.postalCode, required: viewModel.isRequired(.postalCode), focused: $focusedField)
+                    AddressTextField(field: viewModel.postalCode,
+                                     focused: $focusedField)
                 }
                 .padding(.bottom, Constants.extraPadding)
-                AddressTextField(field: .email, text: $viewModel.email, required: viewModel.isRequired(.email), focused: $focusedField)
-                AddressTextField(field: .phone, text: $viewModel.phone, required: viewModel.isRequired(.phone), focused: $focusedField)
-                    .padding(.bottom, Constants.extraPadding)
+                AddressTextField(field: viewModel.email,
+                                 focused: $focusedField)
+                AddressTextField(field: viewModel.phone,
+                                 focused: $focusedField)
+                .padding(.bottom, Constants.extraPadding)
                 if viewModel.showSaveAsDefault {
                     Toggle(Localization.defaultAddress, isOn: $viewModel.isDefaultAddress)
                         .font(.subheadline)
@@ -64,6 +77,12 @@ struct WooShippingEditAddressView: View {
                 }
             }
             .padding()
+            .onChange(of: focusedField) { newField in
+                if let previousFocusedField {
+                    viewModel.validate(previousFocusedField)
+                }
+                previousFocusedField = newField
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
@@ -76,13 +95,13 @@ struct WooShippingEditAddressView: View {
                     }, label: {
                         Image(systemName: "chevron.backward")
                     })
-                    .disabled(focusedField == AddressField.allCases.first)
+                    .disabled(focusedField == WooShippingAddressFieldType.allCases.first)
                     Button(action: {
                         focusNextField()
                     }, label: {
                         Image(systemName: "chevron.forward")
                     })
-                    .disabled(focusedField == AddressField.allCases.last)
+                    .disabled(focusedField == WooShippingAddressFieldType.allCases.last)
                     Spacer()
                     Button {
                         dismissKeyboard()
@@ -131,69 +150,75 @@ struct WooShippingEditAddressView: View {
                 VStack(spacing: Constants.verticalSpacing) {
                     HStack {
                         Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
-                        Text(Localization.Status.label(for: viewModel.status))
+                        Text(viewModel.statusLabel)
                     }
                     .font(.subheadline)
                     .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
                     Button(Localization.Button.label(for: viewModel.status)) {
-                        if viewModel.status == .verified {
+                        switch viewModel.status {
+                        case .verified:
                             dismiss()
-                        } else {
-                            // TODO: Handle remote verification
+                        case .unverified:
+                            Task { @MainActor in
+                                await viewModel.remotelyValidateAddress()
+                            }
+                        case .missingInformation:
+                            break
                         }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
                     .disabled(viewModel.status == .missingInformation)
                 }
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
+            NavigationStack {
+                WooShippingNormalizeAddressView(viewModel: viewModel)
+            }
+        }
     }
 
     private struct AddressTextField: View {
-        /// Which address field to display.
-        let field: AddressField
-
-        /// The text to display in the text field.
-        @Binding var text: String
-
-        /// Whether the field is required.
-        let required: Bool
+        @ObservedObject var field: WooShippingAddressField
 
         /// The focused state of the field.
-        @FocusState.Binding var focused: AddressField?
+        @FocusState.Binding var focused: WooShippingAddressFieldType?
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
                 HStack(spacing: Constants.requiredLabelSpacing) {
-                    Text(field.title)
-                    if required {
+                    Text(Localization.title(for: field.type))
+                    if field.required {
                         Text("*")
                     }
                     Spacer()
                 }
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
-                TextField(field.title, text: $text, prompt: Text(required ? "" : Localization.optional))
-                    .focused($focused, equals: field)
+                TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
+                    .focused($focused, equals: field.type)
+                    .onChange(of: field.value) { _ in
+                        field.clearError()
+                    }
                     .padding()
                     .roundedBorder(cornerRadius: Constants.cornerRadius,
-                                   lineColor: focused == field ? Color(.accent) : Constants.defaultBorderColor,
-                                   lineWidth: focused == field ? 2 : Constants.defaultBorderWidth)
+                                   lineColor: Constants.fieldBorderColor(focused: focused == field.type, valid: field.errorMessage == nil),
+                                   lineWidth: focused == field.type ? 2 : Constants.defaultBorderWidth)
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
 
     private struct AddressSelection: View {
         /// Which address field to display.
-        let field: AddressField
-
-        /// The text to display for the selection.
-        let selected: String
-
-        /// Whether the field is required.
-        let required: Bool
+        @ObservedObject var field: WooShippingAddressField
 
         /// The action to perform when the button is tapped.
         var action: () -> Void
@@ -201,8 +226,9 @@ struct WooShippingEditAddressView: View {
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
                 HStack(spacing: Constants.requiredLabelSpacing) {
-                    Text(field.title)
-                    if required {
+
+                    Text(Localization.title(for: field.type))
+                    if field.required {
                         Text("*")
                     }
                     Spacer()
@@ -213,7 +239,7 @@ struct WooShippingEditAddressView: View {
                     action()
                 } label: {
                     HStack {
-                        Text(selected)
+                        Text(field.displayValue ?? field.value)
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.up.chevron.down")
@@ -224,37 +250,18 @@ struct WooShippingEditAddressView: View {
                                    lineColor: Constants.defaultBorderColor,
                                    lineWidth: Constants.defaultBorderWidth)
                 }
+                if let errorMessage = field.errorMessage {
+                    Text(errorMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(Constants.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
 }
 
 extension WooShippingEditAddressView {
-    enum AddressField: CaseIterable {
-        case name
-        case company
-        case country
-        case address
-        case city
-        case state
-        case postalCode
-        case email
-        case phone
-
-        var title: String {
-            switch self {
-            case .name: return Localization.name
-            case .company: return Localization.company
-            case .country: return Localization.country
-            case .address: return Localization.address
-            case .city: return Localization.city
-            case .state: return Localization.state
-            case .postalCode: return Localization.postalCode
-            case .email: return Localization.email
-            case .phone: return Localization.phone
-            }
-        }
-    }
 
     /// Navigates to the next address field in the form.
     private func focusNextField() {
@@ -319,9 +326,28 @@ private extension WooShippingEditAddressView {
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
         static let requiredLabelSpacing: CGFloat = 4
+        static func fieldBorderColor(focused: Bool, valid: Bool) -> Color {
+            guard valid else {
+                return red
+            }
+            return focused ? Color(.accent) : defaultBorderColor
+        }
     }
 
     enum Localization {
+        static func title(for type: WooShippingAddressFieldType) -> String {
+            switch type {
+            case .name: return Localization.name
+            case .company: return Localization.company
+            case .country: return Localization.country
+            case .address: return Localization.address
+            case .city: return Localization.city
+            case .state: return Localization.state
+            case .postalCode: return Localization.postalCode
+            case .email: return Localization.email
+            case .phone: return Localization.phone
+            }
+        }
         static let name = NSLocalizedString("wooShipping.createLabels.editAddress.name",
                                             value: "Name",
                                             comment: "Label for the name field when editing an address in the Woo Shipping label creation flow")
@@ -365,28 +391,6 @@ private extension WooShippingEditAddressView {
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
 
-        enum Status {
-            static func label(for status: WooShippingAddressStatus) -> String {
-                switch status {
-                case .verified:
-                    return verified
-                case .unverified:
-                    return unverified
-                case .missingInformation:
-                    return missingInformation
-                }
-            }
-            static let verified = NSLocalizedString("wooShipping.createLabels.editAddress.verified",
-                                                    value: "Address verified",
-                                                    comment: "Label when the address has been verified in the Woo Shipping label creation flow")
-            static let unverified = NSLocalizedString("wooShipping.createLabels.editAddress.unverified",
-                                                      value: "Unverified address",
-                                                      comment: "Label when the address is unverified in the Woo Shipping label creation flow")
-            static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
-                                                              value: "Missing information",
-                                                              comment: "Label when the address is missing information in the Woo Shipping label creation flow")
-        }
-
         enum Button {
             static func label(for status: WooShippingAddressStatus) -> String {
                 switch status {
@@ -425,12 +429,11 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 isDefaultAddress: true,
                                                 showCompanyField: false,
-                                                isVerified: true,
-                                                phoneNumberRequired: true))
+                                                isVerified: true))
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(type: .destination,
+    WooShippingEditAddressView(viewModel: .init(type: .destination(orderID: 123),
                                                 id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",
@@ -443,6 +446,5 @@ private extension WooShippingEditAddressView {
                                                 phone: "",
                                                 isDefaultAddress: false,
                                                 showCompanyField: true,
-                                                isVerified: false,
-                                                phoneNumberRequired: true))
+                                                isVerified: false))
 }

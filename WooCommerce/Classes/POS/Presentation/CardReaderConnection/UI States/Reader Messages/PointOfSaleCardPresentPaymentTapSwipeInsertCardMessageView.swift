@@ -3,24 +3,26 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+        VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
             Image(decorative: viewModel.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
-                    .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posPrimaryText)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
@@ -29,12 +31,17 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     }
 }
 
+private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView {
+    enum Constants {
+        static let imageAndTextSpacing: CGFloat = POSSpacing.xLarge
+    }
+}
+
 #Preview {
-    @Namespace var namespace
     return PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
             inputMethods: [.tap, .insert]
         ),
-        animation: .init(namespace: namespace)
+        animation: .init(namespace: Namespace().wrappedValue)
     )
 }

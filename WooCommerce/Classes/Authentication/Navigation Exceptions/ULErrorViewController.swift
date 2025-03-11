@@ -140,7 +140,7 @@ private extension ULErrorViewController {
     func configureTermsLabel() {
         let linkAttributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.foregroundColor: UIColor.accent,
-            NSAttributedString.Key.underlineColor: UIColor.accent,
+            NSAttributedString.Key.underlineColor: UIColor.clear,
             NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         termsLabel.linkTextAttributes = linkAttributes

@@ -377,7 +377,7 @@ private extension CollectOrderPaymentUseCase {
     /// Tracks the successful payments
     ///
     func handleSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
-        analyticsTracker.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+        analyticsTracker.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
     }
 
     func handlePaymentCancellation(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
@@ -401,7 +401,7 @@ private extension CollectOrderPaymentUseCase {
                                                       paymentGatewayAccount: PaymentGatewayAccount,
                                                       channel: PaymentChannel,
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard case ServerSidePaymentCaptureError.paymentGateway(.otherError) = error else {
+        guard case ServerSidePaymentCaptureError.paymentGateway = error else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,

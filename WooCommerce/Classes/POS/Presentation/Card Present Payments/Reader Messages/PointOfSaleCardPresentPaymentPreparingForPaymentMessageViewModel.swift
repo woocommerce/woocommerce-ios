@@ -13,8 +13,8 @@ private extension PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewMod
             comment: "Title shown on the Point of Sale checkout while the reader is being prepared."
         )
         static let message = NSLocalizedString(
-            "pointOfSale.cardPresent.preparingForPayment.message",
-            value: "Preparing card for payment",
+            "pointOfSale.cardPresent.preparingReaderForPayment.message",
+            value: "Preparing reader for payment",
             comment: "Message shown on the Point of Sale checkout while the reader is being prepared."
         )
     }

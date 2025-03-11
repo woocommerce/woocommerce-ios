@@ -15,8 +15,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         currencySettings = CurrencySettings()
         itemProvider = PointOfSaleItemService(siteID: siteID,
                                                  currencySettings: currencySettings,
-                                                 network: network,
-                                                 isVariableProductsFeatureEnabled: false)
+                                                 network: network)
     }
 
     override func tearDown() {
@@ -88,47 +87,33 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
         // Given
-        let expectedNumberOfItems = 2
-        let expectedItemNames = ["Dymo LabelWriter 4XL", "Private Hoodie"]
+        let expectedItemNames = ["Dymo LabelWriter 4XL", "Virtual Polo", "Private Hoodie", "Hoodie with Zipper without price"]
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
         let pagedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        let expectedItems = pagedItems.items
-        XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
+        let items = pagedItems.items
+        XCTAssertEqual(items.count, expectedItemNames.count)
 
-        guard case .simpleProduct(let firstEligibleSimpleProduct) = expectedItems.first,
-              case .simpleProduct(let secondEligibleSimpleProduct) = expectedItems.last else {
-            return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
+        let itemNames: [String] = items.compactMap {
+            guard case let .simpleProduct(simpleProduct) = $0 else {
+                XCTFail("Expected simple product.")
+                return nil
+            }
+            return simpleProduct.name
         }
-        XCTAssertEqual(firstEligibleSimpleProduct.name, expectedItemNames.first)
-        XCTAssertEqual(secondEligibleSimpleProduct.name, expectedItemNames.last)
+        XCTAssertEqual(itemNames, expectedItemNames)
     }
 
     // MARK: - Query Parameters
 
-    func test_providePointOfSaleItems_sets_types_parameters_to_simple_only() async throws {
+    func test_providePointOfSaleItems_sets_types_parameters_correctly() async throws {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                      currencySettings: currencySettings,
-                                                     network: network,
-                                                     isVariableProductsFeatureEnabled: false)
-
-        // When
-        _ = try? await itemProvider.providePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple")
-    }
-
-    func test_providePointOfSaleItems_sets_types_parameters_correctly_when_variable_products_feature_is_enabled() async throws {
-        // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                     currencySettings: currencySettings,
-                                                     network: network,
-                                                     isVariableProductsFeatureEnabled: true)
+                                                     network: network)
 
         // When
         _ = try? await itemProvider.providePointOfSaleItems()
@@ -141,8 +126,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
-                                                  network: network,
-                                                  isVariableProductsFeatureEnabled: true)
+                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -153,44 +137,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 name: "Tea",
                 productImageSource: nil,
                 productID: parentProductID,
-                allAttributes: [
-                        .init(
-                            siteID: siteID,
-                            attributeID: 0,
-                            name: "Shape",
-                            position: 1,
-                            visible: true,
-                            variation: true,
-                            options: ["Marble", "Heart"]
-                        ),
-                        .init(
-                            siteID: siteID,
-                            attributeID: 0,
-                            name: "Flavor",
-                            position: 2,
-                            visible: true,
-                            variation: true,
-                            options: ["fruity", "nuts"]
-                        ),
-                        .init(
-                            siteID: siteID,
-                            attributeID: 0,
-                            name: "Darkness",
-                            position: 3,
-                            visible: true,
-                            variation: true,
-                            options: ["99%", "87%"]
-                        ),
-                        .init(
-                            siteID: siteID,
-                            attributeID: 0,
-                            name: "Size",
-                            position: 4,
-                            visible: true,
-                            variation: true,
-                            options: ["6 piece"]
-                        )
-                    ]
+                allAttributes: teaAttributes
             ),
             pageNumber: 1
         )
@@ -209,7 +156,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             "Shape: brick, Flavor: nuts, Darkness: 99%, " +
             String.localizedStringWithFormat(VariationAttributeViewModel.Localization.anyAttributeFormat, "Size")
         )
-        XCTAssertEqual(firstVariation.formattedPrice, "-")
+        XCTAssertEqual(firstVariation.formattedPrice, "$0.00")
         XCTAssertEqual(firstVariation.price, "")
         XCTAssertEqual(firstVariation.productImageSource,
                        "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1")
@@ -221,8 +168,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                                   currencySettings: currencySettings,
-                                                  network: network,
-                                                  isVariableProductsFeatureEnabled: true)
+                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -257,8 +203,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let itemProvider = PointOfSaleItemService(siteID: siteID,
                                             currencySettings: currencySettings,
-                                            network: network,
-                                            isVariableProductsFeatureEnabled: true)
+                                            network: network)
         let parentProductID: Int64 = 123
         let expectedError = PointOfSaleItemServiceError.requestFailed
 
@@ -281,5 +226,109 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         } catch {
             XCTAssertEqual(error as? PointOfSaleItemServiceError, expectedError)
         }
+    }
+
+    func test_providePointOfSaleVariationItems_formats_empty_prices_as_zero() async throws {
+        // Given
+        let itemProvider = PointOfSaleItemService(siteID: siteID,
+                                                  currencySettings: currencySettings,
+                                                  network: network)
+        let parentProductID: Int64 = 123
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/\(parentProductID)/variations", filename: "product-variations-load-all")
+        let pagedVariations = try await itemProvider.providePointOfSaleVariationItems(
+            for: .init(
+                id: .init(),
+                name: "Tea",
+                productImageSource: nil,
+                productID: parentProductID,
+                allAttributes: teaAttributes
+            ),
+            pageNumber: 1
+        )
+
+        // Then
+        let variations = pagedVariations.items
+
+        XCTAssertEqual(variations.count, 7)
+        for variationItem in variations {
+            guard case let .variation(variation) = variationItem else {
+                return XCTFail("Variation is expected.")
+            }
+            if variation.price == "" {
+                XCTAssertEqual(variation.formattedPrice, "$0.00")
+            } else {
+                XCTFail("Test does not handle non-empty prices")
+            }
+        }
+    }
+
+    func test_providePointOfSaleSimpleProductItems_formats_empty_prices_as_zero() async throws {
+        // Given
+        let expectedProductPrice = ""
+        let expectedFormattedPrice = "$0.00"
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-simple-products-empty-price")
+        let pagedItems = try await itemProvider.providePointOfSaleItems()
+
+        // Then
+        let items = pagedItems.items
+        XCTAssertEqual(items.count, 2)
+        for item in items {
+            guard case let .simpleProduct(simpleProduct) = item else {
+                return XCTFail("Simple product is expected.")
+            }
+            if simpleProduct.price == "" {
+                XCTAssertEqual(simpleProduct.formattedPrice, expectedFormattedPrice)
+                XCTAssertEqual(simpleProduct.price, expectedProductPrice)
+            } else {
+                XCTFail("Test does not handle non-empty prices")
+            }
+        }
+    }
+}
+
+private extension PointOfSaleItemServiceTests {
+    var teaAttributes: [ProductAttribute] {
+        [
+            .init(
+                siteID: siteID,
+                attributeID: 0,
+                name: "Shape",
+                position: 1,
+                visible: true,
+                variation: true,
+                options: ["Marble", "Heart"]
+            ),
+            .init(
+                siteID: siteID,
+                attributeID: 0,
+                name: "Flavor",
+                position: 2,
+                visible: true,
+                variation: true,
+                options: ["fruity", "nuts"]
+            ),
+            .init(
+                siteID: siteID,
+                attributeID: 0,
+                name: "Darkness",
+                position: 3,
+                visible: true,
+                variation: true,
+                options: ["99%", "87%"]
+            ),
+            .init(
+                siteID: siteID,
+                attributeID: 0,
+                name: "Size",
+                position: 4,
+                visible: true,
+                variation: true,
+                options: ["6 piece"]
+            )
+        ]
     }
 }

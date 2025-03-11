@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import Yosemite
@@ -2219,7 +2219,8 @@ extension Networking.Site {
             visibility: .fake(),
             canBlaze: .fake(),
             isAdmin: .fake(),
-            wasEcommerceTrial: .fake()
+            wasEcommerceTrial: .fake(),
+            hasSSOEnabled: .fake()
         )
     }
 }
@@ -2366,6 +2367,21 @@ extension Networking.StoredProductSettings {
     public static func fake() -> Networking.StoredProductSettings {
         .init(
             settings: .fake()
+        )
+    }
+}
+extension Networking.StoredProductSettings.Setting {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.StoredProductSettings.Setting {
+        .init(
+            siteID: .fake(),
+            sort: .fake(),
+            stockStatusFilter: .fake(),
+            productStatusFilter: .fake(),
+            productTypeFilter: .fake(),
+            productCategoryFilter: .fake(),
+            favoriteProduct: .fake()
         )
     }
 }
@@ -2808,6 +2824,44 @@ extension Networking.WooShippingCustomPackage {
             rawType: .fake(),
             dimensions: .fake(),
             boxWeight: .fake()
+        )
+    }
+}
+extension Networking.WooShippingDestinationAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingDestinationAddress {
+        .init(
+            company: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            state: .fake(),
+            postcode: .fake(),
+            country: .fake(),
+            phone: .fake(),
+            name: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            email: .fake()
+        )
+    }
+}
+extension Networking.WooShippingNormalizedAddress {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingNormalizedAddress {
+        .init(
+            company: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            phone: .fake(),
+            country: .fake(),
+            state: .fake(),
+            address1: .fake(),
+            address2: .fake(),
+            city: .fake(),
+            postcode: .fake()
         )
     }
 }

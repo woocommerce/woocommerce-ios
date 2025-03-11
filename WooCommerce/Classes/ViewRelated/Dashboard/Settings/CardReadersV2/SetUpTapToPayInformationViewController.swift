@@ -53,7 +53,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
-        rootView.learnMoreUrl = viewModel.learnMoreURL
     }
 
     required init?(coder: NSCoder) {
@@ -69,7 +68,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
 struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
-    var learnMoreUrl: URL? = nil
     @State var showingAboutTapToPay: Bool = false
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -124,6 +122,7 @@ struct SetUpTapToPayInformationView: View {
 
                 InPersonPaymentsLearnMore(
                     viewModel: LearnMoreViewModel(
+                        url: viewModel.learnMoreURL,
                         formatText: Localization.learnMore,
                         tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
                 .padding(.vertical, Constants.learnMorePadding)
@@ -136,7 +135,14 @@ struct SetUpTapToPayInformationView: View {
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
-            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
+            TapToPayEducationView(viewModel: .init(flow: .about, completion: { result in
+                switch result {
+                case .setUpTapToPay:
+                    viewModel.setUpTapped()
+                default:
+                    break
+                }
+            }))
         }
     }
 }

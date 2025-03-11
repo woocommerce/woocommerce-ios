@@ -109,10 +109,9 @@ public final class CoreDataManager: StorageManagerType {
                                on queue: DispatchQueue) {
         let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
-            derivedStorage.perform {
+            derivedStorage.perform { [self] in
                 operation(derivedStorage)
-
-                (derivedStorage as! NSManagedObjectContext).saveIfNeeded()
+                saveStorageIfNeeded(derivedStorage)
                 queue.async { completion?() }
                 done()
             }
@@ -135,10 +134,10 @@ public final class CoreDataManager: StorageManagerType {
         assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
         let derivedStorage = writerStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
-            derivedStorage.perform {
+            derivedStorage.perform { [self] in
                 let result = Result(catching: { try operation(derivedStorage) })
                 if case .success = result {
-                    (derivedStorage as! NSManagedObjectContext).saveIfNeeded()
+                    saveStorageIfNeeded(derivedStorage)
                 }
                 queue.async { completion(result) }
                 done()
@@ -300,6 +299,37 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(storageName + ".sqlite")
+    }
+}
+
+// MARK: Helpers
+private extension CoreDataManager {
+
+    func saveStorageIfNeeded(_ storage: StorageType) {
+        let context = storage as! NSManagedObjectContext
+        guard context.hasChanges else {
+            return
+        }
+        do {
+            try context.save()
+        } catch {
+            dropDatabaseAndExit(with: error)
+        }
+    }
+
+    func dropDatabaseAndExit(with error: Error) {
+        var persistentStoreRemovalError: Error?
+        do {
+            try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, type: .sqlite, options: nil)
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        } catch {
+            persistentStoreRemovalError = error
+        }
+
+        let logProperties: [String: Any?] = ["originalError": error,
+                                             "persistentStoreRemovalError": persistentStoreRemovalError,
+                                             "message": "[CoreDataManager] Forced reset the database after corrupted store removal."]
+        crashLogger.logFatalErrorAndExit(error, userInfo: logProperties.compactMapValues { $0 })
     }
 }
 

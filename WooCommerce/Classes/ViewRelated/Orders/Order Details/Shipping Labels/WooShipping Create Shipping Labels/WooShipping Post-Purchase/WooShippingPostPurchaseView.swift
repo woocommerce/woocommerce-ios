@@ -4,6 +4,7 @@ struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
     @State private var isPrintingLabel = false
+    @State private var showingPrintingError = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -37,10 +38,8 @@ struct WooShippingPostPurchaseView: View {
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                 }
                 Button {
-                    isPrintingLabel = true
                     Task { @MainActor in
-                        await viewModel.printLabel()
-                        isPrintingLabel = false
+                        await printLabel()
                     }
                 } label: {
                     Text(Localization.printButton)
@@ -105,6 +104,33 @@ struct WooShippingPostPurchaseView: View {
                 .footnoteStyle()
         }
         .padding(.vertical)
+        .alert(Localization.PrintingLabelError.title, isPresented: $showingPrintingError, actions: {
+            Button(role: .cancel) {} label: {
+                Text(Localization.PrintingLabelError.cancel)
+            }
+            Button {
+                Task { @MainActor in
+                    await printLabel()
+                }
+            } label: {
+                Text(Localization.PrintingLabelError.retry)
+            }
+        }, message: {
+            Text(Localization.PrintingLabelError.message)
+        })
+    }
+}
+
+private extension WooShippingPostPurchaseView {
+    func printLabel() async {
+        isPrintingLabel = true
+        do {
+            try await viewModel.printLabel()
+        } catch {
+            showingPrintingError = true
+            DDLogError("Error generating shipping label document for printing: \(error)")
+        }
+        isPrintingLabel = false
     }
 }
 
@@ -131,9 +157,9 @@ private extension WooShippingPostPurchaseView {
                                             value: "Learn how to print from your mobile device",
                                             comment: "Link for more information about how to print a purchased shipping label on the shipping label screen")
         static let infoTitle =
-            NSLocalizedString("wooShipping.createLabels.postPurchase.infoTitle",
-                              value: "Print from your mobile device",
-                              comment: "Navigation bar title of shipping label printing instructions screen")
+        NSLocalizedString("wooShipping.createLabels.postPurchase.infoTitle",
+                          value: "Print from your mobile device",
+                          comment: "Navigation bar title of shipping label printing instructions screen")
         static let trackShipment = NSLocalizedString("wooShipping.createLabels.postPurchase.trackShipment",
                                                      value: "Track shipment",
                                                      comment: "Link to track a shipment for a purchase shipping label on the shipping label screen")
@@ -146,6 +172,30 @@ private extension WooShippingPostPurchaseView {
         static let note = NSLocalizedString("wooShipping.createLabels.postPurchase.note",
                                             value: "Note: Reusing a printed label is a violation of our terms of service and may result in criminal charges.",
                                             comment: "Note about reusing a purchased shipping label on the shipping label screen")
+        enum PrintingLabelError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingLabelError.title",
+                value: "Error previewing shipping label",
+                comment: "Title of the error alert when printing a shipping label fails in the post purchase flow."
+            )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingLabelError.message",
+                value: "Do you want to try again?",
+                comment: "Message of the error alert when printing a shipping label fails in the post purchase flow."
+            )
+            static let cancel = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingLabelError.cancel",
+                value: "Cancel",
+                comment: "Button on the error alert when printing a shipping label fails in the post purchase flow." +
+                "Tapping on this button would cancel the printing."
+            )
+            static let retry = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingLabelError.retry",
+                value: "Retry",
+                comment: "Button on the error alert when printing a shipping label fails in the post purchase flow." +
+                "Tapping on this button would retry printing the shipping label."
+            )
+        }
     }
 }
 

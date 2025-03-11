@@ -23,6 +23,7 @@ final class ProductFormTableViewDataSource: NSObject {
     private var onNameChange: ((_ name: String?) -> Void)?
     private var onStatusChange: ((_ isEnabled: Bool) -> Void)?
     private var onAddImage: (() -> Void)?
+    private var onFailedImageUpload: ((ProductImageAssetType, Error) -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
     private let productUIImageLoader: ProductUIImageLoader
@@ -41,10 +42,14 @@ final class ProductFormTableViewDataSource: NSObject {
         super.init()
     }
 
-    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onStatusChange: ((_ isEnabled: Bool) -> Void)?, onAddImage: @escaping () -> Void) {
+    func configureActions(onNameChange: ((_ name: String?) -> Void)?,
+                          onStatusChange: ((_ isEnabled: Bool) -> Void)?,
+                          onAddImage: @escaping () -> Void,
+                          onFailedImageUpload: @escaping (ProductImageAssetType, Error) -> Void) {
         self.onNameChange = onNameChange
         self.onStatusChange = onStatusChange
         self.onAddImage = onAddImage
+        self.onFailedImageUpload = onFailedImageUpload
     }
 }
 
@@ -175,6 +180,9 @@ private extension ProductFormTableViewDataSource {
         cell.onAddImage = { [weak self] in
             self?.onAddImage?()
         }
+        cell.onFailedUploadSelected = { [weak self] (asset, error) in
+            self?.onFailedImageUpload?(asset, error)
+        }
     }
 
     func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productStatus: ProductStatus) {
@@ -293,7 +301,7 @@ private extension ProductFormTableViewDataSource {
                                                attributes: [.font: font,
                                                             .foregroundColor: linkColor,
                                                             .underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                            .underlineColor: linkColor,
+                                                            .underlineColor: UIColor.clear,
                                                             .link: Constants.legalURL])
             attributedString.replaceFirstOccurrence(of: linkContent, with: legalLink)
             return attributedString

@@ -1,8 +1,10 @@
-// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.2.6 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Codegen
 import Foundation
 import WooFoundation
+import struct Alamofire.JSONEncoding
+
 
 extension Networking.AIProduct {
     public func copy(
@@ -3311,7 +3313,8 @@ extension Networking.Site {
         visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
-        wasEcommerceTrial: CopiableProp<Bool> = .copy
+        wasEcommerceTrial: CopiableProp<Bool> = .copy,
+        hasSSOEnabled: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -3334,6 +3337,7 @@ extension Networking.Site {
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
+        let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
 
         return Networking.Site(
             siteID: siteID,
@@ -3356,7 +3360,8 @@ extension Networking.Site {
             visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
-            wasEcommerceTrial: wasEcommerceTrial
+            wasEcommerceTrial: wasEcommerceTrial,
+            hasSSOEnabled: hasSSOEnabled
         )
     }
 }
@@ -3498,6 +3503,36 @@ extension Networking.SiteVisitStatsItem {
             period: period,
             visitors: visitors,
             views: views
+        )
+    }
+}
+
+extension Networking.StoredProductSettings.Setting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        sort: NullableCopiableProp<String> = .copy,
+        stockStatusFilter: NullableCopiableProp<ProductStockStatus> = .copy,
+        productStatusFilter: NullableCopiableProp<ProductStatus> = .copy,
+        productTypeFilter: NullableCopiableProp<ProductType> = .copy,
+        productCategoryFilter: NullableCopiableProp<ProductCategory> = .copy,
+        favoriteProduct: CopiableProp<Bool> = .copy
+    ) -> Networking.StoredProductSettings.Setting {
+        let siteID = siteID ?? self.siteID
+        let sort = sort ?? self.sort
+        let stockStatusFilter = stockStatusFilter ?? self.stockStatusFilter
+        let productStatusFilter = productStatusFilter ?? self.productStatusFilter
+        let productTypeFilter = productTypeFilter ?? self.productTypeFilter
+        let productCategoryFilter = productCategoryFilter ?? self.productCategoryFilter
+        let favoriteProduct = favoriteProduct ?? self.favoriteProduct
+
+        return Networking.StoredProductSettings.Setting(
+            siteID: siteID,
+            sort: sort,
+            stockStatusFilter: stockStatusFilter,
+            productStatusFilter: productStatusFilter,
+            productTypeFilter: productTypeFilter,
+            productCategoryFilter: productCategoryFilter,
+            favoriteProduct: favoriteProduct
         )
     }
 }
@@ -4057,6 +4092,42 @@ extension Networking.WooShippingAccountSettings {
     }
 }
 
+extension Networking.WooShippingAddress {
+    public func copy(
+        company: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
+    ) -> Networking.WooShippingAddress {
+        let company = company ?? self.company
+        let name = name ?? self.name
+        let phone = phone ?? self.phone
+        let country = country ?? self.country
+        let state = state ?? self.state
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
+
+        return Networking.WooShippingAddress(
+            company: company,
+            name: name,
+            phone: phone,
+            country: country,
+            state: state,
+            address1: address1,
+            address2: address2,
+            city: city,
+            postcode: postcode
+        )
+    }
+}
+
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
@@ -4092,6 +4163,90 @@ extension Networking.WooShippingCustomPackage {
             rawType: rawType,
             dimensions: dimensions,
             boxWeight: boxWeight
+        )
+    }
+}
+
+extension Networking.WooShippingDestinationAddress {
+    public func copy(
+        company: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        email: CopiableProp<String> = .copy
+    ) -> Networking.WooShippingDestinationAddress {
+        let company = company ?? self.company
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let state = state ?? self.state
+        let postcode = postcode ?? self.postcode
+        let country = country ?? self.country
+        let phone = phone ?? self.phone
+        let name = name ?? self.name
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let email = email ?? self.email
+
+        return Networking.WooShippingDestinationAddress(
+            company: company,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postcode: postcode,
+            country: country,
+            phone: phone,
+            name: name,
+            firstName: firstName,
+            lastName: lastName,
+            email: email
+        )
+    }
+}
+
+extension Networking.WooShippingNormalizedAddress {
+    public func copy(
+        company: CopiableProp<String> = .copy,
+        firstName: CopiableProp<String> = .copy,
+        lastName: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
+    ) -> Networking.WooShippingNormalizedAddress {
+        let company = company ?? self.company
+        let firstName = firstName ?? self.firstName
+        let lastName = lastName ?? self.lastName
+        let phone = phone ?? self.phone
+        let country = country ?? self.country
+        let state = state ?? self.state
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
+
+        return Networking.WooShippingNormalizedAddress(
+            company: company,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone,
+            country: country,
+            state: state,
+            address1: address1,
+            address2: address2,
+            city: city,
+            postcode: postcode
         )
     }
 }

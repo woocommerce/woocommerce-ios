@@ -19,7 +19,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
-        guard isTablet else {
+        guard isTablet,
+              #available(iOS 17.0, *) else {
             return Just(false)
                 .eraseToAnyPublisher()
         }
@@ -65,6 +66,8 @@ private extension POSEligibilityChecker {
                 return
             }
 
+            let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
+
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 guard let wcPlugin = wcPlugin, wcPlugin.active else {
                     promise(.success(false))
@@ -72,7 +75,7 @@ private extension POSEligibilityChecker {
                 }
 
                 let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                    minimumRequired: Constants.wcPluginMinimumVersion)
+                                                                    minimumRequired: wcPluginMinimumVersion)
                 promise(.success(isSupported))
             }
             self.stores.dispatch(action)
@@ -121,6 +124,6 @@ private extension POSEligibilityChecker {
 private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
-        static let wcPluginMinimumVersion = "6.6.0"
+        static let wcPluginMinimumVersion = "9.6.0-beta"
     }
 }

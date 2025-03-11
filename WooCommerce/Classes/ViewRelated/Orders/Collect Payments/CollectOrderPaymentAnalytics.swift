@@ -9,7 +9,7 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func trackProcessingCompletion(intent: PaymentIntent)
 
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData)
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData)
 
     func trackPaymentFailure(with error: Error)
 
@@ -25,7 +25,6 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func trackReceiptPrintFailed(error: Error)
 }
-
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 
@@ -83,7 +82,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         }
     }
 
-    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .collectPaymentSuccess(forGatewayID: paymentGatewayAccount?.gatewayID,
                                    countryCode: configuration.countryCode,

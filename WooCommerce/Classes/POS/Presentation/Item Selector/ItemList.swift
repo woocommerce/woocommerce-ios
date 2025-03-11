@@ -4,9 +4,10 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
+@available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     let state: ItemListState
@@ -49,8 +50,12 @@ struct ItemList<HeaderView: View>: View {
 
     @ViewBuilder var footerRows: some View {
         switch state {
-        case .loading:
-            ForEach(0..<8) { _ in
+        case .loading(let items):
+            if items.isEmpty {
+                ForEach(0..<8) { _ in
+                    GhostItemCardView()
+                }
+            } else {
                 GhostItemCardView()
             }
         case .inlineError(_, let errorState):
@@ -67,14 +72,15 @@ struct ItemList<HeaderView: View>: View {
 }
 
 private enum Constants {
-    static let itemListPadding: CGFloat = 16
-    static let itemSpacing: CGFloat = 16
+    static let itemListPadding: CGFloat = POSPadding.medium
+    static let itemSpacing: CGFloat = POSSpacing.small
 }
 
+@available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
     let analytics: Analytics = ServiceLocator.analytics
-    @EnvironmentObject var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     var body: some View {
         switch item {
@@ -102,6 +108,7 @@ private struct ItemListRow: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ItemListRow {
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
@@ -113,7 +120,7 @@ private extension ItemListRow {
 }
 
 #if DEBUG
-
+@available(iOS 17.0, *)
 #Preview("Loaded with items") {
     ItemList(
         state:
@@ -142,13 +149,15 @@ private extension ItemListRow {
     )
 }
 
+@available(iOS 17.0, *)
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     ItemList(state: .loading([]))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 
 #endif

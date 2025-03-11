@@ -7,6 +7,7 @@ import Yosemite
 final class ProductImagesCollectionViewController: UICollectionViewController {
 
     typealias ReorderingHandler = (_ productImageStatuses: [ProductImageStatus]) -> Void
+    typealias FailedUploadHandler = (_ asset: ProductImageAssetType, _ error: Error) -> Void
 
     private var productImageStatuses: [ProductImageStatus]
 
@@ -20,10 +21,12 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
     private let onReordering: ReorderingHandler
+    private let onFailedUploadSelected: FailedUploadHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         onFailedUploadSelected: @escaping FailedUploadHandler,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
          onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
@@ -31,6 +34,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         self.onReordering = onReordering
+        self.onFailedUploadSelected = onFailedUploadSelected
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -72,7 +76,8 @@ extension ProductImagesCollectionViewController {
         let productImageStatus = productImageStatuses[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: productImageStatus.cellReuseIdentifier,
                                                       for: indexPath)
-        configureCell(cell, productImageStatus: productImageStatus)
+        let isFirstImage = indexPath.row == 0
+        configureCell(cell, productImageStatus: productImageStatus, isFirstImage: isFirstImage)
         return cell
     }
 }
@@ -80,10 +85,10 @@ extension ProductImagesCollectionViewController {
 // MARK: Cell configurations
 //
 private extension ProductImagesCollectionViewController {
-    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, productImage: image)
+            configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
         case .uploading(let asset):
             switch asset {
                 case .phAsset(let asset):
@@ -91,10 +96,17 @@ private extension ProductImagesCollectionViewController {
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
+        case let .uploadFailure(asset, _):
+            switch asset {
+                case .phAsset(let asset):
+                    configureFailedImageCell(cell, asset: asset)
+                case .uiImage(let image, _, _):
+                    configureFailedImageCell(cell, image: image)
+            }
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage, isFirstImage: Bool) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
@@ -116,6 +128,7 @@ private extension ProductImagesCollectionViewController {
             cell.imageView.contentMode = .scaleAspectFit
             cell.imageView.image = image
         }
+        cell.coverTagView.isHidden = !isFirstImage
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
@@ -140,6 +153,29 @@ private extension ProductImagesCollectionViewController {
         cell.imageView.contentMode = .scaleAspectFit
         cell.imageView.image = image
     }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureFailedImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? FailedProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
 }
 
 // MARK: UICollectionViewDelegate
@@ -150,15 +186,17 @@ extension ProductImagesCollectionViewController {
         switch status {
         case .remote:
             break
-        default:
+        case let .uploadFailure(asset, error):
+            return onFailedUploadSelected(asset, error)
+        case .uploading:
             return
         }
 
         let selectedImageIndex: Int = {
-            // In case of any pending images, deduct the number of pending images from the index.
+            // In case of any pending and failed images, deduct the number of pending images from the index.
             let imageStatusIndex = indexPath.row
-            let numberOfPendingImages = productImageStatuses.count - productImageStatuses.images.count
-            return imageStatusIndex - numberOfPendingImages
+            let numberOfPendingOrFailedImages = productImageStatuses.count - productImageStatuses.images.count
+            return imageStatusIndex - numberOfPendingOrFailedImages
         }()
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
                                                                                     selectedIndex: selectedImageIndex,
@@ -254,7 +292,9 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
         }, completion: { [weak self] _ in
             // [Workaround] Reload the collection view if there are more than
             // one type of cells, for example, when there are any pending upload.
-            self?.reloadCollectionViewIfNeeded()
+            // Reloading is also necessary when the first image is updated.
+            let firstImageUpdated = item.sourceIndexPath?.item == 0 || destinationIndexPath.item == 0
+            self?.reloadCollectionViewIfNeeded(firstImageUpdated: firstImageUpdated)
         })
 
         coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
@@ -264,9 +304,10 @@ extension ProductImagesCollectionViewController: UICollectionViewDragDelegate, U
     /// Reloads collection view only if there is any pending upload.
     /// This makes sure that cells for pending uploads are reloaded properly
     /// to remove their overlays after uploading is done.
+    /// If the first image is updated, reloading is also necessary to update the Cover tag.
     ///
-    private func reloadCollectionViewIfNeeded() {
-        if productImageStatuses.hasPendingUpload {
+    private func reloadCollectionViewIfNeeded(firstImageUpdated: Bool) {
+        if firstImageUpdated || productImageStatuses.hasPendingUpload {
             collectionView.reloadData()
         }
     }
@@ -289,6 +330,8 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(FailedProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: FailedProductImageCollectionViewCell.reuseIdentifier)
     }
 }
 

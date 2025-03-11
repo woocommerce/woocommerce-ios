@@ -35,9 +35,13 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "The %1$@ extension cannot be in test mode for In-Person Payments. "
+        "The %1$@ extension cannot be in test mode for In‑Person Payments. "
             + "Please disable test mode.",
-        comment: "Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name."
+        comment: """
+                 Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
+                 """
     )
 
     static let primaryButton = NSLocalizedString(

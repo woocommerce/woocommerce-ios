@@ -2,8 +2,10 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     let title = Localization.title
-    let instruction = Localization.instruction
     let connectReaderButtonTitle = Localization.collectPayment
+    var instruction: String {
+        Localization.instruction
+    }
 }
 
 private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
@@ -21,8 +23,8 @@ private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewMode
         )
 
         static let collectPayment =  NSLocalizedString(
-            "pointOfSale.cardPresent.readerNotConnected.button.title",
-            value: "Connect to reader",
+            "pointOfSale.cardPresent.connectReader.button.title",
+            value: "Connect your reader",
             comment: "Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA."
         )
     }

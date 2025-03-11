@@ -4,8 +4,7 @@ import Yosemite
 
 /// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
 protocol ProductImageActionHandlerProtocol {
-    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
-    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
+    typealias OnAllStatusesUpdate = ([ProductImageStatus]) -> Void
     typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     var productImageStatuses: [ProductImageStatus] { get }
@@ -28,13 +27,14 @@ protocol ProductImageActionHandlerProtocol {
     func resetProductImages(to product: ProductFormDataModel)
 
     func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus])
+
+    func discardUpload(asset: ProductImageAssetType)
 }
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
 final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
-    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
-    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
+    typealias OnAllStatusesUpdate = ([ProductImageStatus]) -> Void
     typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
@@ -45,18 +45,14 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     private let stores: StoresManager
 
-    var productImageStatuses: [ProductImageStatus] {
-        return allStatuses.productImageStatuses
-    }
-
-    private var allStatuses: AllStatuses {
+    private(set) var productImageStatuses: [ProductImageStatus] {
         didSet {
             queue.async { [weak self] in
                 guard let self = self else {
                     return
                 }
                 self.observations.allStatusesUpdated.values.forEach { closure in
-                    closure(self.allStatuses)
+                    closure(self.productImageStatuses)
                 }
             }
         }
@@ -82,7 +78,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         self.productOrVariationID = productID
         self.queue = queue
         self.stores = stores
-        self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+        self.productImageStatuses = imageStatuses
     }
 
     /// Observes when the image statuses have been updated.
@@ -113,11 +109,11 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                     return
                 }
 
-                onUpdate(self.allStatuses)
+                onUpdate(self.productImageStatuses)
             }
 
             // Sends the initial value.
-            onUpdate(self.allStatuses)
+            onUpdate(self.productImageStatuses)
         }
 
         return AnyCancellable { [weak self] in
@@ -168,7 +164,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
             let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
             let imageStatuses = newProductImageStatuses + self.productImageStatuses
-            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+            self.productImageStatuses = imageStatuses
         }
     }
 
@@ -178,8 +174,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            let imageStatuses = [.uploading(asset: asset)] + self.allStatuses.productImageStatuses
-            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+            productImageStatuses = [.uploading(asset: asset)] + self.productImageStatuses
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in
@@ -233,6 +228,19 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
     }
 
+    func discardUpload(asset: ProductImageAssetType) {
+        queue.async { [weak self] in
+            guard let self else { return }
+
+            guard let uploadIndex = index(of: asset) else {
+                DDLogWarn("⚠️ Could not find upload for asset to discard!")
+                return
+            }
+
+            productImageStatuses.remove(at: uploadIndex)
+        }
+    }
+
     /// Updates the `productID` with the provided `remoteProductID`
     ///
     /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
@@ -247,14 +255,14 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            var imageStatuses = self.allStatuses.productImageStatuses
+            var imageStatuses = self.productImageStatuses
             imageStatuses.removeAll { status -> Bool in
                 guard case .remote(let image) = status else {
                     return false
                 }
                 return image.imageID == productImage.imageID
             }
-            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+            self.productImageStatuses = imageStatuses
         }
     }
 
@@ -266,7 +274,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
+            self.productImageStatuses = product.imageStatuses
         }
     }
 
@@ -278,44 +286,43 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            self.allStatuses = (productImageStatuses: productImageStatuses, error: nil)
+            self.productImageStatuses = productImageStatuses
         }
     }
 }
 
 private extension ProductImageActionHandler {
     func index(of asset: ProductImageAssetType) -> Int? {
-        return allStatuses.productImageStatuses.firstIndex(where: { status -> Bool in
+        return productImageStatuses.firstIndex(where: { status -> Bool in
             switch status {
             case .uploading(let uploadingAsset):
                 return uploadingAsset == asset
-            default:
+            case let .uploadFailure(failedAsset, _):
+                return failedAsset == asset
+            case .remote:
                 return false
             }
         })
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
-        if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
+        if case .uploading(let asset) = productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
                 closure(asset, .success(productImage))
             }
         }
 
-        var imageStatuses = allStatuses.productImageStatuses
-        imageStatuses[index] = .remote(image: productImage)
-        allStatuses = (productImageStatuses: imageStatuses, error: nil)
+        productImageStatuses[index] = .remote(image: productImage)
     }
 
     func updateProductImageStatus(at index: Int, error: Error) {
-        if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
+        if case .uploading(let asset) = productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
                 closure(asset, .failure(error))
             }
+            productImageStatuses[index] = .uploadFailure(asset: asset, error: error)
+        } else {
+            productImageStatuses.remove(at: index)
         }
-
-        var imageStatuses = allStatuses.productImageStatuses
-        imageStatuses.remove(at: index)
-        allStatuses = (productImageStatuses: imageStatuses, error: error)
     }
 }

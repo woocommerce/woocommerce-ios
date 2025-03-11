@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+import Networking
 import Yosemite
 import protocol Storage.StorageType
 import WordPressAuthenticator
@@ -116,12 +117,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_it_shows_latest_published_product_in_dashboard() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let product1: Product = .fake().copy(siteID: sampleSiteID,
+        let product1: Networking.Product = .fake().copy(siteID: sampleSiteID,
                                              statusKey: (ProductStatus.published.rawValue),
                                              purchasable: true)
         insertProduct(product1)
 
-        let product2: Product = .fake().copy(siteID: sampleSiteID,
+        let product2: Networking.Product = .fake().copy(siteID: sampleSiteID,
                                              statusKey: (ProductStatus.published.rawValue),
                                              purchasable: true)
 
@@ -896,7 +897,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 }
 
 private extension BlazeCampaignDashboardViewModelTests {
-    func insertProduct(_ readOnlyProduct: Product) {
+    func insertProduct(_ readOnlyProduct: Networking.Product) {
         let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
         newProduct.update(with: readOnlyProduct)
         storage.saveIfNeeded()
@@ -910,7 +911,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         storage.saveIfNeeded()
     }
 
-    func mockSynchronizeProducts(insertProductToStorage product: Product? = nil) {
+    func mockSynchronizeProducts(insertProductToStorage product: Networking.Product? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
             case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):

@@ -115,6 +115,7 @@ protocol BatteryPoweredCardReaderConnectionAlertsProviding<AlertDetails> {
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
     func updatingFailedLowBattery(batteryLevel: Double?,
+                                  retrySearch: @escaping () -> Void,
                                   close: @escaping () -> Void) -> AlertDetails
 }
 

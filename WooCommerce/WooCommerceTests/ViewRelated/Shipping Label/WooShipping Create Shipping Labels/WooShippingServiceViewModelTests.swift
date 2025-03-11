@@ -7,7 +7,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
-    private var samplePackageID = "default_box"
+    private static let samplePackageID = "default_box"
+    private var samplePackage = ShippingLabelPackageSelected.fake().copy(id: samplePackageID, weight: 5)
 
     override func setUp() {
         super.setUp()
@@ -25,8 +26,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_init_sets_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake())
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: WooShippingAddress.fake())
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
@@ -36,12 +37,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_loadLabelRates_generates_service_tabs_with_expected_data() throws {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: self.samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
 
         // Then
         XCTAssertEqual(viewModel.loadingState, .loaded)
@@ -105,15 +106,15 @@ final class WooShippingServiceViewModelTests: XCTestCase {
             }
         }
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake())
+        viewModel.loadLabelRates(for: samplePackage)
 
         // Then
-        XCTAssertEqual(viewModel.loadingState, .error)
+        XCTAssertEqual(viewModel.loadingState, .error(.failedLoadingLabelRates))
         XCTAssertTrue(viewModel.serviceTabs.isEmpty)
     }
 
@@ -121,12 +122,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         let standardRate = sampleStandardRates()[1]
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(standardRate, signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -140,11 +141,11 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_selecting_service_card_signature_rate_updates_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: sampleSignatureRates().first, adultSignatureRate: nil)
 
         // Then
@@ -157,12 +158,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_selecting_service_card_adult_signature_rate_updates_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: sampleAdultSignatureRates().first)
 
         // Then
@@ -176,14 +177,14 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Given
         var selectedRate: WooShippingSelectedRate?
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores) { rate in
             selectedRate = rate
         }
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: nil)
 
         // Then
@@ -193,12 +194,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_sortShipping_by_price_returns_sorted_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.sortShipping(by: .price)
 
         // Then
@@ -210,12 +211,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_shortShipping_by_deliveryDays_returns_sorted_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
-                                                    originAddress: ShippingLabelAddress.fake(),
-                                                    destinationAddress: ShippingLabelAddress.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: ShippingLabelPackageSelected.fake().copy(id: samplePackageID))
+        viewModel.loadLabelRates(for: samplePackage)
         viewModel.sortShipping(by: .deliveryTime)
 
         // Then
@@ -224,11 +225,47 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
+    func test_it_sets_correct_error_state_when_destination_address_is_missing() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, _, completion):
+                completion(.failure(NetworkError.timeout()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: WooShippingAddress.fake(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.missingDestinationAddress))
+    }
+
+    func test_it_sets_correct_error_state_when_total_shipment_weight_is_zero() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage.copy(weight: 0))
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.missingShipmentWeight))
+    }
 }
 
 private extension WooShippingServiceViewModelTests {
     func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
-        [ShippingLabelCarriersAndRates(packageID: samplePackageID,
+        [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                        defaultRates: sampleStandardRates(),
                                        signatureRequired: sampleSignatureRates(),
                                        adultSignatureRequired: sampleAdultSignatureRates())]
@@ -306,5 +343,17 @@ private extension WooShippingServiceViewModelTests {
                                   isPickupFree: true,
                                   deliveryDays: 2,
                                   deliveryDateGuaranteed: false)]
+    }
+
+    func sampleDestinationAddress() -> WooShippingAddress {
+        WooShippingAddress(company: "HEADQUARTERS",
+                           name: "JANE DOE",
+                           phone: "1-234-456-7890",
+                           country: "US",
+                           state: "NY",
+                           address1: "15 ALGONKIN ST STE 100",
+                           address2: "",
+                           city: "TICONDEROGA",
+                           postcode: "12883-1487")
     }
 }

@@ -33,8 +33,12 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments.",
-        comment: "Error message when WooCommerce Payments is not installed"
+        "You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments.",
+        comment: """
+                 Error message when WooCommerce Payments is not installed
+                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+                 """
     )
 }
 

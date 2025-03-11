@@ -340,10 +340,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Empty Coupons Icon
+    /// Coupons Image
     ///
-    static var emptyCouponsImage: UIImage {
-        return UIImage(named: "woo-empty-coupons")!
+    static var couponsImage: UIImage {
+        return UIImage(named: "coupons")!
     }
 
     /// Empty Inbox Notes Icon
@@ -364,32 +364,20 @@ extension UIImage {
         return UIImage(named: "woo-empty-products")!
     }
 
-    /// Empty Products Tab Icon
+    /// Message image
     ///
-    static var emptyProductsTabImage: UIImage {
-        return UIImage(named: "woo-empty-products-tab")!
-    }
-
-    /// Empty Reviews Icon
-    ///
-    static var emptyReviewsImage: UIImage {
-        return UIImage(named: "woo-empty-reviews")!
-    }
-
-    /// An image showing a hand holding a magnifying glass over a page.
-    ///
-    static var emptySearchResultsImage: UIImage {
-        UIImage(named: "woo-empty-search-results")!
+    static var messageImage: UIImage {
+        return UIImage(named: "message")!
     }
 
     static var shoppingBagsImage: UIImage {
         UIImage(named: "shopping-bags")!
     }
 
-    /// An image showing a bar chart. This is used to show an empty All Orders tab.
+    /// Image showing boxes
     ///
-    static var emptyOrdersImage: UIImage {
-        UIImage(named: "woo-empty-orders")!
+    static var boxesImage: UIImage {
+        UIImage(named: "boxes")!
     }
 
     /// An image showing a magnifying glass. This is used to show a default image when searching for customers.
@@ -423,6 +411,15 @@ extension UIImage {
         return UIImage(named: "error-big-icon")!
     }
 
+    /// Gray error icon
+    static var grayErrorIcon: UIImage {
+        return UIImage(named: "error-icon-gray")!
+    }
+
+    static var deliveryIcon: UIImage {
+        return UIImage(named: "delivery-icon")!
+    }
+
     /// Blaze success image
     ///
     static var blazeSuccessImage: UIImage {
@@ -445,12 +442,6 @@ extension UIImage {
         }
     }
 
-    /// Filter Icon
-    ///
-    static var filterImage: UIImage {
-        return UIImage.gridicon(.filter)
-    }
-
     /// Fixed cart discount icon
     ///
     static var fixedCartDiscountIcon: UIImage {
@@ -467,19 +458,6 @@ extension UIImage {
     ///
     static var percentageDiscountIcon: UIImage {
         return UIImage(named: "icon-percentage-discount")!
-    }
-
-    /// Gift Icon (with a red dot at the top right corner)
-    ///
-    static var giftWithTopRightRedDotImage: UIImage {
-        guard let image = UIImage.gridicon(.gift, size: CGSize(width: 24, height: 24))
-            // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
-            .withTintColor(.gray(.shade30))
-            .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
-                                  finalSize: CGSize(width: 26, height: 26)) else {
-                                    fatalError()
-        }
-        return image
     }
 
     /// Gravatar Placeholder Image
@@ -500,12 +478,6 @@ extension UIImage {
         return UIImage.gridicon(.helpOutline)
     }
 
-    /// House Image
-    ///
-    static var houseImage: UIImage {
-        UIImage.gridicon(.house)
-    }
-
     /// Hourglass Image
     ///
     static var hourglass: UIImage {
@@ -513,10 +485,10 @@ extension UIImage {
         return UIImage(systemName: "hourglass", withConfiguration: config)!
     }
 
-    /// Hourglass Image from Woo design
+    /// Timer (hour glass) Image from Woo design
     ///
-    static var wooHourglass: UIImage {
-        UIImage(named: "woo-hourglass")!
+    static var timerImage: UIImage {
+        UIImage(named: "timer")!
     }
 
     /// House Outlined Image
@@ -531,12 +503,6 @@ extension UIImage {
         return UIImage(named: "icon-mailbox")!
     }
 
-    /// Store plan image used in the store creation flow.
-    ///
-    static var storeCreationPlanImage: UIImage {
-        UIImage(named: "store-creation-plan")!
-    }
-
     /// Store Image
     ///
     static var storeImage: UIImage {
@@ -547,31 +513,6 @@ extension UIImage {
     ///
     static var storeDetailsImage: UIImage {
         UIImage(named: "icon-store-details")!
-    }
-
-    /// Store creation progress step 1
-    static var storeCreationProgress1: UIImage {
-        UIImage(named: "store-creation-progress-1")!
-    }
-
-    /// Store creation progress step 2
-    static var storeCreationProgress2: UIImage {
-        UIImage(named: "store-creation-progress-2")!
-    }
-
-    /// Store creation progress step 3
-    static var storeCreationProgress3: UIImage {
-        UIImage(named: "store-creation-progress-3")!
-    }
-
-    /// Store creation progress step 4
-    static var storeCreationProgress4: UIImage {
-        UIImage(named: "store-creation-progress-4")!
-    }
-
-    /// Swap icon - horizontal
-    static var swapHorizontal: UIImage {
-        UIImage(named: "swap-horizontal")!
     }
 
     /// Add product image
@@ -592,6 +533,10 @@ extension UIImage {
         return UIImage(named: "product-creation-ai-survey")!
     }
 
+    static var launchImage: UIImage {
+        UIImage(named: "launch")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {
@@ -610,22 +555,15 @@ extension UIImage {
         UIImage(named: "icon-get-paid")!
     }
 
-    /// Store summary image used in the store creation flow.
-    ///
-    static var storeSummaryImage: UIImage {
-        return UIImage(named: "store-summary")!
-    }
-
     /// Cog Image
     ///
     static var cogImage: UIImage {
         return UIImage.gridicon(.cog)
     }
 
-    /// Login prologue curved rectangle
-    ///
-    static var curvedRectangle: UIImage {
-        return UIImage(named: "prologue-curved-rectangle")!
+    static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
+        let image = UIImage(named: "login-prologue-background-bubbles")!
+        return image.withTintColor(tint)
     }
 
     /// Login prologue analytics image
@@ -646,13 +584,6 @@ extension UIImage {
     ///
     static var prologueProductsImage: UIImage {
         return UIImage(named: "login-prologue-products")!
-            .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Login prologue reviews image
-    ///
-    static var prologueReviewsImage: UIImage {
-        return UIImage(named: "login-prologue-reviews")!
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -797,8 +728,8 @@ extension UIImage {
 
     /// Shopping cart Purple
     ///
-    static var shoppingCartPurpleIcon: UIImage {
-        return UIImage(named: "icon-shopping-cart-purple")!
+    static var shoppingCartFilled: UIImage {
+        return UIImage(named: "icon-shopping-cart-filled")!
     }
 
     /// Bordered Custom Amount
@@ -908,12 +839,6 @@ extension UIImage {
     ///
     static var loginNoWordPressError: UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Plugins error
-    ///
-    static var pluginListError: UIImage {
-        return UIImage(named: "woo-plugins-error")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
     static var incorrectRoleError: UIImage {
@@ -1026,24 +951,16 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
-    /// Simple Payments Icon
-    ///
-    static var simplePaymentsImage: UIImage {
-        return UIImage(named: "icon-simple-payments")!.withRenderingMode(.alwaysTemplate)
-    }
-
-    /// Work In Progress banner icon on the Products Tab
-    ///
-    static var workInProgressBanner: UIImage {
-        let tintColor = UIColor.gray(.shade30)
-        return UIImage(named: "icon-tools")!
-            .imageWithTintColor(tintColor)!
-    }
-
     /// Product Image
     ///
     static var productImage: UIImage {
         return UIImage.gridicon(.product)
+    }
+
+    /// A blouse Image
+    ///
+    static var productBlouseImage: UIImage {
+        return UIImage(named: "product-blouse")!
     }
 
     /// Pencil Icon
@@ -1088,35 +1005,10 @@ extension UIImage {
         return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
     }
 
-    /// Small Plus Icon
-    ///
-    static var plusSmallImage: UIImage {
-        return UIImage.gridicon(.plusSmall)
-    }
-
     /// Point of sale image
     ///
     static var pointOfSaleImage: UIImage {
         UIImage(named: "point-of-sale")!
-    }
-
-    /// Product description AI announcement image
-    ///
-    static var productDescriptionAIAnnouncementImage: UIImage {
-        .init(named: "product-description-ai-announcement")!
-    }
-
-    /// Small Minus Icon
-    ///
-    static var minusSmallImage: UIImage {
-        return UIImage.gridicon(.minusSmall)
-    }
-
-    /// Rectangle on rectangle, angled
-    ///
-    static var rectangleOnRectangleAngled: UIImage {
-        return UIImage(systemName: "rectangle.on.rectangle.angled", withConfiguration: Configurations.barButtonItemSymbol)!
-            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Reply Icon
@@ -1178,12 +1070,6 @@ extension UIImage {
         UIImage(named: "search")!
     }
 
-    /// Search No Result Image
-    ///
-    static var searchNoResultImage: UIImage {
-        UIImage(named: "search-no-result")!
-    }
-
     /// Returns a star icon with the given size
     ///
     /// - Parameters:
@@ -1218,13 +1104,6 @@ extension UIImage {
         return UIImage.gridicon(.sync)
     }
 
-    /// Stats Icon
-    ///
-    static var statsImage: UIImage {
-        return UIImage.gridicon(.stats)
-        .imageFlippedForRightToLeftLayoutDirection()
-    }
-
     /// Stats Alt Icon
     ///
     static var statsAltImage: UIImage {
@@ -1250,8 +1129,10 @@ extension UIImage {
         return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
     }
 
-    static var syncDotIcon: UIImage {
-        return UIImage(imageLiteralResourceName: "icon-sync-dot")
+    /// Woo Shipping - Placeholder image for shipping rates
+    ///
+    static var wooShippingRatesPlaceholder: UIImage {
+        return UIImage(named: "woo-shipping-rates-placeholder")!
     }
 
     /// Variations Icon
@@ -1281,19 +1162,7 @@ extension UIImage {
     /// No connection image
     ///
     static var noConnectionImage: UIImage {
-        UIImage(imageLiteralResourceName: "connection-icon")
-    }
-
-    /// Upgrade plan error
-    ///
-    static var planUpgradeError: UIImage {
-        return UIImage(imageLiteralResourceName: "plan-upgrade-error")
-    }
-
-    /// Upgrade plan success celebratory image
-    ///
-    static var planUpgradeSuccessCelebration: UIImage {
-        return UIImage(imageLiteralResourceName: "plan-upgrade-success-celebration")
+        UIImage(imageLiteralResourceName: "connection")
     }
 
     /// Megaphone Icon
@@ -1341,13 +1210,7 @@ extension UIImage {
             vectorImage.draw(in: rect)
         }
 
-        return im2.imageWithTintColor(tintColor)
-    }
-
-    /// Woo logo that is displayed on the login prologue.
-    ///
-    static var wooLogoPrologueImage: UIImage {
-        UIImage(named: "prologue-logo")!
+        return im2.withTintColor(tintColor)
     }
 
     /// Waiting for Customers Image
@@ -1356,8 +1219,8 @@ extension UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
 
-    static var puzzleExtensionsImage: UIImage {
-        return UIImage(named: "woo-puzzle-extensions")!
+    static var puzzleImage: UIImage {
+        return UIImage(named: "puzzle")!
     }
 
     /// Install WCShip banner Image
@@ -1414,12 +1277,6 @@ extension UIImage {
         return UIImage(systemName: "lock.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage.gridicon(.lock, size: CGSize(width: 24, height: 24))
     }
 
-    /// Sites Image
-    ///
-    static var sitesImage: UIImage {
-        UIImage.gridicon(.site).imageFlippedForRightToLeftLayoutDirection()
-    }
-
     /// Image on the empty store picker screen
     ///
     static var emptyStorePickerImage: UIImage {
@@ -1436,16 +1293,6 @@ extension UIImage {
     ///
     static var jetpackConnectionImage: UIImage {
         UIImage(named: "woo-jetpack-connection")!
-    }
-
-    /// WordPress.com logo image.
-    ///
-    static func wpcomLogoImage(tintColor: UIColor? = nil) -> UIImage {
-        if let tintColor {
-            return UIImage(named: "wpcom-logo")!.imageWithTintColor(tintColor)!
-        } else {
-            return UIImage(named: "wpcom-logo")!
-        }
     }
 
     /// Image on the Jetpack setup interrupted screen
@@ -1495,70 +1342,12 @@ extension UIImage {
         return UIImage(named: "built-in-reader-set-up")!
     }
 
-    static var iconBolt: UIImage {
-        UIImage(imageLiteralResourceName: "icon-bolt")
-    }
-
-    /// Illustration for the free trial summary screen.
-    ///
-    static var freeTrialIllustration: UIImage {
-        UIImage(imageLiteralResourceName: "free-trial-ilustration")
-    }
-
-    static var ecommerceIcon: UIImage {
-        UIImage(imageLiteralResourceName: "ecommerce-icon")
-    }
-
-    static var supportIcon: UIImage {
-        UIImage(imageLiteralResourceName: "support-icon")
-    }
-
-    static var backupsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "backups-icon")
-    }
-
-    static var giftIcon: UIImage {
-        UIImage(imageLiteralResourceName: "gifts-icon")
-    }
-
-    static var emailOutlineIcon: UIImage {
-        UIImage(imageLiteralResourceName: "email-outline-icon")
-    }
-
     static var shippingIcon: UIImage {
         UIImage(imageLiteralResourceName: "icon-shipping")
     }
 
-    static var shippingOutlineIcon: UIImage {
-        UIImage(imageLiteralResourceName: "shipping-outline-icon")
-    }
-
-    static var advertisingIcon: UIImage {
-        UIImage(imageLiteralResourceName: "advertising-icon")
-    }
-
-    static var launchIcon: UIImage {
-        UIImage(imageLiteralResourceName: "launch-icon")
-    }
-
-    static var paymentOptionsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "payment-options-icon")
-    }
-
-    static var premiumThemesIcon: UIImage {
-        UIImage(imageLiteralResourceName: "premium-themes-icon")
-    }
-
     static var productIcon: UIImage {
         UIImage(imageLiteralResourceName: "icon-product")
-    }
-
-    static var siteSecurityIcon: UIImage {
-        UIImage(imageLiteralResourceName: "site-security-icon")
-    }
-
-    static var unlimitedProductsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
 
     static var appPasswordTutorialImage: UIImage {
@@ -1577,15 +1366,23 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
 
+    static var magnifyingGlassNotFoundGrey: UIImage {
+        UIImage(imageLiteralResourceName: "magnifying-glass-not-found-grey")
+    }
+
+    static var groupedProductsImage: UIImage {
+        UIImage(named: "grouped-products")!
+	}
+
     static var cardReaderLocationImage: UIImage {
-        UIImage(named: "card-reader-location-permission")!
+        UIImage(named: "location")!
     }
 }
 
 private extension UIImage {
 
     enum Metrics {
-        static let defaultWooLogoSize = CGSize(width: 30, height: 18)
+        static let defaultWooLogoSize = CGSize(width: 30, height: 8)
     }
 
     enum Configurations {

@@ -140,10 +140,6 @@ public enum FeatureFlag: Int {
     ///
     case scanToUpdateInventory
 
-    /// Enables backend receipt generation for all payment methods
-    ///
-    case backendReceipts
-
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
@@ -192,25 +188,6 @@ public enum FeatureFlag: Int {
     /// Enables support for the new product global unique identifier
     ///
     case productGlobalUniqueIdentifierSupport
-
-    /// Enables sending receipt after the payment via the API
-    case sendReceiptAfterPayment
-
-    /// Adds support for  sending receipts after the payment for POS
-    ///
-    case sendReceiptsForPointOfSale
-
-    /// Adds support for  accepting cash as payment for POS
-    ///
-    case acceptCashForPointOfSale
-
-    /// Enables new Tap to Pay onboarding and education features
-    ///
-    case tapToPayEducation
-
-    /// Supports variable products in POS.
-    ///
-    case variableProductsInPointOfSale
 
     /// Supports hiding sites from the store picker
     ///

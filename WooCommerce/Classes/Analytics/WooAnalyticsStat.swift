@@ -822,6 +822,7 @@ enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
     case productImageUploadFailed = "product_image_upload_failed"
+    case productImageUploadRetryButtonTapped = "product_image_upload_retry_button_tapped"
     case savingProductAfterBackgroundImageUploadSuccess = "saving_product_after_background_image_upload_success"
     case savingProductAfterBackgroundImageUploadFailed = "saving_product_after_background_image_upload_failed"
     case failureSavingProductAfterImageUploadNoticeShown = "failure_saving_product_after_image_upload_notice_shown"
@@ -1268,9 +1269,28 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
-    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
-    case pointOfSalePaymentsOnboardingShown = "pos_payments_onboarding_shown"
-    case pointOfSalePaymentsOnboardingDismissed = "pos_payments_onboarding_dismissed"
+    case pointOfSaleLoaded = "loaded"
+    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
+    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
+    case pointOfSaleAddItemToCart = "item_added_to_cart"
+    case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
+    case pointOfSaleCheckoutTapped = "checkout_tapped"
+    case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
+    case pointOfSaleClearCartTapped = "clear_cart_tapped"
+    case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
+    case pointOfSaleExitConfirmed = "exit_confirmed"
+    case pointOfSaleGetSupportTapped = "get_support_tapped"
+    case pointOfSaleSimpleProductsExplanationDialogShown = "simple_products_explanation_dialog_shown"
+    case pointOfSaleCreateNewOrderTapped = "create_new_order_tapped"
+    case pointOfSaleReceiptEmailSendTapped = "receipt_email_send_tapped"
+    case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
+    case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
+    case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
+    case pointOfSaleViewDocsTapped = "view_docs_tapped"
+    case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
+    case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
@@ -1296,14 +1316,11 @@ extension WooAnalyticsStat {
     /// Indicates if site information should be included with this event when it's sent to the tracks server.
     /// Returns `true` if it should be included, `false` otherwise.
     ///
-    /// Note: Currently all application-level and authentication events will return false. If you wish
+    /// Note: Currently all authentication events will return false. If you wish
     /// to include additional no-site-info events, please add them here.
     ///
     var shouldSendSiteProperties: Bool {
         switch self {
-        // Application events
-        case .applicationClosed, .applicationOpened, .applicationUpgraded, .applicationInstalled, .watchAppOpened:
-            return false
         // Authentication Events
         case .signedIn, .logout, .openedLogin, .loginFailed,
              .loginAutoFillCredentialsFilled, .loginAutoFillCredentialsUpdated, .loginEmailFormViewed, .loginMagicLinkOpenEmailClientViewed,

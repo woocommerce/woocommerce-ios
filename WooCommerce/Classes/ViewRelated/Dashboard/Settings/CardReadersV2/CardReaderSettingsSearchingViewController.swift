@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
@@ -37,7 +38,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         }
         self.viewModel = viewModel
 
-        super.init(rootView: CardReaderSettingsSearchingView())
+        super.init(rootView: CardReaderSettingsSearchingView(learnMoreURL: viewModel.learnMoreURL))
         configureView()
     }
 
@@ -49,7 +50,6 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
-        rootView.learnMoreUrl = viewModel.learnMoreURL
     }
 
     required init?(coder: NSCoder) {
@@ -115,7 +115,7 @@ private extension CardReaderSettingsSearchingViewController {
 struct CardReaderSettingsSearchingView: View {
     var connectClickAction: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
-    var learnMoreUrl: URL? = nil
+    var learnMoreURL: URL
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.sizeCategory) private var sizeCategory
@@ -154,17 +154,11 @@ struct CardReaderSettingsSearchingView: View {
                 .padding(.bottom, 8)
 
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
+                url: learnMoreURL,
                 tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .manageCardReader)))
             .padding(.vertical, 8)
             .customOpenURL(action: { url in
-                switch url {
-                case LearnMoreViewModel.learnMoreURL:
-                    if let url = learnMoreUrl {
-                        showURL?(url)
-                    }
-                default:
-                    showURL?(url)
-                }
+                showURL?(url)
             })
         }
         .frame(
@@ -221,6 +215,8 @@ private enum Localization {
 
 struct CardReaderSettingsSearchingView_Previews: PreviewProvider {
     static var previews: some View {
-        CardReaderSettingsSearchingView(connectClickAction: {})
+        CardReaderSettingsSearchingView(
+            connectClickAction: {},
+            learnMoreURL: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
     }
 }

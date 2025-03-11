@@ -601,6 +601,12 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
+            guard hasChangesExcludingImageUploads() else {
+                /// Skip product update if there are no changes
+                saveProductImagesWhenNoneIsPendingUploadAnymore()
+                onCompletion(.success(product))
+                return
+            }
             remoteActionUseCase.editProduct(product: productModelToSave,
                                               originalProduct: originalProduct,
                                               password: password,
@@ -655,6 +661,14 @@ extension ProductFormViewModel {
 // MARK: Background image upload
 //
 private extension ProductFormViewModel {
+
+    func hasChangesExcludingImageUploads() -> Bool {
+        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
+        return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
+
+    }
+
     func replaceProductID(productIDBeforeSave: Int64) {
         productImagesUploader.replaceLocalID(siteID: product.siteID,
                                              localID: .product(id: productIDBeforeSave),
@@ -876,12 +890,10 @@ extension ProductFormViewModel {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }
 
-    @MainActor
     func markAsFavorite() {
         favoriteProductsUseCase.markAsFavorite(productID: product.productID)
     }
 
-    @MainActor
     func removeFromFavorite() {
         favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }

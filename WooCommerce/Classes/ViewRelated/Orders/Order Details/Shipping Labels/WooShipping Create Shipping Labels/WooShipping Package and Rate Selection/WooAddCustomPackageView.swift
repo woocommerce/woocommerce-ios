@@ -12,8 +12,8 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    @State private var isSavingPackage: Bool = false
-    @State private var isAddingPackage: Bool = false
+    @State private var isSavingPackage = false
+    @State private var showingSavingError = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -130,14 +130,10 @@ struct WooAddCustomPackageView: View {
                         else {
                             Spacer()
                             Button(selectionButtonText) {
-                                Task { @MainActor in
-                                    isAddingPackage = true
-                                    await addPackageButtonTapped()
-                                    isAddingPackage = false
-                                }
+                                confirmPackage()
                             }
                             .disabled(selectionButtonDisabled)
-                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
+                            .buttonStyle(PrimaryButtonStyle())
                             .padding(.bottom)
                         }
                     }
@@ -161,6 +157,18 @@ struct WooAddCustomPackageView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .disabled(isSavingPackage)
+                .alert(Localization.SavingPackageError.title, isPresented: $showingSavingError, actions: {
+                    Button(role: .cancel) {} label: {
+                        Text(Localization.SavingPackageError.cancel)
+                    }
+                    Button {
+                        confirmPackage()
+                    } label: {
+                        Text(Localization.SavingPackageError.proceed)
+                    }
+                }, message: {
+                    Text(Localization.SavingPackageError.message)
+                })
             }
         }
     }
@@ -188,17 +196,11 @@ struct WooAddCustomPackageView: View {
 
     // MARK: - actions
 
-    @MainActor
-    private func addPackageButtonTapped() async {
-        let packageDataResult = await viewModel.addPackageAction()
-        // call addPackageAction with data
-        switch packageDataResult {
-        case .success(let data):
-            addPackageAction(data)
-        case .failure(let failure):
-            // show failure
-            print(failure)
+    private func confirmPackage() {
+        guard let packageData = viewModel.packageData else {
+            return
         }
+        addPackageAction(packageData)
     }
 
     @MainActor
@@ -209,8 +211,8 @@ struct WooAddCustomPackageView: View {
         case .success(let data):
             addPackageAction(data)
         case .failure(let failure):
-            // show failure
-            print(failure)
+            DDLogError("⛔️ Error saving package: \(failure)")
+            showingSavingError = true
         }
     }
 
@@ -267,5 +269,29 @@ extension WooAddCustomPackageView {
         static let savePackageTemplatePlaceholder = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder",
                                                            value: "Enter a unique package name",
                                                            comment: "Placeholder text for package name field")
+        enum SavingPackageError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.title",
+                value: "We couldn't save your package as a template",
+                comment: "Title of the error alert when saving a package as template fails in the shipping label creation flow"
+            )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.message",
+                value: "Do you want to proceed without saving it?",
+                comment: "Message of the error alert when saving a package as template fails in the shipping label creation flow"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.cancel",
+                value: "Cancel",
+                comment: "Button on the error alert when saving a package as template fails in the shipping label creation flow. " +
+                "Tapping on this button would cancel the saving."
+            )
+            static let proceed = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.proceed",
+                value: "Proceed",
+                comment: "Button on the error alert when saving a package as template fails in the shipping label creation flow. " +
+                "Tapping on this button would proceed with the creation flow without saving the package."
+            )
+        }
     }
 }

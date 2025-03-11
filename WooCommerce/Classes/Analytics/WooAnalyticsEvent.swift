@@ -1811,6 +1811,7 @@ extension WooAnalyticsEvent {
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
             case readerSoftwareUpdate = "reader_software_update"
+            case readerSoftwareUpdateError = "reader_software_update_error"
             case locationPermissionDenied = "location_permission_denied"
             case other = "unknown"
         }
@@ -2485,10 +2486,12 @@ extension WooAnalyticsEvent {
             case dashboardMainStats
             case analyticsHub
             case appStartup
+            case pointOfSaleLoaded
         }
 
         private enum Keys {
             static let waitingTime = "waiting_time"
+            static let millisecondsTimeElapsedInSplashScreen = "milliseconds_time_elapsed_in_splash_screen"
         }
 
         static func waitingFinished(scenario: Scenario, elapsedTime: TimeInterval) -> WooAnalyticsEvent {
@@ -2503,6 +2506,8 @@ extension WooAnalyticsEvent {
                 return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             case .appStartup:
                 return WooAnalyticsEvent(statName: .applicationOpenedWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .pointOfSaleLoaded:
+                return WooAnalyticsEvent(statName: .pointOfSaleLoaded, properties: [Keys.millisecondsTimeElapsedInSplashScreen: elapsedTime])
             }
         }
     }

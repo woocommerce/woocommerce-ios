@@ -12,6 +12,12 @@ public class TracksProvider: NSObject, AnalyticsProvider {
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
     }()
+
+    private static var isPOSModeActive: Bool = false
+
+    public static func setPOSMode(_ active: Bool) {
+        isPOSModeActive = active
+    }
 }
 
 
@@ -28,6 +34,7 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+        let eventName = decorateEventNameForPOSIfNeeded(eventName)
         if let properties {
             guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                 return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
@@ -100,6 +107,98 @@ private extension TracksProvider {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
         }
+    }
+
+    private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+        guard let event = WooAnalyticsStat(rawValue: eventName) else {
+            DDLogWarn("⚠️ Event not found in WooAnalyticsStat list")
+            return eventName
+        }
+
+        let pointOfSaleEventList: Set<WooAnalyticsStat> = [
+            // POS-specific events
+            WooAnalyticsStat.pointOfSaleLoaded,
+            WooAnalyticsStat.pointOfSaleProductsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleVariationsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleAddItemToCart,
+            WooAnalyticsStat.pointOfSaleItemRemovedFromCart,
+            WooAnalyticsStat.pointOfSaleCheckoutTapped,
+            WooAnalyticsStat.pointOfSaleBackToCartTapped,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromCashTapped,
+            WooAnalyticsStat.pointOfSaleClearCartTapped,
+            WooAnalyticsStat.pointOfSaleExitMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleExitConfirmed,
+            WooAnalyticsStat.pointOfSaleGetSupportTapped,
+            WooAnalyticsStat.pointOfSaleSimpleProductsExplanationDialogShown,
+            WooAnalyticsStat.pointOfSaleCreateNewOrderTapped,
+            WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
+            WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
+            WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
+            WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
+            WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
+            WooAnalyticsStat.pointOfSaleViewDocsTapped,
+            WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
+            WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+
+            // Order
+            WooAnalyticsStat.orderCreationSuccess,
+            WooAnalyticsStat.orderCreationFailed,
+
+            // Card Reader Connection
+            WooAnalyticsStat.cardReaderSelectTypeShown,
+            WooAnalyticsStat.cardReaderSelectTypeBuiltInTapped,
+            WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,
+            WooAnalyticsStat.cardReaderDiscoveryFailed,
+            WooAnalyticsStat.cardReaderConnectionFailed,
+            WooAnalyticsStat.cardReaderConnectionSuccess,
+            WooAnalyticsStat.cardReaderDisconnectTapped,
+            WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect,
+            WooAnalyticsStat.cardReaderAutomaticDisconnect,
+            WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
+            WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
+
+            // Card Reader Software Update
+            WooAnalyticsStat.cardReaderSoftwareUpdateTapped,
+            WooAnalyticsStat.cardReaderSoftwareUpdateStarted,
+            WooAnalyticsStat.cardReaderSoftwareUpdateSuccess,
+            WooAnalyticsStat.cardReaderSoftwareUpdateFailed,
+            WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped,
+            WooAnalyticsStat.cardReaderSoftwareUpdateCanceled,
+
+            // Card-Present Payments Onboarding
+            WooAnalyticsStat.cardPresentOnboardingLearnMoreTapped,
+            WooAnalyticsStat.cardPresentOnboardingCompleted,
+            WooAnalyticsStat.cardPresentOnboardingNotCompleted,
+            WooAnalyticsStat.cardPresentOnboardingStepSkipped,
+            WooAnalyticsStat.cardPresentOnboardingCtaTapped,
+            WooAnalyticsStat.cardPresentOnboardingCtaFailed,
+
+            // Receipts
+            WooAnalyticsStat.receiptEmailTapped,
+            WooAnalyticsStat.receiptEmailSuccess,
+            WooAnalyticsStat.receiptEmailFailed,
+
+            // Payments
+            WooAnalyticsStat.collectPaymentCanceled,
+            WooAnalyticsStat.collectPaymentFailed,
+            WooAnalyticsStat.collectPaymentSuccess,
+            WooAnalyticsStat.collectInteracPaymentSuccess,
+            WooAnalyticsStat.interacRefundSuccess,
+            WooAnalyticsStat.interacRefundFailed,
+            WooAnalyticsStat.interacRefundCanceled,
+
+            // Payment Methods
+            WooAnalyticsStat.paymentsFlowCompleted,
+            WooAnalyticsStat.paymentsFlowCanceled,
+            WooAnalyticsStat.paymentsFlowFailed,
+            WooAnalyticsStat.paymentsFlowCollect,
+        ]
+
+        guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {
+            return eventName
+        }
+        let prefix = "pos_"
+        return "\(prefix)\(eventName)"
     }
 
     func refreshTracksMetadata() {

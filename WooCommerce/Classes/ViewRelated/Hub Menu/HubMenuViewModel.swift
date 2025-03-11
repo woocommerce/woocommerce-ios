@@ -99,8 +99,7 @@ final class HubMenuViewModel: ObservableObject {
 
         return PointOfSaleItemService(siteID: siteID,
                                       currencySettings: currencySettings,
-                                      credentials: credentials,
-                                      isVariableProductsFeatureEnabled: featureFlagService.isFeatureFlagEnabled(.variableProductsInPointOfSale))
+                                      credentials: credentials)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -137,6 +136,7 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -228,6 +228,7 @@ final class HubMenuViewModel: ObservableObject {
 
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
+        updateTrackEventPrefix(isPointOfSaleActive)
     }
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
@@ -275,6 +276,12 @@ private extension HubMenuViewModel {
             ServiceLocator.pushNotesManager.enableInAppNotifications()
         }
     }
+
+    // Decorates track events with a different prefix when Point of Sale is active
+    //
+    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
+        TracksProvider.setPOSMode(isPointOfSaleActive)
+    }
 }
 
 // MARK: - Helper methods
@@ -282,7 +289,8 @@ private extension HubMenuViewModel {
 private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }
 
@@ -678,7 +686,7 @@ extension HubMenuViewModel {
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartPurpleIcon
+        let icon: UIImage = .shoppingCartFilled
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"

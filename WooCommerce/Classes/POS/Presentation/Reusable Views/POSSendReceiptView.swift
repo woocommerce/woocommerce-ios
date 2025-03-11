@@ -1,8 +1,12 @@
 import SwiftUI
+import Combine
+import WooFoundation
 import class WordPressShared.EmailFormatValidator
 
+@available(iOS 17.0, *)
 struct POSSendReceiptView: View {
-    @EnvironmentObject private var posModel: PointOfSaleAggregateModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
@@ -10,84 +14,86 @@ struct POSSendReceiptView: View {
 
     @Binding private(set) var isShowingSendReceiptView: Bool
 
+    @State private var buttonFrame: CGRect = .zero
+    @State private var keyboardFrame: CGRect = .zero
+    @State private var shouldMinimizePadding: Bool = false
+
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
     }
 
     var body: some View {
-        VStack(alignment: .center) {
-            HStack {
-                Button(action: {
+        ScrollView {
+            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                POSPageHeaderView(title: Localization.emailReceiptNavigationText,
+                                  backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                                                 action: {
                     withAnimation {
                         isShowingSendReceiptView = false
                         isTextFieldFocused = false
                     }
-                }, label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text(Localization.emailReceiptNavigationText)
+                }))
+
+                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
+                    Spacer()
+
+                    VStack(alignment: .center, spacing: POSSpacing.xSmall) {
+                        TextField("",
+                                  text: $textFieldInput,
+                                  prompt: Text(Localization.textfieldPlaceholder).foregroundColor(.posOnDisabledContainer))
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .multilineTextAlignment(.center)
+                        .font(POSFontStyle.posHeadingRegular)
+                        .focused()
+                        .focused($isTextFieldFocused)
+                        .onSubmit {
+                            sendReceipt()
+                        }
+
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(POSFontStyle.posBodySmallRegular())
+                                .foregroundColor(.posError)
+                        }
                     }
-                    .font(.posTitleEmphasized)
-                    .foregroundColor(.posPrimaryText)
-                    .accessibilityAddTraits(.isHeader)
-                })
-                Spacer()
-            }
-            .buttonStyle(.plain)
-            .disabled(isLoading)
 
-            TextField(Localization.textfieldPlaceholder, text: $textFieldInput)
-                .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .multilineTextAlignment(.center)
-                .font(POSFontStyle.posTitleRegular)
-                .focused()
-                .focused($isTextFieldFocused)
-                .padding()
-                .onSubmit {
-                    sendReceipt()
-                }
+                    Spacer()
 
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .font(POSFontStyle.posBodyRegular)
-                    .foregroundColor(.red)
-            }
-
-            Button(action: {
-                sendReceipt()
-            }, label: {
-                HStack(spacing: Constants.buttonSpacing) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .tint(Color.posPrimaryText)
-                    } else {
+                    Button(action: {
+                        sendReceipt()
+                    }, label: {
                         Text(Localization.buttonTitle)
-                            .font(Constants.buttonFont)
+                    })
+                    .measureFrame {
+                        buttonFrame = $0
                     }
+                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+                    .frame(maxWidth: .infinity)
+                    .disabled(isLoading)
                 }
-                .frame(maxWidth: .infinity)
-            })
-            .padding(Constants.buttonPadding)
-            .frame(maxWidth: .infinity)
-            .foregroundColor(Color.posPrimaryTextInverted)
-            .background(isEmailValid ? Color.posPrimaryButtonBackground : Color.posBackgroundButtonDisabled)
-            .cornerRadius(Constants.buttonCornerRadius)
-            .contentShape(Rectangle())
-            .disabled(isLoading)
-
-            Spacer()
+                .padding([.horizontal])
+                .padding(.bottom, keyboardFrame.height)
+            }
+            .animation(.easeInOut, value: errorMessage)
+            .onChange(of: textFieldInput) { _ in
+                errorMessage = nil
+            }
+            .onReceive(Publishers.keyboardFrame) {
+                keyboardFrame = $0
+                shouldMinimizePadding = $0.intersects(buttonFrame)
+            }
+            .animation(.default, value: shouldMinimizePadding)
         }
-        .padding([.horizontal, .bottom])
-        .animation(.easeInOut, value: errorMessage)
-        .onChange(of: textFieldInput) { _ in
-            errorMessage = nil
-        }
+        .background(Color.posSurfaceBright)
     }
 
     private func sendReceipt() {
+        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText
@@ -109,15 +115,21 @@ struct POSSendReceiptView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     enum Constants {
-        static let buttonSpacing: CGFloat = 12
-        static let buttonPadding: CGFloat = 32
-        static let buttonFont: POSFontStyle = .posBodyEmphasized
-        static let buttonCornerRadius: CGFloat = 8
+        static let minimumPadding: CGFloat = POSSpacing.xSmall
+    }
+
+    private func conditionalPadding(_ padding: CGFloat) -> CGFloat {
+        if shouldMinimizePadding {
+            return Constants.minimumPadding
+        }
+        return padding
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSSendReceiptView {
     struct Localization {
         static let buttonTitle = NSLocalizedString(
@@ -144,12 +156,14 @@ private extension POSSendReceiptView {
 }
 
 #if DEBUG
+@available(iOS 17.0, *)
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController())
+        orderController: PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environmentObject(posModel)
+        .environment(posModel)
 }
 #endif

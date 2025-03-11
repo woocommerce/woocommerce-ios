@@ -12,6 +12,8 @@ extension ProductsTabProductViewModel {
         imageService = ServiceLocator.imageService
         isSelected = false
         isDraggable = false
+        /// not displaying syncing animation for variation images for now
+        hasPendingUploads = false
     }
 }
 

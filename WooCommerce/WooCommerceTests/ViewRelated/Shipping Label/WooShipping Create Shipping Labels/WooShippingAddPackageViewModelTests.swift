@@ -31,7 +31,6 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedCarriersPackage)
     }
 
-    @MainActor
     func test_star_unstar_package() {
         // Given
         let siteID: Int64 = 1234
@@ -52,6 +51,32 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.starredCarriersPackages.count, 0)
+    }
+
+    func test_starUnstarPackage_creates_notice_when_fails() {
+        // Given
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .createPackage(_, _, _, completion):
+                completion(.failure(.duplicateCustomPackageNames))
+            default:
+                break
+            }
+        }
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID,
+                                                       stores: mockStores)
+        XCTAssertNil(viewModel.notice)
+
+        // When
+        viewModel.starUnstarPackage("1", carrierID: "usps")
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
     @MainActor

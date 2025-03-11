@@ -420,6 +420,10 @@ extension UIImage {
         return UIImage(named: "delivery-icon")!
     }
 
+    static var giftIcon: UIImage {
+        return UIImage(named: "gift-icon")!
+    }
+
     /// Blaze success image
     ///
     static var blazeSuccessImage: UIImage {

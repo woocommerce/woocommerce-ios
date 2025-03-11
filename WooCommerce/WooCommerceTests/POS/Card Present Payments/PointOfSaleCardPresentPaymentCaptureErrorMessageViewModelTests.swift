@@ -5,7 +5,7 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModelTests: XCTe
     func test_manual_equatable_conformance_number_of_properties_unchanged() {
         let sut = PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(tryAgainButtonAction: {}, newOrderButtonAction: {})
         XCTAssertPropertyCount(sut,
-                               expectedCount: 7,
+                               expectedCount: 6,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 }

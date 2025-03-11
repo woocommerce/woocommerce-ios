@@ -24,6 +24,11 @@ DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
+
+# Firebase App Distribution
+FIREBASE_APP_ID = '1:124902176124:ios:02259de1e7c42b291620f9'
+FIREBASE_TESTERS_GROUP = 'woocommerce-ios---prototype-builds'
+
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '18.1' # For screenshots
@@ -51,7 +56,7 @@ MAIN_BUNDLE_IDENTIFIERS = [
 ].freeze
 
 ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
-# Registered in our Enterprise account, for App Center / Prototype Builds
+# Registered in our Enterprise account, for Prototype Builds
 ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
@@ -738,13 +743,17 @@ platform :ios do
 
     build_for_prototype_build
 
-    appcenter_upload(
-      api_token: get_required_env('APPCENTER_API_TOKEN'),
-      owner_name: 'automattic',
-      owner_type: 'organization',
-      app_name: 'WooCommerce-Installable-Builds',
-      destinations: 'Collaborators',
-      notify_testers: false
+    release_notes = <<~NOTES
+      Pull Request: ##{ENV.fetch('BUILDKITE_PULL_REQUEST', 'N/A')}
+      Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
+      Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
+    NOTES
+
+    firebase_app_distribution(
+      app: FIREBASE_APP_ID,
+      service_credentials_json_data: get_required_env('FIREBASE_APP_DISTRIBUTION_ACCOUNT_KEY'),
+      release_notes: release_notes,
+      groups: FIREBASE_TESTERS_GROUP
     )
 
     sentry_upload_dsym(
@@ -757,15 +766,12 @@ platform :ios do
     # The build code used in the Enterprise build has a different format that the App Store one.
     # We cannot use the standard build_code_current method but have to read it directly.
     build_code = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash[BUILD_CODE_KEY]
-    UI.message("Successfully built and uploaded prototype build `#{build_code}` to App Center.")
+    UI.message("Successfully built and uploaded prototype build `#{build_code}` to Firebase App Distribution.")
 
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
     # PR Comment
-    comment_body = prototype_build_details_comment(
-      app_display_name: 'WooCommerce iOS',
-      app_center_org_name: 'automattic'
-    )
+    comment_body = prototype_build_details_comment(app_display_name: 'WooCommerce iOS Prototype')
     comment_on_pr(
       project: GITHUB_REPO,
       pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
@@ -778,19 +784,15 @@ platform :ios do
   lane :build_for_prototype_build do |fetch_code_signing: true|
     update_certs_and_profiles_enterprise if fetch_code_signing
 
-    # Get the current build version, and update it if needed
-    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
-    build_number = generate_prototype_build_number
-    UI.message("Updating build version to #{build_number}")
-    versions[BUILD_CODE_KEY] = build_number
-    new_config = Xcodeproj::Config.new(versions)
-    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
+    build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
+    pr_or_branch = ENV.fetch('BUILDKITE_PULL_REQUEST', nil)&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
 
     gym(
       scheme: 'WooCommerce Alpha',
       workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,
+      xcargs: { BUILD_CODE_KEY => build_number, 'VERSION_SHORT' => pr_or_branch }.compact,
       output_directory: 'build',
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       export_options: {
@@ -1327,25 +1329,6 @@ lane :test_without_building do |options|
 
   # `trainer` sometimes doesn't detect test failures, so we manually throw an error in the lane if there are failures to make sure there are no false positives
   UI.user_error!("Tests failed with #{tests_result[:number_of_failures_excluding_retries]} failures.") if tests_result[:number_of_failures_excluding_retries].positive?
-end
-
-# -----------------------------------------------------------------------------------
-# Generates Prototype Build Version Numbers in a Buildkite-specific way
-# -----------------------------------------------------------------------------------
-def generate_prototype_build_number
-  if ENV.key?('BUILDKITE')
-    commit = ENV.fetch('BUILDKITE_COMMIT')[0, 7]
-    branch = ENV.fetch('BUILDKITE_BRANCH')
-    pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST')
-
-    pr_num == 'false' ? "#{branch}-#{commit}" : "pr#{pr_num}-#{commit}"
-  else
-    repo = Git.open(PROJECT_ROOT_FOLDER)
-    commit = repo.current_branch
-    branch = repo.revparse('HEAD')[0, 7]
-
-    "#{branch}-#{commit}"
-  end
 end
 
 # -----------------------------------------------------------------------------------

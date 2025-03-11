@@ -18,9 +18,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
-    var isMissingITN: Bool {
-        internationalTransactionNumber.isEmpty && internationalTransactionNumberIsRequired
-    }
+    @Published private(set) var isMissingITN: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
@@ -112,6 +110,12 @@ private extension WooShippingCustomsFormViewModel {
                 self?.internationalTransactionNumberIsRequired = hsTariffNumberTotalValueDictionary.values.contains { $0 > 2500 }
             }
             .store(in: &cancellables)
+
+        $internationalTransactionNumber.combineLatest($internationalTransactionNumberIsRequired)
+            .map { itn, itnRequired -> Bool in
+                itn.isEmpty && itnRequired
+            }
+            .assign(to: &$isMissingITN)
     }
 
     func listenToItemsRequiredInformationValues() {

@@ -38,6 +38,12 @@ struct WooShippingServiceView: View {
                             viewModel.loadLabelRates(for: package)
                         }
                     }
+                case .noRatesAvailable:
+                    ErrorState(message: Localization.noRatesAvailable) {
+                        if let package = viewModel.selectedPackage {
+                            viewModel.loadLabelRates(for: package)
+                        }
+                    }
                 }
             }
         }
@@ -197,6 +203,11 @@ private extension WooShippingServiceView {
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "
                                                               + "failed on the shipping label creation screen")
+        static let noRatesAvailable = NSLocalizedString("wooShipping.createLabels.rates.noRatesAvailable",
+                                                        value: "We couldn't find a shipping service for the combination of the selected package "
+                                                        + "and the total shipment weight. Please adjust your input and try again.",
+                                                        comment: "Error message when no shipping rates were found "
+                                                        + "based on the combination of the selected package and the total shipment weight.")
         static let retryCTA = NSLocalizedString("wooShipping.createLabels.rates.retryCTA",
                                                 value: "Retry",
                                                 comment: "Button to retry loading data on the shipping label creation screen")

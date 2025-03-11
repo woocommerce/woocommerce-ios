@@ -282,12 +282,6 @@ private extension TotalsView {
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
-
-        static let topAligned = PaymentViewLayout(
-            backgroundColor: .clear,
-            topPadding: 96,
-            bottomPadding: 96
-        )
     }
 
     private var isShowingPaymentView: Bool {
@@ -323,7 +317,10 @@ private extension TotalsView {
             case .validatingOrderError:
                 return .outlined
             case .paymentError:
-                return .topAligned
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: POSPadding.none,

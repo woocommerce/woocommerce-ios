@@ -3,13 +3,14 @@
 
 22.0
 -----
+- [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
+
 
 21.9
 -----
 - [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
 - [*] Improved accessibility on login flow [https://github.com/woocommerce/woocommerce-ios/pull/15281]
-
 
 21.8
 -----

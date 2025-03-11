@@ -17,25 +17,39 @@ struct ItemListView: View {
     private var isHeaderBannerDismissed: Bool = false
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                headerView
-                switch itemListState {
-                case .loading(let items),
-                        .loaded(let items, _),
-                        .inlineError(let items, _):
-                    listView(items)
-                case .error:
-                    // Currently unused, but this will show errors that are displayed inline with previously
-                    // loaded items, e.g. when loading a new page or refreshing.
-                    EmptyView()
-                }
+        if #available(iOS 18.0, *) {
+            NavigationStack {
+                content
             }
-            .navigationDestination(for: POSItem.self, destination: { item in
-                childListView(parentItem: item)
-            })
-            .background(Color.posSurface)
+        } else {
+            // On iOS 17, NavigationStack causes memory leaks when the POS is closed, NavigationView is a fallback.
+            NavigationView {
+                content
+            }
+            .navigationViewStyle(.stack)
         }
+    }
+
+    var content: some View {
+        VStack {
+            headerView
+            switch itemListState {
+            case .loading(let items),
+                    .loaded(let items, _),
+                    .inlineError(let items, _):
+                listView(items)
+            case .error:
+                // Currently unused, but this will show errors that are displayed inline with previously
+                // loaded items, e.g. when loading a new page or refreshing.
+                EmptyView()
+            }
+        }
+        // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
+        // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
+        .navigationDestination(for: POSItem.self, destination: { item in
+            childListView(parentItem: item)
+        })
+        .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
@@ -110,6 +124,7 @@ private extension ItemListView {
 
     @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
+        // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(parentItem: parentItem, title: parentProduct.name)

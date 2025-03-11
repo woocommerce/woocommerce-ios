@@ -35,7 +35,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
-        customsForm != nil
+        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
     }
 
     /// View model for the section displayed after a shipping label is purchased.

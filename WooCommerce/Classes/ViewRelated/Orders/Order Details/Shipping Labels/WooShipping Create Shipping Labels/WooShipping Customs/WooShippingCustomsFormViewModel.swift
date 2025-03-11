@@ -18,6 +18,10 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
 
+    var isMissingITN: Bool {
+        internationalTransactionNumber.isEmpty && internationalTransactionNumberIsRequired
+    }
+
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
 

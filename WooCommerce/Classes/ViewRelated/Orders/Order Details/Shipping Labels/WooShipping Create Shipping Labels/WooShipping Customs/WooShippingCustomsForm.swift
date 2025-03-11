@@ -127,7 +127,9 @@ struct WooShippingCustomsForm: View {
 
                                 TextField("", text: $viewModel.internationalTransactionNumber)
                                     .padding(Constants.borderPadding)
-                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius,
+                                                   lineColor: (viewModel.isMissingITN || !viewModel.isValidITN()) ? warningRedColor : Color(.separator),
+                                                   lineWidth: Constants.borderWidth)
 
                                 Text(Localization.itnValidationWarningMessage)
                                     .foregroundColor(warningRedColor)
@@ -136,7 +138,7 @@ struct WooShippingCustomsForm: View {
                                 Text(Localization.itnRequiredWarningMessage)
                                     .foregroundColor(warningRedColor)
                                     .footnoteStyle()
-                                    .renderedIf(viewModel.internationalTransactionNumberIsRequired && viewModel.internationalTransactionNumber.isEmpty)
+                                    .renderedIf(viewModel.isMissingITN)
                                 Button {
                                     isShowingITNInfoWebView = true
                                 } label: {
@@ -251,7 +253,7 @@ extension WooShippingCustomsForm {
         static let itnValidationWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
                                                            value: "Please enter a valid ITN",
                                                            comment: "Customs validation warning for the ITN field")
-        static let itnRequiredWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
+        static let itnRequiredWarningMessage = NSLocalizedString("wooShipping.customs.itnRequired",
                                                            value: "International Transaction Number is required for shipping items " +
                                                                  "valued over $2,500 per tariff number",
                                                            comment: "Customs validation warning for the ITN field")

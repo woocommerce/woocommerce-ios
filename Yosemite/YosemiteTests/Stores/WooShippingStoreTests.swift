@@ -214,7 +214,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                           orderID: self.sampleOrderID,
                                                           originAddress: WooShippingAddress.fake(),
                                                           destinationAddress: WooShippingAddress.fake(),
-                                                          packages: [ShippingLabelPackageSelected.fake()]) { result in
+                                                          packages: [ShippingLabelPackageSelected.fake()]) { _, result in
                 promise(result)
             }
             store.onAction(action)
@@ -239,7 +239,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                           orderID: self.sampleOrderID,
                                                           originAddress: WooShippingAddress.fake(),
                                                           destinationAddress: WooShippingAddress.fake(),
-                                                          packages: [ShippingLabelPackageSelected.fake()]) { result in
+                                                          packages: [ShippingLabelPackageSelected.fake()]) { _, result in
                 promise(result)
             }
             store.onAction(action)

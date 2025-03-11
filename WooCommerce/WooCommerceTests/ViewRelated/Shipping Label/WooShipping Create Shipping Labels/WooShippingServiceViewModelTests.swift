@@ -15,8 +15,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .loadLabelRates(_, _, _, _, _, completion):
-                completion(.success(self.sampleLabelRates()))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success(self.sampleLabelRates()))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }
@@ -99,8 +99,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .loadLabelRates(_, _, _, _, _, completion):
-                completion(.failure(NetworkError.timeout()))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .failure(NetworkError.timeout()))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }
@@ -230,8 +230,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .loadLabelRates(_, _, _, _, _, completion):
-                completion(.failure(NetworkError.timeout()))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .failure(NetworkError.timeout()))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }

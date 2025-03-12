@@ -432,12 +432,12 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: [makeItem()], retryHandler: {})
 
             // When
-            let completionResult: Bool = await withCheckedContinuation { continuation in
+            await withCheckedContinuation { continuation in
                 mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                     switch action {
                     case let .updateOrder(_, _, _, _, onCompletion):
                         onCompletion(.failure(NSError(domain: "oops", code: -1)))
-                        continuation.resume(returning: true)
+                        continuation.resume()
                     default:
                         #expect(Bool(false), "Unexpected action \(action)")
                     }
@@ -448,7 +448,6 @@ struct PointOfSaleOrderControllerTests {
             }
 
             // Then
-            #expect(completionResult == true)
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
         }
     }

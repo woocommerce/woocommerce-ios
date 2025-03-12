@@ -70,7 +70,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
     /// Address to ship to (customer address),
-    @Published private var destinationAddress: WooShippingAddress?
+    @Published private var destinationAddress: WooShippingAddress? {
+        didSet {
+            guard let country = destinationAddress?.country else {
+                return
+            }
+            // Updating destination country code in the customs form to validate ITN
+            customsFormViewModel.updateDestinationCountry(code: country)
+        }
+    }
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {

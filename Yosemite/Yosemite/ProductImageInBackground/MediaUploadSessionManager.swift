@@ -12,6 +12,7 @@ enum BackgroundUploadError: Error {
     case invalidRequestBody
     case invalidResponse
     case decodingError
+    case missingStoresManager
 }
 
 /// Session Manager for media upload in background
@@ -33,6 +34,9 @@ public final class MediaUploadSessionManager: NSObject {
     private var backgroundCompletionHandler: (() -> Void)?
     weak var delegate: MediaUploadSessionManagerDelegate?
 
+    // StoresManager reference for accessing network and authentication for updating product with images and vice versa
+    private var stores: StoresManager?
+
     // Storage to keep track of all uploads
     private let statusStorage: ProductImageStatusStorage
 
@@ -41,6 +45,13 @@ public final class MediaUploadSessionManager: NSObject {
         self.backgroundSessionIdentifier = sessionIdentifier
         self.statusStorage = statusStorage
         super.init()
+    }
+
+    /// Sets the StoresManager instance for this MediaUploadSessionManager
+    /// This is designed to be called after initialization to avoid dependency cycles
+    /// - Parameter stores: The StoresManager instance to use
+    public func setStores(_ stores: StoresManager) {
+        self.stores = stores
     }
 
     public func uploadMedia(request: URLRequest,

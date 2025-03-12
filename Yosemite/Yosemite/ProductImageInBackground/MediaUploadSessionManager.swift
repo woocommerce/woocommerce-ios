@@ -53,6 +53,9 @@ public final class MediaUploadSessionManager: NSObject {
     }
 
     public func uploadMedia(request: URLRequest,
+                            updateProductIDRequest: URLRequest,
+                            updateProductImagesRequest: URLRequest,
+                            updateProductVariationImageRequest: URLRequest,
                             mediaItem: UploadableMedia,
                             uploadID: String,
                             siteID: Int64,
@@ -109,39 +112,68 @@ public final class MediaUploadSessionManager: NSObject {
         }
     }
 
-    /// Updates the product ID for a media item after upload
+    /// Updates the product ID for a media item after upload using background URLSession
     ///
     /// - Parameters:
     ///   - siteID: The site ID
     ///   - productID: The product ID to associate with the media
     ///   - mediaID: The uploaded media ID
-    ///   - completion: A closure to be executed upon completion
+    ///   - request: The request template to use for updating the product ID
     ///
-    func updateProductID(siteID: Int64, productID: Int64, mediaID: Int64, completion: @escaping (Result<Media, Error>) -> Void) {
-        guard let stores = stores else {
-            let error = NSError(domain: "MediaUploadSessionManager", code: NSFeatureUnsupportedError, userInfo: [NSLocalizedDescriptionKey: "StoresManager not configured"])
-            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Error: \(error.localizedDescription)")
-            completion(.failure(error))
-            return
+    func updateProductID(siteID: Int64, productID: Int64, mediaID: Int64, request: URLRequest) {
+        // Generate a unique identifier for this task with structured data that can be parsed later
+        let taskID = "updateProductID-\(siteID)-\(productID)-\(mediaID)"
+
+        DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Starting update for media \(mediaID) with product \(productID)")
+
+        // Extract authentication headers if present
+        var authHeaders: [String: String]?
+        if let authHeader = request.allHTTPHeaderFields?["Authorization"] {
+            authHeaders = ["Authorization": authHeader]
+        } else if let allHeaders = request.allHTTPHeaderFields {
+            authHeaders = allHeaders
         }
 
-        stores.dispatch(MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: completion))
+        // Create a copy of the request with the mediaID appended to the URL
+        var updatedRequest = request
+        if let originalURL = request.url {
+            let urlString = originalURL.absoluteString
+            let updatedURLString = urlString.hasSuffix("/") ? "\(urlString)\(mediaID)" : "\(urlString)/\(mediaID)"
+            if let updatedURL = URL(string: updatedURLString) {
+                updatedRequest.url = updatedURL
+            } else {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Failed to create URL with appended mediaID")
+                return
+            }
+        }
+
+        let task = backgroundSession.dataTask(with: updatedRequest)
+        task.taskDescription = taskID + (authHeaders != nil ? "|auth=\(encodeHeaders(authHeaders!))" : "")
+        task.resume()
+
+        DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Started background task with ID: \(taskID) for media \(mediaID)")
     }
 
-    /// Updates the product with the specified images
+    /// Updates the product with the specified images using background URLSession
     ///
     /// - Parameters:
     ///   - siteID: The site ID
     ///   - productID: The product ID to update
     ///   - medias: Array of media to connect to the product
-    ///   - completion: A closure to be executed upon completion
+    ///   - request: The request template to use for updating the product images
     ///
-    func updateProductImages(siteID: Int64, productID: Int64, medias: [Media], completion: @escaping (Result<Bool, Error>) -> Void) {
-        guard let stores = stores else {
-            let error = NSError(domain: "MediaUploadSessionManager", code: NSFeatureUnsupportedError, userInfo: [NSLocalizedDescriptionKey: "StoresManager not configured"])
-            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductImages]- Error: \(error.localizedDescription)")
-            completion(.failure(error))
-            return
+    func updateProductImages(siteID: Int64, productID: Int64, medias: [Media], request: URLRequest) {
+        // Generate a unique identifier for this task
+        let taskID = "updateProductImages-\(siteID)-\(productID)"
+
+        DDLogDebug("MediaUploadSessionManager-[UpdateProductImages]- Starting update for product \(productID) with \(medias.count) images")
+
+        // Extract authentication headers if present
+        var authHeaders: [String: String]?
+        if let authHeader = request.allHTTPHeaderFields?["Authorization"] {
+            authHeaders = ["Authorization": authHeader]
+        } else if let allHeaders = request.allHTTPHeaderFields {
+            authHeaders = allHeaders
         }
 
         // Convert mediaIDs to ProductImage objects
@@ -154,31 +186,50 @@ public final class MediaUploadSessionManager: NSObject {
                          alt: media.alt)
         }
 
-        stores.dispatch(ProductAction.updateProductImages(siteID: siteID, productID: productID, images: productImages, onCompletion: { result in
-            switch result {
-            case .success(let product):
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }))
+        // Create a copy of the request with updated body
+        var updatedRequest = request
+
+        do {
+            // Create body with the images array
+            let requestBody = ["images": productImages]
+            let bodyData = try JSONEncoder().encode(requestBody)
+
+            // Set the updated request body
+            updatedRequest.httpBody = bodyData
+            updatedRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            // Create the data task
+            let task = backgroundSession.uploadTask(withStreamedRequest: updatedRequest)
+            task.taskDescription = taskID + (authHeaders != nil ? "|auth=\(encodeHeaders(authHeaders!))" : "")
+            task.resume()
+
+            DDLogDebug("MediaUploadSessionManager-[UpdateProductImages]- Started background task with ID: \(taskID) for product \(productID)")
+        } catch {
+            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductImages]- Failed to encode request body: \(error)")
+        }
     }
 
-    /// Updates a product variation with the specified image
+    /// Updates a product variation with the specified image using background URLSession
     ///
     /// - Parameters:
     ///   - siteID: The site ID
     ///   - productID: The product ID that owns the variation
     ///   - variationID: The variation ID to update
     ///   - media: The media to connect to the variation
-    ///   - completion: A closure to be executed upon completion
+    ///   - request: The request template to use for updating the variation image
     ///
-    func updateProductVariationImage(siteID: Int64, productID: Int64, variationID: Int64, media: Media, completion: @escaping (Result<Bool, Error>) -> Void) {
-        guard let stores = stores else {
-            let error = NSError(domain: "MediaUploadSessionManager", code: NSFeatureUnsupportedError, userInfo: [NSLocalizedDescriptionKey: "StoresManager not configured"])
-            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Error: \(error.localizedDescription)")
-            completion(.failure(error))
-            return
+    func updateProductVariationImage(siteID: Int64, productID: Int64, variationID: Int64, media: Media, request: URLRequest) {
+        // Generate a unique identifier for this task
+        let taskID = "updateVariationImage-\(siteID)-\(productID)-\(variationID)"
+
+        DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationImage]- Starting update for variation \(variationID) with image from media \(media.mediaID)")
+
+        // Extract authentication headers if present
+        var authHeaders: [String: String]?
+        if let authHeader = request.allHTTPHeaderFields?["Authorization"] {
+            authHeaders = ["Authorization": authHeader]
+        } else if let allHeaders = request.allHTTPHeaderFields {
+            authHeaders = allHeaders
         }
 
         // Convert media to ProductImage
@@ -189,167 +240,36 @@ public final class MediaUploadSessionManager: NSObject {
                                         name: media.name,
                                         alt: media.alt)
 
-        stores.dispatch(ProductVariationAction.updateProductVariationImage(siteID: siteID,
-                                                                           productID: productID,
-                                                                           variationID: variationID,
-                                                                           image: productImage) { result in
-            switch result {
-            case .success(let variation):
-                completion(.success(true))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        })
-    }
-
-    /// Updates a product with the uploaded media in sequence:
-    /// 1. Links the media to the product ID using updateProductID
-    /// 2. Updates the product images using updateProductImages
-    /// 3. Updates the image status in storage
-    ///
-    /// - Parameters:
-    ///   - siteID: The site ID
-    ///   - productID: The product ID to update
-    ///   - media: The uploaded media to associate with the product
-    ///   - asset: Optional asset type that was used for the upload
-    ///   - completion: A closure to be executed upon completion
-    ///
-    public func updateProductWithMedia(siteID: Int64,
-                                      productID: Int64,
-                                      media: Media,
-                                      asset: ProductImageAssetType? = nil,
-                                      completion: @escaping (Result<Bool, Error>) -> Void) {
-        DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Starting update sequence for product \(productID) with media \(media.mediaID)")
-
-        // First, update the product ID for the media
-        updateProductID(siteID: siteID, productID: productID, mediaID: media.mediaID) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .success(let updatedMedia):
-                DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Successfully linked media \(updatedMedia.mediaID) to product \(productID)")
-
-                // Now, update the product with the image
-                self.updateProductImages(siteID: siteID, productID: productID, medias: [updatedMedia]) { [weak self] imageResult in
-                    guard let self = self else { return }
-
-                    switch imageResult {
-                    case .success:
-                        DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Successfully updated product \(productID) with image from media \(updatedMedia.mediaID)")
-
-                        // Update the status in storage to indicate the image is now remote and associated with the product
-                        let productImage = ProductImage(imageID: updatedMedia.mediaID,
-                                                      dateCreated: updatedMedia.date,
-                                                      dateModified: updatedMedia.date,
-                                                      src: updatedMedia.src,
-                                                      name: updatedMedia.name,
-                                                      alt: updatedMedia.alt)
-
-                        let status = ProductImageStatus.remote(image: productImage, siteID: siteID, productID: .product(id: productID))
-                        self.statusStorage.updateStatus(status)
-
-                        // If we have an asset reference, remove any uploading or failure statuses for this asset
-                        if let asset = asset {
-                            self.statusStorage.removeStatus(where: { status in
-                                if case .uploading(let statusAsset, let statusSiteID, _) = status {
-                                    return statusAsset == asset && statusSiteID == siteID
-                                }
-                                if case .uploadFailure(let statusAsset, _, let statusSiteID, _) = status {
-                                    return statusAsset == asset && statusSiteID == siteID
-                                }
-                                return false
-                            })
-                        }
-
-                        completion(.success(true))
-
-                    case .failure(let error):
-                        DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductWithMedia]- Failed to update product images: \(error)")
-                        completion(.failure(error))
-                    }
-                }
-
-            case .failure(let error):
-                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductWithMedia]- Failed to link media to product: \(error)")
-                completion(.failure(error))
+        // Create a copy of the request with the variationID appended to the URL
+        var updatedRequest = request
+        if let originalURL = request.url {
+            let urlString = originalURL.absoluteString
+            let updatedURLString = urlString.hasSuffix("/") ? "\(urlString)\(variationID)" : "\(urlString)/\(variationID)"
+            if let updatedURL = URL(string: updatedURLString) {
+                updatedRequest.url = updatedURL
+            } else {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Failed to create URL with appended variationID")
+                return
             }
         }
-    }
 
-    /// Updates a product variation with the uploaded media in sequence:
-    /// 1. Links the media to the product ID using updateProductID
-    /// 2. Updates the variation image using updateProductVariationImage
-    /// 3. Updates the image status in storage
-    ///
-    /// - Parameters:
-    ///   - siteID: The site ID
-    ///   - productID: The product ID that owns the variation
-    ///   - variationID: The variation ID to update
-    ///   - media: The uploaded media to associate with the variation
-    ///   - asset: Optional asset type that was used for the upload
-    ///   - completion: A closure to be executed upon completion
-    ///
-    public func updateProductVariationWithMedia(siteID: Int64,
-                                               productID: Int64,
-                                               variationID: Int64,
-                                               media: Media,
-                                               asset: ProductImageAssetType? = nil,
-                                               completion: @escaping (Result<Bool, Error>) -> Void) {
-        DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Starting update sequence for variation \(variationID) with media \(media.mediaID)")
+        do {
+            // Create body with the image object
+            let requestBody = ["image": productImage]
+            let bodyData = try JSONEncoder().encode(requestBody)
 
-        // First, update the product ID for the media
-        updateProductID(siteID: siteID, productID: productID, mediaID: media.mediaID) { [weak self] result in
-            guard let self = self else { return }
+            // Set the updated request body
+            updatedRequest.httpBody = bodyData
+            updatedRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-            switch result {
-            case .success(let updatedMedia):
-                DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Successfully linked media \(updatedMedia.mediaID) to product \(productID)")
+            // Create the data task
+            let task = backgroundSession.uploadTask(withStreamedRequest: updatedRequest)
+            task.taskDescription = taskID + (authHeaders != nil ? "|auth=\(encodeHeaders(authHeaders!))" : "")
+            task.resume()
 
-                // Now, update the variation with the image
-                self.updateProductVariationImage(siteID: siteID, productID: productID, variationID: variationID, media: updatedMedia) { [weak self] imageResult in
-                    guard let self = self else { return }
-
-                    switch imageResult {
-                    case .success:
-                        DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Successfully updated variation \(variationID) with image from media \(updatedMedia.mediaID)")
-
-                        // Update the status in storage to indicate the image is now remote and associated with the variation
-                        let productImage = ProductImage(imageID: updatedMedia.mediaID,
-                                                      dateCreated: updatedMedia.date,
-                                                      dateModified: updatedMedia.date,
-                                                      src: updatedMedia.src,
-                                                      name: updatedMedia.name,
-                                                      alt: updatedMedia.alt)
-
-                        let status = ProductImageStatus.remote(image: productImage,
-                                                              siteID: siteID,
-                                                              productID: .variation(productID: productID, variationID: variationID))
-
-                        // If we have an asset reference, remove any uploading or failure statuses for this asset
-                        if let asset = asset {
-                            self.statusStorage.removeStatus(where: { status in
-                                if case .uploading(let statusAsset, let statusSiteID, _) = status {
-                                    return statusAsset == asset && statusSiteID == siteID
-                                }
-                                if case .uploadFailure(let statusAsset, _, let statusSiteID, _) = status {
-                                    return statusAsset == asset && statusSiteID == siteID
-                                }
-                                return false
-                            })
-                        }
-
-                        completion(.success(true))
-
-                    case .failure(let error):
-                        DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Failed to update variation image: \(error)")
-                        completion(.failure(error))
-                    }
-                }
-
-            case .failure(let error):
-                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Failed to link media to product: \(error)")
-                completion(.failure(error))
-            }
+            DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationImage]- Started background task with ID: \(taskID) for variation \(variationID)")
+        } catch {
+            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Failed to encode request body: \(error)")
         }
     }
 
@@ -456,7 +376,17 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
 
         if let error = error {
             DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)): encountered error: \(error.localizedDescription)")
-            handleUploadFailure(uploadID: uploadID, error: error)
+
+            // Check task type by ID prefix
+            if uploadID.starts(with: "updateProductID-") {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Failed to update product ID: \(error.localizedDescription)")
+            } else if uploadID.starts(with: "updateProductImages-") {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductImages]- Failed to update product images: \(error.localizedDescription)")
+            } else if uploadID.starts(with: "updateVariationImage-") {
+                DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Failed to update variation image: \(error.localizedDescription)")
+            } else {
+                handleUploadFailure(uploadID: uploadID, error: error)
+            }
             return
         }
 
@@ -481,7 +411,28 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
             return
         }
 
-        // Use MediaMapper to parse response
+        // Check task type by ID prefix for successful responses
+        if uploadID.starts(with: "updateProductID-") {
+            // Log success for updateProductID
+            if let jsonString = String(data: data, encoding: .utf8) {
+                DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Successful update response: \(jsonString)")
+            }
+            return
+        } else if uploadID.starts(with: "updateProductImages-") {
+            // Log success for updateProductImages
+            if let jsonString = String(data: data, encoding: .utf8) {
+                DDLogDebug("MediaUploadSessionManager-[UpdateProductImages]- Successful update response: \(jsonString)")
+            }
+            return
+        } else if uploadID.starts(with: "updateVariationImage-") {
+            // Log success for updateVariationImage
+            if let jsonString = String(data: data, encoding: .utf8) {
+                DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationImage]- Successful update response: \(jsonString)")
+            }
+            return
+        }
+
+        // Handle media upload task completion
         if let jsonString = String(data: data, encoding: .utf8) {
             DDLogDebug("MediaUploadSessionManager-[MediaUpload]- Successful upload response: \(jsonString)")
         } else {

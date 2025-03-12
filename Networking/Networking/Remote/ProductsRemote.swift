@@ -81,6 +81,9 @@ public protocol ProductsRemoteProtocol {
                               pageNumber: Int,
                               orderBy: ProductsRemote.OrderKey,
                               order: ProductsRemote.Order) async throws -> [ProductReport]
+
+    func updateProductImagesRequest(siteID: Int64,
+                                    productID: Int64) async throws -> URLRequest
 }
 
 extension ProductsRemoteProtocol {
@@ -432,6 +435,42 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /// Creates a URLRequest for updating product images in background
+    ///
+    /// - Parameters:
+    ///   - siteID: Site which hosts the Product.
+    ///   - productID: ID of the Product to update.
+    /// - Returns: URLRequest configured for updating product images
+    public func updateProductImagesRequest(siteID: Int64,
+                                           productID: Int64) async throws -> URLRequest {
+
+        let path = "\(Path.products)/\(productID)"
+
+        // ProductImage model will be attached later on in the parameters
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark3,
+                                           method: .post,
+                                           siteID: siteID,
+                                           path: path,
+                                           parameters: nil,
+                                           availableAsRESTRequest: true)
+
+        guard let network = network as? AlamofireNetwork else {
+            throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
+        }
+
+        let converter = RequestConverter(credentials: network.credentials)
+        var request = try converter.convert(jetpackRequest).asURLRequest()
+
+        // Authenticate the request if we have credentials
+        if let credentials = network.credentials {
+            request = try DefaultRequestAuthenticator(credentials: credentials).authenticate(request)
+        } else {
+            throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
+        }
+
+        return request
     }
 
     /// Updates provided `Products`.

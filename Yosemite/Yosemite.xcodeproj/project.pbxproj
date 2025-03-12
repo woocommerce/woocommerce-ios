@@ -236,7 +236,7 @@
 		458C6DE825ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */; };
 		4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */; };
 		4591A6B4274BB29000F51DCD /* StoredOrderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */; };
-		45A155372D80AC8B00BB7E92 /* MediaUploadSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A155362D80AC8B00BB7E92 /* MediaUploadSessionManager.swift */; };
+		45A3FA032D8226D4004E8D54 /* MediaUploadSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */; };
 		45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */; };
 		45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */; };
 		45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */; };
@@ -777,7 +777,7 @@
 		458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsSettings.swift"; sourceTree = "<group>"; };
 		4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilter.swift; sourceTree = "<group>"; };
 		4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredOrderSettings.swift; sourceTree = "<group>"; };
-		45A155362D80AC8B00BB7E92 /* MediaUploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUploadSessionManager.swift; sourceTree = "<group>"; };
+		45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUploadSessionManager.swift; sourceTree = "<group>"; };
 		45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagAction.swift; sourceTree = "<group>"; };
 		45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStore.swift; sourceTree = "<group>"; };
 		45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStoreTests.swift; sourceTree = "<group>"; };
@@ -1403,10 +1403,10 @@
 			path = Orders;
 			sourceTree = "<group>";
 		};
-		45A155352D80AC7800BB7E92 /* ProductImageInBackground */ = {
+		45A3FA022D8224CA004E8D54 /* ProductImageInBackground */ = {
 			isa = PBXGroup;
 			children = (
-				45A155362D80AC8B00BB7E92 /* MediaUploadSessionManager.swift */,
+				45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */,
 			);
 			path = ProductImageInBackground;
 			sourceTree = "<group>";
@@ -1910,7 +1910,7 @@
 		B5C9DDF72087FEC0006B910A /* Yosemite */ = {
 			isa = PBXGroup;
 			children = (
-				45A155352D80AC7800BB7E92 /* ProductImageInBackground */,
+				45A3FA022D8224CA004E8D54 /* ProductImageInBackground */,
 				6898F3722C0840FE0039F10A /* PointOfSale */,
 				57DFCC7725003B3300251E0C /* SnapshotsProvider */,
 				0202B68E238790B900F3EBE0 /* PListStorage */,
@@ -2431,7 +2431,7 @@
 				D831E2E2230E3513000037D0 /* ProductReviewStore.swift in Sources */,
 				247CE7D42582E1FD00F9D9D1 /* ScreenshotStoresManager.swift in Sources */,
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
-				45A155372D80AC8B00BB7E92 /* MediaUploadSessionManager.swift in Sources */,
+				45A3FA032D8226D4004E8D54 /* MediaUploadSessionManager.swift in Sources */,
 				247CE8562583269900F9D9D1 /* MockProductActionHandler.swift in Sources */,
 				D4CBAE6226D4460900BBE6D1 /* AnnouncementsStore.swift in Sources */,
 				264D2C832B0B19F200FD2C05 /* SystemInformation.swift in Sources */,

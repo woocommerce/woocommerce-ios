@@ -25,6 +25,10 @@ public protocol MediaRemoteProtocol {
     func uploadMediaRequest(siteID: Int64,
                             productID: Int64,
                             mediaItem: UploadableMedia) async throws -> URLRequest
+
+    /// Creates a URLRequest for updating product ID of media in background
+    func updateProductIDRequest(siteID: Int64,
+                                productID: Int64) async throws -> URLRequest
 }
 
 /// Media: Remote Endpoints
@@ -229,6 +233,47 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
 
         request.httpBody = body
         request.httpMethod = "POST"
+        return request
+    }
+
+    /// Creates a URLRequest for updating product ID of media in background
+    /// API reference: https://developer.wordpress.org/rest-api/reference/media/#update-a-media-item
+    ///
+    /// - Parameters:
+    ///   - siteID: Site in which the media was uploaded to.
+    ///   - productID: Product ID to use as post ID of the media.
+    /// - Returns: URLRequest configured for updating product ID
+    public func updateProductIDRequest(siteID: Int64,
+                                       productID: Int64) async throws -> URLRequest {
+
+        // Media ID will be appended later on
+        let path = "sites/\(siteID)/media/"
+
+        let parameters: [String: String] = [
+            ParameterKey.wordPressMediaPostID: "\(productID)",
+            ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
+        ]
+
+        let dotcomRequest = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                             method: .post,
+                                             path: path,
+                                             parameters: parameters,
+                                             availableAsRESTRequest: true)
+
+        guard let network = network as? AlamofireNetwork else {
+            throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
+        }
+
+        let converter = RequestConverter(credentials: network.credentials)
+        var request = try converter.convert(dotcomRequest).asURLRequest()
+
+        // Authenticate the request if we have credentials
+        if let credentials = network.credentials {
+            request = try DefaultRequestAuthenticator(credentials: credentials).authenticate(request)
+        } else {
+            throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
+        }
+
         return request
     }
 }

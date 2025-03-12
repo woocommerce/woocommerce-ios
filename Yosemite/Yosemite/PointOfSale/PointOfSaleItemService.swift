@@ -3,6 +3,7 @@ import protocol Networking.Network
 import protocol Networking.ProductVariationsRemoteProtocol
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
+import class Networking.CouponsRemote
 import class Networking.AlamofireNetwork
 import enum Alamofire.AFError
 import class WooFoundation.CurrencyFormatter
@@ -21,12 +22,14 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
     private let variationRemote: ProductVariationsRemoteProtocol
+    private let couponsRemote: CouponsRemote
 
     public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
         self.variationRemote = ProductVariationsRemote(network: network)
+        self.couponsRemote = CouponsRemote(network: network)
     }
 
     public convenience init(siteID: Int64,
@@ -35,6 +38,11 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials))
+    }
+    
+    public func providePointOfSaleCoupons() async throws -> PagedItems<POSItem> {
+        let coupons = try await couponsRemote.loadAllCouponsAsync(for: siteID)
+        return .init(items: mapCouponsToPOSItems(coupons: coupons), hasMorePages: false)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -91,6 +99,11 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
     }
 
+    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
+        // TODO:
+        []
+    }
+    
     // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.

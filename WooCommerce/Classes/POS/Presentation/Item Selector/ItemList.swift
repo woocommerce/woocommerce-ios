@@ -104,6 +104,8 @@ private struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
+        case .coupon:
+            Text("Coupon")
         }
     }
 }

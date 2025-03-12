@@ -141,7 +141,7 @@ protocol PointOfSaleItemsControllerProtocol {
                                                  parentItem: parent,
                                                  pageNumber: pageNumber,
                                                  appendToExistingItems: appendToExistingItems)
-        case .simpleProduct, .variation:
+        case .simpleProduct, .variation, .coupon:
             assertionFailure("Unsupported parent type for loading child items: \(parent)")
             return false
         }

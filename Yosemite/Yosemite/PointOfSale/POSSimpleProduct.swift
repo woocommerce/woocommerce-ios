@@ -2,6 +2,10 @@ import WooFoundation
 import Codegen
 import Networking
 
+public struct POSCoupon: Equatable, Hashable {
+    public let id: UUID
+}
+
 public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     // POSOrderableItem
     public let id: UUID

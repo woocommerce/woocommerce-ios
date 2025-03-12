@@ -9,6 +9,9 @@ public protocol CouponsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
+    func loadAllCouponsAsync(for siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int) async throws -> [Coupon]
 
     func loadCoupons(for siteID: Int64,
                      by couponIDs: [Int64],
@@ -63,7 +66,26 @@ extension CouponsRemoteProtocol {
 /// Coupons: Remote endpoints
 ///
 public final class CouponsRemote: Remote, CouponsRemoteProtocol {
-    // MARK: - Get Coupons
+    
+    public func loadAllCouponsAsync(for siteID: Int64,
+                                    pageNumber: Int = Default.pageNumber,
+                                    pageSize: Int = Default.pageSize) async throws -> [Coupon] {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.coupons,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = CouponListMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
 
     /// Retrieves all of the `Coupon`s from the API.
     ///

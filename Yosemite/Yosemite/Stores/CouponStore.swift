@@ -94,13 +94,12 @@ private extension CouponStore {
     // Existing logic does not return the full list of coupons, but the sync result
     // The resulting data seems to be coupled with its interaction with local storage
     func loadAllCouponsFromRemote(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
-        remote.loadAllCoupons(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupons):
+        Task { @MainActor in
+            do {
+                let coupons = try await remote.loadAllCouponsAsync(for: siteID, pageNumber: pageNumber, pageSize: pageSize)
                 onCompletion(.success(coupons))
+            } catch {
+                onCompletion(.failure(error))
             }
         }
     }

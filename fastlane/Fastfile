@@ -763,11 +763,6 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
-    # The build code used in the Enterprise build has a different format that the App Store one.
-    # We cannot use the standard build_code_current method but have to read it directly.
-    build_code = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash[BUILD_CODE_KEY]
-    UI.message("Successfully built and uploaded prototype build `#{build_code}` to Firebase App Distribution.")
-
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
     # PR Comment

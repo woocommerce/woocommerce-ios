@@ -124,10 +124,10 @@ public final class MediaUploadSessionManager: NSObject {
             completion(.failure(error))
             return
         }
-        
+
         stores.dispatch(MediaAction.updateProductID(siteID: siteID, productID: productID, mediaID: mediaID, onCompletion: completion))
     }
-    
+
     /// Updates the product with the specified images
     ///
     /// - Parameters:
@@ -143,7 +143,7 @@ public final class MediaUploadSessionManager: NSObject {
             completion(.failure(error))
             return
         }
-        
+
         // Convert mediaIDs to ProductImage objects
         let productImages = medias.map { media in
             ProductImage(imageID: media.mediaID,
@@ -153,7 +153,7 @@ public final class MediaUploadSessionManager: NSObject {
                          name: media.name,
                          alt: media.alt)
         }
-        
+
         stores.dispatch(ProductAction.updateProductImages(siteID: siteID, productID: productID, images: productImages, onCompletion: { result in
             switch result {
             case .success(let product):
@@ -163,7 +163,7 @@ public final class MediaUploadSessionManager: NSObject {
             }
         }))
     }
-    
+
     /// Updates a product variation with the specified image
     ///
     /// - Parameters:
@@ -180,7 +180,7 @@ public final class MediaUploadSessionManager: NSObject {
             completion(.failure(error))
             return
         }
-        
+
         // Convert media to ProductImage
         let productImage = ProductImage(imageID: media.mediaID,
                                         dateCreated: media.date,
@@ -188,7 +188,7 @@ public final class MediaUploadSessionManager: NSObject {
                                         src: media.src,
                                         name: media.name,
                                         alt: media.alt)
-        
+
         stores.dispatch(ProductVariationAction.updateProductVariationImage(siteID: siteID,
                                                                            productID: productID,
                                                                            variationID: variationID,
@@ -201,7 +201,7 @@ public final class MediaUploadSessionManager: NSObject {
             }
         })
     }
-    
+
     /// Updates a product with the uploaded media in sequence:
     /// 1. Links the media to the product ID using updateProductID
     /// 2. Updates the product images using updateProductImages
@@ -214,29 +214,29 @@ public final class MediaUploadSessionManager: NSObject {
     ///   - asset: Optional asset type that was used for the upload
     ///   - completion: A closure to be executed upon completion
     ///
-    public func updateProductWithMedia(siteID: Int64, 
-                                      productID: Int64, 
-                                      media: Media, 
+    public func updateProductWithMedia(siteID: Int64,
+                                      productID: Int64,
+                                      media: Media,
                                       asset: ProductImageAssetType? = nil,
                                       completion: @escaping (Result<Bool, Error>) -> Void) {
         DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Starting update sequence for product \(productID) with media \(media.mediaID)")
-        
+
         // First, update the product ID for the media
         updateProductID(siteID: siteID, productID: productID, mediaID: media.mediaID) { [weak self] result in
             guard let self = self else { return }
-            
+
             switch result {
             case .success(let updatedMedia):
                 DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Successfully linked media \(updatedMedia.mediaID) to product \(productID)")
-                
+
                 // Now, update the product with the image
                 self.updateProductImages(siteID: siteID, productID: productID, medias: [updatedMedia]) { [weak self] imageResult in
                     guard let self = self else { return }
-                    
+
                     switch imageResult {
                     case .success:
                         DDLogDebug("MediaUploadSessionManager-[UpdateProductWithMedia]- Successfully updated product \(productID) with image from media \(updatedMedia.mediaID)")
-                        
+
                         // Update the status in storage to indicate the image is now remote and associated with the product
                         let productImage = ProductImage(imageID: updatedMedia.mediaID,
                                                       dateCreated: updatedMedia.date,
@@ -244,10 +244,10 @@ public final class MediaUploadSessionManager: NSObject {
                                                       src: updatedMedia.src,
                                                       name: updatedMedia.name,
                                                       alt: updatedMedia.alt)
-                        
+
                         let status = ProductImageStatus.remote(image: productImage, siteID: siteID, productID: .product(id: productID))
                         self.statusStorage.updateStatus(status)
-                        
+
                         // If we have an asset reference, remove any uploading or failure statuses for this asset
                         if let asset = asset {
                             self.statusStorage.removeStatus(where: { status in
@@ -260,22 +260,22 @@ public final class MediaUploadSessionManager: NSObject {
                                 return false
                             })
                         }
-                        
+
                         completion(.success(true))
-                        
+
                     case .failure(let error):
                         DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductWithMedia]- Failed to update product images: \(error)")
                         completion(.failure(error))
                     }
                 }
-                
+
             case .failure(let error):
                 DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductWithMedia]- Failed to link media to product: \(error)")
                 completion(.failure(error))
             }
         }
     }
-    
+
     /// Updates a product variation with the uploaded media in sequence:
     /// 1. Links the media to the product ID using updateProductID
     /// 2. Updates the variation image using updateProductVariationImage
@@ -296,23 +296,23 @@ public final class MediaUploadSessionManager: NSObject {
                                                asset: ProductImageAssetType? = nil,
                                                completion: @escaping (Result<Bool, Error>) -> Void) {
         DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Starting update sequence for variation \(variationID) with media \(media.mediaID)")
-        
+
         // First, update the product ID for the media
         updateProductID(siteID: siteID, productID: productID, mediaID: media.mediaID) { [weak self] result in
             guard let self = self else { return }
-            
+
             switch result {
             case .success(let updatedMedia):
                 DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Successfully linked media \(updatedMedia.mediaID) to product \(productID)")
-                
+
                 // Now, update the variation with the image
                 self.updateProductVariationImage(siteID: siteID, productID: productID, variationID: variationID, media: updatedMedia) { [weak self] imageResult in
                     guard let self = self else { return }
-                    
+
                     switch imageResult {
                     case .success:
                         DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Successfully updated variation \(variationID) with image from media \(updatedMedia.mediaID)")
-                        
+
                         // Update the status in storage to indicate the image is now remote and associated with the variation
                         let productImage = ProductImage(imageID: updatedMedia.mediaID,
                                                       dateCreated: updatedMedia.date,
@@ -320,11 +320,11 @@ public final class MediaUploadSessionManager: NSObject {
                                                       src: updatedMedia.src,
                                                       name: updatedMedia.name,
                                                       alt: updatedMedia.alt)
-                        
-                        let status = ProductImageStatus.remote(image: productImage, 
-                                                              siteID: siteID, 
+
+                        let status = ProductImageStatus.remote(image: productImage,
+                                                              siteID: siteID,
                                                               productID: .variation(productID: productID, variationID: variationID))
-                    
+
                         // If we have an asset reference, remove any uploading or failure statuses for this asset
                         if let asset = asset {
                             self.statusStorage.removeStatus(where: { status in
@@ -337,15 +337,15 @@ public final class MediaUploadSessionManager: NSObject {
                                 return false
                             })
                         }
-                        
+
                         completion(.success(true))
-                        
+
                     case .failure(let error):
                         DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Failed to update variation image: \(error)")
                         completion(.failure(error))
                     }
                 }
-                
+
             case .failure(let error):
                 DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationWithMedia]- Failed to link media to product: \(error)")
                 completion(.failure(error))

@@ -869,6 +869,24 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "back_to_checkout_from_cash" }) != nil)
         }
+
+        @available(iOS 17.0, *)
+        @Test func startCashPayment_when_invoked_tracks_expected_event() async throws {
+            // Given
+            let mockAnalyticsProvider = MockAnalyticsProvider()
+            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: mockAnalytics,
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
+
+            // When
+            await sut.startCashPayment()
+
+            // Then
+            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
+        }
     }
 }
 

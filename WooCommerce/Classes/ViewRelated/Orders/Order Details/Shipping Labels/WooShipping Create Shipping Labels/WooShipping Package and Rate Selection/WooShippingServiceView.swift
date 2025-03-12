@@ -33,7 +33,13 @@ struct WooShippingServiceView: View {
                     MissingDataStateView(title: Localization.noWeightTitle,
                                          message: Localization.noWeightMessage)
                 case WooShippingServiceViewModel.Error.failedLoadingLabelRates:
-                    errorState
+                    ErrorState(message: Localization.failedLoadingDataError) {
+                        if let package = viewModel.selectedPackage {
+                            viewModel.loadLabelRates(for: package)
+                        }
+                    }
+                case .noRatesAvailable:
+                    ErrorState(message: Localization.noRatesAvailable)
                 }
             }
         }
@@ -78,24 +84,6 @@ struct WooShippingServiceView: View {
         .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView
     }
 
-    var errorState: some View {
-        VStack(spacing: Layout.padding) {
-            Image(uiImage: .grayErrorIcon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
-            Text(Localization.failedLoadingDataError)
-                .multilineTextAlignment(.center)
-            Button(Localization.retryCTA) {
-                if let package = viewModel.selectedPackage {
-                    viewModel.loadLabelRates(for: package)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .padding(WooShippingServiceView.Layout.placeholderPadding)
-    }
-
     var progressView: some View {
         VStack(spacing: Layout.placeholderPadding) {
             Image(uiImage: .wooShippingRatesPlaceholder)
@@ -107,6 +95,38 @@ struct WooShippingServiceView: View {
         .padding(Layout.placeholderPadding)
         .roundedBorder(cornerRadius: 8, lineColor: Color(.border), lineWidth: 1, dashed: true)
         .padding(.vertical, Layout.padding)
+    }
+}
+
+private struct ErrorState: View {
+    let message: String
+    let retryAction: (() -> Void)?
+
+    init(message: String, retryAction: (() -> Void)? = nil) {
+        self.message = message
+        self.retryAction = retryAction
+    }
+
+    var body: some View {
+        VStack(spacing: WooShippingServiceView.Layout.padding) {
+            Image(uiImage: .grayErrorIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(message)
+                .multilineTextAlignment(.center)
+            if let retryAction {
+                Button(WooShippingServiceView.Localization.retryCTA) {
+                    retryAction()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(WooShippingServiceView.Layout.placeholderPadding)
+    }
+
+    enum Layout {
+        static let errorIconSize: CGFloat = 86
     }
 }
 
@@ -153,7 +173,6 @@ fileprivate extension WooShippingServiceView {
         static let padding: CGFloat = 16
         static let innerSpacing: CGFloat = 8
         static let placeholderPadding: CGFloat = 32
-        static let errorIconSize: CGFloat = 86
     }
 }
 
@@ -187,6 +206,11 @@ private extension WooShippingServiceView {
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "
                                                               + "failed on the shipping label creation screen")
+        static let noRatesAvailable = NSLocalizedString("wooShipping.createLabels.rates.noRatesAvailable",
+                                                        value: "We couldn't find a shipping service for the combination of the selected package "
+                                                        + "and the total shipment weight. Please adjust your input and try again.",
+                                                        comment: "Error message when no shipping rates were found "
+                                                        + "based on the combination of the selected package and the total shipment weight.")
         static let retryCTA = NSLocalizedString("wooShipping.createLabels.rates.retryCTA",
                                                 value: "Retry",
                                                 comment: "Button to retry loading data on the shipping label creation screen")

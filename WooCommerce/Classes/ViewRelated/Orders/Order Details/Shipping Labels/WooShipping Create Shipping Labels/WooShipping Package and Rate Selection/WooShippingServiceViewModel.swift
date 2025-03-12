@@ -94,11 +94,13 @@ final class WooShippingServiceViewModel: ObservableObject {
 
             switch result {
             case let .success(rates):
-                guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }) else {
+                guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }),
+                      rates.defaultRates.isNotEmpty else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
-                    updateLoadingState(to: .error(Error.failedLoadingLabelRates))
+                    updateLoadingState(to: .error(Error.noRatesAvailable))
                     return
                 }
+
                 standardRates = rates.defaultRates
                 signatureRates = rates.signatureRequired
                 adultSignatureRates = rates.adultSignatureRequired
@@ -146,6 +148,7 @@ extension WooShippingServiceViewModel {
         case missingDestinationAddress
         case missingShipmentWeight
         case failedLoadingLabelRates
+        case noRatesAvailable
     }
 }
 

@@ -5,7 +5,7 @@
 -----
 - [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
-
+- [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
 
 21.9
 -----

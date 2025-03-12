@@ -4,6 +4,10 @@ import Foundation
 ///
 public enum CouponAction: Action {
 
+    /// Retrieves all Coupons from the remote site
+    /// 
+    case loadAllCouponsFromRemote(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Result<[Coupon], Error>) -> Void)
+
     /// Retrieves and stores Coupons for a site
     ///
     /// - `siteID`: the site for which coupons should be fetched.

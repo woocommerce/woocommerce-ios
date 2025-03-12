@@ -49,6 +49,8 @@ public final class CouponStore: Store {
         }
 
         switch action {
+        case .loadAllCouponsFromRemote(let siteID, let pageNumber, let pageSize, let onCompletion):
+            loadAllCouponsFromRemote(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeCoupons(siteID: siteID,
                                pageNumber: pageNumber,
@@ -89,6 +91,19 @@ public final class CouponStore: Store {
 //
 private extension CouponStore {
 
+    // Existing logic does not return the full list of coupons, but the sync result
+    // The resulting data seems to be coupled with its interaction with local storage
+    func loadAllCouponsFromRemote(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
+        remote.loadAllCoupons(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupons):
+                onCompletion(.success(coupons))
+            }
+        }
+    }
     /// Synchronizes coupons from a Site with what is persisted in the storage layer.
     /// A successful sync of the first page will delete all coupons for the specified site from
     /// storage, in order to reflect deletions made on other devices.

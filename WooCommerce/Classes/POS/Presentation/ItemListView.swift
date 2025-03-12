@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import enum Yosemite.CouponAction
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -15,6 +16,32 @@ struct ItemListView: View {
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
+    
+    private var shouldShowCoupons: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+    
+    @State private var coupons: [CouponDetailsViewModel] = []
+    
+    // (!) There is no general Coupon object on WooCommece, we have network and storage models, then implementation details for the app use cases.
+    private func loadAllCoupons() {
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+        
+        let action = CouponAction.loadAllCouponsFromRemote(siteID: siteID, pageNumber: 1, pageSize: 25, onCompletion: { result in
+            switch result {
+            case .failure:
+                // TODO: Existing events would need POS decoration
+                ServiceLocator.analytics.track(.couponsLoadedFailed)
+                break
+            case let .success(couponsResult):
+                couponsResult.map {
+                    coupons.append(CouponDetailsViewModel(coupon: $0))
+                }
+                ServiceLocator.analytics.track(.couponsLoaded)
+            }
+        })
+        ServiceLocator.stores.dispatch(action)
+    }
 
     var body: some View {
         NavigationStack {
@@ -51,16 +78,26 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
-                Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                    showSimpleProductsModal = true
-                }, label: {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(Constants.infoIconInset)
-                })
-                .renderedIf(!shouldShowHeaderBanner)
+                HStack(spacing: 10) {
+                    Button(action: {
+                        // (!) We do not have a generic event for tracking loading coupons, many existing events are usecase dependent
+                        loadAllCoupons()
+                    }, label: {
+                        Text("Show coupons (\(coupons.count))")
+                            .font(.posButtonSymbolSmall)
+                            .foregroundStyle(Color.posOnSurface)
+                            .padding(Constants.infoIconInset)
+                    })
+                    Button(action: {
+                        showSimpleProductsModal = true
+                    }, label: {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                            .foregroundStyle(Color.posOnSurface)
+                            .padding(Constants.infoIconInset)
+                    })
+                    .renderedIf(shouldShowCoupons)
+                }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView

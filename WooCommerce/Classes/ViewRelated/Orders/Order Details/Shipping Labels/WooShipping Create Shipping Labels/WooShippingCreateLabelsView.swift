@@ -37,6 +37,8 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var isReadyToShowAddressErrorNotice = false
+
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
@@ -194,34 +196,43 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            // Unverified notice for origin address
-            if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
-                                          isVerified: false,
-                                          onDismiss: {
-                    withAnimation {
-                        viewModel.originAddressUnverifiedNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    viewModel.editSelectedOriginAddress()
-                })
-            }
+            if isReadyToShowAddressErrorNotice {
+                // Unverified notice for origin address
+                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                              isVerified: false,
+                                              onDismiss: {
+                        withAnimation {
+                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                        }
+                    },
+                                              onTap: {
+                        viewModel.editSelectedOriginAddress()
+                    })
+                }
 
-            // Verification notice for destination address
-            if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
-                addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
-                                          isVerified: isDestinationAddressVerified,
-                                          onDismiss: {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    if !isDestinationAddressVerified {
-                        viewModel.editDestinationAddress()
-                    }
-                })
+                // Verification notice for destination address
+                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
+                                              isVerified: isDestinationAddressVerified,
+                                              onDismiss: {
+                        withAnimation {
+                            viewModel.destinationAddressStatusNoticeLabel = nil
+                        }
+                    },
+                                              onTap: {
+                        if !isDestinationAddressVerified {
+                            viewModel.editDestinationAddress()
+                        }
+                    })
+                }
+            }
+        }
+        .onAppear {
+            /// A brief delay in requesting user attention after the UI loads
+            /// to avoid overwhelming them with too many changes at once when opening the screen.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.isReadyToShowAddressErrorNotice = true
             }
         }
     }

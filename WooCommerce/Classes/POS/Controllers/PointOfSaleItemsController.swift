@@ -59,6 +59,7 @@ protocol PointOfSaleItemsControllerProtocol {
                 guard let self else { return true }
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
+            try await fetchCoupons()
         } catch {
             itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
             itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
@@ -186,6 +187,12 @@ private extension PointOfSaleItemsController {
 
 @available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
+    @MainActor
+    func fetchCoupons() async throws {
+        let coupons = try await itemProvider.providePointOfSaleCoupons()
+        debugPrint("🍍 Coupons fetched: \(coupons)")
+    }
+
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
     /// - Parameter pageNumber: Page number to fetch items from.
     /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.

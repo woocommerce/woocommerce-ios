@@ -39,7 +39,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials))
     }
-    
+
     public func providePointOfSaleCoupons() async throws -> PagedItems<POSItem> {
         let coupons = try await couponsRemote.loadAllCouponsAsync(for: siteID)
         return .init(items: mapCouponsToPOSItems(coupons: coupons), hasMorePages: false)
@@ -100,10 +100,11 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     }
 
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
-        // TODO:
-        []
+        return coupons.compactMap { coupon in
+                .coupon(POSCoupon(id: UUID(), couponID: coupon.couponID, code: coupon.code))
+        }
     }
-    
+
     // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.

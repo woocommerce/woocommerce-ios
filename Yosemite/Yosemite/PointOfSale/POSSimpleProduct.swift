@@ -4,6 +4,8 @@ import Networking
 
 public struct POSCoupon: Equatable, Hashable {
     public let id: UUID
+    public let couponID: Int64
+    public let code: String
 }
 
 public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {

@@ -152,8 +152,11 @@ protocol PointOfSaleOrderControllerProtocol {
                                                  fields: fieldsToUpdate,
                                                  onCompletion: { [weak self] result in
                 guard let self = self else { return }
-                if case .success = result {
+                switch result {
+                case .success:
                     self.celebrate()
+                case .failure:
+                    analytics.track(.pointOfSaleCashPaymentFailed)
                 }
                 continuation.resume(with: result)
             })

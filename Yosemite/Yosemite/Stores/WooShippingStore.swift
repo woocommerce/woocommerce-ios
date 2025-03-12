@@ -116,13 +116,15 @@ private extension WooShippingStore {
                         originAddress: WooShippingAddress,
                         destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
-                        completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
+                        completion: @escaping ([ShippingLabelPackageSelected], Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         remote.loadLabelRates(siteID: siteID,
                               orderID: orderID,
                               originAddress: originAddress,
                               destinationAddress: destinationAddress,
                               packages: packages,
-                              completion: completion)
+                              completion: { result in
+            completion(packages, result)
+        })
     }
 
     func loadPackages(siteID: Int64,

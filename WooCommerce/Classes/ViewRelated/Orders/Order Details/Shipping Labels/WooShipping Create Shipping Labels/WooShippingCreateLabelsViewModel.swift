@@ -504,9 +504,9 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] destinationAddress in
                 guard let self else { return }
                 let shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                              destinationAddress: destinationAddress,
-                                                              stores: stores) { [weak self] selectedRate in
+                                                                  originAddress: selectedOriginAddress?.toWooShippingAddress(),
+                                                                  destinationAddress: destinationAddress,
+                                                                  stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
                 }
                 self.shippingService = shippingService

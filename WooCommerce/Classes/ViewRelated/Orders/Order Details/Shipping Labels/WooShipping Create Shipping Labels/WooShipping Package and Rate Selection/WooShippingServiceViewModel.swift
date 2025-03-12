@@ -85,8 +85,13 @@ final class WooShippingServiceViewModel: ObservableObject {
                                                       orderID: orderID,
                                                       originAddress: originAddress,
                                                       destinationAddress: destinationAddress,
-                                                      packages: [selectedPackage]) { [weak self] result in
-            guard let self else { return }
+                                                      packages: [selectedPackage]) { [weak self] remotePackages, result in
+            guard let self,
+                  /// Avoids showing the obsolete rates if the user changes the package weight while loading.
+                  [self.selectedPackage] == remotePackages else {
+                return
+            }
+
             switch result {
             case let .success(rates):
                 guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }) else {

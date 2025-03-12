@@ -104,8 +104,18 @@ private struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
-        case .coupon:
-            Text("Coupon")
+        case let .coupon(coupon):
+            Button(action: {
+                posModel.addToCart(item)
+                // TODO: Update event for addItemToCart = .coupon
+                //analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
+            }, label: {
+                VStack {
+                    Text("Coupon")
+                    Text(coupon.code)
+                    Text(coupon.couponID.description)
+                }
+            })
         }
     }
 }

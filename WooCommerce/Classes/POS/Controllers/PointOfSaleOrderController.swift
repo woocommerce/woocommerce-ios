@@ -1,4 +1,6 @@
 import Foundation
+import protocol Yosemite.POSOrderableItem
+import protocol Yosemite.OrderSynceable
 import Observation
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
@@ -65,9 +67,10 @@ protocol PointOfSaleOrderControllerProtocol {
     @MainActor @discardableResult
     func syncOrder(for cartItems: [CartItem],
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
-        let posCartItems = cartItems.map {
-            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
-        }
+        let posCartItems = cartItems.compactMap { cartItem -> POSCartItem? in
+                guard let item = cartItem.item as? (POSOrderableItem & OrderSynceable) else { return nil }
+                return POSCartItem(item: item, quantity: Decimal(cartItem.quantity))
+            }
 
         guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
             return .success(.orderNotChanged)

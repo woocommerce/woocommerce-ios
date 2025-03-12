@@ -6,10 +6,10 @@ import enum WooFoundation.CurrencyCode
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
 public struct POSCartItem {
-    let item: POSOrderableItem
+    let item: POSOrderableItem & OrderSynceable
     let quantity: Decimal
 
-    public init(item: POSOrderableItem, quantity: Decimal) {
+    public init(item: POSOrderableItem & OrderSynceable, quantity: Decimal) {
         self.item = item
         self.quantity = quantity
     }

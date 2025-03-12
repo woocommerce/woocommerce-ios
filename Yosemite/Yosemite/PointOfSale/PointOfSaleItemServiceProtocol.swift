@@ -30,10 +30,11 @@ public protocol POSOrderableItem {
     var productImageSource: String? { get }
     var formattedPrice: String { get }
 
-    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput
     func matches(orderItem: OrderItem) -> Bool
     func isEqual(to other: POSOrderableItem) -> Bool
 }
+
+extension POSOrderableItem where Self: OrderSynceable { }
 
 public extension POSOrderableItem where Self: Equatable {
     func isEqual(to other: POSOrderableItem) -> Bool {

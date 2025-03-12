@@ -2,13 +2,27 @@ import WooFoundation
 import Codegen
 import Networking
 
-public struct POSCoupon: Equatable, Hashable {
+public struct POSCoupon: POSOrderableItem, Equatable, Hashable {
+    // These properties are needed for POSOrderableItem conformance, which then is used to add them to the Cart
+    // We should split this protocol into multiple smaller ones as isn't needed for coupons
+    public var name: String = ""
+    public var productImageSource: String? = nil
+    public var formattedPrice: String = ""
+    public func matches(orderItem: OrderItem) -> Bool {
+        true
+    }
+
     public let id: UUID
     public let couponID: Int64
     public let code: String
+
 }
 
-public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
+public protocol OrderSynceable {
+    func toOrderSyncProductInput(quantity: Decimal) -> OrderSyncProductInput
+}
+
+public struct POSSimpleProduct: POSOrderableItem, OrderSynceable, OrderSyncProductTypeProtocol {
     // POSOrderableItem
     public let id: UUID
     public let name: String

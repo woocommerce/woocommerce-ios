@@ -72,11 +72,11 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
         switch viewModel?.items[indexPath.item] {
         case .image(let status):
             switch status {
-            case .remote(let image):
+            case .remote(let image, _, _):
                 onImageSelected?(image, indexPath)
             case .uploading:
                 onImageSelected?(nil, indexPath)
-            case let .uploadFailure(asset, error):
+            case let .uploadFailure(asset, error, _, _):
                 onFailedUploadSelected?(asset, error)
             }
         case .addImage:

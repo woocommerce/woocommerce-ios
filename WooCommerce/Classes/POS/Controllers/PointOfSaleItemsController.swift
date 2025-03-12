@@ -59,7 +59,6 @@ protocol PointOfSaleItemsControllerProtocol {
                 guard let self else { return true }
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
-            try await fetchCoupons()
         } catch {
             itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
             itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
@@ -188,9 +187,10 @@ private extension PointOfSaleItemsController {
 @available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     @MainActor
-    func fetchCoupons() async throws {
+    func fetchCoupons() async throws -> [POSItem] {
         let coupons = try await itemProvider.providePointOfSaleCoupons()
         debugPrint("🍍 Coupons fetched: \(coupons)")
+        return coupons.items
     }
 
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
@@ -202,12 +202,20 @@ private extension PointOfSaleItemsController {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
             let newItems = pagedItems.items
+
+            // Coupons
+            let coupons = try await fetchCoupons()
+
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
             let uniqueNewItems = newItems.filter { newItem in
                 // Note that this uniquing won't currently work, as POSItem has a UUID.
                 !allItems.contains(newItem)
             }
             allItems.append(contentsOf: uniqueNewItems)
+            // TODO:
+            // We still to handle their uniqueness, but for now we append them to the end of the product list
+            allItems.append(contentsOf: coupons)
+
             if allItems.isEmpty {
                 itemsViewState.containerState = .empty
                 itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),

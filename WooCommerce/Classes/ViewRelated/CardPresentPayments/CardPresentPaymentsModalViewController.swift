@@ -149,10 +149,12 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleTopTitle() {
         topTitleLabel.applyBodyStyle()
+        topTitleLabel.numberOfLines = 0
     }
 
     func styleTopSubtitle() {
         topSubtitleLabel.applyTitleStyle()
+        topSubtitleLabel.numberOfLines = 0
     }
 
     func styleBottomLabels() {
@@ -166,10 +168,12 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleBottomTitle() {
         bottomTitleLabel.applySubheadlineStyle()
+        bottomTitleLabel.numberOfLines = 0
     }
 
     func styleBottomSubtitle() {
         bottomSubtitleLabel.applyFootnoteStyle()
+        bottomSubtitleLabel.numberOfLines = 0
     }
 
     func styleActionButtons() {

@@ -345,6 +345,10 @@ extension WooShippingContentType {
 
 private extension String {
     var isValidITN: Bool {
+        guard self.isNotEmpty else {
+            return true
+        }
+
         let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
 
         do {

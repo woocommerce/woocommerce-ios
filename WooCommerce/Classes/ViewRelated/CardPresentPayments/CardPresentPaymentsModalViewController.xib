@@ -25,7 +25,6 @@
                 <outlet property="mainStackView" destination="jIt-xb-rrN" id="mSC-3J-47R"/>
                 <outlet property="primaryActionButtonsStackView" destination="mhI-fa-Yzw" id="dx9-oe-Pnq"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
-                <outlet property="scrollView" destination="yA2-8g-wqa" id="df0-r6-3Nj"/>
                 <outlet property="secondaryButton" destination="9Ap-Te-Fsi" id="07U-PT-JrQ"/>
                 <outlet property="topSubtitleLabel" destination="aVs-Lf-QTr" id="uKV-ox-li8"/>
                 <outlet property="topTitleLabel" destination="oDv-zz-CTp" id="wIT-XT-OIO"/>

@@ -205,13 +205,13 @@ extension WooShippingCustomsFormViewModel.ITNValidationError {
     private enum Localization {
         static let itnInvalidFormat = NSLocalizedString(
             "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat",
-            value: "Please enter a valid ITN in one of these formats: X12345678901234, AES X12345678901234, or NOEEI 30.37(a)",
+            value: "Please enter a valid ITN in one of these formats: X12345678901234, AES X12345678901234, or NOEEI 30.37(a).",
             comment: "Message when the ITN field is invalid in the customs form of a shipping label"
         )
         static let itnRequiredForTariffClass = NSLocalizedString(
             "wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass",
             value: "International Transaction Number is required for shipping items " +
-            "valued over $2,500 per tariff number",
+            "valued over $2,500 per tariff number.",
             comment: "Message when the ITN field is missing for a Tariff class in the customs form of a shipping label"
         )
         static let itnRequiredForTotalValue = NSLocalizedString(
@@ -222,7 +222,7 @@ extension WooShippingCustomsFormViewModel.ITNValidationError {
         )
         static let itnRequiredForDestination = NSLocalizedString(
             "wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination",
-            value: "International Transaction Number is required for shipments to the destination country",
+            value: "International Transaction Number is required for shipments to the destination country.",
             comment: "Message when the ITN field is missing in the customs form of a shipping label to the given destination country"
         )
     }

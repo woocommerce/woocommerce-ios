@@ -39,11 +39,7 @@ struct WooShippingServiceView: View {
                         }
                     }
                 case .noRatesAvailable:
-                    ErrorState(message: Localization.noRatesAvailable) {
-                        if let package = viewModel.selectedPackage {
-                            viewModel.loadLabelRates(for: package)
-                        }
-                    }
+                    ErrorState(message: Localization.noRatesAvailable)
                 }
             }
         }
@@ -104,7 +100,12 @@ struct WooShippingServiceView: View {
 
 private struct ErrorState: View {
     let message: String
-    let retryAction: () -> Void
+    let retryAction: (() -> Void)?
+
+    init(message: String, retryAction: (() -> Void)? = nil) {
+        self.message = message
+        self.retryAction = retryAction
+    }
 
     var body: some View {
         VStack(spacing: WooShippingServiceView.Layout.padding) {
@@ -114,8 +115,10 @@ private struct ErrorState: View {
                 .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
             Text(message)
                 .multilineTextAlignment(.center)
-            Button(WooShippingServiceView.Localization.retryCTA) {
-                retryAction()
+            if let retryAction {
+                Button(WooShippingServiceView.Localization.retryCTA) {
+                    retryAction()
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)

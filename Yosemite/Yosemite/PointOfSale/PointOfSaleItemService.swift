@@ -22,12 +22,12 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
     private let variationRemote: ProductVariationsRemoteProtocol
-    private let storage: StorageManagerType
+    private let storage: StorageManagerType?
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
                 network: Network,
-                storage: StorageManagerType) {
+                storage: StorageManagerType? = nil) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
@@ -102,6 +102,9 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     // TODO:
     // gh-15326 - Return PagedItems<POSItem> instead.
     public func providePointOfSaleCoupons() -> [POSItem] {
+        guard let storage = storage else {
+            return []
+        }
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)

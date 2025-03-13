@@ -82,7 +82,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 .onChange(of: fixedContentSize, perform: { [fixedContentSize] _ in
                     guard fixedContentSize.width > 0,
                           fixedContentSize.height > 0 else {
-                        return
+                        // No animation for initial load
+                        return panelHeight = calculateHeight()
                     }
                     withAnimation {
                         panelHeight = calculateHeight()

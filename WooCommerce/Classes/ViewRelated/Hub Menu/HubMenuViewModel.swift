@@ -95,11 +95,13 @@ final class HubMenuViewModel: ObservableObject {
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
+        let storage = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
 
         return PointOfSaleItemService(siteID: siteID,
                                       currencySettings: currencySettings,
-                                      credentials: credentials)
+                                      credentials: credentials,
+                                      storage: storage)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

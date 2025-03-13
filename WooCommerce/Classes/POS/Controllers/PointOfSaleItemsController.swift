@@ -160,6 +160,13 @@ protocol PointOfSaleItemsControllerProtocol {
 
 @available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
+    func loadPointOfSaleCoupons() {
+        itemProvider.providePointOfSaleCoupons()
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleItemsController {
     func setLoadingState(base: ItemListBaseItem) {
         switch base {
         case .root:

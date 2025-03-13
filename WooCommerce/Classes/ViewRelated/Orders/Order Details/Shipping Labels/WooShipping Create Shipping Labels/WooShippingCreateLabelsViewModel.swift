@@ -21,6 +21,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
+    @Published var containsHazardousMaterials = false
+    
     @Published var labelPurchaseErrorNotice: Notice?
 
     let order: Order

@@ -2,7 +2,14 @@ import SwiftUI
 
 struct WooShippingHazmatRow: View {
     /// Whether the interactions (navigation/setting selection) are enabled.
-    let enabled: Bool
+    private let enabled: Bool
+
+    @Binding private var isHazardous: Bool
+
+    init(isHazardous: Binding<Bool>, enabled: Bool) {
+        self._isHazardous = isHazardous
+        self.enabled = enabled
+    }
 
     var body: some View {
         Button(action: {
@@ -12,12 +19,11 @@ struct WooShippingHazmatRow: View {
                 Text(Localization.hazmatLabel)
                     .bodyStyle()
                 Spacer()
-                Text("No") // TODO: Replace with actual hazmat selection for package
+                Text(isHazardous ? Localization.yes : Localization.no)
                     .secondaryBodyStyle()
-                if enabled {
-                    Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
-                        .secondaryBodyStyle()
-                }
+                Image(uiImage: .chevronImage)
+                    .secondaryBodyStyle()
+                    .renderedIf(enabled)
             }
             .padding(.vertical, Layout.verticalPadding)
         }
@@ -36,10 +42,20 @@ private extension WooShippingHazmatRow {
         static let hazmatLabel = NSLocalizedString("wooShipping.createLabel.hazmatLabel",
                                                    value: "Are you shipping dangerous goods or hazardous materials?",
                                                    comment: "Label for section in shipping label creation to declare when a package contains hazardous materials.")
+        static let yes = NSLocalizedString(
+            "wooShipping.createLabel.hazmatRow.yes",
+            value: "Yes",
+            comment: "Value for section in shipping label creation to declare when a package contains hazardous materials."
+        )
+        static let no = NSLocalizedString(
+            "wooShipping.createLabel.hazmatRow.no",
+            value: "No",
+            comment: "Value for section in shipping label creation to declare when a package does not contain hazardous materials."
+        )
     }
 }
 
 #Preview {
-    WooShippingHazmatRow(enabled: true)
+    WooShippingHazmatRow(isHazardous: .constant(false), enabled: true)
         .padding()
 }

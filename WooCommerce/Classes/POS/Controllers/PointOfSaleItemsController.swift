@@ -141,7 +141,7 @@ protocol PointOfSaleItemsControllerProtocol {
                                                  parentItem: parent,
                                                  pageNumber: pageNumber,
                                                  appendToExistingItems: appendToExistingItems)
-        case .simpleProduct, .variation:
+        case .simpleProduct, .variation, .coupon:
             assertionFailure("Unsupported parent type for loading child items: \(parent)")
             return false
         }
@@ -161,7 +161,8 @@ protocol PointOfSaleItemsControllerProtocol {
 @available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func loadPointOfSaleCoupons() {
-        itemProvider.providePointOfSaleCoupons()
+        let posCoupons = itemProvider.providePointOfSaleCoupons()
+        debugPrint(posCoupons)
     }
 }
 

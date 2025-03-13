@@ -100,8 +100,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     }
 
     // TODO:
-    // gh-15326 - Map coupons and return PagedItems<POSItem> to be used in POS
-    public func providePointOfSaleCoupons() {
+    // gh-15326 - Return PagedItems<POSItem> instead.
+    public func providePointOfSaleCoupons() -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)
@@ -112,10 +112,17 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
         do {
             try resultsController.performFetch()
-            let coupons = resultsController.fetchedObjects
-            debugPrint("Coupons: \(coupons)")
+            let storeCoupons = resultsController.fetchedObjects
+            return mapCouponsToPOSItems(coupons: storeCoupons)
         } catch {
             debugPrint(error)
+            return []
+        }
+    }
+
+    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
+        coupons.compactMap { coupon in
+                .coupon(POSCoupon(id: UUID(), couponID: coupon.couponID))
         }
     }
 

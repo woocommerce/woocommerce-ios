@@ -57,8 +57,8 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           formattedPrice: "$1.00")
     }
 
-    func providePointOfSaleCoupons() {
-        // no-op
+    func providePointOfSaleCoupons() -> [POSItem] {
+        []
     }
 }
 

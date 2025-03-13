@@ -26,7 +26,7 @@ final class ProductImagesViewController: UIViewController {
     private var productImages: [ProductImage] {
         return productImageStatuses.compactMap { status in
             switch status {
-            case .remote(let productImage):
+            case .remote(let productImage, _, _):
                 return productImage
             default:
                 return nil

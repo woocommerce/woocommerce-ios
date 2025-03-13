@@ -5,6 +5,8 @@ struct WooShippingHazmatDetailView: View {
 
     @Binding private var isHazardous: Bool
 
+    @State private var detailURL: URL?
+
     init(isHazardous: Binding<Bool>) {
         self._isHazardous = isHazardous
     }
@@ -43,6 +45,11 @@ struct WooShippingHazmatDetailView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .environment(\.openURL, OpenURLAction { url in
+                detailURL = url
+                return .handled
+            })
+            .safariSheet(url: $detailURL)
             .padding(.horizontal)
         }
     }

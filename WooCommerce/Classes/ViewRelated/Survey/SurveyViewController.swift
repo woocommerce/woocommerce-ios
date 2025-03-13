@@ -185,6 +185,9 @@ extension URL {
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
         static let surveyRequestAppVersionTag = "app-version"
+        static let surveyRequestSiteIdTag = "site-id"
+        static let surveyRequestStoreUUIDTag = "store-id"
+        static let surveyRequestStoreURLTag = "store-url"
     }
 }
 

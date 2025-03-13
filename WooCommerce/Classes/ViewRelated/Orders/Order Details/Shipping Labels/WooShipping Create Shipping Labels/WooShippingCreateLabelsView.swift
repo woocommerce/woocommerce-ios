@@ -231,6 +231,7 @@ private extension WooShippingCreateLabelsView {
                         }
                     })
                 }
+
                 // Verification notice for missing ITN in customs form
                 if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
                     verificationNotice(with: itnMissingNoticeLabel,

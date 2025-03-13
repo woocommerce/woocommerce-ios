@@ -157,6 +157,10 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSale
 
+    /// Enables coupons in Point of Sale
+    ///
+    case enableCouponsInPointOfSale
+
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView

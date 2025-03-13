@@ -71,6 +71,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .enableCouponsInPointOfSale:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
             return true
         case .backgroundTasks:

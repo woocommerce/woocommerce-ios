@@ -79,7 +79,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
-                .onChange(of: fixedContentSize, perform: { _ in
+                .onChange(of: fixedContentSize, perform: { [fixedContentSize] _ in
+                    guard fixedContentSize.width > 0,
+                          fixedContentSize.height > 0 else {
+                        return
+                    }
                     withAnimation {
                         panelHeight = calculateHeight()
                     }

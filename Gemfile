@@ -10,8 +10,7 @@ gem 'cocoapods', '~> 1.14'
 gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'danger-dangermattic', '~> 1.2'
 gem 'dotenv'
-# 2.217.0 includes a fix for Xcode 15 test results parsing in CI
-gem 'fastlane', git: 'https://github.com/fastlane/fastlane.git', branch: 'alisoftware/trainer/support-swift-testing'
+gem 'fastlane', '~> 2.227'
 gem 'fastlane-plugin-appcenter', '~> 2.0'
 gem 'fastlane-plugin-sentry', '~> 1.0'
 # This comment avoids typing to switch to a development version for testing.

@@ -6,6 +6,8 @@ struct WooShippingHazmatRow: View {
 
     @Binding private var isHazardous: Bool
 
+    @State private var isShowingDetailView = false
+
     init(isHazardous: Binding<Bool>, enabled: Bool) {
         self._isHazardous = isHazardous
         self.enabled = enabled
@@ -13,7 +15,7 @@ struct WooShippingHazmatRow: View {
 
     var body: some View {
         Button(action: {
-            // TODO: show sheet
+            isShowingDetailView = true
         }) {
             AdaptiveStack {
                 Text(Localization.hazmatLabel)
@@ -29,6 +31,9 @@ struct WooShippingHazmatRow: View {
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
+        .sheet(isPresented: $isShowingDetailView) {
+            WooShippingHazmatDetailView(isHazardous: $isHazardous)
+        }
     }
 }
 

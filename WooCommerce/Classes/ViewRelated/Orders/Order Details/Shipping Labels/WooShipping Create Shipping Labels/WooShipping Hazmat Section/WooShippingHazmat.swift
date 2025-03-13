@@ -5,18 +5,23 @@ struct WooShippingHazmat: View {
     let enabled: Bool
 
     var body: some View {
-        AdaptiveStack {
-            Text(Localization.hazmatLabel)
-                .bodyStyle()
-            Spacer()
-            Text("No") // TODO: Replace with actual hazmat selection for package
-                .secondaryBodyStyle()
-            if enabled {
-                Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
+        Button(action: {
+            // TODO: show sheet
+        }) {
+            AdaptiveStack {
+                Text(Localization.hazmatLabel)
+                    .bodyStyle()
+                Spacer()
+                Text("No") // TODO: Replace with actual hazmat selection for package
                     .secondaryBodyStyle()
+                if enabled {
+                    Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
+                        .secondaryBodyStyle()
+                }
             }
+            .padding(.vertical, Layout.verticalPadding)
         }
-        .padding(.vertical, Layout.verticalPadding)
+        .buttonStyle(.plain)
         .disabled(!enabled)
     }
 }

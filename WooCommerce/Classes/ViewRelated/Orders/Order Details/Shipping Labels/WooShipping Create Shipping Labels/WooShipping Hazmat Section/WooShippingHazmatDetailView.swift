@@ -24,6 +24,20 @@ struct WooShippingHazmatDetailView: View {
                     .secondaryTitleStyle()
                     .bold()
 
+                Toggle(isOn: $isHazardous) {
+                    Text(Localization.toggleLabel)
+                }
+                .padding()
+
+                Button(Localization.selectCategory) {
+                    // TODO: navigate to category list
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.bottom)
+                .renderedIf(isHazardous)
+
+                Divider()
+
                 Spacer()
             }
             .padding(.horizontal)
@@ -42,6 +56,16 @@ private extension WooShippingHazmatDetailView {
             "wooShippingHazmatDetailView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let toggleLabel = NSLocalizedString(
+            "wooShippingHazmatDetailView.switchLabel",
+            value: "Contains hazardous materials",
+            comment: "Label of the toggle on the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let selectCategory = NSLocalizedString(
+            "wooShippingHazmatDetailView.selectCategory",
+            value: "Select Category",
+            comment: "Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow"
         )
     }
 }

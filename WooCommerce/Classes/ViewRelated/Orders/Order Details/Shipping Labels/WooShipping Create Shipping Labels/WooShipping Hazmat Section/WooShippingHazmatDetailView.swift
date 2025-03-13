@@ -11,12 +11,12 @@ struct WooShippingHazmatDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(spacing: Constants.verticalSpacing) {
                 HStack {
                     Button(Localization.cancel) {
                         dismiss()
                     }
-                    .padding(.vertical)
+                    .padding(.top)
                     Spacer()
                 }
 
@@ -27,25 +27,67 @@ struct WooShippingHazmatDetailView: View {
                 Toggle(isOn: $isHazardous) {
                     Text(Localization.toggleLabel)
                 }
-                .padding()
 
                 Button(Localization.selectCategory) {
                     // TODO: navigate to category list
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .padding(.bottom)
                 .renderedIf(isHazardous)
 
                 Divider()
 
+                Text(Localization.detailLine1)
+                AttributedText(detailLine2AttributedString, enablesLinkUnderline: true)
+                AttributedText(detailLine3AttributedString, enablesLinkUnderline: true)
+
                 Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
         }
     }
 }
 
 private extension WooShippingHazmatDetailView {
+    var detailLine2AttributedString: NSAttributedString {
+        let content = String.localizedStringWithFormat(Localization.detailLine2, Constants.hazmatURL, Localization.searchTool)
+
+        let mutableAttributedText = NSMutableAttributedString(
+            string: content,
+            attributes: [.font: UIFont.body,
+                         .foregroundColor: UIColor.text]
+        )
+
+        mutableAttributedText.setAsLink(textToFind: Constants.hazmatURL,
+                                        linkURL: Constants.hazmatURL)
+        mutableAttributedText.setAsLink(textToFind: Localization.searchTool,
+                                        linkURL: Constants.searchToolURL)
+        return mutableAttributedText
+    }
+
+    var detailLine3AttributedString: NSAttributedString {
+        let content = String.localizedStringWithFormat(Localization.detailLine3, Constants.DHLExpressName)
+
+        let mutableAttributedText = NSMutableAttributedString(
+            string: content,
+            attributes: [.font: UIFont.body,
+                         .foregroundColor: UIColor.text]
+        )
+
+        mutableAttributedText.setAsLink(textToFind: Constants.DHLExpressName,
+                                        linkURL: Constants.DHLExpressURL)
+        return mutableAttributedText
+    }
+}
+
+private extension WooShippingHazmatDetailView {
+    enum Constants {
+        static let verticalSpacing: CGFloat = 16
+        static let hazmatURL = "https://www.usps.com/hazmat"
+        static let searchToolURL = "https://pe.usps.com/hazmat/index"
+        static let DHLExpressName = "DHL Express"
+        static let DHLExpressURL = "https://www.dhl.com/us-en/home/express.html"
+    }
     enum Localization {
         static let title = NSLocalizedString(
             "wooShippingHazmatDetailView.title",
@@ -66,6 +108,31 @@ private extension WooShippingHazmatDetailView {
             "wooShippingHazmatDetailView.selectCategory",
             value: "Select Category",
             comment: "Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let detailLine1 = NSLocalizedString(
+            "wooShippingHazmatDetailView.detailLine1",
+            value: "Potentially hazardous material includes items such as batteries, dry ice, " +
+            "flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, " +
+            "and more. Hazardous items must ship in separate packages.",
+            comment: "First line of the explanation on the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let detailLine2 = NSLocalizedString(
+            "wooShippingHazmatDetailView.detailLine2",
+            value: "Learn how to securely package, label, and ship HAZMAT through USPS® at " +
+            "%1$@. Determine your product's mailability using the %2$@.",
+            comment: "Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. " +
+            "The placeholders are links to detail pages for HAZMAT."
+        )
+        static let searchTool = NSLocalizedString(
+            "wooShippingHazmatDetailView.searchTool",
+            value: "USPS HAZMAT Search Tool",
+            comment: "Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow."
+        )
+        static let detailLine3 = NSLocalizedString(
+            "wooShippingHazmatDetailView.detailLine3",
+            value: "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@.",
+            comment: "Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. " +
+            "The placeholder is DHL Express."
         )
     }
 }

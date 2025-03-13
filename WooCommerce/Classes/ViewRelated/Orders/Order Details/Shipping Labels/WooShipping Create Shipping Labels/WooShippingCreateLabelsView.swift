@@ -37,6 +37,8 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var isReadyToShowErrorNotice = false
+
     @State private var showingCustomsForm = false
 
     /// Whether the destination address is verified.
@@ -199,48 +201,57 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            // Unverified notice for origin address
-            if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                verificationNotice(with: originAddressUnverifiedNoticeLabel,
-                                   isVerified: false,
-                                   onDismiss: {
-                    withAnimation {
-                        viewModel.originAddressUnverifiedNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    viewModel.editSelectedOriginAddress()
-                })
-            }
+            if isReadyToShowErrorNotice {
+                // Unverified notice for origin address
+                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        viewModel.editSelectedOriginAddress()
+                    })
+                }
 
-            // Verification notice for destination address
-            if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
-                verificationNotice(with: destinationAddressStatusNoticeLabel,
-                                   isVerified: isDestinationAddressVerified,
-                                   onDismiss: {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    if !isDestinationAddressVerified {
-                        viewModel.editDestinationAddress()
-                    }
-                })
-            }
+                // Verification notice for destination address
+                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    verificationNotice(with: destinationAddressStatusNoticeLabel,
+                                       isVerified: isDestinationAddressVerified,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.destinationAddressStatusNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        if !isDestinationAddressVerified {
+                            viewModel.editDestinationAddress()
+                        }
+                    })
+                }
 
-            // Verification notice for missing ITN in customs form
-            if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
-                verificationNotice(with: itnMissingNoticeLabel,
-                                   isVerified: false,
-                                   onDismiss: {
-                    withAnimation {
-                        viewModel.itnMissingNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    showingCustomsForm = true
-                })
+                // Verification notice for missing ITN in customs form
+                if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
+                    verificationNotice(with: itnMissingNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.itnMissingNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        showingCustomsForm = true
+                    })
+                }
+            }
+        }
+        .onAppear {
+            /// A brief delay in requesting user attention after the UI loads
+            /// to avoid overwhelming them with too many changes at once when opening the screen.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.isReadyToShowErrorNotice = true
             }
         }
     }

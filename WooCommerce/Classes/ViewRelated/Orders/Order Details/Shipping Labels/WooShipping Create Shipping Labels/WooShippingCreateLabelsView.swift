@@ -37,6 +37,8 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var showingCustomsForm = false
+
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
@@ -83,6 +85,9 @@ struct WooShippingCreateLabelsView: View {
                         .navigationTitle(Localization.BottomSheet.editDestination)
                         .navigationBarTitleDisplayMode(.inline)
                 }
+            }
+            .sheet(isPresented: $showingCustomsForm) {
+                WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
         }
@@ -196,9 +201,9 @@ private extension WooShippingCreateLabelsView {
 
             // Unverified notice for origin address
             if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
-                                          isVerified: false,
-                                          onDismiss: {
+                verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                   isVerified: false,
+                                   onDismiss: {
                     withAnimation {
                         viewModel.originAddressUnverifiedNoticeLabel = nil
                     }
@@ -210,9 +215,9 @@ private extension WooShippingCreateLabelsView {
 
             // Verification notice for destination address
             if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
-                addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
-                                          isVerified: isDestinationAddressVerified,
-                                          onDismiss: {
+                verificationNotice(with: destinationAddressStatusNoticeLabel,
+                                   isVerified: isDestinationAddressVerified,
+                                   onDismiss: {
                     withAnimation {
                         viewModel.destinationAddressStatusNoticeLabel = nil
                     }
@@ -221,6 +226,20 @@ private extension WooShippingCreateLabelsView {
                     if !isDestinationAddressVerified {
                         viewModel.editDestinationAddress()
                     }
+                })
+            }
+
+            // Verification notice for missing ITN in customs form
+            if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
+                verificationNotice(with: itnMissingNoticeLabel,
+                                   isVerified: false,
+                                   onDismiss: {
+                    withAnimation {
+                        viewModel.itnMissingNoticeLabel = nil
+                    }
+                },
+                                          onTap: {
+                    showingCustomsForm = true
                 })
             }
         }
@@ -406,12 +425,12 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
-    /// View showing a notice about an address verification status.
+    /// View showing a notice about a verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String,
-                                   isVerified: Bool,
-                                   onDismiss: @escaping () -> Void,
-                                   onTap: @escaping () -> Void) -> some View {
+    func verificationNotice(with label: String,
+                            isVerified: Bool,
+                            onDismiss: @escaping () -> Void,
+                            onTap: @escaping () -> Void) -> some View {
         HStack(spacing: 8) {
             Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
             Text(label)
@@ -426,7 +445,7 @@ private extension WooShippingCreateLabelsView {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-            .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+            .fill(Color(uiColor: isVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
         .onTapGesture(perform: onTap)
     }
 }

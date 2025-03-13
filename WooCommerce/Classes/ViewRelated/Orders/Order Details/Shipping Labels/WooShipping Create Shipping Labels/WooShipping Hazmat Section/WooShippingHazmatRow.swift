@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct WooShippingHazmat: View {
+struct WooShippingHazmatRow: View {
     /// Whether the interactions (navigation/setting selection) are enabled.
     let enabled: Bool
 
@@ -26,7 +26,7 @@ struct WooShippingHazmat: View {
     }
 }
 
-private extension WooShippingHazmat {
+private extension WooShippingHazmatRow {
     enum Layout {
         static let backgroundRadius: CGFloat = 8
         static let verticalPadding: CGFloat = 24
@@ -40,6 +40,6 @@ private extension WooShippingHazmat {
 }
 
 #Preview {
-    WooShippingHazmat(enabled: true)
+    WooShippingHazmatRow(enabled: true)
         .padding()
 }

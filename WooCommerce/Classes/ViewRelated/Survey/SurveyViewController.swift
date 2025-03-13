@@ -69,33 +69,40 @@ extension SurveyViewController {
         case orderFormShippingLines
 
         fileprivate var url: URL {
-            switch self {
-            case .inAppFeedback:
-                return WooConstants.URLs.inAppFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .productsFeedback:
-                return WooConstants.URLs.productsFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .addOnsI1:
-                return WooConstants.URLs.orderAddOnI1Feedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .orderCreation:
-                return WooConstants.URLs.orderCreationFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .orderFormShippingLines:
-                return WooConstants.URLs.orderCreationShippingFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            }
+            let url: URL = {
+                switch self {
+                case .inAppFeedback:
+                    return WooConstants.URLs.inAppFeedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion())
+                case .productsFeedback:
+                    return WooConstants.URLs.productsFeedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion())
+                case .addOnsI1:
+                    return WooConstants.URLs.orderAddOnI1Feedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion())
+                case .orderCreation:
+                    return WooConstants.URLs.orderCreationFeedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion())
+                case .orderFormShippingLines:
+                    return WooConstants.URLs.orderCreationShippingFeedback
+                        .asURL()
+                        .tagPlatform("ios")
+                        .tagAppVersion(Bundle.main.bundleVersion())
+                }
+            }()
+
+            let session = ServiceLocator.stores.sessionManager
+            return url.tagSiteInfo(siteID: session.defaultSite?.siteID,
+                                   storeUUID: session.defaultStoreUUID,
+                                   storeURL: session.defaultSite?.url)
         }
 
         fileprivate var title: String {

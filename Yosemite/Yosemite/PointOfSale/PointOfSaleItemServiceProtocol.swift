@@ -4,6 +4,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
     case variableParentProduct(POSVariableParentProduct)
     case variation(POSVariation)
+    case coupon(POSCoupon)
 
     public var id: UUID {
         switch self {
@@ -13,6 +14,8 @@ public enum POSItem: Equatable, Identifiable, Hashable {
             return parentProduct.id
         case .variation(let variation):
             return variation.id
+        case .coupon(let coupon):
+            return coupon.id
         }
     }
 }
@@ -55,6 +58,7 @@ public extension Sequence where Element == POSOrderableItem {
 public protocol PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem>
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem>
+    func providePointOfSaleCoupons() -> [POSItem]
 }
 
 // Default implementation for convenience, so we do not need to pass the first page explicitly

@@ -7,6 +7,7 @@ import class Networking.AlamofireNetwork
 import enum Alamofire.AFError
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import Storage
 
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
@@ -21,20 +22,27 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let productsRemote: ProductsRemote
     private let variationRemote: ProductVariationsRemoteProtocol
+    private let storage: StorageManagerType?
 
-    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
+    public init(siteID: Int64,
+                currencySettings: CurrencySettings,
+                network: Network,
+                storage: StorageManagerType? = nil) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.productsRemote = ProductsRemote(network: network)
         self.variationRemote = ProductVariationsRemote(network: network)
+        self.storage = storage
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?) {
+                            credentials: Credentials?,
+                            storage: StorageManagerType) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials))
+                  network: AlamofireNetwork(credentials: credentials),
+                  storage: storage)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
@@ -88,6 +96,36 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             )
         } catch AFError.explicitlyCancelled {
             throw PointOfSaleItemServiceError.requestCancelled
+        }
+    }
+
+    // TODO:
+    // gh-15326 - Return PagedItems<POSItem> instead.
+    public func providePointOfSaleCoupons() -> [POSItem] {
+        guard let storage = storage else {
+            return []
+        }
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                          ascending: false)
+
+        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
+                                                                matching: predicate,
+                                                                sortedBy: [descriptor])
+
+        do {
+            try resultsController.performFetch()
+            let storeCoupons = resultsController.fetchedObjects
+            return mapCouponsToPOSItems(coupons: storeCoupons)
+        } catch {
+            debugPrint(error)
+            return []
+        }
+    }
+
+    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
+        coupons.compactMap { coupon in
+                .coupon(POSCoupon(id: UUID(), couponID: coupon.couponID))
         }
     }
 

@@ -2,7 +2,11 @@ import SwiftUI
 
 struct WooShippingHazmatCategoryList: View {
     private let categories: [ShippingLabelHazmatCategory] = {
-        ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
+        ShippingLabelHazmatCategory.allCases.filter {
+            /// Filter out items that don't match the list on the web
+            let exceptions: [ShippingLabelHazmatCategory] = [.none, .class4, .class5, .class6]
+            return !exceptions.contains($0)
+        }
     }()
 
     private let selectionHandler: (ShippingLabelHazmatCategory) -> Void

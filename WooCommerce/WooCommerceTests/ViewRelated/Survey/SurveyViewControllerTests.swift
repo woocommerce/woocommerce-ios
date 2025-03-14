@@ -3,11 +3,32 @@ import WebKit
 import XCTest
 import TestKit
 
+@testable import Yosemite
 @testable import WooCommerce
 
 /// Test cases for `SurveyViewController`.
 ///
 final class SurveyViewControllerTests: XCTestCase {
+    private let siteID: Int64 = 123
+    private let testURL = "https://example.com"
+    private let storeUUID = "8363cd24-2501-463f-b21b-649315a0d507"
+
+    override func setUp() {
+        super.setUp()
+
+        let site = Site.fake().copy(siteID: siteID, url: testURL)
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                              isWPCom: true,
+                                                                              defaultSite: site,
+                                                                              defaultStoreUUID: storeUUID))
+        ServiceLocator.setStores(storesManager)
+    }
+
+    override func tearDown() {
+        ServiceLocator.setStores(MockStoresManager(sessionManager: .testingInstance))
+
+        super.tearDown()
+    }
 
     func test_it_loads_the_correct_inApp_feedback_survey() throws {
         // Given
@@ -19,7 +40,11 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios").tagAppVersion(Bundle.main.bundleVersion()))
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback
+            .asURL()
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
     }
 
     func test_it_loads_the_correct_product_feedback_survey() throws {
@@ -32,8 +57,10 @@ final class SurveyViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
         XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
-                        .asURL().tagPlatform("ios")
-                        .tagAppVersion(Bundle.main.bundleVersion()))
+            .asURL()
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
     }
 
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {

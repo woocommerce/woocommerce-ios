@@ -1,7 +1,14 @@
 import Foundation
+import struct Networking.WordPressMedia
+import struct Networking.WordPressMediaMapper
+
+public enum MediaUploadError: Error {
+    case noDataFound
+    case parsingError(Error)
+}
 
 /// Manages the storage of task response data, persisting it in a cache.
-/// Stores data for each task identifier in a separate file in the cache directory.
+/// Stores data for each task metadata in a separate file in the cache directory.
 public final class MediaUploadSessionTaskStorage {
     // MARK: - Properties
 
@@ -16,12 +23,12 @@ public final class MediaUploadSessionTaskStorage {
 
     // MARK: - Public Methods
 
-    /// Appends data for a given task identifier
-    public static func appendData(_ data: Data, forTaskIdentifier identifier: Int) {
+    /// Appends data for a given task metadata
+    public static func appendData(_ data: Data, forTaskMetadata metadata: TaskMetadata) {
         ioQueue.sync {
             createCacheDirectoryIfNeeded()
 
-            let fileURL = fileURL(for: identifier)
+            let fileURL = fileURL(for: metadata)
             if let fileHandle = try? FileHandle(forWritingTo: fileURL) {
                 defer { fileHandle.closeFile() }
                 fileHandle.seekToEndOfFile()
@@ -32,20 +39,20 @@ public final class MediaUploadSessionTaskStorage {
         }
     }
 
-    /// Gets all data for a given task identifier
-    public static func getData(forTaskIdentifier identifier: Int) -> Data? {
+    /// Gets all data for a given task metadata
+    public static func getData(forTaskMetadata metadata: TaskMetadata) -> Data? {
         var data: Data?
         ioQueue.sync {
-            let fileURL = fileURL(for: identifier)
+            let fileURL = fileURL(for: metadata)
             data = try? Data(contentsOf: fileURL)
         }
         return data
     }
 
-    /// Removes data for a given task identifier
-    public static func removeData(forTaskIdentifier identifier: Int) {
+    /// Removes data for a given task metadata
+    public static func removeData(forTaskMetadata metadata: TaskMetadata) {
         ioQueue.sync {
-            let fileURL = fileURL(for: identifier)
+            let fileURL = fileURL(for: metadata)
             try? FileManager.default.removeItem(at: fileURL)
         }
     }
@@ -55,6 +62,47 @@ public final class MediaUploadSessionTaskStorage {
         ioQueue.sync {
             try? FileManager.default.removeItem(at: cacheDirectoryURL)
             createCacheDirectoryIfNeeded()
+        }
+    }
+
+    /// Gets all stored task metadata
+    public static func getAllTaskMetadata() -> [TaskMetadata] {
+        var metadata: [TaskMetadata] = []
+        ioQueue.sync {
+            createCacheDirectoryIfNeeded()
+            let fileManager = FileManager.default
+            guard let files = try? fileManager.contentsOfDirectory(at: cacheDirectoryURL, includingPropertiesForKeys: nil) else {
+                return
+            }
+
+            metadata = files.compactMap { url in
+                guard url.lastPathComponent.starts(with: "task-") else {
+                    return nil
+                }
+                let metadataString = url.lastPathComponent.replacingOccurrences(of: "task-", with: "")
+                    .replacingOccurrences(of: ".dat", with: "")
+                return TaskMetadata.from(string: metadataString)
+            }
+        }
+        return metadata
+    }
+
+    /// Gets all task metadata for a specific site and product
+    public static func getTaskMetadata(forSiteID siteID: Int64, productID: Int64) -> [TaskMetadata] {
+        return getAllTaskMetadata().filter { $0.siteID == siteID && $0.productID == productID }
+    }
+
+    /// Attempts to parse stored data into WordPressMedia
+    public static func parseWordPressMedia(forTaskMetadata metadata: TaskMetadata) -> Result<WordPressMedia, MediaUploadError> {
+        guard let data = getData(forTaskMetadata: metadata) else {
+            return .failure(.noDataFound)
+        }
+
+        do {
+            let media = try WordPressMediaMapper().map(response: data)
+            return .success(media)
+        } catch {
+            return .failure(.parsingError(error))
         }
     }
 
@@ -69,7 +117,29 @@ public final class MediaUploadSessionTaskStorage {
         }
     }
 
-    private static func fileURL(for taskIdentifier: Int) -> URL {
-        return cacheDirectoryURL.appendingPathComponent("task-\(taskIdentifier).dat")
+    private static func fileURL(for metadata: TaskMetadata) -> URL {
+        return cacheDirectoryURL.appendingPathComponent("task-\(metadata.stringValue).dat")
+    }
+}
+
+public struct TaskMetadata: Codable {
+    let uploadID: String
+    let siteID: Int64
+    let productID: Int64
+
+    var stringValue: String {
+        guard let data = try? JSONEncoder().encode(self),
+              let string = String(data: data, encoding: .utf8) else {
+            return UUID().uuidString // Fallback
+        }
+        return string
+    }
+
+    static func from(string: String) -> TaskMetadata? {
+        guard let data = string.data(using: .utf8),
+              let metadata = try? JSONDecoder().decode(TaskMetadata.self, from: data) else {
+            return nil
+        }
+        return metadata
     }
 }

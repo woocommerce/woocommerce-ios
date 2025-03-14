@@ -12,48 +12,51 @@ struct WooShippingHazmatDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Constants.verticalSpacing) {
-                HStack {
-                    Button(Localization.cancel) {
-                        dismiss()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: Constants.verticalSpacing) {
+
+                    Text(Localization.title)
+                        .secondaryTitleStyle()
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Toggle(isOn: $isHazardous) {
+                        Text(Localization.toggleLabel)
                     }
-                    .padding(.top)
+
+                    Button(Localization.selectCategory) {
+                        // TODO: navigate to category list
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .renderedIf(isHazardous)
+
+                    Divider()
+
+                    Text(Localization.detailLine1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(detailLine2AttributedString)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(detailLine3AttributedString)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
                     Spacer()
                 }
-
-                Text(Localization.title)
-                    .secondaryTitleStyle()
-                    .bold()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Toggle(isOn: $isHazardous) {
-                    Text(Localization.toggleLabel)
+                .environment(\.openURL, OpenURLAction { url in
+                    detailURL = url
+                    return .handled
+                })
+                .safariSheet(url: $detailURL)
+                .padding(.horizontal)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(Localization.cancel) {
+                            dismiss()
+                        }
+                    }
                 }
-
-                Button(Localization.selectCategory) {
-                    // TODO: navigate to category list
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .renderedIf(isHazardous)
-
-                Divider()
-
-                Text(Localization.detailLine1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(detailLine2AttributedString)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(detailLine3AttributedString)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Spacer()
+                .toolbarBackground(Color.clear, for: .navigationBar)
             }
-            .environment(\.openURL, OpenURLAction { url in
-                detailURL = url
-                return .handled
-            })
-            .safariSheet(url: $detailURL)
-            .padding(.horizontal)
         }
     }
 }

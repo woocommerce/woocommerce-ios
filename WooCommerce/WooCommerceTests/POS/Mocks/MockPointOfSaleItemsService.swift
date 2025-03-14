@@ -14,4 +14,6 @@ final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     func refreshItems(base: WooCommerce.ItemListBaseItem) async { }
 
     func loadNextItems(base: ItemListBaseItem) async { }
+
+    func toggleItemType() async { }
 }

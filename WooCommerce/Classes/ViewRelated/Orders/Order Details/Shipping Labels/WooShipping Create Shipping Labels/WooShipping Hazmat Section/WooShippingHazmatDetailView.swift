@@ -39,12 +39,14 @@ struct WooShippingHazmatDetailView: View {
                 Divider()
 
                 Text(Localization.detailLine1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(detailLine2AttributedString)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(detailLine3AttributedString)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .environment(\.openURL, OpenURLAction { url in
                 detailURL = url
                 return .handled

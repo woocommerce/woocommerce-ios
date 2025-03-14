@@ -93,9 +93,10 @@ protocol PointOfSaleAggregateModelProtocol {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     @MainActor
-        func toggleItemType() async {
-            await itemsController.toggleItemType()
-        }
+    func toggleItemType() async {
+        await itemsController.toggleItemType()
+    }
+    
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         await itemsController.loadItems(base: base)

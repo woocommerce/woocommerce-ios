@@ -206,9 +206,9 @@ private extension PointOfSaleItemsController {
     @MainActor
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
-            let pagedItems = itemType == .coupons
-                ? try itemProvider.providePointOfSaleCoupons()
-                : try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+            let pagedItems = itemType == .products
+                ? try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+                : try itemProvider.providePointOfSaleCoupons()
 
             let newItems = pagedItems.items
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []

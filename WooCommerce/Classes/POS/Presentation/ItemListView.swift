@@ -1,7 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
-
 import struct Yosemite.POSCoupon
 
 @available(iOS 17.0, *)

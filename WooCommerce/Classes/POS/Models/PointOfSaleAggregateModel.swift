@@ -96,7 +96,7 @@ extension PointOfSaleAggregateModel {
     func toggleItemType() async {
         await itemsController.toggleItemType()
     }
-    
+
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         await itemsController.loadItems(base: base)

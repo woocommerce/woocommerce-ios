@@ -22,7 +22,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var debounceDuration: Double = 1
 
     @Published var containsHazardousMaterials = false
-    
+
     @Published var labelPurchaseErrorNotice: Notice?
 
     let order: Order

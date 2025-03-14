@@ -124,6 +124,7 @@ private extension POSItem {
         case .variableParentProduct:
             return nil
         case .coupon:
+            debugPrint("Not implemented. TODO: Make POSCoupon POSOrderable")
             return nil
         }
     }

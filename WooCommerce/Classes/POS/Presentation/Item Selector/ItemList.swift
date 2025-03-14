@@ -118,13 +118,9 @@ private struct ItemListRow: View {
             })
         case let .coupon(coupon):
             Button(action: {
-                debugPrint("Added to cart!")
+                posModel.addToCart(item)
             }, label: {
-                HStack {
-                    Text("Coupon:")
-                    Text(coupon.id.uuidString)
-                    Text(coupon.couponID.description)
-                }
+                CouponCardView(coupon: coupon)
             })
         }
     }

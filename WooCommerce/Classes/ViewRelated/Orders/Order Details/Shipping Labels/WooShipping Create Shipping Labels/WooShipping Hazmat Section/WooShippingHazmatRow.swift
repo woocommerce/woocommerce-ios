@@ -44,7 +44,7 @@ private extension WooShippingHazmatRow {
     }
 
     enum Localization {
-        static let hazmatLabel = NSLocalizedString("wooShipping.createLabel.hazmatLabel",
+        static let hazmatLabel = NSLocalizedString("wooShipping.createLabel.hazmatRow.label",
                                                    value: "Are you shipping dangerous goods or hazardous materials?",
                                                    comment: "Label for section in shipping label creation to declare when a package contains hazardous materials.")
         static let yes = NSLocalizedString(

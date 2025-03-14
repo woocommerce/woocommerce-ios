@@ -42,7 +42,7 @@ public struct Media: Equatable, GeneratedCopiable, GeneratedFakeable {
     }
 }
 
-extension Media: Decodable {
+extension Media: Codable {
     /// Decodable Initializer.
     ///
     public init(from decoder: Decoder) throws {
@@ -74,6 +74,26 @@ extension Media: Decodable {
                   alt: alt,
                   height: height,
                   width: width)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(mediaID, forKey: .mediaID)
+        try container.encode(date, forKey: .date)
+        try container.encode(fileExtension, forKey: .fileExtension)
+        try container.encode(filename, forKey: .filename)
+        try container.encode(mimeType, forKey: .mimeType)
+        try container.encode(src, forKey: .src)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(alt, forKey: .alt)
+        try container.encodeIfPresent(height, forKey: .height)
+        try container.encodeIfPresent(width, forKey: .width)
+
+        if let thumbnailURL = thumbnailURL {
+            let thumbnails = ["thumbnail": thumbnailURL]
+            try container.encode(thumbnails, forKey: .thumbnails)
+        }
     }
 }
 

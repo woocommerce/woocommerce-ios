@@ -101,9 +101,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
     // TODO:
     // gh-15326 - Return PagedItems<POSItem> instead.
-    public func providePointOfSaleCoupons() -> [POSItem] {
+    public func providePointOfSaleCoupons() -> PagedItems<POSItem> {
         guard let storage = storage else {
-            return []
+            // TODO: Error handling
+            return .init(items: [], hasMorePages: false)
         }
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
@@ -116,10 +117,12 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         do {
             try resultsController.performFetch()
             let storeCoupons = resultsController.fetchedObjects
-            return mapCouponsToPOSItems(coupons: storeCoupons)
+            let posCoupons = mapCouponsToPOSItems(coupons: storeCoupons)
+            return .init(items: posCoupons, hasMorePages: false)
         } catch {
+            // TODO: Error handling
             debugPrint(error)
-            return []
+            return .init(items: [], hasMorePages: false)
         }
     }
 

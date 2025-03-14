@@ -2,6 +2,8 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
+import struct Yosemite.POSCoupon
+
 @available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -15,6 +17,11 @@ struct ItemListView: View {
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
+
+    private var shouldShowCoupons: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+    @State var shouldReload: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -33,6 +40,27 @@ struct ItemListView: View {
     var content: some View {
         VStack {
             headerView
+
+            HStack {
+                Button(action: {
+                    shouldReload.toggle()
+                    Task {
+                        await posModel.toggleItemType()
+                    }
+                }, label: {
+                    Text("Products")
+                })
+                Button(action: {
+                    shouldReload.toggle()
+                    Task {
+                        await posModel.toggleItemType()
+                    }
+                }, label: {
+                    Text("Coupons")
+                })
+            }
+            .renderedIf(shouldShowCoupons)
+
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),

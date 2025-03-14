@@ -116,8 +116,16 @@ private struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
-        case .coupon:
-            EmptyView()
+        case let .coupon(coupon):
+            Button(action: {
+                debugPrint("Added to cart!")
+            }, label: {
+                HStack {
+                    Text("Coupon:")
+                    Text(coupon.id.uuidString)
+                    Text(coupon.couponID.description)
+                }
+            })
         }
     }
 }

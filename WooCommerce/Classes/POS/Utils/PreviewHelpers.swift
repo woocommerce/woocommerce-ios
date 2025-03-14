@@ -57,8 +57,8 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           formattedPrice: "$1.00")
     }
 
-    func providePointOfSaleCoupons() -> [POSItem] {
-        []
+    func providePointOfSaleCoupons() -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: true)
     }
 }
 
@@ -90,6 +90,10 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
 
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
+    }
+
+    func toggleItemType() async {
+        //
     }
 }
 

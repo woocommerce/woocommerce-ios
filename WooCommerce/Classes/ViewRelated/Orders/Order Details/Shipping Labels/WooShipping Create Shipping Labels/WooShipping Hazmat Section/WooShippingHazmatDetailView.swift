@@ -39,8 +39,8 @@ struct WooShippingHazmatDetailView: View {
                 Divider()
 
                 Text(Localization.detailLine1)
-                AttributedText(detailLine2AttributedString, enablesLinkUnderline: true)
-                AttributedText(detailLine3AttributedString, enablesLinkUnderline: true)
+                Text(detailLine2AttributedString)
+                Text(detailLine3AttributedString)
 
                 Spacer()
             }
@@ -56,34 +56,49 @@ struct WooShippingHazmatDetailView: View {
 }
 
 private extension WooShippingHazmatDetailView {
-    var detailLine2AttributedString: NSAttributedString {
+    var detailLine2AttributedString: AttributedString {
         let content = String.localizedStringWithFormat(Localization.detailLine2, Constants.hazmatURL, Localization.searchTool)
+        var attributedText = AttributedString(content)
+        attributedText.font = .body
+        attributedText.foregroundColor = Color(.text)
 
-        let mutableAttributedText = NSMutableAttributedString(
-            string: content,
-            attributes: [.font: UIFont.body,
-                         .foregroundColor: UIColor.text]
-        )
+        if let range1 = attributedText.range(of: Constants.hazmatURL),
+           let url = URL(string: Constants.hazmatURL) {
+            var linkContainer = AttributeContainer()
+                .link(url)
+                .foregroundColor(Color.accentColor)
+            linkContainer.underlineStyle = .single
+            attributedText[range1].mergeAttributes(linkContainer)
+        }
 
-        mutableAttributedText.setAsLink(textToFind: Constants.hazmatURL,
-                                        linkURL: Constants.hazmatURL)
-        mutableAttributedText.setAsLink(textToFind: Localization.searchTool,
-                                        linkURL: Constants.searchToolURL)
-        return mutableAttributedText
+        if let range2 = attributedText.range(of: Localization.searchTool),
+           let url = URL(string: Constants.searchToolURL) {
+            var linkContainer = AttributeContainer()
+                .link(url)
+                .foregroundColor(Color.accentColor)
+            linkContainer.underlineStyle = .single
+            attributedText[range2].mergeAttributes(linkContainer)
+        }
+        return attributedText
     }
 
-    var detailLine3AttributedString: NSAttributedString {
+    var detailLine3AttributedString: AttributedString {
         let content = String.localizedStringWithFormat(Localization.detailLine3, Constants.DHLExpressName)
 
-        let mutableAttributedText = NSMutableAttributedString(
-            string: content,
-            attributes: [.font: UIFont.body,
-                         .foregroundColor: UIColor.text]
-        )
+        var attributedText = AttributedString(content)
+        attributedText.font = .body
+        attributedText.foregroundColor = Color(.text)
 
-        mutableAttributedText.setAsLink(textToFind: Constants.DHLExpressName,
-                                        linkURL: Constants.DHLExpressURL)
-        return mutableAttributedText
+        if let range = attributedText.range(of: Constants.DHLExpressName),
+           let url = URL(string: Constants.DHLExpressURL) {
+            var linkContainer = AttributeContainer()
+                .link(url)
+                .foregroundColor(Color.accentColor)
+            linkContainer.underlineStyle = .single
+            attributedText[range].mergeAttributes(linkContainer)
+        }
+
+        return attributedText
     }
 }
 

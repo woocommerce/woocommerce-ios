@@ -22,6 +22,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var debounceDuration: Double = 1
 
     @Published var containsHazardousMaterials = false
+    @Published var hazmatCategory: ShippingLabelHazmatCategory?
 
     @Published var labelPurchaseErrorNotice: Notice?
 

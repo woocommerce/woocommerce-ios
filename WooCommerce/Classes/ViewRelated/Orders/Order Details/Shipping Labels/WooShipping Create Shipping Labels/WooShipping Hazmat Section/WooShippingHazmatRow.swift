@@ -6,10 +6,15 @@ struct WooShippingHazmatRow: View {
 
     @Binding private var isHazardous: Bool
 
+    @Binding private var selectedCategory: ShippingLabelHazmatCategory?
+
     @State private var isShowingDetailView = false
 
-    init(isHazardous: Binding<Bool>, enabled: Bool) {
+    init(isHazardous: Binding<Bool>,
+         selectedCategory: Binding<ShippingLabelHazmatCategory?>,
+         enabled: Bool) {
         self._isHazardous = isHazardous
+        self._selectedCategory = selectedCategory
         self.enabled = enabled
     }
 
@@ -32,7 +37,8 @@ struct WooShippingHazmatRow: View {
         .buttonStyle(.plain)
         .disabled(!enabled)
         .sheet(isPresented: $isShowingDetailView) {
-            WooShippingHazmatDetailView(isHazardous: $isHazardous)
+            WooShippingHazmatDetailView(isHazardous: $isHazardous,
+                                        selectedCategory: $selectedCategory)
         }
     }
 }
@@ -61,6 +67,8 @@ private extension WooShippingHazmatRow {
 }
 
 #Preview {
-    WooShippingHazmatRow(isHazardous: .constant(false), enabled: true)
+    WooShippingHazmatRow(isHazardous: .constant(false),
+                         selectedCategory: .constant(nil),
+                         enabled: true)
         .padding()
 }

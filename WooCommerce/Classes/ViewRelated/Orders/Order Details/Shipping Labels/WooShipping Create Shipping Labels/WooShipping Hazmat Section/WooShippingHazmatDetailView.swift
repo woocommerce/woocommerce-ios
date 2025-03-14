@@ -5,10 +5,15 @@ struct WooShippingHazmatDetailView: View {
 
     @Binding private var isHazardous: Bool
 
+    @Binding private var selectedCategory: ShippingLabelHazmatCategory?
+
     @State private var detailURL: URL?
 
-    init(isHazardous: Binding<Bool>) {
+    @State private var isShowingCategoryList = false
+
+    init(isHazardous: Binding<Bool>, selectedCategory: Binding<ShippingLabelHazmatCategory?>) {
         self._isHazardous = isHazardous
+        self._selectedCategory = selectedCategory
     }
 
     var body: some View {
@@ -26,7 +31,7 @@ struct WooShippingHazmatDetailView: View {
                     }
 
                     Button(Localization.selectCategory) {
-                        // TODO: navigate to category list
+                        isShowingCategoryList = true
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .renderedIf(isHazardous)
@@ -56,6 +61,9 @@ struct WooShippingHazmatDetailView: View {
                     }
                 }
                 .toolbarBackground(Color.clear, for: .navigationBar)
+            }
+            .sheet(isPresented: $isShowingCategoryList) {
+                WooShippingHazmatCategoryList(selectedCategory: $selectedCategory)
             }
         }
     }
@@ -166,5 +174,6 @@ private extension WooShippingHazmatDetailView {
 }
 
 #Preview {
-    WooShippingHazmatDetailView(isHazardous: .constant(true))
+    WooShippingHazmatDetailView(isHazardous: .constant(true),
+                                selectedCategory: .constant(.airEligibleEthanol))
 }

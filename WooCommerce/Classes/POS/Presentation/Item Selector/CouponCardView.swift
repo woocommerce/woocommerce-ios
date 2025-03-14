@@ -1,9 +1,9 @@
 import SwiftUI
 import struct Yosemite.POSCoupon
- 
+
 struct CouponCardView: View {
     private let coupon: POSCoupon
-    
+
     init(coupon: POSCoupon) {
         self.coupon = coupon
     }

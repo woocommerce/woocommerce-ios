@@ -57,7 +57,7 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           formattedPrice: "$1.00")
     }
 
-    func providePointOfSaleCoupons() -> PagedItems<POSItem> {
+    func providePointOfSaleCoupons() throws -> PagedItems<POSItem> {
         .init(items: [], hasMorePages: true)
     }
 }

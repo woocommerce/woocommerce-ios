@@ -12,6 +12,7 @@ import Storage
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
     case requestCancelled
+    case storageFailure
     case unknown
 }
 
@@ -99,12 +100,9 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
     }
 
-    // TODO:
-    // gh-15326 - Return PagedItems<POSItem> instead.
-    public func providePointOfSaleCoupons() -> PagedItems<POSItem> {
+    public func providePointOfSaleCoupons() throws -> PagedItems<POSItem> {
         guard let storage = storage else {
-            // TODO: Error handling
-            return .init(items: [], hasMorePages: false)
+            throw PointOfSaleItemServiceError.storageFailure
         }
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
@@ -114,16 +112,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                                 matching: predicate,
                                                                 sortedBy: [descriptor])
 
-        do {
-            try resultsController.performFetch()
-            let storeCoupons = resultsController.fetchedObjects
-            let posCoupons = mapCouponsToPOSItems(coupons: storeCoupons)
-            return .init(items: posCoupons, hasMorePages: false)
-        } catch {
-            // TODO: Error handling
-            debugPrint(error)
-            return .init(items: [], hasMorePages: false)
-        }
+        try resultsController.performFetch()
+        let storeCoupons = resultsController.fetchedObjects
+        let posCoupons = mapCouponsToPOSItems(coupons: storeCoupons)
+        return .init(items: posCoupons, hasMorePages: false)
     }
 
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {

@@ -13,7 +13,17 @@ struct WooShippingHazmatCategoryList: View {
 
     @State private var selectedItem: ShippingLabelHazmatCategory?
 
+    @State private var query: String = ""
+
     @Environment(\.dismiss) private var dismiss
+
+    var filteredCategories: [ShippingLabelHazmatCategory] {
+        if query.isEmpty {
+            return categories
+        } else {
+            return categories.filter { $0.localizedName.lowercased().contains(query.lowercased()) }
+        }
+    }
 
     init(selectedItem: ShippingLabelHazmatCategory? = nil,
          selectionHandler: @escaping (ShippingLabelHazmatCategory) -> Void) {
@@ -23,7 +33,7 @@ struct WooShippingHazmatCategoryList: View {
 
     var body: some View {
         NavigationStack {
-            List(categories, id: \.self) { category in
+            List(filteredCategories, id: \.self) { category in
                 HStack {
                     Image(systemName: "checkmark")
                         .foregroundStyle(Color.accentColor)
@@ -52,6 +62,7 @@ struct WooShippingHazmatCategoryList: View {
                     }
                 }
             }
+            .searchable(text: $query)
         }
     }
 }

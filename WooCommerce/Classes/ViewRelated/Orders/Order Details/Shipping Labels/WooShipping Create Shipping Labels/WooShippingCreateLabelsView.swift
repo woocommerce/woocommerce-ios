@@ -106,7 +106,8 @@ private extension WooShippingCreateLabelsView {
 
                 WooShippingItems(viewModel: viewModel.items)
 
-                WooShippingHazmat(enabled: !viewModel.canViewLabel)
+                WooShippingHazmatRow(isHazardous: $viewModel.containsHazardousMaterials,
+                                     enabled: !viewModel.canViewLabel)
 
                 WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                       customsFormViewModel: viewModel.customsFormViewModel)

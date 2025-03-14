@@ -27,7 +27,6 @@ public final class MediaUploadSessionManager: NSObject {
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
-    private var taskResponseData: [Int: Data] = [:]
     private var uploadCompletionClosures: [String: (Result<Media, Error>) -> Void] = [:]
     private var backgroundCompletionHandler: (() -> Void)?
     weak var delegate: MediaUploadSessionManagerDelegate?
@@ -37,6 +36,21 @@ public final class MediaUploadSessionManager: NSObject {
 
     // Storage to keep track of all uploads
     private let statusStorage: ProductImageStatusStorage
+
+    // Keys for URL request storage
+    private struct StorageKeys {
+        static func updateProductID(uploadID: String) -> String {
+            return "update_product_id_\(uploadID)"
+        }
+
+        static func updateProductImages(uploadID: String) -> String {
+            return "update_product_images_\(uploadID)"
+        }
+
+        static func updateVariationImage(uploadID: String) -> String {
+            return "update_variation_image_\(uploadID)"
+        }
+    }
 
     public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload",
                 statusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
@@ -62,7 +76,13 @@ public final class MediaUploadSessionManager: NSObject {
                             productID: Int64,
                             asset: ProductImageAssetType? = nil,
                             completion: @escaping (Result<Media, Error>) -> Void) {
+
         uploadCompletionClosures[uploadID] = completion
+
+        // Save the request templates to storage for later use in background tasks
+        URLRequestStorage.saveRequest(updateProductIDRequest, forKey: StorageKeys.updateProductID(uploadID: uploadID))
+        URLRequestStorage.saveRequest(updateProductImagesRequest, forKey: StorageKeys.updateProductImages(uploadID: uploadID))
+        URLRequestStorage.saveRequest(updateProductVariationImageRequest, forKey: StorageKeys.updateVariationImage(uploadID: uploadID))
 
         // Extract authentication headers if present
         var authHeaders: [String: String]?
@@ -118,13 +138,19 @@ public final class MediaUploadSessionManager: NSObject {
     ///   - siteID: The site ID
     ///   - productID: The product ID to associate with the media
     ///   - mediaID: The uploaded media ID
-    ///   - request: The request template to use for updating the product ID
+    ///   - uploadID: The original upload ID to retrieve the stored request
     ///
-    func updateProductID(siteID: Int64, productID: Int64, mediaID: Int64, request: URLRequest) {
+    func updateProductID(siteID: Int64, productID: Int64, mediaID: Int64, uploadID: String) {
         // Generate a unique identifier for this task with structured data that can be parsed later
         let taskID = "updateProductID-\(siteID)-\(productID)-\(mediaID)"
 
         DDLogDebug("MediaUploadSessionManager-[UpdateProductID]- Starting update for media \(mediaID) with product \(productID)")
+
+        // Retrieve request from storage
+        guard let request = URLRequestStorage.getRequest(forKey: StorageKeys.updateProductID(uploadID: uploadID)) else {
+            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductID]- Failed to retrieve request from storage")
+            return
+        }
 
         // Extract authentication headers if present
         var authHeaders: [String: String]?
@@ -160,13 +186,19 @@ public final class MediaUploadSessionManager: NSObject {
     ///   - siteID: The site ID
     ///   - productID: The product ID to update
     ///   - medias: Array of media to connect to the product
-    ///   - request: The request template to use for updating the product images
+    ///   - uploadID: The original upload ID to retrieve the stored request
     ///
-    func updateProductImages(siteID: Int64, productID: Int64, medias: [Media], request: URLRequest) {
+    func updateProductImages(siteID: Int64, productID: Int64, medias: [Media], uploadID: String) {
         // Generate a unique identifier for this task
         let taskID = "updateProductImages-\(siteID)-\(productID)"
 
         DDLogDebug("MediaUploadSessionManager-[UpdateProductImages]- Starting update for product \(productID) with \(medias.count) images")
+
+        // Retrieve request from storage
+        guard let request = URLRequestStorage.getRequest(forKey: StorageKeys.updateProductImages(uploadID: uploadID)) else {
+            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductImages]- Failed to retrieve request from storage")
+            return
+        }
 
         // Extract authentication headers if present
         var authHeaders: [String: String]?
@@ -216,13 +248,19 @@ public final class MediaUploadSessionManager: NSObject {
     ///   - productID: The product ID that owns the variation
     ///   - variationID: The variation ID to update
     ///   - media: The media to connect to the variation
-    ///   - request: The request template to use for updating the variation image
+    ///   - uploadID: The original upload ID to retrieve the stored request
     ///
-    func updateProductVariationImage(siteID: Int64, productID: Int64, variationID: Int64, media: Media, request: URLRequest) {
+    func updateProductVariationImage(siteID: Int64, productID: Int64, variationID: Int64, media: Media, uploadID: String) {
         // Generate a unique identifier for this task
         let taskID = "updateVariationImage-\(siteID)-\(productID)-\(variationID)"
 
         DDLogDebug("MediaUploadSessionManager-[UpdateProductVariationImage]- Starting update for variation \(variationID) with image from media \(media.mediaID)")
+
+        // Retrieve request from storage
+        guard let request = URLRequestStorage.getRequest(forKey: StorageKeys.updateVariationImage(uploadID: uploadID)) else {
+            DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Failed to retrieve request from storage")
+            return
+        }
 
         // Extract authentication headers if present
         var authHeaders: [String: String]?
@@ -271,6 +309,17 @@ public final class MediaUploadSessionManager: NSObject {
         } catch {
             DDLogError("⛔️ MediaUploadSessionManager-[UpdateProductVariationImage]- Failed to encode request body: \(error)")
         }
+    }
+
+    /// Clean up stored requests when they're no longer needed
+    ///
+    /// - Parameter uploadID: The upload ID associated with the stored requests
+    ///
+    func cleanupStoredRequests(for uploadID: String) {
+        URLRequestStorage.removeRequest(forKey: StorageKeys.updateProductID(uploadID: uploadID))
+        URLRequestStorage.removeRequest(forKey: StorageKeys.updateProductImages(uploadID: uploadID))
+        URLRequestStorage.removeRequest(forKey: StorageKeys.updateVariationImage(uploadID: uploadID))
+        DDLogDebug("MediaUploadSessionManager-[CleanupRequests]- Removed stored requests for upload ID: \(uploadID)")
     }
 
     public func handleBackgroundSessionCompletion(_ completionHandler: @escaping () -> Void) {
@@ -337,6 +386,32 @@ private extension MediaUploadSessionManager {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             DDLogDebug("MediaUploadSessionManager-[Completion]- Notifying completion for task (\(uploadID)) with result: \(result)")
+            
+            // --------------------------
+            // If upload was successful, schedule updateProductImages task
+            if case .success(let media) = result {
+                // Find the corresponding upload status to get the siteID and productID
+                let uploadingStatuses = self.statusStorage.getAllStatuses().filter { status in
+                    if case .uploading = status {
+                        return true
+                    }
+                    return false
+                }
+                
+                if let uploadStatus = uploadingStatuses.first(where: { $0.asset != nil }),
+                   case let .product(productID) = uploadStatus.productOrVariationID {
+                    // We only schedule updateProductImages for product uploads (not variations)
+                    DDLogDebug("MediaUploadSessionManager-[ScheduleUpdate]- Scheduling updateProductImages for product \(productID) with media \(media.mediaID)")
+                    self.updateProductImages(
+                        siteID: uploadStatus.siteID,
+                        productID: productID,
+                        medias: [media], 
+                        uploadID: uploadID
+                    )
+                }
+            }
+            // --------------------------
+            
             if let completion = self.uploadCompletionClosures[uploadID] {
                 completion(result)
                 self.uploadCompletionClosures.removeValue(forKey: uploadID)
@@ -350,11 +425,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession,
                            dataTask: URLSessionDataTask,
                            didReceive data: Data) {
-        if let existingData = taskResponseData[dataTask.taskIdentifier] {
-            taskResponseData[dataTask.taskIdentifier] = existingData + data
-        } else {
-            taskResponseData[dataTask.taskIdentifier] = data
-        }
+        MediaUploadSessionTaskStorage.appendData(data, forTaskIdentifier: dataTask.taskIdentifier)
     }
 
     public func urlSession(_ session: URLSession,
@@ -371,7 +442,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         let authHeaders: [String: String]? = components.count > 1 ? decodeHeaders(components[1]) : nil
 
         defer {
-            taskResponseData.removeValue(forKey: task.taskIdentifier)
+            MediaUploadSessionTaskStorage.removeData(forTaskIdentifier: task.taskIdentifier)
         }
 
         if let error = error {
@@ -397,7 +468,7 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
             return
         }
 
-        guard let data = taskResponseData[task.taskIdentifier] else {
+        guard let data = MediaUploadSessionTaskStorage.getData(forTaskIdentifier: task.taskIdentifier) else {
             DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
                        " missing response data for task with identifier \(task.taskIdentifier)")
             handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)

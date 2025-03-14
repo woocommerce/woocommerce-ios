@@ -2992,6 +2992,9 @@
 		EE66BB102B29D24600518DAF /* DefaultThemeInstallerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */; };
 		EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */; };
 		EE6C6B6E2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */; };
+		EE7E75A82D83EB1F00E6FF5B /* WooShippingSplitShipmentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */; };
+		EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */; };
+		EE7E75AC2D84080D00E6FF5B /* WooShippingSplitShipmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
 		EE8A302B2B70B63E001D7C66 /* MockImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A302A2B70B63E001D7C66 /* MockImageService.swift */; };
 		EE8A30452B74948C001D7C66 /* OrderAttributionInfo+Origin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */; };
@@ -6193,6 +6196,9 @@
 		EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultThemeInstallerTests.swift; sourceTree = "<group>"; };
 		EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThemeInstaller.swift; sourceTree = "<group>"; };
 		EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSourceTests.swift; sourceTree = "<group>"; };
+		EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsRow.swift; sourceTree = "<group>"; };
+		EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsDetailView.swift; sourceTree = "<group>"; };
+		EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsViewModel.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
 		EE8A302A2B70B63E001D7C66 /* MockImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageService.swift; sourceTree = "<group>"; };
 		EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+Origin.swift"; sourceTree = "<group>"; };
@@ -12457,6 +12463,7 @@
 		CEAB739A2C81E3A000A7EB39 /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */,
 				B90DD08C2D12FA6600EFC06A /* WooShipping Customs */,
 				CE6E11092C91DA3D00563DD4 /* WooShipping Items Section */,
 				CE7B4A592CA1BF7800F764EB /* WooShipping Hazmat Section */,
@@ -13961,6 +13968,16 @@
 				EE4C45662C352D7F001A3D94 /* ToneOfVoiceView.swift */,
 			);
 			path = AIToneVoice;
+			sourceTree = "<group>";
+		};
+		EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */ = {
+			isa = PBXGroup;
+			children = (
+				EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */,
+				EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */,
+				EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */,
+			);
+			path = "WooShipping Split Shipments";
 			sourceTree = "<group>";
 		};
 		EE8B420A2BF9A1E40077C4E7 /* Orders */ = {
@@ -16514,6 +16531,7 @@
 				26E0AE13263359F900A5EB3B /* View+Conditionals.swift in Sources */,
 				68F151E12C0DA7910082AEC8 /* CartItem.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
+				EE7E75A82D83EB1F00E6FF5B /* WooShippingSplitShipmentsRow.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
 				20762BA52C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift in Sources */,
 				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,
@@ -16624,6 +16642,7 @@
 				025FDD3223717D2900824006 /* EditorFactory.swift in Sources */,
 				45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */,
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
+				EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsDetailView.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
 				DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,
@@ -17216,6 +17235,7 @@
 				02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */,
 				B9CCE5FC2C8753A000905A91 /* ProductBarcodeScannerProvider.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
+				EE7E75AC2D84080D00E6FF5B /* WooShippingSplitShipmentsViewModel.swift in Sources */,
 				D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */,
 				B6E7DB64293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift in Sources */,
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,

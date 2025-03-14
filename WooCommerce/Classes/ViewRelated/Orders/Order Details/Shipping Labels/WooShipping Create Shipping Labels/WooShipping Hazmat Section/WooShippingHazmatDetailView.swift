@@ -25,6 +25,7 @@ struct WooShippingHazmatDetailView: View {
                 Text(Localization.title)
                     .secondaryTitleStyle()
                     .bold()
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 Toggle(isOn: $isHazardous) {
                     Text(Localization.toggleLabel)

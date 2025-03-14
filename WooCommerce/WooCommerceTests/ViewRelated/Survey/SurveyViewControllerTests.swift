@@ -40,7 +40,8 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL()
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback
+            .asURL()
             .tagPlatform("ios")
             .tagAppVersion(Bundle.main.bundleVersion())
             .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
@@ -56,9 +57,10 @@ final class SurveyViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
         XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
-                        .asURL()            .tagPlatform("ios")
-                        .tagAppVersion(Bundle.main.bundleVersion())
-                        .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
+            .asURL()
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
     }
 
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {

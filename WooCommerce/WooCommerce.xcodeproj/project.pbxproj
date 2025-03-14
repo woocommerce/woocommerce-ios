@@ -2794,6 +2794,7 @@
 		DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */; };
 		DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */; };
 		DEC17AE02D82C513005A6E6D /* WooShippingHazmatDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC17ADF2D82C513005A6E6D /* WooShippingHazmatDetailView.swift */; };
+		DEC1899A2D84197C005A6E6D /* WooShippingHazmatCategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC189992D84197C005A6E6D /* WooShippingHazmatCategoryList.swift */; };
 		DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */; };
 		DEC2962126BD1627005A056B /* ShippingLabelCustomsFormList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */; };
 		DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962226BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift */; };
@@ -5996,6 +5997,7 @@
 		DEC0293929C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordAuthorizationViewModel.swift; sourceTree = "<group>"; };
 		DEC1508127F450AC00F4487C /* CouponAllowedEmails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmails.swift; sourceTree = "<group>"; };
 		DEC17ADF2D82C513005A6E6D /* WooShippingHazmatDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingHazmatDetailView.swift; sourceTree = "<group>"; };
+		DEC189992D84197C005A6E6D /* WooShippingHazmatCategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingHazmatCategoryList.swift; sourceTree = "<group>"; };
 		DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModel.swift; sourceTree = "<group>"; };
 		DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormList.swift; sourceTree = "<group>"; };
 		DEC2962226BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInput.swift; sourceTree = "<group>"; };
@@ -12341,6 +12343,7 @@
 			children = (
 				CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmatRow.swift */,
 				DEC17ADF2D82C513005A6E6D /* WooShippingHazmatDetailView.swift */,
+				DEC189992D84197C005A6E6D /* WooShippingHazmatCategoryList.swift */,
 			);
 			path = "WooShipping Hazmat Section";
 			sourceTree = "<group>";
@@ -16409,6 +16412,7 @@
 				B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */,
 				268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */,
 				DE7E5E862B4D11D7002E28D2 /* BlazeTargetDevicePickerViewModel.swift in Sources */,
+				DEC1899A2D84197C005A6E6D /* WooShippingHazmatCategoryList.swift in Sources */,
 				CE315DC62CC93CCE00A06748 /* WooShippingCarrier.swift in Sources */,
 				4535EE7E281BE04A004212B4 /* CouponAmountInputFormatter.swift in Sources */,
 				209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */,

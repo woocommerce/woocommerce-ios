@@ -119,6 +119,8 @@ private extension POSItem {
             return CartItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
         case .variableParentProduct:
             return nil
+        case .coupon:
+            return nil
         }
     }
 }

@@ -56,6 +56,10 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
+
+    func providePointOfSaleCoupons() -> [POSItem] {
+        []
+    }
 }
 
 @available(iOS 17.0, *)

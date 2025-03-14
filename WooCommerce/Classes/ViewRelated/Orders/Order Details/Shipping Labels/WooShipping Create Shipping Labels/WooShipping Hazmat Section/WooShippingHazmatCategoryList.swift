@@ -5,12 +5,16 @@ struct WooShippingHazmatCategoryList: View {
         ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
     }()
 
-    @Binding private var selectedItem: ShippingLabelHazmatCategory?
+    private let selectionHandler: (ShippingLabelHazmatCategory) -> Void
+
+    @State private var selectedItem: ShippingLabelHazmatCategory?
 
     @Environment(\.dismiss) private var dismiss
 
-    init(selectedCategory: Binding<ShippingLabelHazmatCategory?>) {
-        self._selectedItem = selectedCategory
+    init(selectedItem: ShippingLabelHazmatCategory? = nil,
+         selectionHandler: @escaping (ShippingLabelHazmatCategory) -> Void) {
+        self.selectedItem = selectedItem
+        self.selectionHandler = selectionHandler
     }
 
     var body: some View {
@@ -31,6 +35,7 @@ struct WooShippingHazmatCategoryList: View {
                 .contentShape(Rectangle())
                 .onTapGesture {
                     selectedItem = category
+                    selectionHandler(category)
                 }
             }
             .listStyle(.plain)
@@ -63,5 +68,5 @@ private extension WooShippingHazmatCategoryList {
 }
 
 #Preview {
-    WooShippingHazmatCategoryList(selectedCategory: .constant(nil))
+    WooShippingHazmatCategoryList(selectionHandler: { _ in })
 }

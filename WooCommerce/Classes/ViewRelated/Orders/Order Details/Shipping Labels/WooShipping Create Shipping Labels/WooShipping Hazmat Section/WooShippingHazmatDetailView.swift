@@ -3,17 +3,17 @@ import SwiftUI
 struct WooShippingHazmatDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @Binding private var isHazardous: Bool
+    @State private var isHazardous: Bool
 
-    @Binding private var selectedCategory: ShippingLabelHazmatCategory?
+    @State private var selectedCategory: ShippingLabelHazmatCategory?
 
     @State private var detailURL: URL?
 
     @State private var isShowingCategoryList = false
 
-    init(isHazardous: Binding<Bool>, selectedCategory: Binding<ShippingLabelHazmatCategory?>) {
-        self._isHazardous = isHazardous
-        self._selectedCategory = selectedCategory
+    init(isHazardous: Bool, selectedCategory: ShippingLabelHazmatCategory?) {
+        self.isHazardous = isHazardous
+        self.selectedCategory = selectedCategory
     }
 
     var body: some View {
@@ -63,7 +63,10 @@ struct WooShippingHazmatDetailView: View {
                 .toolbarBackground(Color.clear, for: .navigationBar)
             }
             .sheet(isPresented: $isShowingCategoryList) {
-                WooShippingHazmatCategoryList(selectedCategory: $selectedCategory)
+                WooShippingHazmatCategoryList(selectedItem: selectedCategory,
+                                              selectionHandler: { category in
+                    // TODO: dismiss view
+                })
             }
         }
     }
@@ -174,6 +177,6 @@ private extension WooShippingHazmatDetailView {
 }
 
 #Preview {
-    WooShippingHazmatDetailView(isHazardous: .constant(true),
-                                selectedCategory: .constant(.airEligibleEthanol))
+    WooShippingHazmatDetailView(isHazardous: true,
+                                selectedCategory: .airEligibleEthanol)
 }

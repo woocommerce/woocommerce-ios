@@ -37,8 +37,8 @@ struct WooShippingHazmatRow: View {
         .buttonStyle(.plain)
         .disabled(!enabled)
         .sheet(isPresented: $isShowingDetailView) {
-            WooShippingHazmatDetailView(isHazardous: $isHazardous,
-                                        selectedCategory: $selectedCategory)
+            WooShippingHazmatDetailView(isHazardous: isHazardous,
+                                        selectedCategory: selectedCategory)
         }
     }
 }

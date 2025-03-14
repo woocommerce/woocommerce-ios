@@ -21,7 +21,6 @@ struct ItemListView: View {
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
-    @State var shouldReload: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -43,18 +42,12 @@ struct ItemListView: View {
 
             HStack {
                 Button(action: {
-                    shouldReload.toggle()
-                    Task {
-                        await posModel.toggleItemType()
-                    }
+                    toggleItemType()
                 }, label: {
                     Text("Products")
                 })
                 Button(action: {
-                    shouldReload.toggle()
-                    Task {
-                        await posModel.toggleItemType()
-                    }
+                    toggleItemType()
                 }, label: {
                     Text("Coupons")
                 })
@@ -166,6 +159,12 @@ private extension ItemListView {
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+    }
+
+    func toggleItemType() {
+        Task {
+            await posModel.toggleItemType()
+        }
     }
 }
 

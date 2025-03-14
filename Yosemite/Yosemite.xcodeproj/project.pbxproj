@@ -237,6 +237,8 @@
 		4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */; };
 		4591A6B4274BB29000F51DCD /* StoredOrderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */; };
 		45A3FA032D8226D4004E8D54 /* MediaUploadSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */; };
+		45A3FA052D8361A7004E8D54 /* MediaUploadSessionTaskStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A3FA042D83619C004E8D54 /* MediaUploadSessionTaskStorage.swift */; };
+		45A3FA072D8374DB004E8D54 /* URLRequestStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A3FA062D8374D1004E8D54 /* URLRequestStorage.swift */; };
 		45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */; };
 		45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */; };
 		45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */; };
@@ -778,6 +780,8 @@
 		4591A6AF274BB23000F51DCD /* OrderDateRangeFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderDateRangeFilter.swift; sourceTree = "<group>"; };
 		4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredOrderSettings.swift; sourceTree = "<group>"; };
 		45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUploadSessionManager.swift; sourceTree = "<group>"; };
+		45A3FA042D83619C004E8D54 /* MediaUploadSessionTaskStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUploadSessionTaskStorage.swift; sourceTree = "<group>"; };
+		45A3FA062D8374D1004E8D54 /* URLRequestStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestStorage.swift; sourceTree = "<group>"; };
 		45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagAction.swift; sourceTree = "<group>"; };
 		45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStore.swift; sourceTree = "<group>"; };
 		45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStoreTests.swift; sourceTree = "<group>"; };
@@ -1407,6 +1411,8 @@
 			isa = PBXGroup;
 			children = (
 				45A3FA012D8224CA004E8D54 /* MediaUploadSessionManager.swift */,
+				45A3FA042D83619C004E8D54 /* MediaUploadSessionTaskStorage.swift */,
+				45A3FA062D8374D1004E8D54 /* URLRequestStorage.swift */,
 			);
 			path = ProductImageInBackground;
 			sourceTree = "<group>";
@@ -2528,6 +2534,7 @@
 				021940E6291E8AD80090354E /* SiteStore.swift in Sources */,
 				749375002249605E007D85D1 /* ProductAction.swift in Sources */,
 				D831E2E4230E3524000037D0 /* ProductReviewAction.swift in Sources */,
+				45A3FA052D8361A7004E8D54 /* MediaUploadSessionTaskStorage.swift in Sources */,
 				02393065291A018600B2632F /* DomainAction.swift in Sources */,
 				D831E2E6230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift in Sources */,
 				DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */,
@@ -2570,6 +2577,7 @@
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				EE3D1E922B8EACB80016B132 /* BlazeCampaignListItem+ReadOnlyConvertible.swift in Sources */,
 				DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */,
+				45A3FA072D8374DB004E8D54 /* URLRequestStorage.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,
 				68EA25382C0876DF00C49AE2 /* PointOfSaleItemService.swift in Sources */,

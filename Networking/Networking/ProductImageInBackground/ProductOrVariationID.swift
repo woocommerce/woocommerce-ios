@@ -13,6 +13,10 @@ public enum ProductOrVariationID: Equatable, Hashable, Codable {
         }
     }
 
+    public var isLocalID: Bool {
+        return id == 0
+    }
+
     private enum CodingKeys: String, CodingKey {
         case type
         case id

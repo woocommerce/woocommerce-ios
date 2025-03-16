@@ -206,13 +206,35 @@ class ProductImageStatusStorageTests: XCTestCase {
         storage.addStatus(status)
         XCTAssertEqual(storage.getAllStatuses().count, 1)
 
-        // When
-        storage.updateStatus(status)
+        // When - Update with a different status case but same product/site IDs
+        let remoteStatus = ProductImageStatus.remote(
+            image: ProductImage(
+                imageID: 123,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: "https://example.com/image.jpg",
+                name: "test.jpg",
+                alt: "Test image"
+            ),
+            siteID: siteID,
+            productID: productID
+        )
 
-        // Then
+        // Remove and add the new status (this is what's happening in the real implementation)
+        storage.updateStatus(remoteStatus)
+
+        // Then - Verify it changed to remote
         let statuses = storage.getAllStatuses()
         XCTAssertEqual(statuses.count, 1)
-        XCTAssertEqual(statuses.first, status)
+        XCTAssertEqual(statuses.first, remoteStatus)
+
+        if case .remote(let image, let storedSiteID, let storedProductID) = statuses.first! {
+            XCTAssertEqual(storedSiteID, siteID)
+            XCTAssertEqual(storedProductID, productID)
+            XCTAssertEqual(image.imageID, 123)
+        } else {
+            XCTFail("Status should have changed to remote")
+        }
     }
 
     func test_removeStatusWherePredicate_should_remove_matching_statuses() {

@@ -78,10 +78,16 @@ public final class ProductImageStatusStorage {
 
     public func updateStatus(_ status: ProductImageStatus) {
         var current = statusesSubject.value
-        if let index = current.firstIndex(where: { $0 == status }) {
+
+        // Find by product ID and site ID
+        if let index = current.firstIndex(where: {
+            $0.siteID == status.siteID &&
+            $0.productOrVariationID == status.productOrVariationID
+        }) {
             current[index] = status
             saveStatuses(current)
         } else {
+            // No matching status found, just add it
             addStatus(status)
         }
     }

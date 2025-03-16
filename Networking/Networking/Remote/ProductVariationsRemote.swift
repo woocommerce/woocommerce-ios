@@ -35,8 +35,6 @@ public protocol ProductVariationsRemoteProtocol {
                                  productVariations: [ProductVariation],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
-    func updateProductVariationImageRequest(siteID: Int64,
-                                            productID: Int64) async throws -> URLRequest
 }
 
 /// ProductVariation: Remote Endpoints
@@ -271,44 +269,6 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
-        }
-    }
-
-    /// Creates a URLRequest for updating a product variation's image in background
-    ///
-    /// - Parameters:
-    ///   - siteID: Site which hosts the ProductVariation.
-    ///   - productID: Identifier of the Product.
-    /// - Returns: URLRequest configured for updating the product variation image
-    public func updateProductVariationImageRequest(siteID: Int64,
-                                                   productID: Int64) async throws -> URLRequest {
-        do {
-            // Variation ID will be appended later on
-            let path = "\(Path.products)/\(productID)/variations/"
-            let request = JetpackRequest(wooApiVersion: .mark3,
-                                         method: .post,
-                                         siteID: siteID,
-                                         path: path,
-                                         parameters: nil,
-                                         availableAsRESTRequest: true)
-
-            guard let network = network as? AlamofireNetwork else {
-                throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
-            }
-
-            let converter = RequestConverter(credentials: network.credentials)
-            var urlRequest = try converter.convert(request).asURLRequest()
-
-            // Authenticate the request if we have credentials
-            if let credentials = network.credentials {
-                urlRequest = try DefaultRequestAuthenticator(credentials: credentials).authenticate(urlRequest)
-            } else {
-                throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
-            }
-
-            return urlRequest
-        } catch {
-            throw error
         }
     }
 

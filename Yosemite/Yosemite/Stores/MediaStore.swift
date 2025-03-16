@@ -6,22 +6,16 @@ import Storage
 //
 public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
-    private let productRemote: ProductsRemoteProtocol
-    private let productVariationRemote: ProductVariationsRemoteProtocol
     private let backgroundUploader: MediaUploadSessionManager
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
 
     public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
-        let productRemote = ProductsRemote(network: network)
-        let productVariationRemote = ProductVariationsRemote(network: network)
         let backgroundUploader = MediaUploadSessionManager()
         self.init(dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
                   remote: remote,
-                  productRemote: productRemote,
-                  productVariationRemote: productVariationRemote,
                   backgroundUploader: backgroundUploader)
     }
 
@@ -29,20 +23,14 @@ public final class MediaStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         productRemote: ProductsRemoteProtocol,
-         productVariationRemote: ProductVariationsRemoteProtocol,
          backgroundUploader: MediaUploadSessionManager) {
         self.remote = remote
-        self.productRemote = productRemote
-        self.productVariationRemote = productVariationRemote
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, backgroundUploader: MediaUploadSessionManager) {
         self.remote = MediaRemote(network: network)
-        self.productRemote = ProductsRemote(network: network)
-        self.productVariationRemote = ProductVariationsRemote(network: network)
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -53,15 +41,11 @@ public final class MediaStore: Store {
                      network: Network,
                      backgroundUploader: MediaUploadSessionManager) {
         let remote = MediaRemote(network: network)
-        let productRemote = ProductsRemote(network: network)
-        let productVariationRemote = ProductVariationsRemote(network: network)
         self.init(mediaExportService: mediaExportService,
                   dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
                   remote: remote,
-                  productRemote: productRemote,
-                  productVariationRemote: productVariationRemote,
                   backgroundUploader: backgroundUploader)
     }
 
@@ -70,12 +54,8 @@ public final class MediaStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         productRemote: ProductsRemoteProtocol,
-         productVariationRemote: ProductVariationsRemoteProtocol,
          backgroundUploader: MediaUploadSessionManager) {
         self.remote = remote
-        self.productRemote = productRemote
-        self.productVariationRemote = productVariationRemote
         self.backgroundUploader = backgroundUploader
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
@@ -263,17 +243,8 @@ private extension MediaStore {
                                                                   productID: productID,
                                                                   mediaItem: uploadableMedia)
 
-                let updateProductIDRequest = try await remote.updateProductIDRequest(siteID: siteID, productID: productID)
-
-                let updateProductImagesRequest = try await productRemote.updateProductImagesRequest(siteID: siteID, productID: productID)
-
-                let updateProductVariationImageRequest = try await productVariationRemote.updateProductVariationImageRequest(siteID: siteID, productID: productID)
-
                 // Start background upload
                 backgroundUploader.uploadMedia(request: request,
-                                               updateProductIDRequest: updateProductIDRequest,
-                                               updateProductImagesRequest: updateProductImagesRequest,
-                                               updateProductVariationImageRequest: updateProductVariationImageRequest,
                                                mediaItem: uploadableMedia,
                                                uploadID: uploadID,
                                                siteID: siteID,

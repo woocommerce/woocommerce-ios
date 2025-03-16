@@ -79,9 +79,16 @@ public final class MediaUploadSessionTaskStorage {
                 guard url.lastPathComponent.starts(with: "task-") else {
                     return nil
                 }
-                let metadataString = url.lastPathComponent.replacingOccurrences(of: "task-", with: "")
+                let fileName = url.lastPathComponent
+                    .replacingOccurrences(of: "task-", with: "")
                     .replacingOccurrences(of: ".dat", with: "")
-                return TaskMetadata.from(string: metadataString)
+                let components = fileName.split(separator: "-").map { String($0) }
+                guard components.count == 3,
+                      let siteID = Int64(components[1]),
+                      let productID = Int64(components[2]) else {
+                    return nil
+                }
+                return TaskMetadata(uploadID: components[0], siteID: siteID, productID: productID)
             }
         }
         return metadata
@@ -118,7 +125,7 @@ public final class MediaUploadSessionTaskStorage {
     }
 
     private static func fileURL(for metadata: TaskMetadata) -> URL {
-        return cacheDirectoryURL.appendingPathComponent("task-\(metadata.stringValue).dat")
+        return cacheDirectoryURL.appendingPathComponent("task-\(metadata.uploadID)-\(metadata.siteID)-\(metadata.productID).dat")
     }
 }
 
@@ -130,7 +137,7 @@ public struct TaskMetadata: Codable {
     var stringValue: String {
         guard let data = try? JSONEncoder().encode(self),
               let string = String(data: data, encoding: .utf8) else {
-            return UUID().uuidString // Fallback
+            return UUID().uuidString
         }
         return string
     }

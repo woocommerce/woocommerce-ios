@@ -24,6 +24,7 @@
 		03CF78D927DF9D0500523706 /* RefundParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */; };
 		205F52482C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */; };
 		20AB9F302D8846A00000EADD /* StarIO10 in Frameworks */ = {isa = PBXBuildFile; productRef = 20AB9F2F2D8846A00000EADD /* StarIO10 */; };
+		20AB9F332D884E0B0000EADD /* StarReceiptPrinterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AB9F322D884E0B0000EADD /* StarReceiptPrinterService.swift */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
@@ -178,6 +179,7 @@
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnderlyingError+StripeTests.swift"; sourceTree = "<group>"; };
+		20AB9F322D884E0B0000EADD /* StarReceiptPrinterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarReceiptPrinterService.swift; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
 		317975BF274EB1F9004357B1 /* DeclineReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReason.swift; sourceTree = "<group>"; };
@@ -333,6 +335,14 @@
 			path = Copiable;
 			sourceTree = "<group>";
 		};
+		20AB9F312D884DDC0000EADD /* StarPrintReceipt */ = {
+			isa = PBXGroup;
+			children = (
+				20AB9F322D884E0B0000EADD /* StarReceiptPrinterService.swift */,
+			);
+			path = StarPrintReceipt;
+			sourceTree = "<group>";
+		};
 		55CD4BB2273E6159007686D3 /* AirPrintReceipt */ = {
 			isa = PBXGroup;
 			children = (
@@ -379,6 +389,7 @@
 				0303380F2705F7D400764131 /* ReceiptTotalLine.swift */,
 				D845BE57262ED81D00A3E40F /* AirPrintReceipt */,
 				D845BE53262ED7CC00A3E40F /* PrinterService.swift */,
+				20AB9F312D884DDC0000EADD /* StarPrintReceipt */,
 				E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */,
 				D8652CB6262F389800350F37 /* ReceiptLineItem.swift */,
 				D8652CBA262F390F00350F37 /* ReceiptContent.swift */,
@@ -913,6 +924,7 @@
 				D88FDB2F25DD21B000CB0DBD /* PaymentIntent.swift in Sources */,
 				D845BDD0262D9C6C00A3E40F /* ReceiptDetails+Stripe.swift in Sources */,
 				D88FDB3025DD21B000CB0DBD /* CardReaderService.swift in Sources */,
+				20AB9F332D884E0B0000EADD /* StarReceiptPrinterService.swift in Sources */,
 				D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */,
 				D89B8F2425DDCD800001C726 /* PaymentIntentStatus+Stripe.swift in Sources */,
 				E1E125AE26EB66B30068A9B0 /* FallibleCancelable.swift in Sources */,

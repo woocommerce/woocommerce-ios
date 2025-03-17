@@ -5,6 +5,8 @@ import UIKit
 public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
     private var receiptContent: ReceiptContent?
 
+    public func connect() async throws {}
+
     public func printReceipt(content: ReceiptContent, completion: @escaping (PrintingResult) -> Void) {
         self.receiptContent = content
 

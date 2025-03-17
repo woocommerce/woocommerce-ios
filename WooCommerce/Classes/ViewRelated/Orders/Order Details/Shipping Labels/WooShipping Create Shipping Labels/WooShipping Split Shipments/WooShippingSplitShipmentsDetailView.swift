@@ -9,7 +9,7 @@ struct WooShippingSplitShipmentsDetailView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                    AdaptiveStack {
+                    AdaptiveStack(horizontalAlignment: .leading) {
                         Text(viewModel.itemsCountLabel)
                             .headlineStyle()
                         Spacer()

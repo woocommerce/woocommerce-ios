@@ -82,6 +82,14 @@ protocol ProductImageUploaderProtocol {
     ///   - originalImages: the image statuses before any edits.
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
+    /// Processes completed image uploads in the background.
+    ///
+    /// This method identifies products that no longer have pending image uploads and updates them accordingly.
+    /// It groups image statuses by product key and checks for any products that have completed all uploads.
+    /// If a product has no pending uploads and is not excluded from status updates, it triggers the saving
+    /// of product images to ensure that the product is updated with the latest images.
+    func processCompletedUploadsInBackground()
+
     /// Resets all internal states and tracking of image uploads for connected stores.
     /// Called when the user is logged out.
     func reset()
@@ -305,6 +313,41 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
                                                                     productOrVariationID: key.productOrVariationID,
                                                                     images: handler.productImageStatuses.images)
+        }
+    }
+
+    func processCompletedUploadsInBackground() {
+        // Group statuses by product key
+        let statusesByProduct = Dictionary(grouping: imageStatusStorage.getAllStatuses()) { status in
+            return ProductImageUploaderKey(
+                siteID: status.siteID,
+                productOrVariationID: status.productOrVariationID,
+                isLocalID: status.productOrVariationID.isLocalID
+            )
+        }
+
+        // Find all products that no longer have pending uploads and update them
+        let productsToUpdate = statusesByProduct.compactMap { (key, statuses) -> ProductImageUploaderKey? in
+            if statuses.hasPendingUpload {
+                DDLogDebug("ProductImageUploader - Pending uploads found for product key \(key). Skipping update.")
+                return nil
+            }
+            if self.statusUpdatesExcludedProductKeys.contains(key) {
+                DDLogDebug("ProductImageUploader - Product key \(key) is excluded from status updates. Skipping update.")
+                return nil
+            }
+            return key
+        }
+
+        for key in productsToUpdate {
+            saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
+                switch result {
+                case .success:
+                    DDLogDebug("ProductImageUploader - Product successfully updated after background upload \(key).")
+                case .failure(let error):
+                    DDLogError("ProductImageUploader - Failed to update product after background upload \(key). Error: \(error.localizedDescription)")
+                }
+            }
         }
     }
 

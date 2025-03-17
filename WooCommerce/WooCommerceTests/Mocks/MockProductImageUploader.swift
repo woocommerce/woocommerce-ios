@@ -66,6 +66,9 @@ extension MockProductImageUploader: ProductImageUploaderProtocol {
     func sendBackgroundUploadNoticeIfNeeded(key: ProductImageUploaderKey, using noticePresenter: NoticePresenter) {
     }
 
+    func processCompletedUploadsInBackground() {
+    }
+
     func reset() {
         resetWasCalled = true
     }

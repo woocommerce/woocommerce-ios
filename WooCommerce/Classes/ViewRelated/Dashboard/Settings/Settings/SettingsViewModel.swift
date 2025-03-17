@@ -279,7 +279,13 @@ private extension SettingsViewModel {
         // App Settings
         let appSettingsSection: Section = {
             let rows: [Row]
-            if featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+            let notificationAvailable: Bool = {
+                guard let site = stores.sessionManager.defaultSite else {
+                    return false
+                }
+                return site.isJetpackThePluginInstalled && site.isJetpackConnected
+            }()
+            if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

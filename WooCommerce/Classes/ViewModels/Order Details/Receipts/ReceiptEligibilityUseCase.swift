@@ -22,6 +22,9 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     }
 
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
+        guard !featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport) else {
+            return onCompletion(false)
+        }
         let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
             // 1. WooCommerce must be installed and active
             guard let wcPlugin = wcPlugin, wcPlugin.active else {

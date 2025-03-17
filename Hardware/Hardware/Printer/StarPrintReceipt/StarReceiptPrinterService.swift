@@ -2,6 +2,7 @@ import Foundation
 import StarIO10
 
 public final class StarReceiptPrinterService: PrinterService {
+    public init() { }
 
     private var printer: StarPrinter?
 

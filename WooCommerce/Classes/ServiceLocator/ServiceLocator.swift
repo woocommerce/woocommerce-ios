@@ -85,6 +85,8 @@ final class ServiceLocator {
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
 
+    private static var _starReceiptPrinter: PrinterService = StarReceiptPrinterService()
+
     /// Observer for network connectivity
     ///
     private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
@@ -231,7 +233,11 @@ final class ServiceLocator {
     /// Provides the access point to the ReceiptPrinterService.
     /// - Returns: An implementation of the ReceiptPrinterService protocol.
     static var receiptPrinterService: PrinterService {
-        _receiptPrinter
+        if _featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport) {
+            return _starReceiptPrinter
+        } else {
+            return _receiptPrinter
+        }
     }
 
     /// Provides access point to the ConnectivityObserver.

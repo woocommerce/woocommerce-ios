@@ -69,7 +69,10 @@ private extension ReceiptStore {
 
     func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
         let content = generateReceiptContent(order: order, parameters: parameters, removingHtml: true)
-        receiptPrinterService.printReceipt(content: content, completion: completion)
+        Task { @MainActor in
+            try await receiptPrinterService.connect()
+            receiptPrinterService.printReceipt(content: content, completion: completion)
+        }
     }
 
     func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {

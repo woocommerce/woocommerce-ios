@@ -92,23 +92,23 @@ extension UnderlyingError {
             self = .processorAPIError
         case .passcodeNotEnabled:
             self = .passcodeNotEnabled
-        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
+        case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn:
             self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
         case .nfcDisabled:
             self = .nfcDisabled
-        case .appleBuiltInReaderFailedToPrepare:
+        case .tapToPayReaderFailedToPrepare:
             self = .appleBuiltInReaderFailedToPrepare
-        case .appleBuiltInReaderTOSAcceptanceCanceled:
+        case .tapToPayReaderTOSAcceptanceCanceled:
             self = .appleBuiltInReaderTOSAcceptanceCanceled
-        case .appleBuiltInReaderTOSNotYetAccepted:
+        case .tapToPayReaderTOSNotYetAccepted:
             self = .appleBuiltInReaderTOSNotYetAccepted
-        case .appleBuiltInReaderTOSAcceptanceFailed:
+        case .tapToPayReaderTOSAcceptanceFailed:
             self = .appleBuiltInReaderTOSAcceptanceFailed
-        case .appleBuiltInReaderMerchantBlocked:
+        case .tapToPayReaderMerchantBlocked:
             self = .appleBuiltInReaderMerchantBlocked
-        case .appleBuiltInReaderInvalidMerchant:
+        case .tapToPayReaderInvalidMerchant:
             self = .appleBuiltInReaderInvalidMerchant
-        case .appleBuiltInReaderDeviceBanned:
+        case .tapToPayReaderDeviceBanned:
             self = .appleBuiltInReaderDeviceBanned
         case .unsupportedMobileDeviceConfiguration:
             self = .unsupportedMobileDeviceConfiguration
@@ -170,7 +170,7 @@ extension UnderlyingError {
             self = .internetConnectTimeOut
         case .bluetoothReconnectStarted:
             self = .bluetoothReconnectStarted
-        case .appleBuiltInReaderAccountDeactivated:
+        case .tapToPayReaderAccountDeactivated:
             self = .appleBuiltInReaderAccountDeactivated
         case .readerMissingEncryptionKeys:
             self = .readerMissingEncryptionKeys

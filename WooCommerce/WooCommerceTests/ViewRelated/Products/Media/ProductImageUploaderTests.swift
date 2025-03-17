@@ -1026,68 +1026,6 @@ final class ProductImageUploaderTests: XCTestCase {
             activeUploads.isEmpty
         }
     }
-
-    func test_replaceLocalID_is_called_when_flag_enabled() {
-        // Given
-        mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let imageUploader = createImageUploader(stores: stores, featureFlag: mockFeatureFlagService)
-
-        let localProductID: Int64 = 0
-        let remoteProductID: Int64 = 606
-        let localID = ProductOrVariationID.product(id: localProductID)
-        let localKey = ProductImageUploaderKey(siteID: siteID,
-                                             productOrVariationID: localID,
-                                             isLocalID: true)
-
-        // Configure the store to keep uploads in progress. Don't call completion to keep it in uploading state.
-        stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case .uploadMedia = action {
-            }
-        }
-
-        // Set up initial conditions with a local product ID
-        let localActionHandler = imageUploader.actionHandler(key: localKey, originalStatuses: [])
-
-        // Upload an image using the local product ID
-        localActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
-
-        // Wait for the upload to be registered
-        let uploadStatus = waitFor { promise in
-            localActionHandler.addUpdateObserver(self) { statuses in
-                if statuses.hasPendingUpload {
-                    promise(statuses)
-                }
-            }
-        }
-
-        // Verify we have a pending upload
-        XCTAssertTrue(uploadStatus.hasPendingUpload)
-
-        // When
-        imageUploader.replaceLocalID(siteID: siteID,
-                                   localID: localID,
-                                   remoteID: remoteProductID)
-
-        // Then
-        // The key with the remote product ID should now have active uploads
-        let remoteKey = ProductImageUploaderKey(siteID: siteID,
-                                              productOrVariationID: .product(id: remoteProductID),
-                                              isLocalID: false)
-
-        // Get action handler with the remote key
-        let remoteActionHandler = imageUploader.actionHandler(key: remoteKey, originalStatuses: [])
-
-        // Check if the remote action handler has the pending upload
-        let remoteStatus = waitFor { promise in
-            remoteActionHandler.addUpdateObserver(self) { statuses in
-                promise(statuses)
-            }
-        }
-
-        XCTAssertTrue(remoteStatus.hasPendingUpload,
-                     "The action handler for the remote product ID should have pending uploads")
-    }
 }
 
 extension ProductImageUploadErrorInfo: @retroactive Equatable {

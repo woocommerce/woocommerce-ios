@@ -95,9 +95,9 @@ final class ServiceLocatorTests: XCTestCase {
    }
 
     func test_receipt_printer_service_defaults_to_airprint() {
-       let cardReader = ServiceLocator.receiptPrinterService
+        let receiptPrinter = ServiceLocator.receiptPrinterService
 
-        XCTAssertTrue(cardReader is AirPrintReceiptPrinterService)
+        XCTAssertTrue(receiptPrinter is AirPrintReceiptPrinterService)
    }
 
     func test_ServiceLocator_provides_crash_logging() {

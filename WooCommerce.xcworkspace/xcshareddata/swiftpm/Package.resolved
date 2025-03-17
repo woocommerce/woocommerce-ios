@@ -101,6 +101,15 @@
         }
       },
       {
+        "package": "StarIO10",
+        "repositoryURL": "https://github.com/star-micronics/StarXpand-SDK-iOS",
+        "state": {
+          "branch": null,
+          "revision": "0d6faec2c759cedbbdb8ba5c8bfb76f4471b88d9",
+          "version": "2.8.0"
+        }
+      },
+      {
         "package": "swift-algorithms",
         "repositoryURL": "https://github.com/apple/swift-algorithms",
         "state": {

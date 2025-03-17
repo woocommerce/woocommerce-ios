@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Woo uses the network to connect to supported receipt printers</string>
+	<key>UISupportedExternalAccessoryProtocols</key>
+	<array>
+		<string>jp.star-m.starpro</string>
+	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.automattic.woocommerce.refresh</string>
@@ -70,9 +76,9 @@
 		<true/>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>This app uses Bluetooth to connect to supported card readers.</string>
+	<string>This app uses Bluetooth to connect to supported card readers and receipt printers.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Bluetooth access is required in order to connect to supported card readers.</string>
+	<string>Bluetooth access is required in order to connect to supported card readers and receipt printers.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To take photos or videos to add to your Products, scan barcode for Product SKU, or support tickets.</string>
 	<key>NSLocationDefaultAccuracyReduced</key>

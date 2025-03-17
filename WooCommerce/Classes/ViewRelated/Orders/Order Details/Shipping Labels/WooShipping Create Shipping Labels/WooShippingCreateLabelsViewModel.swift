@@ -62,6 +62,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
 
+    /// View model for split shipments.
+    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel?
+
     /// Selected shipping rate when creating a shipping label.
     @Published private var selectedRate: WooShippingSelectedRate?
 
@@ -269,6 +272,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                     await self.loadOriginAddresses()
                 }
             }
+
+            group.addTask {
+                await self.loadShipmentsInfo()
+            }
         }
 
         if isMissingStoreSettings ||
@@ -414,6 +421,15 @@ private extension WooShippingCreateLabelsViewModel {
         originAddresses.onSelect = { [weak self] selectedAddress in
             self?.selectedOriginAddress = selectedAddress
         }
+    }
+
+    /// Loads shipment info from remote and creates view model for split shipments.
+    ///
+    @MainActor
+    func loadShipmentsInfo() async {
+        splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(siteID: order.siteID,
+                                                                     orderID: order.orderID,
+                                                                     stores: stores)
     }
 
     /// Loads destination address of the order from remote.

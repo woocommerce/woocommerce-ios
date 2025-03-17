@@ -20,7 +20,7 @@ struct WooShippingSplitShipmentsRow: View {
             .buttonStyle(TextButtonStyle())
         }
         .padding(.vertical, Layout.verticalPadding)
-        .sheet(isPresented: $isShowingDetailView) {
+        .fullScreenCover(isPresented: $isShowingDetailView) {
             WooShippingSplitShipmentsDetailView(viewModel: viewModel)
         }
     }

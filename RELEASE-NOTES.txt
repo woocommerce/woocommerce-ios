@@ -3,7 +3,7 @@
 
 22.0
 -----
-- [*] Payments: Puerto Rico is now available in the list of countries that are supported by in-person payments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
+- [*] Payments: Puerto Rico is now available in the list of countries that are supported by In-Person Payments, when using WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
 
 21.9
 -----

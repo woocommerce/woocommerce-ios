@@ -20,9 +20,9 @@ class CardPresentConfigurationTests: XCTestCase {
         let configuration = CardPresentPaymentsConfiguration(country: .PR)
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.USD])
-        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
-        XCTAssertEqual(configuration.supportedPluginVersions, [.init(plugin: .wcPay, minimumVersion: "9.0.0"), .init(plugin: .stripe, minimumVersion: "6.2.0")])
+        XCTAssertEqual(configuration.supportedPluginVersions, [.init(plugin: .wcPay, minimumVersion: "9.0.0")])
         assertEqual([.chipper, .stripeM2], configuration.supportedReaders)
         // The `purchaseCardReaderUrl` for PR doesn't exist. On lack of country code, the URL redirection falls back to the M2 reader
     }

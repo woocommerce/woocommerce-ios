@@ -67,11 +67,10 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 countryCode: country,
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
-                paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
+                paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.chipper, .stripeM2],
                 supportedPluginVersions: [
-                    .init(plugin: .wcPay, minimumVersion: "9.0.0"),
-                    .init(plugin: .stripe, minimumVersion: "6.2.0")
+                    .init(plugin: .wcPay, minimumVersion: "9.0.0")
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,

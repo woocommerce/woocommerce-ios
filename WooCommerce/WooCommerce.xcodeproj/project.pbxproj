@@ -2680,6 +2680,7 @@
 		DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */; };
 		DE5746362B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */; };
 		DE5746382B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */; };
+		DE58C8A42D88226A005914DF /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */; };
 		DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */; };
 		DE5FBB912A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */; };
 		DE5FBB932A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */; };
@@ -5884,6 +5885,7 @@
 		DE5746332B4512900034B10D /* BlazeBudgetSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingView.swift; sourceTree = "<group>"; };
 		DE5746352B4522ED0034B10D /* BlazeBudgetSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingViewModel.swift; sourceTree = "<group>"; };
 		DE5746372B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeBudgetSettingViewModelTests.swift; sourceTree = "<group>"; };
+		DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductNameAI.swift"; sourceTree = "<group>"; };
 		DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModelTests.swift; sourceTree = "<group>"; };
@@ -12414,6 +12416,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				DE58C8A22D882250005914DF /* NotificationSettings */,
 				DE6F997A2BE9E5CA0007B2DD /* Settings.storyboard */,
 				DEDA8DBA2B19833E0076BF0F /* Themes */,
 				DE68979D2A8F7C8C00154588 /* AccountSettings */,
@@ -13263,6 +13266,14 @@
 				DEF657A22C88540700ACD61E /* BlazeScheduleSettingView.swift */,
 			);
 			path = BudgetSetting;
+			sourceTree = "<group>";
+		};
+		DE58C8A22D882250005914DF /* NotificationSettings */ = {
+			isa = PBXGroup;
+			children = (
+				DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */,
+			);
+			path = NotificationSettings;
 			sourceTree = "<group>";
 		};
 		DE63115D2AF1E16500587641 /* WPComLogin */ = {
@@ -16908,6 +16919,7 @@
 				26BCA0402C35E9A9000BE96C /* BackgroundTaskRefreshDispatcher.swift in Sources */,
 				DECEA4472C81778300C28C10 /* ProductImagePickerView.swift in Sources */,
 				26E0AE1926335AA900A5EB3B /* Survey.swift in Sources */,
+				DE58C8A42D88226A005914DF /* NotificationSettingsView.swift in Sources */,
 				0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */,
 				CE755F732D4A5F9D002539F6 /* WooShippingNormalizeAddressViewModel.swift in Sources */,
 				B90D21782D15B72900ED60ED /* WooShippingCustomsFormViewModel.swift in Sources */,

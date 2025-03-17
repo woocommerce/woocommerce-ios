@@ -1,3 +1,5 @@
+import StripeTerminal
+
 /// Encapsulates the parameters needed to create a PaymentIntent
 /// The Stripe Terminal SDK provides support for several parameters
 /// i.e. metadata,onBehalfOf...
@@ -45,7 +47,7 @@ public struct PaymentIntentParameters {
     ///
     /// Can be `card_present`, `interac_present`.
     ///
-    public let paymentMethodTypes: [String]
+    public let paymentMethodTypes: [PaymentMethodType]
 
     public init(amount: Decimal,
                 currency: String,
@@ -54,7 +56,7 @@ public struct PaymentIntentParameters {
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
-                paymentMethodTypes: [String] = [],
+                paymentMethodTypes: [PaymentMethodType] = [],
                 metadata: [String: String]? = nil) {
         self.amount = amount
         self.currency = currency

@@ -3,7 +3,7 @@ import WooFoundation
 
 public struct CardPresentPaymentsConfiguration: Equatable {
     public let countryCode: CountryCode
-    public let paymentMethods: [WCPayPaymentMethodType]
+    public let paymentMethods: [PaymentMethodType]
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
@@ -22,7 +22,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion
 
     init(countryCode: CountryCode,
-         paymentMethods: [WCPayPaymentMethodType],
+         paymentMethods: [PaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
          supportedReaders: [CardReaderType],

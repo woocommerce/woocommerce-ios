@@ -218,6 +218,7 @@ public typealias CardReaderConfigError = Hardware.CardReaderConfigError
 public typealias PaymentChannel = Hardware.PaymentChannel
 public typealias PaymentMethod = Hardware.PaymentMethod
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
+public typealias PaymentMethodType = Hardware.PaymentMethodType
 public typealias RefundParameters = Hardware.RefundParameters
 public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult

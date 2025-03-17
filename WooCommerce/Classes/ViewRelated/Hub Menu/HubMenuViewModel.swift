@@ -15,6 +15,7 @@ extension NSNotification.Name {
 
 /// Destination views that the hub menu can navigate to.
 enum HubMenuNavigationDestination: Hashable {
+    case aiSettings
     case payments
     case settings
     case blaze
@@ -345,6 +346,10 @@ private extension HubMenuViewModel {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
+        
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
+            items.append(AISettings())
+        }
 
         if eligibleForGoogleAds {
             items.append(GoogleAds())
@@ -544,6 +549,23 @@ extension HubMenuViewModel {
         let trackingOption: String = "settings"
         let iconBadge: HubMenuBadgeType? = nil
         let navigationDestination: HubMenuNavigationDestination? = .settings
+    }
+
+    struct AISettings: HubMenuItem {
+        static var id = "ai-settings"
+
+        let title: String = "AI"
+        let description: String = "AI enhancement"
+        let icon: UIImage = .exclamationImage
+        let iconColor: UIColor = .withColorStudio(.orange)
+        let accessibilityIdentifier: String = "menu-ai"
+        let trackingOption: String = "ai"
+        let iconBadge: HubMenuBadgeType?
+        let navigationDestination: HubMenuNavigationDestination? = .aiSettings
+
+        init(iconBadge: HubMenuBadgeType? = nil) {
+            self.iconBadge = iconBadge
+        }
     }
 
     struct Payments: HubMenuItem {

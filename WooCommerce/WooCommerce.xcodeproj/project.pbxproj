@@ -1564,6 +1564,7 @@
 		681BB5FE2D676061008AF8BB /* POSPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681BB5FD2D676060008AF8BB /* POSPadding.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
+		682DB48F2D88230800E38449 /* AISettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682DB48E2D88230600E38449 /* AISettingsView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
 		6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */; };
 		683421642ACE9391009021D7 /* ProductDiscountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683421632ACE9391009021D7 /* ProductDiscountView.swift */; };
@@ -4727,6 +4728,7 @@
 		681BB5FD2D676060008AF8BB /* POSPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPadding.swift; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
+		682DB48E2D88230600E38449 /* AISettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabeledTextViewTableViewCell.xib; sourceTree = "<group>"; };
 		683421632ACE9391009021D7 /* ProductDiscountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDiscountView.swift; sourceTree = "<group>"; };
@@ -9828,6 +9830,14 @@
 			path = Customer;
 			sourceTree = "<group>";
 		};
+		682DB48D2D8822FC00E38449 /* AI Settings */ = {
+			isa = PBXGroup;
+			children = (
+				682DB48E2D88230600E38449 /* AISettingsView.swift */,
+			);
+			path = "AI Settings";
+			sourceTree = "<group>";
+		};
 		6850C5EC2B69E6460026A93B /* Receipts */ = {
 			isa = PBXGroup;
 			children = (
@@ -10724,6 +10734,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				682DB48D2D8822FC00E38449 /* AI Settings */,
 				B626C7192876599B0083820C /* Custom Fields */,
 				86023FA82B15CA8D00A28F07 /* Themes */,
 				DED91DF72AD78A0C00CDCC53 /* Blaze */,
@@ -16115,6 +16126,7 @@
 				CCCFFC5A2934EF5E006130AF /* StatsIntervalDataParser.swift in Sources */,
 				DE5746342B4512900034B10D /* BlazeBudgetSettingView.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
+				682DB48F2D88230800E38449 /* AISettingsView.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */,
 				DE78082D2BDF9852005D1E30 /* OrderStatsV4Interval+Chart.swift in Sources */,

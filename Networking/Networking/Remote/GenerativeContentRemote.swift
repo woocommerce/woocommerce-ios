@@ -73,6 +73,14 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     private var token: JWToken?
 
+    private var shouldUseMerchantAIAPIKey: Bool {
+        // TODO: Handle case when key non-empty, but disabled
+        guard let openAIApiKey = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !openAIApiKey.isEmpty else {
+            return false
+        }
+        return true
+    }
+
     public func generateText(siteID: Int64,
                              base: String,
                              feature: GenerativeContentRemoteFeature,
@@ -93,6 +101,19 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     public func identifyLanguage(siteID: Int64,
                                  string: String,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
+        if shouldUseMerchantAIAPIKey {
+            debugPrint("🍍 Using merchant API key")
+            return try await identifyLanguageUsingMerchantAPIKey(string: string)
+        } else {
+            return try await identifyLanguageUsingJetpack(siteID: siteID,
+                                                          string: string,
+                                                          feature: feature)
+        }
+    }
+    
+    private func identifyLanguageUsingJetpack(siteID: Int64,
+                                              string: String,
+                                              feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
             guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
@@ -104,6 +125,47 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             self.token = token
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         }
+    }
+    
+    private func identifyLanguageUsingMerchantAPIKey(string: String) async throws -> String {
+
+        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+            // TODO: If retrieved here, handle error case
+            throw URLError(.userAuthenticationRequired)
+        }
+        let prompt = """
+        What is the ISO language code of the language used in the below text?
+        Do not include any explanations and only provide the ISO language code in your response.
+        Text: ```\(string)```
+        """
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4o", // TODO: Pass model
+            "messages": [["role": "user", "content": prompt]],
+            "max_tokens": 10 // TODO: Allow max_tokens. Check why 10. It used ~110 for 2 calls as per https://platform.openai.com/usage
+        ]
+
+        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
+        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        request.httpBody = requestData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let choices = json?["choices"] as? [[String: Any]],
+              let message = choices.first?["message"] as? [String: Any],
+              let content = message["content"] as? String else {
+            throw URLError(.cannotParseResponse)
+        }
+
+        return content.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     public func generateAIProduct(siteID: Int64,

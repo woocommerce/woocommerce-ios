@@ -204,4 +204,8 @@ public enum FeatureFlag: Int {
     /// Supports uploading product images in background
     ///
     case backgroundProductImageUpload
+
+    /// Allows merchants to use their own API keys for AI-powered features
+    ///
+    case allowMerchantAIAPIKey
 }

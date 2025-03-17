@@ -183,6 +183,8 @@ private extension HubMenu {
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
+            case .aiSettings:
+                AISettingsView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

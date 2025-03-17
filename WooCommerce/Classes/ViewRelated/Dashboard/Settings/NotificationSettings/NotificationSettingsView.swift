@@ -11,7 +11,7 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Notification Settings"
+        title = NotificationSettingsView.Localization.title
     }
 }
 
@@ -24,29 +24,69 @@ struct NotificationSettingsView: View {
         Form {
             Section {
                 Toggle(isOn: $notificationsEnabled) {
-                    Text("All notifications")
+                    Text(Localization.allNotifications)
                 }
             } footer: {
-                Text("Including in-app reminders and remote push notifications.")
+                Text(Localization.allNotificationsFooter)
             }
 
             Section {
                 Toggle(isOn: $orderNotificationsEnabled) {
-                    Text("New orders")
+                    Text(Localization.newOrders)
                 }
                 .disabled(!notificationsEnabled)
 
                 Toggle(isOn: $productReviewNotificationsEnabled) {
-                    Text("Product reviews")
+                    Text(Localization.productReviews)
                 }
                 .disabled(!notificationsEnabled)
             } header: {
-                Text("Notification types")
+                Text(Localization.notificationTypesHeader)
             } footer: {
-                Text("Settings applied to all selected sites.")
+                Text(Localization.notificationTypesFooter)
             }
         }
-        .navigationTitle("Notification Settings")
+        .navigationTitle(Localization.title)
+    }
+}
+
+extension NotificationSettingsView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "notificationSettingsView.title",
+            value: "Notification Settings",
+            comment: "Title of the notification settings view"
+        )
+        static let allNotifications = NSLocalizedString(
+            "notificationSettingsView.allNotifications",
+            value: "All notifications",
+            comment: "Label of the toggle to enable/disable all notifications on the notification settings view"
+        )
+        static let allNotificationsFooter = NSLocalizedString(
+            "notificationSettingsView.allNotificationsFooter",
+            value: "Including in-app reminders and remote push notifications.",
+            comment: "Footer of the toggle to enable/disable all notifications on the notification settings view"
+        )
+        static let newOrders = NSLocalizedString(
+            "notificationSettingsView.newOrders",
+            value: "New orders",
+            comment: "Label of the toggle to enable/disable new order notifications on the notification settings view"
+        )
+        static let productReviews = NSLocalizedString(
+            "notificationSettingsView.productReviews",
+            value: "Product reviews",
+            comment: "Label of the toggle to enable/disable product reviews notifications on the notification settings view"
+        )
+        static let notificationTypesHeader = NSLocalizedString(
+            "notificationSettingsView.notificationTypesHeader",
+            value: "Notification types",
+            comment: "Header of the notification types section on the notification settings view"
+        )
+        static let notificationTypesFooter = NSLocalizedString(
+            "notificationSettingsView.notificationTypesFooter",
+            value: "Settings applied to all selected sites.",
+            comment: "Footer of the notification types section on the notification settings view"
+        )
     }
 }
 

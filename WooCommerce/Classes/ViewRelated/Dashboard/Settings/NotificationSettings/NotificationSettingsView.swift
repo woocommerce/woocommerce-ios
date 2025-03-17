@@ -1,5 +1,20 @@
 import SwiftUI
 
+final class NotificationSettingsHostingController: UIHostingController<NotificationSettingsView> {
+    init() {
+        super.init(rootView: NotificationSettingsView())
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "Notification Settings"
+    }
+}
+
 struct NotificationSettingsView: View {
     @State private var notificationsEnabled = false
     @State private var orderNotificationsEnabled = false
@@ -31,6 +46,7 @@ struct NotificationSettingsView: View {
                 Text("Settings applied to all selected sites.")
             }
         }
+        .navigationTitle("Notification Settings")
     }
 }
 

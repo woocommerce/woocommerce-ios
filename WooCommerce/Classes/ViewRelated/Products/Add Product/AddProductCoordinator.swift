@@ -128,7 +128,11 @@ private extension AddProductCoordinator {
     /// Whether the action sheet with the option for product creation with AI should be presented.
     ///
     var shouldShowAIActionSheet: Bool {
-        addProductWithAIEligibilityChecker.isEligible
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
+            return true
+        } else {
+            return addProductWithAIEligibilityChecker.isEligible
+        }
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.

@@ -277,9 +277,17 @@ private extension SettingsViewModel {
         }()
 
         // App Settings
-        let appSettingsSection = Section(title: Localization.appSettingsTitle,
-                                         rows: [.privacy],
-                                         footerHeight: UITableView.automaticDimension)
+        let appSettingsSection: Section = {
+            let rows: [Row]
+            if featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+                rows = [.notifications, .privacy]
+            } else {
+                rows = [.privacy]
+            }
+            return Section(title: Localization.appSettingsTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
 
         // About the App
         let aboutTheAppSection: Section = {

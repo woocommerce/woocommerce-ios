@@ -480,7 +480,7 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    let buildConfig = BluetoothConnectionConfigurationBuilder(locationId: locationId)
+                    let buildConfig = BluetoothConnectionConfigurationBuilder(delegate: self, locationId: locationId)
                     do {
                         let config = try buildConfig.build()
                         return promise(.success(config))
@@ -509,7 +509,7 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    let localMobileConfig = TapToPayConnectionConfigurationBuilder(locationId: locationId)
+                    let localMobileConfig = TapToPayConnectionConfigurationBuilder(delegate: self, locationId: locationId)
                     localMobileConfig.setMerchantDisplayName(nil)
                     localMobileConfig.setOnBehalfOf(nil)
                     localMobileConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
@@ -540,7 +540,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -580,7 +580,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return

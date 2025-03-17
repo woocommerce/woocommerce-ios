@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .notificationSettings:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

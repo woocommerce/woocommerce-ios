@@ -873,7 +873,7 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 // MARK: - ReaderDisplayDelegate.
-extension StripeCardReaderService: BluetoothReaderDelegate {
+extension StripeCardReaderService: MobileReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
         softwareUpdateSubject.send(.available)
     }

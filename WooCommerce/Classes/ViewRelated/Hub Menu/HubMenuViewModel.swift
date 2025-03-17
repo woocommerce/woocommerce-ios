@@ -554,10 +554,10 @@ extension HubMenuViewModel {
     struct AISettings: HubMenuItem {
         static var id = "ai-settings"
 
-        let title: String = "AI"
-        let description: String = "AI enhancement"
-        let icon: UIImage = .exclamationImage
-        let iconColor: UIColor = .withColorStudio(.orange)
+        let title: String = "AI Settings"
+        let description: String = "Manage your store's AI-powered features"
+        let icon: UIImage = UIImage(systemName: "wand.and.rays.inverse")!
+        let iconColor: UIColor = .withColorStudio(.green)
         let accessibilityIdentifier: String = "menu-ai"
         let trackingOption: String = "ai"
         let iconBadge: HubMenuBadgeType?

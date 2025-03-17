@@ -33,7 +33,7 @@ public final class MediaUploadSessionManager: NSObject {
 
     // Storage to keep track of all uploads
     private let statusStorage: ProductImageStatusStorage
-
+    
     public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload",
                 statusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
         self.backgroundSessionIdentifier = sessionIdentifier
@@ -42,9 +42,6 @@ public final class MediaUploadSessionManager: NSObject {
     }
 
     public func uploadMedia(request: URLRequest,
-                            updateProductIDRequest: URLRequest,
-                            updateProductImagesRequest: URLRequest,
-                            updateProductVariationImageRequest: URLRequest,
                             mediaItem: UploadableMedia,
                             uploadID: String,
                             siteID: Int64,
@@ -53,18 +50,12 @@ public final class MediaUploadSessionManager: NSObject {
                             completion: @escaping (Result<Media, Error>) -> Void) {
         uploadCompletionClosures[uploadID] = completion
 
-        // Update status to uploading if we have an asset
-        if let asset = asset {
-            let status = ProductImageStatus.uploading(asset: asset,
-                                                      siteID: siteID,
-                                                      productID: .product(id: productID))
-            statusStorage.updateStatus(status)
-        }
+        let metadata = TaskMetadata(uploadID: uploadID, siteID: siteID, productID: productID)
 
         // Continue with upload
         guard let httpBody = request.httpBody else {
             let error = BackgroundUploadError.invalidRequestBody
-            handleUploadFailure(uploadID: uploadID, error: error)
+            notifyCompletion(.failure(error), for: metadata)
             return
         }
 
@@ -79,7 +70,7 @@ public final class MediaUploadSessionManager: NSObject {
             modifiedRequest.httpBody = nil
 
             let task = backgroundSession.uploadTask(with: modifiedRequest, fromFile: tempFileURL)
-            let metadata = TaskMetadata(uploadID: uploadID, siteID: siteID, productID: productID)
+
             task.taskDescription = metadata.stringValue
             task.resume()
 
@@ -89,7 +80,7 @@ public final class MediaUploadSessionManager: NSObject {
             }
         } catch {
             DDLogError("⛔️ MediaUploadSessionManager-[UploadMedia]- Failed creating temp file for upload media (\(uploadID)): \(error)")
-            handleUploadFailure(uploadID: uploadID, error: error)
+            notifyCompletion(.failure(error), for: metadata)
         }
     }
 
@@ -119,50 +110,73 @@ private extension MediaUploadSessionManager {
         return headers
     }
 
-    func handleUploadFailure(uploadID: String, error: Error) {
-        DDLogError("⛔️ MediaUploadSessionManager-[UploadFailure]- Upload failure for task (\(uploadID)): \(error.localizedDescription)")
-
-        // Find the corresponding upload status
-        let uploadingStatuses = statusStorage.getAllStatuses().filter { status in
-            if case .uploading = status {
-                return true
+    /**
+         * TODO: Fix image state tracking issue with multiple uploads
+         * Current problem: When uploading multiple images for the same product:
+         * - All images upload successfully to the server
+         * - Only some images update their state from `.uploading` to `.remote`
+         * - Many images remain stuck in `.uploading` state despite being uploaded
+         *
+         * Required fix:
+         * 1. Create a mapping between `uploadID` and specific assets (e.g., using PHAsset.localIdentifier)
+         * 2. When starting an upload in `uploadMedia()`, store the mapping: uploadID -> assetIdentifier
+         * 3. In this method, use the mapping to find the exact matching .uploading status
+         * 4. Update only that specific status instead of the first matching one
+         *
+         * Alternative approach:
+         * - Implement a more precise matching logic (similar to `ProductImageSaver`)
+         * - Possibly compare asset properties like creation date, file size, or dimensions
+         */
+    func notifyCompletion(_ result: Result<Media, Error>, for metadata: TaskMetadata) {
+        DispatchQueue.main.sync {
+            let statusStorage = ProductImageStatusStorage()
+            
+            if case .failure(let error) = result {
+                DDLogError("⛔️ MediaUploadSessionManager-[UploadFailure]- Upload failure for task (\(metadata.uploadID)): \(error.localizedDescription)")
+            } else {
+                DDLogDebug("MediaUploadSessionManager-[Completion]- Notifying completion for task (\(metadata.uploadID)) with result: \(result)")
             }
-            return false
-        }
 
-        // Update status to failure if we can find a matching status
-        if let uploadStatus = uploadingStatuses.first(where: { $0.asset != nil }),
-           let asset = uploadStatus.asset {
+            // Find and update status
+            if let uploadStatus = statusStorage.findStatus(where: { status in
+                if case .uploading = status,
+                   status.productOrVariationID.id == metadata.productID,
+                   status.siteID == metadata.siteID {
+                    return true
+                }
+                return false
+            }), let asset = uploadStatus.asset {
 
-            // Update status to failure
-            let failureStatus = ProductImageStatus.uploadFailure(
-                asset: asset,
-                error: error,
-                siteID: uploadStatus.siteID,
-                productID: uploadStatus.productOrVariationID
-            )
-
-            statusStorage.updateStatus(failureStatus)
-        }
-
-        DispatchQueue.main.async { [weak self] in
-            if let self = self, let completion = self.uploadCompletionClosures[uploadID] {
-                completion(.failure(error))
-                self.uploadCompletionClosures.removeValue(forKey: uploadID)
+                let newStatus: ProductImageStatus
+                switch result {
+                case .success(let media):
+                    newStatus = .remote(
+                        image: ProductImage(imageID: media.mediaID,
+                                            dateCreated: media.date,
+                                            dateModified: nil,
+                                            src: media.src,
+                                            name: media.name,
+                                            alt: media.alt),
+                        siteID: uploadStatus.siteID,
+                        productID: uploadStatus.productOrVariationID
+                    )
+                case .failure(let error):
+                    newStatus = .uploadFailure(
+                        asset: asset,
+                        error: error,
+                        siteID: metadata.siteID,
+                        productID: uploadStatus.productOrVariationID
+                    )
+                }
+                statusStorage.updateStatus(newStatus)
             }
-        }
-    }
 
-    func notifyCompletion(_ result: Result<Media, Error>, for uploadID: String) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            DDLogDebug("MediaUploadSessionManager-[Completion]- Notifying completion for task (\(uploadID)) with result: \(result)")
-
-            if let completion = self.uploadCompletionClosures[uploadID] {
+            DDLogDebug("MediaUploadSessionManager- current local statuses \(statusStorage.getAllStatuses())")
+            if let completion = self.uploadCompletionClosures[metadata.uploadID] {
                 completion(result)
-                self.uploadCompletionClosures.removeValue(forKey: uploadID)
+                self.uploadCompletionClosures.removeValue(forKey: metadata.uploadID)
             }
-            self.delegate?.mediaUploadSessionManager(self, didCompleteUpload: uploadID, withResult: result)
+            self.delegate?.mediaUploadSessionManager(self, didCompleteUpload: metadata.uploadID, withResult: result)
         }
     }
 }
@@ -195,22 +209,22 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
 
         guard let httpResponse = task.response as? HTTPURLResponse else {
             DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
-                       " response is not a valid HTTPURLResponse. Actual response: \(String(describing: task.response))")
-            handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)
+                      " response is not a valid HTTPURLResponse. Actual response: \(String(describing: task.response))")
+            notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: metadata)
             return
         }
 
         guard let data = MediaUploadSessionTaskStorage.getData(forTaskMetadata: metadata) else {
             DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
                        " missing response data for task with identifier \(task.taskIdentifier)")
-            handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)
+            notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: metadata)
             return
         }
 
         if !(200...299).contains(httpResponse.statusCode) {
             DDLogError("⛔️ MediaUploadSessionManager-[MediaUpload]- Upload failure for task (\(uploadID)):" +
                        " unexpected HTTP status code \(httpResponse.statusCode). Full response: \(httpResponse) Headers: \(httpResponse.allHeaderFields)")
-            handleUploadFailure(uploadID: uploadID, error: BackgroundUploadError.invalidResponse)
+            notifyCompletion(.failure(BackgroundUploadError.invalidResponse), for: metadata)
             return
         }
 
@@ -226,10 +240,10 @@ extension MediaUploadSessionManager: URLSessionDataDelegate {
         do {
             let wpMedia = try mapper.map(response: data)
             let finalMedia = wpMedia.toMedia()
-            notifyCompletion(.success(finalMedia), for: uploadID)
+            notifyCompletion(.success(finalMedia), for: metadata)
         } catch {
             DDLogError("⛔️ MediaUploadSessionManager-[ResponseMapping]- Upload failure for task (\(uploadID)): error mapping media: \(error.localizedDescription)")
-            handleUploadFailure(uploadID: uploadID, error: error)
+            notifyCompletion(.failure(error), for: metadata)
         }
     }
 

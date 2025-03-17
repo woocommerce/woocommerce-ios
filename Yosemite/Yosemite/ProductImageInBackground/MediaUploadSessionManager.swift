@@ -33,7 +33,7 @@ public final class MediaUploadSessionManager: NSObject {
 
     // Storage to keep track of all uploads
     private let statusStorage: ProductImageStatusStorage
-    
+
     public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload",
                 statusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
         self.backgroundSessionIdentifier = sessionIdentifier
@@ -130,7 +130,7 @@ private extension MediaUploadSessionManager {
     func notifyCompletion(_ result: Result<Media, Error>, for metadata: TaskMetadata) {
         DispatchQueue.main.sync {
             let statusStorage = ProductImageStatusStorage()
-            
+
             if case .failure(let error) = result {
                 DDLogError("⛔️ MediaUploadSessionManager-[UploadFailure]- Upload failure for task (\(metadata.uploadID)): \(error.localizedDescription)")
             } else {

@@ -2,7 +2,9 @@ import UIKit
 import Combine
 import Storage
 import class Networking.UserAgent
+import class Networking.ProductImageStatusStorage
 import class Yosemite.MediaUploadSessionManager
+import class Yosemite.MediaUploadSessionTaskStorage
 import Experiments
 import class WidgetKit.WidgetCenter
 import protocol WooFoundation.Analytics
@@ -132,6 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register for background app refresh events.
         appRefreshHandler.registerSystemTaskIdentifier()
 
+        ProductImageStatusStorage().clearAllStatuses()
         return true
     }
 
@@ -271,9 +274,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      handleEventsForBackgroundURLSession identifier: String,
                      completionHandler: @escaping () -> Void) {
         if identifier == ServiceLocator.backgroundMediaUploadSessionManager.backgroundSessionIdentifier {
+
+
+            ServiceLocator.productImageUploader.processCompletedUploadsInBackground()
+            MediaUploadSessionTaskStorage.cleanupAllData()
+
             ServiceLocator.backgroundMediaUploadSessionManager.handleBackgroundSessionCompletion(completionHandler)
         }
+
     }
+
 }
 
 // MARK: - Initialization Methods

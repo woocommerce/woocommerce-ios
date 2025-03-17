@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .starReceiptPrinterSupport:
+            return false
         default:
             return true
         }

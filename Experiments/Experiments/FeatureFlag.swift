@@ -204,4 +204,6 @@ public enum FeatureFlag: Int {
     /// Supports uploading product images in background
     ///
     case backgroundProductImageUpload
+
+    case starReceiptPrinterSupport
 }

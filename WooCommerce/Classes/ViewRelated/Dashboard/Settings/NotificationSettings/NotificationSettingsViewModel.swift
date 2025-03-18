@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// View model for `NotificationSettingsView`
@@ -7,31 +8,26 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var productReviewNotificationsEnabled = false
 
     private let notificationCenter: UNUserNotificationCenter
+    private var appStateSubscription: AnyCancellable?
 
     init(notificationCenter: UNUserNotificationCenter = .current()) {
         self.notificationCenter = notificationCenter
 
         observeAppState()
-        Task {
-            await checkNotificationPermission()
-        }
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+        updateNotificationStateIfNeeded()
     }
 }
 
 private extension NotificationSettingsViewModel {
     func observeAppState() {
         // Observe when the app becomes active.
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(appDidBecomeActive),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
+        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.updateNotificationStateIfNeeded()
+            }
     }
 
-    @objc private func appDidBecomeActive() {
+    func updateNotificationStateIfNeeded() {
         Task {
             await checkNotificationPermission()
         }

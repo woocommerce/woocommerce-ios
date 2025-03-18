@@ -75,7 +75,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     private var shouldUseMerchantAIAPIKey: Bool {
         // TODO: Handle case when key non-empty, but disabled
-        guard let openAIApiKey = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !openAIApiKey.isEmpty else {
+        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
             return false
         }
         return true
@@ -116,10 +116,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     private func generateTextUsingMerchantAPIKey(base: String,
                                                  responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
-        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+        guard let key = UserDefaults.standard.string(forKey: "AIProviderApiKey"), !key.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
-        let selectedModel = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
+        let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
 
         let requestBody: [String: Any] = [
             "model": selectedModel,
@@ -128,10 +128,20 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         ]
 
         let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+
+        var request: URLRequest
+        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
+        if selectedProvider == "OpenAI" {
+            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        } else { // Anthropic
+            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+            request.setValue(key, forHTTPHeaderField: "x-api-key")
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        }
+
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         request.httpBody = requestData
 
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -182,11 +192,11 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     private func identifyLanguageUsingMerchantAPIKey(string: String) async throws -> String {
 
-        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
             // TODO: If retrieved here, handle error case
             throw URLError(.userAuthenticationRequired)
         }
-        let selectedModel = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
+        let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
         let prompt = """
         What is the ISO language code of the language used in the below text?
         Do not include any explanations and only provide the ISO language code in your response.
@@ -196,14 +206,23 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         let requestBody: [String: Any] = [
             "model": selectedModel,
             "messages": [["role": "user", "content": prompt]],
-            "max_tokens": 400 // TODO: Allow max_tokens. Check why 10. It used ~110 for 2 calls as per https://platform.openai.com/usage
+            "max_tokens": 400
         ]
-
         let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+
+        var request: URLRequest
+        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
+        if selectedProvider == "OpenAI" {
+            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        } else { // Anthropic
+            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+            request.setValue(key, forHTTPHeaderField: "x-api-key")
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        }
+
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         request.httpBody = requestData
 
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -213,13 +232,20 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        guard let choices = json?["choices"] as? [[String: Any]],
-              let message = choices.first?["message"] as? [String: Any],
-              let content = message["content"] as? String else {
-            throw URLError(.cannotParseResponse)
+        if selectedProvider == "OpenAI" {
+            guard let choices = json?["choices"] as? [[String: Any]],
+                  let message = choices.first?["message"] as? [String: Any],
+                  let content = message["content"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            return content.trimmingCharacters(in: .whitespacesAndNewlines)
+        } else { // Anthropic
+            guard let content = json?["content"] as? [[String: Any]],
+                  let text = content.first?["text"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            return text.trimmingCharacters(in: .whitespacesAndNewlines)
         }
-
-        return content.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     public func generateAIProduct(siteID: Int64,
@@ -310,9 +336,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                                    weightUnit: String?,
                                                    categories: [ProductCategory],
                                                    tags: [ProductTag]) async throws -> AIProduct {
-        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
+        let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
 
         var inputComponents = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
@@ -377,16 +404,26 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         let prompt = inputComponents.joined(separator: "\n") + "\n" + expectedJsonFormat
 
         let requestBody: [String: Any] = [
-            "model": "gpt-4",
+            "model": selectedModel,
             "messages": [["role": "user", "content": prompt]],
             "max_tokens": ParameterValue.maxTokens
         ]
 
         let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+        
+        var request: URLRequest
+        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
+        if selectedProvider == "OpenAI" {
+            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        } else { // Anthropic
+            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+            request.setValue(key, forHTTPHeaderField: "x-api-key")
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        }
+        
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         request.httpBody = requestData
 
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -396,10 +433,25 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        guard let choices = json?["choices"] as? [[String: Any]],
-              let message = choices.first?["message"] as? [String: Any],
-              let content = message["content"] as? String,
-              let data = content.data(using: .utf8),
+            
+        var contentString: String
+            
+        if selectedProvider == "OpenAI" {
+            guard let choices = json?["choices"] as? [[String: Any]],
+                  let message = choices.first?["message"] as? [String: Any],
+                  let content = message["content"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            contentString = content
+        } else { // Anthropic
+            guard let content = json?["content"] as? [[String: Any]],
+                  let text = content.first?["text"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            contentString = text
+        }
+
+        guard let data = contentString.data(using: .utf8),
               let productJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             throw URLError(.cannotParseResponse)
         }

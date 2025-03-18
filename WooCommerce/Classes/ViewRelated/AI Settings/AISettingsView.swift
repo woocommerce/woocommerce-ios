@@ -1,54 +1,58 @@
 import SwiftUI
 
 struct AISettingsView: View {
-    @State private var openAIApiKey: String = UserDefaults.standard.string(forKey: "OpenAIApiKey") ?? ""
-    @State private var selectedModel: String = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
+    @State private var AIProviderApiKey: String = UserDefaults.standard.string(forKey: "AIProviderAPIKey") ?? ""
+    @State private var selectedModel: String = UserDefaults.standard.string(forKey: "AIProviderModel") ?? "gpt-4o"
+    @State private var selectedProvider: String = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
 
-    let availableModels = ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"]
+    let openAIModels = [
+        "gpt-4o",
+        "gpt-4-turbo",
+        "gpt-3.5-turbo"
+    ]
+    let anthropicModels = [
+        "claude-3-haiku-20240307"
+    ]
 
     var body: some View {
         ScrollView {
             VStack {
-                Text("Models")
-                Picker("Select Model", selection: $selectedModel) {
-                    ForEach(availableModels, id: \.self) { model in
-                        Text(model).tag(model)
+                HStack {
+                    Text("Provider")
+                    Picker("Select Provider", selection: $selectedProvider) {
+                        Text("OpenAI").tag("OpenAI")
+                        Text("Anthropic").tag("Anthropic")
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .onChange(of: selectedProvider) { _ in
+                        selectedModel = selectedProvider == "OpenAI" ? openAIModels.first ?? "" : anthropicModels.first ?? ""
+                        UserDefaults.standard.setValue(selectedModel, forKey: "AIProviderModel")
+                        UserDefaults.standard.setValue(selectedProvider, forKey: "AIProvider")
                     }
                 }
-                .pickerStyle(MenuPickerStyle())
-                .onChange(of: selectedModel) { newModel in
-                    UserDefaults.standard.setValue(newModel, forKey: "OpenAIModel")
-                }
-                Divider()
 
-                // OpenAI
                 HStack {
-                    Toggle("OpenAI API key", isOn: .constant(true))
+                    Text("Models")
+                    Picker("Select Model", selection: $selectedModel) {
+                        ForEach(selectedProvider == "OpenAI" ? openAIModels : anthropicModels, id: \.self) { model in
+                            Text(model).tag(model)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
                 }
+
+                Divider()
                 HStack {
-                    TextField("Enter API Key", text: $openAIApiKey)
+                    TextField("Enter API Key", text: $AIProviderApiKey)
                         .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
 
                     Button(action: {
-                        UserDefaults.standard.setValue(openAIApiKey, forKey: "OpenAIApiKey")
+                        UserDefaults.standard.setValue(AIProviderApiKey, forKey: "AIProviderAPIKey")
+                        UserDefaults.standard.setValue(selectedModel, forKey: "AIProviderModel")
+                        UserDefaults.standard.setValue(selectedProvider, forKey: "AIProvider")
                     }, label: { Text("Save") })
                 }
-                Text("Enter your OpenAI key to use AI generation at public API costs.")
-                    .font(.caption)
-
-                // Anthropic
-                HStack {
-                    Toggle("Anthropic API key", isOn: .constant(true))
-                }
-                HStack {
-                    TextField(text: .constant("*****"), label: {
-                        EmptyView()
-                    })
-                    Button(action: {
-                        // TODO: not implemented
-                    }, label: { Text("Save") } )
-                }
-                Text("Enter your Anthropic key to use AI generation at public API costs. When used, this key will be used for all 'claude-' models.")
+                Text("Enter your API key to use AI generation at public API costs.")
                     .font(.caption)
             }
         }

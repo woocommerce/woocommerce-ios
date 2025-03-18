@@ -4,6 +4,7 @@ struct AISettingsView: View {
     @State private var AIProviderApiKey: String = UserDefaults.standard.string(forKey: "AIProviderAPIKey") ?? ""
     @State private var selectedModel: String = UserDefaults.standard.string(forKey: "AIProviderModel") ?? "gpt-4o"
     @State private var selectedProvider: String = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
+    @State private var isEditingApiKey: Bool = false
 
     let openAIModels = [
         "gpt-4o",
@@ -28,6 +29,7 @@ struct AISettingsView: View {
                         selectedModel = selectedProvider == "OpenAI" ? openAIModels.first ?? "" : anthropicModels.first ?? ""
                         UserDefaults.standard.setValue(selectedModel, forKey: "AIProviderModel")
                         UserDefaults.standard.setValue(selectedProvider, forKey: "AIProvider")
+                        logSettings()
                     }
                 }
 
@@ -39,18 +41,39 @@ struct AISettingsView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
+                    .onChange(of: selectedModel) { _ in
+                        logSettings()
+                    }
                 }
 
                 Divider()
                 HStack {
                     TextField("Enter API Key", text: $AIProviderApiKey)
-                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: isEditingApiKey))
+                        .foregroundColor(isEditingApiKey ? .primary : .gray)
+                        .disabled(!isEditingApiKey)
+
+                    if !AIProviderApiKey.isEmpty {
+                        Button(action: {
+                            AIProviderApiKey = ""
+                            logSettings()
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
 
                     Button(action: {
-                        UserDefaults.standard.setValue(AIProviderApiKey, forKey: "AIProviderAPIKey")
-                        UserDefaults.standard.setValue(selectedModel, forKey: "AIProviderModel")
-                        UserDefaults.standard.setValue(selectedProvider, forKey: "AIProvider")
-                    }, label: { Text("Save") })
+                        if isEditingApiKey {
+                            UserDefaults.standard.setValue(AIProviderApiKey, forKey: "AIProviderAPIKey")
+                            UserDefaults.standard.setValue(selectedModel, forKey: "AIProviderModel")
+                            UserDefaults.standard.setValue(selectedProvider, forKey: "AIProvider")
+                            isEditingApiKey = false
+                        } else {
+                            isEditingApiKey = true
+                        }
+                        logSettings()
+                    }, label: { Text(isEditingApiKey ? "Save" : "Edit") })
                 }
                 Text("Enter your API key to use AI generation at public API costs.")
                     .font(.caption)
@@ -59,6 +82,12 @@ struct AISettingsView: View {
         .padding()
         .navigationTitle("AI Settings")
         .onAppear {
+            if !AIProviderApiKey.isEmpty {
+                isEditingApiKey = false
+            } else {
+                isEditingApiKey = true
+            }
+            logSettings()
             getSiteDetails()
         }
     }
@@ -75,6 +104,24 @@ struct AISettingsView: View {
             - isWooCommerceActive : \(site.isWooCommerceActive)
             - isWordPressComStore : \(site.isWordPressComStore)
             """)
+    }
+
+    private func logSettings() {
+        // TODO: Analytics
+        let maskedApiKey: String = {
+            if AIProviderApiKey.count > 8 {
+                let start = AIProviderApiKey.prefix(4)
+                let end = AIProviderApiKey.suffix(4)
+                return "\(start)****\(end)"
+            } else {
+                return "****"
+            }
+        }()
+        
+        print("AIProviderApiKey: \(maskedApiKey)")
+        print("selectedModel: \(selectedModel)")
+        print("selectedProvider: \(selectedProvider)")
+        print("isEditingApiKey: \(isEditingApiKey)")
     }
 }
 

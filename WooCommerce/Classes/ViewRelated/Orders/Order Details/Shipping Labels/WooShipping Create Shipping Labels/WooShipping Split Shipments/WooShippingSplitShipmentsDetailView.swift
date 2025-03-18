@@ -71,6 +71,6 @@ private extension WooShippingSplitShipmentsDetailView {
 }
 
 #Preview {
-    WooShippingSplitShipmentsDetailView(viewModel:  WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
+    WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                        config: ShippingLabelSampleData.sampleWooShippingConfig()))
 }

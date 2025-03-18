@@ -96,7 +96,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                                       responseFormat: responseFormat)
         }
     }
-    
+
     private func generateTextUsingJetpack(siteID: Int64,
                                           base: String,
                                           feature: GenerativeContentRemoteFeature,
@@ -197,11 +197,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             throw URLError(.userAuthenticationRequired)
         }
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
-        let prompt = """
-        What is the ISO language code of the language used in the below text?
-        Do not include any explanations and only provide the ISO language code in your response.
-        Text: ```\(string)```
-        """
+        let prompt = String(format: AIRequestPrompts.identifyLanguage, string)
 
         let requestBody: [String: Any] = [
             "model": selectedModel,
@@ -283,7 +279,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                                         tags: tags)
         }
     }
-    
+
     private func generateAIProductUsingJetpack(siteID: Int64,
                                             productName: String?,
                                             keywords: String,
@@ -341,65 +337,23 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
 
-        var inputComponents = [
-            "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone, and give your response in the below JSON format.",
-            "keywords: ```\(keywords)```",
-            "tone: ```\(tone)```",
-        ]
+        var inputComponents = [String(format: AIRequestPrompts.inputComponents, keywords, tone)]
 
         if let productName = productName, !productName.isEmpty {
             inputComponents.insert("name: ```\(productName)```", at: 1)
         }
 
-        let jsonResponseFormatDict: [String: Any] = {
-            let tagsPrompt: String = {
-                guard !tags.isEmpty else {
-                    return "Suggest an array of the best matching tags for this product."
-                }
-                return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                    "suggest an array of the best matching tags for this product. You can suggest new tags as well."
-            }()
+        let jsonResponseFormatDict = generateAIProductResponseFormat(
+            tags: tags,
+            categories: categories,
+            language: language,
+            tone: tone,
+            currencySymbol: currencySymbol,
+            dimensionUnit: dimensionUnit,
+            weightUnit: weightUnit
+        )
 
-            let categoriesPrompt: String = {
-                guard !categories.isEmpty else {
-                    return "Suggest an array of the best matching categories for this product."
-                }
-                return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                    "suggest an array of the best matching categories for this product. You can suggest new categories as well."
-            }()
-
-            let shippingPrompt = {
-                var dict = [String: String]()
-                if let weightUnit {
-                    dict["weight"] = "Guess and provide only the number in \(weightUnit)"
-                }
-                if let dimensionUnit {
-                    dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
-                }
-                return dict
-            }()
-
-            return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
-                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "virtual": "A boolean value that shows whether the product is virtual or physical",
-                    "shipping": shippingPrompt,
-                    "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
-                    + "only provide the price as a number",
-                    "tags": tagsPrompt,
-                    "categories": categoriesPrompt]
-        }()
-
-        let expectedJsonFormat =
-            "Your response should be in JSON format and don't send anything extra. " +
-            "Don't include the word JSON in your response:" +
-            "\n" +
-            (jsonResponseFormatDict.toJSONEncoded() ?? "")
+        let expectedJsonFormat = formatExpectedJsonResponse(jsonResponseFormatDict)
 
         let prompt = inputComponents.joined(separator: "\n") + "\n" + expectedJsonFormat
 
@@ -410,7 +364,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         ]
 
         let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-        
+
         var request: URLRequest
         let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
         if selectedProvider == "OpenAI" {
@@ -421,7 +375,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             request.setValue(key, forHTTPHeaderField: "x-api-key")
             request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         }
-        
+
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = requestData
@@ -433,9 +387,9 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            
+
         var contentString: String
-            
+
         if selectedProvider == "OpenAI" {
             guard let choices = json?["choices"] as? [[String: Any]],
                   let message = choices.first?["message"] as? [String: Any],
@@ -500,11 +454,7 @@ private extension GenerativeContentRemote {
                           string: String,
                           feature: GenerativeContentRemoteFeature,
                           token: JWToken) async throws -> String {
-        let prompt = [
-            "What is the ISO language code of the language used in the below text?" +
-            "Do not include any explanations and only provide the ISO language code in your response.",
-            "Text: ```\(string)```"
-        ].joined(separator: "\n")
+        let prompt = String(format: AIRequestPrompts.identifyLanguage, string)
         let parameters: [String: Any] = [ParameterKey.token: token.token,
                                          ParameterKey.question: prompt,
                                          ParameterKey.stream: ParameterValue.stream,
@@ -530,12 +480,7 @@ private extension GenerativeContentRemote {
                            categories: [ProductCategory],
                            tags: [ProductTag],
                            token: JWToken) async throws -> AIProduct {
-        var inputComponents = [
-            "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone, and give your response in the below JSON format.",
-            "keywords: ```\(keywords)```",
-            "tone: ```\(tone)```",
-        ]
+        var inputComponents = [String(format: AIRequestPrompts.inputComponents, keywords, tone)]
 
         // Name will be added only if `productName` is available.
         // TODO: this code related to `productName` can be removed after releasing the new product creation with AI flow. Github issue: 13108
@@ -545,58 +490,17 @@ private extension GenerativeContentRemote {
 
         let input = inputComponents.joined(separator: "\n")
 
-        let jsonResponseFormatDict: [String: Any] = {
-            let tagsPrompt: String = {
-                guard !tags.isEmpty else {
-                    return "Suggest an array of the best matching tags for this product."
-                }
+        let jsonResponseFormatDict = generateAIProductResponseFormat(
+            tags: tags,
+            categories: categories,
+            language: language,
+            tone: tone,
+            currencySymbol: currencySymbol,
+            dimensionUnit: dimensionUnit,
+            weightUnit: weightUnit
+        )
 
-                return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                        "suggest an array of the best matching tags for this product. You can suggest new tags as well."
-            }()
-
-            let categoriesPrompt: String = {
-                guard !categories.isEmpty else {
-                    return "Suggest an array of the best matching categories for this product."
-                }
-
-                return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                        "suggest an array of the best matching categories for this product. You can suggest new categories as well."
-            }()
-
-            let shippingPrompt = {
-                var dict = [String: String]()
-                if let weightUnit {
-                    dict["weight"] = "Guess and provide only the number in \(weightUnit)"
-                }
-
-                if let dimensionUnit {
-                    dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
-                }
-                return dict
-            }()
-
-            // swiftlint:disable line_length
-            return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
-                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "virtual": "A boolean value that shows whether the product is virtual or physical",
-                    "shipping": shippingPrompt,
-                    "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
-                    + "only provide the price as a number",
-                    "tags": tagsPrompt,
-                    "categories": categoriesPrompt]
-        }()
-
-        let expectedJsonFormat =
-        "Your response should be in JSON format and don't send anything extra. " +
-        "Don't include the word JSON in your response:" +
-        "\n" +
-        (jsonResponseFormatDict.toJSONEncoded() ?? "")
+        let expectedJsonFormat = formatExpectedJsonResponse(jsonResponseFormatDict)
 
         let prompt = input + "\n" + expectedJsonFormat
 
@@ -655,5 +559,79 @@ private extension GenerativeContentRemote {
 private extension JWToken {
     func isTokenValid(for currentSelectedSiteID: Int64) -> Bool {
         expiryDate > Date() && siteID == currentSelectedSiteID
+    }
+}
+
+private struct AIRequestPrompts {
+    static let identifyLanguage = [
+        "What is the ISO language code of the language used in the below text?",
+        "Do not include any explanations and only provide the ISO language code in your response.",
+        "Text: ```%@"
+    ].joined(separator: "\n")
+
+    static let inputComponents = [
+        "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
+        "using the provided name, keywords, and tone, and give your response in the below JSON format.",
+        "keywords: ```%@```",
+        "tone: ```%@```"
+    ].joined(separator: "\n")
+}
+
+private extension GenerativeContentRemote {
+    private func formatExpectedJsonResponse(_ jsonResponseFormat: [String: Any]) -> String {
+        return "Your response should be in JSON format and don't send anything extra. " +
+               "Don't include the word JSON in your response:\n" +
+               (jsonResponseFormat.toJSONEncoded() ?? "")
+    }
+
+    private func generateAIProductResponseFormat(tags: [ProductTag],
+                                                 categories: [ProductCategory],
+                                                 language: String,
+                                                 tone: String,
+                                                 currencySymbol: String,
+                                                 dimensionUnit: String?,
+                                                 weightUnit: String?) -> [String: Any] {
+        let tagsPrompt: String = {
+            guard !tags.isEmpty else {
+                return "Suggest an array of the best matching tags for this product."
+            }
+            return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
+                   "suggest an array of the best matching tags for this product. You can suggest new tags as well."
+        }()
+
+        let categoriesPrompt: String = {
+            guard !categories.isEmpty else {
+                return "Suggest an array of the best matching categories for this product."
+            }
+            return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
+                   "suggest an array of the best matching categories for this product. You can suggest new categories as well."
+        }()
+
+        let shippingPrompt = {
+            var dict = [String: String]()
+            if let weightUnit {
+                dict["weight"] = "Guess and provide only the number in \(weightUnit)"
+            }
+            if let dimensionUnit {
+                dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
+                dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
+                dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
+            }
+            return dict
+        }()
+
+        // swiftlint:disable line_length
+        return [
+            "names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
+            "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, " +
+                            "written in the language with ISO code ```\(language)```",
+            "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, " +
+                                  "written in the language with ISO code ```\(language)```",
+            "virtual": "A boolean value that shows whether the product is virtual or physical",
+            "shipping": shippingPrompt,
+            "price": "Guess the price in \(currencySymbol), do not include the currency symbol, only provide the price as a number",
+            "tags": tagsPrompt,
+            "categories": categoriesPrompt
+        ]
     }
 }

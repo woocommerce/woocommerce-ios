@@ -2,8 +2,8 @@ import SwiftUI
 
 struct AISettingsView: View {
     @State private var AIProviderApiKey: String = UserDefaults.standard.string(forKey: "AIProviderAPIKey") ?? ""
-    @State private var selectedModel: String = UserDefaults.standard.string(forKey: "AIProviderModel") ?? "gpt-4o"
-    @State private var selectedProvider: String = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
+    @State private var selectedModel: String = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
+    @State private var selectedProvider: String = UserDefaults.standard.string(forKey: "AIProvider") ?? ""
     @State private var isEditingApiKey: Bool = false
 
     let openAIModels = [

@@ -433,7 +433,7 @@ private extension PaymentMethodsViewModel {
             return
         }
 
-        localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
+        tapToPayReaderSupported { [weak self] tapToPaySupportedByDevice in
             let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay) ?? false
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
                 self?.showPayWithCardRow = orderIsEligible
@@ -442,11 +442,11 @@ private extension PaymentMethodsViewModel {
         }
     }
 
-    private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
+    private func tapToPayReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: siteID,
             cardReaderType: .tapToPay,
-            discoveryMethod: .localMobile,
+            discoveryMethod: .tapToPay,
             minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionForTapToPay,
             onCompletion: onCompletion)
         stores.dispatch(action)
@@ -558,7 +558,7 @@ private extension PaymentMethodsViewModel {
     ///
     func shouldReturnToOrderDetails(for discoveryMethod: CardReaderDiscoveryMethod, error: Error) -> Bool {
         switch (discoveryMethod, error) {
-        case (.localMobile, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
+        case (.tapToPay, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
             return false
         default:
             return true
@@ -602,7 +602,7 @@ enum PaymentMethodsError: Error {
 private extension CardReaderDiscoveryMethod {
     var analyticsCardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType {
         switch self {
-        case .localMobile:
+        case .tapToPay:
             return .builtIn
         case .bluetoothScan:
             return .external

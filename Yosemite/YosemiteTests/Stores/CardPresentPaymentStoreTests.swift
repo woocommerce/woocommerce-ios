@@ -702,7 +702,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     func test_checkDeviceSupport_action_passes_configuration_provider_to_service() {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
                                                                  cardReaderType: .tapToPay,
-                                                                 discoveryMethod: .localMobile,
+                                                                 discoveryMethod: .tapToPay,
                                                                  minimumOperatingSystemVersionOverride: nil,
                                                                  onCompletion: { _ in })
 
@@ -729,7 +729,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: sampleSiteID,
             cardReaderType: .tapToPay,
-            discoveryMethod: .localMobile,
+            discoveryMethod: .tapToPay,
             minimumOperatingSystemVersionOverride: expectedVersion,
             onCompletion: { _ in })
 

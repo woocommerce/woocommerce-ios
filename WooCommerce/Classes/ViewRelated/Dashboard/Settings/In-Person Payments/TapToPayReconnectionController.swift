@@ -86,8 +86,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         let supportDeterminer = supportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID)
         Task { @MainActor in
             guard supportDeterminer.locationIsAuthorized,
-                  supportDeterminer.siteSupportsLocalMobileReader(),
-                  await supportDeterminer.deviceSupportsLocalMobileReader(),
+                  supportDeterminer.siteSupportsTapToPayReader(),
+                  await supportDeterminer.deviceSupportsTapToPayReader(),
                   await supportDeterminer.hasPreviousTapToPayUsage(),
                   await supportDeterminer.connectedReader() == nil,
                   case .completed = onboardingCache.value else {

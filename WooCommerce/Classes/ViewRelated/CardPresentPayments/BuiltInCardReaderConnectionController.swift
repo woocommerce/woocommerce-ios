@@ -263,7 +263,7 @@ private extension BuiltInCardReaderConnectionController {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: .localMobile,
+            discoveryMethod: .tapToPay,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return

@@ -180,9 +180,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         guard !tapToPayReconnectionController.isReconnecting else {
             return adoptReconnection(using: paymentGatewayAccount)
         }
-        let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
+        let tapToPayReaderSupported = await supportDeterminer.deviceSupportsTapToPayReader() && supportDeterminer.siteSupportsTapToPayReader()
 
-        switch (discoveryMethod, localMobileReaderSupported) {
+        switch (discoveryMethod, tapToPayReaderSupported) {
         case (.none, true):
             await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
         case (.bluetoothScan, _),
@@ -190,12 +190,12 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-        case (.localMobile, true):
+        case (.tapToPay, true):
             builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-        case (.localMobile, false):
-            handlePreflightFailure(error: CardPresentPaymentPreflightError.localMobileReaderNotSupported)
+        case (.tapToPay, false):
+            handlePreflightFailure(error: CardPresentPaymentPreflightError.tapToPayReaderNotSupported)
         }
     }
 
@@ -208,7 +208,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                     try await self?.automaticallyDisconnectFromReader()
                     await self?.startReaderConnection(using: paymentGatewayAccount)
                 }
-            case .localMobile, .none:
+            case .tapToPay, .none:
                 self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             }
         }
@@ -290,5 +290,5 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 enum CardPresentPaymentPreflightError: Error, Equatable {
     case paymentGatewayAccountNotFound
     case failedToAutomaticallyDisconnect(reader: CardReader)
-    case localMobileReaderNotSupported
+    case tapToPayReaderNotSupported
 }

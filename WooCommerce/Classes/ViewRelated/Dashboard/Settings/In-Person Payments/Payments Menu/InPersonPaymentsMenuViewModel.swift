@@ -380,7 +380,7 @@ private extension InPersonPaymentsMenuViewModel {
 
 private extension InPersonPaymentsMenuViewModel {
     func updateTapToPaySection() async {
-        let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
+        let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsTapToPayReader()
 
         shouldShowTapToPaySection = isEligibleForCardPresentPayments &&
             countryEnabledForTapToPay &&

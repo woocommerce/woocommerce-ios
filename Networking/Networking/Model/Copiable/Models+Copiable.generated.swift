@@ -4131,6 +4131,36 @@ extension Networking.WooShippingAddress {
     }
 }
 
+extension Networking.WooShippingConfig {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy,
+        shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
+    ) -> Networking.WooShippingConfig {
+        let siteID = siteID ?? self.siteID
+        let shipments = shipments ?? self.shipments
+        let shippingLabelData = shippingLabelData ?? self.shippingLabelData
+
+        return Networking.WooShippingConfig(
+            siteID: siteID,
+            shipments: shipments,
+            shippingLabelData: shippingLabelData
+        )
+    }
+}
+
+extension Networking.WooShippingConfigResponse {
+    public func copy(
+        config: CopiableProp<WooShippingConfig> = .copy
+    ) -> Networking.WooShippingConfigResponse {
+        let config = config ?? self.config
+
+        return Networking.WooShippingConfigResponse(
+            config: config
+        )
+    }
+}
+
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
@@ -4343,6 +4373,21 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingShipment {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        subItems: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.WooShippingShipment {
+        let id = id ?? self.id
+        let subItems = subItems ?? self.subItems
+
+        return Networking.WooShippingShipment(
+            id: id,
+            subItems: subItems
         )
     }
 }

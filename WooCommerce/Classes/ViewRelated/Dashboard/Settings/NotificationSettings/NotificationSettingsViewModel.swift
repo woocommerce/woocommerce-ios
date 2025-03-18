@@ -11,15 +11,34 @@ final class NotificationSettingsViewModel: ObservableObject {
     init(notificationCenter: UNUserNotificationCenter = .current()) {
         self.notificationCenter = notificationCenter
 
+        observeAppState()
         Task {
-            await updateNotificationPermission()
+            await checkNotificationPermission()
         }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
 private extension NotificationSettingsViewModel {
+    func observeAppState() {
+        // Observe when the app becomes active.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+
+    @objc private func appDidBecomeActive() {
+        Task {
+            await checkNotificationPermission()
+        }
+    }
+
     @MainActor
-    func updateNotificationPermission() async {
+    func checkNotificationPermission() async {
         let isEnabled = await withCheckedContinuation { continuation in
             notificationCenter.getNotificationSettings { settings in
                 switch settings.authorizationStatus {

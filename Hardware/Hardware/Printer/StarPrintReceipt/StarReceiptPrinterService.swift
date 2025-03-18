@@ -29,15 +29,11 @@ public final class StarReceiptPrinterService: PrinterService {
         guard let printer else {
             return completion(.failure(StarReceiptPrinterError.noPrinterConnected))
         }
-        Task {
-            let printerStatus = try await printer.getStatus()
-            DDLogInfo("Printer status: \(printerStatus)")
-        }
+
         let command = getPrintCommand(for: content)
 
         Task {
             do {
-//                let command = try getTemplateCommand(for: content)
                 try await printer.open()
                 try await printer.print(command: command)
             } catch {
@@ -84,55 +80,6 @@ public final class StarReceiptPrinterService: PrinterService {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter.string(from: date)
     }
-
-    func getTemplateCommand(for content: ReceiptContent) throws -> String {
-        // Load JSON template
-        guard let templatePath = Bundle.main.path(forResource: "receipt_template", ofType: "json"),
-              let templateData = try? Data(contentsOf: URL(fileURLWithPath: templatePath)),
-              var templateString = String(data: templateData, encoding: .utf8) else {
-            print("Failed to load template.")
-            throw StarReceiptPrinterError.couldntLoadTemplate
-        }
-
-        // Replace placeholders with actual values
-        templateString = templateString
-            .replacingOccurrences(of: "{storeName}", with: content.parameters.storeName ?? "Store")
-            .replacingOccurrences(of: "{date}", with: formatDate(content.parameters.date))
-            .replacingOccurrences(of: "{amountPaid}", with: content.parameters.formattedAmount)
-            .replacingOccurrences(of: "{cardLast4}", with: content.parameters.cardDetails.last4)
-            .replacingOccurrences(of: "{orderNote}", with: content.orderNote ?? "")
-
-        // Convert line items into JSON format
-        let lineItemsJSON = content.lineItems.map {
-            """
-            {
-                "type": "text",
-                "content": "\($0.title) x \($0.quantity)    \($0.amount)",
-                "style": { "fontSize": 14, "alignment": "left" }
-            }
-            """
-        }.joined(separator: ",")
-
-        let totalsJSON = content.cartTotals.map {
-            """
-            {
-                "type": "text",
-                "content": "\($0.description): \($0.amount)",
-                "style": { "fontSize": 16, "bold": true, "alignment": "left" }
-            }
-            """
-        }.joined(separator: ",")
-
-        templateString = templateString
-            .replacingOccurrences(of: "\"{lineItems}\"", with: "[\(lineItemsJSON)]")
-            .replacingOccurrences(of: "\"{totals}\"", with: "[\(totalsJSON)]")
-
-        // Send the command to print
-        let builder = StarXpandCommand.StarXpandCommandBuilder()
-            .addDocument(StarXpandCommand.DocumentBuilder().addRaw(templateString.data(using: .utf8)!))
-
-        return builder.getCommands()
-    }
 }
 
 extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
@@ -148,5 +95,4 @@ extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
 
 enum StarReceiptPrinterError: Error {
     case noPrinterConnected
-    case couldntLoadTemplate
 }

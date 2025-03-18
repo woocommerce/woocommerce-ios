@@ -2,14 +2,23 @@ import SwiftUI
 
 struct AISettingsView: View {
     @State private var openAIApiKey: String = UserDefaults.standard.string(forKey: "OpenAIApiKey") ?? ""
+    @State private var selectedModel: String = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
+
+    let availableModels = ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"]
 
     var body: some View {
         ScrollView {
             VStack {
                 Text("Models")
-                // TODO:
-                Text("✅ gpt-4o")
-                Text("◽️ claude-3.5-sonnet")
+                Picker("Select Model", selection: $selectedModel) {
+                    ForEach(availableModels, id: \.self) { model in
+                        Text(model).tag(model)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .onChange(of: selectedModel) { newModel in
+                    UserDefaults.standard.setValue(newModel, forKey: "OpenAIModel")
+                }
                 Divider()
 
                 // OpenAI
@@ -63,4 +72,8 @@ struct AISettingsView: View {
             - isWordPressComStore : \(site.isWordPressComStore)
             """)
     }
+}
+
+#Preview {
+    AISettingsView()
 }

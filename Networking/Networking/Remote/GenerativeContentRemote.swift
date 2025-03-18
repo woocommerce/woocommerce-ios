@@ -119,9 +119,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
+        let selectedModel = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
 
         let requestBody: [String: Any] = [
-            "model": "gpt-4",
+            "model": selectedModel,
             "messages": [["role": "user", "content": base]],
             "max_tokens": ParameterValue.maxTokens
         ]
@@ -185,6 +186,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             // TODO: If retrieved here, handle error case
             throw URLError(.userAuthenticationRequired)
         }
+        let selectedModel = UserDefaults.standard.string(forKey: "OpenAIModel") ?? "gpt-4o"
         let prompt = """
         What is the ISO language code of the language used in the below text?
         Do not include any explanations and only provide the ISO language code in your response.
@@ -192,7 +194,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         """
 
         let requestBody: [String: Any] = [
-            "model": "gpt-4o", // TODO: Pass model
+            "model": selectedModel,
             "messages": [["role": "user", "content": prompt]],
             "max_tokens": 400 // TODO: Allow max_tokens. Check why 10. It used ~110 for 2 calls as per https://platform.openai.com/usage
         ]

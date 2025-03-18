@@ -450,10 +450,10 @@ private extension ProductDetailPreviewViewModel {
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                await self.fetchGeneralSettings()
+                await self.fetchGeneralSettings() // TODO: Double-check this doesn't conflict with own API keys if given
             }
             group.addTask {
-                await self.fetchProductSiteSettings()
+                await self.fetchProductSiteSettings() // TODO: Same as ^
             }
         }
 

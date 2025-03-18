@@ -85,6 +85,22 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                              base: String,
                              feature: GenerativeContentRemoteFeature,
                              responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
+        if shouldUseMerchantAIAPIKey {
+            debugPrint("🍍 Using merchant API key")
+            return try await generateTextUsingMerchantAPIKey(base: base, responseFormat: responseFormat)
+        } else {
+            debugPrint("🍍 Using Jetpack tunnel")
+            return try await generateTextUsingJetpack(siteID: siteID,
+                                                      base: base,
+                                                      feature: feature,
+                                                      responseFormat: responseFormat)
+        }
+    }
+    
+    private func generateTextUsingJetpack(siteID: Int64,
+                                          base: String,
+                                          feature: GenerativeContentRemoteFeature,
+                                          responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
         do {
             guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
@@ -98,19 +114,55 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
     }
 
+    private func generateTextUsingMerchantAPIKey(base: String,
+                                                 responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
+        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+            throw URLError(.userAuthenticationRequired)
+        }
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4",
+            "messages": [["role": "user", "content": base]],
+            "max_tokens": ParameterValue.maxTokens
+        ]
+
+        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
+        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        request.httpBody = requestData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let choices = json?["choices"] as? [[String: Any]],
+              let message = choices.first?["message"] as? [String: Any],
+              let content = message["content"] as? String else {
+            throw URLError(.cannotParseResponse)
+        }
+
+        return content.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     public func identifyLanguage(siteID: Int64,
                                  string: String,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
         if shouldUseMerchantAIAPIKey {
-            debugPrint("🍍 Using merchant API key")
+            debugPrint("🍍 identifyLanguage... using merchant API key")
             return try await identifyLanguageUsingMerchantAPIKey(string: string)
         } else {
+            debugPrint("🍍 identifyLanguage... using Jetpack tunnel")
             return try await identifyLanguageUsingJetpack(siteID: siteID,
                                                           string: string,
                                                           feature: feature)
         }
     }
-    
+
     private func identifyLanguageUsingJetpack(siteID: Int64,
                                               string: String,
                                               feature: GenerativeContentRemoteFeature) async throws -> String {
@@ -126,7 +178,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         }
     }
-    
+
     private func identifyLanguageUsingMerchantAPIKey(string: String) async throws -> String {
 
         guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
@@ -142,7 +194,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         let requestBody: [String: Any] = [
             "model": "gpt-4o", // TODO: Pass model
             "messages": [["role": "user", "content": prompt]],
-            "max_tokens": 10 // TODO: Allow max_tokens. Check why 10. It used ~110 for 2 calls as per https://platform.openai.com/usage
+            "max_tokens": 400 // TODO: Allow max_tokens. Check why 10. It used ~110 for 2 calls as per https://platform.openai.com/usage
         ]
 
         let requestData = try JSONSerialization.data(withJSONObject: requestBody)
@@ -178,38 +230,181 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                   weightUnit: String?,
                                   categories: [ProductCategory],
                                   tags: [ProductTag]) async throws -> AIProduct {
-
+        if shouldUseMerchantAIAPIKey {
+            debugPrint("🍍 generateAIProduct... using merchant API key")
+            return try await generateAIProductUsingMerchantAPIKey(productName: productName,
+                                                                keywords: keywords,
+                                                                language: language,
+                                                                tone: tone,
+                                                                currencySymbol: currencySymbol,
+                                                                dimensionUnit: dimensionUnit,
+                                                                weightUnit: weightUnit,
+                                                                categories: categories,
+                                                                tags: tags)
+        } else {
+            debugPrint("🍍 generateAIProduct... using Jetpack tunnel")
+            return try await generateAIProductUsingJetpack(siteID: siteID,
+                                                        productName: productName,
+                                                        keywords: keywords,
+                                                        language: language,
+                                                        tone: tone,
+                                                        currencySymbol: currencySymbol,
+                                                        dimensionUnit: dimensionUnit,
+                                                        weightUnit: weightUnit,
+                                                        categories: categories,
+                                                        tags: tags)
+        }
+    }
+    
+    private func generateAIProductUsingJetpack(siteID: Int64,
+                                            productName: String?,
+                                            keywords: String,
+                                            language: String,
+                                            tone: String,
+                                            currencySymbol: String,
+                                            dimensionUnit: String?,
+                                            weightUnit: String?,
+                                            categories: [ProductCategory],
+                                            tags: [ProductTag]) async throws -> AIProduct {
         do {
             guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await generateAIProduct(siteID: siteID,
-                                               productName: productName,
-                                               keywords: keywords,
-                                               language: language,
-                                               tone: tone,
-                                               currencySymbol: currencySymbol,
-                                               dimensionUnit: dimensionUnit,
-                                               weightUnit: weightUnit,
-                                               categories: categories,
-                                               tags: tags,
-                                               token: token)
+                                            productName: productName,
+                                            keywords: keywords,
+                                            language: language,
+                                            tone: tone,
+                                            currencySymbol: currencySymbol,
+                                            dimensionUnit: dimensionUnit,
+                                            weightUnit: weightUnit,
+                                            categories: categories,
+                                            tags: tags,
+                                            token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
                 WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await generateAIProduct(siteID: siteID,
-                                               productName: productName,
-                                               keywords: keywords,
-                                               language: language,
-                                               tone: tone,
-                                               currencySymbol: currencySymbol,
-                                               dimensionUnit: dimensionUnit,
-                                               weightUnit: weightUnit,
-                                               categories: categories,
-                                               tags: tags,
-                                               token: token)
+                                            productName: productName,
+                                            keywords: keywords,
+                                            language: language,
+                                            tone: tone,
+                                            currencySymbol: currencySymbol,
+                                            dimensionUnit: dimensionUnit,
+                                            weightUnit: weightUnit,
+                                            categories: categories,
+                                            tags: tags,
+                                            token: token)
         }
+    }
+
+    private func generateAIProductUsingMerchantAPIKey(productName: String?,
+                                                   keywords: String,
+                                                   language: String,
+                                                   tone: String,
+                                                   currencySymbol: String,
+                                                   dimensionUnit: String?,
+                                                   weightUnit: String?,
+                                                   categories: [ProductCategory],
+                                                   tags: [ProductTag]) async throws -> AIProduct {
+        guard let key = UserDefaults.standard.string(forKey: "OpenAIApiKey"), !key.isEmpty else {
+            throw URLError(.userAuthenticationRequired)
+        }
+
+        var inputComponents = [
+            "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
+            "using the provided name, keywords and tone, and give your response in the below JSON format.",
+            "keywords: ```\(keywords)```",
+            "tone: ```\(tone)```",
+        ]
+
+        if let productName = productName, !productName.isEmpty {
+            inputComponents.insert("name: ```\(productName)```", at: 1)
+        }
+
+        let jsonResponseFormatDict: [String: Any] = {
+            let tagsPrompt: String = {
+                guard !tags.isEmpty else {
+                    return "Suggest an array of the best matching tags for this product."
+                }
+                return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
+                    "suggest an array of the best matching tags for this product. You can suggest new tags as well."
+            }()
+
+            let categoriesPrompt: String = {
+                guard !categories.isEmpty else {
+                    return "Suggest an array of the best matching categories for this product."
+                }
+                return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
+                    "suggest an array of the best matching categories for this product. You can suggest new categories as well."
+            }()
+
+            let shippingPrompt = {
+                var dict = [String: String]()
+                if let weightUnit {
+                    dict["weight"] = "Guess and provide only the number in \(weightUnit)"
+                }
+                if let dimensionUnit {
+                    dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
+                    dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
+                    dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
+                }
+                return dict
+            }()
+
+            return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
+                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
+                    + "written in the language with ISO code ```\(language)```",
+                    "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, "
+                    + "written in the language with ISO code ```\(language)```",
+                    "virtual": "A boolean value that shows whether the product is virtual or physical",
+                    "shipping": shippingPrompt,
+                    "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
+                    + "only provide the price as a number",
+                    "tags": tagsPrompt,
+                    "categories": categoriesPrompt]
+        }()
+
+        let expectedJsonFormat =
+            "Your response should be in JSON format and don't send anything extra. " +
+            "Don't include the word JSON in your response:" +
+            "\n" +
+            (jsonResponseFormatDict.toJSONEncoded() ?? "")
+
+        let prompt = inputComponents.joined(separator: "\n") + "\n" + expectedJsonFormat
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4",
+            "messages": [["role": "user", "content": prompt]],
+            "max_tokens": ParameterValue.maxTokens
+        ]
+
+        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
+        var request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        request.httpBody = requestData
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let choices = json?["choices"] as? [[String: Any]],
+              let message = choices.first?["message"] as? [String: Any],
+              let content = message["content"] as? String,
+              let data = content.data(using: .utf8),
+              let productJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw URLError(.cannotParseResponse)
+        }
+
+        // We don't need siteID for direct API calls, but need a new mapper
+        let mapper = AIProductMapper(siteID: 0)
+        return try mapper.map(dictionary: productJson)
     }
 }
 

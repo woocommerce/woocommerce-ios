@@ -29,6 +29,7 @@ final class AIToneVoiceViewModel: ObservableObject {
 }
 
 // MARK: - AI tone helpers
+// We can use the same approach for storing the local API KEY, via UserDefaults extension
 extension UserDefaults {
     private enum Constants {
         static let defaultTone = AIToneVoice.casual

@@ -129,6 +129,7 @@ private extension AddProductCoordinator {
     ///
     var shouldShowAIActionSheet: Bool {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
+            // TODO: Needs more eligibility checks, as the flag could ne enabled, but the API key not entered, in which case they do not know what to do
             return true
         } else {
             return addProductWithAIEligibilityChecker.isEligible
@@ -220,7 +221,7 @@ private extension AddProductCoordinator {
 
         addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
-        analytics.track(event: .ProductCreationAI.entryPointDisplayed())
+        analytics.track(event: .ProductCreationAI.entryPointDisplayed()) // TODO: Modify analytics based on own key or a8c key
     }
 
     func startProductCreationWithAI() {

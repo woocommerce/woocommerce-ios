@@ -36,11 +36,13 @@ struct NotificationSettingsView: View {
 
 private extension NotificationSettingsView {
     var notificationsDisabledView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Layout.contentSpacing) {
             Spacer()
 
-            Image(systemName: "app.badge.fill")
-                .font(.largeTitle)
+            Image(uiImage: .bellIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.emptyStateImageWidth)
 
             Text(Localization.notificationsDisabled)
 
@@ -97,6 +99,11 @@ private extension NotificationSettingsView {
 }
 
 extension NotificationSettingsView {
+    enum Layout {
+        static let contentSpacing: CGFloat = 16
+        static let emptyStateImageWidth: CGFloat = 120
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "notificationSettingsView.title",
@@ -125,7 +132,7 @@ extension NotificationSettingsView {
         )
         static let notificationsFooter = NSLocalizedString(
             "notificationSettingsView.notificationsFooter",
-            value: "Including in-app reminders and remote push notifications.",
+            value: "Including reminders and remote push notifications.",
             comment: "Footer of the notifications section on the notification settings view"
         )
         static let newOrders = NSLocalizedString(

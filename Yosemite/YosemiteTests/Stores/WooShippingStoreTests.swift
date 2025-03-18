@@ -848,6 +848,50 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `loadConfig`
+
+    func test_loadConfig_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipment.fake()]])
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            let action = WooShippingAction.loadConfig(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actualConfig = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualConfig, expectedConfig)
+    }
+
+    func test_loadConfig_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            let action = WooShippingAction.loadConfig(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

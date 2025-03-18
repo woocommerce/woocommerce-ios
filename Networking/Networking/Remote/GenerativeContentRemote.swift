@@ -119,30 +119,16 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         guard let key = UserDefaults.standard.string(forKey: "AIProviderApiKey"), !key.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
+
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
+        let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
 
-        let requestBody: [String: Any] = [
-            "model": selectedModel,
-            "messages": [["role": "user", "content": base]],
-            "max_tokens": ParameterValue.maxTokens
-        ]
-
-        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-
-        var request: URLRequest
-        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
-        if selectedProvider == "OpenAI" {
-            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
-            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
-        } else { // Anthropic
-            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
-            request.setValue(key, forHTTPHeaderField: "x-api-key")
-            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-        }
-
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = requestData
+        let request = try createAIRequest(
+            provider: selectedProvider,
+            apiKey: key,
+            model: selectedModel,
+            prompt: base
+        )
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
@@ -197,29 +183,15 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             throw URLError(.userAuthenticationRequired)
         }
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
+        let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
         let prompt = String(format: AIRequestPrompts.identifyLanguage, string)
 
-        let requestBody: [String: Any] = [
-            "model": selectedModel,
-            "messages": [["role": "user", "content": prompt]],
-            "max_tokens": 400
-        ]
-        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-
-        var request: URLRequest
-        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
-        if selectedProvider == "OpenAI" {
-            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
-            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
-        } else { // Anthropic
-            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
-            request.setValue(key, forHTTPHeaderField: "x-api-key")
-            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-        }
-
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = requestData
+        let request = try createAIRequest(
+                provider: selectedProvider,
+                apiKey: key,
+                model: selectedModel,
+                prompt: prompt
+            )
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
@@ -228,7 +200,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        if selectedProvider == "OpenAI" {
+        if selectedProvider == .openAI {
             guard let choices = json?["choices"] as? [[String: Any]],
                   let message = choices.first?["message"] as? [String: Any],
                   let content = message["content"] as? String else {
@@ -335,6 +307,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
+        let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
 
         var inputComponents = [String(format: AIRequestPrompts.inputComponents, keywords, tone)]
@@ -357,28 +330,12 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
         let prompt = inputComponents.joined(separator: "\n") + "\n" + expectedJsonFormat
 
-        let requestBody: [String: Any] = [
-            "model": selectedModel,
-            "messages": [["role": "user", "content": prompt]],
-            "max_tokens": ParameterValue.maxTokens
-        ]
-
-        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
-
-        var request: URLRequest
-        let selectedProvider = UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI"
-        if selectedProvider == "OpenAI" {
-            request = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
-            request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
-        } else { // Anthropic
-            request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
-            request.setValue(key, forHTTPHeaderField: "x-api-key")
-            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-        }
-
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = requestData
+        let request = try createAIRequest(
+                provider: selectedProvider,
+                apiKey: key,
+                model: selectedModel,
+                prompt: prompt
+            )
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
@@ -390,7 +347,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
         var contentString: String
 
-        if selectedProvider == "OpenAI" {
+        if selectedProvider == .openAI {
             guard let choices = json?["choices"] as? [[String: Any]],
                   let message = choices.first?["message"] as? [String: Any],
                   let content = message["content"] as? String else {
@@ -578,6 +535,44 @@ private struct AIRequestPrompts {
 }
 
 private extension GenerativeContentRemote {
+    private enum AIProvider: String {
+        case openAI = "OpenAI"
+        case anthropic = "Anthropic"
+
+        var requestURL: String {
+            switch self {
+            case .openAI:
+                return "https://api.openai.com/v1/chat/completions"
+            case .anthropic:
+                return "https://api.anthropic.com/v1/messages"
+            }
+        }
+    }
+
+    private func createAIRequest(provider: AIProvider, apiKey: String, model: String, prompt: String) throws -> URLRequest {
+        let requestBody: [String: Any] = [
+            "model": model,
+            "messages": [["role": "user", "content": prompt]],
+            "max_tokens": ParameterValue.maxTokens
+        ]
+
+        let requestData = try JSONSerialization.data(withJSONObject: requestBody)
+        var request = URLRequest(url: URL(string: provider.requestURL)!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = requestData
+
+        switch provider {
+        case .openAI:
+            request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        case .anthropic:
+            request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
+            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+        }
+
+        return request
+    }
+
     private func formatExpectedJsonResponse(_ jsonResponseFormat: [String: Any]) -> String {
         return "Your response should be in JSON format and don't send anything extra. " +
                "Don't include the word JSON in your response:\n" +

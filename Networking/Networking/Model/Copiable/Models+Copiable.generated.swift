@@ -3232,7 +3232,8 @@ extension Networking.ShippingLabelPurchase {
         refundableAmount: CopiableProp<Double> = .copy,
         status: CopiableProp<ShippingLabelStatus> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
-        productNames: CopiableProp<[String]> = .copy
+        productNames: CopiableProp<[String]> = .copy,
+        shipmentID: NullableCopiableProp<String> = .copy
     ) -> Networking.ShippingLabelPurchase {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3246,6 +3247,7 @@ extension Networking.ShippingLabelPurchase {
         let status = status ?? self.status
         let productIDs = productIDs ?? self.productIDs
         let productNames = productNames ?? self.productNames
+        let shipmentID = shipmentID ?? self.shipmentID
 
         return Networking.ShippingLabelPurchase(
             siteID: siteID,
@@ -3259,7 +3261,8 @@ extension Networking.ShippingLabelPurchase {
             refundableAmount: refundableAmount,
             status: status,
             productIDs: productIDs,
-            productNames: productNames
+            productNames: productNames,
+            shipmentID: shipmentID
         )
     }
 }

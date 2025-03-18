@@ -23,15 +23,53 @@ struct NotificationSettingsView: View {
     }
 
     var body: some View {
+        Group {
+            if viewModel.notificationsEnabled {
+                notificationTypesForm
+            } else {
+                notificationsDisabledView
+            }
+        }
+        .navigationTitle(Localization.title)
+    }
+}
+
+private extension NotificationSettingsView {
+    var notificationsDisabledView: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            Image(systemName: "app.badge.fill")
+                .font(.largeTitle)
+
+            Text("All notifications are disabled for Woo")
+
+            Button("Enable") {
+                Task {
+                    await viewModel.requestNotificationPermission()
+                }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Spacer()
+        }
+        .scrollVerticallyIfNeeded()
+        .padding(.horizontal)
+    }
+
+    var notificationTypesForm: some View {
         Form {
             Section {
-                Toggle(isOn: $viewModel.notificationsEnabled) {
-                    Text(Localization.allNotifications)
+                HStack {
+                    Text("Notifications allowed")
+                    Spacer()
+                    Button("Change") {
+                        // TODO
+                    }
                 }
             } footer: {
                 Text(Localization.allNotificationsFooter)
             }
-
             Section {
                 Toggle(isOn: $viewModel.orderNotificationsEnabled) {
                     Text(Localization.newOrders)
@@ -44,9 +82,7 @@ struct NotificationSettingsView: View {
             } footer: {
                 Text(Localization.notificationTypesFooter)
             }
-            .disabled(!viewModel.notificationsEnabled)
         }
-        .navigationTitle(Localization.title)
     }
 }
 

@@ -280,10 +280,13 @@ private extension SettingsViewModel {
         let appSettingsSection: Section = {
             let rows: [Row]
             let notificationAvailable: Bool = {
+                guard stores.isAuthenticated && stores.isAuthenticatedWithoutWPCom == false else {
+                    return false
+                }
                 guard let site = stores.sessionManager.defaultSite else {
                     return false
                 }
-                return site.isJetpackThePluginInstalled && site.isJetpackConnected
+                return site.isJetpackCPConnected == false
             }()
             if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
                 rows = [.notifications, .privacy]

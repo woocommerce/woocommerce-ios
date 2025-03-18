@@ -49,6 +49,9 @@ public protocol WooShippingRemoteProtocol {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
+    func loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: @escaping (Result<WooShippingConfig, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -402,6 +405,27 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Loads label config for a given order
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadConfig(siteID: Int64,
+                           orderID: Int64,
+                           completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
+        do {
+            let path = Path.config(orderID: orderID)
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .get,
+                                         siteID: siteID,
+                                         path: path,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingConfigMapper(siteID: siteID, orderID: orderID)
+            enqueue(request, mapper: mapper, completion: completion)
+        }
+    }
 }
 
 // MARK: Constants
@@ -421,6 +445,9 @@ private extension WooShippingRemote {
         }
         static func updateDestination(orderID: Int64) -> String {
             "address/\(orderID)/update_destination"
+        }
+        static func config(orderID: Int64) -> String {
+            "config/label-purchase/\(orderID)"
         }
     }
 

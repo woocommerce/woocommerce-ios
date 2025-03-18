@@ -17,6 +17,7 @@ public final class StarReceiptPrinterService: PrinterService {
     }
 
     func discoverAll() async throws {
+        guard printer == nil else { return }
         let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetoothLE, .bluetooth, .usb])
 
         discovery.delegate = self
@@ -24,18 +25,31 @@ public final class StarReceiptPrinterService: PrinterService {
         try discovery.startDiscovery()
     }
 
+    enum PrintType {
+        case template
+        case standard
+    }
+
+    let printType: PrintType = .template
+
     public func printReceipt(content: ReceiptContent,
                              completion: @escaping (PrintingResult) -> Void) {
         guard let printer else {
             return completion(.failure(StarReceiptPrinterError.noPrinterConnected))
         }
 
-        let command = getPrintCommand(for: content)
-
         Task {
             do {
                 try await printer.open()
-                try await printer.print(command: command)
+
+                switch printType {
+                case .template:
+                    printer.template = receiptTemplate()
+                    try await printer.print(command: jsonRepresentation(of: content))
+                case .standard:
+                    let command = getPrintCommand(for: content)
+                    try await printer.print(command: command)
+                }
             } catch {
                 return completion(.failure(error))
             }
@@ -43,8 +57,26 @@ public final class StarReceiptPrinterService: PrinterService {
             completion(.success)
         }
     }
+}
 
-    private func getPrintCommand(for content: ReceiptContent) -> String {
+extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
+    public func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
+        DDLogInfo("Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.rawValue)")
+        self.printer = printer
+    }
+
+    public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
+        DDLogInfo("Finished discovering printers")
+    }
+}
+
+enum StarReceiptPrinterError: Error {
+    case noPrinterConnected
+    case couldNotMakeJson
+}
+
+private extension StarReceiptPrinterService {
+    func getPrintCommand(for content: ReceiptContent) -> String {
         var printerBuilder = StarXpandCommand.PrinterBuilder()
             .actionPrintText("\(content.parameters.storeName ?? "Store")\n")
             .actionPrintText("Date: \(formatDate(content.parameters.date))\n")
@@ -75,24 +107,113 @@ public final class StarReceiptPrinterService: PrinterService {
         return builder.getCommands()
     }
 
-    private func formatDate(_ date: Date) -> String {
+    func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter.string(from: date)
     }
-}
 
-extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
-    public func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
-        DDLogInfo("Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.rawValue)")
-        self.printer = printer
+    func jsonRepresentation(of content: ReceiptContent) throws -> String {
+        let encoder = JSONEncoder()
+        guard let jsonData = try? encoder.encode(content),
+           let jsonString = String(data: jsonData, encoding: .utf8) else {
+            throw StarReceiptPrinterError.couldNotMakeJson
+        }
+
+        return jsonString
     }
 
-    public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
-        DDLogInfo("Finished discovering printers")
-    }
-}
+    func receiptTemplate() -> String {
+        let builder = StarXpandCommand.StarXpandCommandBuilder()
+        _ = builder.addDocument(StarXpandCommand.DocumentBuilder()
+            .settingPrintableArea(48.0)
+            .addPrinter(StarXpandCommand.PrinterBuilder()
+                .styleInternationalCharacter(.usa)
+                .styleCharacterSpace(0.0)
+                .add(
+                     StarXpandCommand.PrinterBuilder()
+                    .styleAlignment(.center)
+                    .styleBold(true)
+                    .styleInvert(true)
+                    .styleMagnification(StarXpandCommand.MagnificationParameter(width: 2, height: 2))
+                    .actionPrintText("Receipt from ${parameters.store_name}\n")
+                    )
+                .actionFeed(1.0)
+                .actionPrintText("Amount Paid\n".uppercased())
+                .actionPrintText("${parameters.formatted_amount}\n")
+                .actionPrintText("Date Paid\n".uppercased())
+                .actionPrintText("${parameters.date}\n")
+                .actionPrintText("Payment Status\n".uppercased())
+                .actionPrintText("Success\n")
+                .actionPrintText("Payment Method\n".uppercased())
+                .actionPrintText("${parameters.card_details.brand} - ${parameters.card_details.last_4}\n")
+                .actionPrintText("Summary: Order #".uppercased())
+                .actionPrintText("${parameters.order_id}\n")
+                .actionPrintRuledLine(
+                    StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                )
+                .add(
+                    StarXpandCommand.PrinterBuilder(
+                        StarXpandCommand.Printer.PrinterParameter()
+                            .setTemplateExtension(
+                                StarXpandCommand.TemplateExtensionParameter()
+                                    .setEnableArrayFieldData(true)
+                            )
+                    )
+                        .actionPrintText(
+                            "${line_items.title}",
+                            StarXpandCommand.Printer.TextParameter()
+                                .setWidth(19)
+                        )
+                        .actionPrintText(
+                            "x ${line_items.quantity}",
+                            StarXpandCommand.Printer.TextParameter()
+                                .setWidth(5)
+                        )
+                        .actionPrintText(
+                            "${line_items.amount}\n",
+                            StarXpandCommand.Printer.TextParameter()
+                                .setWidth(7,
+                                          StarXpandCommand.Printer.TextWidthParameter()
+                                              .setAlignment(.right))
+                        )
+                )
+                    .add(
+                        StarXpandCommand.PrinterBuilder(
+                            StarXpandCommand.Printer.PrinterParameter()
+                                .setTemplateExtension(
+                                    StarXpandCommand.TemplateExtensionParameter()
+                                        .setEnableArrayFieldData(true)
+                                )
+                        )
+                            .actionPrintText(
+                                "${cart_totals.description}",
+                                StarXpandCommand.Printer.TextParameter()
+                                    .setWidth(24)
+                            )
+                            .actionPrintText(
+                                "${cart_totals.amount}\n",
+                                StarXpandCommand.Printer.TextParameter()
+                                    .setWidth(7,
+                                              StarXpandCommand.Printer.TextWidthParameter()
+                                                  .setAlignment(.right))
+                            )
+                    )
+                .actionPrintRuledLine(
+                    StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                )
+                    .actionPrintText("Notes\n".uppercased())
+                    .actionPrintText("${order_note}\n")
+                    .actionPrintRuledLine(
+                        StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                    )
+                    .actionPrintText("Application Name: ${parameters.card_details.receipt.application_preferred_name}\n")
+                    .actionPrintText("AID: ${parameters.card_details.receipt.dedicated_file_name}\n")
+                    .actionPrintText("Account Type: ${parameters.card_details.receipt.account_type}\n")
+                .actionCut(.partial)
+            )
+        )
 
-enum StarReceiptPrinterError: Error {
-    case noPrinterConnected
+        return builder.getCommands()
+    }
 }

@@ -52,11 +52,21 @@ enum ShippingLabelSampleData {
                                              predefinedOptions: sampleShippingLabelPredefinedOptions(),
                                              unactivatedPredefinedOptions: sampleShippingLabelPredefinedOptions())
     }
+
+    static func sampleWooShippingConfig() -> WooShippingConfig {
+        WooShippingConfig(siteID: 123,
+                          shipments: ["0": [sampleWooShippingShipment()]],
+                          shippingLabelData: nil)
+    }
 }
 
 // MARK: Helper methods
 //
 private extension ShippingLabelSampleData {
+    static func sampleWooShippingShipment() -> WooShippingShipment {
+        WooShippingShipment(id: 123, subItems: ["123-sub-0", "123-sub-1"])
+    }
+
     static func sampleAddress() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",

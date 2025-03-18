@@ -3,9 +3,9 @@ import Yosemite
 import WooFoundation
 
 final class WooShippingSplitShipmentsViewModel: ObservableObject {
-    private let siteID: Int64
-    private let orderID: Int64
+    private let order: Order
     private let stores: StoresManager
+    private let config: WooShippingConfig
 
     /// Label for the total number of items
     let itemsCountLabel = "6 items"
@@ -25,11 +25,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                                                             detailsLabel: "15×10×8cm • Espresso",
                                                                             weightLabel: "275g",
                                                                             priceLabel: "$60.00")]
-    init(siteID: Int64,
-         orderID: Int64,
+    init(order: Order,
+         config: WooShippingConfig,
          stores: StoresManager = ServiceLocator.stores) {
-        self.siteID = siteID
-        self.orderID = orderID
+        self.order = order
+        self.config = config
         self.stores = stores
     }
 }

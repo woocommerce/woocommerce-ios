@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct WooShippingSplitShipmentsRow: View {
     @State private var isShowingDetailView = false
@@ -43,7 +44,7 @@ private extension WooShippingSplitShipmentsRow {
 }
 
 #Preview {
-    WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(siteID: 123,
-                                                                               orderID: 123))
+    WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
+                                                                               config: ShippingLabelSampleData.sampleWooShippingConfig()))
     .padding()
 }

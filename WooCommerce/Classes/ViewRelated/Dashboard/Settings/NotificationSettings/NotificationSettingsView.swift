@@ -16,14 +16,16 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 }
 
 struct NotificationSettingsView: View {
-    @State private var notificationsEnabled = false
-    @State private var orderNotificationsEnabled = false
-    @State private var productReviewNotificationsEnabled = false
+    @StateObject private var viewModel: NotificationSettingsViewModel
+
+    init() {
+        self._viewModel = StateObject(wrappedValue: NotificationSettingsViewModel())
+    }
 
     var body: some View {
         Form {
             Section {
-                Toggle(isOn: $notificationsEnabled) {
+                Toggle(isOn: $viewModel.notificationsEnabled) {
                     Text(Localization.allNotifications)
                 }
             } footer: {
@@ -31,20 +33,18 @@ struct NotificationSettingsView: View {
             }
 
             Section {
-                Toggle(isOn: $orderNotificationsEnabled) {
+                Toggle(isOn: $viewModel.orderNotificationsEnabled) {
                     Text(Localization.newOrders)
                 }
-                .disabled(!notificationsEnabled)
-
-                Toggle(isOn: $productReviewNotificationsEnabled) {
+                Toggle(isOn: $viewModel.productReviewNotificationsEnabled) {
                     Text(Localization.productReviews)
                 }
-                .disabled(!notificationsEnabled)
             } header: {
                 Text(Localization.notificationTypesHeader)
             } footer: {
                 Text(Localization.notificationTypesFooter)
             }
+            .disabled(!viewModel.notificationsEnabled)
         }
         .navigationTitle(Localization.title)
     }

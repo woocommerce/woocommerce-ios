@@ -40,3 +40,9 @@ private struct WooShippingConfigMapperEnvelope: Decodable {
         case data = "data"
     }
 }
+
+extension WooShippingConfigMapper {
+    /// Load only the relevant fields from remote
+    ///
+    static let fieldsToLoad = "config.shipments, config.shippingLabelData.currentOrderLabels"
+}

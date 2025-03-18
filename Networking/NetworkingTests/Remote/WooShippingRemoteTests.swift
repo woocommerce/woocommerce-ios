@@ -620,6 +620,25 @@ final class WooShippingRemoteTests: XCTestCase {
 
     // MARK: Load config
 
+    func test_loadConfig_sends_correct_fields_value() async throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "shipping-label-config-success")
+
+        // When
+        _ = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID,
+                              orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let fieldsValue = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertEqual(WooShippingConfigMapper.fieldsToLoad, fieldsValue)
+    }
+
     func test_loadConfig_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)

@@ -17,7 +17,7 @@ final class WooShippingConfigMapperTests: XCTestCase {
         let shippingLabelData = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
         XCTAssertEqual(shippingLabelData.count, 1)
         XCTAssertEqual(shippingLabelData.first?.shipmentID, "1")
-        XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4869)
+        XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4871)
     }
 
     func test_config_info_is_properly_parsed_when_response_has_no_data_envelope() throws {
@@ -30,7 +30,7 @@ final class WooShippingConfigMapperTests: XCTestCase {
         let shippingLabelData = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
         XCTAssertEqual(shippingLabelData.count, 1)
         XCTAssertEqual(shippingLabelData.first?.shipmentID, "1")
-        XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4869)
+        XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4871)
     }
 }
 

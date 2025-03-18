@@ -416,10 +416,14 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                            completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
         do {
             let path = Path.config(orderID: orderID)
+            let parameters = [
+                ParameterKey.fields: WooShippingConfigMapper.fieldsToLoad
+            ]
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .get,
                                          siteID: siteID,
                                          path: path,
+                                         parameters: parameters,
                                          availableAsRESTRequest: true)
 
             let mapper = WooShippingConfigMapper(siteID: siteID, orderID: orderID)
@@ -467,6 +471,7 @@ private extension WooShippingRemote {
         static let labelIDCSV = "label_id_csv"
         static let address = "address"
         static let isVerified = "isVerified"
+        static let fields = "_fields"
     }
 }
 

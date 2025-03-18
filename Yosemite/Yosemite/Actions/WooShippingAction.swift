@@ -84,4 +84,10 @@ public enum WooShippingAction: Action {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
+
+    /// Loads label config for a given order
+    ///
+    case loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: (Result<WooShippingConfig, Error>) -> Void)
 }

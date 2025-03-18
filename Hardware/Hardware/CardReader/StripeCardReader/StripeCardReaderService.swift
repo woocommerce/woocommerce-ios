@@ -159,8 +159,6 @@ extension StripeCardReaderService: CardReaderService {
             throw CardReaderServiceError.bluetoothDenied
         }
 
-        Terminal.shared.delegate = self
-
         // We're now ready to start discovery, but first we'll check that we're not starting or canceling
         // another discovery process.
         // If we can't grab a lock quickly, let's fail rather than wait indefinitely
@@ -960,6 +958,10 @@ extension StripeCardReaderService: MobileReaderDelegate {
 
         connectedReadersSubject.send([connectedReaderWithUpdatedBatteryLevel])
     }
+
+    public func reader(_ reader: Reader, didDisconnect reason: DisconnectReason) {
+        connectedReadersSubject.send([])
+    }
 }
 
 extension StripeCardReaderService: TapToPayReaderDelegate {
@@ -1004,13 +1006,6 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
 
     public func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
         builtInCardReaderAcceptToSSubject.send(())
-    }
-}
-
-// MARK: - Terminal delegate
-extension StripeCardReaderService: TerminalDelegate {
-    public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
-        connectedReadersSubject.send([])
     }
 }
 

@@ -15,16 +15,6 @@ final class NotificationSettingsViewModel: ObservableObject {
             await updateNotificationPermission()
         }
     }
-
-    @MainActor
-    func requestNotificationPermission() async {
-        do {
-            let isGranted = try await notificationCenter.requestAuthorization(options: [.alert, .badge, .sound])
-            notificationsEnabled = isGranted
-        } catch {
-            DDLogError("⛔️ Error requesting notification permission: \(error)")
-        }
-    }
 }
 
 private extension NotificationSettingsViewModel {

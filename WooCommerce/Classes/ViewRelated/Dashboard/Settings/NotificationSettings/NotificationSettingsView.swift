@@ -42,11 +42,11 @@ private extension NotificationSettingsView {
             Image(systemName: "app.badge.fill")
                 .font(.largeTitle)
 
-            Text("All notifications are disabled for Woo")
+            Text(Localization.notificationsDisabled)
 
-            Button("Enable") {
+            Button(Localization.enableNotificationsCTA) {
                 Task {
-                    await viewModel.requestNotificationPermission()
+                    await openSettingsApp()
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -61,14 +61,16 @@ private extension NotificationSettingsView {
         Form {
             Section {
                 HStack {
-                    Text("Notifications allowed")
+                    Text(Localization.notificationsEnabled)
                     Spacer()
-                    Button("Change") {
-                        // TODO
+                    Button(Localization.settingsAppCTA) {
+                        Task {
+                            await openSettingsApp()
+                        }
                     }
                 }
             } footer: {
-                Text(Localization.allNotificationsFooter)
+                Text(Localization.notificationsFooter)
             }
             Section {
                 Toggle(isOn: $viewModel.orderNotificationsEnabled) {
@@ -84,6 +86,14 @@ private extension NotificationSettingsView {
             }
         }
     }
+
+    func openSettingsApp() async {
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else {
+            return
+        }
+        // Ask the system to open that URL.
+        await UIApplication.shared.open(url)
+    }
 }
 
 extension NotificationSettingsView {
@@ -93,15 +103,30 @@ extension NotificationSettingsView {
             value: "Notification Settings",
             comment: "Title of the notification settings view"
         )
-        static let allNotifications = NSLocalizedString(
-            "notificationSettingsView.allNotifications",
-            value: "All notifications",
-            comment: "Label of the toggle to enable/disable all notifications on the notification settings view"
+        static let notificationsDisabled = NSLocalizedString(
+            "notificationSettingsView.notificationsDisabled",
+            value: "Notifications are disabled for Woo",
+            comment: "Label indicating notifications are disabled on the notification settings view"
         )
-        static let allNotificationsFooter = NSLocalizedString(
-            "notificationSettingsView.allNotificationsFooter",
+        static let enableNotificationsCTA = NSLocalizedString(
+            "notificationSettingsView.enableNotificationsCTA",
+            value: "Enable notifications",
+            comment: "Button to enable notifications on the notification settings view"
+        )
+        static let notificationsEnabled = NSLocalizedString(
+            "notificationSettingsView.notificationsEnabled",
+            value: "Notifications enabled",
+            comment: "Label indicating notifications are enabled on the notification settings view"
+        )
+        static let settingsAppCTA = NSLocalizedString(
+            "notificationSettingsView.settingsAppCTA",
+            value: "Change",
+            comment: "Button to open the app's notification settings in the Settings app"
+        )
+        static let notificationsFooter = NSLocalizedString(
+            "notificationSettingsView.notificationsFooter",
             value: "Including in-app reminders and remote push notifications.",
-            comment: "Footer of the toggle to enable/disable all notifications on the notification settings view"
+            comment: "Footer of the notifications section on the notification settings view"
         )
         static let newOrders = NSLocalizedString(
             "notificationSettingsView.newOrders",

@@ -34,9 +34,9 @@
 
     We use Ruby to manage the third party dependencies and other tools and automation.
 
-3. Ensure you have [git-lfs]([url](https://git-lfs.com/)) installed.
+3. Ensure you have [git-lfs](https://git-lfs.com/) installed.
 
-   You can install it via homebrew or visit [git-lfs]([url](https://git-lfs.com/)) for other installation methods.
+   You can install it via homebrew or visit [git-lfs](https://git-lfs.com/)) for other installation methods.
    ```bash
    brew install git-lfs
    ```

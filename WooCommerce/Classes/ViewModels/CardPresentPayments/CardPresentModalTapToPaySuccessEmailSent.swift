@@ -2,7 +2,7 @@ import UIKit
 
 /// Modal presented when the payment has been collected successfully
 /// Customer attached to order therefore an email receipt is sent automatically
-final class CardPresentModalBuiltInSuccessEmailSent: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPaySuccessEmailSent: CardPresentPaymentsModalViewModel {
 
     /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
@@ -17,7 +17,7 @@ final class CardPresentModalBuiltInSuccessEmailSent: CardPresentPaymentsModalVie
 
     let topSubtitle: String? = nil
 
-    let image: UIImage = .builtInReaderSuccess
+    let image: UIImage = .tapToPayReaderSuccess
 
     let primaryButtonTitle: String? = CardPresentModalSuccess.Localization.printReceipt
 

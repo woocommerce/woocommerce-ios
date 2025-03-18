@@ -83,7 +83,7 @@ public enum CardPresentPaymentAction: Action {
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 
     /// Observe TTP Terms and Services accept event
-    case observeBuiltInCardReaderAcceptToS(onCompletion: (AnyPublisher<Void, Never>) -> Void)
+    case observeTapToPayCardReaderAcceptToS(onCompletion: (AnyPublisher<Void, Never>) -> Void)
 
     /// Update card reader firmware.
     case startCardReaderUpdate

@@ -596,7 +596,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
-        let expectedEvent = WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect.rawValue
+        let expectedEvent = WooAnalyticsStat.manageCardReadersTapToPayReaderAutoDisconnect.rawValue
         let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: expectedEvent))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[eventIndex])
         assertEqual(WooAnalyticsEvent.InPersonPayments.unknownGatewayID, eventProperties[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String)

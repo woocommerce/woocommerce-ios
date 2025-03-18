@@ -65,7 +65,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
+    private var tapToPayConnectionController: TapToPayCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
 
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
@@ -88,7 +88,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          tapToPayAlertProvider: TapToPayAlertProvider,
          externalReaderConnectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
+         tapToPayConnectionController: TapToPayCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
          tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
@@ -105,7 +105,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.analyticsTracker = analyticsTracker
         self.tapToPayAlertProvider = tapToPayAlertProvider
         self.connectionController = externalReaderConnectionController
-        self.builtInConnectionController = tapToPayConnectionController
+        self.tapToPayConnectionController = tapToPayConnectionController
 
         self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }
@@ -191,7 +191,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         case (.tapToPay, true):
-            builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+            tapToPayConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         case (.tapToPay, false):
@@ -220,10 +220,10 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                            countryCode: configuration.countryCode))
         alertsPresenter.present(viewModel: tapToPayAlertProvider.selectSearchType(tapToPay: {[weak self] in
             guard let self = self else { return }
-            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
+            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeTapToPayTapped(
                 forGatewayID: paymentGatewayAccount.gatewayID,
                 countryCode: self.configuration.countryCode))
-            self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+            self.tapToPayConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         }, bluetooth: { [weak self] in

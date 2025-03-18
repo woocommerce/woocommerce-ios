@@ -16,7 +16,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
-    private let builtInCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
+    private let tapToPayCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
 
     private var connectionAttemptInvalidated: Bool = false
 
@@ -64,8 +64,8 @@ extension StripeCardReaderService: CardReaderService {
         softwareUpdateSubject.eraseToAnyPublisher()
     }
 
-    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
-        builtInCardReaderAcceptToSSubject.eraseToAnyPublisher()
+    public var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+        tapToPayCardReaderAcceptToSSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -510,7 +510,7 @@ extension StripeCardReaderService: CardReaderService {
                     let tapToPayConfig = TapToPayConnectionConfigurationBuilder(delegate: self, locationId: locationId)
                     tapToPayConfig.setMerchantDisplayName(nil)
                     tapToPayConfig.setOnBehalfOf(nil)
-                    tapToPayConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
+                    tapToPayConfig.setTosAcceptancePermitted(options?.tapToPayOptions?.termsOfServiceAcceptancePermitted ?? true)
                     do {
                         let config = try tapToPayConfig.build()
                         return promise(.success(config))
@@ -1005,7 +1005,7 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
     }
 
     public func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
-        builtInCardReaderAcceptToSSubject.send(())
+        tapToPayCardReaderAcceptToSSubject.send(())
     }
 }
 

@@ -204,4 +204,8 @@ public enum FeatureFlag: Int {
     /// Supports uploading product images in background
     ///
     case backgroundProductImageUpload
+
+    /// Supports managing notification settings from the app settings
+    ///
+    case notificationSettings
 }

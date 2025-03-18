@@ -390,7 +390,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     var countryEnabledForTapToPay: Bool {
-        cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
+        cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay)
     }
 
     func updateSetUpTryTapToPay() async {

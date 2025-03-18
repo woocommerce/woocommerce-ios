@@ -434,7 +434,7 @@ private extension PaymentMethodsViewModel {
         }
 
         localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
-            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn) ?? false
+            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay) ?? false
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
                 self?.showPayWithCardRow = orderIsEligible
                 self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
@@ -445,7 +445,7 @@ private extension PaymentMethodsViewModel {
     private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: siteID,
-            cardReaderType: .appleBuiltIn,
+            cardReaderType: .tapToPay,
             discoveryMethod: .localMobile,
             minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionForTapToPay,
             onCompletion: onCompletion)

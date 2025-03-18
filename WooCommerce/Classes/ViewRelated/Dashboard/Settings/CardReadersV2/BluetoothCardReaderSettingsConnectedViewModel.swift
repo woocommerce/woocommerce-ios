@@ -285,7 +285,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
 private extension [CardReader] {
     func includesBuiltInReader() -> Bool {
-        return self.first(where: { $0.readerType == .appleBuiltIn }) != nil
+        return self.first(where: { $0.readerType == .tapToPay }) != nil
     }
 }
 

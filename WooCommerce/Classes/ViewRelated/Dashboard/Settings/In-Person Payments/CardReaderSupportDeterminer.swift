@@ -55,7 +55,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     }
 
     func siteSupportsLocalMobileReader() -> Bool {
-        configuration.supportedReaders.contains(.appleBuiltIn)
+        configuration.supportedReaders.contains(.tapToPay)
     }
 
     @MainActor
@@ -71,7 +71,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         let deviceSupportsLocalMobileReader = await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.checkDeviceSupport(
                 siteID: siteID,
-                cardReaderType: .appleBuiltIn,
+                cardReaderType: .tapToPay,
                 discoveryMethod: .localMobile,
                 minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { result in
                     continuation.resume(returning: result)
@@ -88,7 +88,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
                 siteID: siteID,
-                cardReaderType: .appleBuiltIn) { date in
+                cardReaderType: .tapToPay) { date in
                     continuation.resume(returning: date)
             }
 

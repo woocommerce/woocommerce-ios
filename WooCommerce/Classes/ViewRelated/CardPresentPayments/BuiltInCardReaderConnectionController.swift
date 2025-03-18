@@ -501,7 +501,7 @@ private extension BuiltInCardReaderConnectionController {
             case .failure(let error):
                 // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
                 // screen are returned as failures here.
-                if case .connection(.appleBuiltInReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
+                if case .connection(.tapToPayReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
                     return self.state = .cancel(.appleTOSAcceptance)
                 } else {
                     self.analyticsTracker.connectionFailed(error: error,
@@ -664,10 +664,10 @@ private extension BuiltInCardReaderConnectionController {
 private extension CardReaderServiceUnderlyingError {
     var canBeResolvedByRetrying: Bool {
         switch self {
-        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn,
+        case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn,
                 .passcodeNotEnabled,
-                .appleBuiltInReaderDeviceBanned,
-                .appleBuiltInReaderMerchantBlocked,
+                .tapToPayReaderDeviceBanned,
+                .tapToPayReaderMerchantBlocked,
                 .nfcDisabled,
                 .unsupportedMobileDeviceConfiguration:
             return false

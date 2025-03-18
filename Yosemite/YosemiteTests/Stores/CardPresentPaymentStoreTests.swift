@@ -701,7 +701,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     func test_checkDeviceSupport_action_passes_configuration_provider_to_service() {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
-                                                                 cardReaderType: .appleBuiltIn,
+                                                                 cardReaderType: .tapToPay,
                                                                  discoveryMethod: .localMobile,
                                                                  minimumOperatingSystemVersionOverride: nil,
                                                                  onCompletion: { _ in })
@@ -728,7 +728,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let expectedVersion = OperatingSystemVersion(majorVersion: 16, minorVersion: 4, patchVersion: 0)
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: sampleSiteID,
-            cardReaderType: .appleBuiltIn,
+            cardReaderType: .tapToPay,
             discoveryMethod: .localMobile,
             minimumOperatingSystemVersionOverride: expectedVersion,
             onCompletion: { _ in })

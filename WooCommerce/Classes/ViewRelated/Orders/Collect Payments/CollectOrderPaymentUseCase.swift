@@ -199,7 +199,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
-        case .appleBuiltIn:
+        case .tapToPay:
             return tapToPayAlertsProvider
         default:
             return bluetoothAlertsProvider

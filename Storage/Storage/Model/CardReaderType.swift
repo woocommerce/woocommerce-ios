@@ -10,7 +10,7 @@ public enum CardReaderType: String, Codable {
     /// BBPOS WisePad 3
     case wisepad3
     /// Tap on Mobile: Apple built in reader
-    case appleBuiltIn
+    case tapToPay
     /// Other
     case other
 }

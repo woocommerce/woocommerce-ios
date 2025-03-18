@@ -158,7 +158,7 @@ private extension [CardReader] {
     func includesBluetoothReader() -> Bool {
         return self.first(where: { reader in
             switch reader.readerType {
-            case .appleBuiltIn:
+            case .tapToPay:
                 return false
             default:
                 return true

@@ -196,7 +196,7 @@ private extension CardPresentPaymentStore {
                         $0.readerType == .chipper ||
                         $0.readerType == .stripeM2 ||
                         $0.readerType == .wisepad3 ||
-                        $0.readerType == .appleBuiltIn
+                        $0.readerType == .tapToPay
                     })
                     onReaderDiscovered(supportedReaders)
                 }

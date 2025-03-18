@@ -200,20 +200,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         }
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        if selectedProvider == .openAI {
-            guard let choices = json?["choices"] as? [[String: Any]],
-                  let message = choices.first?["message"] as? [String: Any],
-                  let content = message["content"] as? String else {
-                throw URLError(.cannotParseResponse)
-            }
-            return content.trimmingCharacters(in: .whitespacesAndNewlines)
-        } else { // Anthropic
-            guard let content = json?["content"] as? [[String: Any]],
-                  let text = content.first?["text"] as? String else {
-                throw URLError(.cannotParseResponse)
-            }
-            return text.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
+        return try parseAIResponse(json: json, provider: selectedProvider)
     }
 
     public func generateAIProduct(siteID: Int64,
@@ -345,22 +332,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
 
-        var contentString: String
-
-        if selectedProvider == .openAI {
-            guard let choices = json?["choices"] as? [[String: Any]],
-                  let message = choices.first?["message"] as? [String: Any],
-                  let content = message["content"] as? String else {
-                throw URLError(.cannotParseResponse)
-            }
-            contentString = content
-        } else { // Anthropic
-            guard let content = json?["content"] as? [[String: Any]],
-                  let text = content.first?["text"] as? String else {
-                throw URLError(.cannotParseResponse)
-            }
-            contentString = text
-        }
+        let contentString = try parseAIResponse(json: json, provider: selectedProvider)
 
         guard let data = contentString.data(using: .utf8),
               let productJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -571,6 +543,25 @@ private extension GenerativeContentRemote {
         }
 
         return request
+    }
+    
+    private func parseAIResponse(json: [String: Any]?, provider: AIProvider) throws -> String {
+        if provider == .openAI {
+            // openAI
+            guard let choices = json?["choices"] as? [[String: Any]],
+                  let message = choices.first?["message"] as? [String: Any],
+                  let content = message["content"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            return content.trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            // Anthropic // TODO: Switch to be explicit
+            guard let content = json?["content"] as? [[String: Any]],
+                  let text = content.first?["text"] as? String else {
+                throw URLError(.cannotParseResponse)
+            }
+            return text.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
     }
 
     private func formatExpectedJsonResponse(_ jsonResponseFormat: [String: Any]) -> String {

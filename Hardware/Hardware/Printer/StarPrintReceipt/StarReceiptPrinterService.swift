@@ -7,10 +7,20 @@ public final class StarReceiptPrinterService: PrinterService {
     private var printer: StarPrinter?
 
     public func connect() async throws {
-        let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetooth, .usb])
+        try await discoverAll()
+//        connectToBluetoothPrinter()
+    }
+
+    func connectToBluetoothPrinter() {
+        let connectionSettings = StarConnectionSettings(interfaceType: .bluetooth)
+        printer = StarPrinter(connectionSettings)
+    }
+
+    func discoverAll() async throws {
+        let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetoothLE, .bluetooth, .usb])
 
         discovery.delegate = self
-        discovery.discoveryTime = 10000 // 10 seconds
+        discovery.discoveryTime = 30000 // 30 seconds
         try discovery.startDiscovery()
     }
 
@@ -27,7 +37,7 @@ public final class StarReceiptPrinterService: PrinterService {
                 try await printer.open()
                 try await printer.print(command: command)
             } catch {
-                completion(.failure(error))
+                return completion(.failure(error))
             }
             await printer.close()
             completion(.success)
@@ -74,11 +84,12 @@ public final class StarReceiptPrinterService: PrinterService {
 
 extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
     public func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
+        DDLogInfo("Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.rawValue)")
         self.printer = printer
     }
-    
-    public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
 
+    public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
+        DDLogInfo("Finished discovering printers")
     }
 }
 

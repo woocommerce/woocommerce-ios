@@ -877,6 +877,7 @@
 		20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		20A3AFE32B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */; };
 		20A3AFE52B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */; };
+		20AB9F382D888C410000EADD /* StarIO10 in Frameworks */ = {isa = PBXBuildFile; productRef = 20AB9F372D888C410000EADD /* StarIO10 */; };
 		20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */; };
 		20ADE9432C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */; };
 		20ADE9462C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */; };
@@ -6445,6 +6446,7 @@
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
+				20AB9F382D888C410000EADD /* StarIO10 in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */,
@@ -14445,6 +14447,7 @@
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
 				DEA6BCA82BC6A7050017D671 /* DGCharts */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
+				20AB9F372D888C410000EADD /* StarIO10 */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -14635,6 +14638,7 @@
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
+				20AB9F362D888C410000EADD /* XCRemoteSwiftPackageReference "StarXpand-SDK-iOS" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -19523,6 +19527,14 @@
 				minimumVersion = 1.2.0;
 			};
 		};
+		20AB9F362D888C410000EADD /* XCRemoteSwiftPackageReference "StarXpand-SDK-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/star-micronics/StarXpand-SDK-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.0;
+			};
+		};
 		247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/envoy/Embassy";
@@ -19615,6 +19627,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */;
 			productName = ScrollViewSectionKit;
+		};
+		20AB9F372D888C410000EADD /* StarIO10 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 20AB9F362D888C410000EADD /* XCRemoteSwiftPackageReference "StarXpand-SDK-iOS" */;
+			productName = StarIO10;
 		};
 		247CE89B2583402A00F9D9D1 /* Embassy */ = {
 			isa = XCSwiftPackageProductDependency;

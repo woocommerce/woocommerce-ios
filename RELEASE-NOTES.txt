@@ -8,6 +8,7 @@
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 - [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
+- [Internal] Update Stripe Terminal SDK to 4.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/15377]
 
 21.9
 -----

@@ -22,7 +22,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
     }
 }
 
-/// Allows the user to generate a product description using Jetpack AI given the product name and features.
+/// Allows the user to generate a product description using AI given the product name and features.
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?

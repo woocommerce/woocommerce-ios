@@ -4,10 +4,12 @@ import SwiftUI
 ///
 final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
     init(productTypes: [BottomSheetProductType],
+         aiSource: AISource,
          onAIOption: @escaping () -> Void,
          onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
 
         let rootView = AddProductWithAIActionSheet(productTypes: productTypes,
+                                                   aiSource: aiSource,
                                                    onAIOption: onAIOption,
                                                    onProductTypeOption: onProductTypeOption)
         super.init(rootView: rootView)
@@ -28,13 +30,16 @@ struct AddProductWithAIActionSheet: View {
     @State private var isShowingManualOptions: Bool = false
 
     private let productTypes: [BottomSheetProductType]
+    private let aiSource: AISource
     private let onAIOption: () -> Void
     private let onProductTypeOption: (BottomSheetProductType) -> Void
 
     init(productTypes: [BottomSheetProductType],
+         aiSource: AISource,
          onAIOption: @escaping () -> Void,
          onProductTypeOption: @escaping (BottomSheetProductType) -> Void) {
         self.productTypes = productTypes
+        self.aiSource = aiSource
         self.onAIOption = onAIOption
         self.onProductTypeOption = onProductTypeOption
     }
@@ -70,8 +75,13 @@ struct AddProductWithAIActionSheet: View {
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.CreateProductWithAI.aiTitle)
                             .bodyStyle()
-                        Text(Localization.CreateProductWithAI.aiDescription)
-                            .subheadlineStyle()
+                        if aiSource == .internal {
+                            Text(Localization.CreateProductWithAI.aiDescription)
+                                .subheadlineStyle()
+                        } else {
+                            Text(Localization.CreateProductWithAI.merchantAIDescription)
+                                .subheadlineStyle()
+                        }
                         AdaptiveStack(horizontalAlignment: .leading) {
                             Text(Localization.CreateProductWithAI.legalText)
                             Text(.init(Localization.CreateProductWithAI.learnMore))
@@ -161,6 +171,11 @@ private extension AddProductWithAIActionSheet {
                 value: "Let us generate product details for you",
                 comment: "Description of the option to add new product with AI assistance"
             )
+            static let merchantAIDescription = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.merchantAiDescription",
+                value: "Generate product details using AI. Enter your API key under Settings > AI Settings",
+                comment: "Description of the option to add new product with AI assistance"
+            )
             static let legalText = NSLocalizedString(
                 "addProductWithAIActionSheet.createProductWithAI.legalText",
                 value: "Powered by AI.",
@@ -198,6 +213,7 @@ struct AddProductWithAIActionSheet_Previews: PreviewProvider {
                 .grouped,
                 .affiliate
             ],
+            aiSource: .internal,
             onAIOption: {},
             onProductTypeOption: {_ in }
         )

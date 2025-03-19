@@ -115,7 +115,7 @@ final class AddProductCoordinator: Coordinator {
         if shouldSkipBottomSheet {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldShowAIActionSheet {
-            presentActionSheetWithAI()
+            presentActionSheetWithAI(source: aiSource)
         } else {
             presentProductTypeBottomSheet()
         }
@@ -128,12 +128,13 @@ private extension AddProductCoordinator {
     /// Whether the action sheet with the option for product creation with AI should be presented.
     ///
     var shouldShowAIActionSheet: Bool {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
-            // TODO: Needs more eligibility checks, as the flag could ne enabled, but the API key not entered, in which case they do not know what to do
-            return true
-        } else {
-            return addProductWithAIEligibilityChecker.isEligible
-        }
+        addProductWithAIEligibilityChecker.isEligible
+    }
+
+    /// The source used for AI generation based on eligibility, it could be either from WPCOM/JP or from a merchant API key
+    ///
+    var aiSource: AISource {
+        addProductWithAIEligibilityChecker.aiSource
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.
@@ -190,7 +191,7 @@ private extension AddProductCoordinator {
 
     /// Presents an action sheet with the option to start product creation with AI
     ///
-    func presentActionSheetWithAI() {
+    func presentActionSheetWithAI(source: AISource) {
         let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
         let productTypes: [BottomSheetProductType] = [
             .simple(isVirtual: false),
@@ -203,6 +204,7 @@ private extension AddProductCoordinator {
 
         let controller = AddProductWithAIActionSheetHostingController(
             productTypes: productTypes,
+            aiSource: aiSource,
             onAIOption: { [weak self] in
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
                     self?.analytics.track(event: .ProductCreationAI.entryPointTapped())

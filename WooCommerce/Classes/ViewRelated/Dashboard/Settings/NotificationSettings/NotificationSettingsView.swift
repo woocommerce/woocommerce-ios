@@ -176,7 +176,7 @@ extension NotificationSettingsView {
         )
         static let siteListSectionFooter = NSLocalizedString(
             "notificationSettingsView.siteListSectionFooter",
-            value: "Customize your notification preferences for new orders and product reviews.",
+            value: "Customize your notification preferences for each store.",
             comment: "Footer of the site list section on the notification settings view"
         )
     }

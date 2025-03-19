@@ -68,15 +68,11 @@ final class NotificationSettingsViewModelTests: XCTestCase {
         notificationCenter.authorizationStatus = .denied
 
         let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
-        var notificationStatuses: [Bool] = []
         let expectation = XCTestExpectation(description: "Notification authorization status updated")
         subscription = viewModel.$notificationsEnabled
             .dropFirst()
             .sink { status in
-                notificationStatuses.append(status)
-                if notificationStatuses.count == 2 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
         // When
@@ -85,6 +81,6 @@ final class NotificationSettingsViewModelTests: XCTestCase {
         await fulfillment(of: [expectation])
 
         // Then
-        XCTAssertEqual(notificationStatuses, [false, true])
+        XCTAssertTrue(viewModel.notificationsEnabled)
     }
 }

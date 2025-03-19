@@ -7,10 +7,10 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var orderNotificationsEnabled = false
     @Published var productReviewNotificationsEnabled = false
 
-    private let notificationCenter: UNUserNotificationCenter
+    private let notificationCenter: UserNotificationsCenterAdapter
     private var appStateSubscription: AnyCancellable?
 
-    init(notificationCenter: UNUserNotificationCenter = .current()) {
+    init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) {
         self.notificationCenter = notificationCenter
 
         observeAppState()
@@ -36,8 +36,8 @@ private extension NotificationSettingsViewModel {
     @MainActor
     func checkNotificationPermission() async {
         let isEnabled = await withCheckedContinuation { continuation in
-            notificationCenter.getNotificationSettings { settings in
-                switch settings.authorizationStatus {
+            notificationCenter.loadAuthorizationStatus(queue: .main) { status in
+                switch status {
                 case .authorized:
                     continuation.resume(returning: true)
                 case .denied, .notDetermined, .provisional, .ephemeral:

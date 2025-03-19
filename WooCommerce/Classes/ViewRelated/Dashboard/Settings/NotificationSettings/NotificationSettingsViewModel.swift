@@ -1,5 +1,7 @@
 import Combine
 import UIKit
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View model for `NotificationSettingsView`
 final class NotificationSettingsViewModel: ObservableObject {
@@ -8,10 +10,27 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published var productReviewNotificationsEnabled = false
 
     private let notificationCenter: UserNotificationsCenterAdapter
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
     private var appStateSubscription: AnyCancellable?
 
-    init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) {
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private lazy var siteResultsController: ResultsController<StorageSite> = {
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSite.name, ascending: true)
+        return ResultsController(storageManager: storageManager,
+                                 matching: predicate,
+                                 sortedBy: [nameDescriptor])
+    }()
+
+    init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.notificationCenter = notificationCenter
+        self.stores = stores
+        self.storageManager = storageManager
 
         observeAppState()
         updateNotificationStateIfNeeded()
@@ -48,5 +67,14 @@ private extension NotificationSettingsViewModel {
             }
         }
         notificationsEnabled = isEnabled
+    }
+
+    @MainActor
+    func synchronizeSites(selectedSiteID: Int64?) async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { _ in
+                continuation.resume()
+            })
+        }
     }
 }

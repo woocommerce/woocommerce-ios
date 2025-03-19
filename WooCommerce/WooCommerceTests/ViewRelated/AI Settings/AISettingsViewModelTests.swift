@@ -104,4 +104,67 @@ final class AISettingsViewModelTests: XCTestCase {
         XCTAssertEqual(defaults.string(forKey: "AIProviderModel"), expectedOpenAIModels.first)
         XCTAssertEqual(defaults.string(forKey: "AIProvider"), "OpenAI")
     }
+
+    func test_sut_when_onAppear_with_empty_apiKey_then_enables_editing() {
+        // Given
+        sut.apiKey = ""
+        sut.isEditingApiKey = false
+
+        // When
+        sut.onAppear()
+
+        // Then
+        XCTAssertTrue(sut.isEditingApiKey)
+    }
+
+    func test_sut_when_onAppear_with_apiKey_then_disables_editing() {
+        // Given
+        sut.apiKey = "some-key"
+        sut.isEditingApiKey = true
+
+        // When
+        sut.onAppear()
+
+        // Then
+        XCTAssertFalse(sut.isEditingApiKey)
+    }
+
+    func test_sut_when_clearApiKey_then_empties_apiKey() {
+        // Given
+        sut.apiKey = "some-key"
+
+        // When
+        sut.clearApiKey()
+
+        // Then
+        XCTAssertTrue(sut.apiKey.isEmpty)
+    }
+
+    func test_sut_when_toggleEditing_then_toggles_editing_state() {
+        // Given
+        sut.isEditingApiKey = false
+
+        // When
+        sut.toggleEditing()
+
+        // Then
+        XCTAssertTrue(sut.isEditingApiKey)
+    }
+
+    func test_sut_when_togglEediting_from_editing_then_saves_settings() {
+        // Given
+        sut.isEditingApiKey = true
+        sut.apiKey = "new-key"
+        sut.selectedModel = "test-model"
+        sut.selectedProvider = "test-provider"
+
+        // When
+        sut.toggleEditing()
+
+        // Then
+        XCTAssertFalse(sut.isEditingApiKey)
+        XCTAssertEqual(defaults.string(forKey: "AIProviderAPIKey"), "new-key")
+        XCTAssertEqual(defaults.string(forKey: "AIProviderModel"), "test-model")
+        XCTAssertEqual(defaults.string(forKey: "AIProvider"), "test-provider")
+    }
 }

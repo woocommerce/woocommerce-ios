@@ -63,6 +63,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -93,6 +95,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(error))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -138,6 +142,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -184,7 +190,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -230,7 +236,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -464,7 +470,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(originAddresses))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -511,7 +517,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -552,7 +558,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(ShippingLabel.fake()))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -585,7 +591,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(ShippingLabel.fake()))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -685,7 +691,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(expectedShippingLabel))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -719,7 +725,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(packages, .success([]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -783,6 +789,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                     completion(.success(self.settings))
                 case .loadOriginAddresses(_, let completion):
                     completion(.success([]))
+                case .loadConfig:
+                    break
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -836,7 +844,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: false)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -864,7 +872,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -891,7 +899,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                       nameError: nil)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")

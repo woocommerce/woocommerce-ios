@@ -428,9 +428,26 @@ private extension WooShippingCreateLabelsViewModel {
     ///
     @MainActor
     func loadShipmentsInfo() async {
-        splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(siteID: order.siteID,
-                                                                     orderID: order.orderID,
-                                                                     stores: stores)
+        let config: WooShippingConfig? = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadConfig(siteID: order.siteID,
+                                                      orderID: order.orderID) { result in
+                switch result {
+                case .success(let shipmentResponse):
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading config for Woo Shipping labels: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+
+        // TODO: Create view model only if order has more than 1 items that can be split into multiple shipments. (Check web logic)
+        if let config {
+            splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         config: config,
+                                                                         stores: stores)
+        }
     }
 
     /// Loads destination address of the order from remote.

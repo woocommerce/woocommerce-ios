@@ -6,8 +6,7 @@ import protocol Storage.StorageManagerType
 /// View model for `NotificationSettingsView`
 final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var notificationsEnabled = false
-    @Published var orderNotificationsEnabled = false
-    @Published var productReviewNotificationsEnabled = false
+    @Published private(set) var sites: [Site] = []
 
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
@@ -34,6 +33,16 @@ final class NotificationSettingsViewModel: ObservableObject {
 
         observeAppState()
         updateNotificationStateIfNeeded()
+        configureResultsController()
+    }
+
+    @MainActor
+    func synchronizeSites() async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AccountAction.synchronizeSites(selectedSiteID: nil) { _ in
+                continuation.resume()
+            })
+        }
     }
 }
 
@@ -52,6 +61,26 @@ private extension NotificationSettingsViewModel {
         }
     }
 
+    func configureResultsController() {
+        siteResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteList()
+        }
+        siteResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteList()
+        }
+
+        do {
+            try siteResultsController.performFetch()
+            updateSiteList()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateSiteList() {
+        sites = siteResultsController.fetchedObjects
+    }
+
     @MainActor
     func checkNotificationPermission() async {
         let isEnabled = await withCheckedContinuation { continuation in
@@ -67,14 +96,5 @@ private extension NotificationSettingsViewModel {
             }
         }
         notificationsEnabled = isEnabled
-    }
-
-    @MainActor
-    func synchronizeSites(selectedSiteID: Int64?) async {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { _ in
-                continuation.resume()
-            })
-        }
     }
 }

@@ -90,7 +90,14 @@ public enum OrderAction: Action {
 
     /// Updates the specified fields from an order.
     ///
-    case updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+    case updateOrder(
+        siteID: Int64,
+        order: Order,
+        giftCard: String?,
+        cashPaymentChangeDueAmount: String?,
+        fields: [OrderUpdateField],
+        onCompletion: (Result<Order, Error>) -> Void
+    )
 
     /// Updates the specified fields from an order **optimistically**.
     ///

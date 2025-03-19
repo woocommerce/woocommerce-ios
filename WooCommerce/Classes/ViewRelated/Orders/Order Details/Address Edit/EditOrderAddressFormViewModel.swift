@@ -135,7 +135,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             orderFields = [.billingAddress]
         }
 
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, giftCard: nil, fields: orderFields) { [weak self] result in
+        let action = OrderAction.updateOrder(siteID: order.siteID,
+                                             order: modifiedOrder,
+                                             giftCard: nil,
+                                             cashPaymentChangeDueAmount: nil,
+                                             fields: orderFields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)

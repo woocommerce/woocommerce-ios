@@ -156,7 +156,15 @@ private extension EditCustomerNoteViewModel {
         if areOptimisticUpdatesEnabled {
             return OrderAction.updateOrderOptimistically(siteID: order.siteID, order: order, fields: [.customerNote], onCompletion: onCompletion)
         } else {
-            return OrderAction.updateOrder(siteID: order.siteID, order: order, giftCard: nil, fields: [.customerNote], onCompletion: onCompletion)
+            return OrderAction
+                .updateOrder(
+                    siteID: order.siteID,
+                    order: order,
+                    giftCard: nil,
+                    cashPaymentChangeDueAmount: nil,
+                    fields: [.customerNote],
+                    onCompletion: onCompletion
+                )
         }
     }
 

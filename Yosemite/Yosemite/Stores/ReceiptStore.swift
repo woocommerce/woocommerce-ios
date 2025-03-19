@@ -242,7 +242,13 @@ private extension ReceiptStore {
                                                                                         email: email)
         let orderToUpdate = order.copy(billingAddress: updatedBillingAddress)
 
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { result in
+        let action = OrderAction.updateOrder(
+            siteID: order.siteID,
+            order: orderToUpdate,
+            giftCard: nil,
+            cashPaymentChangeDueAmount: nil,
+            fields: [.billingAddress]
+        ) { result in
             switch result {
             case let .success(updatedOrder):
                 Task { [weak self] in

@@ -497,6 +497,7 @@ private extension RemoteOrderSynchronizer {
             let action = OrderAction.updateOrder(siteID: self.siteID,
                                                  order: orderToSubmit,
                                                  giftCard: giftCard,
+                                                 cashPaymentChangeDueAmount: nil,
                                                  fields: operationUpdateFields) { [weak self] result in
                 guard let self = self else { return }
 

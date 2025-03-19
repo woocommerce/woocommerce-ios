@@ -20,6 +20,6 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
 
     func clearOrder() { }
 
-    func collectCashPayment() async throws {}
+    func collectCashPayment(changeDueAmount: String?) async throws {}
 }
 #endif

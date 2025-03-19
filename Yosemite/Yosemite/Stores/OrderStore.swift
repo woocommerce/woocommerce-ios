@@ -62,8 +62,13 @@ public class OrderStore: Store {
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
 
-        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
-            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, cashPaymentChangeDueAmount, fields, onCompletion):
+            updateOrder(siteID: siteID,
+                        order: order,
+                        giftCard: giftCard,
+                        cashPaymentChangeDueAmount: cashPaymentChangeDueAmount,
+                        fields: fields,
+                        onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
@@ -350,7 +355,14 @@ private extension OrderStore {
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
         let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
-        updateOrder(siteID: siteID, order: updatedOrder, giftCard: nil, fields: updateFields, onCompletion: onCompletion)
+        updateOrder(
+            siteID: siteID,
+            order: updatedOrder,
+            giftCard: nil,
+            cashPaymentChangeDueAmount: nil,
+            fields: updateFields,
+            onCompletion: onCompletion
+        )
     }
 
     /// Creates a manual order with the provided order details.
@@ -400,7 +412,14 @@ private extension OrderStore {
 
     /// Updates the specified fields from an order.
     ///
-    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func updateOrder(
+        siteID: Int64,
+        order: Order,
+        giftCard: String?,
+        cashPaymentChangeDueAmount: String?,
+        fields: [OrderUpdateField],
+        onCompletion: @escaping (Result<Order, Error>) -> Void
+    ) {
         /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
         /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
         /// - Create a new order item with the bundle configuration
@@ -428,7 +447,11 @@ private extension OrderStore {
             }
         }()
 
-        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
+        remote.updateOrder(from: siteID,
+                           order: order.copy(items: items),
+                           giftCard: giftCard,
+                           cashPaymentChangeDueAmount: cashPaymentChangeDueAmount,
+                           fields: fields) { [weak self] result in
             self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }

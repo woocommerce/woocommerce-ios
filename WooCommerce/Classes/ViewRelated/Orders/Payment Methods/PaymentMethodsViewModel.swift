@@ -382,6 +382,7 @@ private extension PaymentMethodsViewModel {
             stores.dispatch(OrderAction.updateOrder(siteID: siteID,
                                                     order: modifiedOrder,
                                                     giftCard: nil,
+                                                    cashPaymentChangeDueAmount: nil,
                                                     fields: fieldsToUpdate,
                                                     onCompletion: { result in
                 switch result {

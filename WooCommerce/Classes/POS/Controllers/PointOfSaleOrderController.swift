@@ -30,7 +30,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
-    func collectCashPayment() async throws
+    func collectCashPayment(changeDueAmount: String?) async throws
 }
 
 @available(iOS 17.0, *)
@@ -129,7 +129,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     @MainActor
-    func collectCashPayment() async throws {
+    func collectCashPayment(changeDueAmount: String?) async throws {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             throw PointOfSaleOrderControllerError.noSiteID
         }
@@ -149,6 +149,7 @@ protocol PointOfSaleOrderControllerProtocol {
             let action = OrderAction.updateOrder(siteID: siteID,
                                                  order: updatedOrder,
                                                  giftCard: nil,
+                                                 cashPaymentChangeDueAmount: changeDueAmount,
                                                  fields: fieldsToUpdate,
                                                  onCompletion: { [weak self] result in
                 guard let self = self else { return }

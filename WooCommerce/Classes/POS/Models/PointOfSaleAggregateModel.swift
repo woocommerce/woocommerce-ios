@@ -275,8 +275,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func collectCashPayment() async throws {
-        try await orderController.collectCashPayment()
+    func collectCashPayment(changeDueAmount: String?) async throws {
+        try await orderController.collectCashPayment(changeDueAmount: changeDueAmount)
         cashPaymentSuccess()
     }
 

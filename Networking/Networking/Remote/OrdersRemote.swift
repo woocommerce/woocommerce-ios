@@ -269,12 +269,14 @@ public class OrdersRemote: Remote {
     ///     - siteID: Site which hosts the Order.
     ///     - order: Order to be updated.
     ///     - giftCard: Optional gift card to apply to the order.
+    ///     - cashPaymentChangeDueAmount: Optional change due amount for cash payments.
     ///     - fields: Fields from the order to be updated.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int64,
                             order: Order,
                             giftCard: String?,
+                            cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
@@ -316,6 +318,12 @@ public class OrdersRemote: Remote {
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                }
+
+                if let cashPaymentChangeDueAmount {
+                    params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
+                                                                               key: NestedFieldKeys.cashPaymentChangeDueAmount,
+                                                                               value: cashPaymentChangeDueAmount).toDictionary()]
                 }
 
                 return params
@@ -481,6 +489,7 @@ public extension OrdersRemote {
 
     enum NestedFieldKeys {
         static let giftCardCode = "code"
+        static let cashPaymentChangeDueAmount = "_cash_change_amount"
     }
 
     /// Order fields supported for update

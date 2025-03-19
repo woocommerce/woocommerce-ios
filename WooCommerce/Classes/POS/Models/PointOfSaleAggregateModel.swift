@@ -221,7 +221,6 @@ extension PointOfSaleAggregateModel {
     /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
     /// e.g. when the TotalsView goes offscreen.
     private func startPaymentWhenCardReaderConnected() async {
-        paymentState = .card(.idle)
         guard case .connected = cardReaderConnectionStatus else {
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in
@@ -485,10 +484,12 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
 
-        if eligibilityChecker.isOnlyScanToPayEnabled {
-            startScanToPay()
-        } else {
+        if isCardPaymentAvailable {
+            paymentState = .card(.idle)
             await startPaymentWhenCardReaderConnected()
+        } else {
+            paymentState = .scan(.waitingForScan)
+            startScanToPay()
         }
     }
 }
@@ -537,8 +538,11 @@ extension PointOfSaleAggregateModel {
         return nil
     }
 
+    var isCardPaymentAvailable: Bool {
+        return eligibilityChecker.isOnlyScanToPayEnabled
+    }
+
     func startScanToPay() {
-        paymentState = .scan(.waitingForScan)
         stopScanToPay()
 
         scanToPayTask = Task { @MainActor [weak self] in

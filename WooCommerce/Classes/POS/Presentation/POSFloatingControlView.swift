@@ -68,6 +68,7 @@ struct POSFloatingControlView: View {
                 .cornerRadius(Constants.cornerRadius)
                 .disabled(posModel.paymentState.shownFullScreen)
                 .disabled(horizontalSizeClass != .regular)
+                .disabled(!posModel.isCardPaymentAvailable)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

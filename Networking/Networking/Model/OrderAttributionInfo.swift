@@ -75,5 +75,6 @@ public extension OrderAttributionInfo {
         /// Sent in create order request to mark the order as created from mobile
         ///
         public static let mobileAppSourceType = "mobile_app"
+        public static let mobileAppPOSSourceType = "pos"
     }
 }

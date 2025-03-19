@@ -3,6 +3,8 @@ import Yosemite
 
 struct AISettingsView: View {
     @ObservedObject private var viewModel: AISettingsViewModel
+    // TODO: Show if current source is WPCOM/JP or Merchant key
+    private let currentAISource: String = ""
 
     init(viewModel: AISettingsViewModel) {
         self.viewModel = viewModel
@@ -10,7 +12,11 @@ struct AISettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text(Localization.currentAISource(currentAISource))
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
                 HStack {
                     Text(Localization.aiProvider)
                     Picker(Localization.selectProvider, selection: $viewModel.selectedProvider) {
@@ -34,28 +40,38 @@ struct AISettingsView: View {
                 }
 
                 Divider()
-                HStack {
-                    TextField(Localization.enterAPIKey, text: $viewModel.apiKey)
-                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isEditingApiKey))
-                        .foregroundColor(viewModel.isEditingApiKey ? .primary : .gray)
-                        .disabled(!viewModel.isEditingApiKey)
 
-                    if !viewModel.apiKey.isEmpty {
-                        Button(action: viewModel.clearApiKey) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.gray)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        TextField(Localization.enterAPIKey, text: $viewModel.apiKey)
+                            .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isEditingApiKey))
+                            .foregroundColor(viewModel.isEditingApiKey ? .primary : .gray)
+                            .disabled(!viewModel.isEditingApiKey)
+
+                        if !viewModel.apiKey.isEmpty {
+                            Button(action: viewModel.clearApiKey) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+
+                        Button(action: viewModel.toggleEditing) {
+                            Text(viewModel.isEditingApiKey ? Localization.save : Localization.edit)
                         }
                     }
 
-                    Button(action: viewModel.toggleEditing) {
-                        Text(viewModel.isEditingApiKey ? Localization.save : Localization.edit)
-                    }
+                    Text(Localization.apiKeyDescription)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                    Spacer()
                 }
-                Text(Localization.apiKeyDescription)
+                Text(Localization.apiKeyDisclaimer)
                     .font(.caption)
+                    .foregroundColor(.secondary)
             }
+            .padding()
         }
-        .padding()
         .navigationTitle(Localization.navigationTitle)
         .onAppear {
             viewModel.onAppear()
@@ -129,6 +145,20 @@ private extension AISettingsView {
             "aiSettings.apiKeyDescription",
             value: "Enter your API key to use AI generation at public API costs.",
             comment: "Description text explaining the purpose of the API key"
+        )
+
+        static func currentAISource(_ source: String) -> String {
+            String(format: NSLocalizedString(
+                "aiSettings.currentAISource",
+                value: "Current AI source: %@",
+                comment: "Label showing the current AI source being used. %@ shows the provider name (e.g. Jetpack)"
+            ), source)
+        }
+
+        static let apiKeyDisclaimer = NSLocalizedString(
+            "aiSettings.apiKeyDisclaimer",
+            value: "API keys open up access to potentially sensitive information. Do not share your API key with others or expose them.",
+            comment: "Warning message about keeping API keys secure"
         )
     }
 }

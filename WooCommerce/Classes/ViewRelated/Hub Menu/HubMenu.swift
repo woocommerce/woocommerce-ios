@@ -186,6 +186,7 @@ private extension HubMenu {
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
             case .aiSettings:
+                // TODO: Pass eligibility, so we know what's the AI source
                 let viewModel = AISettingsViewModel()
                 AISettingsView(viewModel: viewModel)
             }

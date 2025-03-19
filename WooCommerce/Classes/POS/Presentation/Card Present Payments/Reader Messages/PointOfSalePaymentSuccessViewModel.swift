@@ -34,6 +34,13 @@ private extension PointOfSalePaymentSuccessViewModel {
             comment: "Message shown to users when payment is made. %1$@ is a placeholder for the order " +
             " total, e.g $10.50. Please include %1$@ in your formatted string"
         )
+
+        static let messageScan = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.message.scan.1",
+            value: "A payment of %1$@ was successfully made.",
+            comment: "Message shown to users when payment is made by scanning QR code. %1$@ is a placeholder for the order " +
+            " total, e.g $10.50. Please include %1$@ in your formatted string"
+        )
     }
 }
 
@@ -42,9 +49,10 @@ private extension PointOfSalePaymentMethod {
         switch self {
         case .card:
             return PointOfSalePaymentSuccessViewModel.Localization.messageCard
-
         case .cash:
             return PointOfSalePaymentSuccessViewModel.Localization.messageCash
+        case .scan:
+            return PointOfSalePaymentSuccessViewModel.Localization.messageScan
         }
     }
 }

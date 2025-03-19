@@ -744,7 +744,7 @@ platform :ios do
     build_for_prototype_build
 
     release_notes = <<~NOTES
-      Pull Request: ##{ENV.fetch('BUILDKITE_PULL_REQUEST', 'N/A')}
+      Pull Request: ##{pull_request_number || 'N/A'}
       Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
       Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
     NOTES
@@ -763,13 +763,13 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
-    next if ENV.fetch('BUILDKITE_PULL_REQUEST', 'false') == 'false'
+    next if pull_request_number.nil?
 
     # PR Comment
     comment_body = prototype_build_details_comment(app_display_name: 'WooCommerce iOS Prototype')
     comment_on_pr(
       project: GITHUB_REPO,
-      pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
+      pr_number: pull_request_number,
       reuse_identifier: 'prototype-build-link',
       body: comment_body
     )
@@ -780,7 +780,7 @@ platform :ios do
     update_certs_and_profiles_enterprise if fetch_code_signing
 
     build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
-    pr_or_branch = ENV.fetch('BUILDKITE_PULL_REQUEST', nil)&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
+    pr_or_branch = pull_request_number&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
 
     gym(
       scheme: 'WooCommerce Alpha',
@@ -1473,13 +1473,6 @@ def prompt_user_for_app_store_connect_credentials
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
 
-def override_default_release_branch(version)
-  success = Fastlane::Helper::GitHelper.checkout_and_pull(release: version)
-  UI.user_error!("Release branch for version #{version} doesn't exist. Abort.") unless success
-
-  UI.message("Checked out branch `#{git_branch}` as requested by user.\n")
-end
-
 # https://buildkite.com/docs/test-analytics/ci-environments
 TEST_ANALYTICS_ENVIRONMENT = %w[
   BUILDKITE_ANALYTICS_TOKEN
@@ -1495,6 +1488,13 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
+
+def pull_request_number
+  # Buildkite sets this env var to the PR number if on a PR, but to 'false' (and not nil) if not on a PR
+  pr_num = ENV.fetch('BUILDKITE_PULL_REQUEST', 'false')
+  pr_num == 'false' ? nil : Integer(pr_num)
+end
+
 def create_backmerge_pr
   version = release_version_current
 

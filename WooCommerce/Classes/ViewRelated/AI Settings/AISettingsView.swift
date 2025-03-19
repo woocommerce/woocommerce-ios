@@ -3,7 +3,7 @@ import Yosemite
 
 struct AISettingsView: View {
     @ObservedObject private var viewModel: AISettingsViewModel
-    
+
     init(viewModel: AISettingsViewModel) {
         self.viewModel = viewModel
     }

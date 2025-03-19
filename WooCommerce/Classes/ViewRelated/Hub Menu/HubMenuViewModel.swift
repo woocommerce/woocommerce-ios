@@ -346,7 +346,7 @@ private extension HubMenuViewModel {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
-        
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
             items.append(AISettings())
         }

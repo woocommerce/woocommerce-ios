@@ -544,7 +544,7 @@ private extension GenerativeContentRemote {
 
         return request
     }
-    
+
     private func parseAIResponse(json: [String: Any]?, provider: AIProvider) throws -> String {
         if provider == .openAI {
             // openAI

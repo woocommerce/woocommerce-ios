@@ -73,7 +73,7 @@ private extension AISettingsViewModel {
                 - isWordPressComStore : \(site.isWordPressComStore)
                 """)
     }
-    
+
     private func debug_logSettings() {
         let maskedApiKey: String = {
             if apiKey.count > 8 {
@@ -84,7 +84,7 @@ private extension AISettingsViewModel {
                 return "****"
             }
         }()
-        
+
         print("AIProviderApiKey: \(maskedApiKey)")
         print("selectedModel: \(selectedModel)")
         print("selectedProvider: \(selectedProvider)")

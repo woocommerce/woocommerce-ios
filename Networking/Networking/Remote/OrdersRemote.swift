@@ -409,7 +409,7 @@ public class OrdersRemote: Remote {
 extension OrdersRemote: POSOrdersRemoteProtocol {
     public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .mobilePOS) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

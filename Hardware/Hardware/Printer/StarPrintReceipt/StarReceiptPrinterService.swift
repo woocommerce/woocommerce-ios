@@ -25,36 +25,42 @@ public final class StarReceiptPrinterService: PrinterService {
         try discovery.startDiscovery()
     }
 
-    enum PrintType {
+    public enum PrintType {
         case template
         case standard
     }
 
-    let printType: PrintType = .template
-
     public func printReceipt(content: ReceiptContent,
                              completion: @escaping (PrintingResult) -> Void) {
-        guard let printer else {
-            return completion(.failure(StarReceiptPrinterError.noPrinterConnected))
-        }
-
         Task {
             do {
-                try await printer.open()
-
-                switch printType {
-                case .template:
-                    printer.template = receiptTemplate()
-                    try await printer.print(command: jsonRepresentation(of: content))
-                case .standard:
-                    let command = getPrintCommand(for: content)
-                    try await printer.print(command: command)
-                }
+                try await printReceipt(content: content, printType: .template)
             } catch {
                 return completion(.failure(error))
             }
-            await printer.close()
             completion(.success)
+        }
+    }
+
+    public func printReceipt(content: ReceiptContent, printType: PrintType = .template) async throws {
+        guard let printer else {
+            throw StarReceiptPrinterError.noPrinterConnected
+        }
+
+        try await printer.open()
+        defer {
+            Task {
+                await printer.close()
+            }
+        }
+
+        switch printType {
+        case .template:
+            printer.template = receiptTemplate(width: 72.0)
+            try await printer.print(command: jsonRepresentation(of: content))
+        case .standard:
+            let command = getPrintCommand(for: content)
+            try await printer.print(command: command)
         }
     }
 }
@@ -123,10 +129,10 @@ private extension StarReceiptPrinterService {
         return jsonString
     }
 
-    func receiptTemplate() -> String {
+    func receiptTemplate(width: Double = 48.0) -> String {
         let builder = StarXpandCommand.StarXpandCommandBuilder()
         _ = builder.addDocument(StarXpandCommand.DocumentBuilder()
-            .settingPrintableArea(48.0)
+            .settingPrintableArea(width)
             .addPrinter(StarXpandCommand.PrinterBuilder()
                 .styleInternationalCharacter(.usa)
                 .styleCharacterSpace(0.0)
@@ -136,7 +142,8 @@ private extension StarReceiptPrinterService {
                     .styleBold(true)
                     .styleInvert(true)
                     .styleMagnification(StarXpandCommand.MagnificationParameter(width: 2, height: 2))
-                    .actionPrintText("Receipt from ${parameters.store_name}\n")
+                    .actionPrintText("${parameters.store_name}\n")
+                    .actionPrintText("Receipt")
                     )
                 .actionFeed(1.0)
                 .actionPrintText("Amount Paid\n".uppercased())
@@ -150,7 +157,7 @@ private extension StarReceiptPrinterService {
                 .actionPrintText("Summary: Order #".uppercased())
                 .actionPrintText("${parameters.order_id}\n")
                 .actionPrintRuledLine(
-                    StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                    StarXpandCommand.Printer.RuledLineParameter(width: width)
                 )
                 .add(
                     StarXpandCommand.PrinterBuilder(
@@ -200,12 +207,12 @@ private extension StarReceiptPrinterService {
                             )
                     )
                 .actionPrintRuledLine(
-                    StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                    StarXpandCommand.Printer.RuledLineParameter(width: width)
                 )
                     .actionPrintText("Notes\n".uppercased())
                     .actionPrintText("${order_note}\n")
                     .actionPrintRuledLine(
-                        StarXpandCommand.Printer.RuledLineParameter(width: 48.0)
+                        StarXpandCommand.Printer.RuledLineParameter(width: width)
                     )
                     .actionPrintText("Application Name: ${parameters.card_details.receipt.application_preferred_name}\n")
                     .actionPrintText("AID: ${parameters.card_details.receipt.dedicated_file_name}\n")

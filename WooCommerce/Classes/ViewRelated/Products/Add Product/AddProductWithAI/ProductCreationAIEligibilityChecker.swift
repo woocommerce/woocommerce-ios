@@ -9,10 +9,10 @@ protocol ProductCreationAIEligibilityCheckerProtocol {
     var aiSource: AISource { get }
 }
 
-enum AISource {
-    case none
-    case `internal`
-    case merchant
+enum AISource: String {
+    case none = "none"
+    case `internal` = "internal"
+    case merchant = "merchant"
 }
 
 /// Checks the eligibility for the "add product using AI" feature.

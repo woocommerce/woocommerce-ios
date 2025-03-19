@@ -213,8 +213,10 @@ private extension POSEligibilityCheckerTests {
     func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
+            case .isRemoteFeatureFlagEnabled(.pointOfSale, _, completion: let completion):
                 completion(isAllowed)
+            case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
+                completion(false)
             }
         }
     }

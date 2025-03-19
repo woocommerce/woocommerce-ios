@@ -89,10 +89,10 @@ final class HubMenuViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+    let posEligibilityChecker: POSEligibilityCheckerProtocol
 
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let storage = ServiceLocator.storageManager

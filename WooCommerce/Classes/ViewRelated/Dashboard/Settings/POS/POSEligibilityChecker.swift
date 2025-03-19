@@ -28,10 +28,17 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
         }
 
         return Publishers.CombineLatest3(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled, isPointOfSaleOnlyScanToPayEnabled)
-            .filter { [weak self] _ in
-                self?.isEligibleFromSiteChecks ?? false
+            .map { [weak self] isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled, isPointOfSaleOnlyScanToPayEnabled -> Bool in
+                guard let self else {
+                    return false
+                }
+
+                guard isWooCommerceVersionSupported else {
+                    return false
+                }
+
+                return (isPointOfSaleFeatureFlagEnabled && isEligibleFromSiteChecks) || isPointOfSaleOnlyScanToPayEnabled
             }
-            .map { $0 && ($1 || $2) }
             .eraseToAnyPublisher()
     }
 

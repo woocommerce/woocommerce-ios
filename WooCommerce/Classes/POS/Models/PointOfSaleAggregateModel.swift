@@ -539,7 +539,7 @@ extension PointOfSaleAggregateModel {
     }
 
     var isCardPaymentAvailable: Bool {
-        return eligibilityChecker.isOnlyScanToPayEnabled
+        return !eligibilityChecker.isOnlyScanToPayEnabled
     }
 
     func startScanToPay() {

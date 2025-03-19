@@ -11,18 +11,21 @@ struct PointOfSaleEntryPointView: View {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
+        posEligibilityChecker: POSEligibilityCheckerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.posEligibilityChecker = posEligibilityChecker
     }
 
     var body: some View {
@@ -42,7 +45,8 @@ struct PointOfSaleEntryPointView: View {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+                eligibilityChecker: posEligibilityChecker)
         }
         .environmentObject(posModalManager)
         .onAppear {
@@ -63,6 +67,7 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              posEligibilityChecker: POSEligibilityChecker())
 }
 #endif

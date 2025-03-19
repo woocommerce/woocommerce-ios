@@ -2683,6 +2683,7 @@
 		DE58C8A42D88226A005914DF /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */; };
 		DE58C8A62D8928CF005914DF /* NotificationSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58C8A52D8928C8005914DF /* NotificationSettingsViewModel.swift */; };
 		DE58D0042D8A6F85005914DF /* NotificationSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D0032D8A6F85005914DF /* NotificationSettingsViewModelTests.swift */; };
+		DE58D0062D8A9F45005914DF /* SiteNotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D0052D8A9F45005914DF /* SiteNotificationSettingsView.swift */; };
 		DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */; };
 		DE5FBB912A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */; };
 		DE5FBB932A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */; };
@@ -5890,6 +5891,7 @@
 		DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		DE58C8A52D8928C8005914DF /* NotificationSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewModel.swift; sourceTree = "<group>"; };
 		DE58D0032D8A6F85005914DF /* NotificationSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsViewModelTests.swift; sourceTree = "<group>"; };
+		DE58D0052D8A9F45005914DF /* SiteNotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteNotificationSettingsView.swift; sourceTree = "<group>"; };
 		DE5C19C82AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductNameAI.swift"; sourceTree = "<group>"; };
 		DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModelTests.swift; sourceTree = "<group>"; };
@@ -13277,6 +13279,7 @@
 			isa = PBXGroup;
 			children = (
 				DE58C8A32D88226A005914DF /* NotificationSettingsView.swift */,
+				DE58D0052D8A9F45005914DF /* SiteNotificationSettingsView.swift */,
 				DE58C8A52D8928C8005914DF /* NotificationSettingsViewModel.swift */,
 			);
 			path = NotificationSettings;
@@ -16817,6 +16820,7 @@
 				02B1AA6729A4709400D54FCB /* FilterTabBar.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				015D99AA2C58C780001D7186 /* PointOfSaleCardPresentPaymentLayout.swift in Sources */,
+				DE58D0062D8A9F45005914DF /* SiteNotificationSettingsView.swift in Sources */,
 				DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */,
 				EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */,
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,

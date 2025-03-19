@@ -1,0 +1,83 @@
+import SwiftUI
+
+struct SiteNotificationSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var orderNotificationsEnabled = false
+    @State private var productReviewNotificationsEnabled = false
+
+    private let siteTitle: String
+
+    init(siteTitle: String) {
+        self.siteTitle = siteTitle
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Toggle(isOn: $orderNotificationsEnabled) {
+                        Text(Localization.newOrders)
+                    }
+                    Toggle(isOn: $productReviewNotificationsEnabled) {
+                        Text(Localization.productReviews)
+                    }
+                } header: {
+                    Text(Localization.notificationTypesHeader)
+                } footer: {
+                    Text(Localization.notificationTypesFooter)
+                }
+            }
+            .navigationTitle(siteTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel) {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.save) {
+                        // TODO
+                    }
+                }
+            }
+        }
+    }
+}
+
+private extension SiteNotificationSettingsView {
+    enum Localization {
+        static let cancel = NSLocalizedString(
+            "siteNotificationSettingsView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the site notification settings view"
+        )
+        static let save = NSLocalizedString(
+            "siteNotificationSettingsView.save",
+            value: "Save",
+            comment: "Button to save the settings on the site notification settings view"
+        )
+        static let notificationTypesHeader = NSLocalizedString(
+            "siteNotificationSettingsView.notificationTypesHeader",
+            value: "Notification types",
+            comment: "Header of the notification types section on the site notification settings view"
+        )
+        static let notificationTypesFooter = NSLocalizedString(
+            "siteNotificationSettingsView.notificationTypesFooter",
+            value: "Settings for push notifications that appear on your mobile device.",
+            comment: "Footer of the notification types section on the site notification settings view"
+        )
+        static let newOrders = NSLocalizedString(
+            "siteNotificationSettingsView.newOrders",
+            value: "New orders",
+            comment: "Label of the toggle to enable/disable new order notifications on the site notification settings view"
+        )
+        static let productReviews = NSLocalizedString(
+            "siteNotificationSettingsView.productReviews",
+            value: "Product reviews",
+            comment: "Label of the toggle to enable/disable product reviews notifications on the site notification settings view"
+        )
+    }
+}

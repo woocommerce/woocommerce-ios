@@ -6,6 +6,11 @@ import XCTest
 
 final class NotificationSettingsViewModelTests: XCTestCase {
 
+    override func tearDown() {
+        subscription = nil
+        super.tearDown()
+    }
+
     private var subscription: AnyCancellable?
 
     func test_notificationsEnabled_is_false_notification_permission_is_not_authorized() async {

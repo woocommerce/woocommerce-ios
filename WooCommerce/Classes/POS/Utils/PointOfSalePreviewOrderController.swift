@@ -21,5 +21,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     func clearOrder() { }
 
     func collectCashPayment() async throws {}
+
+    func collectScanPayment() async throws {}
 }
 #endif

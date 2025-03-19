@@ -4,6 +4,7 @@ import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
+import enum Yosemite.OrderStatusEnum
 import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCartItem
 import enum Yosemite.OrderAction
@@ -31,6 +32,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
+    func collectScanPayment() async throws
 }
 
 @available(iOS 17.0, *)
@@ -163,6 +165,42 @@ protocol PointOfSaleOrderControllerProtocol {
             stores.dispatch(action)
         }
     }
+
+    /// Initiates scan-to-pay flow and monitors order status until completion
+    @MainActor
+    func collectScanPayment() async throws {
+        do {
+            order = try await updateOrderStatus(.pending)
+        } catch {
+            throw ScanToPayError.updateStatusFailure
+        }
+
+        guard let siteID = stores.sessionManager.defaultStoreID,
+              let order = order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        try Task.checkCancellation()
+
+        while true {
+            do {
+                let updatedOrder = try await retrieveOrder(siteID: siteID, orderID: order.orderID)
+
+                if updatedOrder.status == .processing {
+                    Task {
+                        try? await updateOrderStatus(.completed)
+                    }
+                    self.celebrate()
+                    return
+                }
+            } catch {
+                throw ScanToPayError.observationFailure
+            }
+
+            try await Task.sleep(for: .seconds(5))
+            try Task.checkCancellation()
+        }
+    }
 }
 
 @available(iOS 17.0, *)
@@ -247,5 +285,53 @@ extension PointOfSaleOrderController {
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder
+    }
+}
+
+// MARK: - Scan to Pay
+
+enum ScanToPayError: Error {
+    case updateStatusFailure
+    case observationFailure
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    @MainActor
+    func updateOrderStatus(_ status: OrderStatusEnum) async throws -> Order {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            throw PointOfSaleOrderControllerError.noSiteID
+        }
+        guard let order = order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        let fieldsToUpdate: [OrderUpdateField] = [.status]
+        let updatedOrder = order.copy(status: status)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.updateOrder(siteID: siteID,
+                                                 order: updatedOrder,
+                                                 giftCard: nil,
+                                                 fields: fieldsToUpdate,
+                                                 onCompletion: { result in
+                continuation.resume(with: result)
+            })
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func retrieveOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.retrieveOrderRemotely(
+                siteID: siteID,
+                orderID: orderID,
+                onCompletion: { result in
+                    continuation.resume(with: result)
+                }
+            )
+            stores.dispatch(action)
+        }
     }
 }

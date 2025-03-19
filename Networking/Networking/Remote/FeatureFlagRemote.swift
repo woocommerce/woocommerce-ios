@@ -30,7 +30,7 @@ public enum RemoteFeatureFlag: Decodable {
     case storeCreationCompleteNotification
     case hardcodedPlanUpgradeDetailsMilestone1AreAccurate
     case pointOfSale
-    case pointOfSaleScanToPayOnly
+    case pointOfSaleOnlyScanToPay
 
     init?(rawValue: String) {
         switch rawValue {
@@ -40,8 +40,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .hardcodedPlanUpgradeDetailsMilestone1AreAccurate
         case "woo_pos":
             self = .pointOfSale
-        case "woo_pos_scan_to_pay_only":
-            self = .pointOfSaleScanToPayOnly
+        case "woo_pos_only_scan_to_pay":
+            self = .pointOfSaleOnlyScanToPay
         default:
             return nil
         }

@@ -22,9 +22,6 @@ struct PointOfSaleScanToPayView: View {
             }
         }
         .padding(.top, dynamicTypeSize.isAccessibilitySize ? 0 : POSPadding.large)
-        .onAppear {
-            posModel.startScanToPay()
-        }
         .onDisappear() {
             posModel.stopScanToPay()
         }

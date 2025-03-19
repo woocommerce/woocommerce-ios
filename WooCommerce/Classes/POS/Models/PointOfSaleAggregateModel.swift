@@ -65,6 +65,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    private var eligibilityChecker: POSEligibilityCheckerProtocol
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -78,12 +79,14 @@ protocol PointOfSaleAggregateModelProtocol {
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
+         eligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker(),
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.eligibilityChecker = eligibilityChecker
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -218,6 +221,7 @@ extension PointOfSaleAggregateModel {
     /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
     /// e.g. when the TotalsView goes offscreen.
     private func startPaymentWhenCardReaderConnected() async {
+        paymentState = .card(.idle)
         guard case .connected = cardReaderConnectionStatus else {
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in
@@ -481,8 +485,11 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
 
-//        await startPaymentWhenCardReaderConnected()
-        paymentState = .scan(.waitingForScan)
+        if eligibilityChecker.isOnlyScanToPayEnabled {
+            startScanToPay()
+        } else {
+            await startPaymentWhenCardReaderConnected()
+        }
     }
 }
 
@@ -531,6 +538,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func startScanToPay() {
+        paymentState = .scan(.waitingForScan)
         stopScanToPay()
 
         scanToPayTask = Task { @MainActor [weak self] in

@@ -12,6 +12,8 @@ import enum Yosemite.FeatureFlagAction
 protocol POSEligibilityCheckerProtocol {
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
     var isEligible: AnyPublisher<Bool, Never> { get }
+    /// Experiment: Specific mercants that operate outside eligible markets may only have QR Scan to Pay enabled
+    var isOnlyScanToPayEnabled: Bool { get }
 }
 
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
@@ -25,11 +27,11 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+        return Publishers.CombineLatest3(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled, isPointOfSaleOnlyScanToPayEnabled)
             .filter { [weak self] _ in
                 self?.isEligibleFromSiteChecks ?? false
             }
-            .map { $0 && $1 }
+            .map { $0 && ($1 || $2) }
             .eraseToAnyPublisher()
     }
 
@@ -38,6 +40,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    var isOnlyScanToPayEnabled: Bool = false
 
     init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
@@ -119,6 +122,26 @@ private extension POSEligibilityChecker {
                 return false
         }
     }
+}
+
+private extension POSEligibilityChecker {
+    var isPointOfSaleOnlyScanToPayEnabled: AnyPublisher<Bool, Never> {
+        // Experimental feature
+        // Only whitelisted accounts in WPCOM have the woo_pos_only_scan_to_pay remote feature flag enabled. These can be found at D159901-code
+        Future<Bool, Never> { [weak self] promise in
+            guard let self else {
+                promise(.success(false))
+                return
+            }
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSaleOnlyScanToPay, defaultValue: false, completion: { [weak self] result in
+                self?.isOnlyScanToPayEnabled = result
+                return promise(.success(result))
+            })
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
+    }
+
 }
 
 private extension POSEligibilityChecker {

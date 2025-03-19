@@ -12,6 +12,7 @@ extension WooAnalyticsEvent {
             case description
             case field
             case featureWordCount = "feature_word_count"
+            case aiSource = "ai_source"
         }
 
         static func entryPointDisplayed() -> WooAnalyticsEvent {
@@ -19,9 +20,9 @@ extension WooAnalyticsEvent {
                               properties: [:])
         }
 
-        static func entryPointTapped() -> WooAnalyticsEvent {
+        static func entryPointTapped(_ aiSource: AISource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIEntryPointTapped,
-                              properties: [:])
+                              properties: [Key.aiSource.rawValue: aiSource.rawValue])
         }
 
         static func productNameContinueTapped() -> WooAnalyticsEvent {

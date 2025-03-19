@@ -206,8 +206,9 @@ private extension AddProductCoordinator {
             productTypes: productTypes,
             aiSource: aiSource,
             onAIOption: { [weak self] in
+                let trackedAiSource = self?.aiSource ?? .none
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                    self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
+                    self?.analytics.track(event: .ProductCreationAI.entryPointTapped(trackedAiSource))
                     self?.addProductWithAIBottomSheetPresenter = nil
                     self?.startProductCreationWithAI()
                 }

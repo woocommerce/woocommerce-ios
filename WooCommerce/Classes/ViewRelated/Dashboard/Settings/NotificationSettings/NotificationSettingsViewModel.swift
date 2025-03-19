@@ -3,7 +3,7 @@ import UIKit
 
 /// View model for `NotificationSettingsView`
 final class NotificationSettingsViewModel: ObservableObject {
-    @Published private(set) var notificationsEnabled = false
+    @Published private(set) var notificationsEnabled: Bool?
     @Published var orderNotificationsEnabled = false
     @Published var productReviewNotificationsEnabled = false
 
@@ -14,23 +14,6 @@ final class NotificationSettingsViewModel: ObservableObject {
         self.notificationCenter = notificationCenter
 
         observeAppState()
-        updateNotificationStateIfNeeded()
-    }
-}
-
-private extension NotificationSettingsViewModel {
-    func observeAppState() {
-        // Observe when the app becomes active.
-        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.updateNotificationStateIfNeeded()
-            }
-    }
-
-    func updateNotificationStateIfNeeded() {
-        Task {
-            await checkNotificationPermission()
-        }
     }
 
     @MainActor
@@ -48,5 +31,21 @@ private extension NotificationSettingsViewModel {
             }
         }
         notificationsEnabled = isEnabled
+    }
+}
+
+private extension NotificationSettingsViewModel {
+    func observeAppState() {
+        // Observe when the app becomes active.
+        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.updateNotificationStateIfNeeded()
+            }
+    }
+
+    func updateNotificationStateIfNeeded() {
+        Task {
+            await checkNotificationPermission()
+        }
     }
 }

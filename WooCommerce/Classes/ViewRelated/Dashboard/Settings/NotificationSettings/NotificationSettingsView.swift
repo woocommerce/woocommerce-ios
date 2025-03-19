@@ -24,13 +24,19 @@ struct NotificationSettingsView: View {
 
     var body: some View {
         Group {
-            if viewModel.notificationsEnabled {
+            switch viewModel.notificationsEnabled {
+            case .none:
+                ProgressView().progressViewStyle(.circular)
+            case .some(true):
                 notificationTypesForm
-            } else {
+            case .some(false):
                 notificationsDisabledView
             }
         }
         .navigationTitle(Localization.title)
+        .task {
+            await viewModel.checkNotificationPermission()
+        }
     }
 }
 

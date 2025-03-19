@@ -98,19 +98,3 @@ private extension NotificationSettingsViewModel {
         sites = siteResultsController.fetchedObjects
     }
 }
-
-private extension NotificationSettingsViewModel {
-    func observeAppState() {
-        // Observe when the app becomes active.
-        appStateSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.updateNotificationStateIfNeeded()
-            }
-    }
-
-    func updateNotificationStateIfNeeded() {
-        Task {
-            await checkNotificationPermission()
-        }
-    }
-}

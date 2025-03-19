@@ -89,17 +89,17 @@ private extension NotificationSettingsView {
 
             Section {
                 ForEach(viewModel.sites) { site in
-                    siteRow(for: site)
+                    detailRow(for: site)
                 }
             } header: {
-                Text(Localization.siteListSectionHeader)
+                Text(Localization.storeListSectionHeader)
             } footer: {
-                Text(Localization.siteListSectionFooter)
+                Text(Localization.storeListSectionFooter)
             }
         }
     }
 
-    func siteRow(for site: Site) -> some View {
+    func detailRow(for site: Site) -> some View {
         Button(action: {
             selectedSite = site
         }) {
@@ -169,15 +169,15 @@ extension NotificationSettingsView {
             value: "Including reminders and remote push notifications.",
             comment: "Footer of the notifications section on the notification settings view"
         )
-        static let siteListSectionHeader = NSLocalizedString(
-            "notificationSettingsView.siteListSectionHeader",
-            value: "Your sites",
-            comment: "Header of the site list section on the notification settings view"
+        static let storeListSectionHeader = NSLocalizedString(
+            "notificationSettingsView.storeListSectionHeader",
+            value: "Your stores",
+            comment: "Header of the store list section on the notification settings view"
         )
-        static let siteListSectionFooter = NSLocalizedString(
-            "notificationSettingsView.siteListSectionFooter",
+        static let storeListSectionFooter = NSLocalizedString(
+            "notificationSettingsView.storeListSectionFooter",
             value: "Customize your notification preferences for each store.",
-            comment: "Footer of the site list section on the notification settings view"
+            comment: "Footer of the store list section on the notification settings view"
         )
     }
 }

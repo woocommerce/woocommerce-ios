@@ -3,6 +3,7 @@ import Foundation
 enum PointOfSalePaymentState: Equatable {
     case card(PointOfSaleCardPaymentState)
     case cash(PointOfSaleCashPaymentState)
+    case scan(PointOfSaleScanPaymentState)
 }
 
 enum PointOfSaleCardPaymentState: Equatable {
@@ -18,6 +19,11 @@ enum PointOfSaleCardPaymentState: Equatable {
 
 enum PointOfSaleCashPaymentState: Equatable {
     case collectingCash
+    case paymentSuccess
+}
+
+enum PointOfSaleScanPaymentState: Equatable {
+    case waitingForScan
     case paymentSuccess
 }
 
@@ -69,6 +75,13 @@ extension PointOfSalePaymentState {
             return false
         case .cash:
             return true
+        case .scan(let scanPaymentState):
+            switch scanPaymentState {
+            case .waitingForScan:
+                return false
+            case .paymentSuccess:
+                return true
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ enum HubMenuNavigationDestination: Hashable {
     case subscriptions
     case customers
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
+    case POS
 }
 
 /// View model for `HubMenu`.
@@ -202,6 +203,10 @@ final class HubMenuViewModel: ObservableObject {
     /// Shows the payments menu from the hub menu root view.
     func showPayments() {
         navigateToDestination(.payments)
+    }
+
+    func showPOS() {
+        showsPOS = true
     }
 
     func navigateToDestination(_ destination: HubMenuNavigationDestination?) {

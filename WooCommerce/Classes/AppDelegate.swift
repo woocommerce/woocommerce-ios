@@ -13,6 +13,7 @@ import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
 import AutomatticTracks
+import TipKit
 
 import class Yosemite.ScreenshotStoresManager
 
@@ -123,6 +124,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Don't track startup waiting time if user starts logged out
         if !ServiceLocator.stores.isAuthenticated {
             cancelStartupWaitingTimeTracker()
+        }
+
+        if #available(iOS 17.0, *) {
+            try? Tips.configure() // ✅ Initialize TipKit
+            try? Tips.resetDatastore() // ✅ Reset for testing (remove in production)
         }
 
         // Start app navigation.

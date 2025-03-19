@@ -1,11 +1,36 @@
 import SwiftUI
 import Kingfisher
 import Yosemite
+import TipKit
+
+// Define TipKit Tip (Only for iOS 17+)
+@available(iOS 17.0, *)
+struct POSMenuTip: Tip {
+    var title: Text {
+        Text("Sell In-Person with Woo POS")
+    }
+
+    var message: Text? {
+        Text("Easily capture in-store orders and sync them with your WooCommerce store. Tap below to get started!")
+    }
+
+    var image: Image? {
+        //Image(systemName: "cart.fill") // Change to a relevant SF Symbol
+        Image(PointOfSaleAssets.readerConnection.imageName)
+    }
+
+    var options: [any Option] {
+        // Tip will only appear 3 times before it is automatically invalidated.
+        MaxDisplayCount(1)
+    }
+}
+
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
+
     /// Set from the hosting controller to handle switching store.
     var switchStoreHandler: () -> Void = {}
 
@@ -105,7 +130,14 @@ private extension HubMenu {
             // Point of Sale
             if let menu = viewModel.posElement {
                 Section {
-                    menuItemView(menu: menu, chevron: .enteringMode)
+                    VStack {
+                        if #available(iOS 17.0, *) {
+                            let posMenuTip = POSMenuTip()
+                            TipView(posMenuTip)
+                        }
+
+                        menuItemView(menu: menu, chevron: .enteringMode)
+                    }
                 }
             }
 
@@ -183,6 +215,26 @@ private extension HubMenu {
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
+            case .POS:
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                   let receiptService = POSReceiptService(siteID: viewModel.siteID,
+                                                          credentials: viewModel.credentials),
+                   let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                      credentials: viewModel.credentials),
+                   #available(iOS 17.0, *) {
+                    PointOfSaleEntryPointView(
+                        itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                        onPointOfSaleModeActiveStateChange: { isEnabled in
+                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                        },
+                        cardPresentPaymentService: cardPresentPaymentService,
+                        orderController: PointOfSaleOrderController(orderService: orderService,
+                                                                    receiptService: receiptService),
+                        collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker)
+                } else {
+                    // TODO: When we have a singleton for the card payment service, this should not be required.
+                    Text("Error creating card payment service")
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)

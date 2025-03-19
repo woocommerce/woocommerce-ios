@@ -50,6 +50,10 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.showPayments()
     }
 
+    func showPOS() {
+        viewModel.showPOS()
+    }
+
     func showCoupons() {
         viewModel.navigateToDestination(.coupons)
     }
@@ -139,6 +143,8 @@ extension HubMenuViewController: DeepLinkNavigator {
         switch hubMenuDestination {
         case .paymentsMenu:
             showPaymentsMenu()
+        case .POS:
+            showPOS()
         }
     }
 }

@@ -1,9 +1,33 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import TipKit
+
+// Step 1: Define the Tip
+@available(iOS 17.0, *)
+struct ConnectReaderTip: Tip {
+    var title: Text {
+        Text("Can't you see your products?")
+    }
+
+    var message: Text? {
+        Text("Tap here for more information.")
+    }
+
+    var image: Image? {
+        Image(systemName: "questionmark")
+    }
+
+    var options: [any Option] {
+        // Tip will only appear 3 times before it is automatically invalidated.
+        MaxDisplayCount(1)
+       // MaxDisplayDuration(5)
+    }
+}
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
+    @State private var connectReaderTip = ConnectReaderTip()
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -75,6 +99,8 @@ private extension ItemListView {
                         .padding(Constants.infoIconInset)
                 })
                 .renderedIf(!shouldShowHeaderBanner)
+                .popoverTip(connectReaderTip)
+                //.inlineTip(connectReaderTip)
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView

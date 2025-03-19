@@ -23,12 +23,12 @@ struct SiteNotificationSettingsView: View {
                         Text(Localization.productReviews)
                     }
                 } header: {
-                    Text(Localization.notificationTypesHeader)
+                    Text(siteTitle)
                 } footer: {
                     Text(Localization.notificationTypesFooter)
                 }
             }
-            .navigationTitle(siteTitle)
+            .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -59,8 +59,8 @@ private extension SiteNotificationSettingsView {
             value: "Save",
             comment: "Button to save the settings on the site notification settings view"
         )
-        static let notificationTypesHeader = NSLocalizedString(
-            "siteNotificationSettingsView.notificationTypesHeader",
+        static let title = NSLocalizedString(
+            "siteNotificationSettingsView.title",
             value: "Notification types",
             comment: "Header of the notification types section on the site notification settings view"
         )

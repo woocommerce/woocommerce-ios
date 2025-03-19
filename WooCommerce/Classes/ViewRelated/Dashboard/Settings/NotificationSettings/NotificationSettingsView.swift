@@ -18,6 +18,7 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 
 struct NotificationSettingsView: View {
     @StateObject private var viewModel: NotificationSettingsViewModel
+    @State private var selectedSite: Site?
 
     init() {
         self._viewModel = StateObject(wrappedValue: NotificationSettingsViewModel())
@@ -26,7 +27,7 @@ struct NotificationSettingsView: View {
     var body: some View {
         Group {
             if viewModel.notificationsEnabled {
-                notificationTypesForm
+                siteList
             } else {
                 notificationsDisabledView
             }
@@ -34,6 +35,9 @@ struct NotificationSettingsView: View {
         .navigationTitle(Localization.title)
         .task {
             await viewModel.synchronizeSites()
+        }
+        .sheet(item: $selectedSite) { site in
+            SiteNotificationSettingsView(siteTitle: site.name)
         }
     }
 }
@@ -63,7 +67,7 @@ private extension NotificationSettingsView {
         .padding(.horizontal)
     }
 
-    var notificationTypesForm: some View {
+    var siteList: some View {
         List {
             Section {
                 HStack {
@@ -80,7 +84,7 @@ private extension NotificationSettingsView {
             }
 
             Section {
-                ForEach(viewModel.sites, id: \.siteID) { site in
+                ForEach(viewModel.sites) { site in
                     siteRow(for: site)
                 }
             } header: {
@@ -93,7 +97,7 @@ private extension NotificationSettingsView {
 
     func siteRow(for site: Site) -> some View {
         Button(action: {
-            // TODO
+            selectedSite = site
         }) {
             HStack(spacing: Layout.contentSpacing) {
                 VStack(alignment: .leading) {
@@ -110,6 +114,7 @@ private extension NotificationSettingsView {
                 Image(systemName: "chevron.forward")
                     .secondaryBodyStyle()
             }
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -160,15 +165,15 @@ extension NotificationSettingsView {
             value: "Including reminders and remote push notifications.",
             comment: "Footer of the notifications section on the notification settings view"
         )
-        static let newOrders = NSLocalizedString(
-            "notificationSettingsView.newOrders",
-            value: "New orders",
-            comment: "Label of the toggle to enable/disable new order notifications on the notification settings view"
+        static let siteListSectionHeader = NSLocalizedString(
+            "notificationSettingsView.siteListSectionHeader",
+            value: "Your sites",
+            comment: "Header of the site list section on the notification settings view"
         )
-        static let productReviews = NSLocalizedString(
-            "notificationSettingsView.productReviews",
-            value: "Product reviews",
-            comment: "Label of the toggle to enable/disable product reviews notifications on the notification settings view"
+        static let siteListSectionFooter = NSLocalizedString(
+            "notificationSettingsView.siteListSectionFooter",
+            value: "Customize your notification preferences for new orders and product reviews.",
+            comment: "Footer of the site list section on the notification settings view"
         )
     }
 }

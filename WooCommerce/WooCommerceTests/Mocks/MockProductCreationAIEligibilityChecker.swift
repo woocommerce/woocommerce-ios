@@ -12,4 +12,8 @@ final class MockProductCreationAIEligibilityChecker: ProductCreationAIEligibilit
     var isEligible: Bool {
         eligible
     }
+
+    var aiSource: AISource {
+        .none
+    }
 }

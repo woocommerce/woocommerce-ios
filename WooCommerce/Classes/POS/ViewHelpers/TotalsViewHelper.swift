@@ -18,6 +18,13 @@ final class TotalsViewHelper {
             }
         case .cash:
             return false
+        case .scan(let scanPaymentState):
+            switch scanPaymentState {
+            case .waitingForScan:
+                return true
+            case .paymentSuccess:
+                return false
+            }
         }
     }
 
@@ -43,8 +50,15 @@ final class TotalsViewHelper {
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
-        guard orderState != .syncing,
-              case .card(let cardState) = paymentState else {
+        guard orderState != .syncing else {
+            return false
+        }
+
+        if case .scan(let scanState) = paymentState {
+            return scanState == .waitingForScan
+        }
+
+        guard case .card(let cardState) = paymentState else {
             return false
         }
 

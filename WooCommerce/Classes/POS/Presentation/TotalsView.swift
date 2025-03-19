@@ -252,6 +252,18 @@ private extension TotalsView {
                                              paymentMethod: .cash)))
                 }
             }
+        case .scan(let scanPaymentState):
+            switch scanPaymentState {
+            case .waitingForScan:
+                PointOfSaleScanToPayView()
+            case .paymentSuccess:
+                if case .loaded(let total) = posModel.orderState {
+                    PointOfSaleCardPresentPaymentInLineMessage(
+                        messageType: .paymentSuccess(
+                            viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                             paymentMethod: .scan)))
+                }
+            }
         }
     }
 }
@@ -299,6 +311,8 @@ private extension TotalsView {
                 return posModel.cardPresentPaymentInlineMessage != nil
             case .cash:
                 return true
+            case .scan:
+                return true
             }
         case .disconnected:
             // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -341,6 +355,19 @@ private extension TotalsView {
         case .cash(let cashPaymentState):
             switch cashPaymentState {
             case .collectingCash:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: nil,
+                                         sidePadding: POSPadding.none)
+            case .paymentSuccess:
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
+            }
+        case .scan(let scanPaymentState):
+            switch scanPaymentState {
+            case .waitingForScan:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: POSPadding.none,
                                          bottomPadding: nil,

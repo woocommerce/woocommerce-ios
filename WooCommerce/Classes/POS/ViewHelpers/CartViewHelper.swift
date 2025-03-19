@@ -39,6 +39,13 @@ private extension PointOfSalePaymentState {
             }
         case .cash:
             return false
+        case .scan(let scanPaymentState):
+            switch scanPaymentState {
+            case .waitingForScan:
+                return true
+            case .paymentSuccess:
+                return false
+            }
         }
     }
 }

@@ -3,6 +3,10 @@ import Foundation
 /// Order: Remote Endpoints
 ///
 public class OrdersRemote: Remote {
+    public enum OrderSource {
+        case mobile
+        case mobilePOS
+    }
 
     /// Retrieves all of the `Orders` available.
     ///
@@ -161,9 +165,16 @@ public class OrdersRemote: Remote {
     ///     - order: Order to be created.
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - fields: Fields of the order to be created.
+    ///     - source: Source of the order creation.
     ///     - completion: Closure to be executed upon completion.
-    ///
-    public func createOrder(siteID: Int64, order: Order, giftCard: String?, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+    public func createOrder(
+        siteID: Int64,
+        order: Order,
+        giftCard: String?,
+        fields: [CreateOrderField],
+        source: OrderSource = .mobile,
+        completion: @escaping (Result<Order, Error>) -> Void
+    ) {
         do {
             let path = Constants.ordersPath
             let mapper = OrderMapper(siteID: siteID)
@@ -203,9 +214,17 @@ public class OrdersRemote: Remote {
                 }
 
                 // Set source type to mark the order as created from mobile
+                let sourceValue: String = {
+                    switch source {
+                    case .mobile:
+                        return OrderAttributionInfo.Values.mobileAppSourceType
+                    case .mobilePOS:
+                        return OrderAttributionInfo.Values.mobileAppPOSSourceType
+                    }
+                }()
                 params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
                                                                                 key: OrderAttributionInfo.Keys.sourceType.rawValue,
-                                                                                value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
+                                                                                value: sourceValue).toDictionary()]
 
                 return params
             }()

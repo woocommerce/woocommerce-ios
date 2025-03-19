@@ -71,6 +71,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    private var scanToPayTask: Task<Void, Never>?
+
     init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -263,10 +265,7 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
-        paymentState = .card(.idle)
-        if case .connected = cardReaderConnectionStatus {
-            await collectCardPayment()
-        }
+        await checkOut()
     }
 
     private func cashPaymentSuccess() {
@@ -481,7 +480,9 @@ extension PointOfSaleAggregateModel {
             await self?.checkOut()
         })
         trackOrderSyncState(syncOrderResult)
-        await startPaymentWhenCardReaderConnected()
+
+//        await startPaymentWhenCardReaderConnected()
+        paymentState = .scan(.waitingForScan)
     }
 }
 
@@ -515,5 +516,44 @@ extension PointOfSaleAggregateModel {
 private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1
+    }
+}
+
+// MARK: - Scan to Pay
+
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    var paymentURL: URL? {
+        if case .loaded(_, let order) = internalOrderState {
+            return order.paymentURL
+        }
+        return nil
+    }
+
+    func startScanToPay() {
+        stopScanToPay()
+
+        scanToPayTask = Task { @MainActor [weak self] in
+            do {
+                let _ = try await self?.orderController.collectScanPayment()
+                self?.paymentState = .scan(.paymentSuccess)
+            } catch is CancellationError {
+                DDLogInfo("Scan to Pay cancelled")
+                return
+            } catch is ScanToPayError {
+                try? await Task.sleep(for: .seconds(5))
+                if self?.scanToPayTask?.isCancelled == false {
+                    DDLogError("Scan to Pay failed, restarting.")
+                    self?.startScanToPay()
+                }
+            } catch {
+                DDLogError("Scan to Pay failed: \(error)")
+            }
+        }
+    }
+
+    func stopScanToPay() {
+        scanToPayTask?.cancel()
+        scanToPayTask = nil
     }
 }

@@ -70,7 +70,9 @@ private extension WooShippingSplitShipmentsDetailView {
     }
 }
 
+#if DEBUG
 #Preview {
     WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                        config: ShippingLabelSampleData.sampleWooShippingConfig()))
 }
+#endif

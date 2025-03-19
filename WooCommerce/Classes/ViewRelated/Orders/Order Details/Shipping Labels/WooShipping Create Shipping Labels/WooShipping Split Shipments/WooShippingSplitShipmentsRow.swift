@@ -43,8 +43,10 @@ private extension WooShippingSplitShipmentsRow {
     }
 }
 
+#if DEBUG
 #Preview {
     WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                config: ShippingLabelSampleData.sampleWooShippingConfig()))
     .padding()
 }
+#endif

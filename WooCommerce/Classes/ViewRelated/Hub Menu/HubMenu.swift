@@ -69,6 +69,8 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         case HubMenuViewModel.PointOfSaleEntryPoint.id:
             viewModel.showsPOS = true
+        case HubMenuViewModel.AISettings.id:
+            ServiceLocator.analytics.track(.hubMenuAISettingsTapped)
         default:
             break
         }

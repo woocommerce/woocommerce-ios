@@ -1,86 +1,38 @@
-import Combine
-import UIKit
 import UserNotifications
-import XCTest
+import Testing
 @testable import WooCommerce
 
-final class NotificationSettingsViewModelTests: XCTestCase {
+struct NotificationSettingsViewModelTests {
 
-    override func tearDown() {
-        subscription = nil
-        super.tearDown()
-    }
-
-    private var subscription: AnyCancellable?
-
-    func test_notificationsEnabled_is_false_notification_permission_is_not_authorized() async {
+    @Test(arguments: [
+        UNAuthorizationStatus.notDetermined,
+        UNAuthorizationStatus.denied,
+        UNAuthorizationStatus.provisional,
+        UNAuthorizationStatus.ephemeral
+    ])
+    func notificationsEnabled_is_false_notification_permission_is_not_authorized(authorizationStatus: UNAuthorizationStatus) async {
         // Given
         let notificationCenter = MockUserNotificationsCenterAdapter()
-        let statuses = [
-            UNAuthorizationStatus.notDetermined,
-            UNAuthorizationStatus.denied,
-            UNAuthorizationStatus.provisional,
-            UNAuthorizationStatus.ephemeral
-        ]
+        notificationCenter.authorizationStatus = authorizationStatus
+        let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
 
-        for status in statuses {
-            // When
-            notificationCenter.authorizationStatus = status
-            let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
+        // When
+        await viewModel.checkNotificationPermission()
 
-            let expectation = XCTestExpectation(description: "Notification authorization status updated")
-            subscription = viewModel.$notificationsEnabled
-                .dropFirst()
-                .sink { _ in
-                    expectation.fulfill()
-                }
-
-            await fulfillment(of: [expectation])
-
-            // Then
-            XCTAssertFalse(viewModel.notificationsEnabled)
-        }
+        // Then
+        #expect(viewModel.notificationsEnabled == false)
     }
 
-    func test_notificationsEnabled_is_true_notification_permission_is_authorized() async {
+    @Test func notificationsEnabled_is_true_notification_permission_is_authorized() async {
         // Given
         let notificationCenter = MockUserNotificationsCenterAdapter()
         notificationCenter.authorizationStatus = .authorized
+        let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
 
         // When
-        let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
-        let expectation = XCTestExpectation(description: "Notification authorization status updated")
-        subscription = viewModel.$notificationsEnabled
-            .dropFirst()
-            .sink { _ in
-                expectation.fulfill()
-            }
-
-        await fulfillment(of: [expectation])
+        await viewModel.checkNotificationPermission()
 
         // Then
-        XCTAssertTrue(viewModel.notificationsEnabled)
-    }
-
-    func test_notificationEnabled_is_updated_when_app_becomes_active() async {
-        // Given
-        let notificationCenter = MockUserNotificationsCenterAdapter()
-        notificationCenter.authorizationStatus = .denied
-
-        let viewModel = NotificationSettingsViewModel(notificationCenter: notificationCenter)
-        let expectation = XCTestExpectation(description: "Notification authorization status updated")
-        subscription = viewModel.$notificationsEnabled
-            .dropFirst()
-            .sink { status in
-                expectation.fulfill()
-            }
-
-        // When
-        notificationCenter.authorizationStatus = .authorized
-        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-        await fulfillment(of: [expectation])
-
-        // Then
-        XCTAssertTrue(viewModel.notificationsEnabled)
+        #expect(viewModel.notificationsEnabled == true)
     }
 }

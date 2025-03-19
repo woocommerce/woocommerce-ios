@@ -26,14 +26,18 @@ struct NotificationSettingsView: View {
 
     var body: some View {
         Group {
-            if viewModel.notificationsEnabled {
+            switch viewModel.notificationsEnabled {
+            case .none:
+                ProgressView().progressViewStyle(.circular)
+            case .some(true):
                 notificationSettings
-            } else {
+            case .some(false):
                 notificationsDisabledView
             }
         }
         .navigationTitle(Localization.title)
         .task {
+            await viewModel.checkNotificationPermission()
             await viewModel.synchronizeSites()
         }
         .sheet(item: $selectedSite) { site in

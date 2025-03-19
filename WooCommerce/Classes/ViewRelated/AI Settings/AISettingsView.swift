@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct AISettingsView: View {
     @State private var AIProviderApiKey: String = UserDefaults.standard.string(forKey: "AIProviderAPIKey") ?? ""
@@ -14,6 +15,11 @@ struct AISettingsView: View {
     let anthropicModels = [
         "claude-3-haiku-20240307"
     ]
+    private let viewModel: AISettingsViewModel
+    
+    init(viewModel: AISettingsViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         ScrollView {
@@ -126,5 +132,5 @@ struct AISettingsView: View {
 }
 
 #Preview {
-    AISettingsView()
+    AISettingsView(viewModel: AISettingsViewModel())
 }

@@ -1629,6 +1629,8 @@
 		68E674AB2A4DAB8C0034BA1E /* CompletedUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AA2A4DAB8C0034BA1E /* CompletedUpgradeView.swift */; };
 		68E674AD2A4DAC010034BA1E /* CurrentPlanDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AC2A4DAC010034BA1E /* CurrentPlanDetailsView.swift */; };
 		68E674AF2A4DACD50034BA1E /* UpgradeTopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674AE2A4DACD50034BA1E /* UpgradeTopBarView.swift */; };
+		68E7C0B42D8A707500934B04 /* AISettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7C0B32D8A707100934B04 /* AISettingsViewModel.swift */; };
+		68E7C0B72D8A730200934B04 /* AISettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7C0B62D8A730200934B04 /* AISettingsViewModelTests.swift */; };
 		68E952CC287536010095A23D /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952CB287536010095A23D /* SafariView.swift */; };
 		68E952D0287587BF0095A23D /* CardReaderManualRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952CF287587BF0095A23D /* CardReaderManualRowView.swift */; };
 		68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */; };
@@ -4793,6 +4795,8 @@
 		68E674AA2A4DAB8C0034BA1E /* CompletedUpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedUpgradeView.swift; sourceTree = "<group>"; };
 		68E674AC2A4DAC010034BA1E /* CurrentPlanDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentPlanDetailsView.swift; sourceTree = "<group>"; };
 		68E674AE2A4DACD50034BA1E /* UpgradeTopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeTopBarView.swift; sourceTree = "<group>"; };
+		68E7C0B32D8A707100934B04 /* AISettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsViewModel.swift; sourceTree = "<group>"; };
+		68E7C0B62D8A730200934B04 /* AISettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISettingsViewModelTests.swift; sourceTree = "<group>"; };
 		68E952CB287536010095A23D /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		68E952CF287587BF0095A23D /* CardReaderManualRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualRowView.swift; sourceTree = "<group>"; };
 		68E952D12875A44B0095A23D /* CardReaderType+Manual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderType+Manual.swift"; sourceTree = "<group>"; };
@@ -9834,6 +9838,7 @@
 			isa = PBXGroup;
 			children = (
 				682DB48E2D88230600E38449 /* AISettingsView.swift */,
+				68E7C0B32D8A707100934B04 /* AISettingsViewModel.swift */,
 			);
 			path = "AI Settings";
 			sourceTree = "<group>";
@@ -9902,6 +9907,14 @@
 				68DF5A8E2CB38F20000154C9 /* OrderCouponSectionView.swift */,
 			);
 			path = Coupons;
+			sourceTree = "<group>";
+		};
+		68E7C0B52D8A72E200934B04 /* AI Settings */ = {
+			isa = PBXGroup;
+			children = (
+				68E7C0B62D8A730200934B04 /* AISettingsViewModelTests.swift */,
+			);
+			path = "AI Settings";
 			sourceTree = "<group>";
 		};
 		68F151DF2C0DA7800082AEC8 /* Models */ = {
@@ -12838,6 +12851,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				68E7C0B52D8A72E200934B04 /* AI Settings */,
 				864059FE2C6F67A000DA04DC /* Custom Fields */,
 				86023FAB2B16D80E00A28F07 /* Themes */,
 				EE45E2C02A42C9C70085F227 /* Feature Highlight */,
@@ -16251,6 +16265,7 @@
 				267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */,
 				D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */,
 				DAAF53B82CF75701006D8880 /* WooShippingAddPackageViewModel.swift in Sources */,
+				68E7C0B42D8A707500934B04 /* AISettingsViewModel.swift in Sources */,
 				26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */,
 				B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */,
 				205E79462C204387001BA266 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel.swift in Sources */,
@@ -17457,6 +17472,7 @@
 				0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */,
 				455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */,
 				86EC6EB92CD0BA6A00D7D2FE /* CustomFieldEditorViewModelTests.swift in Sources */,
+				68E7C0B72D8A730200934B04 /* AISettingsViewModelTests.swift in Sources */,
 				CE86C8332CC8F9BB00B1764D /* WooShippingServiceCardViewModelTests.swift in Sources */,
 				26F92DBE2C7ECAB20074A208 /* EditOrderFormTests.swift in Sources */,
 				D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */,

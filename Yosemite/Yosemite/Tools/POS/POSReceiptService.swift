@@ -27,8 +27,11 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
 
     public func sendReceipt(order: Yosemite.Order, recipientEmail: String) async throws {
         do {
-            try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+            try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: order.orderID)
         } catch {
+            if let error = error as? ReceiptRemoteError, error == .missingTemplate {
+                throw POSReceiptServiceError.missingTemplate
+            }
             throw POSReceiptServiceError.sendReceiptFailed
         }
     }
@@ -37,5 +40,6 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
 public extension POSReceiptService {
     enum POSReceiptServiceError: Error {
         case sendReceiptFailed
+        case missingTemplate
     }
 }

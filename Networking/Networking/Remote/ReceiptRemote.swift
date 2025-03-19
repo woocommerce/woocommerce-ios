@@ -48,6 +48,33 @@ public final class ReceiptRemote: Remote {
                                      availableAsRESTRequest: true)
         try await enqueue(request)
     }
+
+    public func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
+        let templatesPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/email_templates"
+        let templatesRequest = JetpackRequest(wooApiVersion: .mark3,
+                                              method: .get,
+                                              siteID: siteID,
+                                              path: templatesPath,
+                                              parameters: [:],
+                                              availableAsRESTRequest: true)
+        let validTemplates: [EmailTemplateResponse] = try await enqueue(templatesRequest)
+
+        let posReceiptTemplateID = "pos_customer_completed_order"
+        guard validTemplates.contains(where: { $0.id == posReceiptTemplateID }) else {
+            throw ReceiptRemoteError.missingTemplate
+        }
+
+        let sendEmailPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_email"
+        let sendEmailRequest = JetpackRequest(wooApiVersion: .mark3,
+                                              method: .post,
+                                              siteID: siteID,
+                                              path: sendEmailPath,
+                                              parameters: [
+                                                "template_id": posReceiptTemplateID
+                                              ],
+                                              availableAsRESTRequest: true)
+        try await enqueue(sendEmailRequest)
+    }
 }
 
 extension ReceiptRemote: POSReceiptsRemoteProtocol { }
@@ -62,4 +89,14 @@ private extension ReceiptRemote {
         static let ordersPath: String = "orders"
         static let actionsPath: String = "actions"
     }
+}
+
+private extension ReceiptRemote {
+    struct EmailTemplateResponse: Decodable {
+        let id: String
+    }
+}
+
+public enum ReceiptRemoteError: Error {
+    case missingTemplate
 }

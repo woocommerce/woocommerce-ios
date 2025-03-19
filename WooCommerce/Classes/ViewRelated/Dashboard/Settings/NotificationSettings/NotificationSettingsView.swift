@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.Site
 
 final class NotificationSettingsHostingController: UIHostingController<NotificationSettingsView> {
     init() {
@@ -31,6 +32,9 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationTitle(Localization.title)
+        .task {
+            await viewModel.synchronizeSites()
+        }
     }
 }
 
@@ -60,7 +64,7 @@ private extension NotificationSettingsView {
     }
 
     var notificationTypesForm: some View {
-        Form {
+        List {
             Section {
                 HStack {
                     Text(Localization.notificationsEnabled)
@@ -74,19 +78,40 @@ private extension NotificationSettingsView {
             } footer: {
                 Text(Localization.notificationsFooter)
             }
+
             Section {
-                Toggle(isOn: $viewModel.orderNotificationsEnabled) {
-                    Text(Localization.newOrders)
-                }
-                Toggle(isOn: $viewModel.productReviewNotificationsEnabled) {
-                    Text(Localization.productReviews)
+                ForEach(viewModel.sites, id: \.siteID) { site in
+                    siteRow(for: site)
                 }
             } header: {
-                Text(Localization.notificationTypesHeader)
+                Text("Your sites")
             } footer: {
-                Text(Localization.notificationTypesFooter)
+                Text("Customize your notification preferences for new orders and product reviews.")
             }
         }
+    }
+
+    func siteRow(for site: Site) -> some View {
+        Button(action: {
+            // TODO
+        }) {
+            HStack(spacing: Layout.contentSpacing) {
+                VStack(alignment: .leading) {
+                    Text(site.name)
+                        .bodyStyle()
+                    Text(site.url)
+                        .foregroundStyle(Color.secondary)
+                        .captionStyle()
+                }
+                .multilineTextAlignment(.leading)
+
+                Spacer()
+
+                Image(systemName: "chevron.forward")
+                    .secondaryBodyStyle()
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     func openSettingsApp() async {
@@ -144,16 +169,6 @@ extension NotificationSettingsView {
             "notificationSettingsView.productReviews",
             value: "Product reviews",
             comment: "Label of the toggle to enable/disable product reviews notifications on the notification settings view"
-        )
-        static let notificationTypesHeader = NSLocalizedString(
-            "notificationSettingsView.notificationTypesHeader",
-            value: "Notification types",
-            comment: "Header of the notification types section on the notification settings view"
-        )
-        static let notificationTypesFooter = NSLocalizedString(
-            "notificationSettingsView.notificationTypesFooter",
-            value: "Settings applied to all selected sites.",
-            comment: "Footer of the notification types section on the notification settings view"
         )
     }
 }

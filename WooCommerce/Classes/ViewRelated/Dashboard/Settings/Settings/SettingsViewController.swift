@@ -156,6 +156,8 @@ private extension SettingsViewController {
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
             configureSendFeedback(cell: cell)
+        case let cell as BasicTableViewCell where row == .notifications:
+            configureNotificationSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -227,6 +229,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureNotificationSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.notificationSettings
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -476,6 +484,11 @@ private extension SettingsViewController {
         present(surveyNavigation, animated: true, completion: nil)
     }
 
+    func showNotificationSettings() {
+        let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
     func deviceSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
@@ -653,6 +666,8 @@ extension SettingsViewController: UITableViewDelegate {
             logoutWasPressed()
         case .themes:
             showThemeSettings()
+        case .notifications:
+            showNotificationSettings()
         default:
             break
         }
@@ -719,6 +734,7 @@ extension SettingsViewController {
         case sendFeedback
 
         // App Settings
+        case notifications
         case privacy
 
         // About the App
@@ -762,7 +778,7 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy:
+            case .privacy, .notifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -851,6 +867,12 @@ private extension SettingsViewController {
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
+        )
+
+        static let notificationSettings = NSLocalizedString(
+            "settingsViewController.notificationSettings",
+            value: "Notification Settings",
+            comment: "Navigates to the Notification Settings screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(

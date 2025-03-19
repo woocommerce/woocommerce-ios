@@ -54,6 +54,7 @@
 		019630B42D01DB4800219D80 /* TapToPayAwarenessMomentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */; };
 		019630B62D02018C00219D80 /* TapToPayAwarenessMomentDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */; };
 		019630B82D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */; };
+		019A953E2D89D5BF00ABBB71 /* PointOfSaleScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019A953D2D89D5B800ABBB71 /* PointOfSaleScanToPayView.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
 		01B744E22D2FCA1400AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */; };
@@ -3278,6 +3279,7 @@
 		019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentView.swift; sourceTree = "<group>"; };
 		019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminer.swift; sourceTree = "<group>"; };
 		019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminerTests.swift; sourceTree = "<group>"; };
+		019A953D2D89D5B800ABBB71 /* PointOfSaleScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleScanToPayView.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
 		01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizerFactory.swift; sourceTree = "<group>"; };
@@ -7216,6 +7218,7 @@
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				014BD4B62C64E26B0011A66E /* Order Messages */,
 				02B1914A2CCF278100CF38C9 /* Payments Onboarding */,
+				019A953D2D89D5B800ABBB71 /* PointOfSaleScanToPayView.swift */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				68A345632D029E09002EE324 /* PaymentButtons.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
@@ -16462,6 +16465,7 @@
 				68B6F22B2ADE7ED500D171FC /* TooltipView.swift in Sources */,
 				02EAF5BE29FA04750058071C /* ProductDescriptionGenerationView.swift in Sources */,
 				CEEF74252B99EF1200B03948 /* RevenueReportCardViewModel.swift in Sources */,
+				019A953E2D89D5BF00ABBB71 /* PointOfSaleScanToPayView.swift in Sources */,
 				CC857C7729B25FAF00E19D1E /* FooterNotice.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				2677B559299F322300862180 /* SupportForm+Presentation.swift in Sources */,

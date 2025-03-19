@@ -34,4 +34,6 @@ private final class MockPOSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         $isEligibleValue.eraseToAnyPublisher()
     }
+
+    var isOnlyScanToPayEnabled: Bool = false
 }

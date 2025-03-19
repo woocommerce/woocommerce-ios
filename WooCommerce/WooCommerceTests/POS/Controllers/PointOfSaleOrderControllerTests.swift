@@ -8,6 +8,7 @@ import struct Yosemite.OrderItem
 import enum Yosemite.OrderAction
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
+import enum Yosemite.OrderStatusEnum
 
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -362,6 +363,63 @@ struct PointOfSaleOrderControllerTests {
         } else {
             #expect(Bool(false), "Expected sync failure but got \(result)")
         }
+    }
+
+    @MainActor
+    @available(iOS 17.0, *)
+    @Test func collectScanPayment_when_processing_detected_then_succeeds() async throws {
+        // Given
+        let sampleSiteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.sessionManager.setStoreId(sampleSiteID)
+        let mockPaymentCelebration = MockPaymentCaptureCelebration()
+
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores,
+                                             celebration: mockPaymentCelebration)
+
+        let orderItem = OrderItem.fake()
+        let initialOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = initialOrder
+        await sut.syncOrder(for: [makeItem()], retryHandler: {})
+
+        var orderStatusUpdates: [OrderStatusEnum] = []
+        var retrievedOrder: Order? = nil
+
+        // When
+        let result: Bool = await withCheckedContinuation { continuation in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, fields, onCompletion):
+                    if fields.contains(.status) {
+                        orderStatusUpdates.append(order.status)
+                        onCompletion(.success(order))
+                    }
+                case let .retrieveOrderRemotely(_, _, onCompletion):
+                    if retrievedOrder == nil {
+                        retrievedOrder = initialOrder.copy(status: .processing)
+                        onCompletion(.success(retrievedOrder!))
+                    }
+                default:
+                    #expect(Bool(false), "Unexpected action \(action)")
+                }
+            }
+
+            Task {
+                do {
+                    try await sut.collectScanPayment()
+                    continuation.resume(returning: true)
+                } catch {
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+
+        // Then
+        #expect(result == true)
+        #expect(orderStatusUpdates == [.pending, .completed])
+        #expect(mockPaymentCelebration.celebrationWasCalled)
     }
 
     struct AnalyticsTests {

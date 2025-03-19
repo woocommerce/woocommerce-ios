@@ -9,6 +9,8 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         // no-op
     }
 
+    func collectScanPayment() async throws {}
+
     var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
         $orderState.eraseToAnyPublisher()
     }

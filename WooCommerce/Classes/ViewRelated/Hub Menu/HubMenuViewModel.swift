@@ -94,6 +94,7 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+    private let productCreationAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
 
     private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
         let storage = ServiceLocator.storageManager
@@ -112,6 +113,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
+    @Published private var isSiteEligibleForProductAICreation = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -150,6 +152,7 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         productCreationAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -161,6 +164,7 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
+        self.productCreationAIEligibilityChecker = productCreationAIEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
@@ -322,18 +326,25 @@ private extension HubMenuViewModel {
     }
 
     func setupGeneralElements() {
-        $shouldShowNewFeatureBadgeOnPayments
-            .combineLatest($isSiteEligibleForInbox,
-                           $isSiteEligibleForBlaze,
-                           $isSiteEligibleForGoogleAds)
+        let eligibilityPublisher = $isSiteEligibleForInbox
+            .combineLatest($isSiteEligibleForBlaze, $isSiteEligibleForGoogleAds)
+            .map { (inbox, blaze, googleAds) -> (Bool, Bool, Bool) in
+                return (inbox, blaze, googleAds)
+            }
+        eligibilityPublisher
+            .combineLatest($shouldShowNewFeatureBadgeOnPayments, $isSiteEligibleForProductAICreation)
             .map { [weak self] combinedResult -> [HubMenuItem] in
                 guard let self else { return [] }
-                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
-                return createGeneralElements(
+                let ((eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds),
+                     shouldShowBadgeOnPayments,
+                     eligibleForProductAICreation) = combinedResult
+
+                return self.createGeneralElements(
                     shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
                     eligibleForGoogleAds: eligibleForGoogleAds,
                     eligibleForBlaze: eligibleForBlaze,
-                    eligibleForInbox: eligibleForInbox
+                    eligibleForInbox: eligibleForInbox,
+                    eligibleForProductAICreation: eligibleForProductAICreation
                 )
             }
             .assign(to: &$generalElements)
@@ -342,12 +353,13 @@ private extension HubMenuViewModel {
     func createGeneralElements(shouldShowBadgeOnPayments: Bool,
                                eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
-                               eligibleForInbox: Bool) -> [HubMenuItem] {
+                               eligibleForInbox: Bool,
+                               eligibleForProductAICreation: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
+        if eligibleForProductAICreation {
             items.append(AISettings())
         }
 
@@ -429,8 +441,8 @@ private extension HubMenuViewModel {
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
-
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+        isSiteEligibleForProductAICreation = productCreationAIEligibilityChecker.isEligible
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)

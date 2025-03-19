@@ -27,7 +27,7 @@ struct NotificationSettingsView: View {
     var body: some View {
         Group {
             if viewModel.notificationsEnabled {
-                siteList
+                notificationSettings
             } else {
                 notificationsDisabledView
             }
@@ -67,7 +67,7 @@ private extension NotificationSettingsView {
         .padding(.horizontal)
     }
 
-    var siteList: some View {
+    var notificationSettings: some View {
         List {
             Section {
                 HStack {
@@ -88,9 +88,9 @@ private extension NotificationSettingsView {
                     siteRow(for: site)
                 }
             } header: {
-                Text("Your sites")
+                Text(Localization.siteListSectionHeader)
             } footer: {
-                Text("Customize your notification preferences for new orders and product reviews.")
+                Text(Localization.siteListSectionFooter)
             }
         }
     }

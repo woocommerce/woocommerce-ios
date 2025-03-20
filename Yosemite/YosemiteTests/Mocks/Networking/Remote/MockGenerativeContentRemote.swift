@@ -39,6 +39,7 @@ final class MockGenerativeContentRemote {
 extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
     func generateText(siteID: Int64,
                       base: String,
+                      shouldUseMerchantAIKey: Bool,
                       feature: GenerativeContentRemoteFeature,
                       responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
         generateTextBase = base
@@ -53,6 +54,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
 
     func identifyLanguage(siteID: Int64,
                           string: String,
+                          shouldUseMerchantAIKey: Bool,
                           feature: GenerativeContentRemoteFeature) async throws -> String {
         identifyLanguageString = string
         identifyLanguageFeature = feature
@@ -68,6 +70,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
                            keywords: String,
                            language: String,
                            tone: String,
+                           shouldUseMerchantAIKey: Bool,
                            currencySymbol: String,
                            dimensionUnit: String?,
                            weightUnit: String?,

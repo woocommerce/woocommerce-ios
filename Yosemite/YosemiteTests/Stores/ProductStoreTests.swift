@@ -1905,6 +1905,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
+                                                                           shouldUseMerchantAIKey: false,
                                                                            features: "Trendy",
                                                                            language: "en") { result in
                 promise(result)
@@ -1931,6 +1932,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
+                                                                           shouldUseMerchantAIKey: false,
                                                                            features: "Trendy",
                                                                            language: "en") { result in
                 promise(result)
@@ -1956,6 +1958,7 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
+                                                                           shouldUseMerchantAIKey: false,
                                                                            features: "Trendy, cool, fun",
                                                                            language: "en") { _ in
                 promise(())
@@ -1983,6 +1986,7 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
+                                                                           shouldUseMerchantAIKey: false,
                                                                            features: "Trendy, cool, fun",
                                                                            language: "en") { _ in
                 promise(())
@@ -2008,6 +2012,7 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
+                                                                           shouldUseMerchantAIKey: false,
                                                                            features: "Trendy, cool, fun",
                                                                            language: "en") { _ in
                 promise(())
@@ -2039,7 +2044,8 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "en"
+                language: "en",
+                shouldUseMerchantAIKey: false
             ) { result in
                 promise(result)
             })
@@ -2068,7 +2074,8 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "en"
+                language: "en",
+                shouldUseMerchantAIKey: false
             ) { result in
                 promise(result)
             })
@@ -2097,7 +2104,8 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "en"
+                language: "en",
+                shouldUseMerchantAIKey: false
             ) { result in
                 promise(result)
             })
@@ -2113,7 +2121,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedURL = "https://example.com"
         let expectedName = "Sample product"
         let expectedDescription = "Sample description"
-        let expectedLangugae = "en"
+        let expectedLanguage = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
@@ -2130,8 +2138,8 @@ final class ProductStoreTests: XCTestCase {
                 url: expectedURL,
                 name: expectedName,
                 description: expectedDescription,
-                language: expectedLangugae
-            ) { result in
+                language: expectedLanguage,
+                shouldUseMerchantAIKey: false) { result in
                 promise(())
             })
         }
@@ -2141,7 +2149,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedURL))
         XCTAssertTrue(base.contains(expectedName))
         XCTAssertTrue(base.contains(expectedDescription))
-        XCTAssertTrue(base.contains(expectedLangugae))
+        XCTAssertTrue(base.contains(expectedLanguage))
     }
 
     func test_generateProductSharingMessage_uses_correct_feature() throws {
@@ -2161,7 +2169,8 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "en"
+                language: "en",
+                shouldUseMerchantAIKey: false
             ) { result in
                 promise(())
             })
@@ -2189,7 +2198,8 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "en"
+                language: "en",
+                shouldUseMerchantAIKey: false
             ) { result in
                 promise(())
             })
@@ -2217,6 +2227,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
                                                                  string: "Woo is awesome",
+                                                                 shouldUseMerchantAIKey: false,
                                                                  feature: .productSharing) { result in
                 promise(result)
             })
@@ -2242,6 +2253,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
                                                                  string: "Woo is awesome",
+                                                                 shouldUseMerchantAIKey: false,
                                                                  feature: .productSharing) { result in
                 promise(result)
             })
@@ -2640,7 +2652,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
                                                                        scannedTexts: [""],
-                                                                       language: "en") { result in
+                                                                       language: "en",
+                                                                       shouldUseMerchantAIKey: false) { result in
                 promise(result)
             })
         }
@@ -2666,7 +2679,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
                                                                        scannedTexts: [""],
-                                                                       language: "en") { result in
+                                                                       language: "en",
+                                                                       shouldUseMerchantAIKey: false) { result in
                 promise(result)
             })
         }
@@ -2694,7 +2708,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: productName,
                                                                        scannedTexts: scannedTexts,
-                                                                       language: language) { _ in
+                                                                       language: language,
+                                                                       shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2721,7 +2736,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
                                                                        scannedTexts: [""],
-                                                                       language: "en") { _ in
+                                                                       language: "en",
+                                                                       shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2746,7 +2762,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
                                                                        scannedTexts: [""],
-                                                                       language: "en") { _ in
+                                                                       language: "en",
+                                                                       shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2771,7 +2788,10 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "iPhone 15", language: "en") { result in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123,
+                                                                    keywords: "iPhone 15",
+                                                                    language: "en",
+                                                                    shouldUseMerchantAIKey: false) { result in
                 promise(result)
             })
         }
@@ -2793,7 +2813,10 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "iPhone 15", language: "en") { result in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123,
+                                                                    keywords: "iPhone 15",
+                                                                    language: "en",
+                                                                    shouldUseMerchantAIKey: false) { result in
                 promise(result)
             })
         }
@@ -2816,7 +2839,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         waitFor { promise in
-            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: keyword, language: "en") { _ in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: keyword, language: "en", shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2838,7 +2861,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         waitFor { promise in
-            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en") { _ in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en", shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2860,7 +2883,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         waitFor { promise in
-            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en") { _ in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en", shouldUseMerchantAIKey: false) { _ in
                 promise(())
             })
         }
@@ -2929,6 +2952,7 @@ final class ProductStoreTests: XCTestCase {
                                                                   keywords: "Leather strip, silver",
                                                                   language: "en",
                                                                   tone: "Casual",
+                                                                  shouldUseMerchantAIKey: false,
                                                                   currencySymbol: "INR",
                                                                   dimensionUnit: "cm",
                                                                   weightUnit: "kg",
@@ -2960,6 +2984,7 @@ final class ProductStoreTests: XCTestCase {
                                                                   keywords: "Leather strip, silver",
                                                                   language: "en",
                                                                   tone: "Casual",
+                                                                  shouldUseMerchantAIKey: false,
                                                                   currencySymbol: "INR",
                                                                   dimensionUnit: "cm",
                                                                   weightUnit: "kg",

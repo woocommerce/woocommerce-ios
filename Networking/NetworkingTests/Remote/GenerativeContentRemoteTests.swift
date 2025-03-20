@@ -30,6 +30,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
 
@@ -48,6 +49,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
 
@@ -66,6 +68,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         let generatedText = try await remote.generateText(siteID: sampleSiteID,
                                                           base: "generate a product description for wapuu pencil",
+                                                          shouldUseMerchantAIKey: false,
                                                           feature: .productDescription,
                                                           responseFormat: .text)
 
@@ -83,6 +86,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.generateText(siteID: sampleSiteID,
                                               base: "generate a product description for wapuu pencil",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription,
                                               responseFormat: .text)
         } errorAssert: { error in
@@ -101,6 +105,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.generateText(siteID: sampleSiteID,
                                               base: "generate a product description for wapuu pencil",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription,
                                               responseFormat: .text)
         } errorAssert: { error in
@@ -120,6 +125,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
         // Then
@@ -128,6 +134,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
 
@@ -140,6 +147,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generative-text-invalid-token")
         _ = try? await remote.generateText(siteID: sampleSiteID,
                                            base: "generate a product description for wapuu pencil",
+                                           shouldUseMerchantAIKey: false,
                                            feature: .productDescription,
                                            responseFormat: .text)
 
@@ -159,6 +167,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
         // Then
@@ -167,6 +176,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
+                                          shouldUseMerchantAIKey: false,
                                           feature: .productDescription,
                                           responseFormat: .text)
 
@@ -186,6 +196,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                               string: "Woo is awesome.",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription)
 
         // Then
@@ -203,6 +214,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         let language = try await remote.identifyLanguage(siteID: sampleSiteID,
                                                          string: "Woo is awesome.",
+                                                         shouldUseMerchantAIKey: false,
                                                          feature: .productDescription)
 
         // Then
@@ -219,6 +231,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                                   string: "Woo is awesome.",
+                                                  shouldUseMerchantAIKey: false,
                                                   feature: .productDescription)
         } errorAssert: { error in
             // Then
@@ -236,6 +249,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                                   string: "Woo is awesome.",
+                                                  shouldUseMerchantAIKey: false,
                                                   feature: .productDescription)
         } errorAssert: { error in
             // Then
@@ -254,6 +268,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                               string: "Woo is awesome.",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription)
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
@@ -261,6 +276,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                               string: "Woo is awesome.",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription)
 
         // Then
@@ -272,6 +288,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "identify-language-invalid-token")
         _ = try? await remote.identifyLanguage(siteID: sampleSiteID,
                                                string: "Woo is awesome.",
+                                               shouldUseMerchantAIKey: false,
                                                feature: .productDescription)
 
         // Then
@@ -290,6 +307,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                               string: "Woo is awesome.",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription)
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
@@ -297,6 +315,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
                                               string: "Woo is awesome.",
+                                              shouldUseMerchantAIKey: false,
                                               feature: .productDescription)
 
         // Then
@@ -318,6 +337,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -342,6 +362,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -366,6 +387,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -390,6 +412,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -417,6 +440,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -442,6 +466,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -468,6 +493,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -492,6 +518,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                          keywords: "Crunchy, Crispy",
                                                          language: "en",
                                                          tone: "Casual",
+                                                         shouldUseMerchantAIKey: false,
                                                          currencySymbol: "INR",
                                                          dimensionUnit: "cm",
                                                          weightUnit: "kg",
@@ -525,6 +552,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                          keywords: "Crunchy, Crispy",
                                                          language: "en",
                                                          tone: "Casual",
+                                                         shouldUseMerchantAIKey: false,
                                                          currencySymbol: "INR",
                                                          dimensionUnit: "cm",
                                                          weightUnit: "kg",
@@ -548,6 +576,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                    keywords: "Crunchy, Crispy",
                                                    language: "en",
                                                    tone: "Casual",
+                                                   shouldUseMerchantAIKey: false,
                                                    currencySymbol: "INR",
                                                    dimensionUnit: "cm",
                                                    weightUnit: "kg",
@@ -572,6 +601,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                    keywords: "Crunchy, Crispy",
                                                    language: "en",
                                                    tone: "Casual",
+                                                   shouldUseMerchantAIKey: false,
                                                    currencySymbol: "INR",
                                                    dimensionUnit: "cm",
                                                    weightUnit: "kg",
@@ -597,6 +627,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -611,6 +642,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -629,6 +661,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                 keywords: "Crunchy, Crispy",
                                                 language: "en",
                                                 tone: "Casual",
+                                                shouldUseMerchantAIKey: false,
                                                 currencySymbol: "INR",
                                                 dimensionUnit: "cm",
                                                 weightUnit: "kg",
@@ -654,6 +687,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",
@@ -668,6 +702,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                keywords: "Crunchy, Crispy",
                                                language: "en",
                                                tone: "Casual",
+                                               shouldUseMerchantAIKey: false,
                                                currencySymbol: "INR",
                                                dimensionUnit: "cm",
                                                weightUnit: "kg",

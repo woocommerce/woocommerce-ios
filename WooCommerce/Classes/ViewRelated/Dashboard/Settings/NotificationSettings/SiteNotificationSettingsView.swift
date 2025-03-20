@@ -47,8 +47,9 @@ struct SiteNotificationSettingsView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.save) {
+                    Button(Localization.done) {
                         completionHandler(orderNotificationsEnabled, productReviewsNotificationsEnabled)
+                        dismiss()
                     }
                 }
             }
@@ -63,10 +64,10 @@ private extension SiteNotificationSettingsView {
             value: "Cancel",
             comment: "Button to dismiss the site notification settings view"
         )
-        static let save = NSLocalizedString(
-            "siteNotificationSettingsView.save",
-            value: "Save",
-            comment: "Button to save the settings on the site notification settings view"
+        static let done = NSLocalizedString(
+            "siteNotificationSettingsView.done",
+            value: "Done",
+            comment: "Button to confirm the settings on the site notification settings view"
         )
         static let title = NSLocalizedString(
             "siteNotificationSettingsView.title",

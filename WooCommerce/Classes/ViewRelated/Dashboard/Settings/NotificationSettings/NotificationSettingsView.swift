@@ -36,6 +36,14 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationTitle(Localization.title)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") {
+                    //  TODO
+                }
+                .disabled(viewModel.hasSiteSettingsChanges == false)
+            }
+        }
         .task {
             await viewModel.checkNotificationPermission()
             if viewModel.currentDeviceID != nil {
@@ -50,8 +58,10 @@ struct NotificationSettingsView: View {
                 SiteNotificationSettingsView(siteTitle: site.name,
                                              ordersNotificationsEnabled: device.storeOrder,
                                              productReviewsNotificationsEnabled: device.newComment,
-                                             completionHandler: { _, _ in
-                    // TODO
+                                             completionHandler: { newOrder, productReviews in
+                    viewModel.updateSettings(siteID: site.siteID,
+                                             ordersNotificationsEnabled: newOrder,
+                                             productReviewsNotificationsEnabled: productReviews)
                 })
             }
         }

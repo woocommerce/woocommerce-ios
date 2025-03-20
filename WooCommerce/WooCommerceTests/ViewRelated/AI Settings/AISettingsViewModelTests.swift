@@ -6,7 +6,6 @@ final class AISettingsViewModelTests: XCTestCase {
     var defaults: UserDefaults!
     let suiteName = #file
 
-    private let testAPIKey = "test-ai-key"
     private let testAIProvider = "test-ai-model"
     private let testAIModel = "test-ai-provider"
 
@@ -39,7 +38,6 @@ final class AISettingsViewModelTests: XCTestCase {
         guard let defaults = UserDefaults(suiteName: suiteName) else {
             return XCTFail()
         }
-        defaults.set(testAPIKey, forKey: "AIProviderAPIKey")
         defaults.set(testAIModel, forKey: "AIProviderModel")
         defaults.set(testAIProvider, forKey: "AIProvider")
 
@@ -47,13 +45,11 @@ final class AISettingsViewModelTests: XCTestCase {
         sut = AISettingsViewModel(defaults: defaults)
 
         // Then
-        XCTAssertEqual(sut.apiKey, testAPIKey)
         XCTAssertEqual(sut.selectedModel, testAIModel)
         XCTAssertEqual(sut.selectedProvider, testAIProvider)
     }
 
     func test_init_should_use_empty_values_when_userdefaults_is_empty() {
-        XCTAssertEqual(sut.apiKey, "")
         XCTAssertEqual(sut.selectedModel, "")
         XCTAssertEqual(sut.selectedProvider, "")
     }
@@ -100,7 +96,6 @@ final class AISettingsViewModelTests: XCTestCase {
         sut.updateProvider("OpenAI")
 
         // Then
-        XCTAssertEqual(defaults.string(forKey: "AIProviderAPIKey"), "new-api-key")
         XCTAssertEqual(defaults.string(forKey: "AIProviderModel"), expectedOpenAIModels.first)
         XCTAssertEqual(defaults.string(forKey: "AIProvider"), "OpenAI")
     }
@@ -163,7 +158,6 @@ final class AISettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isEditingApiKey)
-        XCTAssertEqual(defaults.string(forKey: "AIProviderAPIKey"), "new-key")
         XCTAssertEqual(defaults.string(forKey: "AIProviderModel"), "test-model")
         XCTAssertEqual(defaults.string(forKey: "AIProvider"), "test-provider")
     }

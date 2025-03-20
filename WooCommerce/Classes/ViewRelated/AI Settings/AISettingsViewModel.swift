@@ -4,7 +4,7 @@ import KeychainAccess
 final class AISettingsViewModel: ObservableObject {
     private var keychain = Keychain(service: WooConstants.keychainServiceName)
 
-    @Published var apiKey: String
+    @Published var apiKey: String // TODO: Make function and restrict set access
     @Published var selectedModel: String
     @Published var selectedProvider: String
     @Published var isEditingApiKey: Bool

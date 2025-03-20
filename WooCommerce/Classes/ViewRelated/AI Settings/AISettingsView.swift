@@ -81,19 +81,23 @@ struct AISettingsView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        TextField(Localization.enterAPIKey, text: $viewModel.apiKey)
-                            .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isEditingApiKey))
-                            .foregroundColor(viewModel.isEditingApiKey ? .primary : .gray)
-                            .disabled(!viewModel.isEditingApiKey || shouldUseWPCOMJPAISource)
-                            .opacity(shouldUseWPCOMJPAISource ? 0.5 : 1.0)
+                        TextField(
+                            Localization.enterAPIKey,
+                            text: Binding(
+                                get: { viewModel.isEditingApiKey ? viewModel.apiKey : "**********" },
+                                set: { newValue in if viewModel.isEditingApiKey { viewModel.apiKey = newValue } }
+                            )
+                        )
+                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isEditingApiKey))
+                        .foregroundColor(.primary)
+                        .privacySensitive()
+                        .disabled(!viewModel.isEditingApiKey)
 
-                        if !viewModel.apiKey.isEmpty {
+                        if viewModel.isEditingApiKey, !viewModel.apiKey.isEmpty {
                             Button(action: viewModel.clearApiKey) {
                                 Image(systemName: "xmark.circle.fill")
                                     .foregroundColor(.gray)
                             }
-                            .disabled(shouldUseWPCOMJPAISource)
-                            .opacity(shouldUseWPCOMJPAISource ? 0.5 : 1.0)
                         }
 
                         Button(action: viewModel.toggleEditing) {

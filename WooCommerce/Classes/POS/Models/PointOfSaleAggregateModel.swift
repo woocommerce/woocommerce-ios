@@ -571,27 +571,24 @@ extension PointOfSaleAggregateModel {
             guard let self,
                   case .connected = printerConnectionState,
                   case let .loaded(_, order) = internalOrderState else { return }
-            let content = ReceiptContent(
-                parameters: .init(
-                    amount: UInt(Int(order.total) ?? 0),
-                    formattedAmount: order.total,
-                    currency: order.currency,
-                    date: order.datePaid ?? order.dateCreated,
-                    storeName: "",
-                    cardDetails: .init(last4: "0000",
-                                       expMonth: 1,
-                                       expYear: 2033,
-                                       cardholderName: nil,
-                                       brand: .visa,
-                                       generatedCard: nil,
-                                       receipt: nil,
-                                       emvAuthData: nil,
-                                       wallet: nil,
-                                       network: nil),
-                    orderID: order.orderID),
-                lineItems: [],
-                cartTotals: [],
-                orderNote: order.customerNote)
+            let parameters = CardPresentReceiptParameters(
+                amount: UInt(Int(order.total) ?? 0),
+                formattedAmount: order.total,
+                currency: order.currency,
+                date: order.datePaid ?? order.dateCreated,
+                storeName: "",
+                cardDetails: .init(last4: "0000",
+                                   expMonth: 1,
+                                   expYear: 2033,
+                                   cardholderName: nil,
+                                   brand: .visa,
+                                   generatedCard: nil,
+                                   receipt: nil,
+                                   emvAuthData: nil,
+                                   wallet: nil,
+                                   network: nil),
+                orderID: order.orderID)
+            let content = ReceiptGenerator().generateReceiptContent(order: order, parameters: parameters)
             Task { [weak self] in
                 try await self?.receiptPrinterService.printReceipt(content: content)
             }
@@ -599,6 +596,8 @@ extension PointOfSaleAggregateModel {
         .store(in: &cancellables)
     }
 }
+
+import class Yosemite.ReceiptGenerator
 
 // MARK: - Lifecycle
 @available(iOS 17.0, *)

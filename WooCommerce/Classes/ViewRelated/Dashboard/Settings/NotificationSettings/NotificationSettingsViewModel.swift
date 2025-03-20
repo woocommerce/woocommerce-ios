@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View model for `NotificationSettingsView`
@@ -22,6 +23,7 @@ final class NotificationSettingsViewModel: ObservableObject {
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
 
     let currentDeviceID: String?
 
@@ -42,11 +44,13 @@ final class NotificationSettingsViewModel: ObservableObject {
     init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         pushNotificationManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotificationManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.notificationCenter = notificationCenter
         self.stores = stores
         self.storageManager = storageManager
         self.currentDeviceID = pushNotificationManager.deviceID
+        self.analytics = analytics
 
         observeAppState()
         updateNotificationStateIfNeeded()
@@ -118,6 +122,8 @@ final class NotificationSettingsViewModel: ObservableObject {
             return
         }
 
+        analytics.track(.notificationSettingsUpdateButtonTapped)
+
         var updatedBlogs: [NotificationSettings.Blog] = []
         for blog in siteSettings.blogs {
             if blog.blogID == siteID {
@@ -144,6 +150,7 @@ final class NotificationSettingsViewModel: ObservableObject {
         guard let siteSettings else {
             return
         }
+        analytics.track(.notificationSettingsSaveButtonTapped)
         isSavingSettings = true
         do {
             try await withCheckedThrowingContinuation { continuation in
@@ -154,9 +161,11 @@ final class NotificationSettingsViewModel: ObservableObject {
             isSavingSettings = false
             initialSiteSettings = siteSettings // to ensure that checking for changes works
             notice = Notice(title: Localization.successNotice)
+            analytics.track(.notificationSettingsSavingSuccess)
         } catch {
             DDLogError("⛔️ Error saving notification settings: \(error)")
             isSavingSettings = false
+            analytics.track(.notificationSettingsSavingFailed, withError: error)
             throw error
         }
     }

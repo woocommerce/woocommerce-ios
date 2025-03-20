@@ -7,10 +7,16 @@ import protocol Storage.StorageManagerType
 final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var notificationsEnabled: Bool?
     @Published private(set) var sites: [Site] = []
+    @Published private(set) var isLoadingSiteSettings = true
+    @Published private(set) var loadingSiteSettingsError: SiteSettingsError?
 
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+
+    let currentDeviceID: String?
+
+    private(set) var siteSettings: NotificationSettings?
 
     private var appStateSubscription: AnyCancellable?
 
@@ -26,10 +32,12 @@ final class NotificationSettingsViewModel: ObservableObject {
 
     init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         pushNotificationManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.notificationCenter = notificationCenter
         self.stores = stores
         self.storageManager = storageManager
+        self.currentDeviceID = pushNotificationManager.deviceID
 
         observeAppState()
         updateNotificationStateIfNeeded()
@@ -60,6 +68,27 @@ final class NotificationSettingsViewModel: ObservableObject {
                 continuation.resume()
             })
         }
+    }
+
+    @MainActor
+    func retrieveNotificationSettings() async {
+        guard let currentDeviceID, let id = Int64(currentDeviceID) else {
+            loadingSiteSettingsError = SiteSettingsError.deviceNotAvailable
+            return
+        }
+        loadingSiteSettingsError = nil
+        isLoadingSiteSettings = true
+        do {
+            siteSettings = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(AccountAction.loadNotificationSettings(deviceID: id) { result in
+                    continuation.resume(with: result)
+                })
+            }
+        } catch {
+            DDLogError("⛔️ Error retrieving notification settings: \(error)")
+            loadingSiteSettingsError = .loadingFailed(error: error)
+        }
+        isLoadingSiteSettings = false
     }
 }
 
@@ -96,5 +125,12 @@ private extension NotificationSettingsViewModel {
 
     func updateSiteList() {
         sites = siteResultsController.fetchedObjects
+    }
+}
+
+extension NotificationSettingsViewModel {
+    enum SiteSettingsError: Error {
+        case deviceNotAvailable
+        case loadingFailed(error: Error)
     }
 }

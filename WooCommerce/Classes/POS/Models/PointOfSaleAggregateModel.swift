@@ -9,6 +9,10 @@ import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
+import protocol Hardware.PrinterService
+import protocol Hardware.DiscoverableHardwareService
+import class Hardware.StarReceiptPrinterService
+import class StarIO10.StarPrinter
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -69,11 +73,16 @@ protocol PointOfSaleAggregateModelProtocol {
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
+    private let receiptPrinterService: StarReceiptPrinterService
+    private var printerDiscoveryTask: Task<Void, Never>?
+    private(set) var discoveredPrinters: [PrinterDevice] = []
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
+         receiptPrinterService: StarReceiptPrinterService = StarReceiptPrinterService(),
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
@@ -83,10 +92,21 @@ protocol PointOfSaleAggregateModelProtocol {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.paymentState = paymentState
+        self.receiptPrinterService = receiptPrinterService
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
     }
+}
+
+struct PrinterDevice {
+    var name: String {
+        String(describing: starPrinter.information?.model)
+    }
+    var id: String {
+        starPrinter.id
+    }
+    fileprivate let starPrinter: StarPrinter
 }
 
 // MARK: - ItemList
@@ -482,6 +502,32 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await startPaymentWhenCardReaderConnected()
+    }
+}
+
+// MARK: - Receipt printer
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func startPrinterDiscovery() {
+        printerDiscoveryTask?.cancel() // Cancel any existing task before starting a new one
+        discoveredPrinters.removeAll()
+
+        printerDiscoveryTask = Task {
+            do {
+                for try await printer in receiptPrinterService.discover() {
+                    discoveredPrinters.append(PrinterDevice(starPrinter: printer))
+                    DDLogInfo("🖨️💰 Discovered printer: \(printer.id), all printers: \(discoveredPrinters.map(\.id))")
+                }
+            } catch {
+                DDLogError("🖨️💰 Discovery failed: \(error)")
+            }
+        }
+    }
+
+    func connect(printer: PrinterDevice) {
+        printerDiscoveryTask?.cancel()
+        receiptPrinterService.stopDiscovery()
+        receiptPrinterService.connect(to: printer.starPrinter)
     }
 }
 

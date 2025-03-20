@@ -21,9 +21,11 @@ public protocol DiscoverableHardwareService<Device> {
 }
 
 public enum DeviceStatus {
+    case connecting
     case connected
     case busy
     case error(Error)
+    case disconnecting
     case disconnected
 }
 

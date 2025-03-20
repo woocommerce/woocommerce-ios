@@ -68,6 +68,23 @@ struct POSFloatingControlView: View {
                 .cornerRadius(Constants.cornerRadius)
                 .disabled(posModel.paymentState.shownFullScreen)
                 .disabled(horizontalSizeClass != .regular)
+
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport) {
+                Button {
+                    posModel.startPrinterDiscovery()
+                } label: {
+                    VStack {
+                        Spacer()
+                        Image(systemName: "printer")
+                            .font(.posBodyLargeBold)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        Spacer()
+                    }
+                    .frame(width: Constants.size)
+                }
+                .background(backgroundColor)
+                .cornerRadius(Constants.cornerRadius)
+            }
         }
         .frame(height: Constants.size)
         .background(Color.clear)

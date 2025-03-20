@@ -14,6 +14,8 @@ public final class StarReceiptPrinterService: PrinterService, DiscoverableHardwa
         statusSubject.eraseToAnyPublisher()
     }
 
+    fileprivate var discoveryDolegate: StarDiscoveryDelegate?
+
     public func discover() -> AsyncThrowingStream<StarPrinter, Error> {
         print("🖨️ Starting printer discovery")
         return AsyncThrowingStream { continuation in
@@ -22,13 +24,17 @@ public final class StarReceiptPrinterService: PrinterService, DiscoverableHardwa
                     let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetoothLE, .bluetooth, .usb])
                     self.discoveryManager = discovery
 
-                    discovery.delegate = StarDiscoveryDelegate(continuation: continuation)
+                    let discoveryDelegate = StarDiscoveryDelegate(continuation: continuation)
+                    self.discoveryDolegate = discoveryDelegate
+                    discovery.delegate = discoveryDelegate
+
                     discovery.discoveryTime = 30000
                     try discovery.startDiscovery()
                     DDLogDebug("🖨️ Discovery started")
 
                     continuation.onTermination = { _ in
                         discovery.stopDiscovery()
+                        self.discoveryDolegate = nil
                         DDLogDebug("🖨️ Discovery stopped")
                     }
                 } catch {

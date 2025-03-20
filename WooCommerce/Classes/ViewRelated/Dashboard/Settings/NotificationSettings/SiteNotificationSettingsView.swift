@@ -10,6 +10,12 @@ struct SiteNotificationSettingsView: View {
 
     private let siteTitle: String
     private let completionHandler: CompletionCallback
+    private let initialValues: (newOrders: Bool, productReviews: Bool)
+
+    var hasChanges: Bool {
+        initialValues.newOrders != orderNotificationsEnabled ||
+        initialValues.productReviews != productReviewsNotificationsEnabled
+    }
 
     init(siteTitle: String,
          ordersNotificationsEnabled: Bool,
@@ -19,6 +25,7 @@ struct SiteNotificationSettingsView: View {
         self.orderNotificationsEnabled = ordersNotificationsEnabled
         self.productReviewsNotificationsEnabled = productReviewsNotificationsEnabled
         self.completionHandler = completionHandler
+        self.initialValues = (ordersNotificationsEnabled, productReviewsNotificationsEnabled)
     }
 
     var body: some View {
@@ -47,10 +54,11 @@ struct SiteNotificationSettingsView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
+                    Button(Localization.update) {
                         completionHandler(orderNotificationsEnabled, productReviewsNotificationsEnabled)
                         dismiss()
                     }
+                    .disabled(hasChanges == false)
                 }
             }
         }
@@ -64,9 +72,9 @@ private extension SiteNotificationSettingsView {
             value: "Cancel",
             comment: "Button to dismiss the site notification settings view"
         )
-        static let done = NSLocalizedString(
-            "siteNotificationSettingsView.done",
-            value: "Done",
+        static let update = NSLocalizedString(
+            "siteNotificationSettingsView.update",
+            value: "Update",
             comment: "Button to confirm the settings on the site notification settings view"
         )
         static let title = NSLocalizedString(

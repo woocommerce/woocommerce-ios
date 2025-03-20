@@ -77,7 +77,7 @@ public extension NotificationSettings {
 
     /// Notification settings for a device
     struct Device: Equatable, Codable, GeneratedCopiable {
-        
+
         /// Unique ID of the device
         public let deviceID: Int64
 

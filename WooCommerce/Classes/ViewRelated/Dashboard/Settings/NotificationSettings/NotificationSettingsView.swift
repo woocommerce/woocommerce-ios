@@ -19,6 +19,7 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 struct NotificationSettingsView: View {
     @StateObject private var viewModel: NotificationSettingsViewModel
     @State private var selectedSite: Site?
+    @State private var savingSettingsFailed = false
 
     init() {
         self._viewModel = StateObject(wrappedValue: NotificationSettingsViewModel())
@@ -38,8 +39,14 @@ struct NotificationSettingsView: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    //  TODO
+                Button {
+                    saveSettings()
+                } label: {
+                    if viewModel.isSavingSettings {
+                        ProgressView().progressViewStyle(.circular)
+                    } else {
+                        Text(Localization.save)
+                    }
                 }
                 .disabled(viewModel.hasSiteSettingsChanges == false)
             }
@@ -63,6 +70,12 @@ struct NotificationSettingsView: View {
                                              ordersNotificationsEnabled: newOrder,
                                              productReviewsNotificationsEnabled: productReviews)
                 })
+            }
+        }
+        .alert(Localization.errorSavingSiteSettings, isPresented: $savingSettingsFailed) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.retry) {
+                saveSettings()
             }
         }
     }
@@ -166,6 +179,16 @@ private extension NotificationSettingsView {
         // Ask the system to open that URL.
         await UIApplication.shared.open(url)
     }
+
+    func saveSettings() {
+        Task { @MainActor in
+            do {
+                try await viewModel.saveSettings()
+            } catch {
+                savingSettingsFailed = true
+            }
+        }
+    }
 }
 
 extension NotificationSettingsView {
@@ -224,6 +247,21 @@ extension NotificationSettingsView {
             "notificationSettingsView.retry",
             value: "Try again",
             comment: "Button to reload site settings on the notification settings view"
+        )
+        static let save = NSLocalizedString(
+            "notificationSettingsView.save",
+            value: "Save",
+            comment: "Button to save site settings on the notification settings view"
+        )
+        static let cancel = NSLocalizedString(
+            "notificationSettingsView.cancel",
+            value: "Cancel",
+            comment: "Button to cancel saving site settings on the notification settings view"
+        )
+        static let errorSavingSiteSettings = NSLocalizedString(
+            "notificationSettingsView.errorSavingSiteSettings",
+            value: "Unable to save notification settings",
+            comment: "Error message when saving site settings fails on the notification settings view"
         )
     }
 }

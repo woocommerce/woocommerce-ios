@@ -11,6 +11,8 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var loadingSiteSettingsError: SiteSettingsError?
     @Published private(set) var siteSettings: NotificationSettings?
 
+    @Published private(set) var isSavingSettings = false
+
     var hasSiteSettingsChanges: Bool {
         siteSettings != initialSiteSettings
     }
@@ -124,6 +126,27 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
 
         self.siteSettings = NotificationSettings(blogs: updatedBlogs)
+    }
+
+    @MainActor
+    func saveSettings() async throws {
+        guard let siteSettings else {
+            return
+        }
+        isSavingSettings = true
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            isSavingSettings = false
+            initialSiteSettings = siteSettings // to ensure that checking for changes works
+        } catch {
+            DDLogError("⛔️ Error saving notification settings: \(error)")
+            isSavingSettings = false
+            throw error
+        }
     }
 }
 

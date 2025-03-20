@@ -1,4 +1,5 @@
 import Foundation
+import KeychainAccess
 
 /// Used by backend to track AI-generation usage and measure costs
 public enum GenerativeContentRemoteFeature: String {
@@ -14,6 +15,31 @@ public enum GenerativeContentRemoteResponseFormat: String {
     case text = "text"
 }
 
+public struct AIProviderKeyStorage {
+    private let keychain: Keychain
+
+    public init(keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+        self.keychain = keychain
+    }
+    
+    // Returns the merchant AI API if available
+    public var aiProviderAPIKey: String? {
+        guard let key = keychain.aiProviderAPIKey else {
+            return nil
+        }
+        return key
+    }
+}
+
+private extension Keychain {
+    private static let keychainAIProviderAPIKey = "aiProviderAPIKey"
+    
+    var aiProviderAPIKey: String? {
+        get { self[Keychain.keychainAIProviderAPIKey] }
+        set { self[Keychain.keychainAIProviderAPIKey] = newValue }
+    }
+}
+
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
 ///
 public protocol GenerativeContentRemoteProtocol {
@@ -21,11 +47,13 @@ public protocol GenerativeContentRemoteProtocol {
     /// - Parameters:
     ///   - siteID: WPCOM ID of the site.
     ///   - base: Prompt for the AI-generated text.
+    ///   - shouldUseMerchantAIKey: If should use the merchant's API key for AI functionalities
     ///   - feature: Used by backend to track AI-generation usage and measure costs
     ///   - responseFormat: enum parameter to specify response format.
     /// - Returns: AI-generated text based on the prompt if Jetpack AI is enabled.
     func generateText(siteID: Int64,
                       base: String,
+                      shouldUseMerchantAIKey: Bool,
                       feature: GenerativeContentRemoteFeature,
                       responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String
 
@@ -33,10 +61,12 @@ public protocol GenerativeContentRemoteProtocol {
     /// - Parameters:
     ///   - siteID: WPCOM ID of the site.
     ///   - string: String from which we should identify the language
+    ///   - shouldUseMerchantAIKey: If should use the merchant's API key for AI functionalities
     ///   - feature: Used by backend to track AI-generation usage and measure costs
     /// - Returns: ISO code of the language
     func identifyLanguage(siteID: Int64,
                           string: String,
+                          shouldUseMerchantAIKey: Bool,
                           feature: GenerativeContentRemoteFeature) async throws -> String
 
     /// Generates a product using provided info
@@ -46,6 +76,7 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - keywords: Keywords describing the product to input for AI prompt
     ///   - language: Language to generate the product details
     ///   - tone: Tone of AI - Represented by `AIToneVoice`
+    ///   - shouldUseMerchantAIKey: If should use the merchant's API key for AI functionalities
     ///   - currencySymbol: Currency symbol to generate product price
     ///   - dimensionUnit: Weight unit to generate product dimensions
     ///   - weightUnit: Weight unit to generate product weight
@@ -57,6 +88,7 @@ public protocol GenerativeContentRemoteProtocol {
                            keywords: String,
                            language: String,
                            tone: String,
+                           shouldUseMerchantAIKey: Bool,
                            currencySymbol: String,
                            dimensionUnit: String?,
                            weightUnit: String?,
@@ -72,24 +104,16 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     }
 
     private var token: JWToken?
-
-    private var shouldUseMerchantAIAPIKey: Bool {
-        // TODO: Handle case when key non-empty, but disabled
-        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
-            return false
-        }
-        return true
-    }
+    private var storage: AIProviderKeyStorage = AIProviderKeyStorage()
 
     public func generateText(siteID: Int64,
                              base: String,
+                             shouldUseMerchantAIKey: Bool,
                              feature: GenerativeContentRemoteFeature,
                              responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
-        if shouldUseMerchantAIAPIKey {
-            debugPrint("🍍 Using merchant API key")
+        if shouldUseMerchantAIKey {
             return try await generateTextUsingMerchantAPIKey(base: base, responseFormat: responseFormat)
         } else {
-            debugPrint("🍍 Using Jetpack tunnel")
             return try await generateTextUsingJetpack(siteID: siteID,
                                                       base: base,
                                                       feature: feature,
@@ -116,10 +140,9 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     private func generateTextUsingMerchantAPIKey(base: String,
                                                  responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
-        guard let key = UserDefaults.standard.string(forKey: "AIProviderApiKey"), !key.isEmpty else {
-            throw URLError(.userAuthenticationRequired)
+        guard let key = storage.aiProviderAPIKey else {
+            throw URLError(.unknown)
         }
-
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
         let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
 
@@ -148,12 +171,11 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     public func identifyLanguage(siteID: Int64,
                                  string: String,
+                                 shouldUseMerchantAIKey: Bool,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
-        if shouldUseMerchantAIAPIKey {
-            debugPrint("🍍 identifyLanguage... using merchant API key")
+        if shouldUseMerchantAIKey {
             return try await identifyLanguageUsingMerchantAPIKey(string: string)
         } else {
-            debugPrint("🍍 identifyLanguage... using Jetpack tunnel")
             return try await identifyLanguageUsingJetpack(siteID: siteID,
                                                           string: string,
                                                           feature: feature)
@@ -177,10 +199,8 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     }
 
     private func identifyLanguageUsingMerchantAPIKey(string: String) async throws -> String {
-
-        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
-            // TODO: If retrieved here, handle error case
-            throw URLError(.userAuthenticationRequired)
+        guard let key = storage.aiProviderAPIKey else {
+            throw URLError(.unknown)
         }
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
         let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
@@ -208,13 +228,13 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                   keywords: String,
                                   language: String,
                                   tone: String,
+                                  shouldUseMerchantAIKey: Bool,
                                   currencySymbol: String,
                                   dimensionUnit: String?,
                                   weightUnit: String?,
                                   categories: [ProductCategory],
                                   tags: [ProductTag]) async throws -> AIProduct {
-        if shouldUseMerchantAIAPIKey {
-            debugPrint("🍍 generateAIProduct... using merchant API key")
+        if shouldUseMerchantAIKey {
             return try await generateAIProductUsingMerchantAPIKey(productName: productName,
                                                                 keywords: keywords,
                                                                 language: language,
@@ -225,7 +245,6 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                                                 categories: categories,
                                                                 tags: tags)
         } else {
-            debugPrint("🍍 generateAIProduct... using Jetpack tunnel")
             return try await generateAIProductUsingJetpack(siteID: siteID,
                                                         productName: productName,
                                                         keywords: keywords,
@@ -291,9 +310,6 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                                    weightUnit: String?,
                                                    categories: [ProductCategory],
                                                    tags: [ProductTag]) async throws -> AIProduct {
-        guard let key = UserDefaults.standard.string(forKey: "AIProviderAPIKey"), !key.isEmpty else {
-            throw URLError(.userAuthenticationRequired)
-        }
         let selectedProvider = AIProvider(rawValue: UserDefaults.standard.string(forKey: "AIProvider") ?? "OpenAI") ?? .openAI
         let selectedModel = UserDefaults.standard.string(forKey: "AIProviderModel") ?? ""
 
@@ -317,6 +333,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
         let prompt = inputComponents.joined(separator: "\n") + "\n" + expectedJsonFormat
 
+        guard let key = storage.aiProviderAPIKey else {
+            throw URLError(.unknown)
+        }
+        
         let request = try createAIRequest(
                 provider: selectedProvider,
                 apiKey: key,

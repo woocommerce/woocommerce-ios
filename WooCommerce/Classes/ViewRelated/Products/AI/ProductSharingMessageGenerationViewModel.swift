@@ -51,6 +51,10 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     ///
     private var languageIdentifiedUsingAI: String?
 
+    private var shouldUseMerchantAIKey: Bool {
+        ProductCreationAIEligibilityChecker().aiSource == .merchant
+    }
+
     init(siteID: Int64,
          url: String,
          productName: String,
@@ -134,6 +138,7 @@ private extension ProductSharingMessageGenerationViewModel {
                                                                         name: productName,
                                                                         description: productDescription,
                                                                         language: language,
+                                                                        shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                         completion: { result in
                 continuation.resume(with: result)
             }))
@@ -151,6 +156,7 @@ private extension ProductSharingMessageGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productName + " " + productDescription,
+                                                               shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                feature: .productSharing,
                                                                completion: { result in
                     continuation.resume(with: result)

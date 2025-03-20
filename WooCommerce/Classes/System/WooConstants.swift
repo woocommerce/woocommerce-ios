@@ -33,6 +33,10 @@ public enum WooConstants {
     ///
     static let siteCredentialPassword = "siteCredentialPassword"
 
+    /// Keychain Access's Key for the AI API key entered by the merchant in AI settings
+    ///
+    static let aiProviderAPIKey = "aiProviderAPIKey"
+
     /// Keychain Access's Key for the current application password
     ///
     static let applicationPassword = "ApplicationPassword"

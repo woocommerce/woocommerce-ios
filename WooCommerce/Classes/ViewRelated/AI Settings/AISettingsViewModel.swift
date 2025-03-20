@@ -1,6 +1,9 @@
 import SwiftUI
+import KeychainAccess
 
 final class AISettingsViewModel: ObservableObject {
+    private var keychain = Keychain(service: WooConstants.keychainServiceName)
+
     @Published var apiKey: String
     @Published var selectedModel: String
     @Published var selectedProvider: String
@@ -20,7 +23,7 @@ final class AISettingsViewModel: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        self.apiKey = defaults.string(forKey: "AIProviderAPIKey") ?? ""
+        self.apiKey = Keychain(service: WooConstants.keychainServiceName).aiProviderAPIKey ?? ""
         self.selectedModel = defaults.string(forKey: "AIProviderModel") ?? ""
         self.selectedProvider = defaults.string(forKey: "AIProvider") ?? ""
         self.isEditingApiKey = false
@@ -38,6 +41,7 @@ final class AISettingsViewModel: ObservableObject {
 
     func clearApiKey() {
         apiKey = ""
+        keychain.aiProviderAPIKey = nil
     }
 
     func toggleEditing() {
@@ -48,7 +52,7 @@ final class AISettingsViewModel: ObservableObject {
     }
 
     private func saveSettings() {
-        defaults.setValue(apiKey, forKey: "AIProviderAPIKey")
+        keychain.aiProviderAPIKey = apiKey
         defaults.setValue(selectedModel, forKey: "AIProviderModel")
         defaults.setValue(selectedProvider, forKey: "AIProvider")
     }

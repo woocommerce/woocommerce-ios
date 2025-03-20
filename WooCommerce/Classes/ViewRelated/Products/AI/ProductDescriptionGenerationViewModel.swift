@@ -50,6 +50,10 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     ///
     private var languageIdentifiedUsingAI: String?
 
+    private var shouldUseMerchantAIKey: Bool {
+        ProductCreationAIEligibilityChecker().aiSource == .merchant
+    }
+
     init(siteID: Int64,
          name: String,
          description: String,
@@ -118,6 +122,7 @@ private extension ProductDescriptionGenerationViewModel {
             return await withCheckedContinuation { continuation in
                 stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
                                                                          name: name,
+                                                                         shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                          features: features,
                                                                          language: language) { result in
                     continuation.resume(returning: result)
@@ -139,6 +144,7 @@ private extension ProductDescriptionGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: name + " " + features,
+                                                               shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                feature: .productDescription,
                                                                completion: { result in
                     continuation.resume(with: result)

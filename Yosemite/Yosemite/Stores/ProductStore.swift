@@ -116,18 +116,40 @@ public class ProductStore: Store {
             replaceProductLocally(product: product, onCompletion: onCompletion)
         case let .checkIfStoreHasProducts(siteID, status, onCompletion):
             checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
-        case let .identifyLanguage(siteID, string, feature, completion):
+        case let .identifyLanguage(siteID, string, shouldUseMerchantAIKey, feature, completion):
             identifyLanguage(siteID: siteID,
-                             string: string, feature: feature,
+                             string: string,
+                             shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                             feature: feature,
                              completion: completion)
-        case let .generateProductDescription(siteID, name, features, language, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
-        case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
-        case let .generateProductName(siteID, keywords, language, completion):
-            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
-        case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
+        case let .generateProductDescription(siteID, name, shouldUseMerchantAIKey, features, language, completion):
+            generateProductDescription(siteID: siteID,
+                                       name: name,
+                                       shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                       features: features,
+                                       language: language,
+                                       completion: completion)
+        case let .generateProductSharingMessage(siteID, url, name, description, language, shouldUseMerchantAIKey, completion):
+            generateProductSharingMessage(siteID: siteID,
+                                          url: url,
+                                          name: name,
+                                          description: description,
+                                          language: language,
+                                          shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                          completion: completion)
+        case let .generateProductName(siteID, keywords, language, shouldUseMerchantAIKey, completion):
+            generateProductName(siteID: siteID,
+                                keywords: keywords,
+                                language: language,
+                                shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, language, shouldUseMerchantAIKey, completion):
+            generateProductDetails(siteID: siteID,
+                                   productName: productName,
+                                   scannedTexts: scannedTexts,
+                                   language: language,
+                                   shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                   completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
         case let .generateAIProduct(siteID,
@@ -135,6 +157,7 @@ public class ProductStore: Store {
                                     keywords,
                                     language,
                                     tone,
+                                    shouldUseMerchantAIKey,
                                     currencySymbol,
                                     dimensionUnit,
                                     weightUnit,
@@ -146,6 +169,7 @@ public class ProductStore: Store {
                               keywords: keywords,
                               language: language,
                               tone: tone,
+                              shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                               currencySymbol: currencySymbol,
                               dimensionUnit: dimensionUnit,
                               weightUnit: weightUnit,
@@ -594,12 +618,14 @@ private extension ProductStore {
 
     func identifyLanguage(siteID: Int64,
                           string: String,
+                          shouldUseMerchantAIKey: Bool,
                           feature: GenerativeContentRemoteFeature,
                           completion: @escaping (Result<String, Error>) -> Void) {
         Task { @MainActor in
             let result = await Result {
                 try await generativeContentRemote.identifyLanguage(siteID: siteID,
                                                                    string: string,
+                                                                   shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                    feature: feature)
             }
             completion(result)
@@ -608,6 +634,7 @@ private extension ProductStore {
 
     func generateProductDescription(siteID: Int64,
                                     name: String,
+                                    shouldUseMerchantAIKey: Bool,
                                     features: String,
                                     language: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
@@ -622,7 +649,11 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription, responseFormat: .text)
+                let description = try await generativeContentRemote.generateText(siteID: siteID,
+                                                                                 base: prompt,
+                                                                                 shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                                                                 feature: .productDescription,
+                                                                                 responseFormat: .text)
                 return description
             }
             completion(result)
@@ -634,6 +665,7 @@ private extension ProductStore {
                                        name: String,
                                        description: String,
                                        language: String,
+                                       shouldUseMerchantAIKey: Bool,
                                        completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             // swiftlint:disable:next line_length
@@ -649,7 +681,11 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing, responseFormat: .text)
+                let message = try await generativeContentRemote.generateText(siteID: siteID,
+                                                                             base: prompt,
+                                                                             shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                                                             feature: .productSharing,
+                                                                             responseFormat: .text)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
                 return message
             }
@@ -661,6 +697,7 @@ private extension ProductStore {
                                 productName: String?,
                                 scannedTexts: [String],
                                 language: String,
+                                shouldUseMerchantAIKey: Bool,
                                 completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {
@@ -683,6 +720,7 @@ private extension ProductStore {
             do {
                 let jsonString = try await generativeContentRemote.generateText(siteID: siteID,
                                                                                 base: prompt,
+                                                                                shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                                 feature: .productDetailsFromScannedTexts,
                                                                                 responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
@@ -699,6 +737,7 @@ private extension ProductStore {
     func generateProductName(siteID: Int64,
                              keywords: String,
                              language: String,
+                             shouldUseMerchantAIKey: Bool,
                              completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "You are a WooCommerce SEO and marketing expert.",
@@ -710,7 +749,11 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName, responseFormat: .text)
+                let description = try await generativeContentRemote.generateText(siteID: siteID,
+                                                                                 base: prompt,
+                                                                                 shouldUseMerchantAIKey: shouldUseMerchantAIKey,
+                                                                                 feature: .productName,
+                                                                                 responseFormat: .text)
                 return description
             }
             completion(result)
@@ -733,6 +776,7 @@ private extension ProductStore {
                            keywords: String,
                            language: String,
                            tone: String,
+                           shouldUseMerchantAIKey: Bool,
                            currencySymbol: String,
                            dimensionUnit: String?,
                            weightUnit: String?,
@@ -746,6 +790,7 @@ private extension ProductStore {
                                                                                   keywords: keywords,
                                                                                   language: language,
                                                                                   tone: tone,
+                                                                                  shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                                   currencySymbol: currencySymbol,
                                                                                   dimensionUnit: dimensionUnit,
                                                                                   weightUnit: weightUnit,

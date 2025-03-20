@@ -107,6 +107,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return productDescription != original
     }
 
+    private var shouldUseMerchantAIKey: Bool {
+        ProductCreationAIEligibilityChecker().aiSource == .merchant
+    }
+
     private let productFeatures: String
 
     private let siteID: Int64
@@ -199,7 +203,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             async let language = try identifyLanguage()
             let aiTone = userDefaults.aiTone(for: siteID)
             let aiProduct = try await generateProduct(language: language,
-                                                           tone: aiTone)
+                                                      tone: aiTone,
+                                                      shouldUseMerchantAIKey: shouldUseMerchantAIKey)
             analytics.track(event: .ProductCreationAI.nameDescriptionOptionsGenerated(
                 nameCount: aiProduct.names.count,
                 shortDescriptionCount: aiProduct.shortDescriptions.count,
@@ -529,6 +534,7 @@ private extension ProductDetailPreviewViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productInfo,
+                                                               shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                                feature: .productCreation,
                                                                completion: { result in
                     continuation.resume(with: result)
@@ -543,12 +549,14 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func generateProduct(language: String,
-                         tone: AIToneVoice) async throws -> AIProduct {
+                         tone: AIToneVoice,
+                         shouldUseMerchantAIKey: Bool) async throws -> AIProduct {
         let existingCategories = categoryResultController.fetchedObjects
         let existingTags = tagResultController.fetchedObjects
 
         return try await generateAIProduct(language: language,
                                            tone: tone,
+                                           shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                            existingCategories: existingCategories,
                                            existingTags: existingTags)
     }
@@ -556,6 +564,7 @@ private extension ProductDetailPreviewViewModel {
     @MainActor
     func generateAIProduct(language: String,
                            tone: AIToneVoice,
+                           shouldUseMerchantAIKey: Bool,
                            existingCategories: [ProductCategory],
                            existingTags: [ProductTag]) async throws -> AIProduct {
         try await withCheckedThrowingContinuation { continuation in
@@ -564,6 +573,7 @@ private extension ProductDetailPreviewViewModel {
                                                             keywords: productFeatures,
                                                             language: language,
                                                             tone: tone.rawValue,
+                                                            shouldUseMerchantAIKey: shouldUseMerchantAIKey,
                                                             currencySymbol: currency,
                                                             dimensionUnit: dimensionUnit,
                                                             weightUnit: weightUnit,

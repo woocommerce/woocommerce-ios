@@ -26,4 +26,11 @@ extension Keychain {
         get { self[WooConstants.siteCredentialPassword] }
         set { self[WooConstants.siteCredentialPassword] = newValue }
     }
+
+    /// AI Provider API key
+    ///
+    var aiProviderAPIKey: String? {
+        get { self[WooConstants.aiProviderAPIKey] }
+        set { self[WooConstants.aiProviderAPIKey] = newValue }
+    }
 }

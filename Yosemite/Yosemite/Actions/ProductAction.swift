@@ -130,6 +130,7 @@ public enum ProductAction: Action {
     ///
     case identifyLanguage(siteID: Int64,
                           string: String,
+                          shouldUseMerchantAIKey: Bool,
                           feature: GenerativeContentRemoteFeature,
                           completion: (Result<String, Error>) -> Void)
 
@@ -138,12 +139,14 @@ public enum ProductAction: Action {
     case generateProductName(siteID: Int64,
                              keywords: String,
                              language: String,
+                             shouldUseMerchantAIKey: Bool,
                              completion: (Result<String, Error>) -> Void)
 
     /// Generates a product description with Jetpack AI given the name and features.
     ///
     case generateProductDescription(siteID: Int64,
                                     name: String,
+                                    shouldUseMerchantAIKey: Bool,
                                     features: String,
                                     language: String,
                                     completion: (Result<String, Error>) -> Void)
@@ -155,6 +158,7 @@ public enum ProductAction: Action {
                                        name: String,
                                        description: String,
                                        language: String,
+                                       shouldUseMerchantAIKey: Bool,
                                        completion: (Result<String, Error>) -> Void)
 
     /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image and optional product name .
@@ -163,6 +167,7 @@ public enum ProductAction: Action {
                                 productName: String?,
                                 scannedTexts: [String],
                                 language: String,
+                                shouldUseMerchantAIKey: Bool,
                                 completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.
@@ -189,6 +194,7 @@ public enum ProductAction: Action {
                            keywords: String,
                            language: String,
                            tone: String,
+                           shouldUseMerchantAIKey: Bool,
                            currencySymbol: String,
                            dimensionUnit: String?,
                            weightUnit: String?,

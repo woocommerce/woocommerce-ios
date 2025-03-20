@@ -46,6 +46,31 @@ public extension NotificationSettings {
         enum CodingKeys: String, CodingKey {
             case blogID = "blog_id"
             case devices
+            case device
+        }
+
+        public init(blogID: Int64, devices: [Device]) {
+            self.blogID = blogID
+            self.devices = devices
+        }
+
+        public func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(blogID, forKey: .blogID)
+            try container.encode(devices, forKey: .devices)
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container: KeyedDecodingContainer<NotificationSettings.Blog.CodingKeys> = try decoder.container(keyedBy: NotificationSettings.Blog.CodingKeys.self)
+            self.blogID = try container.decode(Int64.self, forKey: NotificationSettings.Blog.CodingKeys.blogID)
+            self.devices = try {
+                if let array = try container.decodeIfPresent([NotificationSettings.Device].self, forKey: NotificationSettings.Blog.CodingKeys.devices) {
+                    return array
+                } else if let device = try container.decodeIfPresent(NotificationSettings.Device.self, forKey: NotificationSettings.Blog.CodingKeys.device) {
+                    return [device]
+                }
+                return []
+            }()
         }
     }
 

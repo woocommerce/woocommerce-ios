@@ -1,28 +1,63 @@
 import Foundation
 import StarIO10
+import Combine
 
-public final class StarReceiptPrinterService: PrinterService {
+public final class StarReceiptPrinterService: PrinterService, DiscoverableHardwareService {
     public init() { }
 
     private var printer: StarPrinter?
+    private var discoveryManager: StarDeviceDiscoveryManager?
+    private var cancellables = Set<AnyCancellable>()
 
-    public func connect() async throws {
-        try await discoverAll()
-//        connectToBluetoothPrinter()
+    private let statusSubject = PassthroughSubject<DeviceStatus, Never>()
+    public var statusPublisher: AnyPublisher<DeviceStatus, Never> {
+        statusSubject.eraseToAnyPublisher()
     }
 
-    func connectToBluetoothPrinter() {
-        let connectionSettings = StarConnectionSettings(interfaceType: .bluetooth)
-        printer = StarPrinter(connectionSettings)
+    public func discover() -> AsyncThrowingStream<StarPrinter, Error> {
+        print("🖨️ Starting printer discovery")
+        return AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetoothLE, .bluetooth, .usb])
+                    self.discoveryManager = discovery
+
+                    discovery.delegate = StarDiscoveryDelegate(continuation: continuation)
+                    discovery.discoveryTime = 30000
+                    try discovery.startDiscovery()
+                    DDLogDebug("🖨️ Discovery started")
+
+                    continuation.onTermination = { _ in
+                        discovery.stopDiscovery()
+                        DDLogDebug("🖨️ Discovery stopped")
+                    }
+                } catch {
+                    DDLogError("🖨️ Discovery error: \(error.localizedDescription)")
+                    continuation.finish(throwing: StarReceiptPrinterError.discoveryFailure)
+                }
+            }
+        }
     }
 
-    func discoverAll() async throws {
-        guard printer == nil else { return }
-        let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.lan, .bluetoothLE, .bluetooth, .usb])
+    public func stopDiscovery() {
+        guard let discoveryManager else {
+            return
+        }
+        discoveryManager.stopDiscovery()
+    }
 
-        discovery.delegate = self
-        discovery.discoveryTime = 30000 // 30 seconds
-        try discovery.startDiscovery()
+    public func connect(to printer: StarPrinter) {
+        DDLogDebug("🖨️ Connecting to printer: \(printer.connectionSettings.identifier)")
+        self.printer = printer
+        self.printer?.printerDelegate = self
+        statusSubject.send(.connected)
+        DDLogDebug("🖨️ Connected to printer")
+    }
+
+    public func disconnect() {
+        DDLogDebug("🖨️ Disconnecting from printer")
+        statusSubject.send(.disconnected)
+        self.printer = nil
     }
 
     public enum PrintType {
@@ -30,8 +65,7 @@ public final class StarReceiptPrinterService: PrinterService {
         case standard
     }
 
-    public func printReceipt(content: ReceiptContent,
-                             completion: @escaping (PrintingResult) -> Void) {
+    public func printReceipt(content: ReceiptContent, completion: @escaping (PrintingResult) -> Void) {
         Task {
             do {
                 try await printReceipt(content: content, printType: .template)
@@ -42,18 +76,21 @@ public final class StarReceiptPrinterService: PrinterService {
         }
     }
 
-    public func printReceipt(content: ReceiptContent, printType: PrintType = .template) async throws {
+    public func printReceipt(content: ReceiptContent) async throws {
+        try await printReceipt(content: content, printType: .template)
+    }
+
+    public func printReceipt(content: ReceiptContent, printType: PrintType) async throws {
         guard let printer else {
+            DDLogDebug("🖨️ No printer connected")
             throw StarReceiptPrinterError.noPrinterConnected
         }
 
+        DDLogDebug("🖨️ Opening connection to printer")
         try await printer.open()
-        defer {
-            Task {
-                await printer.close()
-            }
-        }
+        defer { Task { await printer.close() } }
 
+        DDLogDebug("🖨️ Sending print command")
         switch printType {
         case .template:
             printer.template = receiptTemplate(width: 72.0)
@@ -62,25 +99,35 @@ public final class StarReceiptPrinterService: PrinterService {
             let command = getPrintCommand(for: content)
             try await printer.print(command: command)
         }
+        DDLogDebug("🖨️ Print job sent successfully")
     }
 }
 
-extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
-    public func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
-        DDLogInfo("🖨️ Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.description)")
-        self.printer = printer
-        self.printer?.printerDelegate = self
-        printer.getStarConfiguration()
+private class StarDiscoveryDelegate: NSObject, StarDeviceDiscoveryManagerDelegate {
+    private let continuation: AsyncThrowingStream<StarPrinter, Error>.Continuation
+
+    init(continuation: AsyncThrowingStream<StarPrinter, Error>.Continuation) {
+        self.continuation = continuation
     }
 
-    public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
-        DDLogInfo("🖨️ Finished discovering printers")
+    func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
+        DDLogDebug("🖨️ Found printer: \(printer.connectionSettings.identifier)")
+        continuation.yield(printer)
+    }
+
+    func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
+        DDLogDebug("🖨️ Finished printer discovery")
+        continuation.finish()
     }
 }
 
 extension StarReceiptPrinterService: PrinterDelegate {
     public func printer(_ printer: StarIO10.StarPrinter, communicationErrorDidOccur error: any Error) {
         DDLogError("🖨️ Communication error: \(error)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsReady(_ printer: StarIO10.StarPrinter) {
@@ -89,32 +136,73 @@ extension StarReceiptPrinterService: PrinterDelegate {
 
     public func printerDidHaveError(_ printer: StarIO10.StarPrinter) {
         DDLogError("🖨️ Printer error: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsPaperReady(_ printer: StarIO10.StarPrinter) {
         DDLogInfo("🖨️ Paper ready for printer: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsPaperNearEmpty(_ printer: StarIO10.StarPrinter) {
         DDLogInfo("🖨️ Paper near empty for printer: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsPaperEmpty(_ printer: StarIO10.StarPrinter) {
         DDLogInfo("🖨️ Paper empty for printer: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsCoverOpen(_ printer: StarIO10.StarPrinter) {
         DDLogInfo("🖨️ Cover open on printer: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
     }
 
     public func printerIsCoverClose(_ printer: StarIO10.StarPrinter) {
         DDLogInfo("🖨️ Cover closed on printer: \(printer.connectionSettings.identifier)")
+        Task {
+            let status = try await printer.getStatus()
+            statusSubject.send(status.toDeviceStatus())
+        }
+    }
+}
+
+extension StarPrinter: Identifiable {
+    public var id: String {
+        return connectionSettings.identifier
+    }
+}
+
+private extension StarPrinterStatus {
+    func toDeviceStatus() -> DeviceStatus {
+        guard !hasError else {
+            return .error(StarReceiptPrinterError.unknownError)
+        }
+        return .connected
     }
 }
 
 enum StarReceiptPrinterError: Error {
     case noPrinterConnected
     case couldNotMakeJson
+    case discoveryFailure
+    case unknownError
 }
 
 private extension StarReceiptPrinterService {

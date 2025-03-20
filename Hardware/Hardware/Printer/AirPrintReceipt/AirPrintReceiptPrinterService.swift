@@ -5,7 +5,20 @@ import UIKit
 public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
     private var receiptContent: ReceiptContent?
 
-    public func connect() async throws {}
+    public func printReceipt(content: ReceiptContent) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            printReceipt(content: content) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .cancel:
+                    continuation.resume(throwing: AirPrintReceiptPrinterError.cancelled)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 
     public func printReceipt(content: ReceiptContent, completion: @escaping (PrintingResult) -> Void) {
         self.receiptContent = content
@@ -61,4 +74,8 @@ extension AirPrintReceiptPrinterService {
     /// Default size of a page for a receipt in points.
     ///
     static let defaultReceiptPageSize: CGSize = CGSize(width: 4 * pointsPerInch, height: 11 * pointsPerInch)
+}
+
+enum AirPrintReceiptPrinterError: Error {
+    case cancelled
 }

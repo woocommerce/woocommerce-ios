@@ -63,6 +63,10 @@ final class MockAccountRemote {
     func whenUpdatingNotificationSettings(thenReturn result: Result<Void, Error>) {
         updateNotificationSettingsResult = result
     }
+
+    func whenLoadingNotificationSettings(thenReturn result: Result<NotificationSettings, Error>) {
+        loadNotificationSettingsResult = result
+    }
 }
 
 extension MockAccountRemote {

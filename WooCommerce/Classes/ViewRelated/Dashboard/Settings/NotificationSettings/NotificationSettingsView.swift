@@ -44,7 +44,16 @@ struct NotificationSettingsView: View {
             }
         }
         .sheet(item: $selectedSite) { site in
-            SiteNotificationSettingsView(siteTitle: site.name)
+            if let setting = viewModel.siteSettings?.blogs.first(where: { $0.blogID == site.siteID }),
+               let deviceID = viewModel.currentDeviceID,
+               let device = setting.devices.first(where: { $0.deviceID == Int64(deviceID) }) {
+                SiteNotificationSettingsView(siteTitle: site.name,
+                                             ordersNotificationsEnabled: device.storeOrder,
+                                             productReviewsNotificationsEnabled: device.newComment,
+                                             completionHandler: { _, _ in
+                    // TODO
+                })
+            }
         }
     }
 }

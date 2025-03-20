@@ -3,13 +3,22 @@ import SwiftUI
 struct SiteNotificationSettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var orderNotificationsEnabled = false
-    @State private var productReviewNotificationsEnabled = false
+    @State private var orderNotificationsEnabled: Bool
+    @State private var productReviewsNotificationsEnabled: Bool
+
+    typealias CompletionCallback = (_ orderNotificationsEnabled: Bool, _ productReviewsNotificationsEnabled: Bool) -> Void
 
     private let siteTitle: String
+    private let completionHandler: CompletionCallback
 
-    init(siteTitle: String) {
+    init(siteTitle: String,
+         ordersNotificationsEnabled: Bool,
+         productReviewsNotificationsEnabled: Bool,
+         completionHandler: @escaping CompletionCallback) {
         self.siteTitle = siteTitle
+        self.orderNotificationsEnabled = ordersNotificationsEnabled
+        self.productReviewsNotificationsEnabled = productReviewsNotificationsEnabled
+        self.completionHandler = completionHandler
     }
 
     var body: some View {
@@ -19,7 +28,7 @@ struct SiteNotificationSettingsView: View {
                     Toggle(isOn: $orderNotificationsEnabled) {
                         Text(Localization.newOrders)
                     }
-                    Toggle(isOn: $productReviewNotificationsEnabled) {
+                    Toggle(isOn: $productReviewsNotificationsEnabled) {
                         Text(Localization.productReviews)
                     }
                 } header: {
@@ -39,7 +48,7 @@ struct SiteNotificationSettingsView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.save) {
-                        // TODO
+                        completionHandler(orderNotificationsEnabled, productReviewsNotificationsEnabled)
                     }
                 }
             }

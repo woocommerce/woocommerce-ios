@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Notification settings for a user
 ///
-public struct NotificationSettings: Equatable, Codable {
+public struct NotificationSettings: Equatable, Codable, GeneratedCopiable {
 
     /// Settings for different blogs connected to the user.
     public let blogs: [Blog]
@@ -36,7 +37,7 @@ public struct NotificationSettings: Equatable, Codable {
 
 public extension NotificationSettings {
     /// Notification settings for a blog
-    struct Blog: Equatable, Codable {
+    struct Blog: Equatable, Codable, GeneratedCopiable {
         /// ID of the blog
         public let blogID: Int64
 
@@ -75,7 +76,8 @@ public extension NotificationSettings {
     }
 
     /// Notification settings for a device
-    struct Device: Equatable, Codable {
+    struct Device: Equatable, Codable, GeneratedCopiable {
+        
         /// Unique ID of the device
         public let deviceID: Int64
 
@@ -84,6 +86,7 @@ public extension NotificationSettings {
 
         /// Whether a notification should be sent when there is a new order on the store.
         public let storeOrder: Bool
+
 
         enum CodingKeys: String, CodingKey {
             case deviceID = "device_id"

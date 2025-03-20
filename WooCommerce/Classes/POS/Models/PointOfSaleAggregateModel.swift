@@ -14,6 +14,7 @@ import protocol Hardware.DiscoverableHardwareService
 import class Hardware.StarReceiptPrinterService
 import class StarIO10.StarPrinter
 import enum Hardware.DeviceStatus
+import Hardware
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -99,6 +100,7 @@ protocol PointOfSaleAggregateModelProtocol {
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         subscribeToPrinterConnectionUpdates()
+        observePaymentSuccessForReceiptPrinting()
     }
 }
 
@@ -555,6 +557,46 @@ extension PointOfSaleAggregateModel {
         Task {
             await receiptPrinterService.disconnect()
         }
+    }
+
+    func observePaymentSuccessForReceiptPrinting() {
+        cardPresentPaymentService.paymentEventPublisher.filter { event in
+            if case .show(.paymentSuccess) = event {
+                return true
+            } else {
+                return false
+            }
+        }
+        .sink { [weak self] event in
+            guard let self,
+                  case .connected = printerConnectionState,
+                  case let .loaded(_, order) = internalOrderState else { return }
+            let content = ReceiptContent(
+                parameters: .init(
+                    amount: UInt(Int(order.total) ?? 0),
+                    formattedAmount: order.total,
+                    currency: order.currency,
+                    date: order.datePaid ?? order.dateCreated,
+                    storeName: "",
+                    cardDetails: .init(last4: "0000",
+                                       expMonth: 1,
+                                       expYear: 2033,
+                                       cardholderName: nil,
+                                       brand: .visa,
+                                       generatedCard: nil,
+                                       receipt: nil,
+                                       emvAuthData: nil,
+                                       wallet: nil,
+                                       network: nil),
+                    orderID: order.orderID),
+                lineItems: [],
+                cartTotals: [],
+                orderNote: order.customerNote)
+            Task { [weak self] in
+                try await self?.receiptPrinterService.printReceipt(content: content)
+            }
+        }
+        .store(in: &cancellables)
     }
 }
 

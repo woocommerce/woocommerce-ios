@@ -87,6 +87,11 @@ public extension NotificationSettings {
         /// Whether a notification should be sent when there is a new order on the store.
         public let storeOrder: Bool
 
+        public init(deviceID: Int64, newComment: Bool, storeOrder: Bool) {
+            self.deviceID = deviceID
+            self.newComment = newComment
+            self.storeOrder = storeOrder
+        }
 
         enum CodingKeys: String, CodingKey {
             case deviceID = "device_id"

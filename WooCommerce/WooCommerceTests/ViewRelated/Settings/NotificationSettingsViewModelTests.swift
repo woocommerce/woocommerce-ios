@@ -98,4 +98,69 @@ struct NotificationSettingsViewModelTests {
         // Then
         #expect(viewModel.sites == [testSite4])
     }
+
+    @Test func retrieveNotificationSettings_returns_error_when_device_id_is_unavailable() async throws {
+        // Given
+        let pushNotificationManager = MockPushNotificationsManager()
+        let viewModel = NotificationSettingsViewModel(pushNotificationManager: pushNotificationManager)
+
+        // When
+        await viewModel.retrieveNotificationSettings()
+
+        // Then
+        let error = try #require(viewModel.loadingSiteSettingsError)
+        #expect(error == .deviceNotAvailable)
+    }
+
+    @MainActor
+    @Test func retrieveNotificationSettings_updates_settings_when_succeeds() async throws {
+        // Given
+        let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = NotificationSettingsViewModel(stores: stores, pushNotificationManager: pushNotificationManager)
+
+        // When
+        let expectedSettings = NotificationSettings(blogs: [
+            .init(blogID: 134, devices: [.init(deviceID: 132, newComment: true, storeOrder: false)])
+        ])
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .loadNotificationSettings(_, onCompletion):
+                onCompletion(.success(expectedSettings))
+            default:
+                break
+            }
+        }
+        await viewModel.retrieveNotificationSettings()
+
+        // Then
+        let settings = try #require(viewModel.siteSettings)
+        #expect(settings == expectedSettings)
+    }
+
+    @MainActor
+    @Test func retrieveNotificationSettings_updates_error_when_fails() async throws {
+        // Given
+        let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = NotificationSettingsViewModel(stores: stores, pushNotificationManager: pushNotificationManager)
+
+        // When
+        let expectedSettings = NotificationSettings(blogs: [
+            .init(blogID: 134, devices: [.init(deviceID: 132, newComment: true, storeOrder: false)])
+        ])
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .loadNotificationSettings(_, onCompletion):
+                onCompletion(.failure(NSError(domain: "Test", code: 400)))
+            default:
+                break
+            }
+        }
+        await viewModel.retrieveNotificationSettings()
+
+        // Then
+        let error = try #require(viewModel.loadingSiteSettingsError)
+        #expect(error == .loadingFailed)
+    }
 }

@@ -96,7 +96,7 @@ final class NotificationSettingsViewModel: ObservableObject {
             initialSiteSettings = siteSettings
         } catch {
             DDLogError("⛔️ Error retrieving notification settings: \(error)")
-            loadingSiteSettingsError = .loadingFailed(error: error)
+            loadingSiteSettingsError = .loadingFailed
         }
         isLoadingSiteSettings = false
     }
@@ -201,7 +201,7 @@ private extension NotificationSettingsViewModel {
 extension NotificationSettingsViewModel {
     enum SiteSettingsError: Error {
         case deviceNotAvailable
-        case loadingFailed(error: Error)
+        case loadingFailed
     }
 
     enum Localization {

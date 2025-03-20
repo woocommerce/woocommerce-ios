@@ -9,6 +9,11 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var sites: [Site] = []
     @Published private(set) var isLoadingSiteSettings = true
     @Published private(set) var loadingSiteSettingsError: SiteSettingsError?
+    @Published private(set) var siteSettings: NotificationSettings?
+
+    var hasSiteSettingsChanges: Bool {
+        siteSettings != initialSiteSettings
+    }
 
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
@@ -16,9 +21,9 @@ final class NotificationSettingsViewModel: ObservableObject {
 
     let currentDeviceID: String?
 
-    private(set) var siteSettings: NotificationSettings?
-
     private var appStateSubscription: AnyCancellable?
+
+    private var initialSiteSettings: NotificationSettings?
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
@@ -84,11 +89,41 @@ final class NotificationSettingsViewModel: ObservableObject {
                     continuation.resume(with: result)
                 })
             }
+            initialSiteSettings = siteSettings
         } catch {
             DDLogError("⛔️ Error retrieving notification settings: \(error)")
             loadingSiteSettingsError = .loadingFailed(error: error)
         }
         isLoadingSiteSettings = false
+    }
+
+    func updateSettings(siteID: Int64,
+                        ordersNotificationsEnabled: Bool,
+                        productReviewsNotificationsEnabled: Bool) {
+        guard let siteSettings,
+              let currentDeviceID else {
+            return
+        }
+
+        var updatedBlogs: [NotificationSettings.Blog] = []
+        for blog in siteSettings.blogs {
+            if blog.blogID == siteID {
+                var updatedDevices: [NotificationSettings.Device] = []
+                for device in blog.devices {
+                    if device.deviceID == Int64(currentDeviceID) {
+                        updatedDevices.append(device.copy(newComment: productReviewsNotificationsEnabled,
+                                                          storeOrder: ordersNotificationsEnabled))
+                    } else {
+                        updatedDevices.append(device)
+                    }
+                }
+                updatedBlogs.append(blog.copy(devices: updatedDevices))
+            } else {
+                updatedBlogs.append(blog)
+            }
+        }
+
+        self.siteSettings = NotificationSettings(blogs: updatedBlogs)
     }
 }
 

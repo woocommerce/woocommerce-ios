@@ -76,7 +76,6 @@ extension MockAccountRemote {
 // MARK: - AccountRemoteProtocol
 
 extension MockAccountRemote: AccountRemoteProtocol {
-    
     func loadAccount(completion: @escaping (Result<Account, Error>) -> Void) {
         // no-op
     }
@@ -127,7 +126,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
         return try result.get()
     }
 
-    func loadNotificationSettings() async throws -> NotificationSettings {
+    func loadNotificationSettings(deviceID: Int64) async throws -> NotificationSettings {
         guard let result = loadNotificationSettingsResult else {
             XCTFail("Could not find result for loading notification settings.")
             throw NetworkError.notFound()

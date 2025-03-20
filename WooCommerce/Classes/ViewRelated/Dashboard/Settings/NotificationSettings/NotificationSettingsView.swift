@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Site
+import struct Yosemite.NotificationSettings
 
 final class NotificationSettingsHostingController: UIHostingController<NotificationSettingsView> {
     init() {
@@ -59,12 +60,10 @@ struct NotificationSettingsView: View {
             }
         }
         .sheet(item: $selectedSite) { site in
-            if let setting = viewModel.siteSettings?.blogs.first(where: { $0.blogID == site.siteID }),
-               let deviceID = viewModel.currentDeviceID,
-               let device = setting.devices.first(where: { $0.deviceID == Int64(deviceID) }) {
+            if let setting = viewModel.loadSetting(for: site) {
                 SiteNotificationSettingsView(siteTitle: site.name,
-                                             ordersNotificationsEnabled: device.storeOrder,
-                                             productReviewsNotificationsEnabled: device.newComment,
+                                             ordersNotificationsEnabled: setting.storeOrder,
+                                             productReviewsNotificationsEnabled: setting.newComment,
                                              completionHandler: { newOrder, productReviews in
                     viewModel.updateSettings(siteID: site.siteID,
                                              ordersNotificationsEnabled: newOrder,
@@ -157,9 +156,11 @@ private extension NotificationSettingsView {
                 VStack(alignment: .leading) {
                     Text(site.name)
                         .bodyStyle()
-                    Text(site.url)
-                        .foregroundStyle(Color.secondary)
-                        .captionStyle()
+                    if let setting = viewModel.loadSetting(for: site) {
+                        Text(description(for: setting))
+                            .foregroundStyle(Color.secondary)
+                            .captionStyle()
+                    }
                 }
                 .multilineTextAlignment(.leading)
 
@@ -188,6 +189,19 @@ private extension NotificationSettingsView {
             } catch {
                 savingSettingsFailed = true
             }
+        }
+    }
+
+    func description(for settings: NotificationSettings.Device) -> String {
+        switch (settings.storeOrder, settings.newComment) {
+        case (true, true):
+            [Localization.newOrders, Localization.productReviews].joined(separator: ", ")
+        case (true, false):
+            Localization.newOrders
+        case (false, true):
+            Localization.productReviews
+        case (false, false):
+            Localization.off
         }
     }
 }
@@ -263,6 +277,21 @@ extension NotificationSettingsView {
             "notificationSettingsView.errorSavingSiteSettings",
             value: "Unable to save notification settings",
             comment: "Error message when saving site settings fails on the notification settings view"
+        )
+        static let newOrders = NSLocalizedString(
+            "notificationSettingsView.newOrders",
+            value: "New orders",
+            comment: "Label indicating that new orders notifications are enabled for a site on the notification settings view"
+        )
+        static let productReviews = NSLocalizedString(
+            "notificationSettingsView.productReviews",
+            value: "Product reviews",
+            comment: "Label indicating that product reviews notifications are enabled for a site on the notification settings view"
+        )
+        static let off = NSLocalizedString(
+            "notificationSettingsView.off",
+            value: "Off",
+            comment: "Label indicating that notifications are disabled for a site on the notification settings view"
         )
     }
 }

@@ -67,12 +67,48 @@ public final class StarReceiptPrinterService: PrinterService {
 
 extension StarReceiptPrinterService: StarDeviceDiscoveryManagerDelegate {
     public func manager(_ manager: any StarIO10.StarDeviceDiscoveryManager, didFind printer: StarIO10.StarPrinter) {
-        DDLogInfo("Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.rawValue)")
+        DDLogInfo("🖨️ Connected to printer \(printer.connectionSettings.identifier) using \(printer.connectionSettings.interfaceType.description)")
         self.printer = printer
+        self.printer?.printerDelegate = self
+        printer.getStarConfiguration()
     }
 
     public func managerDidFinishDiscovery(_ manager: any StarIO10.StarDeviceDiscoveryManager) {
-        DDLogInfo("Finished discovering printers")
+        DDLogInfo("🖨️ Finished discovering printers")
+    }
+}
+
+extension StarReceiptPrinterService: PrinterDelegate {
+    public func printer(_ printer: StarIO10.StarPrinter, communicationErrorDidOccur error: any Error) {
+        DDLogError("🖨️ Communication error: \(error)")
+    }
+
+    public func printerIsReady(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Printer ready: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerDidHaveError(_ printer: StarIO10.StarPrinter) {
+        DDLogError("🖨️ Printer error: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerIsPaperReady(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Paper ready for printer: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerIsPaperNearEmpty(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Paper near empty for printer: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerIsPaperEmpty(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Paper empty for printer: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerIsCoverOpen(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Cover open on printer: \(printer.connectionSettings.identifier)")
+    }
+
+    public func printerIsCoverClose(_ printer: StarIO10.StarPrinter) {
+        DDLogInfo("🖨️ Cover closed on printer: \(printer.connectionSettings.identifier)")
     }
 }
 

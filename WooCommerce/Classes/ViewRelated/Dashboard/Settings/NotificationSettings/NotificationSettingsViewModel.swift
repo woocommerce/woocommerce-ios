@@ -9,12 +9,14 @@ final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var notificationsEnabled: Bool?
     @Published private(set) var sites: [Site] = []
     @Published private(set) var isLoadingSiteSettings = true
-    @Published private(set) var loadingSiteSettingsError: SiteSettingsError?
     @Published private(set) var siteSettings: NotificationSettings?
 
     @Published private(set) var isSavingSettings = false
 
     @Published var notice: Notice?
+
+    @Published var loadingSiteSettingsFailed = false
+    @Published var savingSiteSettingsFailed = false
 
     var hasSiteSettingsChanges: Bool {
         siteSettings != initialSiteSettings
@@ -86,10 +88,9 @@ final class NotificationSettingsViewModel: ObservableObject {
     @MainActor
     func retrieveNotificationSettings() async {
         guard let currentDeviceID, let id = Int64(currentDeviceID) else {
-            loadingSiteSettingsError = SiteSettingsError.deviceNotAvailable
             return
         }
-        loadingSiteSettingsError = nil
+        loadingSiteSettingsFailed = false
         isLoadingSiteSettings = true
         do {
             siteSettings = try await withCheckedThrowingContinuation { continuation in
@@ -100,7 +101,7 @@ final class NotificationSettingsViewModel: ObservableObject {
             initialSiteSettings = siteSettings
         } catch {
             DDLogError("⛔️ Error retrieving notification settings: \(error)")
-            loadingSiteSettingsError = .loadingFailed
+            loadingSiteSettingsFailed = true
         }
         isLoadingSiteSettings = false
     }
@@ -146,11 +147,12 @@ final class NotificationSettingsViewModel: ObservableObject {
     }
 
     @MainActor
-    func saveSettings() async throws {
+    func saveSettings() async {
         guard let siteSettings else {
             return
         }
         analytics.track(.notificationSettingsSaveButtonTapped)
+        savingSiteSettingsFailed = false
         isSavingSettings = true
         do {
             try await withCheckedThrowingContinuation { continuation in
@@ -158,16 +160,15 @@ final class NotificationSettingsViewModel: ObservableObject {
                     continuation.resume(with: result)
                 })
             }
-            isSavingSettings = false
             initialSiteSettings = siteSettings // to ensure that checking for changes works
             notice = Notice(title: Localization.successNotice)
             analytics.track(.notificationSettingsSavingSuccess)
         } catch {
             DDLogError("⛔️ Error saving notification settings: \(error)")
-            isSavingSettings = false
+            savingSiteSettingsFailed = true
             analytics.track(.notificationSettingsSavingFailed, withError: error)
-            throw error
         }
+        isSavingSettings = false
     }
 }
 
@@ -208,11 +209,6 @@ private extension NotificationSettingsViewModel {
 }
 
 extension NotificationSettingsViewModel {
-    enum SiteSettingsError: Error {
-        case deviceNotAvailable
-        case loadingFailed
-    }
-
     enum Localization {
         static let successNotice = NSLocalizedString(
             "notificationSettingsViewModel.successNotice",

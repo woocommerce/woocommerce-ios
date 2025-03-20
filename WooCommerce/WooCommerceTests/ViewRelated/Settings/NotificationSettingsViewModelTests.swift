@@ -99,7 +99,7 @@ struct NotificationSettingsViewModelTests {
         #expect(viewModel.sites == [testSite4])
     }
 
-    @Test func retrieveNotificationSettings_returns_error_when_device_id_is_unavailable() async throws {
+    @Test func retrieveNotificationSettings_does_not_return_error_when_device_id_is_unavailable() async throws {
         // Given
         let pushNotificationManager = MockPushNotificationsManager()
         let viewModel = NotificationSettingsViewModel(pushNotificationManager: pushNotificationManager)
@@ -108,7 +108,8 @@ struct NotificationSettingsViewModelTests {
         await viewModel.retrieveNotificationSettings()
 
         // Then
-        #expect(viewModel.loadingSiteSettingsError == .deviceNotAvailable)
+        #expect(viewModel.loadingSiteSettingsFailed == false)
+        #expect(viewModel.siteSettings == nil)
     }
 
     @MainActor
@@ -137,7 +138,7 @@ struct NotificationSettingsViewModelTests {
     }
 
     @MainActor
-    @Test func retrieveNotificationSettings_updates_error_when_fails() async throws {
+    @Test func retrieveNotificationSettings_returns_error_when_fails() async throws {
         // Given
         let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -155,7 +156,7 @@ struct NotificationSettingsViewModelTests {
         await viewModel.retrieveNotificationSettings()
 
         // Then
-        #expect(viewModel.loadingSiteSettingsError == .loadingFailed)
+        #expect(viewModel.loadingSiteSettingsFailed == true)
     }
 
     @MainActor
@@ -219,7 +220,7 @@ struct NotificationSettingsViewModelTests {
     }
 
     @MainActor
-    @Test func saveSettings_updates_notice_when_succeeds() async throws {
+    @Test func saveSettings_updates_notice_when_succeeds() async {
         // Given
         let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -244,14 +245,14 @@ struct NotificationSettingsViewModelTests {
         // When
         await viewModel.retrieveNotificationSettings()
         viewModel.updateSettings(siteID: 136, ordersNotificationsEnabled: false, productReviewsNotificationsEnabled: false)
-        try await viewModel.saveSettings()
+        await viewModel.saveSettings()
 
         // Then
         #expect(viewModel.notice != nil)
     }
 
     @MainActor
-    @Test func saveSettings_throws_error_when_fails() async throws {
+    @Test func saveSettings_throws_error_when_fails() async {
         // Given
         let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -276,15 +277,15 @@ struct NotificationSettingsViewModelTests {
         await viewModel.retrieveNotificationSettings()
         viewModel.updateSettings(siteID: 136, ordersNotificationsEnabled: false, productReviewsNotificationsEnabled: false)
 
+        // When
+        await viewModel.saveSettings()
+
         // Then
-        await #expect(throws: expectedError) {
-            // When
-            try await viewModel.saveSettings()
-        }
+        #expect(viewModel.savingSiteSettingsFailed == true)
     }
 
     @MainActor
-    @Test func hasSiteSettingsChanges_returns_correctly() async throws {
+    @Test func hasSiteSettingsChanges_returns_correctly() async {
         // Given
         let pushNotificationManager = MockPushNotificationsManager(mockedDeviceID: "132")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -314,7 +315,7 @@ struct NotificationSettingsViewModelTests {
         #expect(viewModel.hasSiteSettingsChanges == true)
 
         // When
-        try await viewModel.saveSettings()
+        await viewModel.saveSettings()
         #expect(viewModel.hasSiteSettingsChanges == false)
     }
 }

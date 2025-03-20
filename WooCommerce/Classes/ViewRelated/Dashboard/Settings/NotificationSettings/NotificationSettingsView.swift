@@ -20,7 +20,6 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 struct NotificationSettingsView: View {
     @StateObject private var viewModel: NotificationSettingsViewModel
     @State private var selectedSite: Site?
-    @State private var savingSettingsFailed = false
 
     init() {
         self._viewModel = StateObject(wrappedValue: NotificationSettingsViewModel())
@@ -71,10 +70,18 @@ struct NotificationSettingsView: View {
                 })
             }
         }
-        .alert(Localization.errorSavingSiteSettings, isPresented: $savingSettingsFailed) {
+        .alert(Localization.errorSavingSiteSettings, isPresented: $viewModel.savingSiteSettingsFailed) {
             Button(Localization.cancel, role: .cancel) {}
             Button(Localization.retry) {
                 saveSettings()
+            }
+        }
+        .alert(Localization.errorLoadingSiteSettings, isPresented: $viewModel.loadingSiteSettingsFailed) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.retrieveNotificationSettings()
+                }
             }
         }
         .notice($viewModel.notice)
@@ -127,13 +134,6 @@ private extension NotificationSettingsView {
                     ProgressView()
                         .progressViewStyle(.circular)
                         .frame(maxWidth: .infinity)
-                } else if case .loadingFailed = viewModel.loadingSiteSettingsError {
-                    Text(Localization.errorLoadingSiteSettings)
-                    Button(Localization.retry) {
-                        Task {
-                            await viewModel.retrieveNotificationSettings()
-                        }
-                    }
                 } else if viewModel.siteSettings != nil {
                     ForEach(viewModel.sites) { site in
                         detailRow(for: site)
@@ -144,7 +144,7 @@ private extension NotificationSettingsView {
             } footer: {
                 Text(Localization.storeListSectionFooter)
             }
-            .renderedIf(viewModel.currentDeviceID != nil)
+            .renderedIf(viewModel.currentDeviceID != nil && viewModel.loadingSiteSettingsFailed == false)
         }
     }
 
@@ -183,12 +183,8 @@ private extension NotificationSettingsView {
     }
 
     func saveSettings() {
-        Task { @MainActor in
-            do {
-                try await viewModel.saveSettings()
-            } catch {
-                savingSettingsFailed = true
-            }
+        Task {
+            await viewModel.saveSettings()
         }
     }
 
@@ -255,7 +251,7 @@ extension NotificationSettingsView {
         )
         static let errorLoadingSiteSettings = NSLocalizedString(
             "notificationSettingsView.errorLoadingSiteSettings",
-            value: "We're unable to load notification settings for your stores.",
+            value: "Unable to load notification settings for your stores.",
             comment: "Error message when loading site settings fails on the notification settings view"
         )
         static let retry = NSLocalizedString(

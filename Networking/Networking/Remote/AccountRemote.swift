@@ -16,6 +16,8 @@ public protocol AccountRemoteProtocol {
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
     func loadUsernameSuggestions(from text: String) async throws -> [String]
 
+    func loadNotificationSettings() async throws -> NotificationSettings
+    
     func updateNotificationSettings(with settings: NotificationSettings) async throws
 
     /// Creates a WPCOM account with the given email and password.
@@ -145,6 +147,12 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         let suggestions = result["suggestions"] ?? []
 
         return suggestions
+    }
+
+    public func loadNotificationSettings() async throws -> NotificationSettings {
+        let path = Path.notificationSettings
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        return try await enqueue(request)
     }
 
     public func updateNotificationSettings(with settings: NotificationSettings) async throws {

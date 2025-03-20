@@ -2,7 +2,7 @@ import Foundation
 
 /// Notification settings for a user
 ///
-public struct NotificationSettings: Equatable, Encodable {
+public struct NotificationSettings: Equatable, Codable {
 
     /// Settings for different blogs connected to the user.
     public let blogs: [Blog]
@@ -36,7 +36,7 @@ public struct NotificationSettings: Equatable, Encodable {
 
 public extension NotificationSettings {
     /// Notification settings for a blog
-    struct Blog: Equatable, Encodable {
+    struct Blog: Equatable, Codable {
         /// ID of the blog
         public let blogID: Int64
 
@@ -50,7 +50,7 @@ public extension NotificationSettings {
     }
 
     /// Notification settings for a device
-    struct Device: Equatable, Encodable {
+    struct Device: Equatable, Codable {
         /// Unique ID of the device
         public let deviceID: Int64
 

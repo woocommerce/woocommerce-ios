@@ -38,7 +38,10 @@ struct NotificationSettingsView: View {
         .navigationTitle(Localization.title)
         .task {
             await viewModel.checkNotificationPermission()
-            await viewModel.synchronizeSites()
+            if viewModel.currentDeviceID != nil {
+                await viewModel.retrieveNotificationSettings()
+                await viewModel.synchronizeSites()
+            }
         }
         .sheet(item: $selectedSite) { site in
             SiteNotificationSettingsView(siteTitle: site.name)
@@ -88,14 +91,28 @@ private extension NotificationSettingsView {
             }
 
             Section {
-                ForEach(viewModel.sites) { site in
-                    detailRow(for: site)
+                if viewModel.isLoadingSiteSettings {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .frame(maxWidth: .infinity)
+                } else if case .loadingFailed = viewModel.loadingSiteSettingsError {
+                    Text(Localization.errorLoadingSiteSettings)
+                    Button(Localization.retry) {
+                        Task {
+                            await viewModel.retrieveNotificationSettings()
+                        }
+                    }
+                } else if viewModel.siteSettings != nil {
+                    ForEach(viewModel.sites) { site in
+                        detailRow(for: site)
+                    }
                 }
             } header: {
                 Text(Localization.storeListSectionHeader)
             } footer: {
                 Text(Localization.storeListSectionFooter)
             }
+            .renderedIf(viewModel.currentDeviceID != nil)
         }
     }
 
@@ -178,6 +195,16 @@ extension NotificationSettingsView {
             "notificationSettingsView.storeListSectionFooter",
             value: "Customize your notification preferences for each store.",
             comment: "Footer of the store list section on the notification settings view"
+        )
+        static let errorLoadingSiteSettings = NSLocalizedString(
+            "notificationSettingsView.errorLoadingSiteSettings",
+            value: "We're unable to load notification settings for your stores.",
+            comment: "Error message when loading site settings fails on the notification settings view"
+        )
+        static let retry = NSLocalizedString(
+            "notificationSettingsView.retry",
+            value: "Try again",
+            comment: "Button to reload site settings on the notification settings view"
         )
     }
 }

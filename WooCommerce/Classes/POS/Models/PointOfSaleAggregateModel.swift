@@ -75,7 +75,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private let receiptPrinterService: StarReceiptPrinterService
     private var printerDiscoveryTask: Task<Void, Never>?
-    private(set) var printerDiscoveryState: PrinterDiscoveryState = .idle
+    var printerDiscoveryState: PrinterDiscoveryState?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -99,9 +99,9 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 }
 
-struct PrinterDevice: Equatable {
+struct PrinterDevice: Equatable, Hashable, Identifiable {
     var name: String {
-        String(describing: starPrinter.information?.model)
+        "\(starPrinter.information?.model.description ?? "Star printer") via \(starPrinter.connectionSettings.interfaceType.description) connection"
     }
     var id: String {
         starPrinter.id
@@ -522,15 +522,23 @@ extension PointOfSaleAggregateModel {
                 }
             } catch {
                 DDLogError("🖨️💰 Discovery failed: \(error)")
-                printerDiscoveryState = .error(error)
+                printerDiscoveryState = .error
             }
         }
+    }
+
+    func stopPrinterDiscovery() {
+        printerDiscoveryTask?.cancel()
+        receiptPrinterService.stopDiscovery()
+        printerDiscoveryState = nil
     }
 
     func connect(printer: PrinterDevice) {
         printerDiscoveryTask?.cancel()
         receiptPrinterService.stopDiscovery()
+        printerDiscoveryState = .connecting
         receiptPrinterService.connect(to: printer.starPrinter)
+        printerDiscoveryState = nil
     }
 }
 
@@ -567,9 +575,13 @@ private extension PointOfSaleAggregateModel {
     }
 }
 
-enum PrinterDiscoveryState {
-    case idle
+enum PrinterDiscoveryState: Hashable, Identifiable {
+    var id: Self {
+        self
+    }
+
     case searching
     case found([PrinterDevice])
-    case error(Error)
+    case error
+    case connecting
 }

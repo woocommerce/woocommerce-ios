@@ -18,6 +18,7 @@ struct POSFloatingControlView: View {
     }
 
     var body: some View {
+        @Bindable var posModel = posModel
         HStack {
             Menu {
                 Button {
@@ -84,6 +85,43 @@ struct POSFloatingControlView: View {
                 }
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
+                .posModal(item: $posModel.printerDiscoveryState, onDismiss: {
+                    posModel.stopPrinterDiscovery()
+                }) { discoveryState in
+                    switch discoveryState {
+                    case .searching:
+                        VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+                            ProgressView()
+                                .progressViewStyle(POSProgressViewStyle())
+                                .frame(width: 160,
+                                       height: 160)
+                            VStack(alignment: .center, spacing: POSSpacing.small) {
+                                Text("Searching for printers")
+                                    .foregroundStyle(Color.posOnSurface)
+                                    .font(.posBodyLargeRegular())
+                            }
+                        }
+                        .multilineTextAlignment(.center)
+                        .posModalSizing()
+                    case .found(let printers):
+                        VStack(alignment: .center, spacing: POSSpacing.small) {
+                            Text("Found \(printers.count) printer(s)")
+
+                            ForEach(printers) { printer in
+                                Button {
+                                    posModel.connect(printer: printer)
+                                } label: {
+                                    Text("Connect to \(printer.name)")
+                                }
+                            }
+                        }
+                        .posModalSizing()
+                    case .error:
+                        Text("Error finding printers")
+                    case .connecting:
+                        Text("Connecting to printer...")
+                    }
+                }
             }
         }
         .frame(height: Constants.size)

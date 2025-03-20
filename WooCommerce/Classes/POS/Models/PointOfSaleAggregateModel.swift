@@ -75,7 +75,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private let receiptPrinterService: StarReceiptPrinterService
     private var printerDiscoveryTask: Task<Void, Never>?
-    private(set) var discoveredPrinters: [PrinterDevice] = []
+    private(set) var printerDiscoveryState: PrinterDiscoveryState = .idle
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -99,7 +99,7 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 }
 
-struct PrinterDevice {
+struct PrinterDevice: Equatable {
     var name: String {
         String(describing: starPrinter.information?.model)
     }
@@ -510,16 +510,19 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func startPrinterDiscovery() {
         printerDiscoveryTask?.cancel() // Cancel any existing task before starting a new one
-        discoveredPrinters.removeAll()
+        var discoveredPrinters = [PrinterDevice]()
+        printerDiscoveryState = .searching
 
         printerDiscoveryTask = Task {
             do {
                 for try await printer in receiptPrinterService.discover() {
                     discoveredPrinters.append(PrinterDevice(starPrinter: printer))
+                    printerDiscoveryState = .found(discoveredPrinters)
                     DDLogInfo("🖨️💰 Discovered printer: \(printer.id), all printers: \(discoveredPrinters.map(\.id))")
                 }
             } catch {
                 DDLogError("🖨️💰 Discovery failed: \(error)")
+                printerDiscoveryState = .error(error)
             }
         }
     }
@@ -562,4 +565,11 @@ private extension PointOfSaleAggregateModel {
     enum Constants {
         static let initialPage: Int = 1
     }
+}
+
+enum PrinterDiscoveryState {
+    case idle
+    case searching
+    case found([PrinterDevice])
+    case error(Error)
 }

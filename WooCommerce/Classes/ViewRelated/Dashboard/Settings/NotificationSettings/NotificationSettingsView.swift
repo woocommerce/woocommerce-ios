@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.Site
 
 final class NotificationSettingsHostingController: UIHostingController<NotificationSettingsView> {
     init() {
@@ -17,6 +18,7 @@ final class NotificationSettingsHostingController: UIHostingController<Notificat
 
 struct NotificationSettingsView: View {
     @StateObject private var viewModel: NotificationSettingsViewModel
+    @State private var selectedSite: Site?
 
     init() {
         self._viewModel = StateObject(wrappedValue: NotificationSettingsViewModel())
@@ -28,7 +30,7 @@ struct NotificationSettingsView: View {
             case .none:
                 ProgressView().progressViewStyle(.circular)
             case .some(true):
-                notificationTypesForm
+                notificationSettings
             case .some(false):
                 notificationsDisabledView
             }
@@ -36,6 +38,10 @@ struct NotificationSettingsView: View {
         .navigationTitle(Localization.title)
         .task {
             await viewModel.checkNotificationPermission()
+            await viewModel.synchronizeSites()
+        }
+        .sheet(item: $selectedSite) { site in
+            SiteNotificationSettingsView(siteTitle: site.name)
         }
     }
 }
@@ -65,8 +71,8 @@ private extension NotificationSettingsView {
         .padding(.horizontal)
     }
 
-    var notificationTypesForm: some View {
-        Form {
+    var notificationSettings: some View {
+        List {
             Section {
                 HStack {
                     Text(Localization.notificationsEnabled)
@@ -80,19 +86,41 @@ private extension NotificationSettingsView {
             } footer: {
                 Text(Localization.notificationsFooter)
             }
+
             Section {
-                Toggle(isOn: $viewModel.orderNotificationsEnabled) {
-                    Text(Localization.newOrders)
-                }
-                Toggle(isOn: $viewModel.productReviewNotificationsEnabled) {
-                    Text(Localization.productReviews)
+                ForEach(viewModel.sites) { site in
+                    detailRow(for: site)
                 }
             } header: {
-                Text(Localization.notificationTypesHeader)
+                Text(Localization.storeListSectionHeader)
             } footer: {
-                Text(Localization.notificationTypesFooter)
+                Text(Localization.storeListSectionFooter)
             }
         }
+    }
+
+    func detailRow(for site: Site) -> some View {
+        Button(action: {
+            selectedSite = site
+        }) {
+            HStack(spacing: Layout.contentSpacing) {
+                VStack(alignment: .leading) {
+                    Text(site.name)
+                        .bodyStyle()
+                    Text(site.url)
+                        .foregroundStyle(Color.secondary)
+                        .captionStyle()
+                }
+                .multilineTextAlignment(.leading)
+
+                Spacer()
+
+                Image(systemName: "chevron.forward")
+                    .secondaryBodyStyle()
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     func openSettingsApp() async {
@@ -141,25 +169,15 @@ extension NotificationSettingsView {
             value: "Including reminders and remote push notifications.",
             comment: "Footer of the notifications section on the notification settings view"
         )
-        static let newOrders = NSLocalizedString(
-            "notificationSettingsView.newOrders",
-            value: "New orders",
-            comment: "Label of the toggle to enable/disable new order notifications on the notification settings view"
+        static let storeListSectionHeader = NSLocalizedString(
+            "notificationSettingsView.storeListSectionHeader",
+            value: "Your stores",
+            comment: "Header of the store list section on the notification settings view"
         )
-        static let productReviews = NSLocalizedString(
-            "notificationSettingsView.productReviews",
-            value: "Product reviews",
-            comment: "Label of the toggle to enable/disable product reviews notifications on the notification settings view"
-        )
-        static let notificationTypesHeader = NSLocalizedString(
-            "notificationSettingsView.notificationTypesHeader",
-            value: "Notification types",
-            comment: "Header of the notification types section on the notification settings view"
-        )
-        static let notificationTypesFooter = NSLocalizedString(
-            "notificationSettingsView.notificationTypesFooter",
-            value: "Settings applied to all selected sites.",
-            comment: "Footer of the notification types section on the notification settings view"
+        static let storeListSectionFooter = NSLocalizedString(
+            "notificationSettingsView.storeListSectionFooter",
+            value: "Customize your notification preferences for each store.",
+            comment: "Footer of the store list section on the notification settings view"
         )
     }
 }

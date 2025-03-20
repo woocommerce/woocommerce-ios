@@ -1,19 +1,39 @@
 import Combine
 import UIKit
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// View model for `NotificationSettingsView`
 final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var notificationsEnabled: Bool?
-    @Published var orderNotificationsEnabled = false
-    @Published var productReviewNotificationsEnabled = false
+    @Published private(set) var sites: [Site] = []
 
     private let notificationCenter: UserNotificationsCenterAdapter
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
+
     private var appStateSubscription: AnyCancellable?
 
-    init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) {
+    /// ResultsController: Loads Sites from the Storage Layer.
+    ///
+    private lazy var siteResultsController: ResultsController<StorageSite> = {
+        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSite.name, ascending: true)
+        return ResultsController(storageManager: storageManager,
+                                 matching: predicate,
+                                 sortedBy: [nameDescriptor])
+    }()
+
+    init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.notificationCenter = notificationCenter
+        self.stores = stores
+        self.storageManager = storageManager
 
         observeAppState()
+        updateNotificationStateIfNeeded()
+        configureResultsController()
     }
 
     @MainActor
@@ -32,6 +52,15 @@ final class NotificationSettingsViewModel: ObservableObject {
         }
         notificationsEnabled = isEnabled
     }
+
+    @MainActor
+    func synchronizeSites() async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AccountAction.synchronizeSites(selectedSiteID: nil) { _ in
+                continuation.resume()
+            })
+        }
+    }
 }
 
 private extension NotificationSettingsViewModel {
@@ -47,5 +76,25 @@ private extension NotificationSettingsViewModel {
         Task {
             await checkNotificationPermission()
         }
+    }
+
+    func configureResultsController() {
+        siteResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteList()
+        }
+        siteResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteList()
+        }
+
+        do {
+            try siteResultsController.performFetch()
+            updateSiteList()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateSiteList() {
+        sites = siteResultsController.fetchedObjects
     }
 }

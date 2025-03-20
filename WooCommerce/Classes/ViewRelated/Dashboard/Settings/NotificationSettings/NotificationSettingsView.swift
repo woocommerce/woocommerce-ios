@@ -60,10 +60,10 @@ struct NotificationSettingsView: View {
             }
         }
         .sheet(item: $selectedSite) { site in
-            if let setting = viewModel.loadSetting(for: site) {
+            if let settings = viewModel.loadSettings(for: site) {
                 SiteNotificationSettingsView(siteTitle: site.name,
-                                             ordersNotificationsEnabled: setting.storeOrder,
-                                             productReviewsNotificationsEnabled: setting.newComment,
+                                             ordersNotificationsEnabled: settings.storeOrder,
+                                             productReviewsNotificationsEnabled: settings.newComment,
                                              completionHandler: { newOrder, productReviews in
                     viewModel.updateSettings(siteID: site.siteID,
                                              ordersNotificationsEnabled: newOrder,
@@ -156,8 +156,8 @@ private extension NotificationSettingsView {
                 VStack(alignment: .leading) {
                     Text(site.name)
                         .bodyStyle()
-                    if let setting = viewModel.loadSetting(for: site) {
-                        Text(description(for: setting))
+                    if let settings = viewModel.loadSettings(for: site) {
+                        Text(description(for: settings))
                             .foregroundStyle(Color.secondary)
                             .captionStyle()
                     }

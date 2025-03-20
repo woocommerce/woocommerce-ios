@@ -101,7 +101,7 @@ final class NotificationSettingsViewModel: ObservableObject {
         isLoadingSiteSettings = false
     }
 
-    func loadSetting(for site: Site) -> NotificationSettings.Device? {
+    func loadSettings(for site: Site) -> NotificationSettings.Device? {
         if let setting = siteSettings?.blogs.first(where: { $0.blogID == site.siteID }),
            let deviceID = currentDeviceID,
            let device = setting.devices.first(where: { $0.deviceID == Int64(deviceID) }) {

@@ -54,16 +54,19 @@ public final class StarReceiptPrinterService: PrinterService, DiscoverableHardwa
 
     public func connect(to printer: StarPrinter) {
         DDLogDebug("🖨️ Connecting to printer: \(printer.connectionSettings.identifier)")
+        statusSubject.send(.connecting)
         self.printer = printer
         self.printer?.printerDelegate = self
         statusSubject.send(.connected)
         DDLogDebug("🖨️ Connected to printer")
     }
 
-    public func disconnect() {
+    public func disconnect() async {
         DDLogDebug("🖨️ Disconnecting from printer")
-        statusSubject.send(.disconnected)
+        statusSubject.send(.disconnecting)
+        await self.printer?.close()
         self.printer = nil
+        statusSubject.send(.disconnected)
     }
 
     public enum PrintType {
@@ -352,5 +355,24 @@ private extension StarReceiptPrinterService {
         )
 
         return builder.getCommands()
+    }
+}
+
+public extension StarIO10.InterfaceType {
+    var interfaceName: String {
+        switch self {
+        case .bluetooth:
+            return "Bluetooth"
+        case .bluetoothLE:
+            return "Bluetooth Low Energy"
+        case .usb:
+            return "USB"
+        case .lan:
+            return "Local Network"
+        case .unknown:
+            return "Unknown"
+        @unknown default:
+            return "Unknown"
+        }
     }
 }

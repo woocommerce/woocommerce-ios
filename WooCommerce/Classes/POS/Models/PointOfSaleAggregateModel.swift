@@ -13,6 +13,7 @@ import protocol Hardware.PrinterService
 import protocol Hardware.DiscoverableHardwareService
 import class Hardware.StarReceiptPrinterService
 import class StarIO10.StarPrinter
+import enum Hardware.DeviceStatus
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -76,6 +77,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let receiptPrinterService: StarReceiptPrinterService
     private var printerDiscoveryTask: Task<Void, Never>?
     var printerDiscoveryState: PrinterDiscoveryState?
+    var printerConnectionState: DeviceStatus = .disconnected
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -96,14 +98,15 @@ protocol PointOfSaleAggregateModelProtocol {
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
+        subscribeToPrinterConnectionUpdates()
     }
 }
 
-struct PrinterDevice: Equatable, Hashable, Identifiable {
-    var name: String {
-        "\(starPrinter.information?.model.description ?? "Star printer") via \(starPrinter.connectionSettings.interfaceType.description) connection"
+public struct PrinterDevice: Equatable, Hashable, Identifiable {
+    public var name: String {
+        "\(starPrinter.information?.model.description ?? "Star printer") via \(starPrinter.connectionSettings.interfaceType.interfaceName) connection"
     }
-    var id: String {
+    public var id: String {
         starPrinter.id
     }
     fileprivate let starPrinter: StarPrinter
@@ -527,6 +530,13 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func subscribeToPrinterConnectionUpdates() {
+        receiptPrinterService.statusPublisher.sink { [weak self] connectionState in
+            self?.printerConnectionState = connectionState
+        }
+        .store(in: &cancellables)
+    }
+
     func stopPrinterDiscovery() {
         printerDiscoveryTask?.cancel()
         receiptPrinterService.stopDiscovery()
@@ -539,6 +549,12 @@ extension PointOfSaleAggregateModel {
         printerDiscoveryState = .connecting
         receiptPrinterService.connect(to: printer.starPrinter)
         printerDiscoveryState = nil
+    }
+
+    func disconnectPrinter() {
+        Task {
+            await receiptPrinterService.disconnect()
+        }
     }
 }
 

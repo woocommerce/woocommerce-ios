@@ -71,56 +71,19 @@ struct POSFloatingControlView: View {
                 .disabled(horizontalSizeClass != .regular)
 
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport) {
-                Button {
-                    posModel.startPrinterDiscovery()
-                } label: {
-                    VStack {
-                        Spacer()
-                        Image(systemName: "printer")
-                            .font(.posBodyLargeBold)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        Spacer()
-                    }
-                    .frame(width: Constants.size)
-                }
-                .background(backgroundColor)
-                .cornerRadius(Constants.cornerRadius)
-                .posModal(item: $posModel.printerDiscoveryState, onDismiss: {
-                    posModel.stopPrinterDiscovery()
-                }) { discoveryState in
-                    switch discoveryState {
-                    case .searching:
-                        VStack(alignment: .center, spacing: POSSpacing.xLarge) {
-                            ProgressView()
-                                .progressViewStyle(POSProgressViewStyle())
-                                .frame(width: 160,
-                                       height: 160)
-                            VStack(alignment: .center, spacing: POSSpacing.small) {
-                                Text("Searching for printers")
-                                    .foregroundStyle(Color.posOnSurface)
-                                    .font(.posBodyLargeRegular())
-                            }
+                switch posModel.printerConnectionState {
+                case .connected:
+                    Menu {
+                        Button {
+                            posModel.disconnectPrinter()
+                        } label: {
+                            Text("Disconnect Printer")
                         }
-                        .multilineTextAlignment(.center)
-                        .posModalSizing()
-                    case .found(let printers):
-                        VStack(alignment: .center, spacing: POSSpacing.small) {
-                            Text("Found \(printers.count) printer(s)")
-
-                            ForEach(printers) { printer in
-                                Button {
-                                    posModel.connect(printer: printer)
-                                } label: {
-                                    Text("Connect to \(printer.name)")
-                                }
-                            }
-                        }
-                        .posModalSizing()
-                    case .error:
-                        Text("Error finding printers")
-                    case .connecting:
-                        Text("Connecting to printer...")
+                    } label: {
+                        printerConnectionButton
                     }
+                default:
+                    printerConnectionButton
                 }
             }
         }
@@ -128,6 +91,91 @@ struct POSFloatingControlView: View {
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
         .posShadow(.large)
+        .posModal(item: $posModel.printerDiscoveryState, onDismiss: {
+            posModel.stopPrinterDiscovery()
+        }) { discoveryState in
+            switch discoveryState {
+            case .searching:
+                VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+                    ProgressView()
+                        .progressViewStyle(POSProgressViewStyle())
+                        .frame(width: 160,
+                               height: 160)
+                    VStack(alignment: .center, spacing: POSSpacing.small) {
+                        Text("Searching for printers")
+                            .foregroundStyle(Color.posOnSurface)
+                            .font(.posBodyLargeRegular())
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .posModalSizing()
+            case .found(let printers):
+                VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+                    Image(systemName: "printer")
+                        .resizable()
+                        .frame(width: 160,
+                               height: 160)
+                    VStack(alignment: .center, spacing: POSSpacing.small) {
+                        Text("Found \(printers.count) printer(s)")
+
+                        ForEach(printers) { printer in
+                            Button {
+                                posModel.connect(printer: printer)
+                            } label: {
+                                Text("Connect to \(printer.name)")
+                            }
+                        }
+                    }
+                }
+                .posModalSizing()
+            case .error:
+                Text("Error finding printers")
+            case .connecting:
+                Text("Connecting to printer...")
+            }
+        }
+    }
+
+    @ViewBuilder private var printerConnectionButton: some View {
+        Button {
+            posModel.startPrinterDiscovery()
+        } label: {
+            VStack {
+                Spacer()
+                Image(systemName: "printer")
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .overlay(alignment: .bottomLeading) {
+                        switch posModel.printerConnectionState {
+                            case .connected:
+                            circleIcon(with: .posSuccess)
+                        case .disconnected:
+                            circleIcon(with: .posError)
+                        case .connecting, .disconnecting:
+                            ProgressView()
+                                .progressViewStyle(POSProgressViewStyle(
+                                    size: 10,
+                                    lineWidth: 2
+                                ))
+                        default:
+                            EmptyView()
+                        }
+                    }
+                Spacer()
+            }
+            .frame(width: Constants.size)
+        }
+        .background(backgroundColor)
+        .cornerRadius(Constants.cornerRadius)
+    }
+
+    @ViewBuilder
+    private func circleIcon(with color: Color) -> some View {
+        Image(systemName: "circle.fill")
+            .resizable()
+            .frame(width: 14, height: 14)
+            .foregroundColor(color)
+            .accessibilityHidden(true)
     }
 }
 

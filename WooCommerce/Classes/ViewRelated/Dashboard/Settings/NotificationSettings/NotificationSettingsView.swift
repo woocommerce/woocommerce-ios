@@ -78,6 +78,7 @@ struct NotificationSettingsView: View {
                 saveSettings()
             }
         }
+        .notice($viewModel.notice)
     }
 }
 

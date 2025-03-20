@@ -13,6 +13,8 @@ final class NotificationSettingsViewModel: ObservableObject {
 
     @Published private(set) var isSavingSettings = false
 
+    @Published var notice: Notice?
+
     var hasSiteSettingsChanges: Bool {
         siteSettings != initialSiteSettings
     }
@@ -142,6 +144,7 @@ final class NotificationSettingsViewModel: ObservableObject {
             }
             isSavingSettings = false
             initialSiteSettings = siteSettings // to ensure that checking for changes works
+            notice = Notice(title: Localization.successNotice)
         } catch {
             DDLogError("⛔️ Error saving notification settings: \(error)")
             isSavingSettings = false
@@ -190,5 +193,13 @@ extension NotificationSettingsViewModel {
     enum SiteSettingsError: Error {
         case deviceNotAvailable
         case loadingFailed(error: Error)
+    }
+
+    enum Localization {
+        static let successNotice = NSLocalizedString(
+            "notificationSettingsViewModel.successNotice",
+            value: "Settings saved!",
+            comment: "Notice displayed when saving notification settings succeeds."
+        )
     }
 }

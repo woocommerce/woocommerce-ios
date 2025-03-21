@@ -85,13 +85,49 @@ struct POSFloatingControlView: View {
                 default:
                     printerConnectionButton
                 }
+                switch posModel.printerDiscoveryState {
+                case .searching, .found([]):
+                    VStack {
+                        Spacer()
+                        Text("Turn your printer on")
+                        Spacer()
+                    }
+                    .padding(.horizontal, POSPadding.medium)
+                    .foregroundStyle(fontColor)
+                    .background(backgroundColor)
+                    .cornerRadius(Constants.cornerRadius)
+                    .id("printerGuide")
+                    .transition(.asymmetric(insertion: .push(from: .leading), removal: .push(from: .trailing)))
+                case .found(let devices):
+                    if devices.count == 1,
+                       let printer = devices.first {
+                        Button {
+                            posModel.connect(printer: printer)
+                        } label: {
+                            VStack {
+                                Spacer()
+                                Text("Connect to \(printer.name)")
+                                Spacer()
+                            }
+                            .padding(.horizontal, POSPadding.medium)
+                        }
+                        .foregroundStyle(fontColor)
+                        .background(backgroundColor)
+                        .cornerRadius(Constants.cornerRadius)
+                        .id("printerGuide")
+                        .transition(.asymmetric(insertion: .push(from: .leading), removal: .push(from: .trailing)))
+                    }
+                default:
+                    EmptyView()
+                }
             }
         }
+        .animation(.default, value: posModel.printerDiscoveryState)
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
         .posShadow(.large)
-        .posModal(item: $posModel.printerDiscoveryState, onDismiss: {
+        .posModal(item: $posModel.showPrintersFoundModal, onDismiss: {
             posModel.stopPrinterDiscovery()
         }) { discoveryState in
             switch discoveryState {
@@ -110,24 +146,26 @@ struct POSFloatingControlView: View {
                 .multilineTextAlignment(.center)
                 .posModalSizing()
             case .found(let printers):
-                VStack(alignment: .center, spacing: POSSpacing.xLarge) {
-                    Image(systemName: "printer")
-                        .resizable()
-                        .frame(width: 160,
-                               height: 160)
-                    VStack(alignment: .center, spacing: POSSpacing.small) {
-                        Text("Found \(printers.count) printer(s)")
+                if printers.containsMoreThanOne {
+                    VStack(alignment: .center, spacing: POSSpacing.xLarge) {
+                        Image(systemName: "printer")
+                            .resizable()
+                            .frame(width: 160,
+                                   height: 160)
+                        VStack(alignment: .center, spacing: POSSpacing.small) {
+                            Text("Found \(printers.count) printer(s)")
 
-                        ForEach(printers) { printer in
-                            Button {
-                                posModel.connect(printer: printer)
-                            } label: {
-                                Text("Connect to \(printer.name)")
+                            ForEach(printers) { printer in
+                                Button {
+                                    posModel.connect(printer: printer)
+                                } label: {
+                                    Text("Connect to \(printer.name)")
+                                }
                             }
                         }
                     }
+                    .posModalSizing()
                 }
-                .posModalSizing()
             case .error:
                 Text("Error finding printers")
             case .connecting:

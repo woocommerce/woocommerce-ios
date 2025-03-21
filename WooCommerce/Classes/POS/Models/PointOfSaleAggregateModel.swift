@@ -79,6 +79,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var printerDiscoveryTask: Task<Void, Never>?
     var printerDiscoveryState: PrinterDiscoveryState?
     var printerConnectionState: DeviceStatus = .disconnected
+    var showPrintersFoundModal: PrinterDiscoveryState?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -106,7 +107,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
 public struct PrinterDevice: Equatable, Hashable, Identifiable {
     public var name: String {
-        "\(starPrinter.information?.model.description ?? "Star printer") via \(starPrinter.connectionSettings.interfaceType.interfaceName) connection"
+        "\(starPrinter.information?.model.description ?? "Star printer") (\(starPrinter.connectionSettings.interfaceType.interfaceName))"
     }
     public var id: String {
         starPrinter.id
@@ -528,7 +529,7 @@ extension PointOfSaleAggregateModel {
     func startPrinterDiscovery() {
         printerDiscoveryTask?.cancel() // Cancel any existing task before starting a new one
         var discoveredPrinters = [PrinterDevice]()
-//        printerDiscoveryState = .searching
+        printerDiscoveryState = .searching
         printerConnectionState = .connecting
 
         printerDiscoveryTask = Task {
@@ -536,6 +537,7 @@ extension PointOfSaleAggregateModel {
                 for try await printer in receiptPrinterService.discover() {
                     discoveredPrinters.append(PrinterDevice(starPrinter: printer))
                     printerDiscoveryState = .found(discoveredPrinters)
+                    showPrintersFoundModal = discoveredPrinters.count > 1 ? .found(discoveredPrinters) : nil
                     DDLogInfo("🖨️💰 Discovered printer: \(printer.id), all printers: \(discoveredPrinters.map(\.id))")
                 }
             } catch {
@@ -553,12 +555,14 @@ extension PointOfSaleAggregateModel {
     }
 
     func stopPrinterDiscovery() {
+        showPrintersFoundModal = nil
         printerDiscoveryTask?.cancel()
         receiptPrinterService.stopDiscovery()
         printerDiscoveryState = nil
     }
 
     func connect(printer: PrinterDevice) {
+        showPrintersFoundModal = nil
         printerDiscoveryTask?.cancel()
         receiptPrinterService.stopDiscovery()
         printerDiscoveryState = .connecting

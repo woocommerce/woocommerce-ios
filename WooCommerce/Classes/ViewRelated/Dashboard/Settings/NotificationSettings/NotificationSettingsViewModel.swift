@@ -1,18 +1,44 @@
 import Combine
 import UIKit
 import Yosemite
+import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// View model for `NotificationSettingsView`
 final class NotificationSettingsViewModel: ObservableObject {
     @Published private(set) var notificationsEnabled: Bool?
     @Published private(set) var sites: [Site] = []
+    @Published private(set) var isLoadingSiteSettings = true
+    @Published private(set) var siteSettings: NotificationSettings?
+
+    @Published private(set) var isSavingSettings = false
+
+    @Published var notice: Notice?
+
+    @Published var loadingSiteSettingsFailed = false
+    @Published var savingSiteSettingsFailed = false
+
+    var hasSiteSettingsChanges: Bool {
+        siteSettings != initialSiteSettings
+    }
+
+    var shouldShowSiteList: Bool {
+        guard currentDeviceID != nil else {
+            return false
+        }
+        return isLoadingSiteSettings || siteSettings != nil
+    }
 
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
+
+    let currentDeviceID: String?
 
     private var appStateSubscription: AnyCancellable?
+
+    private var initialSiteSettings: NotificationSettings?
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
@@ -26,13 +52,16 @@ final class NotificationSettingsViewModel: ObservableObject {
 
     init(notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         pushNotificationManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.notificationCenter = notificationCenter
         self.stores = stores
         self.storageManager = storageManager
+        self.currentDeviceID = pushNotificationManager.deviceID
+        self.analytics = analytics
 
         observeAppState()
-        updateNotificationStateIfNeeded()
         configureResultsController()
     }
 
@@ -60,6 +89,92 @@ final class NotificationSettingsViewModel: ObservableObject {
                 continuation.resume()
             })
         }
+    }
+
+    @MainActor
+    func retrieveNotificationSettings() async {
+        guard let currentDeviceID, let id = Int64(currentDeviceID) else {
+            return
+        }
+        loadingSiteSettingsFailed = false
+        isLoadingSiteSettings = true
+        do {
+            siteSettings = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(AccountAction.loadNotificationSettings(deviceID: id) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            initialSiteSettings = siteSettings
+        } catch {
+            DDLogError("⛔️ Error retrieving notification settings: \(error)")
+            loadingSiteSettingsFailed = true
+        }
+        isLoadingSiteSettings = false
+    }
+
+    func loadSettings(for site: Site) -> NotificationSettings.Device? {
+        if let setting = siteSettings?.blogs.first(where: { $0.blogID == site.siteID }),
+           let deviceID = currentDeviceID,
+           let device = setting.devices.first(where: { $0.deviceID == Int64(deviceID) }) {
+            return device
+        }
+        return nil
+    }
+
+    func updateSettings(siteID: Int64,
+                        ordersNotificationsEnabled: Bool,
+                        productReviewsNotificationsEnabled: Bool) {
+        guard let siteSettings,
+              let currentDeviceID else {
+            return
+        }
+
+        analytics.track(.notificationSettingsUpdateButtonTapped)
+
+        var updatedBlogs: [NotificationSettings.Blog] = []
+        for blog in siteSettings.blogs {
+            if blog.blogID == siteID {
+                var updatedDevices: [NotificationSettings.Device] = []
+                for device in blog.devices {
+                    if device.deviceID == Int64(currentDeviceID) {
+                        updatedDevices.append(device.copy(newComment: productReviewsNotificationsEnabled,
+                                                          storeOrder: ordersNotificationsEnabled))
+                    } else {
+                        updatedDevices.append(device)
+                    }
+                }
+                updatedBlogs.append(blog.copy(devices: updatedDevices))
+            } else {
+                updatedBlogs.append(blog)
+            }
+        }
+
+        self.siteSettings = NotificationSettings(blogs: updatedBlogs)
+    }
+
+    @MainActor
+    func saveSettings() async {
+        guard let siteSettings else {
+            return
+        }
+        analytics.track(.notificationSettingsSaveButtonTapped)
+        savingSiteSettingsFailed = false
+        isSavingSettings = true
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings) { result in
+                    continuation.resume(with: result)
+                })
+            }
+            initialSiteSettings = siteSettings // to ensure that checking for changes works
+            notice = Notice(title: Localization.successNotice)
+            analytics.track(.notificationSettingsSavingSuccess)
+        } catch {
+            DDLogError("⛔️ Error saving notification settings: \(error)")
+            savingSiteSettingsFailed = true
+            analytics.track(.notificationSettingsSavingFailed, withError: error)
+        }
+        isSavingSettings = false
     }
 }
 
@@ -96,5 +211,15 @@ private extension NotificationSettingsViewModel {
 
     func updateSiteList() {
         sites = siteResultsController.fetchedObjects
+    }
+}
+
+extension NotificationSettingsViewModel {
+    enum Localization {
+        static let successNotice = NSLocalizedString(
+            "notificationSettingsViewModel.successNotice",
+            value: "Settings saved!",
+            comment: "Notice displayed when saving notification settings succeeds."
+        )
     }
 }

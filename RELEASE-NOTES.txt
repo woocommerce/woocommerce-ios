@@ -10,6 +10,7 @@
 - [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
 - [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
+- [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
 
 21.9
 -----

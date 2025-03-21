@@ -3,13 +3,29 @@ import SwiftUI
 struct SiteNotificationSettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var orderNotificationsEnabled = false
-    @State private var productReviewNotificationsEnabled = false
+    @State private var orderNotificationsEnabled: Bool
+    @State private var productReviewsNotificationsEnabled: Bool
+
+    typealias CompletionCallback = (_ orderNotificationsEnabled: Bool, _ productReviewsNotificationsEnabled: Bool) -> Void
 
     private let siteTitle: String
+    private let completionHandler: CompletionCallback
+    private let initialValues: (newOrders: Bool, productReviews: Bool)
 
-    init(siteTitle: String) {
+    var hasChanges: Bool {
+        initialValues.newOrders != orderNotificationsEnabled ||
+        initialValues.productReviews != productReviewsNotificationsEnabled
+    }
+
+    init(siteTitle: String,
+         ordersNotificationsEnabled: Bool,
+         productReviewsNotificationsEnabled: Bool,
+         completionHandler: @escaping CompletionCallback) {
         self.siteTitle = siteTitle
+        self.orderNotificationsEnabled = ordersNotificationsEnabled
+        self.productReviewsNotificationsEnabled = productReviewsNotificationsEnabled
+        self.completionHandler = completionHandler
+        self.initialValues = (ordersNotificationsEnabled, productReviewsNotificationsEnabled)
     }
 
     var body: some View {
@@ -19,7 +35,7 @@ struct SiteNotificationSettingsView: View {
                     Toggle(isOn: $orderNotificationsEnabled) {
                         Text(Localization.newOrders)
                     }
-                    Toggle(isOn: $productReviewNotificationsEnabled) {
+                    Toggle(isOn: $productReviewsNotificationsEnabled) {
                         Text(Localization.productReviews)
                     }
                 } header: {
@@ -38,9 +54,11 @@ struct SiteNotificationSettingsView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.save) {
-                        // TODO
+                    Button(Localization.update) {
+                        completionHandler(orderNotificationsEnabled, productReviewsNotificationsEnabled)
+                        dismiss()
                     }
+                    .disabled(hasChanges == false)
                 }
             }
         }
@@ -54,10 +72,10 @@ private extension SiteNotificationSettingsView {
             value: "Cancel",
             comment: "Button to dismiss the site notification settings view"
         )
-        static let save = NSLocalizedString(
-            "siteNotificationSettingsView.save",
-            value: "Save",
-            comment: "Button to save the settings on the site notification settings view"
+        static let update = NSLocalizedString(
+            "siteNotificationSettingsView.update",
+            value: "Update",
+            comment: "Button to confirm the settings on the site notification settings view"
         )
         static let title = NSLocalizedString(
             "siteNotificationSettingsView.title",

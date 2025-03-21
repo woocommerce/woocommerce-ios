@@ -493,6 +493,7 @@ private extension SettingsViewController {
     }
 
     func showNotificationSettings() {
+        ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
         let controller = NotificationSettingsHostingController()
         show(controller, sender: self)
     }

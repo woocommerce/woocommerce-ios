@@ -336,10 +336,18 @@ enum WooAnalyticsStat: String {
     case settingsThirdPartyLearnMoreTapped = "privacy_settings_third_party_tracking_info_link_tapped"
     case settingsLicensesLinkTapped = "settings_about_open_source_licenses_link_tapped"
     case settingsAboutLinkTapped = "settings_about_woocommerce_link_tapped"
+    case settingsNotificationSettingsTapped = "settings_notification_settings_tapped"
 
     case settingsLogoutTapped = "settings_logout_button_tapped"
     case settingsLogoutConfirmation = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped = "settings_we_are_hiring_button_tapped"
+
+    // MARK: Notification Settings
+    //
+    case notificationSettingsUpdateButtonTapped = "notification_settings_update_button_tapped"
+    case notificationSettingsSaveButtonTapped = "notification_settings_save_button_tapped"
+    case notificationSettingsSavingSuccess = "notification_settings_saving_success"
+    case notificationSettingsSavingFailed = "notification_settings_saving_failed"
 
     // MARK: Domain Settings
     //

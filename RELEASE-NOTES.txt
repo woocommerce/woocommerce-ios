@@ -7,6 +7,7 @@
 - [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 - [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
+- [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
 - [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
 

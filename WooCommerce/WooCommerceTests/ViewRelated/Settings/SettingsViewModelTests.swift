@@ -355,7 +355,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
     }
 
-    func test_sections_does_not_contain_notifications_row_for_Jetpack_site_and_user_is_authenticated_with_WPCom() {
+    func test_sections_contains_notifications_row_for_Jetpack_site_and_user_is_authenticated_with_WPCom() {
         // Given
         let featureFlagService = MockFeatureFlagService(notificationSettings: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
@@ -367,6 +367,42 @@ final class SettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    func test_sections_does_not_contain_connectivity_row_for_wpcom_site() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+    }
+
+    func test_sections_does_not_contain_connectivity_row_if_user_authenticated_without_wpcom() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+    }
+
+    func test_sections_contains_connectivity_row_if_user_authenticated_with_wpcom_to_non_wpcom_site() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
     }
 }
 

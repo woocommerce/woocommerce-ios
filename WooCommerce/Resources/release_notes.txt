@@ -1,8 +1,1 @@
-- [*] Payments: Puerto Rico is now available in the list of countries that are supported by In-Person Payments, when using WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
-- [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
-- [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
-- [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
-- [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
-- [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
-- [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
-- [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
+This update adds the option to set different notification preferences for each store. In Orders and Products, your filters stay around as you move through the app, and we've fixed a crash that could happen when you choose pictures for your products. Payments is improved too, with support for Puerto Rico in WooPayments, and better accessibility.

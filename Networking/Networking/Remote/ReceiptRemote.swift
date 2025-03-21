@@ -57,7 +57,8 @@ public final class ReceiptRemote: Remote {
                                               path: templatesPath,
                                               parameters: [:],
                                               availableAsRESTRequest: true)
-        let validTemplates: [EmailTemplateResponse] = try await enqueue(templatesRequest)
+        let mapper = EmailTemplatesMapper()
+        let validTemplates = try await enqueue(templatesRequest, mapper: mapper)
 
         let posReceiptTemplateID = "pos_customer_completed_order"
         guard validTemplates.contains(where: { $0.id == posReceiptTemplateID }) else {

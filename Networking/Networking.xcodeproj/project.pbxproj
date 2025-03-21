@@ -82,6 +82,7 @@
 		029149742D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json in Resources */ = {isa = PBXBuildFile; fileRef = 029149732D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
 		02935AEF29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */; };
+		02999E632D8D369000CA89EB /* EmailTemplatesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02999E622D8D368300CA89EB /* EmailTemplatesMapper.swift */; };
 		029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */ = {isa = PBXBuildFile; fileRef = 029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */; };
 		029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */; };
 		029BA4F4255D72EC006171FD /* ShippingLabelPrintData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */; };
@@ -1411,6 +1412,7 @@
 		029149732D26430E00F7B3B3 /* systemStatus-inconsistent-environment-max-upload-size-data-type.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "systemStatus-inconsistent-environment-max-upload-size-data-type.json"; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
 		02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-error-already-upgraded.json"; sourceTree = "<group>"; };
+		02999E622D8D368300CA89EB /* EmailTemplatesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailTemplatesMapper.swift; sourceTree = "<group>"; };
 		029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-account-null-isLive.json"; sourceTree = "<group>"; };
 		029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemote.swift; sourceTree = "<group>"; };
 		029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintData.swift; sourceTree = "<group>"; };
@@ -3681,6 +3683,7 @@
 		B567AF2720A0FA0A00AB6C62 /* Mapper */ = {
 			isa = PBXGroup;
 			children = (
+				02999E622D8D368300CA89EB /* EmailTemplatesMapper.swift */,
 				DEB387742C2A9A040025256E /* GoogleAds */,
 				EE1CB9032B4BC88700AD24D5 /* Blaze */,
 				EE57C10F297927A000BC31E7 /* ApplicationPassword */,
@@ -5429,6 +5432,7 @@
 				02C254A025636F6900A04423 /* ShippingLabelRefund.swift in Sources */,
 				CCF48B24262890BB0034EA83 /* ShippingLabelPaymentCardType.swift in Sources */,
 				26455E2725F669EA008A1D32 /* ProductAttributeTermListMapper.swift in Sources */,
+				02999E632D8D369000CA89EB /* EmailTemplatesMapper.swift in Sources */,
 				CCB573AA268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift in Sources */,
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */,

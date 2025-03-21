@@ -100,7 +100,6 @@ protocol PointOfSaleAggregateModelProtocol {
         publishPaymentMessages()
         setupReaderReconnectionObservation()
         subscribeToPrinterConnectionUpdates()
-        observePaymentSuccessForReceiptPrinting()
     }
 }
 
@@ -319,7 +318,19 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        let transactionResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport),
+              case .connected = printerConnectionState,
+              case .success(let transaction) = transactionResult,
+              let receiptParameters = transaction.paymentData.receiptParameters else {
+            return
+        }
+
+        let content = ReceiptGenerator().generateReceiptContent(
+            order: order,
+            parameters: receiptParameters)
+        try await receiptPrinterService.printReceipt(content: content)
     }
 
     func cancelThenCollectPayment() {
@@ -557,43 +568,6 @@ extension PointOfSaleAggregateModel {
         Task {
             await receiptPrinterService.disconnect()
         }
-    }
-
-    func observePaymentSuccessForReceiptPrinting() {
-        cardPresentPaymentService.paymentEventPublisher.filter { event in
-            if case .show(.paymentSuccess) = event {
-                return true
-            } else {
-                return false
-            }
-        }
-        .sink { [weak self] event in
-            guard let self,
-                  case .connected = printerConnectionState,
-                  case let .loaded(_, order) = internalOrderState else { return }
-            let parameters = CardPresentReceiptParameters(
-                amount: UInt(Int(order.total) ?? 0),
-                formattedAmount: order.total,
-                currency: order.currency,
-                date: order.datePaid ?? order.dateCreated,
-                storeName: "",
-                cardDetails: .init(last4: "0000",
-                                   expMonth: 1,
-                                   expYear: 2033,
-                                   cardholderName: nil,
-                                   brand: .visa,
-                                   generatedCard: nil,
-                                   receipt: nil,
-                                   emvAuthData: nil,
-                                   wallet: nil,
-                                   network: nil),
-                orderID: order.orderID)
-            let content = ReceiptGenerator().generateReceiptContent(order: order, parameters: parameters)
-            Task { [weak self] in
-                try await self?.receiptPrinterService.printReceipt(content: content)
-            }
-        }
-        .store(in: &cancellables)
     }
 }
 

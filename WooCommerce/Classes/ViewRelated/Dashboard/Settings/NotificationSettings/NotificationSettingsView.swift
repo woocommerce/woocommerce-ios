@@ -131,8 +131,7 @@ private extension NotificationSettingsView {
 
             Section {
                 if viewModel.isLoadingSiteSettings {
-                    ProgressView()
-                        .progressViewStyle(.circular)
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
                         .frame(maxWidth: .infinity)
                 } else if viewModel.siteSettings != nil {
                     ForEach(viewModel.sites) { site in
@@ -144,7 +143,7 @@ private extension NotificationSettingsView {
             } footer: {
                 Text(Localization.storeListSectionFooter)
             }
-            .renderedIf(viewModel.currentDeviceID != nil && viewModel.loadingSiteSettingsFailed == false)
+            .renderedIf(viewModel.shouldShowSiteList)
         }
     }
 

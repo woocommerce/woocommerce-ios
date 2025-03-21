@@ -2116,6 +2116,7 @@
 		B9DC770729F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */; };
 		B9DF08582D8C59E9007869EE /* GoToPOSAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DF08572D8C59E9007869EE /* GoToPOSAppIntent.swift */; };
 		B9DF085A2D8C63D9007869EE /* WooShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DF08592D8C63D3007869EE /* WooShortcutsProvider.swift */; };
+		B9DF085E2D8D6EDC007869EE /* GetTodayRevenueAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DF085B2D8C6ABE007869EE /* GetTodayRevenueAppIntent.swift */; };
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
@@ -5315,6 +5316,7 @@
 		B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSelectorTopProductsProvider.swift; sourceTree = "<group>"; };
 		B9DF08572D8C59E9007869EE /* GoToPOSAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToPOSAppIntent.swift; sourceTree = "<group>"; };
 		B9DF08592D8C63D3007869EE /* WooShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShortcutsProvider.swift; sourceTree = "<group>"; };
+		B9DF085B2D8C6ABE007869EE /* GetTodayRevenueAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTodayRevenueAppIntent.swift; sourceTree = "<group>"; };
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
@@ -11428,6 +11430,7 @@
 		B9F3DAAB29BB714900DDD545 /* App Intents */ = {
 			isa = PBXGroup;
 			children = (
+				B9DF085B2D8C6ABE007869EE /* GetTodayRevenueAppIntent.swift */,
 				B9DF08592D8C63D3007869EE /* WooShortcutsProvider.swift */,
 				B9DF08572D8C59E9007869EE /* GoToPOSAppIntent.swift */,
 				B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */,
@@ -16585,6 +16588,7 @@
 				0373A12F2A1D1F2100731236 /* DotView.swift in Sources */,
 				0295CDC02D6477C400865E27 /* POSNoticeView.swift in Sources */,
 				DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */,
+				B9DF085E2D8D6EDC007869EE /* GetTodayRevenueAppIntent.swift in Sources */,
 				01F42C162CE34AB8003D0A5A /* CardPresentModalBuiltInSuccessEmailSent.swift in Sources */,
 				028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */,
 				DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */,

@@ -527,7 +527,8 @@ extension PointOfSaleAggregateModel {
     func startPrinterDiscovery() {
         printerDiscoveryTask?.cancel() // Cancel any existing task before starting a new one
         var discoveredPrinters = [PrinterDevice]()
-        printerDiscoveryState = .searching
+//        printerDiscoveryState = .searching
+        printerConnectionState = .connecting
 
         printerDiscoveryTask = Task {
             do {

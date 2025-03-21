@@ -144,18 +144,19 @@ struct POSFloatingControlView: View {
                 Spacer()
                 Image(systemName: "printer")
                     .font(.posBodyLargeBold)
+                    .foregroundStyle(fontColor)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .overlay(alignment: .bottomLeading) {
                         switch posModel.printerConnectionState {
                             case .connected:
                             circleIcon(with: .posSuccess)
                         case .disconnected:
-                            circleIcon(with: .posError)
+                            circleIcon(with: .posAlert)
                         case .connecting, .disconnecting:
                             ProgressView()
                                 .progressViewStyle(POSProgressViewStyle(
-                                    size: 10,
-                                    lineWidth: 2
+                                    size: 12,
+                                    lineWidth: 4
                                 ))
                         default:
                             EmptyView()
@@ -167,6 +168,7 @@ struct POSFloatingControlView: View {
         }
         .background(backgroundColor)
         .cornerRadius(Constants.cornerRadius)
+        .disabled(posModel.paymentState.shownFullScreen)
     }
 
     @ViewBuilder

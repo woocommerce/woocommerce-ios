@@ -85,7 +85,7 @@ protocol PointOfSaleAggregateModelProtocol {
     init(itemsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         receiptPrinterService: StarReceiptPrinterService = StarReceiptPrinterService(),
+         receiptPrinterService: StarReceiptPrinterService? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
@@ -95,6 +95,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.paymentState = paymentState
+        let receiptPrinterService = receiptPrinterService ?? ServiceLocator.receiptPrinterService as? StarReceiptPrinterService ?? StarReceiptPrinterService()
         self.receiptPrinterService = receiptPrinterService
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

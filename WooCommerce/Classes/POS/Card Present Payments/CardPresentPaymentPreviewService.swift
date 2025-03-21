@@ -25,7 +25,10 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     func collectPayment(for order: Yosemite.Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {
-        .success(CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.net/receipts/123")!))
+        .success(CardPresentPaymentTransaction(
+            receiptURL: URL(string: "https://example.net/receipts/123")!,
+            paymentData: .init(paymentMethod: .unknown, receiptParameters: nil))
+        )
     }
 
     func cancelPayment() {

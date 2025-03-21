@@ -86,10 +86,10 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             paymentEventSubject.send(.idle)
                             continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.cancellation)
                         },
-                        onPaymentCompletion: {
+                        onPaymentCompletion: { paymentData in
                             guard let continuation = nillableContinuation else { return }
                             nillableContinuation = nil
-                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success)
+                            continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success(paymentData))
                         },
                         onCompleted: {
                             // This isn't required for our use case yet.
@@ -111,7 +111,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
 }
 
 enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
-    case success
+    case success(CardPresentCapturedPaymentData)
     case cancellation
 }
 

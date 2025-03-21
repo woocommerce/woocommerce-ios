@@ -24,7 +24,7 @@ protocol CollectOrderPaymentProtocol {
                         channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
+                        onPaymentCompletion: @escaping (CardPresentCapturedPaymentData) -> Void,
                         onCompleted: @escaping () -> Void)
 }
 
@@ -144,7 +144,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         channel: PaymentChannel,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
+                        onPaymentCompletion: @escaping (CardPresentCapturedPaymentData) -> Void,
                         onCompleted: @escaping () -> Void) {
         preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
@@ -180,8 +180,8 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                               onCompleted: onCompleted)
                             }
                         }
+                        onPaymentCompletion(paymentData)
                     }
-                    onPaymentCompletion()
                 })
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)

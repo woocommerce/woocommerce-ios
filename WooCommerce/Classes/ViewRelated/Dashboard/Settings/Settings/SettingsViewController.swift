@@ -498,6 +498,7 @@ private extension SettingsViewController {
     }
 
     func showConnectivityTool() {
+        ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
         let controller = ConnectivityToolViewController()
         show(controller, sender: self)
     }

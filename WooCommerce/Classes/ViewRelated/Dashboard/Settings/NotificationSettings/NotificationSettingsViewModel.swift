@@ -22,6 +22,13 @@ final class NotificationSettingsViewModel: ObservableObject {
         siteSettings != initialSiteSettings
     }
 
+    var shouldShowSiteList: Bool {
+        guard currentDeviceID != nil else {
+            return false
+        }
+        return isLoadingSiteSettings || siteSettings != nil
+    }
+
     private let notificationCenter: UserNotificationsCenterAdapter
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -55,7 +62,6 @@ final class NotificationSettingsViewModel: ObservableObject {
         self.analytics = analytics
 
         observeAppState()
-        updateNotificationStateIfNeeded()
         configureResultsController()
     }
 

@@ -934,6 +934,60 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as NSError?, error)
     }
+
+    // MARK: - loadNotificationSettings
+
+    func test_loadNotificationSettings_returns_success_upon_success() throws {
+        // Given
+        let network = MockNetwork()
+        let accountRemote = MockAccountRemote()
+        let deviceID: Int64 = 115
+        let settings = NotificationSettings(blogs: [
+            .init(blogID: 113, devices: [.init(deviceID: deviceID, newComment: true, storeOrder: true)]),
+            .init(blogID: 72, devices: [.init(deviceID: deviceID, newComment: false, storeOrder: true)])
+        ])
+        accountRemote.whenLoadingNotificationSettings(thenReturn: .success(settings))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: accountRemote)
+
+        // When
+        let result: Result<NotificationSettings, Error> = waitFor { promise in
+            let action = AccountAction.loadNotificationSettings(deviceID: deviceID) { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try result.get(), settings)
+    }
+
+    func test_loadNotificationSettings_relays_error_upon_failure() {
+        // Given
+        let network = MockNetwork()
+        let accountRemote = MockAccountRemote()
+        let error = NSError(domain: "notifications", code: 33)
+        accountRemote.whenLoadingNotificationSettings(thenReturn: .failure(error))
+        let accountStore = AccountStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: accountRemote)
+
+        // When
+        let result: Result<NotificationSettings, Error> = waitFor { promise in
+            let action = AccountAction.loadNotificationSettings(deviceID: 11) { result in
+                promise(result)
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as NSError?, error)
+    }
 }
 
 // MARK: - Private Methods

@@ -144,6 +144,8 @@ private extension SettingsViewController {
             configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .domain:
             configureDomain(cell: cell)
+        case let cell as BasicTableViewCell where row == .connectivity:
+            configureConnectivity(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .themes:
@@ -211,6 +213,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.domain
+    }
+
+    func configureConnectivity(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.connectivity
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -485,7 +493,14 @@ private extension SettingsViewController {
     }
 
     func showNotificationSettings() {
+        ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
         let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
+    func showConnectivityTool() {
+        ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
+        let controller = ConnectivityToolViewController()
         show(controller, sender: self)
     }
 
@@ -668,6 +683,8 @@ extension SettingsViewController: UITableViewDelegate {
             showThemeSettings()
         case .notifications:
             showNotificationSettings()
+        case .connectivity:
+            showConnectivityTool()
         default:
             break
         }
@@ -727,6 +744,7 @@ extension SettingsViewController {
         case installJetpack
         case storeName
         case themes
+        case connectivity
 
         // Help & Feedback
         case support
@@ -772,7 +790,7 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowContent>.self
             case .support:
                 return BasicTableViewCell.self
-            case .domain:
+            case .domain, .connectivity:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
@@ -846,6 +864,12 @@ private extension SettingsViewController {
         static let domain = NSLocalizedString(
             "Domains",
             comment: "Navigates to domain settings screen."
+        )
+
+        static let connectivity = NSLocalizedString(
+            "settingsViewController.connectivity",
+            value: "Troubleshoot Connection",
+            comment: "Navigates to connectivity test screen."
         )
 
         static let installJetpack = NSLocalizedString(

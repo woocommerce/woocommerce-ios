@@ -248,6 +248,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.percentageDiscountIcon)
     }
 
+    func test_bell_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.bellIcon)
+    }
+
     func testHeartOutlineImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.heartOutlineImage)
     }

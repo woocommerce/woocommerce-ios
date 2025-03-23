@@ -333,4 +333,41 @@ final class AccountRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedError, errorCaught as? NetworkError)
     }
+
+    func test_loadNotificationSettings_succeeds_on_request_success() async throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        let deviceID: Int64 = 664
+        network.simulateResponse(requestUrlSuffix: "me/notifications/settings",
+                                 filename: "load-notification-settings-success")
+
+        // When
+        let notificationSettings = try await remote.loadNotificationSettings(deviceID: deviceID)
+
+        // Then
+        let expectedResult = NotificationSettings(blogs: [
+            .init(blogID: 113, devices: [.init(deviceID: deviceID, newComment: true, storeOrder: true)]),
+            .init(blogID: 72, devices: [.init(deviceID: deviceID, newComment: false, storeOrder: true)])
+        ])
+        XCTAssertEqual(notificationSettings, expectedResult)
+    }
+
+    func test_loadNotificationSettings_relays_error_on_request_failure() async {
+        // Given
+        let remote = AccountRemote(network: network)
+        let deviceID: Int64 = 664
+        let expectedError = NetworkError.timeout()
+        network.simulateError(requestUrlSuffix: "me/notifications/settings", error: expectedError)
+
+        // When
+        var errorCaught: Error?
+        do {
+            _ = try await remote.loadNotificationSettings(deviceID: deviceID)
+        } catch {
+            errorCaught = error
+        }
+
+        // Then
+        XCTAssertEqual(expectedError, errorCaught as? NetworkError)
+    }
 }

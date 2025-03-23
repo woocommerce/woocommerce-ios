@@ -424,6 +424,10 @@ extension UIImage {
         return UIImage(named: "gift-icon")!
     }
 
+    static var bellIcon: UIImage {
+        return UIImage(named: "bell-icon")!
+    }
+
     /// Blaze success image
     ///
     static var blazeSuccessImage: UIImage {

@@ -446,6 +446,7 @@ private extension WooShippingCreateLabelsViewModel {
         if let config {
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
+                                                                         items: items.dataSource.items,
                                                                          stores: stores)
         }
     }

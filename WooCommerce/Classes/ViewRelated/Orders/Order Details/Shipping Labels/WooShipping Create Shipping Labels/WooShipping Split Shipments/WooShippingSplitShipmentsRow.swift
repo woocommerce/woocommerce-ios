@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct WooShippingSplitShipmentsRow: View {
-    @State private var isShowingDetailView = true
+    @State private var isShowingDetailView = false
 
     let viewModel: WooShippingSplitShipmentsViewModel
 

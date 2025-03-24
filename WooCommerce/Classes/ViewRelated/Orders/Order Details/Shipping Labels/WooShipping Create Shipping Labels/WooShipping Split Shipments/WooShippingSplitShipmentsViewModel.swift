@@ -110,7 +110,7 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func hasSelectedAnItem() -> Bool {
-        shipmentCardViewModels.map({ $0.hasSelectedAnItem }).contains(where: { $0 })
+        shipmentCardViewModels.contains(where: { $0.hasSelectedAnItem })
     }
 
     /// Configures the labels in the section header.

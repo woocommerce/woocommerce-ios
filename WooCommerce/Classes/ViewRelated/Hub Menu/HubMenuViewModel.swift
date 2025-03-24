@@ -558,8 +558,8 @@ extension HubMenuViewModel {
     struct AISettings: HubMenuItem {
         static var id = "ai-settings"
 
-        let title: String = "AI Settings"
-        let description: String = "Manage your store's AI-powered features"
+        let title: String = Localization.aiSettings
+        let description: String = Localization.aiSettingsDescription
         let icon: UIImage = .wandAndRaysInverse
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "ai-settings"
@@ -747,6 +747,16 @@ extension HubMenuViewModel {
         static let payments = NSLocalizedString(
             "Payments",
             comment: "Title of the hub menu payments button")
+
+        static let aiSettings = NSLocalizedString(
+            "hubMenuViewModel.aiSettings",
+            value: "AI Settings",
+            comment: "Title of the hub menu AI settings button")
+
+        static let aiSettingsDescription = NSLocalizedString(
+            "hubMenuViewModel.aiSettingsDescription",
+            value: "Manage your store's AI-powered features",
+            comment: "Description of the hub menu AI settings button")
 
         static let paymentsDescription = NSLocalizedString(
             "Take payments on the go",

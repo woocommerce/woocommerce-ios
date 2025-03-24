@@ -52,6 +52,7 @@ private extension CollapsibleShipmentCard {
             }, label: {
                 ZStack(alignment: .topTrailing) {
                     SelectableShipmentRow(viewModel: viewModel.mainShipmentRow)
+                        .contentShape(Rectangle())
 
                     Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)
                         .foregroundColor(Color(.accent))

@@ -16,6 +16,7 @@ extension NSNotification.Name {
 /// Destination views that the hub menu can navigate to.
 enum HubMenuNavigationDestination: Hashable {
     case payments
+    case aiSettings
     case settings
     case blaze
     case blazeCampaignDetails(campaignID: String)
@@ -111,6 +112,10 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
+    
+    private var shouldShowAISettings: Bool {
+        featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey)
+    }
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -345,6 +350,10 @@ private extension HubMenuViewModel {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
+        
+        if shouldShowAISettings {
+            items.append(AISettings())
+        }
 
         if eligibleForGoogleAds {
             items.append(GoogleAds())
@@ -544,6 +553,23 @@ extension HubMenuViewModel {
         let trackingOption: String = "settings"
         let iconBadge: HubMenuBadgeType? = nil
         let navigationDestination: HubMenuNavigationDestination? = .settings
+    }
+
+    struct AISettings: HubMenuItem {
+        static var id = "ai-settings"
+
+        let title: String = "AI Settings"
+        let description: String = "Manage your store's AI-powered features"
+        let icon: UIImage = .wandAndRaysInverse
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "ai-settings"
+        let trackingOption: String = "ai"
+        let iconBadge: HubMenuBadgeType?
+        let navigationDestination: HubMenuNavigationDestination? = .aiSettings
+
+        init(iconBadge: HubMenuBadgeType? = nil) {
+            self.iconBadge = iconBadge
+        }
     }
 
     struct Payments: HubMenuItem {

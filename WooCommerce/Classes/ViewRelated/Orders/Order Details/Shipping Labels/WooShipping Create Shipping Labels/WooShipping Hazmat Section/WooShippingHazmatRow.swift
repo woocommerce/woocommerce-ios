@@ -18,23 +18,38 @@ struct WooShippingHazmatRow: View {
     }
 
     var body: some View {
-        Button(action: {
-            isShowingDetailView = true
-        }) {
-            AdaptiveStack {
-                Text(Localization.hazmatLabel)
-                    .bodyStyle()
-                Spacer()
-                Text(isHazardous ? Localization.yes : Localization.no)
-                    .secondaryBodyStyle()
-                Image(uiImage: .chevronImage)
-                    .secondaryBodyStyle()
-                    .renderedIf(enabled)
+        VStack {
+            Button(action: {
+                isShowingDetailView = true
+            }) {
+                AdaptiveStack {
+                    Text(Localization.hazmatLabel)
+                        .bodyStyle()
+                    Spacer()
+                    Text(isHazardous ? Localization.yes : Localization.no)
+                        .secondaryBodyStyle()
+                    Image(uiImage: .chevronImage)
+                        .secondaryBodyStyle()
+                        .renderedIf(enabled)
+                }
             }
-            .padding(.vertical, Layout.verticalPadding)
+            .buttonStyle(.plain)
+            .disabled(!enabled)
+
+            if let category = selectedCategory {
+                Text(category.localizedName)
+                    .captionStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                    .padding(Layout.categoryPadding)
+                    .background(
+                        Color(.quaternarySystemFill)
+                            .clipShape(RoundedRectangle(cornerSize: .init(width: Layout.backgroundRadius,
+                                                                          height: Layout.backgroundRadius)))
+                    )
+            }
         }
-        .buttonStyle(.plain)
-        .disabled(!enabled)
+        .padding(.vertical, Layout.verticalPadding)
         .sheet(isPresented: $isShowingDetailView) {
             WooShippingHazmatDetailView(selectedCategory: selectedCategory) { selectedCategory in
                 self.selectedCategory = selectedCategory
@@ -48,6 +63,7 @@ private extension WooShippingHazmatRow {
     enum Layout {
         static let backgroundRadius: CGFloat = 8
         static let verticalPadding: CGFloat = 24
+        static let categoryPadding: CGFloat = 16
     }
 
     enum Localization {

@@ -3,9 +3,9 @@ import Foundation
 /// Order: Remote Endpoints
 ///
 public class OrdersRemote: Remote {
-    public enum OrderSource {
+    public enum OrderSourceType {
         case mobile
-        case mobilePOS
+        case pointOfSale
     }
 
     /// Retrieves all of the `Orders` available.
@@ -172,7 +172,7 @@ public class OrdersRemote: Remote {
         order: Order,
         giftCard: String?,
         fields: [CreateOrderField],
-        source: OrderSource = .mobile,
+        source: OrderSourceType = .mobile,
         completion: @escaping (Result<Order, Error>) -> Void
     ) {
         do {
@@ -218,7 +218,7 @@ public class OrdersRemote: Remote {
                     switch source {
                     case .mobile:
                         return OrderAttributionInfo.Values.mobileAppSourceType
-                    case .mobilePOS:
+                    case .pointOfSale:
                         return OrderAttributionInfo.Values.mobileAppPOSSourceType
                     }
                 }()
@@ -414,7 +414,7 @@ public class OrdersRemote: Remote {
 extension OrdersRemote: POSOrdersRemoteProtocol {
     public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .mobilePOS) { result in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .pointOfSale) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

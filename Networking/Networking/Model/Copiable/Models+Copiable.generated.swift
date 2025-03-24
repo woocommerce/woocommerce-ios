@@ -1311,6 +1311,51 @@ extension Networking.NoteRange {
     }
 }
 
+extension Networking.NotificationSettings {
+    public func copy(
+        blogs: CopiableProp<[NotificationSettings.Blog]> = .copy
+    ) -> Networking.NotificationSettings {
+        let blogs = blogs ?? self.blogs
+
+        return Networking.NotificationSettings(
+            blogs: blogs
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Blog {
+    public func copy(
+        blogID: CopiableProp<Int64> = .copy,
+        devices: CopiableProp<[NotificationSettings.Device]> = .copy
+    ) -> Networking.NotificationSettings.Blog {
+        let blogID = blogID ?? self.blogID
+        let devices = devices ?? self.devices
+
+        return Networking.NotificationSettings.Blog(
+            blogID: blogID,
+            devices: devices
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Device {
+    public func copy(
+        deviceID: CopiableProp<Int64> = .copy,
+        newComment: CopiableProp<Bool> = .copy,
+        storeOrder: CopiableProp<Bool> = .copy
+    ) -> Networking.NotificationSettings.Device {
+        let deviceID = deviceID ?? self.deviceID
+        let newComment = newComment ?? self.newComment
+        let storeOrder = storeOrder ?? self.storeOrder
+
+        return Networking.NotificationSettings.Device(
+            deviceID: deviceID,
+            newComment: newComment,
+            storeOrder: storeOrder
+        )
+    }
+}
+
 extension Networking.Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

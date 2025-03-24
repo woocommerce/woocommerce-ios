@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Site
+import struct Yosemite.NotificationSettings
 
 final class NotificationSettingsHostingController: UIHostingController<NotificationSettingsView> {
     init() {
@@ -36,13 +37,54 @@ struct NotificationSettingsView: View {
             }
         }
         .navigationTitle(Localization.title)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    saveSettings()
+                } label: {
+                    if viewModel.isSavingSettings {
+                        ProgressView().progressViewStyle(.circular)
+                    } else {
+                        Text(Localization.save)
+                    }
+                }
+                .disabled(viewModel.hasSiteSettingsChanges == false)
+            }
+        }
         .task {
             await viewModel.checkNotificationPermission()
-            await viewModel.synchronizeSites()
+            if viewModel.currentDeviceID != nil {
+                await viewModel.retrieveNotificationSettings()
+                await viewModel.synchronizeSites()
+            }
         }
         .sheet(item: $selectedSite) { site in
-            SiteNotificationSettingsView(siteTitle: site.name)
+            if let settings = viewModel.loadSettings(for: site) {
+                SiteNotificationSettingsView(siteTitle: site.name,
+                                             ordersNotificationsEnabled: settings.storeOrder,
+                                             productReviewsNotificationsEnabled: settings.newComment,
+                                             completionHandler: { newOrder, productReviews in
+                    viewModel.updateSettings(siteID: site.siteID,
+                                             ordersNotificationsEnabled: newOrder,
+                                             productReviewsNotificationsEnabled: productReviews)
+                })
+            }
         }
+        .alert(Localization.errorSavingSiteSettings, isPresented: $viewModel.savingSiteSettingsFailed) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.retry) {
+                saveSettings()
+            }
+        }
+        .alert(Localization.errorLoadingSiteSettings, isPresented: $viewModel.loadingSiteSettingsFailed) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.retrieveNotificationSettings()
+                }
+            }
+        }
+        .notice($viewModel.notice)
     }
 }
 
@@ -88,14 +130,20 @@ private extension NotificationSettingsView {
             }
 
             Section {
-                ForEach(viewModel.sites) { site in
-                    detailRow(for: site)
+                if viewModel.isLoadingSiteSettings {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                        .frame(maxWidth: .infinity)
+                } else if viewModel.siteSettings != nil {
+                    ForEach(viewModel.sites) { site in
+                        detailRow(for: site)
+                    }
                 }
             } header: {
                 Text(Localization.storeListSectionHeader)
             } footer: {
                 Text(Localization.storeListSectionFooter)
             }
+            .renderedIf(viewModel.shouldShowSiteList)
         }
     }
 
@@ -107,9 +155,11 @@ private extension NotificationSettingsView {
                 VStack(alignment: .leading) {
                     Text(site.name)
                         .bodyStyle()
-                    Text(site.url)
-                        .foregroundStyle(Color.secondary)
-                        .captionStyle()
+                    if let settings = viewModel.loadSettings(for: site) {
+                        Text(description(for: settings))
+                            .foregroundStyle(Color.secondary)
+                            .captionStyle()
+                    }
                 }
                 .multilineTextAlignment(.leading)
 
@@ -129,6 +179,25 @@ private extension NotificationSettingsView {
         }
         // Ask the system to open that URL.
         await UIApplication.shared.open(url)
+    }
+
+    func saveSettings() {
+        Task {
+            await viewModel.saveSettings()
+        }
+    }
+
+    func description(for settings: NotificationSettings.Device) -> String {
+        switch (settings.storeOrder, settings.newComment) {
+        case (true, true):
+            [Localization.newOrders, Localization.productReviews].joined(separator: ", ")
+        case (true, false):
+            Localization.newOrders
+        case (false, true):
+            Localization.productReviews
+        case (false, false):
+            Localization.off
+        }
     }
 }
 
@@ -178,6 +247,46 @@ extension NotificationSettingsView {
             "notificationSettingsView.storeListSectionFooter",
             value: "Customize your notification preferences for each store.",
             comment: "Footer of the store list section on the notification settings view"
+        )
+        static let errorLoadingSiteSettings = NSLocalizedString(
+            "notificationSettingsView.errorLoadingSiteSettings",
+            value: "Unable to load notification settings for your stores.",
+            comment: "Error message when loading site settings fails on the notification settings view"
+        )
+        static let retry = NSLocalizedString(
+            "notificationSettingsView.retry",
+            value: "Try again",
+            comment: "Button to reload site settings on the notification settings view"
+        )
+        static let save = NSLocalizedString(
+            "notificationSettingsView.save",
+            value: "Save",
+            comment: "Button to save site settings on the notification settings view"
+        )
+        static let cancel = NSLocalizedString(
+            "notificationSettingsView.cancel",
+            value: "Cancel",
+            comment: "Button to cancel saving site settings on the notification settings view"
+        )
+        static let errorSavingSiteSettings = NSLocalizedString(
+            "notificationSettingsView.errorSavingSiteSettings",
+            value: "Unable to save notification settings",
+            comment: "Error message when saving site settings fails on the notification settings view"
+        )
+        static let newOrders = NSLocalizedString(
+            "notificationSettingsView.newOrders",
+            value: "New orders",
+            comment: "Label indicating that new orders notifications are enabled for a site on the notification settings view"
+        )
+        static let productReviews = NSLocalizedString(
+            "notificationSettingsView.productReviews",
+            value: "Product reviews",
+            comment: "Label indicating that product reviews notifications are enabled for a site on the notification settings view"
+        )
+        static let off = NSLocalizedString(
+            "notificationSettingsView.off",
+            value: "Off",
+            comment: "Label indicating that notifications are disabled for a site on the notification settings view"
         )
     }
 }

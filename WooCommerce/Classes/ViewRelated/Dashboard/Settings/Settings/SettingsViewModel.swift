@@ -214,6 +214,12 @@ private extension SettingsViewModel {
                 rows.append(.domain)
             }
 
+            if stores.isAuthenticated,
+               stores.isAuthenticatedWithoutWPCom == false,
+               stores.sessionManager.defaultSite?.isWordPressComStore == false {
+                rows.append(.connectivity)
+            }
+
             guard rows.isNotEmpty else {
                 return nil
             }

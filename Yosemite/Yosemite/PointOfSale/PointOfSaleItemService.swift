@@ -125,7 +125,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(), couponID: coupon.couponID))
+                .coupon(POSCoupon(id: UUID(), code: coupon.code))
         }
     }
 

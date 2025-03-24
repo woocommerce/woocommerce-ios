@@ -43,17 +43,17 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
 
 private extension CollapsibleShipmentCardViewModel {
     func observeSelection() {
-        self.mainShipmentRow.onSelectedChange = { [weak self] row in
+        mainShipmentRow.onSelectedChange = { [weak self] row in
             guard let self else { return }
 
-            self.childShipmentRows.forEach({ $0.setSelected(row.selected) })
+            childShipmentRows.forEach({ $0.setSelected(row.selected) })
         }
 
-        self.childShipmentRows.forEach({
+        childShipmentRows.forEach({
             $0.onSelectedChange = { [weak self] row in
                 guard let self else { return }
 
-                self.mainShipmentRow.setSelected(false)
+                mainShipmentRow.setSelected(false)
             }
         })
     }

@@ -14,6 +14,16 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
 
     var onSelectionChange: (() -> Void)?
 
+    var hasSelectedAnItem: Bool {
+        if mainShipmentRow.selected {
+            return true
+        }
+
+        return childShipmentRows
+            .filter { $0.selected }
+            .isNotEmpty
+    }
+
     init(parentShipmentId: String,
          childShipmentIds: [String],
          item: ShippingLabelPackageItem,

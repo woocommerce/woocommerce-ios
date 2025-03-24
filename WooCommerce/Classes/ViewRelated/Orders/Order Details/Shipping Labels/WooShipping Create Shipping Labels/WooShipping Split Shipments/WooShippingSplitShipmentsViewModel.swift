@@ -85,6 +85,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 }
 
 private extension WooShippingSplitShipmentsViewModel {
+    func configureSelectionCallback() {
+        shipmentCardViewModels.forEach { viewModel in
+            viewModel.onSelectionChange = { [weak self] in
+                self?.checkSelectionAndHideInstructions()
+            }
+        }
+    }
 
     func showInstructionsNotice() {
         if hasSelectedAnItem() == false {
@@ -96,6 +103,11 @@ private extension WooShippingSplitShipmentsViewModel {
         }
     }
 
+    func checkSelectionAndHideInstructions() {
+        if hasSelectedAnItem() {
+            instructionsNotice = nil
+        }
+    }
 
     func hasSelectedAnItem() -> Bool {
         shipmentCardViewModels.map({ $0.hasSelectedAnItem }).contains(where: { $0 })

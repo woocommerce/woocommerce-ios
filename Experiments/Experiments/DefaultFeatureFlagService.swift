@@ -98,7 +98,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .notificationSettings:
             return true
         case .allowMerchantAIAPIKey:
-            return true
+            return false
         default:
             return true
         }

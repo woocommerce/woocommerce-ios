@@ -16,7 +16,9 @@ struct CollapsibleShipmentCard: View {
             mainShipmentRow
                 .padding(.horizontal, Layout.horizontalPadding)
                 .padding(.vertical, Layout.verticalPadding)
-                .background(Color(.listForeground(modal: false)))
+                .background(
+                    mainShipmentRowBackground
+                )
 
             if !isCollapsed {
                 VStack(spacing: 0) {
@@ -59,6 +61,17 @@ private extension CollapsibleShipmentCard {
                 }
             })
             .buttonStyle(PlainButtonStyle())
+        }
+    }
+
+    @ViewBuilder
+    var mainShipmentRowBackground: some View {
+        if isCollapsed {
+            RoundedRectangle(cornerRadius: Layout.borderCornerRadius)
+                .fill(Color(.listForeground(modal: false)))
+        } else {
+            UnevenRoundedRectangle(cornerRadii: .init(topLeading: Layout.borderCornerRadius, topTrailing: Layout.borderCornerRadius))
+                .fill(Color(.listForeground(modal: false)))
         }
     }
 }

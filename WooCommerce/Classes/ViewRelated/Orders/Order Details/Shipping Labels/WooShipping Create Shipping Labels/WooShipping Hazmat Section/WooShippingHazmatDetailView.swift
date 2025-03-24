@@ -35,11 +35,38 @@ struct WooShippingHazmatDetailView: View {
                     }
                     .tint(Color.accentColor)
 
-                    Button(Localization.selectCategory) {
-                        isShowingCategoryList = true
+                    if isHazardous {
+                        if let selectedCategory {
+                            HStack {
+                                Text(Localization.category)
+                                    .headlineStyle()
+                                Spacer()
+                                Button {
+                                    isShowingCategoryList = true
+                                } label: {
+                                    Image(systemName: "pencil")
+                                }
+                                .buttonStyle(.plain)
+                                .font(.body)
+                                .foregroundStyle(Color.accentColor)
+                            }
+
+                            Text(selectedCategory.localizedName)
+                                .font(.body)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .multilineTextAlignment(.leading)
+                                .padding(Constants.verticalSpacing)
+                                .background(
+                                    Color(.quaternarySystemFill)
+                                        .clipShape(RoundedRectangle(cornerSize: Constants.cornerSize))
+                                )
+                        } else {
+                            Button(Localization.selectCategory) {
+                                isShowingCategoryList = true
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                        }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .renderedIf(isHazardous)
 
                     Divider()
 
@@ -128,6 +155,7 @@ private extension WooShippingHazmatDetailView {
 private extension WooShippingHazmatDetailView {
     enum Constants {
         static let verticalSpacing: CGFloat = 16
+        static let cornerSize = CGSize(width: 8, height: 8)
         static let hazmatURL = "https://www.usps.com/hazmat"
         static let searchToolURL = "https://pe.usps.com/hazmat/index"
         static let DHLExpressName = "DHL Express"
@@ -153,6 +181,11 @@ private extension WooShippingHazmatDetailView {
             "wooShippingHazmatDetailView.selectCategory",
             value: "Select Category",
             comment: "Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let category = NSLocalizedString(
+            "wooShippingHazmatDetailView.category",
+            value: "Category",
+            comment: "Label for the existing category on the HAZMAT detail view in the shipping label creation flow"
         )
         static let detailLine1 = NSLocalizedString(
             "wooShippingHazmatDetailView.detailLine1",

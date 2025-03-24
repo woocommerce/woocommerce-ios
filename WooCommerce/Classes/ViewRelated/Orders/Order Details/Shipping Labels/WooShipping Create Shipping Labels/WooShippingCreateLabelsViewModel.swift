@@ -650,7 +650,7 @@ private extension WooShippingCreateLabelsViewModel {
                                      height: Double(packageData.height) ?? 0,
                                      weight: weight,
                                      isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
-                                     hazmatCategory: nil, // Hazmat support will be added in a future milestone
+                                     hazmatCategory: hazmatCategory?.rawValue,
                                      customsForm: customsForm)
     }
 }

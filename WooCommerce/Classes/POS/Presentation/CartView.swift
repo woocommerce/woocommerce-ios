@@ -47,6 +47,21 @@ struct CartView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: Constants.cartItemSpacing) {
+
+                            /// WIP: Behind the feature flag
+                            if posModel.cart.coupons.isNotEmpty {
+                                    ForEach(posModel.cart.coupons, id: \.id) { couponItem in
+                                        CouponRowView(couponItem: couponItem,
+                                                      onItemRemoveTapped: posModel.orderStage == .building ? {
+                                            posModel.remove(cartItem: couponItem)
+                                        } : nil)
+                                        .id(couponItem.id)
+                                        .transition(.opacity)
+                                    }
+
+                                Spacer(minLength: 64)
+                            }
+
                             ForEach(posModel.cart.items, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             showImage: $shouldShowItemImages,
@@ -59,6 +74,7 @@ struct CartView: View {
                             }
                         }
                         .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)

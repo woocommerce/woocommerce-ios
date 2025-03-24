@@ -22,7 +22,7 @@ struct CollapsibleShipmentCard: View {
 
             if !isCollapsed {
                 VStack(spacing: 0) {
-                    ForEach(viewModel.childShipmentRows) { item in
+                    ForEach(Array(viewModel.childShipmentRows.enumerated()), id: \.element.id) { index, item in
                         VStack(spacing: 0) {
                             Divider()
 
@@ -30,7 +30,7 @@ struct CollapsibleShipmentCard: View {
                                 .padding(.leading, Layout.horizontalPadding * 2)
                                 .padding(.trailing, Layout.horizontalPadding)
                                 .padding(.vertical, Layout.verticalPadding)
-                                .background(Color(.listForeground(modal: false)))
+                                .background(backgroundForChildShipmentRow(isFinalRow: index == viewModel.childShipmentRows.count - 1))
                         }
                     }
                 }
@@ -72,6 +72,16 @@ private extension CollapsibleShipmentCard {
         } else {
             UnevenRoundedRectangle(cornerRadii: .init(topLeading: Layout.borderCornerRadius, topTrailing: Layout.borderCornerRadius))
                 .fill(Color(.listForeground(modal: false)))
+        }
+    }
+
+    @ViewBuilder
+    func backgroundForChildShipmentRow(isFinalRow: Bool) -> some View {
+        if isFinalRow {
+            UnevenRoundedRectangle(cornerRadii: .init(bottomLeading: Layout.borderCornerRadius, bottomTrailing: Layout.borderCornerRadius))
+                .fill(Color(.listForeground(modal: false)))
+        } else {
+            Color(.listForeground(modal: false))
         }
     }
 }

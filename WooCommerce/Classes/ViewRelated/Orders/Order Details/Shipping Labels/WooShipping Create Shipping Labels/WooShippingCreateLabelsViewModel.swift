@@ -21,7 +21,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
-    @Published var containsHazardousMaterials = false
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
 
     @Published var labelPurchaseErrorNotice: Notice?

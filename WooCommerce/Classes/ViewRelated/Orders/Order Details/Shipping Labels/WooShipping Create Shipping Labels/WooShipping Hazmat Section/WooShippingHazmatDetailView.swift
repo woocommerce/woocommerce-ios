@@ -11,8 +11,8 @@ struct WooShippingHazmatDetailView: View {
 
     @State private var isShowingCategoryList = false
 
-    init(isHazardous: Bool, selectedCategory: ShippingLabelHazmatCategory?) {
-        self.isHazardous = isHazardous
+    init(selectedCategory: ShippingLabelHazmatCategory?) {
+        self.isHazardous = selectedCategory != nil
         self.selectedCategory = selectedCategory
     }
 
@@ -29,6 +29,7 @@ struct WooShippingHazmatDetailView: View {
                     Toggle(isOn: $isHazardous) {
                         Text(Localization.toggleLabel)
                     }
+                    .tint(Color.accentColor)
 
                     Button(Localization.selectCategory) {
                         isShowingCategoryList = true
@@ -177,6 +178,5 @@ private extension WooShippingHazmatDetailView {
 }
 
 #Preview {
-    WooShippingHazmatDetailView(isHazardous: true,
-                                selectedCategory: .airEligibleEthanol)
+    WooShippingHazmatDetailView(selectedCategory: .airEligibleEthanol)
 }

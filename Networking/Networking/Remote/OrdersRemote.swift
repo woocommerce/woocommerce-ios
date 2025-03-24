@@ -222,9 +222,14 @@ public class OrdersRemote: Remote {
                         return OrderAttributionInfo.Values.mobileAppPOSSourceType
                     }
                 }()
-                params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
-                                                                                key: OrderAttributionInfo.Keys.sourceType.rawValue,
-                                                                                value: sourceValue).toDictionary()]
+                params[Order.CodingKeys.metadata.rawValue] = try [
+                    MetaData(metadataID: 0,
+                             key: OrderAttributionInfo.Keys.sourceType.rawValue,
+                             value: sourceValue).toDictionary(),
+                    MetaData(metadataID: 0,
+                             key: OrderAttributionInfo.Keys.salesChannel.rawValue,
+                             value: OrderAttributionInfo.Values.mobileAppSalesChannel).toDictionary(),
+                ]
 
                 return params
             }()

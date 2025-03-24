@@ -62,6 +62,7 @@ public struct OrderAttributionInfo: Equatable, Sendable, GeneratedFakeable, Gene
 extension OrderAttributionInfo {
     enum Keys: String {
         case sourceType = "_wc_order_attribution_source_type"
+        case salesChannel = "_wc_order_attribution_sales_channel"
         case campaign = "_wc_order_attribution_utm_campaign"
         case source = "_wc_order_attribution_utm_source"
         case medium = "_wc_order_attribution_utm_medium"
@@ -75,6 +76,11 @@ public extension OrderAttributionInfo {
         /// Sent in create order request to mark the order as created from mobile
         ///
         public static let mobileAppSourceType = "mobile_app"
+        /// Sent in create order request to mark the order as created from mobile POS
+        ///
         public static let mobileAppPOSSourceType = "pos"
+        /// Sent in create order request to mark the order's sales channel from the mobile app
+        ///
+        public static let mobileAppSalesChannel = "woocommerce_app_ios"
     }
 }

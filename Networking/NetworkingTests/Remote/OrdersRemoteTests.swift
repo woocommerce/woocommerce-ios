@@ -722,7 +722,7 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
-    func test_create_order_sets_mobile_app_as_source_type_meta_data() throws {
+    func test_create_order_from_mobile_app_sets_source_type_and_sales_channel_meta_data() throws {
         // Given
         let remote = OrdersRemote(network: network)
         let order = Order.fake()
@@ -735,7 +735,30 @@ final class OrdersRemoteTests: XCTestCase {
         let received = try XCTUnwrap(request.parameters["meta_data"] as? [[String: AnyHashable]])
         let expected: [[String: AnyHashable]] = [["id": 0,
                                                   "key": "_wc_order_attribution_source_type",
-                                                  "value": "mobile_app"]]
+                                                  "value": "mobile_app"],
+                                                 ["id": 0,
+                                                  "key": "_wc_order_attribution_sales_channel",
+                                                  "value": "woocommerce_app_ios"]]
+        assertEqual(received, expected)
+    }
+
+    func test_create_order_from_pos_sets_source_type_and_sales_channel_meta_data() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [], source: .pointOfSale) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["meta_data"] as? [[String: AnyHashable]])
+        let expected: [[String: AnyHashable]] = [["id": 0,
+                                                  "key": "_wc_order_attribution_source_type",
+                                                  "value": "pos"],
+                                                 ["id": 0,
+                                                  "key": "_wc_order_attribution_sales_channel",
+                                                  "value": "woocommerce_app_ios"]]
         assertEqual(received, expected)
     }
 

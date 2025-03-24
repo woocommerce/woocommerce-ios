@@ -26,9 +26,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
-    @Published var selectedItemIDs: [String: [String]] = [:]
-
     let shipmentCardViewModels: [CollapsibleShipmentCardViewModel]
+
+    @Published var instructionsNotice: Notice?
 
     init(order: Order,
          config: WooShippingConfig,
@@ -70,6 +70,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }()
 
         configureSectionHeader()
+        configureSelectionCallback()
+    }
+
+    func onAppear() {
+        showInstructionsNotice()
     }
 
     func selectAll() {
@@ -80,6 +85,22 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 }
 
 private extension WooShippingSplitShipmentsViewModel {
+
+    func showInstructionsNotice() {
+        if hasSelectedAnItem() == false {
+            instructionsNotice = Notice(message: Localization.SelectionInstructionsNotice.message,
+                                        feedbackType: .success,
+                                        actionTitle: Localization.SelectionInstructionsNotice.dismiss) { [weak self] in
+                self?.instructionsNotice = nil
+            }
+        }
+    }
+
+
+    func hasSelectedAnItem() -> Bool {
+        shipmentCardViewModels.map({ $0.hasSelectedAnItem }).contains(where: { $0 })
+    }
+
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {

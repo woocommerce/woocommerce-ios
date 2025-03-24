@@ -18,7 +18,7 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: nil, currency: .USD)
+        _ = try await sut.syncOrder(cart: .init(), order: nil, currency: .USD)
 
         // Then
         #expect(mockOrdersRemote.createPOSOrderCalled == true)
@@ -29,7 +29,7 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: nil, currency: .EUR)
+        _ = try await sut.syncOrder(cart: .init(), order: nil, currency: .EUR)
 
         // Then
         #expect(mockOrdersRemote.spyCreatePOSOrder?.currency.uppercased() == "EUR")
@@ -43,7 +43,7 @@ struct POSOrderServiceTests {
         let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "JPY")
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
+        _ = try await sut.syncOrder(cart: .init(), order: order, currency: .JPY)
 
         // Then
         #expect(mockOrdersRemote.updatePOSOrderCalled == true)
@@ -56,7 +56,7 @@ struct POSOrderServiceTests {
         let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD")
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
+        _ = try await sut.syncOrder(cart: .init(), order: order, currency: .JPY)
 
         // Then
         #expect(mockOrdersRemote.updatePOSOrderCalled == true)
@@ -71,10 +71,10 @@ struct POSOrderServiceTests {
         let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
 
         // When
-        let cart: [POSCartItem] = [
+        let cart = POSCart(items: [
             makePOSCartItem(productID: 100, quantity: 2),
             makePOSCartItem(productID: 102, quantity: 1)
-        ]
+        ])
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
@@ -93,9 +93,9 @@ struct POSOrderServiceTests {
         let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
 
         // When
-        let cart: [POSCartItem] = [
+        let cart = POSCart(items: [
             makePOSCartItem(productID: 102, quantity: 1)
-        ]
+        ])
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
@@ -122,10 +122,10 @@ struct POSOrderServiceTests {
         let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
 
         // When
-        let cart: [POSCartItem] = [
+        let cart = POSCart(items: [
             makePOSCartItem(productID: 100, quantity: 1),
             makePOSCartItem(productID: 102, quantity: 5)
-        ]
+        ])
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
         // Then
@@ -142,10 +142,10 @@ private func makePOSCartItem(
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
             item: POSSimpleProduct(id: UUID(),
-                             name: "",
-                             formattedPrice: "",
-                             productID: productID,
-                             price: ""),
+                                   name: "",
+                                   formattedPrice: "",
+                                   productID: productID,
+                                   price: ""),
             quantity: quantity
         )
     }

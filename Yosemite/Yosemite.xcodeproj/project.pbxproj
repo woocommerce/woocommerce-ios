@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0139C2B02D91D1C600C78FDE /* POSCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0139C2AF2D91D1C400C78FDE /* POSCart.swift */; };
 		016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */; };
 		016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */; };
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
@@ -551,6 +552,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0139C2AF2D91D1C400C78FDE /* POSCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCart.swift; sourceTree = "<group>"; };
 		016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePrice.swift"; sourceTree = "<group>"; };
 		016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePriceTests.swift"; sourceTree = "<group>"; };
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
@@ -2119,6 +2121,7 @@
 		DA3F0E1A2C218EE200B8C2F8 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				0139C2AF2D91D1C400C78FDE /* POSCart.swift */,
 				DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */,
 				68A70DD12D0BF6F30013B807 /* POSReceiptService.swift */,
 			);
@@ -2653,6 +2656,7 @@
 				E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */,
 				03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */,
 				7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */,
+				0139C2B02D91D1C600C78FDE /* POSCart.swift in Sources */,
 				7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */,
 				D8C11A5222DF2DA200D4A88D /* StatsActionV4.swift in Sources */,
 				6889089F28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift in Sources */,

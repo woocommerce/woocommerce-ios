@@ -97,6 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .notificationSettings:
             return true
+        case .allowMerchantAIAPIKey:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

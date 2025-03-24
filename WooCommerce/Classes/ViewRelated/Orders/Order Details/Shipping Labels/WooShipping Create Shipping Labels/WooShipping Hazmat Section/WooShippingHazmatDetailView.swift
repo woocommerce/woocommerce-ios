@@ -94,17 +94,24 @@ struct WooShippingHazmatDetailView: View {
                 }
                 .toolbarBackground(Color.clear, for: .navigationBar)
             }
+            .safeAreaInset(edge: .bottom) {
+                VStack {
+                    Button(Localization.save) {
+                        selectionHandler(nil)
+                        dismiss()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(Constants.verticalSpacing)
+                }
+                .background(Color(.systemBackground))
+                .renderedIf(selectedCategory != nil && isHazardous == false)
+            }
             .sheet(isPresented: $isShowingCategoryList) {
                 WooShippingHazmatCategoryList(selectedItem: selectedCategory,
                                               selectionHandler: { category in
                     selectionHandler(category)
                     dismiss()
                 })
-            }
-            .onChange(of: isHazardous) { newValue in
-                if newValue == false {
-                    selectedCategory = nil
-                }
             }
         }
     }
@@ -191,6 +198,11 @@ private extension WooShippingHazmatDetailView {
             "wooShippingHazmatDetailView.category",
             value: "Category",
             comment: "Label for the existing category on the HAZMAT detail view in the shipping label creation flow"
+        )
+        static let save = NSLocalizedString(
+            "wooShippingHazmatDetailView.save",
+            value: "Save",
+            comment: "Button to confirm selection on the HAZMAT detail view in the shipping label creation flow"
         )
         static let detailLine1 = NSLocalizedString(
             "wooShippingHazmatDetailView.detailLine1",

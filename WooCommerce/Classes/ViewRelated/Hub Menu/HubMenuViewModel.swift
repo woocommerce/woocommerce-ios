@@ -112,7 +112,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
-    
+
     private var shouldShowAISettings: Bool {
         featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey)
     }
@@ -350,7 +350,7 @@ private extension HubMenuViewModel {
         var items: [HubMenuItem] = [
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
-        
+
         if shouldShowAISettings {
             items.append(AISettings())
         }

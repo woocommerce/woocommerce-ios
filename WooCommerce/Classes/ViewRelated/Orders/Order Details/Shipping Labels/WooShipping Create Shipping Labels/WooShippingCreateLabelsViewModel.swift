@@ -573,7 +573,9 @@ private extension WooShippingCreateLabelsViewModel {
 
     func observeHAZMATChanges() {
         $hazmatCategory
-            .scan((nil, nil)) { (previous: (current: ShippingLabelHazmatCategory?, previous: ShippingLabelHazmatCategory?),
+            .dropFirst()
+            .scan((nil, nil)) { (previous: (current: ShippingLabelHazmatCategory?,
+                                            previous: ShippingLabelHazmatCategory?),
                                  newValue: ShippingLabelHazmatCategory?) in
                 return (current: newValue, previous: previous.current)
             }

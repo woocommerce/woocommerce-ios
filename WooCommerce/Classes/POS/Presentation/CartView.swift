@@ -11,7 +11,7 @@ struct CartView: View {
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
-        posModel.cart.isNotEmpty && offSetPosition < 0
+        !posModel.cart.isEmpty && offSetPosition < 0
     }
 
     @State private var shouldShowItemImages: Bool = false
@@ -22,7 +22,7 @@ struct CartView: View {
                               backButtonConfiguration: backButtonConfiguration,
                               trailingContent: {
                 DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
-                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
+                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.items.count) {
                         Text(itemsInCartLabel)
                             .font(Constants.itemsFont)
                             .lineLimit(1)
@@ -43,11 +43,11 @@ struct CartView: View {
             })
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
-            if posModel.cart.isNotEmpty {
+            if !posModel.cart.isEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: Constants.cartItemSpacing) {
-                            ForEach(posModel.cart, id: \.id) { cartItem in
+                            ForEach(posModel.cart.items, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
@@ -58,7 +58,7 @@ struct CartView: View {
                                 .transition(.opacity)
                             }
                         }
-                        .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
@@ -81,7 +81,7 @@ struct CartView: View {
                             .renderedIf(posModel.orderStage == .finalizing)
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
-                    .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
+                    .onChange(of: posModel.cart.items.first?.id) { itemToScrollTo in
                         if posModel.orderStage == .building {
                             withAnimation {
                                 proxy.scrollTo(itemToScrollTo)
@@ -268,7 +268,7 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
-        let itemsInCart = posModel.cart.count
+        let itemsInCart = posModel.cart.items.count
         ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
     }
 }

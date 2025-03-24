@@ -26,9 +26,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
-    @Published var selectedItemIDs: [String: [String]] = [:]
-
     let shipmentCardViewModels: [CollapsibleShipmentCardViewModel]
+
+    @Published var instructionsNotice: Notice?
 
     init(order: Order,
          config: WooShippingConfig,
@@ -70,6 +70,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }()
 
         configureSectionHeader()
+        configureSelectionCallback()
+    }
+
+    func onAppear() {
+        showInstructionsNotice()
     }
 
     func selectAll() {
@@ -80,6 +85,34 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 }
 
 private extension WooShippingSplitShipmentsViewModel {
+    func configureSelectionCallback() {
+        shipmentCardViewModels.forEach { viewModel in
+            viewModel.onSelectionChange = { [weak self] in
+                self?.checkSelectionAndHideInstructions()
+            }
+        }
+    }
+
+    func showInstructionsNotice() {
+        if hasSelectedAnItem() == false {
+            instructionsNotice = Notice(message: Localization.SelectionInstructionsNotice.message,
+                                        feedbackType: .success,
+                                        actionTitle: Localization.SelectionInstructionsNotice.dismiss) { [weak self] in
+                self?.instructionsNotice = nil
+            }
+        }
+    }
+
+    func checkSelectionAndHideInstructions() {
+        if hasSelectedAnItem() {
+            instructionsNotice = nil
+        }
+    }
+
+    func hasSelectedAnItem() -> Bool {
+        shipmentCardViewModels.contains(where: { $0.hasSelectedAnItem })
+    }
+
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {
@@ -113,6 +146,16 @@ private extension WooShippingSplitShipmentsViewModel {
 // MARK: Constants
 private extension WooShippingSplitShipmentsViewModel {
     enum Localization {
+        enum SelectionInstructionsNotice {
+            static let message = NSLocalizedString("wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message",
+                                                   value: "To split, select the items, and tap **move to new shipment** when the toolbar appears.",
+                                                   comment: "Instructions to ask customer to select items to split during shipping label creation."
+                                                   + " The content inside two double asterisks **...** denote bolded text.")
+
+            static let dismiss = NSLocalizedString("wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.dismiss",
+                                                   value: "Dismiss",
+                                                   comment: "Label of the button to dismiss the instructions notice in split shipments flow.")
+        }
         static func itemsCount(_ count: Decimal) -> String {
             return String.pluralize(count, singular: Localization.itemsCountSingularFormat, plural: Localization.itemsCountPluralFormat)
         }

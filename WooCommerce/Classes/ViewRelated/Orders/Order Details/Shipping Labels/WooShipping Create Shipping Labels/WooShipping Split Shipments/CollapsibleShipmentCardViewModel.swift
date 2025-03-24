@@ -12,6 +12,18 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     /// Child shipment rows, if the shipment has more than one quantity
     let childShipmentRows: [SelectableShipmentRowViewModel]
 
+    var onSelectionChange: (() -> Void)?
+
+    var hasSelectedAnItem: Bool {
+        if mainShipmentRow.selected {
+            return true
+        }
+
+        return childShipmentRows
+            .filter { $0.selected }
+            .isNotEmpty
+    }
+
     init(parentShipmentId: String,
          childShipmentIds: [String],
          item: ShippingLabelPackageItem,
@@ -47,6 +59,7 @@ private extension CollapsibleShipmentCardViewModel {
             guard let self else { return }
 
             childShipmentRows.forEach({ $0.setSelected(row.selected) })
+            onSelectionChange?()
         }
 
         childShipmentRows.forEach({
@@ -54,6 +67,7 @@ private extension CollapsibleShipmentCardViewModel {
                 guard let self else { return }
 
                 mainShipmentRow.setSelected(false)
+                onSelectionChange?()
             }
         })
     }

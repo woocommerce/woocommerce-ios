@@ -4,7 +4,7 @@ import Yosemite
 struct WooShippingSplitShipmentsDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
-    let viewModel: WooShippingSplitShipmentsViewModel
+    @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
 
     var body: some View {
         NavigationView {
@@ -40,6 +40,10 @@ struct WooShippingSplitShipmentsDetailView: View {
                     }
                 }
             }
+        }
+        .notice($viewModel.instructionsNotice, autoDismiss: false)
+        .onAppear {
+            viewModel.onAppear()
         }
     }
 }

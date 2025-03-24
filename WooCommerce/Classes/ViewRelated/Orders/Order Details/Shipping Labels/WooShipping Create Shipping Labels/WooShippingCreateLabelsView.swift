@@ -104,7 +104,7 @@ private extension WooShippingCreateLabelsView {
                     WooShippingPostPurchaseView(viewModel: postPurchase)
                 }
 
-                if let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
+                if !viewModel.canViewLabel, let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
                     WooShippingSplitShipmentsRow(viewModel: splitShipmentsViewModel)
                 }
 

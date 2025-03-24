@@ -4,7 +4,7 @@ struct WooShippingHazmatRow: View {
     /// Whether the interactions (navigation/setting selection) are enabled.
     private let enabled: Bool
 
-    private let isHazardous: Bool
+    @State private var isHazardous: Bool
 
     @Binding private var selectedCategory: ShippingLabelHazmatCategory?
 
@@ -36,7 +36,10 @@ struct WooShippingHazmatRow: View {
         .buttonStyle(.plain)
         .disabled(!enabled)
         .sheet(isPresented: $isShowingDetailView) {
-            WooShippingHazmatDetailView(selectedCategory: selectedCategory)
+            WooShippingHazmatDetailView(selectedCategory: selectedCategory) { selectedCategory in
+                self.selectedCategory = selectedCategory
+                isHazardous = selectedCategory != nil
+            }
         }
     }
 }

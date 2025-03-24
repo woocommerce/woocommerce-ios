@@ -11,9 +11,13 @@ struct WooShippingHazmatDetailView: View {
 
     @State private var isShowingCategoryList = false
 
-    init(selectedCategory: ShippingLabelHazmatCategory?) {
+    private let selectionHandler: (ShippingLabelHazmatCategory?) -> Void
+
+    init(selectedCategory: ShippingLabelHazmatCategory?,
+         selectionHandler: @escaping (ShippingLabelHazmatCategory?) -> Void) {
         self.isHazardous = selectedCategory != nil
         self.selectedCategory = selectedCategory
+        self.selectionHandler = selectionHandler
     }
 
     var body: some View {
@@ -66,7 +70,8 @@ struct WooShippingHazmatDetailView: View {
             .sheet(isPresented: $isShowingCategoryList) {
                 WooShippingHazmatCategoryList(selectedItem: selectedCategory,
                                               selectionHandler: { category in
-                    // TODO: dismiss view
+                    selectionHandler(category)
+                    dismiss()
                 })
             }
         }
@@ -178,5 +183,5 @@ private extension WooShippingHazmatDetailView {
 }
 
 #Preview {
-    WooShippingHazmatDetailView(selectedCategory: .airEligibleEthanol)
+    WooShippingHazmatDetailView(selectedCategory: .airEligibleEthanol, selectionHandler: { _ in })
 }

@@ -924,6 +924,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.addressToEdit)
     }
+
+    func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() {
+        // Given
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+        XCTAssertNil(viewModel.hazmatNotice)
+
+        // When
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        waitUntil {
+            viewModel.hazmatNotice != nil
+        }
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

@@ -83,7 +83,7 @@ struct NoticeModifier: ViewModifier {
                             }
                             if let message = notice.message {
                                 HStack {
-                                    Text(message)
+                                    BoldableTextView(message)
                                     Spacer()
                                 }
                                 .font(Constants.messageFont)

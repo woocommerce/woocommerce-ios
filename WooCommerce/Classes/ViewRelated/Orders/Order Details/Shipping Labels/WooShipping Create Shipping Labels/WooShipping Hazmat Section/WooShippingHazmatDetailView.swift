@@ -101,6 +101,11 @@ struct WooShippingHazmatDetailView: View {
                     dismiss()
                 })
             }
+            .onChange(of: isHazardous) { newValue in
+                if newValue == false {
+                    selectedCategory = nil
+                }
+            }
         }
     }
 }

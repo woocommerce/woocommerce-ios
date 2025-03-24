@@ -28,6 +28,7 @@ struct CollapsibleShipmentCard: View {
                                 .padding(.leading, Layout.horizontalPadding * 2)
                                 .padding(.trailing, Layout.horizontalPadding)
                                 .padding(.vertical, Layout.verticalPadding)
+                                .background(Color(.listForeground(modal: false)))
                         }
                     }
                 }

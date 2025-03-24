@@ -39,7 +39,7 @@ extension Cart {
             return
         case .coupon(let coupon):
             let couponItem = CartCouponItem(id: UUID(), code: coupon.code)
-            coupons.insert(couponItem, at: items.startIndex)
+            coupons.insert(couponItem, at: coupons.startIndex)
         }
     }
 

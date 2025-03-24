@@ -69,7 +69,7 @@ protocol PointOfSaleOrderControllerProtocol {
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCart.items.matches(order: order) else {
+        guard !orderState.isSyncing, !posCart.matches(order: order) else {
             return .success(.orderNotChanged)
         }
 

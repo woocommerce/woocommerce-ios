@@ -5,6 +5,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.OrderCouponLine
 import enum Yosemite.OrderAction
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
@@ -362,6 +363,72 @@ struct PointOfSaleOrderControllerTests {
         } else {
             #expect(Bool(false), "Expected sync failure but got \(result)")
         }
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_with_cart_matching_order_and_coupons_doesnt_call_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+        let orderItem = OrderItem.fake().copy(quantity: 1)
+        let couponCode = "SAVE10"
+        let coupon = OrderCouponLine.fake().copy(code: couponCode)
+        let fakeOrder = Order.fake().copy(items: [orderItem], coupons: [coupon])
+        let cartItem = makeItem(orderItemsToMatch: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync to set up the order
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
+
+        // When - sync with same items and coupons
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.syncOrderWasCalled == false)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+        let orderItem = OrderItem.fake().copy(quantity: 1)
+        let initialCouponCode = "SAVE10"
+        let initialCoupon = OrderCouponLine.fake().copy(code: initialCouponCode)
+        let fakeOrder = Order.fake().copy(items: [orderItem], coupons: [initialCoupon])
+        let cartItem = makeItem(orderItemsToMatch: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: initialCouponCode)]), retryHandler: {})
+
+        // When - sync with same items but different coupon
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: "DIFFERENT20")]), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_with_matching_items_but_removed_coupon_calls_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+        let orderItem = OrderItem.fake().copy(quantity: 1)
+        let couponCode = "SAVE10"
+        let coupon = OrderCouponLine.fake().copy(code: couponCode)
+        let fakeOrder = Order.fake().copy(items: [orderItem], coupons: [coupon])
+        let cartItem = makeItem(orderItemsToMatch: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync with coupon
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
+
+        // When - sync with same items but no coupons
+        await sut.syncOrder(for: .init(items: [cartItem], coupons: []), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.syncOrderWasCalled == true)
     }
 
     struct AnalyticsTests {

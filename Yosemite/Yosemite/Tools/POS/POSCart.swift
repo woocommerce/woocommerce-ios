@@ -31,8 +31,14 @@ public struct POSCartCouponItem {
     }
 }
 
+public extension POSCart {
+    func matches(order: Order?) -> Bool {
+        return items.matches(order: order) && coupons.matches(order: order)
+    }
+}
+
 extension [POSCartItem] {
-    public func matches(order: Order?) -> Bool {
+    func matches(order: Order?) -> Bool {
         guard let order else {
             return self.isEmpty
         }
@@ -92,5 +98,17 @@ extension [POSCartItem] {
         }
 
         return output
+    }
+}
+
+extension [POSCartCouponItem] {
+    func matches(order: Order?) -> Bool {
+        guard let order else {
+            return self.isEmpty
+        }
+
+        let orderCoupons = Set(order.coupons.map(\.code))
+        let cartCoupons = Set(self.map(\.code))
+        return orderCoupons == cartCoupons
     }
 }

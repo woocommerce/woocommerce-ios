@@ -12,7 +12,6 @@ import Storage
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
     case requestCancelled
-    case storageFailure
     case unknown
 }
 

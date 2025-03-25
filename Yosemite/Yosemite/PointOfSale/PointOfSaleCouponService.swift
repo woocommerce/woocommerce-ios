@@ -73,8 +73,6 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
 
     @MainActor
     public func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        // Lands here when invoked from coupons controller -> Error, as won't show any in the view if we return empty.
-        //return .init(items: [], hasMorePages: false)
         let coupons = providePointOfSaleCoupons()
         return .init(items: coupons, hasMorePages: false)
     }

@@ -5,9 +5,9 @@ import Foundation
 
 public struct POSCart {
     public let items: [POSCartItem]
-    public let coupons: [POSCartCouponItem]
+    public let coupons: [POSCoupon]
 
-    public init(items: [POSCartItem] = [], coupons: [POSCartCouponItem] = []) {
+    public init(items: [POSCartItem] = [], coupons: [POSCoupon] = []) {
         self.items = items
         self.coupons = coupons
     }
@@ -20,14 +20,6 @@ public struct POSCartItem {
     public init(item: POSOrderableItem, quantity: Decimal) {
         self.item = item
         self.quantity = quantity
-    }
-}
-
-public struct POSCartCouponItem {
-    public let code: String
-
-    public init(code: String) {
-        self.code = code
     }
 }
 
@@ -101,7 +93,7 @@ extension [POSCartItem] {
     }
 }
 
-extension [POSCartCouponItem] {
+extension [POSCoupon] {
     func matches(order: Order?) -> Bool {
         guard let order else {
             return self.isEmpty

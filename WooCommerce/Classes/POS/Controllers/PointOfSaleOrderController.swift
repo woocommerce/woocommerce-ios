@@ -7,7 +7,7 @@ import struct Yosemite.Order
 import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
-import struct Yosemite.POSCartCouponItem
+import struct Yosemite.POSCoupon
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
@@ -255,7 +255,7 @@ extension PointOfSaleOrderController {
 private extension POSCart {
     init(cart: Cart) {
         let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
-        let coupons = cart.coupons.map { POSCartCouponItem(code: $0.code) }
+        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code) }
         self.init(items: items, coupons: coupons)
     }
 }

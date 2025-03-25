@@ -144,7 +144,7 @@ struct POSOrderServiceTests {
         // When
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
-            coupons: [.init(code: "SAVE10")]
+            coupons: [.init(id: UUID(), code: "SAVE10")]
         )
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 
@@ -186,9 +186,9 @@ struct POSOrderServiceTests {
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
             coupons: [
-                .init(code: "KEEP1"),
-                .init(code: "NEW1"),
-                .init(code: "NEW2")
+                .init(id: UUID(), code: "KEEP1"),
+                .init(id: UUID(), code: "NEW1"),
+                .init(id: UUID(), code: "NEW2")
             ]
         )
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
@@ -220,7 +220,7 @@ struct POSOrderServiceTests {
         // When
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
-            coupons: [.init(code: "KEEP1")] // Same coupon in cart
+            coupons: [.init(id: UUID(), code: "KEEP1")] // Same coupon in cart
         )
         _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
 

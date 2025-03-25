@@ -98,7 +98,7 @@ private extension POSOrderService {
         return order
     }
 
-    func updateCoupons(_ coupons: [POSCartCouponItem], on order: Order) -> Order {
+    func updateCoupons(_ coupons: [POSCoupon], on order: Order) -> Order {
         // Get coupon codes from cart
         let cartCouponCodes = Set(coupons.map { $0.code })
 

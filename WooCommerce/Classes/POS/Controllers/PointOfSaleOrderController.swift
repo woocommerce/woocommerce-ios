@@ -8,6 +8,7 @@ import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
@@ -102,12 +103,19 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private func setOrderStateToError(_ error: Error,
                                       retryHandler: @escaping () async -> Void) {
-        // Consider removing error or handle specific errors with our own formatting and localization
-        orderState = .error(.other(error.localizedDescription), {
-            Task {
-                await retryHandler()
-            }
-        })
+        if let couponsError = CouponsError(underlyingError: error) {
+            orderState = .error(.invalidCoupon(couponsError.message), {
+                Task {
+                    await retryHandler()
+                }
+            })
+        } else {
+            orderState = .error(.other(error.localizedDescription), {
+                Task {
+                    await retryHandler()
+                }
+            })
+        }
     }
 
     func sendReceipt(recipientEmail: String) async throws {

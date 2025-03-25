@@ -179,9 +179,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(orderStates == [
             .idle,
             .syncing,
-            .error(.init(
-                message: MockPOSOrderServiceError.noOrderToReturn.localizedDescription,
-                handler: {}))
+            .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
         ])
     }
 

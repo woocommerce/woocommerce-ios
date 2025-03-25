@@ -76,10 +76,10 @@ struct TotalsView: View {
                 }
                 .animation(.default, value: isShowingPaymentView)
             case .error(.other(let message), let handler):
-                PointOfSaleOrderSyncErrorMessageView(message: message, handler: handler)
+                PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
             case .error(.invalidCoupon(let message), let handler):
-                PointOfSaleOrderSyncErrorMessageView(message: message, handler: handler)
+                PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
             }
         }

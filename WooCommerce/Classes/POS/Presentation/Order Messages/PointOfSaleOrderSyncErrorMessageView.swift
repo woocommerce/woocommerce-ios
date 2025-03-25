@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PointOfSaleOrderSyncErrorMessageView: View {
     let message: String
-    let handler: () -> Void
+    let retryHandler: () -> Void
 
     var body: some View {
         HStack(alignment: .center) {
@@ -22,7 +22,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                         .padding([.leading, .trailing])
                 }
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-                Button(Localization.actionTitle, action: handler)
+                Button(Localization.actionTitle, action: retryHandler)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)
@@ -59,7 +59,6 @@ private extension PointOfSaleOrderSyncErrorMessageView {
     }
 }
 
-private struct TestError: Error {}
 #Preview {
     PointOfSaleOrderSyncErrorMessageView(message: "An error happened!") {}
 }

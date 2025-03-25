@@ -54,6 +54,7 @@
 		019630B42D01DB4800219D80 /* TapToPayAwarenessMomentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */; };
 		019630B62D02018C00219D80 /* TapToPayAwarenessMomentDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */; };
 		019630B82D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */; };
+		01AAD8142D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
 		01B744E22D2FCA1400AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */; };
@@ -3286,6 +3287,7 @@
 		019630B32D01DB4000219D80 /* TapToPayAwarenessMomentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentView.swift; sourceTree = "<group>"; };
 		019630B52D02018400219D80 /* TapToPayAwarenessMomentDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminer.swift; sourceTree = "<group>"; };
 		019630B72D0211F400219D80 /* TapToPayAwarenessMomentDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayAwarenessMomentDeterminerTests.swift; sourceTree = "<group>"; };
+		01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncCouponsErrorMessageView.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
 		01B744E12D2FCA1300AEB3F4 /* PushNotificationBackgroundSynchronizerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizerFactory.swift; sourceTree = "<group>"; };
@@ -6516,6 +6518,7 @@
 		014BD4B62C64E26B0011A66E /* Order Messages */ = {
 			isa = PBXGroup;
 			children = (
+				01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */,
 				014BD4B72C64E2BA0011A66E /* PointOfSaleOrderSyncErrorMessageView.swift */,
 			);
 			path = "Order Messages";
@@ -16624,6 +16627,7 @@
 				0373A12F2A1D1F2100731236 /* DotView.swift in Sources */,
 				0295CDC02D6477C400865E27 /* POSNoticeView.swift in Sources */,
 				DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */,
+				01AAD8142D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift in Sources */,
 				01F42C162CE34AB8003D0A5A /* CardPresentModalBuiltInSuccessEmailSent.swift in Sources */,
 				028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */,
 				DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */,

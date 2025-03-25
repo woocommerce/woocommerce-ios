@@ -28,7 +28,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     let shipmentCardViewModels: [CollapsibleShipmentCardViewModel]
 
-    @Published var instructionsNotice: Notice?
+    @Published private(set) var instructions: String?
+    private var dismissedInstructions: Bool = false
+
 
     init(order: Order,
          config: WooShippingConfig,
@@ -82,6 +84,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             $0.selectAll()
         }
     }
+
+    func dismissInstructions() {
+        instructions = nil
+        dismissedInstructions = true
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {
@@ -94,12 +101,8 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func showInstructionsNotice() {
-        if hasSelectedAnItem() == false {
-            instructionsNotice = Notice(message: Localization.SelectionInstructionsNotice.message,
-                                        feedbackType: .success,
-                                        actionTitle: Localization.SelectionInstructionsNotice.dismiss) { [weak self] in
-                self?.instructionsNotice = nil
-            }
+        if !dismissedInstructions {
+            instructions = Localization.SelectionInstructionsNotice.message
         }
     }
 

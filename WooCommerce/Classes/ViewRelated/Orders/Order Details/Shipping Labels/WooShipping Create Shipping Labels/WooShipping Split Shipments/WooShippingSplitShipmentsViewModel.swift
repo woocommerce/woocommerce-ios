@@ -28,6 +28,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     let shipmentCardViewModels: [CollapsibleShipmentCardViewModel]
 
+    @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
+
     @Published private(set) var instructions: String?
     private var dismissedInstructions: Bool = false
 
@@ -77,6 +79,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     func onAppear() {
         showInstructionsNotice()
+        showMoveToNotice()
     }
 
     func selectAll() {
@@ -95,7 +98,7 @@ private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
         shipmentCardViewModels.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
-                self?.checkSelectionAndHideInstructions()
+                self?.showMoveToNotice()
             }
         }
     }
@@ -106,14 +109,32 @@ private extension WooShippingSplitShipmentsViewModel {
         }
     }
 
-    func checkSelectionAndHideInstructions() {
-        if hasSelectedAnItem() {
-            instructionsNotice = nil
-        }
-    }
+    func showMoveToNotice() {
+        let selectedItemsCount = {
+            shipmentCardViewModels.map { $0.selectedShipmentIds.count }.reduce(0, +)
+        }()
 
-    func hasSelectedAnItem() -> Bool {
-        shipmentCardViewModels.contains(where: { $0.hasSelectedAnItem })
+        guard selectedItemsCount > 0 else {
+            return self.moveToNoticeViewModel = nil
+        }
+
+        // TODO: Use count and index values from shipment tabs
+        moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
+                                                               existingShipmentsCount: 3,
+                                                               currentShipmentIndex: 2,
+                                                               actionHandler: { [weak self] moveTo in
+            guard let self else { return }
+
+            self.moveToNoticeViewModel = nil
+            self.instructions = nil
+
+            switch moveTo {
+            case .existingShipment:
+                break
+            case .newShipment:
+                break
+            }
+        })
     }
 
     /// Configures the labels in the section header.

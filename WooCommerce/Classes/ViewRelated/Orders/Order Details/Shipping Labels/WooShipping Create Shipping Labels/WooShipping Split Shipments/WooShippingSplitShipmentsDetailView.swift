@@ -46,7 +46,6 @@ struct WooShippingSplitShipmentsDetailView: View {
                 }
             }
         }
-        .notice($viewModel.instructionsNotice, autoDismiss: false)
         .onAppear {
             viewModel.onAppear()
         }
@@ -60,6 +59,11 @@ private extension WooShippingSplitShipmentsDetailView {
                 InstructionsSnackbar(message: message) {
                     viewModel.dismissInstructions()
                 }
+            }
+
+            if let moveTo = viewModel.moveToNoticeViewModel {
+                MoveToShipmentNotice(viewModel: moveTo)
+            }
         }
     }
 }
@@ -102,9 +106,13 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
     enum Layout {
         static let contentPadding: CGFloat = 16
         static let borderCornerRadius: CGFloat = 8
+        static let shadowRadius: CGFloat = 8
+        static let shadowYOffset: CGFloat = 2
         static let borderWidth: CGFloat = 0.5
         static let verticalSpacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
     }
+
     enum Localization {
         static let title = NSLocalizedString(
             "wooShippingSplitShipmentsDetailView.title",

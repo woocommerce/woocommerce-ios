@@ -10,7 +10,7 @@ final class WooShippingItemsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
 
     /// Data source for items to be shipped.
-    private var dataSource: WooShippingItemsDataSource
+    private(set) var dataSource: WooShippingItemsDataSource
 
     /// Label with the total number of items to ship.
     @Published private(set) var itemsCountLabel: String = ""

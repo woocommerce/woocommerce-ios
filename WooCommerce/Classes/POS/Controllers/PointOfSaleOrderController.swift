@@ -27,7 +27,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
+    func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
@@ -63,9 +63,9 @@ protocol PointOfSaleOrderControllerProtocol {
     private var order: Order? = nil
 
     @MainActor @discardableResult
-    func syncOrder(for cartItems: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
-        let posCartItems = cartItems.map {
+        let posCartItems = cart.items.map {
             POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
         }
 

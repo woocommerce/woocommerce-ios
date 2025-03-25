@@ -20,6 +20,8 @@ struct ItemListView: View {
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
+    
+    @State private var selectedItemType: ItemType = .products
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -41,12 +43,12 @@ struct ItemListView: View {
 
             HStack {
                 Button(action: {
-                    toggleItemType()
+                    displayItemType(.products)
                 }, label: {
                     Text("Products")
                 })
                 Button(action: {
-                    toggleItemType()
+                    displayItemType(.coupons)
                 }, label: {
                     Text("Coupons")
                 })
@@ -160,8 +162,9 @@ private extension ItemListView {
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 
-    func toggleItemType() {
-        debugPrint("🍍 Toggle ItemType tapped")
+    func displayItemType(_ itemType: ItemType) {
+        selectedItemType = itemType
+        posModel.switchToItemType(itemType)
     }
 }
 

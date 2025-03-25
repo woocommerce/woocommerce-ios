@@ -106,6 +106,11 @@ extension PointOfSaleAggregateModel {
     func loadNextItems(base: ItemListBaseItem) async {
         await itemsController.loadNextItems(base: base)
     }
+
+    func switchToItemType(_ type: ItemType) {
+        // TODO: Switch between controllers controller: products or coupons
+        debugPrint("🍍 Switching to \(type)")
+    }
 }
 
 // MARK: - Cart

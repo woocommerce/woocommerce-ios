@@ -8,6 +8,20 @@ struct WooShippingSplitShipmentsDetailView: View {
 
     var body: some View {
         NavigationView {
+            if viewModel.shipments.count > 1 {
+                TopTabView(tabs: viewModel.topTabItems,
+                           showContent: .constant(false),
+                           selectedTabIndex: $viewModel.selectedShipmentIndex,
+                           tabsContainerHorizontalPadding: nil,
+                           selectedStateColor: .accentColor,
+                           unselectedStateColor: .secondary,
+                           selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                           tabPadding: Layout.tabPadding,
+                           tabsNameFont: Font.subheadline.bold(),
+                           tabsIconSize: nil,
+                           tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                           tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            }
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.contentPadding) {
                     AdaptiveStack(horizontalAlignment: .leading) {
@@ -18,9 +32,11 @@ struct WooShippingSplitShipmentsDetailView: View {
                             .foregroundStyle(Color(.textSubtle))
                     }
 
-                    VStack(spacing: Layout.verticalSpacing) {
-                        ForEach(viewModel.shipmentCardViewModels) { item in
-                            CollapsibleShipmentCard(viewModel: item)
+                    if let shipment = viewModel.currentShipment {
+                        VStack(spacing: Layout.verticalSpacing) {
+                            ForEach(shipment) { item in
+                                CollapsibleShipmentCard(viewModel: item)
+                            }
                         }
                     }
                 }
@@ -54,6 +70,10 @@ private extension WooShippingSplitShipmentsDetailView {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5
         static let verticalSpacing: CGFloat = 8
+        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let tabPadding: CGFloat = 9.0
+        static let tabItemContentHorizontalPadding: CGFloat = 16.0
+        static let tabItemContentVerticalPadding: CGFloat = 9.0
     }
     enum Localization {
         static let title = NSLocalizedString(

@@ -60,7 +60,7 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if viewModel.state == .ready {
+                if viewModel.state == .ready && viewModel.hazmatNotice == nil {
                     expandableBottomSheet
                 }
             }
@@ -92,6 +92,7 @@ struct WooShippingCreateLabelsView: View {
                 WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
+            .notice($viewModel.hazmatNotice)
         }
     }
 }
@@ -110,8 +111,7 @@ private extension WooShippingCreateLabelsView {
 
                 WooShippingItems(viewModel: viewModel.items)
 
-                WooShippingHazmatRow(isHazardous: $viewModel.containsHazardousMaterials,
-                                     selectedCategory: $viewModel.hazmatCategory,
+                WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
                                      enabled: !viewModel.canViewLabel)
 
                 WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,

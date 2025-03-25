@@ -103,11 +103,11 @@ final class HubMenuViewModel: ObservableObject {
                                       credentials: credentials,
                                       storage: storage)
     }()
-    
+
     private(set) lazy var posCouponProvider: PointOfSaleItemServiceProtocol = {
         let storage = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
-        
+
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,

@@ -20,7 +20,7 @@ struct ItemListView: View {
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
-    
+
     @State private var selectedItemType: ItemType = .products
 
     var body: some View {

@@ -743,6 +743,41 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPurchasingLabel)
     }
 
+    func test_purchaseLabel_sets_hazmat_category_correctly() {
+        // Given
+        var encodedHazmat: [String: Any]?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
+                                                         selectedRate: sampleSelectedRate(),
+                                                         stores: stores)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, completion):
+                encodedHazmat = package.encodedHazmat()
+                completion(.success(ShippingLabel.fake()))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success([]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.hazmatCategory = .class3
+        viewModel.purchaseLabel()
+
+        // Then
+        let shipmentDetails = encodedHazmat?["shipment_0"] as? [String: Any]
+        XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
+        XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
+    }
+
     func test_selectPackage_sets_selectedPackage_with_package_data() {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
@@ -923,6 +958,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.addressToEdit)
+    }
+
+    func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() {
+        // Given
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+        XCTAssertNil(viewModel.hazmatNotice)
+
+        // When
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        waitUntil {
+            viewModel.hazmatNotice != nil
+        }
     }
 }
 

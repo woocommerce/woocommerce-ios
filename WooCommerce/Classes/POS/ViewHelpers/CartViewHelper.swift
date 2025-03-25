@@ -18,7 +18,7 @@ final class CartViewHelper {
         return orderState.isSyncing
     }
 
-    func shouldShowClearCartButton(cart: [CartItem], orderStage: PointOfSaleOrderStage) -> Bool {
+    func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
         cart.isNotEmpty && orderStage == .building
     }
 }

@@ -6,6 +6,8 @@ import Yosemite
 final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
+    let item: ShippingLabelPackageItem
+
     /// The main shipment row.
     let mainShipmentRow: SelectableShipmentRowViewModel
 
@@ -28,6 +30,8 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
          childShipmentIds: [String],
          item: ShippingLabelPackageItem,
          currency: String) {
+        self.item = item
+
         let mainShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: max(1.0, Decimal(childShipmentIds.count))),
                                                            currency: currency)
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),

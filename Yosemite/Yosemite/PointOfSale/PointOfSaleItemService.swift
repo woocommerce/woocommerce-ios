@@ -100,30 +100,6 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
     }
 
-    public func providePointOfSaleCoupons() throws -> PagedItems<POSItem> {
-        guard let storage = storage else {
-            throw PointOfSaleItemServiceError.storageFailure
-        }
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: false)
-
-        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
-                                                                matching: predicate,
-                                                                sortedBy: [descriptor])
-
-        try resultsController.performFetch()
-        let storeCoupons = resultsController.fetchedObjects
-        let posCoupons = mapCouponsToPOSItems(coupons: storeCoupons)
-        return .init(items: posCoupons, hasMorePages: false)
-    }
-
-    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
-        coupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(), couponID: coupon.couponID))
-        }
-    }
-
     // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.

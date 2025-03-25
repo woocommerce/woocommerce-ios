@@ -31,7 +31,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     var topTabItems: [TopTabItem<EmptyView>] {
         shipments.enumerated().map { (index, item) in
-            TopTabItem(name: "Shipment \(index + 1)", content: { EmptyView() })
+            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                       content: { EmptyView() })
         }
     }
 
@@ -184,5 +185,10 @@ private extension WooShippingSplitShipmentsViewModel {
         static let itemsCountPluralFormat = NSLocalizedString("wooShipping.createLabels.splitShipment.items.count",
                                                               value: "%1$@ items",
                                                               comment: "Label for plural items to ship during shipping label creation. Reads like: '3 items'")
+        static let shipmentFormat = NSLocalizedString(
+            "wooShipping.createLabels.splitShipment.shipmentFormat",
+            value: "Shipment %1$d",
+            comment: "Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1'"
+        )
     }
 }

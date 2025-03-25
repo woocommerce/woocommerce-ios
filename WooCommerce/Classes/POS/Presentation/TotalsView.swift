@@ -75,8 +75,11 @@ struct TotalsView: View {
                                                                               cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
-            case .error(let viewModel):
-                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+            case .error(.other(let message), let handler):
+                PointOfSaleOrderSyncErrorMessageView(message: message, handler: handler)
+                    .transition(.opacity)
+            case .error(.invalidCoupon(let message), let handler):
+                PointOfSaleOrderSyncErrorMessageView(message: message, handler: handler)
                     .transition(.opacity)
             }
         }

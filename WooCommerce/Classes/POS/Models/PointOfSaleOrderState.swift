@@ -4,7 +4,25 @@ enum PointOfSaleOrderState: Equatable {
     case idle
     case syncing
     case loaded(PointOfSaleOrderTotals)
-    case error(PointOfSaleOrderSyncErrorMessageViewModel)
+    case error(OrderStateError, OrderStateRetryHandler)
+
+    typealias OrderStateRetryHandler = () -> Void
+
+    enum OrderStateError: Equatable {
+        case other(String)
+        case invalidCoupon(String)
+
+        static func == (lhs: OrderStateError, rhs: OrderStateError) -> Bool {
+            switch (lhs, rhs) {
+            case (.other(let lhsError), .other(let rhsError)):
+                return lhsError == rhsError
+            case (.invalidCoupon(let lhsCoupon), .invalidCoupon(let rhsCoupon)):
+                return lhsCoupon == rhsCoupon
+            default:
+                return false
+            }
+        }
+    }
 
     static func == (lhs: PointOfSaleOrderState, rhs: PointOfSaleOrderState) -> Bool {
         switch (lhs, rhs) {

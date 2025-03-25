@@ -6,6 +6,21 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     let retryHandler: () -> Void
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    private var attributedMessage: AttributedString {
+        if let data = message.data(using: .utf8),
+           let nsAttributedString = try? NSAttributedString(
+               data: data,
+               options: [.documentType: NSAttributedString.DocumentType.html],
+               documentAttributes: nil) {
+            var attributedString = AttributedString(nsAttributedString)
+            attributedString.font = POSFontStyle.posBodyLargeRegular().font()
+            attributedString.foregroundColor = UIColor(Color.posOnSurface)
+            return attributedString
+        }
+        return AttributedString(message)
+    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -19,9 +34,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
 
-                    Text(message)
-                        .foregroundStyle(Color.posOnSurface)
-                        .font(.posBodyLargeRegular())
+                    Text(attributedMessage)
                         .padding([.leading, .trailing])
                 }
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)

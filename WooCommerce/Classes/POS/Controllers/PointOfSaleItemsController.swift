@@ -14,8 +14,6 @@ enum ItemType {
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
     ///
-    var itemType: ItemType { get }
-    ///
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
@@ -29,7 +27,6 @@ protocol PointOfSaleItemsControllerProtocol {
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    let itemType: ItemType = .products
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

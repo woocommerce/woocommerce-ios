@@ -50,6 +50,7 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     func selectAll() {
         mainShipmentRow.setSelected(true)
         childShipmentRows.forEach({ $0.setSelected(true) })
+        onSelectionChange?()
     }
 }
 

@@ -1097,7 +1097,6 @@ enum WooAnalyticsStat: String {
     case hubMenuSwitchStoreTapped = "hub_menu_switch_store_tapped"
     case hubMenuOptionTapped = "hub_menu_option_tapped"
     case hubMenuSettingsTapped = "hub_menu_settings_tapped"
-    case hubMenuAISettingsTapped = "hub_menu_ai_settings_tapped"
 
     // MARK: Coupons
     case couponsLoaded = "coupons_loaded"

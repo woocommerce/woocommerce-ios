@@ -573,7 +573,7 @@ extension HubMenuViewModel {
         let icon: UIImage = .wandAndRaysInverse
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "ai-settings"
-        let trackingOption: String = "ai"
+        let trackingOption: String = "ai-settings"
         let iconBadge: HubMenuBadgeType?
         let navigationDestination: HubMenuNavigationDestination? = .aiSettings
 

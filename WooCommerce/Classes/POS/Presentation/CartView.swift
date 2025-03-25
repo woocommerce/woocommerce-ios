@@ -16,13 +16,17 @@ struct CartView: View {
 
     @State private var shouldShowItemImages: Bool = false
 
+    private var shouldShowCoupons: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
     var body: some View {
         VStack {
             POSPageHeaderView(title: Localization.cartTitle,
                               backButtonConfiguration: backButtonConfiguration,
                               trailingContent: {
                 DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
-                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.count) {
+                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.items.count) {
                         Text(itemsInCartLabel)
                             .font(Constants.itemsFont)
                             .lineLimit(1)
@@ -47,7 +51,11 @@ struct CartView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: Constants.cartItemSpacing) {
-                            ForEach(posModel.cart, id: \.id) { cartItem in
+                            if shouldShowCoupons {
+                                couponsCartSectionView
+                            }
+
+                            ForEach(posModel.cart.items, id: \.id) { cartItem in
                                 ItemRowView(cartItem: cartItem,
                                             showImage: $shouldShowItemImages,
                                             onItemRemoveTapped: posModel.orderStage == .building ? {
@@ -58,7 +66,8 @@ struct CartView: View {
                                 .transition(.opacity)
                             }
                         }
-                        .animation(Constants.cartAnimation, value: posModel.cart.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
+                        .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                    value: geometry.frame(in: coordinateSpace).origin.y)
@@ -81,7 +90,7 @@ struct CartView: View {
                             .renderedIf(posModel.orderStage == .finalizing)
                     }
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
-                    .onChange(of: posModel.cart.first?.id) { itemToScrollTo in
+                    .onChange(of: posModel.cart.items.first?.id) { itemToScrollTo in
                         if posModel.orderStage == .building {
                             withAnimation {
                                 proxy.scrollTo(itemToScrollTo)
@@ -93,7 +102,7 @@ struct CartView: View {
             Spacer()
             switch posModel.orderStage {
             case .building:
-                if posModel.cart.isEmpty {
+                if posModel.cart.items.isEmpty {
                     EmptyView()
                 } else {
                     checkoutButton
@@ -263,12 +272,27 @@ private extension CartView {
         }
         .background(backgroundColor.ignoresSafeArea(.all))
     }
+
+    var couponsCartSectionView: some View {
+        VStack {
+            ForEach(posModel.cart.coupons, id: \.id) { couponItem in
+                CouponRowView(couponItem: couponItem,
+                              onItemRemoveTapped: posModel.orderStage == .building ? {
+                    posModel.remove(cartCouponItem: couponItem)
+                } : nil)
+                .id(couponItem.id)
+                .transition(.opacity)
+            }
+
+            Spacer(minLength: 48)
+        }
+    }
 }
 
 @available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
-        let itemsInCart = posModel.cart.count
+        let itemsInCart = posModel.cart.items.count
         ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
     }
 }

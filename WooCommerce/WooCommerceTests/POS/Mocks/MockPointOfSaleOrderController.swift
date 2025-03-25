@@ -21,10 +21,10 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         syncOrderWasCalled = true
-        spyCartProducts = cartProducts
+        spyCartProducts = cart.items
         spyRetryHandler = retryHandler
 
         guard let orderStateToReturn else {

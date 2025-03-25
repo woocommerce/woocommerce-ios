@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
-import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 
@@ -28,9 +28,10 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
 
-    var cart: [CartItem] { get }
+    var cart: Cart { get }
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
+    func remove(cartCouponItem: CartCouponItem)
     func removeAllItemsFromCart()
     func addMoreToCart()
     func startNewCart()
@@ -54,7 +55,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var itemsViewState: ItemsViewState { itemsController.itemsViewState }
 
-    private(set) var cart: [CartItem] = []
+    private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
@@ -108,33 +109,19 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-// MARK: - Cart
-
-private extension POSItem {
-    var cartItem: CartItem? {
-        switch self {
-        case .simpleProduct(let simpleProduct):
-            return CartItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
-        case .variation(let variation):
-            return CartItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
-        case .variableParentProduct:
-            return nil
-        case .coupon:
-            return nil
-        }
-    }
-}
-
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
-        guard let cartItem = item.cartItem else { return }
-        cart.insert(cartItem, at: cart.startIndex)
+        cart.add(item)
     }
 
     func remove(cartItem: CartItem) {
-        cart.removeAll(where: { $0.id == cartItem.id } )
+        cart.remove(cartItem)
+    }
+
+    func remove(cartCouponItem: CartCouponItem) {
+        cart.remove(cartCouponItem)
     }
 
     func removeAllItemsFromCart() {
@@ -164,7 +151,7 @@ private extension PointOfSaleAggregateModel {
     func trackCustomerInteractionStarted() {
         // At the moment we're assumming that an interaction starts simply when the cart is zero
         // but a more complex logic will be needed for other cases
-        if cart.count == 0 {
+        if cart.isEmpty {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
         }
     }

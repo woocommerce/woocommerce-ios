@@ -1,6 +1,5 @@
 import SwiftUI
 import enum Yosemite.POSItem
-import protocol Yosemite.POSOrderableItem
 
 @available(iOS 17.0, *)
 struct ItemListView: View {

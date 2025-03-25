@@ -5,6 +5,7 @@ import enum Yosemite.POSItem
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+    let itemType: ItemType = .products
     var itemsViewState: ItemsViewState = .init(containerState: .empty,
                                                itemsStack: .init(root: .loaded([], hasMoreItems: false),
                                                                  itemStates: [:]))
@@ -14,6 +15,4 @@ final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     func refreshItems(base: WooCommerce.ItemListBaseItem) async { }
 
     func loadNextItems(base: ItemListBaseItem) async { }
-
-    func toggleItemType() async { }
 }

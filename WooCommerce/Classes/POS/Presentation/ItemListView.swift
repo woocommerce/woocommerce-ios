@@ -161,9 +161,7 @@ private extension ItemListView {
     }
 
     func toggleItemType() {
-        Task {
-            await posModel.toggleItemType()
-        }
+        debugPrint("🍍 Toggle ItemType tapped")
     }
 }
 

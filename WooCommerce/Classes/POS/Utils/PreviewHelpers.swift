@@ -56,14 +56,12 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
-
-    func providePointOfSaleCoupons() throws -> PagedItems<POSItem> {
-        .init(items: [], hasMorePages: true)
-    }
 }
 
 @available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+    let itemType: ItemType = .products
+
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
@@ -90,10 +88,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
 
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
-    }
-
-    func toggleItemType() async {
-        //
     }
 }
 

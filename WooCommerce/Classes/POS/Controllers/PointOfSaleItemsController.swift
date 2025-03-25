@@ -6,13 +6,16 @@ import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
-enum POSItemType {
+enum ItemType {
     case products
     case coupons
 }
 
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
+    ///
+    var itemType: ItemType { get }
+    ///
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
@@ -20,19 +23,19 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
-    /// Toggles between item types
-    func toggleItemType() async
 }
+
+
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+    let itemType: ItemType = .products
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let itemProvider: PointOfSaleItemServiceProtocol
-    private var itemType: POSItemType = .products
 
     init(itemProvider: PointOfSaleItemServiceProtocol) {
         self.itemProvider = itemProvider
@@ -48,11 +51,6 @@ protocol PointOfSaleItemsControllerProtocol {
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         await loadFirstPage(base: base)
-    }
-
-    func toggleItemType() async {
-        itemType = (itemType == .products) ? .coupons : .products
-        await loadFirstPage(base: .root)
     }
 
     @MainActor
@@ -206,9 +204,7 @@ private extension PointOfSaleItemsController {
     @MainActor
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
-            let pagedItems = itemType == .products
-                ? try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
-                : try itemProvider.providePointOfSaleCoupons()
+            let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
 
             let newItems = pagedItems.items
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []

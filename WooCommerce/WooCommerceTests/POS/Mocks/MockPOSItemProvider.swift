@@ -45,10 +45,6 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
         return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations)
     }
-
-    func providePointOfSaleCoupons() throws -> PagedItems<POSItem> {
-        .init(items: [], hasMorePages: true)
-    }
 }
 
 extension MockPointOfSaleItemService {

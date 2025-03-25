@@ -380,6 +380,8 @@ struct PointOfSaleOrderControllerTests {
         // Initial sync to set up the order
         await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
 
+        mockOrderService.syncOrderWasCalled = false
+
         // When - sync with same items and coupons
         await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
 
@@ -402,6 +404,8 @@ struct PointOfSaleOrderControllerTests {
         // Initial sync
         await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: initialCouponCode)]), retryHandler: {})
 
+        mockOrderService.syncOrderWasCalled = false
+
         // When - sync with same items but different coupon
         await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: "DIFFERENT20")]), retryHandler: {})
 
@@ -423,6 +427,8 @@ struct PointOfSaleOrderControllerTests {
 
         // Initial sync with coupon
         await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode)]), retryHandler: {})
+
+        mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items but no coupons
         await sut.syncOrder(for: .init(items: [cartItem], coupons: []), retryHandler: {})

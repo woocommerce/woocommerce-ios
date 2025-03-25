@@ -52,14 +52,16 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var itemsViewState: ItemsViewState { currentController.itemsViewState }
 
     private(set) var cart: [CartItem] = []
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
+    private var currentController: PointOfSaleItemsControllerProtocol
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -72,12 +74,15 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
+        self.currentController = itemsController // Default current controller set to products
         self.itemsController = itemsController
+        self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics

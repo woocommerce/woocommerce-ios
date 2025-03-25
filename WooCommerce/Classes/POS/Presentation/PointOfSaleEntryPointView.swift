@@ -43,6 +43,7 @@ struct PointOfSaleEntryPointView: View {
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             posModel = PointOfSaleAggregateModel(
                 itemsController: itemsController,
+                couponsController: couponsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)

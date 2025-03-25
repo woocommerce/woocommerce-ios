@@ -147,6 +147,7 @@ private extension ChildItemList {
                                                     ], hasMoreItems: false)]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -172,6 +173,7 @@ private extension ChildItemList {
                                             ]))
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

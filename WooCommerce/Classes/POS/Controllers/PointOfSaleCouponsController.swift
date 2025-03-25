@@ -23,12 +23,25 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
     }
 
     func refreshItems(base: ItemListBaseItem) async {
-        debugPrint("🍍 CouponsController::refreshItems called")
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+        await fetchItems()
     }
 
     func loadNextItems(base: ItemListBaseItem) async {
         debugPrint("🍍 CouponsController::loadNextItems called")
         itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleCouponsController {
+    func fetchItems() async {
+        do {
+            let items = try await itemProvider.providePointOfSaleItems(pageNumber: 1).items
+            itemsViewState = ItemsViewState(containerState: .content,
+                                            itemsStack: .init(root: .loaded(items, hasMoreItems: false),
+                                                              itemStates: [:]))
+        } catch {
+            debugPrint(error)
+        }
     }
 }

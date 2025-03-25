@@ -1,5 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import protocol Yosemite.POSOrderableItem
+import struct Yosemite.POSCoupon
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -14,6 +16,12 @@ struct ItemListView: View {
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
     private var isHeaderBannerDismissed: Bool = false
+
+    private var shouldShowCoupons: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
+    @State private var selectedItemType: ItemType = .products
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -32,6 +40,21 @@ struct ItemListView: View {
     var content: some View {
         VStack {
             headerView
+
+            HStack {
+                Button(action: {
+                    displayItemType(.products)
+                }, label: {
+                    Text("Products")
+                })
+                Button(action: {
+                    displayItemType(.coupons)
+                }, label: {
+                    Text("Coupons")
+                })
+            }
+            .renderedIf(shouldShowCoupons)
+
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
@@ -138,6 +161,13 @@ private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
+
+    func displayItemType(_ itemType: ItemType) {
+        selectedItemType = itemType
+        Task { @MainActor in
+            await posModel.switchToItemType(itemType)
+        }
+    }
 }
 
 private extension ItemListState {
@@ -222,6 +252,7 @@ private extension ItemListView {
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -233,6 +264,7 @@ private extension ItemListView {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

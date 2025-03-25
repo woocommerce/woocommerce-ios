@@ -302,6 +302,7 @@ private extension CartView {
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -313,6 +314,7 @@ private extension CartView {
 #Preview("Cart with one item") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

@@ -104,6 +104,16 @@ final class HubMenuViewModel: ObservableObject {
                                       storage: storage)
     }()
 
+    private(set) lazy var posCouponProvider: PointOfSaleItemServiceProtocol = {
+        let storage = ServiceLocator.storageManager
+        let currencySettings = ServiceLocator.currencySettings
+
+        return PointOfSaleCouponService(siteID: siteID,
+                                        currencySettings: currencySettings,
+                                        credentials: credentials,
+                                        storage: storage)
+    }()
+
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false

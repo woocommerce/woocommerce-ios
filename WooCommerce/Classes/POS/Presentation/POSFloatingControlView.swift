@@ -139,6 +139,7 @@ private extension POSFloatingControlView {
 #Preview("Reader Disconnected") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -152,6 +153,7 @@ private extension POSFloatingControlView {
     let paymentService = CardPresentPaymentPreviewService()
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -165,6 +167,7 @@ private extension POSFloatingControlView {
 #Preview("Secondary/disabled Background") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

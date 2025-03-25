@@ -55,4 +55,8 @@ extension Cart {
     var isEmpty: Bool {
         items.isEmpty && coupons.isEmpty
     }
+
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
 }

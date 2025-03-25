@@ -19,7 +19,7 @@ final class CartViewHelper {
     }
 
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
-        !cart.isEmpty && orderStage == .building
+        cart.isNotEmpty && orderStage == .building
     }
 }
 

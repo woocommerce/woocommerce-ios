@@ -81,7 +81,7 @@ private extension ItemRowView {
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
     }
-    
+
     enum Localization {
         static let removeFromCartAccessibilityLabel = NSLocalizedString(
             "pointOfSale.item.removeFromCart.button.accessibilityLabel",

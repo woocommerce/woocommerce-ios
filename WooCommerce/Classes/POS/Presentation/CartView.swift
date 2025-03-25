@@ -11,7 +11,7 @@ struct CartView: View {
     @State private var offSetPosition: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
-        !posModel.cart.isEmpty && offSetPosition < 0
+        posModel.cart.isNotEmpty && offSetPosition < 0
     }
 
     @State private var shouldShowItemImages: Bool = false
@@ -43,7 +43,7 @@ struct CartView: View {
             })
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
 
-            if !posModel.cart.isEmpty {
+            if posModel.cart.isNotEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: Constants.cartItemSpacing) {

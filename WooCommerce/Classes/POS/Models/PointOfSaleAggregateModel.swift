@@ -30,7 +30,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
-    func remove(cartItem: any CartItem)
+    func remove(cartItem: CartItem)
+    func remove(cartCouponItem: CartCouponItem)
     func removeAllItemsFromCart()
     func addMoreToCart()
     func startNewCart()
@@ -115,8 +116,12 @@ extension PointOfSaleAggregateModel {
         cart.add(item)
     }
 
-    func remove(cartItem: any CartItem) {
+    func remove(cartItem: CartItem) {
         cart.remove(cartItem)
+    }
+
+    func remove(cartCouponItem: CartCouponItem) {
+        cart.remove(cartCouponItem)
     }
 
     func removeAllItemsFromCart() {

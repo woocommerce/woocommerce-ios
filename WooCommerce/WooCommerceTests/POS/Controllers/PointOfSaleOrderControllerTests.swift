@@ -100,7 +100,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         await sut.syncOrder(for: .init(items: [cartItem,
-                                  makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
+                                               makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
                             retryHandler: {})
 
         // Then
@@ -456,12 +456,12 @@ struct PointOfSaleOrderControllerTests {
 private func makeItem(name: String = "",
                       formattedPrice: String = "",
                       quantity: Int = 1,
-                      orderItemsToMatch: [OrderItem] = []) -> CartProductItem {
-    return CartProductItem(id: UUID(),
-                           item: MockPOSOrderableItem(name: name,
-                                                      formattedPrice: formattedPrice,
-                                                      orderItemsToMatch: orderItemsToMatch),
-                           title: name,
-                           subtitle: nil,
-                           quantity: quantity)
+                      orderItemsToMatch: [OrderItem] = []) -> CartItem {
+    return CartItem(id: UUID(),
+                    item: MockPOSOrderableItem(name: name,
+                                               formattedPrice: formattedPrice,
+                                               orderItemsToMatch: orderItemsToMatch),
+                    title: name,
+                    subtitle: nil,
+                    quantity: quantity)
 }

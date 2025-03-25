@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ItemRowView: View {
-    private let cartItem: CartProductItem
+    private let cartItem: CartItem
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -11,7 +11,7 @@ struct ItemRowView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(cartItem: CartProductItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: CartItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
@@ -81,7 +81,7 @@ private extension ItemRowView {
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
     }
-
+    
     enum Localization {
         static let removeFromCartAccessibilityLabel = NSLocalizedString(
             "pointOfSale.item.removeFromCart.button.accessibilityLabel",
@@ -94,21 +94,21 @@ private extension ItemRowView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartProductItem(id: UUID(),
-                                          item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                          title: "Item Title",
-                                          subtitle: "Item Subtitle",
-                                          quantity: 2),
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: "Item Subtitle",
+                                   quantity: 2),
                 onItemRemoveTapped: { })
 }
 
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartProductItem(id: UUID(),
-                                          item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                          title: "Item Title",
-                                          subtitle: nil,
-                                          quantity: 2),
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                   title: "Item Title",
+                                   subtitle: nil,
+                                   quantity: 2),
                 onItemRemoveTapped: { })
 }
 #endif

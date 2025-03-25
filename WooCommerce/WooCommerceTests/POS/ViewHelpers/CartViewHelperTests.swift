@@ -87,10 +87,10 @@ struct CartViewHelperTests {
     }
 }
 
-private func makeItem() -> CartProductItem {
-    CartProductItem(id: UUID(),
-                    item: MockPOSOrderableItem(name: "Item", formattedPrice: "$1.00"),
-                    title: "Item",
-                    subtitle: nil,
-                    quantity: 1)
+private func makeItem() -> CartItem {
+    CartItem(id: UUID(),
+             item: MockPOSOrderableItem(name: "Item", formattedPrice: "$1.00"),
+             title: "Item",
+             subtitle: nil,
+             quantity: 1)
 }

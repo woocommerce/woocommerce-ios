@@ -53,7 +53,7 @@ struct CartView: View {
                                     ForEach(posModel.cart.coupons, id: \.id) { couponItem in
                                         CouponRowView(couponItem: couponItem,
                                                       onItemRemoveTapped: posModel.orderStage == .building ? {
-                                            posModel.remove(cartItem: couponItem)
+                                            posModel.remove(cartCouponItem: couponItem)
                                         } : nil)
                                         .id(couponItem.id)
                                         .transition(.opacity)

@@ -144,6 +144,8 @@ private extension SettingsViewController {
             configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .domain:
             configureDomain(cell: cell)
+        case let cell as BasicTableViewCell where row == .connectivity:
+            configureConnectivity(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .themes:
@@ -156,6 +158,8 @@ private extension SettingsViewController {
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
             configureSendFeedback(cell: cell)
+        case let cell as BasicTableViewCell where row == .notifications:
+            configureNotificationSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -211,6 +215,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.domain
     }
 
+    func configureConnectivity(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.connectivity
+    }
+
     func configureInstallJetpack(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -227,6 +237,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureNotificationSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.notificationSettings
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -476,6 +492,18 @@ private extension SettingsViewController {
         present(surveyNavigation, animated: true, completion: nil)
     }
 
+    func showNotificationSettings() {
+        ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
+        let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
+    func showConnectivityTool() {
+        ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
+        let controller = ConnectivityToolViewController()
+        show(controller, sender: self)
+    }
+
     func deviceSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
@@ -653,6 +681,10 @@ extension SettingsViewController: UITableViewDelegate {
             logoutWasPressed()
         case .themes:
             showThemeSettings()
+        case .notifications:
+            showNotificationSettings()
+        case .connectivity:
+            showConnectivityTool()
         default:
             break
         }
@@ -712,6 +744,7 @@ extension SettingsViewController {
         case installJetpack
         case storeName
         case themes
+        case connectivity
 
         // Help & Feedback
         case support
@@ -719,6 +752,7 @@ extension SettingsViewController {
         case sendFeedback
 
         // App Settings
+        case notifications
         case privacy
 
         // About the App
@@ -756,13 +790,13 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowContent>.self
             case .support:
                 return BasicTableViewCell.self
-            case .domain:
+            case .domain, .connectivity:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy:
+            case .privacy, .notifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -832,6 +866,12 @@ private extension SettingsViewController {
             comment: "Navigates to domain settings screen."
         )
 
+        static let connectivity = NSLocalizedString(
+            "settingsViewController.connectivity",
+            value: "Troubleshoot Connection",
+            comment: "Navigates to connectivity test screen."
+        )
+
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Navigates to Install Jetpack screen."
@@ -851,6 +891,12 @@ private extension SettingsViewController {
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
+        )
+
+        static let notificationSettings = NSLocalizedString(
+            "settingsViewController.notificationSettings",
+            value: "Notification Settings",
+            comment: "Navigates to the Notification Settings screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(

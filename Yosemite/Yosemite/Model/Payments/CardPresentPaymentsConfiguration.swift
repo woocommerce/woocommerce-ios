@@ -62,6 +62,21 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: nil,
                 minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
             )
+        case .PR:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.USD],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.chipper, .stripeM2],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "9.0.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+            )
         case .CA:
             self.init(
                 countryCode: country,

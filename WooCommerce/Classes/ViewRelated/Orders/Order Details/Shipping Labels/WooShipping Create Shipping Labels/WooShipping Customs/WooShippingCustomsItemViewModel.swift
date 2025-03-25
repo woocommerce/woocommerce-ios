@@ -31,6 +31,14 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         resultsController.fetchedObjects
     }
 
+    var totalValue: Decimal {
+        guard currencySymbol == "$",
+              let valuePerUnitDecimal = Decimal(string: valuePerUnit) else {
+            return 0
+        }
+        return valuePerUnitDecimal * orderItem.quantity
+    }
+
     /// View model for selecting a country from a list.
     var countrySelectorVM: CountrySelectorViewModel {
         let selectedCountryBinding = Binding<AreaSelectorCommandProtocol?>(

@@ -16,6 +16,10 @@ struct CartView: View {
 
     @State private var shouldShowItemImages: Bool = false
 
+    private var shouldShowCoupons: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
     var body: some View {
         VStack {
             POSPageHeaderView(title: Localization.cartTitle,
@@ -47,19 +51,8 @@ struct CartView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: Constants.cartItemSpacing) {
-
-                            /// WIP: Behind the feature flag
-                            if posModel.cart.coupons.isNotEmpty {
-                                    ForEach(posModel.cart.coupons, id: \.id) { couponItem in
-                                        CouponRowView(couponItem: couponItem,
-                                                      onItemRemoveTapped: posModel.orderStage == .building ? {
-                                            posModel.remove(cartCouponItem: couponItem)
-                                        } : nil)
-                                        .id(couponItem.id)
-                                        .transition(.opacity)
-                                    }
-
-                                Spacer(minLength: 64)
+                            if shouldShowCoupons {
+                                couponsCartSectionView
                             }
 
                             ForEach(posModel.cart.items, id: \.id) { cartItem in
@@ -109,7 +102,7 @@ struct CartView: View {
             Spacer()
             switch posModel.orderStage {
             case .building:
-                if posModel.cart.isEmpty {
+                if posModel.cart.items.isEmpty {
                     EmptyView()
                 } else {
                     checkoutButton
@@ -278,6 +271,21 @@ private extension CartView {
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))
+    }
+
+    var couponsCartSectionView: some View {
+        VStack {
+            ForEach(posModel.cart.coupons, id: \.id) { couponItem in
+                CouponRowView(couponItem: couponItem,
+                              onItemRemoveTapped: posModel.orderStage == .building ? {
+                    posModel.remove(cartCouponItem: couponItem)
+                } : nil)
+                .id(couponItem.id)
+                .transition(.opacity)
+            }
+
+            Spacer(minLength: 48)
+        }
     }
 }
 

@@ -21,13 +21,16 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         debugPrint("🍍 CouponsController::loadItems called")
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
     }
 
     func refreshItems(base: ItemListBaseItem) async {
         debugPrint("🍍 CouponsController::refreshItems called")
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
     }
 
     func loadNextItems(base: ItemListBaseItem) async {
         debugPrint("🍍 CouponsController::loadNextItems called")
+        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
     }
 }

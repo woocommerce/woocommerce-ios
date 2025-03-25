@@ -164,7 +164,9 @@ private extension ItemListView {
 
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
-        posModel.switchToItemType(itemType)
+        Task { @MainActor in
+            await posModel.switchToItemType(itemType)
+        }
     }
 }
 

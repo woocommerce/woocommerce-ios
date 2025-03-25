@@ -99,22 +99,23 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await itemsController.loadItems(base: base)
+        await currentController.loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await itemsController.refreshItems(base: base)
+        await currentController.refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await itemsController.loadNextItems(base: base)
+        await currentController.loadNextItems(base: base)
     }
 
-    func switchToItemType(_ type: ItemType) {
-        // TODO: Switch between controllers controller: products or coupons
-        debugPrint("🍍 Switching to \(type)")
+    func switchToItemType(_ type: ItemType) async {
+        let newController = type == .products ? itemsController : couponsController
+        currentController = newController
+        await refreshItems(base: .root)
     }
 }
 

@@ -3,89 +3,13 @@ import Networking
 import class WooFoundation.CurrencyFormatter
 import enum WooFoundation.CurrencyCode
 
-/// POSCartItem is different from the CartItem in the POS app layer.
-/// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
-public struct POSCartItem {
-    let item: POSOrderableItem
-    let quantity: Decimal
-
-    public init(item: POSOrderableItem, quantity: Decimal) {
-        self.item = item
-        self.quantity = quantity
-    }
-}
-
-extension [POSCartItem] {
-    public func matches(order: Order?) -> Bool {
-        guard let order else {
-            return self.isEmpty
-        }
-
-        let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
-            if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
-                let itemToUpdate = partialResult[matchingIndex]
-                partialResult[matchingIndex] = POSCartItem(item: itemToUpdate.item, quantity: itemToUpdate.quantity + nextItem.quantity)
-            } else {
-                partialResult.append(nextItem)
-            }
-        }
-
-        let consolidatedOrderItems = order.items.reduce(into: [OrderItem]()) { partialResult, nextItem in
-            if let matchingIndex = partialResult.firstIndex(where: { $0.productID == nextItem.productID && $0.variationID == nextItem.variationID }) {
-                let itemToUpdate = partialResult[matchingIndex]
-                partialResult[matchingIndex] = itemToUpdate.copy(quantity: itemToUpdate.quantity + nextItem.quantity)
-            } else {
-                partialResult.append(nextItem)
-            }
-        }
-
-        guard consolidatedCartItems.count == consolidatedOrderItems.count else {
-            return false
-        }
-
-        for cartItem in consolidatedCartItems {
-            guard consolidatedOrderItems.contains(where: { orderItem in
-                cartItem.item.matches(orderItem: orderItem) && cartItem.quantity == orderItem.quantity
-            }) else {
-                return false
-            }
-        }
-        return true
-    }
-
-    func createGroupedOrderSyncProductInputs() -> [OrderSyncProductInput.ProductType: OrderSyncProductInput] {
-        let orderSyncProductInputs = self.map { $0.item.toOrderSyncProductInput(quantity: $0.quantity) }
-
-        // Group items by their `product`, which is actually a `ProductType` enum, representing a product or variation,
-        // with an associated value for the underlying item.
-        let groupedItems = Dictionary(grouping: orderSyncProductInputs, by: { $0.product })
-
-        // Convert each group into a single `OrderSyncProductInput`
-        let output = groupedItems.compactMapValues { items -> OrderSyncProductInput? in
-            guard let firstItem = items.first else { return nil }
-
-            // Aggregate the quantity for this item
-            let totalQuantity = items.reduce(Decimal(0)) { $0 + $1.quantity }
-
-            // Return a copy of the first item, with the aggregate quantity
-            return OrderSyncProductInput(product: firstItem.product,
-                                         quantity: totalQuantity,
-                                         discount: firstItem.discount,
-                                         baseSubtotal: firstItem.baseSubtotal,
-                                         bundleConfiguration: firstItem.bundleConfiguration)
-        }
-
-        return output
-    }
-}
-
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
-    ///   - cart: Cart with optional items (product & quantity).
+    ///   - cart: Cart with different types of items and quantities.
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [POSCartItem], order: Order?, currency: CurrencyCode) async throws -> Order
+    func syncOrder(cart: POSCart, order: Order?, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(order: Order, recipientEmail: String) async throws
 }
 
@@ -111,7 +35,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [POSCartItem],
+    public func syncOrder(cart: POSCart,
                           order posOrder: Order?,
                           currency: CurrencyCode) async throws -> Order {
         let initialOrder: Order = posOrder ?? OrderFactory.newOrder(currency: currency)
@@ -120,9 +44,9 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let order = updateOrder(initialOrder, cart: cart).sanitizingLocalItems()
         let syncedOrder: Order
         if posOrder != nil {
-            syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items])
+            syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items, .couponLines])
         } else {
-            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency])
+            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
         }
         return syncedOrder
     }
@@ -158,20 +82,40 @@ private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol, Hashable {
 }
 
 private extension POSOrderService {
-    func updateOrder(_ order: Order, cart: [POSCartItem]) -> Order {
+    func updateOrder(_ order: Order, cart: POSCart) -> Order {
         // Removes all existing items by setting quantity to 0.
         let itemsToRemove = order.items.compactMap {
             Self.removalProductInput(item: $0)
         }
 
         // Adds items from the latest cart grouping by item.
-        let itemsToAdd = cart.createGroupedOrderSyncProductInputs().values
+        let itemsToAdd = cart.items.createGroupedOrderSyncProductInputs().values
         let itemsToSync = itemsToRemove + itemsToAdd
 
-        return ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+        var order = ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+        order = updateCoupons(cart.coupons, on: order)
+
+        return order
     }
 
+    func updateCoupons(_ coupons: [POSCoupon], on order: Order) -> Order {
+        // Get coupon codes from cart
+        let cartCouponCodes = Set(coupons.map { $0.code })
 
+        // Keep existing coupons that are still in the cart
+        let remainingCoupons = order.coupons.filter { orderCoupon in
+            cartCouponCodes.contains(orderCoupon.code)
+        }
+
+        // Find new coupons that need to be added (in cart but not in order)
+        let existingCouponCodes = Set(order.coupons.map { $0.code })
+        let newCoupons = coupons
+            .filter { !existingCouponCodes.contains($0.code) }
+            .map { OrderFactory.newOrderCouponLine(code: $0.code) }
+
+        // Update order with remaining + new coupons
+        return order.copy(coupons: remainingCoupons + newCoupons)
+    }
 
     /// Creates a new `OrderSyncProductInput` type meant to remove an existing item from `OrderSynchronizer`
     ///

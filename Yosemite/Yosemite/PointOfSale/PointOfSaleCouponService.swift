@@ -1,7 +1,6 @@
 import protocol Networking.Network
 import protocol Networking.ProductVariationsRemoteProtocol
-import class Networking.ProductsRemote
-import class Networking.ProductVariationsRemote
+import class Networking.CouponsRemote
 import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -10,8 +9,7 @@ import Storage
 public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let productsRemote: ProductsRemote
-    private let variationRemote: ProductVariationsRemoteProtocol
+    private let couponsRemote: CouponsRemote
     private let storage: StorageManagerType?
 
     public init(siteID: Int64,
@@ -20,8 +18,7 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
                 storage: StorageManagerType? = nil) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.productsRemote = ProductsRemote(network: network)
-        self.variationRemote = ProductVariationsRemote(network: network)
+        self.couponsRemote = CouponsRemote(network: network)
         self.storage = storage
     }
 
@@ -38,26 +35,36 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     // TODO:
     // gh-15326 - Return PagedItems<POSItem> instead.
     @MainActor
-    public func providePointOfSaleCoupons() -> [POSItem] {
+    public func providePointOfSaleCoupons() async -> [POSItem] {
         guard let storage = storage else {
             return []
         }
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: false)
-
-        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
-                                                                matching: predicate,
-                                                                sortedBy: [descriptor])
-
+// #2 Remote
         do {
-            try resultsController.performFetch()
-            let storeCoupons = resultsController.fetchedObjects
-            return mapCouponsToPOSItems(coupons: storeCoupons)
+            let remoteCoupons = try await couponsRemote.loadAllCoupons(for: siteID)
+            return mapCouponsToPOSItems(coupons: remoteCoupons)
         } catch {
             debugPrint(error)
             return []
         }
+
+// #1 Storage
+//        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+//        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+//                                          ascending: false)
+//
+//        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
+//                                                                matching: predicate,
+//                                                                sortedBy: [descriptor])
+//
+//        do {
+//            try resultsController.performFetch()
+//            let storeCoupons = resultsController.fetchedObjects
+//            return mapCouponsToPOSItems(coupons: storeCoupons)
+//        } catch {
+//            debugPrint(error)
+//            return []
+//        }
     }
 
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
@@ -73,7 +80,7 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
 
     @MainActor
     public func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let coupons = providePointOfSaleCoupons()
+        let coupons = await providePointOfSaleCoupons()
         return .init(items: coupons, hasMorePages: false)
     }
 }

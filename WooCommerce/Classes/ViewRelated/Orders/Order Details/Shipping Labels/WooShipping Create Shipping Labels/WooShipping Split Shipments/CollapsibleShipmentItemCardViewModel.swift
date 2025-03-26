@@ -14,7 +14,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
 
     var onSelectionChange: (() -> Void)?
 
-    var selectedShipmentIds: [String] {
+    var selectedItemIds: [String] {
         if mainItemRow.selected {
             if childItemRows.isNotEmpty {
                 return childItemRows.map { $0.itemID }

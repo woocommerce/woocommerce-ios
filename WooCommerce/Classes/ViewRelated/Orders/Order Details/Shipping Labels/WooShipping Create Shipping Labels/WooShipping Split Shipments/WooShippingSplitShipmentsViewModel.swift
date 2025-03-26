@@ -132,19 +132,18 @@ private extension WooShippingSplitShipmentsViewModel {
             currentShipment?.map { $0.selectedItemIds.count }.reduce(0, +) ?? 0
         }()
 
-        guard selectedItemsCount > 0 else {
-            return self.moveToNoticeViewModel = nil
+        guard selectedItemsCount > 0, let selectedShipmentIndex else {
+            return moveToNoticeViewModel = nil
         }
 
-        // TODO: Use count and index values from shipment tabs
         moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
-                                                               existingShipmentsCount: 3,
-                                                               currentShipmentIndex: 2,
-                                                               actionHandler: { [weak self] moveTo in
+                                                              existingShipmentsCount: shipments.count,
+                                                              currentShipmentIndex: selectedShipmentIndex,
+                                                              actionHandler: { [weak self] moveTo in
             guard let self else { return }
 
-            self.moveToNoticeViewModel = nil
-            self.instructions = nil
+            moveToNoticeViewModel = nil
+            instructions = nil
 
             switch moveTo {
             case .existingShipment:

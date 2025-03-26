@@ -22,7 +22,7 @@ struct CollapsibleShipmentCard: View {
 
             if !isCollapsed {
                 VStack(spacing: 0) {
-                    ForEach(Array(viewModel.childShipmentRows.enumerated()), id: \.element.id) { index, item in
+                    ForEach(Array(viewModel.childItemRows.enumerated()), id: \.element.id) { index, item in
                         VStack(spacing: 0) {
                             Divider()
 
@@ -30,7 +30,7 @@ struct CollapsibleShipmentCard: View {
                                 .padding(.leading, Layout.horizontalPadding * 2)
                                 .padding(.trailing, Layout.horizontalPadding)
                                 .padding(.vertical, Layout.verticalPadding)
-                                .background(backgroundForChildShipmentRow(isFinalRow: index == viewModel.childShipmentRows.count - 1))
+                                .background(backgroundForChildShipmentRow(isFinalRow: index == viewModel.childItemRows.count - 1))
                         }
                     }
                 }
@@ -44,7 +44,7 @@ struct CollapsibleShipmentCard: View {
 private extension CollapsibleShipmentCard {
     @ViewBuilder
     var mainShipmentRow: some View {
-        if viewModel.childShipmentRows.isEmpty {
+        if viewModel.childItemRows.isEmpty {
             SelectableShipmentRow(viewModel: viewModel.mainItemRow)
         } else {
             Button(action: {

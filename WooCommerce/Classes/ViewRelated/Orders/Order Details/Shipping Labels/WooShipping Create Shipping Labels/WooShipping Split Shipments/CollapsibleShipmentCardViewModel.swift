@@ -10,20 +10,20 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     let mainItemRow: SelectableShipmentRowViewModel
 
     /// Child shipment rows, if the shipment has more than one quantity
-    let childShipmentRows: [SelectableShipmentRowViewModel]
+    let childItemRows: [SelectableShipmentRowViewModel]
 
     var onSelectionChange: (() -> Void)?
 
     var selectedShipmentIds: [String] {
         if mainItemRow.selected {
-            if childShipmentRows.isNotEmpty {
-                return childShipmentRows.map { $0.shipmentId }
+            if childItemRows.isNotEmpty {
+                return childItemRows.map { $0.shipmentId }
             } else {
                 return [mainItemRow.shipmentId]
             }
         }
 
-        return childShipmentRows
+        return childItemRows
             .filter { $0.selected }
             .map(\.shipmentId)
     }
@@ -41,7 +41,7 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
                                                           isSelectable: true,
                                                           item: mainShippingItem,
                                                           showQuantity: true)
-        self.childShipmentRows = childShipmentIds.map({
+        self.childItemRows = childShipmentIds.map({
             SelectableShipmentRowViewModel(shipmentId: $0,
                                            isSelectable: true,
                                            item: childShippingItem,
@@ -53,7 +53,7 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
 
     func selectAll() {
         mainItemRow.setSelected(true)
-        childShipmentRows.forEach({ $0.setSelected(true) })
+        childItemRows.forEach({ $0.setSelected(true) })
         onSelectionChange?()
     }
 }
@@ -63,11 +63,11 @@ private extension CollapsibleShipmentCardViewModel {
         mainItemRow.onSelectedChange = { [weak self] row in
             guard let self else { return }
 
-            childShipmentRows.forEach({ $0.setSelected(row.selected) })
+            childItemRows.forEach({ $0.setSelected(row.selected) })
             onSelectionChange?()
         }
 
-        childShipmentRows.forEach({
+        childItemRows.forEach({
             $0.onSelectedChange = { [weak self] row in
                 guard let self else { return }
 

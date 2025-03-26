@@ -79,7 +79,9 @@ private extension WooShippingSplitShipmentsDetailView {
             }
 
             if let moveTo = viewModel.moveToNoticeViewModel {
-                MoveToShipmentNotice(viewModel: moveTo)
+                MoveToShipmentNotice(viewModel: moveTo, onMoving: { destination in
+                    viewModel.moveSelectedItems(to: destination)
+                })
             }
         }
     }

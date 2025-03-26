@@ -2,12 +2,12 @@ import Yosemite
 import SwiftUI
 
 /// Displays a single collapsible shipment item row or grouped parent and child shipment item rows
-struct CollapsibleShipmentCard: View {
+struct CollapsibleShipmentItemCard: View {
     @State private var isCollapsed: Bool = true
 
-    private let viewModel: CollapsibleShipmentCardViewModel
+    private let viewModel: CollapsibleShipmentItemCardViewModel
 
-    init(viewModel: CollapsibleShipmentCardViewModel) {
+    init(viewModel: CollapsibleShipmentItemCardViewModel) {
         self.viewModel = viewModel
     }
 
@@ -22,15 +22,15 @@ struct CollapsibleShipmentCard: View {
 
             if !isCollapsed {
                 VStack(spacing: 0) {
-                    ForEach(Array(viewModel.childShipmentRows.enumerated()), id: \.element.id) { index, item in
+                    ForEach(Array(viewModel.childItemRows.enumerated()), id: \.element.id) { index, item in
                         VStack(spacing: 0) {
                             Divider()
 
-                            SelectableShipmentRow(viewModel: item)
+                            SelectableShipmentItemRow(viewModel: item)
                                 .padding(.leading, Layout.horizontalPadding * 2)
                                 .padding(.trailing, Layout.horizontalPadding)
                                 .padding(.vertical, Layout.verticalPadding)
-                                .background(backgroundForChildShipmentRow(isFinalRow: index == viewModel.childShipmentRows.count - 1))
+                                .background(backgroundForChildShipmentRow(isFinalRow: index == viewModel.childItemRows.count - 1))
                         }
                     }
                 }
@@ -41,11 +41,11 @@ struct CollapsibleShipmentCard: View {
     }
 }
 
-private extension CollapsibleShipmentCard {
+private extension CollapsibleShipmentItemCard {
     @ViewBuilder
     var mainShipmentRow: some View {
-        if viewModel.childShipmentRows.isEmpty {
-            SelectableShipmentRow(viewModel: viewModel.mainShipmentRow)
+        if viewModel.childItemRows.isEmpty {
+            SelectableShipmentItemRow(viewModel: viewModel.mainItemRow)
         } else {
             Button(action: {
                 withAnimation {
@@ -53,7 +53,7 @@ private extension CollapsibleShipmentCard {
                 }
             }, label: {
                 ZStack(alignment: .topTrailing) {
-                    SelectableShipmentRow(viewModel: viewModel.mainShipmentRow)
+                    SelectableShipmentItemRow(viewModel: viewModel.mainItemRow)
                         .contentShape(Rectangle())
 
                     Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)
@@ -86,7 +86,7 @@ private extension CollapsibleShipmentCard {
     }
 }
 
-private extension CollapsibleShipmentCard {
+private extension CollapsibleShipmentItemCard {
     enum Layout {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5

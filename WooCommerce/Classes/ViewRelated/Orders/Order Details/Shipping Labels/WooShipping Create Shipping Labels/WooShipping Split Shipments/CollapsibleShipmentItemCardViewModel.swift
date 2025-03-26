@@ -2,32 +2,32 @@ import SwiftUI
 import WooFoundation
 import Yosemite
 
-/// View model for `CollapsibleShipmentCard`.
-final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
+/// View model for `CollapsibleShipmentItemCard`.
+final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
     let item: ShippingLabelPackageItem
 
-    /// The main shipment row.
-    let mainShipmentRow: SelectableShipmentRowViewModel
+    /// The main item row.
+    let mainItemRow: SelectableShipmentItemRowViewModel
 
     /// Child shipment rows, if the shipment has more than one quantity
-    let childShipmentRows: [SelectableShipmentRowViewModel]
+    let childItemRows: [SelectableShipmentItemRowViewModel]
 
     var onSelectionChange: (() -> Void)?
 
-    var selectedShipmentIds: [String] {
-        if mainShipmentRow.selected {
-            if childShipmentRows.isNotEmpty {
-                return childShipmentRows.map { $0.shipmentId }
+    var selectedItemIds: [String] {
+        if mainItemRow.selected {
+            if childItemRows.isNotEmpty {
+                return childItemRows.map { $0.itemID }
             } else {
-                return [mainShipmentRow.shipmentId]
+                return [mainItemRow.itemID]
             }
         }
 
-        return childShipmentRows
+        return childItemRows
             .filter { $0.selected }
-            .map(\.shipmentId)
+            .map(\.itemID)
     }
 
     init(parentShipmentId: String,
@@ -41,41 +41,41 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),
                                                             currency: currency)
 
-        self.mainShipmentRow = SelectableShipmentRowViewModel(shipmentId: parentShipmentId,
+        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: parentShipmentId,
                                                               isSelectable: true,
                                                               item: mainShippingItem,
                                                               showQuantity: true)
-        self.childShipmentRows = childShipmentIds.map({
-            SelectableShipmentRowViewModel(shipmentId: $0,
-                                           isSelectable: true,
-                                           item: childShippingItem,
-                                           showQuantity: false)
+        self.childItemRows = childShipmentIds.map({
+            SelectableShipmentItemRowViewModel(itemID: $0,
+                                               isSelectable: true,
+                                               item: childShippingItem,
+                                               showQuantity: false)
         })
 
         observeSelection()
     }
 
     func selectAll() {
-        mainShipmentRow.setSelected(true)
-        childShipmentRows.forEach({ $0.setSelected(true) })
+        mainItemRow.setSelected(true)
+        childItemRows.forEach({ $0.setSelected(true) })
         onSelectionChange?()
     }
 }
 
-private extension CollapsibleShipmentCardViewModel {
+private extension CollapsibleShipmentItemCardViewModel {
     func observeSelection() {
-        mainShipmentRow.onSelectedChange = { [weak self] row in
+        mainItemRow.onSelectedChange = { [weak self] row in
             guard let self else { return }
 
-            childShipmentRows.forEach({ $0.setSelected(row.selected) })
+            childItemRows.forEach({ $0.setSelected(row.selected) })
             onSelectionChange?()
         }
 
-        childShipmentRows.forEach({
+        childItemRows.forEach({
             $0.onSelectedChange = { [weak self] row in
                 guard let self else { return }
 
-                mainShipmentRow.setSelected(false)
+                mainItemRow.setSelected(false)
                 onSelectionChange?()
             }
         })

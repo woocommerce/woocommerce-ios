@@ -3,7 +3,7 @@ import WooFoundation
 import Yosemite
 
 /// View model for `SelectableShipmentRow`.
-final class SelectableShipmentRowViewModel: ObservableObject, Identifiable {
+final class SelectableShipmentItemRowViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
     let item: WooShippingItemRowViewModel
@@ -12,17 +12,17 @@ final class SelectableShipmentRowViewModel: ObservableObject, Identifiable {
 
     let isSelectable: Bool
 
-    let shipmentId: String
+    let itemID: String
 
     let showQuantity: Bool
 
-    var onSelectedChange: ((SelectableShipmentRowViewModel) -> Void)?
+    var onSelectedChange: ((SelectableShipmentItemRowViewModel) -> Void)?
 
-    init(shipmentId: String,
+    init(itemID: String,
          isSelectable: Bool,
          item: WooShippingItemRowViewModel,
          showQuantity: Bool = true) {
-        self.shipmentId = shipmentId
+        self.itemID = itemID
         self.isSelectable = isSelectable
         self.item = item
         self.showQuantity = showQuantity

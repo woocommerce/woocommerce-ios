@@ -36,7 +36,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
     }
 
-    var currentShipment: [CollapsibleShipmentCardViewModel]? {
+    var currentShipment: [CollapsibleShipmentItemCardViewModel]? {
         guard let index = selectedShipmentIndex,
             let shipment = shipments[safe: index] else {
             return nil
@@ -63,7 +63,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.shippingSettingsService = shippingSettingsService
 
         let shipmentCardViewModels = {
-            var viewModels = [CollapsibleShipmentCardViewModel]()
+            var viewModels = [CollapsibleShipmentItemCardViewModel]()
             for item in items {
                 // TODO: #15303 Set IDs based on web logic
                 let childShipmentIds: [String] = {
@@ -79,10 +79,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                     return children
                 }()
 
-                let viewModel = CollapsibleShipmentCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
-                                                                 childShipmentIds: childShipmentIds,
-                                                                 item: item,
-                                                                 currency: order.currency)
+                let viewModel = CollapsibleShipmentItemCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
+                                                                     childShipmentIds: childShipmentIds,
+                                                                     item: item,
+                                                                     currency: order.currency)
                 viewModels.append(viewModel)
             }
             return viewModels
@@ -127,7 +127,7 @@ private extension WooShippingSplitShipmentsViewModel {
 
     func showMoveToNotice() {
         let selectedItemsCount = {
-            currentShipment?.map { $0.selectedShipmentIds.count }.reduce(0, +) ?? 0
+            currentShipment?.map { $0.selectedItemIds.count }.reduce(0, +) ?? 0
         }()
 
         guard selectedItemsCount > 0 else {

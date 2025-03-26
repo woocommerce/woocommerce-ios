@@ -9,6 +9,8 @@ import struct Yosemite.OrderCouponLine
 import enum Yosemite.OrderAction
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -179,9 +181,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(orderStates == [
             .idle,
             .syncing,
-            .error(.init(
-                message: MockPOSOrderServiceError.noOrderToReturn.localizedDescription,
-                handler: {}))
+            .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
         ])
     }
 
@@ -435,6 +435,93 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_when_orderService_fails_with_couponsError_then_sets_invalidCoupon_error() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                           receiptService: mockReceiptService)
+        let errorMessage = "Invalid coupon code"
+        mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
+
+        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
+        var orderStateAppendTask: Task<Void, Never>? = nil
+        await confirmation(expectedCount: 2) { confirmation in
+            @Sendable func observeOrderState() {
+                withObservationTracking {
+                    _ = sut.orderState
+                } onChange: {
+                    orderStateAppendTask = Task { @MainActor in
+                        orderStates.append(sut.orderState)
+                    }
+                    confirmation()
+                    observeOrderState()
+                }
+            }
+            observeOrderState()
+
+            // When
+            await sut.syncOrder(for: .init(items: [makeItem()],
+                                         coupons: [.init(id: UUID(), code: "INVALID")]),
+                              retryHandler: {})
+        }
+
+        await orderStateAppendTask?.value
+
+        // Then
+        #expect(orderStates == [
+            .idle,
+            .syncing,
+            .error(.invalidCoupon(errorMessage), {})
+        ])
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                           receiptService: mockReceiptService)
+        let errorMessage = "Coupon INVALID does not exist"
+        let errorJSON = """
+        {
+            "code": "woocommerce_rest_invalid_coupon",
+            "message": "\(errorMessage)"
+        }
+        """
+        let errorData = errorJSON.data(using: .utf8)!
+        mockOrderService.errorToReturn = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
+
+        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
+        var orderStateAppendTask: Task<Void, Never>? = nil
+        await confirmation(expectedCount: 2) { confirmation in
+            @Sendable func observeOrderState() {
+                withObservationTracking {
+                    _ = sut.orderState
+                } onChange: {
+                    orderStateAppendTask = Task { @MainActor in
+                        orderStates.append(sut.orderState)
+                    }
+                    confirmation()
+                    observeOrderState()
+                }
+            }
+            observeOrderState()
+
+            // When
+            await sut.syncOrder(for: .init(items: [makeItem()],
+                                         coupons: [.init(id: UUID(), code: "INVALID")]),
+                              retryHandler: {})
+        }
+
+        await orderStateAppendTask?.value
+
+        // Then
+        #expect(orderStates == [
+            .idle,
+            .syncing,
+            .error(.invalidCoupon(errorMessage), {})
+        ])
     }
 
     struct AnalyticsTests {

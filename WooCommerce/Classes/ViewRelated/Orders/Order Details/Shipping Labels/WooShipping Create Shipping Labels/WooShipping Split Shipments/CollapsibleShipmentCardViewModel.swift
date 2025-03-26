@@ -37,15 +37,15 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),
                                                             currency: currency)
 
-        self.mainItemRow = SelectableShipmentItemRowViewModel(shipmentId: parentShipmentId,
-                                                          isSelectable: true,
-                                                          item: mainShippingItem,
-                                                          showQuantity: true)
+        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: parentShipmentId,
+                                                              isSelectable: true,
+                                                              item: mainShippingItem,
+                                                              showQuantity: true)
         self.childItemRows = childShipmentIds.map({
-            SelectableShipmentItemRowViewModel(shipmentId: $0,
-                                           isSelectable: true,
-                                           item: childShippingItem,
-                                           showQuantity: false)
+            SelectableShipmentItemRowViewModel(itemID: $0,
+                                               isSelectable: true,
+                                               item: childShippingItem,
+                                               showQuantity: false)
         })
 
         observeSelection()

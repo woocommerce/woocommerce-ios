@@ -2,7 +2,7 @@ import Yosemite
 import SwiftUI
 
 /// Row for a selectable shipment item to ship with the Woo Shipping extension.
-struct SelectableShipmentRow: View {
+struct SelectableShipmentItemRow: View {
     @ObservedObject private var viewModel: SelectableShipmentItemRowViewModel
 
     init(viewModel: SelectableShipmentItemRowViewModel) {
@@ -53,7 +53,7 @@ struct SelectableShipmentRow: View {
     }
 }
 
-private extension SelectableShipmentRow {
+private extension SelectableShipmentItemRow {
     @ViewBuilder
     func selectionCircle(selected: Bool) -> some View {
         if selected {
@@ -75,7 +75,7 @@ private extension SelectableShipmentRow {
     }
 }
 
-private extension SelectableShipmentRow {
+private extension SelectableShipmentItemRow {
     enum Layout {
         static let horizontalSpacing: CGFloat = 16
         static let imageSize: CGFloat = 56.0
@@ -85,12 +85,12 @@ private extension SelectableShipmentRow {
 }
 
 #Preview {
-    SelectableShipmentRow(viewModel: SelectableShipmentItemRowViewModel(itemID: "123",
-                                                                        isSelectable: false,
-                                                                        item: WooShippingItemRowViewModel(imageUrl: nil,
-                                                                                                          quantityLabel: "3",
-                                                                                                          name: "Little Nap Brazil 250g",
-                                                                                                          detailsLabel: "15×10×8cm • Espresso",
-                                                                                                          weightLabel: "275g",
-                                                                                                          priceLabel: "$60.00")))
+    SelectableShipmentItemRow(viewModel: SelectableShipmentItemRowViewModel(itemID: "123",
+                                                                            isSelectable: false,
+                                                                            item: WooShippingItemRowViewModel(imageUrl: nil,
+                                                                                                              quantityLabel: "3",
+                                                                                                              name: "Little Nap Brazil 250g",
+                                                                                                              detailsLabel: "15×10×8cm • Espresso",
+                                                                                                              weightLabel: "275g",
+                                                                                                              priceLabel: "$60.00")))
 }

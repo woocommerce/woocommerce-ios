@@ -26,7 +26,7 @@ struct CollapsibleShipmentCard: View {
                         VStack(spacing: 0) {
                             Divider()
 
-                            SelectableShipmentRow(viewModel: item)
+                            SelectableShipmentItemRow(viewModel: item)
                                 .padding(.leading, Layout.horizontalPadding * 2)
                                 .padding(.trailing, Layout.horizontalPadding)
                                 .padding(.vertical, Layout.verticalPadding)
@@ -45,7 +45,7 @@ private extension CollapsibleShipmentCard {
     @ViewBuilder
     var mainShipmentRow: some View {
         if viewModel.childItemRows.isEmpty {
-            SelectableShipmentRow(viewModel: viewModel.mainItemRow)
+            SelectableShipmentItemRow(viewModel: viewModel.mainItemRow)
         } else {
             Button(action: {
                 withAnimation {
@@ -53,7 +53,7 @@ private extension CollapsibleShipmentCard {
                 }
             }, label: {
                 ZStack(alignment: .topTrailing) {
-                    SelectableShipmentRow(viewModel: viewModel.mainItemRow)
+                    SelectableShipmentItemRow(viewModel: viewModel.mainItemRow)
                         .contentShape(Rectangle())
 
                     Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)

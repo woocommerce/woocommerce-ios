@@ -51,6 +51,7 @@ public struct NUXButtonStyle {
     }
 
     var buttonStyle: NUXButtonStyle?
+    var contentInsets: UIEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
 
     open override var isEnabled: Bool {
         didSet {
@@ -150,7 +151,7 @@ public struct NUXButtonStyle {
     /// Setup: NUXButton's Default Settings
     ///
     private func configureInsets() {
-        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
+        contentEdgeInsets = contentInsets
     }
 
     /// Setup: ActivityIndicator

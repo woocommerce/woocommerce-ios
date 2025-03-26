@@ -127,7 +127,7 @@ private extension WooShippingSplitShipmentsViewModel {
 
     func showMoveToNotice() {
         let selectedItemsCount = {
-            shipmentCardViewModels.map { $0.selectedShipmentIds.count }.reduce(0, +)
+            currentShipment?.map { $0.selectedShipmentIds.count }.reduce(0, +) ?? 0
         }()
 
         guard selectedItemsCount > 0 else {

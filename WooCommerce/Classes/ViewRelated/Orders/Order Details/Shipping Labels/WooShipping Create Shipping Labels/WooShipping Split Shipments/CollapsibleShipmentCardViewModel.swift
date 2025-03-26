@@ -7,10 +7,10 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
     /// The main item row.
-    let mainItemRow: SelectableShipmentRowViewModel
+    let mainItemRow: SelectableShipmentItemRowViewModel
 
     /// Child shipment rows, if the shipment has more than one quantity
-    let childItemRows: [SelectableShipmentRowViewModel]
+    let childItemRows: [SelectableShipmentItemRowViewModel]
 
     var onSelectionChange: (() -> Void)?
 
@@ -37,12 +37,12 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),
                                                             currency: currency)
 
-        self.mainItemRow = SelectableShipmentRowViewModel(shipmentId: parentShipmentId,
+        self.mainItemRow = SelectableShipmentItemRowViewModel(shipmentId: parentShipmentId,
                                                           isSelectable: true,
                                                           item: mainShippingItem,
                                                           showQuantity: true)
         self.childItemRows = childShipmentIds.map({
-            SelectableShipmentRowViewModel(shipmentId: $0,
+            SelectableShipmentItemRowViewModel(shipmentId: $0,
                                            isSelectable: true,
                                            item: childShippingItem,
                                            showQuantity: false)

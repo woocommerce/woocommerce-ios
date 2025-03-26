@@ -3,9 +3,9 @@ import SwiftUI
 
 /// Row for a selectable shipment item to ship with the Woo Shipping extension.
 struct SelectableShipmentRow: View {
-    @ObservedObject private var viewModel: SelectableShipmentRowViewModel
+    @ObservedObject private var viewModel: SelectableShipmentItemRowViewModel
 
-    init(viewModel: SelectableShipmentRowViewModel) {
+    init(viewModel: SelectableShipmentItemRowViewModel) {
         self.viewModel = viewModel
     }
 
@@ -85,7 +85,7 @@ private extension SelectableShipmentRow {
 }
 
 #Preview {
-    SelectableShipmentRow(viewModel: SelectableShipmentRowViewModel(shipmentId: "123",
+    SelectableShipmentRow(viewModel: SelectableShipmentItemRowViewModel(shipmentId: "123",
                                                                     isSelectable: false,
                                                                     item: WooShippingItemRowViewModel(imageUrl: nil,
                                                                                                       quantityLabel: "3",

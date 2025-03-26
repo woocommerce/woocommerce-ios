@@ -18,27 +18,34 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        debugPrint("🍍 CouponsController::loadItems called")
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+        // TODO:
+        // Handle unhappy path
+        await loadFirstPage()
     }
 
+    @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await fetchItems()
+        // TODO:
+        // Handle unhappy path
+        await loadFirstPage()
     }
 
+    @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        debugPrint("🍍 CouponsController::loadNextItems called")
-        itemsViewState = ItemsViewState(containerState: .content, itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+        // TODO:
+        // Pagination https://github.com/woocommerce/woocommerce-ios/issues/15343
+        await loadFirstPage()
     }
 }
 
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
-    func fetchItems() async {
+    @MainActor
+    func loadFirstPage() async {
         do {
-            let items = try await itemProvider.providePointOfSaleItems(pageNumber: 1).items
+            let coupons = try await itemProvider.providePointOfSaleItems(pageNumber: 1).items
             itemsViewState = ItemsViewState(containerState: .content,
-                                            itemsStack: .init(root: .loaded(items, hasMoreItems: false),
+                                            itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
                                                               itemStates: [:]))
         } catch {
             debugPrint(error)

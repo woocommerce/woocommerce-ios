@@ -3,8 +3,8 @@
 
 22.1
 -----
-
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
 
 22.0
 -----
@@ -48,14 +48,12 @@
 - [*] Orders: Improved accessibility UI for Tax Rates related views [https://github.com/woocommerce/woocommerce-ios/pull/15043]
 - [*] Product Details: Display cover tag on the first product image [https://github.com/woocommerce/woocommerce-ios/pull/15041]
 - [*] Now, usernames and emails in text fields across multiple login views are no longer capitalized. [https://github.com/woocommerce/woocommerce-ios/pull/15002]
-- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
 
 21.6
 -----
 - [*] Payments: improve retry handling when card reader updates fail due to low battery [https://github.com/woocommerce/woocommerce-ios/pull/14990]
 - [*] Payments: Improved error handling during card payments and refunds [https://github.com/woocommerce/woocommerce-ios/pull/14980]
 - [***] Updated the app look and feel to match the new WooCommerce branding [https://github.com/woocommerce/woocommerce-ios/pull/14825]
-
 
 21.5
 -----

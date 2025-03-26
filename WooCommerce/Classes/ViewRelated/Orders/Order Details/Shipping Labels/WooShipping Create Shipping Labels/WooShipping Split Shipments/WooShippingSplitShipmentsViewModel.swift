@@ -26,7 +26,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
-    let shipmentCardViewModels: [CollapsibleShipmentCardViewModel]
+    let shipmentCardViewModels: [CollapsibleShipmentItemCardViewModel]
 
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
 
@@ -48,7 +48,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.shippingSettingsService = shippingSettingsService
 
         self.shipmentCardViewModels = {
-            var viewModels = [CollapsibleShipmentCardViewModel]()
+            var viewModels = [CollapsibleShipmentItemCardViewModel]()
             for item in items {
                 // TODO: #15303 Set IDs based on web logic
                 let childShipmentIds: [String] = {
@@ -64,10 +64,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                     return children
                 }()
 
-                let viewModel = CollapsibleShipmentCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
-                                                                 childShipmentIds: childShipmentIds,
-                                                                 item: item,
-                                                                 currency: order.currency)
+                let viewModel = CollapsibleShipmentItemCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
+                                                                     childShipmentIds: childShipmentIds,
+                                                                     item: item,
+                                                                     currency: order.currency)
                 viewModels.append(viewModel)
             }
             return viewModels
@@ -111,7 +111,7 @@ private extension WooShippingSplitShipmentsViewModel {
 
     func showMoveToNotice() {
         let selectedItemsCount = {
-            shipmentCardViewModels.map { $0.selectedShipmentIds.count }.reduce(0, +)
+            shipmentCardViewModels.map { $0.selectedItemIds.count }.reduce(0, +)
         }()
 
         guard selectedItemsCount > 0 else {

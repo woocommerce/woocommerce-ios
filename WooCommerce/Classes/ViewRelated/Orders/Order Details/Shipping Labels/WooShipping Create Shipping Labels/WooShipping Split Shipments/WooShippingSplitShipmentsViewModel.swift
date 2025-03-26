@@ -16,6 +16,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published var selectedShipmentIndex: Int? = 0 {
         didSet {
+            configureSectionHeader()
             configureSelectionCallback()
             updateMoveToNotice()
         }
@@ -156,6 +157,7 @@ private extension WooShippingSplitShipmentsViewModel {
             // Step 2: Update the current shipment
             shipments[currentIndex] = newShipment
             configureSelectionCallback()
+            configureSectionHeader()
 
             // Step 3: Add new or update existing shipment
             switch moveTo {

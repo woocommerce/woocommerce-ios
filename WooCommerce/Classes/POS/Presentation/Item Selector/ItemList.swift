@@ -120,11 +120,8 @@ private struct ItemListRow: View {
             Button(action: {
                 posModel.addToCart(item)
             }, label: {
-                HStack {
-                    Text("Coupon:")
-                    Text(coupon.code)
-                }
-                .padding()
+                CouponRowView(couponItem: .init(id: coupon.id,
+                                                code: coupon.code))
             })
         }
     }

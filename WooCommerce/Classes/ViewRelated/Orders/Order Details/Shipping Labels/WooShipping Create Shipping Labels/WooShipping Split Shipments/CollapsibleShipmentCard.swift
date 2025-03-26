@@ -45,7 +45,7 @@ private extension CollapsibleShipmentCard {
     @ViewBuilder
     var mainShipmentRow: some View {
         if viewModel.childShipmentRows.isEmpty {
-            SelectableShipmentRow(viewModel: viewModel.mainShipmentRow)
+            SelectableShipmentRow(viewModel: viewModel.mainItemRow)
         } else {
             Button(action: {
                 withAnimation {
@@ -53,7 +53,7 @@ private extension CollapsibleShipmentCard {
                 }
             }, label: {
                 ZStack(alignment: .topTrailing) {
-                    SelectableShipmentRow(viewModel: viewModel.mainShipmentRow)
+                    SelectableShipmentRow(viewModel: viewModel.mainItemRow)
                         .contentShape(Rectangle())
 
                     Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)

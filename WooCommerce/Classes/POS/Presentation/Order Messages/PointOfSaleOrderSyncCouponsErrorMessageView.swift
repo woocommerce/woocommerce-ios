@@ -64,7 +64,7 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     }
 }
 
-// MARK: - TODO when copy is finalized
+// MARK: - TODO https://github.com/woocommerce/woocommerce-ios/issues/15424
 //
 //private extension PointOfSaleOrderSyncErrorMessageView {
 //    enum Localization {

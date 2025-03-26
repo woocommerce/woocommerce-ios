@@ -75,6 +75,8 @@ public final class WooShippingStore: Store {
             verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
         case let .updateDestinationAddress(siteID, orderID, address, completion):
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
+        case let .loadConfig(siteID, orderID, completion):
+            loadConfig(siteID: siteID, orderID: orderID, completion: completion)
         }
     }
 }
@@ -116,13 +118,15 @@ private extension WooShippingStore {
                         originAddress: WooShippingAddress,
                         destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
-                        completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
+                        completion: @escaping ([ShippingLabelPackageSelected], Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         remote.loadLabelRates(siteID: siteID,
                               orderID: orderID,
                               originAddress: originAddress,
                               destinationAddress: destinationAddress,
                               packages: packages,
-                              completion: completion)
+                              completion: { result in
+            completion(packages, result)
+        })
     }
 
     func loadPackages(siteID: Int64,
@@ -283,6 +287,12 @@ private extension WooShippingStore {
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
         remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
+    }
+
+    func loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
+        remote.loadConfig(siteID: siteID, orderID: orderID, completion: completion)
     }
 }
 

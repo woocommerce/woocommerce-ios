@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-11 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-11 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -367,12 +367,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "Etkin";
-
-/* The plugin is active on the site and has not enabled automatic updates */
-"Active, Autoupdates off" = "Etkin, otomatik güncellemeler kapalı";
-
-/* The plugin is active on the site and has enabled automatic updates */
-"Active, Autoupdates on" = "Etkin, otomatik güncellemeler açık";
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "Reklamsız deneyim";
@@ -876,9 +870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Şu adres için doğrulama gerekli: %@";
-
-/* The plugin can not be manually updated or deactivated */
-"Auto-managed on this site" = "Bu sitede otomatik yönetiliyor";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "Otomatik yedekleme + hızlı geri yükleme";
@@ -3411,12 +3402,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
 
-/* The plugin is not active on the site and has not enabled automatic updates */
-"Inactive, Autoupdates off" = "Etkin değil, otomatik güncellemeler kapalı";
-
-/* The plugin is not active on the site and has enabled automatic updates */
-"Inactive, Autoupdates on" = "Etkin değil, otomatik güncellemeler açık";
-
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
@@ -3548,9 +3533,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "Geçersiz URL. Lütfen tekrar kontrol edip yeniden deneyin.";
-
-/* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "Geçersiz uç nokta";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Geçersiz kullanıcı adı";
@@ -8971,6 +8953,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Simge";
 
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "Uygulama Şifresi Nedir?";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "Yardım";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "Tekrar dene";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "Başka Bir Hesapla Oturum Açın";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Yeni bir mağaza mı açıyorsunuz?";
 
@@ -10777,6 +10771,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "Satışlarınızı güçlendirin";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "Ürün görselleriniz hala arka planda karşıya yükleniyor. Karşıya yükleme hızı daha yavaş olabilir ve hatalar oluşabilir. En iyi sonuçlar için lütfen karşıya yüklemeler tamamlanıncaya kadar uygulamayı açık tutun.";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "Görsel Karşıya Yükleme Devam Ediyor";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Mağaza senkronize ediliyor...";
 
@@ -11305,6 +11305,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Ödeme okuyucuda iptal edildi";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "Okuyucunuzu bağlayın";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "Ödeme işleniyor";
 
@@ -11368,6 +11371,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "Hazırlanıyor";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "Okuyucu ödeme için hazırlanıyor";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Kartı takın";
 
@@ -11406,6 +11412,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Sipariş kontrol edilirken bir hata oluştu";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Tekrar dene";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Lütfen bekleyin";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Kapat";
@@ -11620,14 +11632,23 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Bağlantı kesiliyor";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "Belgeler";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Kaldır";
 
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.retry" = "Tekrar dene";
-
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Toplamlar yüklenemedi";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "Tekrar dene";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "%1$@ tutarındaki bir kart ödemesi başarıyla alındı.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "%1$@ tutarındaki bir nakit ödemesi başarıyla alındı.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Ödeme başarılı";
@@ -11736,6 +11757,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Ürünler";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "Kapat";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Kullanılabilir seçenekler var";
@@ -12001,8 +12025,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Siteniz Özel olarak işaretlendiğinden görseller kullanılamıyor. Çok Yakında moduna geçerek bunu değiştirebilirsiniz.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "Sil";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "Tekrar dene";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "Görsel karşıya yüklenmedi";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Favori olarak işaretle";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "İptal Et";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "Tekrar dene";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "Ürün kaydedilmedi";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Favorilerden kaldır";
@@ -12019,11 +12061,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "Fotoğraflar";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "Görsel karşıya yükleme işlemi arka planda devam edecek";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Görselleri yeniden sıralamadan önce tüm yüklemelerin tamamlanmasını bekleyin.";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "Fotoğrafların sıralamasını değiştirmek için sürükleyip bırakın. İlk fotoğraf kapak olarak ayarlanır.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "Sil";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "Tekrar dene";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "Görsel karşıya yüklenmedi";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Önerilen ürün";
@@ -12813,6 +12867,18 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Kaydedildi";
 
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would cancel the saving. */
+"wooShipping.createLabel.addPackage.savingPackageError.cancel" = "İptal Et";
+
+/* Message of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.message" = "Kaydetmeden ilerlemek istiyor musunuz?";
+
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would proceed with the creation flow without saving the package. */
+"wooShipping.createLabel.addPackage.savingPackageError.proceed" = "İlerle";
+
+/* Title of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.title" = "Paketinizi şablon olarak kaydedemedik";
+
 /* Title for the Add Package screen Select Package button */
 "wooShipping.createLabel.addPackage.selectPackage" = "Paket Seç";
 
@@ -12858,6 +12924,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is missing on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.missing" = "Adres yok";
 
+/* Notice when a origin address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.originUnverified" = "Menşe adresi doğrulanmadı";
+
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.unverified" = "Doğrulanmamış adres";
 
@@ -12872,6 +12941,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (temel ücret)";
+
+/* Title for the edit destination address screen in the shipping label creation flow */
+"wooShipping.createLabels.bottomSheet.editDestination" = "Hedef Adresini Düzenleyin";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Sipariş bilgileri";
@@ -12999,6 +13071,9 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Error message when loading required data failed on the shipping label creation screen */
+"wooShipping.createLabels.missingDataError" = "Gerekli verileri yükleyemedik";
+
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "Tamam";
 
@@ -13023,6 +13098,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "Buradan gönderim etiketini yeniden yazdırabilir veya etiketin kağıt boyutunu değiştirebilirsiniz.";
 
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "İptal Et";
+
+/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.message" = "Tekrar denemek ister misiniz?";
+
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "Tekrar dene";
+
+/* Title of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.title" = "Kargo etiketi önizlenirken hata oluştu";
+
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "Gönderim etiketiniz yazdırmaya hazır";
 
@@ -13035,6 +13122,24 @@ which should be translated separately and considered part of this sentence. */
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Gönderimi takip et";
 
+/* Error message when loading shipping label rates failed on the shipping label creation screen */
+"wooShipping.createLabels.rates.failedLoadingDataError" = "Gönderim ücretlerini yükleyemedik";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Mevcut gönderim ücretlerini göstermeden önce bu paketin nereye gittiğini bilmemiz gerekiyor.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Gönderim ücretlerini almak için bir hedef adres ekleyin";
+
+/* Message displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightMessage" = "Mevcut gönderim ücretlerini göstermeden önce gönderim ağırlığını bilmemiz gerekiyor.";
+
+/* Title displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightTitle" = "Gönderim ücretlerini almak için gönderim ağırlığı ekleyin";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.rates.retryCTA" = "Tekrar dene";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Gönderim hizmeti";
 
@@ -13046,6 +13151,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "En ucuz";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.retryCTA" = "Tekrar dene";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Yetişkin İmzası Gerekli (+%1$@)";
@@ -13220,6 +13328,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Gönderen:";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.originAddresses.unverified" = "Doğrulanmamış adres";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.packagesSelectionView.createCustomPackageCTA" = "Özel paket oluştur";
+
+/* Message when there are no carrier packages loaded in the shipping label creation flow */
+"wooShipping.packagesSelectionView.emptyStateMessage" = "Kargo bilgisi bulunamadı";
+
+/* Error message when loading carrier packages failed in the shipping label creation flow */
+"wooShipping.packagesSelectionView.loadingPackageError" = "Kargo paketlerini yükleyemedik";
+
+/* Button to retry loading carrier packages in the shipping label creation flow */
+"wooShipping.packagesSelectionView.retryCTA" = "Tekrar dene";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";

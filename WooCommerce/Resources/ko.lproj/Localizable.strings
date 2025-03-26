@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -367,12 +367,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "활성";
-
-/* The plugin is active on the site and has not enabled automatic updates */
-"Active, Autoupdates off" = "활성화, 자동 업데이트 끄기";
-
-/* The plugin is active on the site and has enabled automatic updates */
-"Active, Autoupdates on" = "활성화, 자동 업데이트 켜기";
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "광고 없는 환경";
@@ -876,9 +870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "호스트 인증 필요: %@";
-
-/* The plugin can not be manually updated or deactivated */
-"Auto-managed on this site" = "이 사이트에서 자동으로 관리됨";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "자동 백업 + 빠른 복원";
@@ -3411,12 +3402,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "비활성";
 
-/* The plugin is not active on the site and has not enabled automatic updates */
-"Inactive, Autoupdates off" = "비활성화, 자동 업데이트 끄기";
-
-/* The plugin is not active on the site and has enabled automatic updates */
-"Inactive, Autoupdates on" = "비활성화, 자동 업데이트 켜기";
-
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
@@ -3548,9 +3533,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "유효하지 않은 URL. 다시 확인하고 다시 시도하세요.";
-
-/* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "유효하지 않은 엔드포인트";
 
 /* No comment provided by engineer. */
 "Invalid username" = "유효하지 않은 사용자명";
@@ -8971,6 +8953,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "아이콘";
 
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "애플리케이션 비밀번호가 무엇인가요?";
+
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "%1$@ 사이트에서 애플리케이션 비밀번호가 비활성화된 것 같습니다. 우커머스 앱을 사용하려면 활성화하세요.";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "도움말";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "다시 시도";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "다른 계정으로 로그인";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "새 스토어를 시작하시나요?";
 
@@ -10777,6 +10774,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "매출 증대";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "상품 이미지가 아직 백그라운드에서 업로드되고 있습니다. 업로드 속도가 느려지고 오류가 발생할 수 있습니다. 최상의 결과를 얻으려면 업로드가 완료될 때까지 앱을 열어 두세요.";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "이미지 업로드 진행 중";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "스토어 동기화 중...";
 
@@ -11305,6 +11308,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "판독기에서 결제 취소됨";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "리더 연결";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "결제 처리 중";
 
@@ -11368,6 +11374,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "준비 중";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "결제용 리더 준비 중";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "카드 삽입";
 
@@ -11406,6 +11415,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "주문을 확인하는 중 오류 발생";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "다시 시도";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "기다려 주세요.";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "해제";
@@ -11620,14 +11635,23 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "연결 해제 중";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "설명서";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
 
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.retry" = "다시 시도";
-
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "합계를 로드할 수 없음";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "다시 시도";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "%1$@의 카드 결제가 완료되었습니다.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "%1$@의 현금 결제가 완료되었습니다.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "결제 성공";
@@ -11736,6 +11760,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "상품";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "해제";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "사용 가능한 옵션";
@@ -12001,8 +12028,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "사이트가 비공개로 표시되어서 이미지를 사용할 수 없습니다. 공개 예정 모드로 전환하여 이를 변경할 수 있습니다.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "취소";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "다시 시도";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "이미지가 업로드되지 않음";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "즐겨찾기로 표시";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "취소";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "다시 시도";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "상품이 저장되지 않음";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "즐겨찾기에서 제거";
@@ -12019,11 +12064,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "사진";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "백그라운드에서 계속 이미지 업로드 중";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "모든 업로드가 완료된 후에 이미지를 재정렬하세요.";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "사진을 끌어서 놓아 순서를 변경할 수 있습니다. 첫 번째 사진은 커버로 설정됩니다.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "취소";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "다시 시도";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "이미지가 업로드되지 않음";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "추천 상품";
@@ -12813,6 +12870,18 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "저장됨";
 
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would cancel the saving. */
+"wooShipping.createLabel.addPackage.savingPackageError.cancel" = "취소";
+
+/* Message of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.message" = "저장하지 않고 진행하시겠어요?";
+
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would proceed with the creation flow without saving the package. */
+"wooShipping.createLabel.addPackage.savingPackageError.proceed" = "진행";
+
+/* Title of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.title" = "패키지를 템플릿으로 저장할 수 없습니다.";
+
 /* Title for the Add Package screen Select Package button */
 "wooShipping.createLabel.addPackage.selectPackage" = "패키지 선택";
 
@@ -12858,6 +12927,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is missing on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.missing" = "이메일 누락";
 
+/* Notice when a origin address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.originUnverified" = "출발지 주소 미확인됨";
+
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.unverified" = "미확인된 주소";
 
@@ -12872,6 +12944,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@(기본 수수료)";
+
+/* Title for the edit destination address screen in the shipping label creation flow */
+"wooShipping.createLabels.bottomSheet.editDestination" = "목적지 편집";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "주문 상세 정보";
@@ -12999,6 +13074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Error message when loading required data failed on the shipping label creation screen */
+"wooShipping.createLabels.missingDataError" = "필수 데이터를 로드할 수 없습니다.";
+
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "완료";
 
@@ -13023,6 +13101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "여기에서 배송 레이블을 다시 인쇄하거나 레이블의 용지 크기를 변경할 수 있습니다.";
 
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "취소";
+
+/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.message" = "다시 시도하시겠어요?";
+
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "다시 시도";
+
+/* Title of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.title" = "배송 레이블을 미리 보는 중 오류 발생";
+
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "배송 레이블을 인쇄할 준비가 되었습니다.";
 
@@ -13035,6 +13125,24 @@ which should be translated separately and considered part of this sentence. */
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "배송 추적";
 
+/* Error message when loading shipping label rates failed on the shipping label creation screen */
+"wooShipping.createLabels.rates.failedLoadingDataError" = "배송비를 로드할 수 없습니다.";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "적용되는 배송비를 표시하려면 이 패키지의 행선지를 알아야 합니다.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "배송비를 확인하려면 목적지 주소를 추가하세요.";
+
+/* Message displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightMessage" = "적용되는 배송비를 표시하려면 배송 무게를 알아야 합니다.";
+
+/* Title displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightTitle" = "배송비를 확인하려면 배송 무게를 추가하세요.";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.rates.retryCTA" = "다시 시도";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "배송 서비스";
 
@@ -13046,6 +13154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "가장 저렴";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.retryCTA" = "다시 시도";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "성인 서명 필수(+%1$@)";
@@ -13220,6 +13331,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "출발지";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.originAddresses.unverified" = "미확인된 주소";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.packagesSelectionView.createCustomPackageCTA" = "사용자 정의 패키지 생성";
+
+/* Message when there are no carrier packages loaded in the shipping label creation flow */
+"wooShipping.packagesSelectionView.emptyStateMessage" = "배송업체 정보를 찾을 수 없음";
+
+/* Error message when loading carrier packages failed in the shipping label creation flow */
+"wooShipping.packagesSelectionView.loadingPackageError" = "배송업체 패키지를 로드할 수 없습니다.";
+
+/* Button to retry loading carrier packages in the shipping label creation flow */
+"wooShipping.packagesSelectionView.retryCTA" = "다시 시도";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "우커머스, 내 스토어, 오늘, 이번 주, 이번 달, 이번 해, 주문수, 방문자, 전환, 상위 전환, 판매된 제품";

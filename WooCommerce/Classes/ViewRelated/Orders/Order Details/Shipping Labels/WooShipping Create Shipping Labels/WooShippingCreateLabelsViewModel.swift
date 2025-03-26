@@ -21,6 +21,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
+    @Published var hazmatCategory: ShippingLabelHazmatCategory?
+    @Published var hazmatNotice: Notice?
+
+    @Published var labelPurchaseErrorNotice: Notice?
+
     let order: Order
 
     @Published private(set) var state = ContentState.loading
@@ -35,7 +40,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Whether the custom information is completed or not.
     var customsInformationIsCompleted: Bool {
-        customsForm != nil
+        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
     }
 
     /// View model for the section displayed after a shipping label is purchased.
@@ -58,6 +63,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for the label shipping service.
     private(set) var shippingService: WooShippingServiceViewModel?
 
+    /// View model for split shipments.
+    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel?
+
     /// Selected shipping rate when creating a shipping label.
     @Published private var selectedRate: WooShippingSelectedRate?
 
@@ -68,7 +76,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
     /// Address to ship to (customer address),
-    @Published private var destinationAddress: WooShippingAddress?
+    @Published private var destinationAddress: WooShippingAddress? {
+        didSet {
+            guard let country = destinationAddress?.country else {
+                return
+            }
+            // Updating destination country code in the customs form to validate ITN
+            customsFormViewModel.updateDestinationCountry(code: country)
+        }
+    }
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {
@@ -175,16 +191,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Check for the need of customs form
     ///
-    var customsFormRequired: Bool {
-        guard let originAddress = selectedOriginAddress,
-              let destinationAddress = destinationAddress else {
-            return false
-        }
-        return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
-                                                                originState: originAddress.state,
-                                                                destinationCountry: destinationAddress.country,
-                                                                destinationState: destinationAddress.state)
-    }
+    @Published private(set) var customsFormRequired: Bool = false
+
+    @Published var itnMissingNoticeLabel: String?
 
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
@@ -219,6 +228,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeDestinationAddress()
         observeSelectedPackage()
         observeForLabelRates()
+        observeForCustomsForm()
+        observeHAZMATChanges()
         Task {
             await loadRequiredData()
         }
@@ -263,6 +274,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                     await self.loadOriginAddresses()
                 }
             }
+
+            group.addTask {
+                await self.loadShipmentsInfo()
+            }
         }
 
         if isMissingStoreSettings ||
@@ -285,6 +300,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             return
         }
         isPurchasingLabel = true
+        labelPurchaseErrorNotice = nil
+
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipmentID,
                                                          package: fromPackageDataToPackageSelected(selectedPackage,
                                                                                                    weight: Double(shipmentWeight) ?? 0,
@@ -304,6 +321,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 self.shippingLabel = shippingLabel
                 postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
             case .failure(let error):
+                self.labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
+                                                       message: Localization.LabelPurchaseError.message,
+                                                       feedbackType: .error,
+                                                       actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
+                    self?.purchaseLabel()
+                }
                 DDLogError("⛔️ Error purchasing shipping label: \(error)")
             }
         }
@@ -402,6 +425,33 @@ private extension WooShippingCreateLabelsViewModel {
         }
     }
 
+    /// Loads shipment info from remote and creates view model for split shipments.
+    ///
+    @MainActor
+    func loadShipmentsInfo() async {
+        let config: WooShippingConfig? = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadConfig(siteID: order.siteID,
+                                                      orderID: order.orderID) { result in
+                switch result {
+                case .success(let shipmentResponse):
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading config for Woo Shipping labels: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+
+        // TODO: Create view model only if order has more than 1 items that can be split into multiple shipments. (Check web logic)
+        if let config {
+            splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         config: config,
+                                                                         items: items.dataSource.items,
+                                                                         stores: stores)
+        }
+    }
+
     /// Loads destination address of the order from remote.
     ///
     func loadDestinationAddress() {
@@ -494,9 +544,9 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] destinationAddress in
                 guard let self else { return }
                 let shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                              destinationAddress: destinationAddress,
-                                                              stores: stores) { [weak self] selectedRate in
+                                                                  originAddress: selectedOriginAddress?.toWooShippingAddress(),
+                                                                  destinationAddress: destinationAddress,
+                                                                  stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
                 }
                 self.shippingService = shippingService
@@ -520,6 +570,46 @@ private extension WooShippingCreateLabelsViewModel {
                 shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage, weight: Double(weight) ?? 0, shipmentID: shipmentID))
             }
             .store(in: &subscriptions)
+    }
+
+    func observeHAZMATChanges() {
+        $hazmatCategory
+            .dropFirst()
+            .scan((nil, nil)) { (previous: (current: ShippingLabelHazmatCategory?,
+                                            previous: ShippingLabelHazmatCategory?),
+                                 newValue: ShippingLabelHazmatCategory?) in
+                return (current: newValue, previous: previous.current)
+            }
+            .map { [weak self] (newValue, oldValue) in
+                let noticeTitle = newValue != nil ? Localization.hazmatSet : Localization.hazmatRemoved
+                return Notice(title: noticeTitle, actionTitle: Localization.undo, actionHandler: {
+                    self?.hazmatCategory = oldValue
+                })
+            }
+            .assign(to: &$hazmatNotice)
+    }
+
+    func observeForCustomsForm() {
+        $selectedOriginAddress.combineLatest($destinationAddress)
+            .map { (originAddress, destinationAddress) -> Bool in
+                guard let originAddress, let destinationAddress else {
+                    return false
+                }
+                return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                        originState: originAddress.state,
+                                                                        destinationCountry: destinationAddress.country,
+                                                                        destinationState: destinationAddress.state)
+            }
+            .assign(to: &$customsFormRequired)
+
+        customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
+            .map { (isMissingITN, customsFormRequired) -> String? in
+                if customsFormRequired, isMissingITN {
+                    return Localization.itnMissing
+                }
+                return nil
+            }
+            .assign(to: &$itnMissingNoticeLabel)
     }
 
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
@@ -561,7 +651,7 @@ private extension WooShippingCreateLabelsViewModel {
                                      height: Double(packageData.height) ?? 0,
                                      weight: weight,
                                      isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
-                                     hazmatCategory: nil, // Hazmat support will be added in a future milestone
+                                     hazmatCategory: hazmatCategory?.rawValue,
                                      customsForm: customsForm)
     }
 }
@@ -607,6 +697,42 @@ private extension WooShippingCreateLabelsViewModel {
                                                               value: "Destination address missing",
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
+
+        static let itnMissing = NSLocalizedString(
+            "wooShipping.createLabels.itnMissing",
+            value: "ITN is required.",
+            comment: "Notice when a International Transaction Number is missing on the shipping label creation screen"
+        )
+
+        enum LabelPurchaseError {
+            static let title = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.title",
+                                                   value: "Error purchasing shipping label.",
+                                                   comment: "Title of the notice when purchasing a shipping label fails")
+            static let message = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.message",
+                                                   value: "We are unable to purchase the shipping label. Please try again.",
+                                                   comment: "Message in the notice when purchasing a shipping label fails")
+            static let retry = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.retry",
+                                                   value: "Retry",
+                                                   comment: "Button to retry label purchase when an error occurs")
+        }
+
+        static let hazmatSet = NSLocalizedString(
+            "wooShipping.createLabels.hazmatSet",
+            value: "Hazardous materials category set",
+            comment: "Notice when a hazardous materials category is set on the shipping label creation screen"
+        )
+
+        static let hazmatRemoved = NSLocalizedString(
+            "wooShipping.createLabels.hazmatRemoved",
+            value: "Remove hazardous materials category",
+            comment: "Notice when a hazardous materials category is removed on the shipping label creation screen"
+        )
+
+        static let undo = NSLocalizedString(
+            "wooShipping.createLabels.undo",
+            value: "Undo",
+            comment: "Button to undo a change on the shipping label creation screen"
+        )
     }
 }
 

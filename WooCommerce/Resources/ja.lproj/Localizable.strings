@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-12 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -367,12 +367,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "有効";
-
-/* The plugin is active on the site and has not enabled automatic updates */
-"Active, Autoupdates off" = "プラグイン有効化中。自動更新オフ。";
-
-/* The plugin is active on the site and has enabled automatic updates */
-"Active, Autoupdates on" = "プラグイン有効化中。自動更新オン。";
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "広告非表示のエクスペリエンス";
@@ -876,9 +870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "ホストに必要な認証:%@";
-
-/* The plugin can not be manually updated or deactivated */
-"Auto-managed on this site" = "このサイトで自動管理";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "自動バックアップとすばやい復元";
@@ -3411,12 +3402,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "停止中";
 
-/* The plugin is not active on the site and has not enabled automatic updates */
-"Inactive, Autoupdates off" = "プラグイン無効化中。自動更新オフ。";
-
-/* The plugin is not active on the site and has enabled automatic updates */
-"Inactive, Autoupdates on" = "プラグイン無効化中。自動更新オン。";
-
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
@@ -3548,9 +3533,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "無効な URL。 もう一度確認してから、やり直してください。";
-
-/* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "無効のエンドポイント";
 
 /* No comment provided by engineer. */
 "Invalid username" = "無効なユーザー名";
@@ -8971,6 +8953,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
 
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "アプリケーションパスワードとは";
+
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "サイト %1$@ のアプリケーションパスワードが無効になっているようです。 WooCommerce アプリを使用するには、アプリケーションパスワードを有効にしてください。";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "ヘルプ";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "再試行";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "別のアカウントでログイン";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "新しいストアを始めますか ?";
 
@@ -10777,6 +10774,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "売上を伸ばす";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "商品画像はまだバックグラウンドでアップロード中です。 アップロード速度が遅くなり、エラーが発生する可能性があります。 最良の結果を得るには、アップロードが完了するまでアプリを開いたままにしてください。";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "画像のアップロード中";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "ストアを同期中...";
 
@@ -11305,6 +11308,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "リーダーで支払いがキャンセルされました";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "読者とつながる";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "支払いを処理しています";
 
@@ -11368,6 +11374,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "準備しています";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "お支払いのリーダーを準備しています";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "カードを挿入";
 
@@ -11406,6 +11415,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "注文の確認中にエラーが発生しました";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "もう一度お試しください";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "しばらくお待ちください";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "閉じる";
@@ -11620,14 +11635,23 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "接続を切断中";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "ドキュメント";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "削除";
 
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.retry" = "再試行";
-
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "合計を読み込めませんでした";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "もう一度お試しください";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "%1$@のカード支払いが正常に行われました。";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "%1$@の現金支払いが正常に行われました。";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "支払いに成功しました";
@@ -11736,6 +11760,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "商品";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "閉じる";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "オプションを使用可能";
@@ -12001,8 +12028,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "サイトが「非公開」として設定されているため、画像が利用できません。 これは、「近日公開」モードに切り替えることで変更できます。";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "破棄";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "再試行";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "画像がアップロードされませんでした";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "お気に入りに登録";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "キャンセル";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "再試行";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "商品が保存されませんでした";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "お気に入りから削除";
@@ -12019,11 +12064,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "写真";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "画像のアップロードはバックグラウンドで続行されます";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "写真の順序を変更するにはドラッグ & ドロップしてください。 最初の写真はカバーとして設定されます。";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "破棄";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "再試行";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "画像がアップロードされませんでした";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "おすすめの商品";
@@ -12813,6 +12870,18 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "保存済み";
 
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would cancel the saving. */
+"wooShipping.createLabel.addPackage.savingPackageError.cancel" = "キャンセル";
+
+/* Message of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.message" = "保存せずに続行しますか ?";
+
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would proceed with the creation flow without saving the package. */
+"wooShipping.createLabel.addPackage.savingPackageError.proceed" = "続行";
+
+/* Title of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.title" = "荷物をテンプレートとして保存できませんでした";
+
 /* Title for the Add Package screen Select Package button */
 "wooShipping.createLabel.addPackage.selectPackage" = "荷物を選択";
 
@@ -12858,6 +12927,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is missing on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.missing" = "住所なし";
 
+/* Notice when a origin address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.originUnverified" = "配送元住所が確認されていません";
+
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.unverified" = "未確認の住所";
 
@@ -12872,6 +12944,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (基本料金)";
+
+/* Title for the edit destination address screen in the shipping label creation flow */
+"wooShipping.createLabels.bottomSheet.editDestination" = "配送先を編集";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "注文詳細";
@@ -12999,6 +13074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Error message when loading required data failed on the shipping label creation screen */
+"wooShipping.createLabels.missingDataError" = "必須データを読み込めません";
+
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "完了";
 
@@ -13023,6 +13101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "こちらから再度配送ラベルを印刷するか、ラベルの用紙サイズを変更することができます。";
 
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "キャンセル";
+
+/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.message" = "再試行しますか ?";
+
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "再試行";
+
+/* Title of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.title" = "配送ラベルのプレビューでエラーが発生しました";
+
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "配送ラベルを印刷する準備ができました";
 
@@ -13035,6 +13125,24 @@ which should be translated separately and considered part of this sentence. */
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "配送状況を追跡";
 
+/* Error message when loading shipping label rates failed on the shipping label creation screen */
+"wooShipping.createLabels.rates.failedLoadingDataError" = "配送料金を読み込めません";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "利用可能な配送料金を表示するには、この荷物の配送先を入力する必要があります。";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "配送先住所を追加して配送料金を取得";
+
+/* Message displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightMessage" = "利用可能な配送料金を表示するには、配送重量を入力する必要があります。";
+
+/* Title displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightTitle" = "配送重量を追加して配送料金を取得";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.rates.retryCTA" = "再試行";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "配送サービス";
 
@@ -13046,6 +13154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "最安値";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.retryCTA" = "再試行";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "成人の方の署名が必要 (+%1$@)";
@@ -13220,6 +13331,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "出荷元";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.originAddresses.unverified" = "未確認の住所";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.packagesSelectionView.createCustomPackageCTA" = "カスタム荷物を作成";
+
+/* Message when there are no carrier packages loaded in the shipping label creation flow */
+"wooShipping.packagesSelectionView.emptyStateMessage" = "配送業者の情報が見つかりません";
+
+/* Error message when loading carrier packages failed in the shipping label creation flow */
+"wooShipping.packagesSelectionView.loadingPackageError" = "配送業者の荷物を読み込めません。";
+
+/* Button to retry loading carrier packages in the shipping label creation flow */
+"wooShipping.packagesSelectionView.retryCTA" = "再試行";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";

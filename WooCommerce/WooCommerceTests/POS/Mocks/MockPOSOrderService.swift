@@ -5,12 +5,13 @@ import WooFoundation
 class MockPOSOrderService: POSOrderServiceProtocol {
     var simulateSyncing = false
     var orderToReturn: Order?
+    var errorToReturn: Error?
 
     var syncOrderWasCalled = false
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
 
-    func syncOrder(cart: [Yosemite.POSCartItem],
+    func syncOrder(cart: Yosemite.POSCart,
                    order: Yosemite.Order?,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
@@ -18,6 +19,10 @@ class MockPOSOrderService: POSOrderServiceProtocol {
 
         if simulateSyncing {
             try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
+        }
+
+        if let error = errorToReturn {
+            throw error
         }
 
         guard let order = orderToReturn else {

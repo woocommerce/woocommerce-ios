@@ -420,6 +420,14 @@ extension UIImage {
         return UIImage(named: "delivery-icon")!
     }
 
+    static var giftIcon: UIImage {
+        return UIImage(named: "gift-icon")!
+    }
+
+    static var bellIcon: UIImage {
+        return UIImage(named: "bell-icon")!
+    }
+
     /// Blaze success image
     ///
     static var blazeSuccessImage: UIImage {
@@ -559,6 +567,10 @@ extension UIImage {
     ///
     static var cogImage: UIImage {
         return UIImage.gridicon(.cog)
+    }
+
+    static var wandAndRaysInverse: UIImage {
+        return UIImage(systemName: "wand.and.rays.inverse")!
     }
 
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {

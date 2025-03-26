@@ -6,7 +6,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
-import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 
@@ -28,10 +28,12 @@ protocol PointOfSaleAggregateModelProtocol {
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
 
-    var cart: [CartItem] { get }
+    var cart: Cart { get }
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
+    func remove(cartCouponItem: CartCouponItem)
     func removeAllItemsFromCart()
+    func removeAllCouponsFromCart()
     func addMoreToCart()
     func startNewCart()
 
@@ -52,14 +54,16 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var itemsViewState: ItemsViewState { currentController.itemsViewState }
 
-    private(set) var cart: [CartItem] = []
+    private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
+    private var currentController: PointOfSaleItemsControllerProtocol
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -72,12 +76,15 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
+        self.currentController = itemsController // Default current controller set to products
         self.itemsController = itemsController
+        self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
@@ -94,32 +101,23 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await itemsController.loadItems(base: base)
+        await currentController.loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await itemsController.refreshItems(base: base)
+        await currentController.refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await itemsController.loadNextItems(base: base)
+        await currentController.loadNextItems(base: base)
     }
-}
 
-// MARK: - Cart
-
-private extension POSItem {
-    var cartItem: CartItem? {
-        switch self {
-        case .simpleProduct(let simpleProduct):
-            return CartItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
-        case .variation(let variation):
-            return CartItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
-        case .variableParentProduct:
-            return nil
-        }
+    func switchToItemType(_ type: ItemType) async {
+        let newController = type == .products ? itemsController : couponsController
+        currentController = newController
+        await refreshItems(base: .root)
     }
 }
 
@@ -127,16 +125,23 @@ private extension POSItem {
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
-        guard let cartItem = item.cartItem else { return }
-        cart.insert(cartItem, at: cart.startIndex)
+        cart.add(item)
     }
 
     func remove(cartItem: CartItem) {
-        cart.removeAll(where: { $0.id == cartItem.id } )
+        cart.remove(cartItem)
+    }
+
+    func remove(cartCouponItem: CartCouponItem) {
+        cart.remove(cartCouponItem)
     }
 
     func removeAllItemsFromCart() {
         cart.removeAll()
+    }
+
+    func removeAllCouponsFromCart() {
+        cart.coupons.removeAll()
     }
 
     func addMoreToCart() {
@@ -162,7 +167,7 @@ private extension PointOfSaleAggregateModel {
     func trackCustomerInteractionStarted() {
         // At the moment we're assumming that an interaction starts simply when the cart is zero
         // but a more complex logic will be needed for other cases
-        if cart.count == 0 {
+        if cart.isEmpty {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
         }
     }
@@ -253,6 +258,7 @@ extension PointOfSaleAggregateModel {
     // Once we get the callback from the card service, we switch to cash collection state
     @MainActor
     func startCashPayment() async {
+        analytics.track(.pointOfSaleCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
         paymentState = .cash(.collectingCash)
     }

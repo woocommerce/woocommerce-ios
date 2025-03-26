@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.0
+This update adds the option to set different notification preferences for each store. In Orders and Products, your filters stay around as you move through the app, and we've fixed a crash that could happen when you choose pictures for your products. Payments is improved too, with support for Puerto Rico in WooPayments, and better accessibility.
+
+## 21.9
+We're dedicated to enhancing your WooCommerce app experience! We've ironed out the issues related to discarding images during uploads in the Product Form. Plus, we've ramped up our login flow accessibility to make your journey smoother and more intuitive. Enjoy the fresh update and newly polished features!
+
 ## 21.8
 This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.
 

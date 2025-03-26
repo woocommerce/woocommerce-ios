@@ -1,0 +1,1 @@
+WooCommerce uygulama deneyiminizi geliştirmeye kendimizi adadık! Ürün Formunda yüklemeler sırasında görsellerin atılmasıyla ilgili sorunları giderdik. Ayrıca, yolculuğunuzu daha sorunsuz ve sezgisel hale getirmek için giriş akışı erişilebilirliğimizi geliştirdik. Yeni güncellemenin ve yenilenen özelliklerin keyfini çıkarın!

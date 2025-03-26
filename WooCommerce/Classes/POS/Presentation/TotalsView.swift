@@ -75,8 +75,11 @@ struct TotalsView: View {
                                                                               cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
-            case .error(let viewModel):
-                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+            case .error(.other(let message), let handler):
+                PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
+                    .transition(.opacity)
+            case .error(.invalidCoupon(let message), let handler):
+                PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
             }
         }
@@ -282,12 +285,6 @@ private extension TotalsView {
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
-
-        static let topAligned = PaymentViewLayout(
-            backgroundColor: .clear,
-            topPadding: 96,
-            bottomPadding: 96
-        )
     }
 
     private var isShowingPaymentView: Bool {
@@ -323,7 +320,10 @@ private extension TotalsView {
             case .validatingOrderError:
                 return .outlined
             case .paymentError:
-                return .topAligned
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: POSPadding.none,
@@ -443,6 +443,7 @@ private extension TotalsView {
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

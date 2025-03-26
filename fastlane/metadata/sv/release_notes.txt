@@ -1,0 +1,1 @@
+Vi strävar efter att förbättra din WooCommerce-appupplevelse. Vi har åtgärdat problemen relaterade till att kasta bilder under uppladdning i produktformuläret. Dessutom har vi ökat tillgängligheten för vårt inloggningsflöde för att göra din upplevelse smidigare och mer intuitiv. Njut av den nya uppdateringen och de förbättrade funktionerna.

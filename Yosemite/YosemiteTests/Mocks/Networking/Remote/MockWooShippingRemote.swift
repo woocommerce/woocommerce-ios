@@ -51,6 +51,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `updateDestinationAddress`
     private var updateDestinationAddress = [ResultKey: Result<WooShippingDestinationAddressUpdate, Error>]()
 
+    /// The results to return based on the given arguments in `loadConfig`
+    private var loadConfig = [ResultKey: Result<WooShippingConfig, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
@@ -140,6 +143,13 @@ final class MockWooShippingRemote {
                                         thenReturn result: Result<WooShippingDestinationAddressUpdate, Error>) {
         let key = ResultKey(siteID: siteID)
         updateDestinationAddress[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadConfig` is called.
+    func whenLoadingConfig(siteID: Int64,
+                           thenReturn result: Result<WooShippingConfig, Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadConfig[key] = result
     }
 }
 
@@ -341,6 +351,21 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateDestinationAddress[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadConfig[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

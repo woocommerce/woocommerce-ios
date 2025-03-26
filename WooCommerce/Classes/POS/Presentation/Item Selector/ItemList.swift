@@ -92,10 +92,22 @@ private struct ItemListRow: View {
                 SimpleProductCardView(product: product)
             })
         case let .variableParentProduct(parentProduct):
-            NavigationLink(value: item) {
-                ParentProductCardView(name: parentProduct.name,
-                                      imageSource: parentProduct.productImageSource,
-                                      detailText: Localization.variationsAvailable)
+            if #available(iOS 18.0, *) {
+                NavigationLink(value: item) {
+                    ParentProductCardView(name: parentProduct.name,
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
+                }
+            } else {
+                // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
+                // we still have to use the NavigationView approach here.
+                NavigationLink(destination: {
+                    ChildItemList(parentItem: item, title: parentProduct.name)
+                }) {
+                    ParentProductCardView(name: parentProduct.name,
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
+                }
             }
         case let .variation(variation):
             Button(action: {
@@ -103,6 +115,13 @@ private struct ItemListRow: View {
                 analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
             }, label: {
                 VariationCardView(variation: variation)
+            })
+        case let .coupon(coupon):
+            Button(action: {
+                posModel.addToCart(item)
+            }, label: {
+                CouponRowView(couponItem: .init(id: coupon.id,
+                                                code: coupon.code))
             })
         }
     }
@@ -153,6 +172,7 @@ private extension ItemListRow {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

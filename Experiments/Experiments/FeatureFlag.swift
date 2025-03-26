@@ -157,6 +157,10 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSale
 
+    /// Enables coupons in Point of Sale
+    ///
+    case enableCouponsInPointOfSale
+
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView
@@ -196,4 +200,16 @@ public enum FeatureFlag: Int {
     /// Supports managing filer history on order and product lists
     ///
     case filterHistoryOnOrderAndProductLists
+
+    /// Supports uploading product images in background
+    ///
+    case backgroundProductImageUpload
+
+    /// Supports managing notification settings from the app settings
+    ///
+    case notificationSettings
+
+    /// Allows merchants to use their own API keys for AI-powered features
+    ///
+    case allowMerchantAIAPIKey
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-12 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-11 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -367,12 +367,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "פעיל";
-
-/* The plugin is active on the site and has not enabled automatic updates */
-"Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
-
-/* The plugin is active on the site and has enabled automatic updates */
-"Active, Autoupdates on" = "פעיל, עדכונים אוטומטיים מופעלים";
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "חוויית צפייה ללא פרסומות";
@@ -876,9 +870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "נדרש אימות עבור חברת האחסון: ‎%@";
-
-/* The plugin can not be manually updated or deactivated */
-"Auto-managed on this site" = "מנוהל באופן אוטומטי באתר זה";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "גיבויים אוטומטיים + שחזור מהיר";
@@ -3411,12 +3402,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
 
-/* The plugin is not active on the site and has not enabled automatic updates */
-"Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
-
-/* The plugin is not active on the site and has enabled automatic updates */
-"Inactive, Autoupdates on" = "לא פעיל, עדכונים אוטומטיים מופעלים";
-
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
@@ -3548,9 +3533,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "כתובת URL לא תקינה. יש לבדוק שנית ולנסות שוב.";
-
-/* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "נקודת קצה לא חוקית";
 
 /* No comment provided by engineer. */
 "Invalid username" = "שם המשתמש אינו תקין";
@@ -8971,6 +8953,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "סמל";
 
+/* Button that will navigate to a web page explaining Application Password */
+"applicationPasswordDisabled.auxiliaryButtonTitle" = "מהי 'סיסמת אפליקציה'?";
+
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "נראה ש'סיסמת האפליקציה' באתר שלך, %1$@, מושבתת. יש להפעיל אותה כדי להשתמש באפליקציית WooCommerce.";
+
+/* Button that will navigate to the support area */
+"applicationPasswordDisabled.helpButtonTitle" = "עזרה";
+
+/* Button to retry fetching application password authorization if application password is disabled */
+"applicationPasswordDisabled.retry.buttonTitle" = "לנסות שוב";
+
+/* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
+"applicationPasswordDisabled.secondaryButtonTitle" = "להתחבר עם חשבון אחר";
+
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
 
@@ -10777,6 +10774,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.title" = "לשפר את המכירות";
 
+/* Message on the local notification to inform the user about the background upload of product images. */
+"localNotification.ProductImageUploader.message" = "תמונות המוצר עדיין בתהליך העלאה ברקע. ייתכן שמהירות ההעלאה איטית יותר ועלולות לחול שגיאות. לתוצאות הטובות ביותר, כדאי להשאיר את האפליקציה פתוחה עד שההעלאות יושלמו.";
+
+/* Title of the local notification to inform the user that product images are uploading in the background. */
+"localNotification.ProductImageUploader.title" = "העלאת התמונה בתהליך";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "מסנכרן חנות...";
 
@@ -11305,6 +11308,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "התשלום בוטל דרך הקורא";
 
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.connectReader.button.title" = "לחבר את הקורא";
+
 /* Message shown on the Point of Sale checkout while the reader payment is being processed. */
 "pointOfSale.cardPresent.displayReaderMessage.message" = "מעבד תשלום";
 
@@ -11368,6 +11374,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "מתכוננים…";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingReaderForPayment.message" = "מכין את קורא הכרטיסים לתשלום";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "יש להכניס את הכרטיס";
 
@@ -11406,6 +11415,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order validation fails. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "שגיאה בעת בדיקת ההזמנה";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "יש לנסות שוב";
+
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.waitForPaymentProcessing.message" = "רק רגע";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "לבטל";
@@ -11620,14 +11635,23 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "מתנתק";
 
+/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.viewDocumentation.button.title" = "תיעוד";
+
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "להסיר";
 
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.retry" = "לנסות שוב";
-
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
+
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "יש לנסות שוב";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.card.1" = "תשלום בכרטיס של %1$@ חויב בהצלחה.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "תשלום במזומן של %1$@ חויב בהצלחה.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "התשלום בוצע בהצלחה";
@@ -11736,6 +11760,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "מוצרים";
+
+/* Accessibility label for button to dismiss a notice banner */
+"pos.noticeView.dismiss.button.accessibiltyLabel" = "לבטל";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
@@ -12001,8 +12028,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "התמונות לא זמינות מאחר שהאתר שלך מסומן כ'פרטי'. אפשר לשנות את ההגדרה הזאת על ידי מעבר למצב 'בקרוב'.";
 
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productFormViewController.imageUploadError.discard" = "ביטול";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productFormViewController.imageUploadError.retry" = "לנסות שוב";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productFormViewController.imageUploadError.title" = "התמונה לא הועלתה";
+
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "להוסיף למועדפים";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
+"productFormViewController.productSavingError.cancel" = "ביטול";
+
+/* Button on the alert when there is an error saving a product. Tapping the button should retry the saving. */
+"productFormViewController.productSavingError.retry" = "לנסות שוב";
+
+/* Title of the alert when there is an error saving a product */
+"productFormViewController.productSavingError.title" = "המוצר לא נשמר";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "להסיר מהמועדפים";
@@ -12019,11 +12064,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product image picker screen */
 "productImagePickerView.title" = "תמונות";
 
+/* No comment provided by engineer. */
+"productImageUploader.backgroundUploadNotice.title" = "העלאת התמונה תתבצע ברקע";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "יש להמתין שכל ההעלאות יסתיימו לפני שינוי סדר התמונות.";
 
 /* Drag and drop helper text above photo list in Product images screen */
 "productImagesViewController.dragAndDropHelperText" = "לגרור ולשחרר כדי לשנות את הסדר של התמונות. התמונה הראשונה תוגדר בתוך הכיסוי.";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should discard the upload. */
+"productImagesViewController.imageUploadError.discard" = "ביטול";
+
+/* Button on the alert when there is an error uploading an image of a product. Tapping the button should retry the upload. */
+"productImagesViewController.imageUploadError.retry" = "לנסות שוב";
+
+/* Title of the alert when there is an error uploading an image of a product. */
+"productImagesViewController.imageUploadError.title" = "התמונה לא הועלתה";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "מוצר מומלץ";
@@ -12813,6 +12870,18 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "נשמר";
 
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would cancel the saving. */
+"wooShipping.createLabel.addPackage.savingPackageError.cancel" = "ביטול";
+
+/* Message of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.message" = "האם ברצונך להמשיך בלי לשמור את התוכן?";
+
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would proceed with the creation flow without saving the package. */
+"wooShipping.createLabel.addPackage.savingPackageError.proceed" = "המשך";
+
+/* Title of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.title" = "לא הצלחנו לשמור את החבילה כתבנית עמוד";
+
 /* Title for the Add Package screen Select Package button */
 "wooShipping.createLabel.addPackage.selectPackage" = "לבחור חבילה";
 
@@ -12858,6 +12927,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is missing on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.missing" = "כתובת חסרה";
 
+/* Notice when a origin address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.originUnverified" = "כתובת מוצא לא מאומתת";
+
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.unverified" = "כתובת לא מאומתת";
 
@@ -12872,6 +12944,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (עמלה בסיסית)";
+
+/* Title for the edit destination address screen in the shipping label creation flow */
+"wooShipping.createLabels.bottomSheet.editDestination" = "לערוך את היעד";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "פרטי הזמנה";
@@ -12999,6 +13074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
 
+/* Error message when loading required data failed on the shipping label creation screen */
+"wooShipping.createLabels.missingDataError" = "לא הצלחנו לטעון את הנתונים הנדרשים";
+
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "בוצע";
 
@@ -13023,6 +13101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "מכאן אפשר להדפיס את תווית המשלוח שוב או לשנות את גודל הנייר של התווית.";
 
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "ביטול";
+
+/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.message" = "רוצה לנסות שוב?";
+
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "לנסות שוב";
+
+/* Title of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.title" = "אירעה שגיאה בתצוגה המקדימה של תווית המשלוח";
+
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "תווית המשלוח שלך מוכנה להדפסה";
 
@@ -13035,6 +13125,24 @@ which should be translated separately and considered part of this sentence. */
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "מעקב אחר משלוח";
 
+/* Error message when loading shipping label rates failed on the shipping label creation screen */
+"wooShipping.createLabels.rates.failedLoadingDataError" = "לא הצלחנו לטעון את תעריפי המשלוח";
+
+/* Message displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "אנחנו צריכים לדעת לאן החבילה הזאת נשלחת לפני שנוכל להציג את תעריפי המשלוח הזמינים.";
+
+/* Title displayed when no destination address is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "יש להוסיף כתובת יעד כדי להציג את תעריפי המשלוח";
+
+/* Message displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightMessage" = "אנחנו צריכים לדעת את משקל המשלוח לפני שנוכל להציג את תעריפי המשלוח הזמינים.";
+
+/* Title displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightTitle" = "יש להוסיף משקל משלוח כדי לקבל תעריפי משלוח";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.rates.retryCTA" = "לנסות שוב";
+
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "שירות משלוחים";
 
@@ -13046,6 +13154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "הזול ביותר";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.retryCTA" = "לנסות שוב";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "נדרשת חתימה של אדם מבוגר (+%1$@)";
@@ -13220,6 +13331,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "מוצא למשלוח";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.originAddresses.unverified" = "כתובת לא מאומתת";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.packagesSelectionView.createCustomPackageCTA" = "ליצור חבילה מותאמת אישית";
+
+/* Message when there are no carrier packages loaded in the shipping label creation flow */
+"wooShipping.packagesSelectionView.emptyStateMessage" = "לא נמצאו פרטי ספק";
+
+/* Error message when loading carrier packages failed in the shipping label creation flow */
+"wooShipping.packagesSelectionView.loadingPackageError" = "לא הצלחנו לטעון את חבילות הספק";
+
+/* Button to retry loading carrier packages in the shipping label creation flow */
+"wooShipping.packagesSelectionView.retryCTA" = "לנסות שוב";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "WooCommerce, החנות שלי, היום, השבוע, החודש, השנה, הזמנות, מבקרים, המרות, המרות מובילות, פריטים שנמכרו";

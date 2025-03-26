@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-02-24 15:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-12 09:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -367,12 +367,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "Ativo";
-
-/* The plugin is active on the site and has not enabled automatic updates */
-"Active, Autoupdates off" = "Ativo, atualizações automáticas desligadas";
-
-/* The plugin is active on the site and has enabled automatic updates */
-"Active, Autoupdates on" = "Ativo, atualizações automáticas ligadas";
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "Experiência sem publicidade";
@@ -876,9 +870,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Autenticação requerida pelo host: %@";
-
-/* The plugin can not be manually updated or deactivated */
-"Auto-managed on this site" = "Gerenciado automaticamente neste site";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "Backup automatizado e restauração rápida";
@@ -3411,12 +3402,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "Inativas";
 
-/* The plugin is not active on the site and has not enabled automatic updates */
-"Inactive, Autoupdates off" = "Inativo, atualizações automáticas desligadas";
-
-/* The plugin is not active on the site and has enabled automatic updates */
-"Inactive, Autoupdates on" = "Inativo, atualizações automáticas ligadas";
-
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
    Title of the Inbox menu in the hub menu */
@@ -3548,9 +3533,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "URL inválida. Verifique novamente e tente outra vez.";
-
-/* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "Ponto de extremidade inválido";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Nome de usuário inválido";
@@ -8974,6 +8956,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "O que é a senha do aplicativo?";
 
+/* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
+"applicationPasswordDisabled.errorMessage" = "Parece que a senha do aplicativo está desativada para o seu site %1$@. Ative-a para usar o aplicativo do WooCommerce.";
+
 /* Button that will navigate to the support area */
 "applicationPasswordDisabled.helpButtonTitle" = "Ajuda";
 
@@ -8981,7 +8966,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "applicationPasswordDisabled.retry.buttonTitle" = "Tentar novamente";
 
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
-"applicationPasswordDisabled.secondaryButtonTitle" = "Faça login com outra conta";
+"applicationPasswordDisabled.secondaryButtonTitle" = "Fazer login com outra conta";
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Quer começar uma nova loja?";
@@ -10790,7 +10775,7 @@ which should be translated separately and considered part of this sentence. */
 "localNotification.BlazeNoCampaignReminder.title" = "Impulsione suas vendas";
 
 /* Message on the local notification to inform the user about the background upload of product images. */
-"localNotification.ProductImageUploader.message" = "Suas imagens de produtos ainda estão fazendo upload em segundo plano. A velocidade de upload pode ser mais lenta e podem ocorrer erros. Para obter melhores resultados, mantenha o aplicativo aberto até que os uploads sejam concluídos.";
+"localNotification.ProductImageUploader.message" = "O upload das suas imagens de produtos está ocorrendo em segundo plano. A velocidade de upload pode ser mais lenta e talvez ocorram erros. Para obter melhores resultados, mantenha o aplicativo aberto até que os uploads sejam concluídos.";
 
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Upload de imagem em andamento";
@@ -11432,7 +11417,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.validatingOrderError.title" = "Erro ao validar o pedido";
 
 /* Button title to retry order validation. */
-"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Tente novamente";
+"pointOfSale.cardPresent.validatingOrderError.tryAgain" = "Tentar novamente";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.waitForPaymentProcessing.message" = "Aguarde";
@@ -11656,17 +11641,17 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remover";
 
-/* Button title to retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.error.retry" = "Tentar novamente";
-
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Não foi possível carregar o total";
 
-/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.card.1" = "Um pagamento de %1$@ com cartão foi feito com sucesso";
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.tryAgain" = "Tentar novamente";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
-"pointOfSale.paymentSuccessful.message.cash.1" = "Um pagamento de %1$@ em dinheiro foi feito com sucesso";
+"pointOfSale.paymentSuccessful.message.card.1" = "Um pagamento de %1$@ com cartão foi feito com sucesso.";
+
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.cash.1" = "Um pagamento de %1$@ em dinheiro foi feito com sucesso.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Pagamento bem-sucedido";
@@ -12050,7 +12035,7 @@ which should be translated separately and considered part of this sentence. */
 "productFormViewController.imageUploadError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error uploading an image of a product. */
-"productFormViewController.imageUploadError.title" = "Imagem enviada";
+"productFormViewController.imageUploadError.title" = "Imagem não enviada";
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Marcar como favorito";
@@ -12062,7 +12047,7 @@ which should be translated separately and considered part of this sentence. */
 "productFormViewController.productSavingError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error saving a product */
-"productFormViewController.productSavingError.title" = "Produto salvo";
+"productFormViewController.productSavingError.title" = "Produto não salvo";
 
 /* Remove favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.removeAsFavorite" = "Remover dos favoritos";
@@ -12095,7 +12080,7 @@ which should be translated separately and considered part of this sentence. */
 "productImagesViewController.imageUploadError.retry" = "Tentar novamente";
 
 /* Title of the alert when there is an error uploading an image of a product. */
-"productImagesViewController.imageUploadError.title" = "Imagem enviada";
+"productImagesViewController.imageUploadError.title" = "Imagem não enviada";
 
 /* Label for the suggested product on the Blaze dashboard view. */
 "productInfoView.suggestedProductLabel" = "Produto sugerido";
@@ -12885,6 +12870,18 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for saved package option */
 "wooShipping.createLabel.addPackage.saved" = "Salvo";
 
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would cancel the saving. */
+"wooShipping.createLabel.addPackage.savingPackageError.cancel" = "Cancelar";
+
+/* Message of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.message" = "Deseja continuar sem salvar?";
+
+/* Button on the error alert when saving a package as template fails in the shipping label creation flow. Tapping on this button would proceed with the creation flow without saving the package. */
+"wooShipping.createLabel.addPackage.savingPackageError.proceed" = "Continuar";
+
+/* Title of the error alert when saving a package as template fails in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.savingPackageError.title" = "Não foi possível salvar o pacote como modelo";
+
 /* Title for the Add Package screen Select Package button */
 "wooShipping.createLabel.addPackage.selectPackage" = "Selecionar pacote";
 
@@ -12930,6 +12927,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is missing on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.missing" = "Endereço ausente";
 
+/* Notice when a origin address is unverified on the shipping label creation screen */
+"wooShipping.createLabels.addressVerification.originUnverified" = "Endereço de origem não verificado";
+
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.unverified" = "Endereço não verificado";
 
@@ -12944,6 +12944,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (taxa básica)";
+
+/* Title for the edit destination address screen in the shipping label creation flow */
+"wooShipping.createLabels.bottomSheet.editDestination" = "Editar destino";
 
 /* Header for order details section on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.orderDetails" = "Detalhes do pedido";
@@ -13071,6 +13074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Error message when loading required data failed on the shipping label creation screen */
+"wooShipping.createLabels.missingDataError" = "Não foi possível carregar os dados necessários";
+
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "Concluir";
 
@@ -13095,6 +13101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "Aqui você pode imprimir a etiqueta de envio novamente ou alterar o tamanho do papel da etiqueta.";
 
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "Cancelar";
+
+/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.message" = "Deseja tentar novamente?";
+
+/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "Tentar novamente";
+
+/* Title of the error alert when printing a shipping label fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingLabelError.title" = "Erro ao visualizar a etiqueta de envio";
+
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "Sua etiqueta de envio está pronta para impressão";
 
@@ -13107,11 +13125,23 @@ which should be translated separately and considered part of this sentence. */
 /* Link to track a shipment for a purchase shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.trackShipment" = "Rastrear envio";
 
+/* Error message when loading shipping label rates failed on the shipping label creation screen */
+"wooShipping.createLabels.rates.failedLoadingDataError" = "Não foi possível carregar as taxas de envio";
+
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
-"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Precisamos saber para onde este pacote vai antes de podermos mostrar as taxas de envio disponíveis.";
+"wooShipping.createLabels.rates.noDestinationAddressMessage" = "Precisamos saber o destino do pacote para mostrar as taxas de envio disponíveis.";
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
-"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Adicione um endereço de destino para obter as taxas de envio";
+"wooShipping.createLabels.rates.noDestinationAddressTitle" = "Adicione um endereço de destino para conferir as taxas de envio";
+
+/* Message displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightMessage" = "Precisamos saber o peso da remessa para mostrar as taxas de envio disponíveis.";
+
+/* Title displayed when no shipment weight is provided in the shipping label creation screen. */
+"wooShipping.createLabels.rates.noWeightTitle" = "Adicione o peso da remessa para obter as taxas";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.rates.retryCTA" = "Tentar novamente";
 
 /* Heading for the shipping service section in the shipping label creation screen. */
 "wooShipping.createLabels.rates.shippingService" = "Serviço de envio";
@@ -13124,6 +13154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "Mais barata";
+
+/* Button to retry loading data on the shipping label creation screen */
+"wooShipping.createLabels.retryCTA" = "Tentar novamente";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Assinatura de um adulto obrigatória (+%1$@)";
@@ -13298,6 +13331,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the list of origin addresses to choose from on the shipping label creation screen */
 "wooShipping.originAddresses.shipFrom" = "Remetente";
+
+/* Label when an address is unverified on the shipping label creation screen */
+"wooShipping.originAddresses.unverified" = "Endereço não verificado";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.packagesSelectionView.createCustomPackageCTA" = "Criar pacote personalizado";
+
+/* Message when there are no carrier packages loaded in the shipping label creation flow */
+"wooShipping.packagesSelectionView.emptyStateMessage" = "Nenhuma informação da transportadora encontrada";
+
+/* Error message when loading carrier packages failed in the shipping label creation flow */
+"wooShipping.packagesSelectionView.loadingPackageError" = "Não é possível carregar pacotes de transportadora";
+
+/* Button to retry loading carrier packages in the shipping label creation flow */
+"wooShipping.packagesSelectionView.retryCTA" = "Tentar novamente";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, principais caminhos de conversão, itens vendidos";

@@ -3040,6 +3040,7 @@
 		EEBB9B3B2D8E5071008D6CE5 /* SelectableShipmentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentRow.swift */; };
 		EEBB9B3D2D8E5099008D6CE5 /* SelectableShipmentRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentRowViewModel.swift */; };
 		EEBB9B402D8FE5B6008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3F2D8FE5B4008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift */; };
+		EEBBC3BC2D92A1E0008D6CE5 /* MoveToShipmentNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBBC3BB2D92A1C6008D6CE5 /* MoveToShipmentNotice.swift */; };
 		EEBDF7DA2A2EF69B00EFEF47 /* ShareProductCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7D92A2EF69B00EFEF47 /* ShareProductCoordinator.swift */; };
 		EEBDF7DF2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7DE2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift */; };
 		EEBDF7E22A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */; };
@@ -6257,6 +6258,7 @@
 		EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentRow.swift; sourceTree = "<group>"; };
 		EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentRowViewModel.swift; sourceTree = "<group>"; };
 		EEBB9B3F2D8FE5B4008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsViewModelTests.swift; sourceTree = "<group>"; };
+		EEBBC3BB2D92A1C6008D6CE5 /* MoveToShipmentNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToShipmentNotice.swift; sourceTree = "<group>"; };
 		EEBDF7D92A2EF69B00EFEF47 /* ShareProductCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductCoordinator.swift; sourceTree = "<group>"; };
 		EEBDF7DE2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductAIEligibilityChecker.swift; sourceTree = "<group>"; };
 		EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShareProductAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -14024,6 +14026,7 @@
 		EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */ = {
 			isa = PBXGroup;
 			children = (
+				EEBBC3BB2D92A1C6008D6CE5 /* MoveToShipmentNotice.swift */,
 				EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentRowViewModel.swift */,
 				EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentRow.swift */,
 				EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentCard.swift */,
@@ -16044,6 +16047,7 @@
 				CEE113952CFA2F7700F53E30 /* WooShippingSelectedPackageView.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */,
+				EEBBC3BC2D92A1E0008D6CE5 /* MoveToShipmentNotice.swift in Sources */,
 				03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
 				BAE4F8432734325C00871344 /* SettingsViewModel.swift in Sources */,

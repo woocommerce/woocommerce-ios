@@ -14,7 +14,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var shipments: [Shipment]
 
-    @Published var selectedShipmentIndex: Int? = 0
+    @Published var selectedShipmentIndex: Int? = 0 {
+        didSet {
+            moveToNoticeViewModel = nil
+            configureSelectionCallback()
+        }
+    }
 
     /// Label with the total number of items to ship.
     @Published private(set) var itemsCountLabel: String = ""
@@ -103,7 +108,7 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func showMoveToNotice() {
-        let shipmentIndex = selectedShipmentIndex ?? 0
+        let currentIndex = selectedShipmentIndex ?? 0
         let selectedItemsCount = currentShipment
             .map(\.numberOfSelectedItems)
             .reduce(0, +)
@@ -114,18 +119,53 @@ private extension WooShippingSplitShipmentsViewModel {
 
         moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
                                                               existingShipmentsCount: shipments.count,
-                                                              currentShipmentIndex: shipmentIndex,
+                                                              currentShipmentIndex: currentIndex,
                                                               actionHandler: { [weak self] moveTo in
             guard let self else { return }
 
             moveToNoticeViewModel = nil
             instructions = nil
 
+            // Step 1: Split items
+            var newShipment = Shipment()
+            var movedItems = [CollapsibleShipmentItemCardViewModel]()
+            for item in currentShipment {
+                let initialQuantity = item.packageItem.quantity.intValue
+                let selectedQuantity = item.numberOfSelectedItems
+                let remainingQuantity = initialQuantity - selectedQuantity
+                if remainingQuantity == 0 {
+                    movedItems.append(
+                        CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: self.order.currency)
+                    )
+                } else if selectedQuantity > 0 {
+                    let newItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(remainingQuantity))
+                    newShipment.append(
+                        CollapsibleShipmentItemCardViewModel(item: newItem, currency: self.order.currency)
+                    )
+                    let movedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(selectedQuantity))
+                    movedItems.append(
+                        CollapsibleShipmentItemCardViewModel(item: movedItem, currency: self.order.currency)
+                    )
+                } else if selectedQuantity == 0 {
+                    newShipment.append(
+                        CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: self.order.currency)
+                    )
+                }
+            }
+
+            // Step 2: Update the current shipment
+            shipments[currentIndex] = newShipment
+            configureSelectionCallback()
+
+            // Step 3: Add new or update existing shipment
             switch moveTo {
-            case .existingShipment:
-                break
             case .newShipment:
-                break
+                shipments.append(movedItems)
+
+            case .existingShipment(let index):
+                var previousShipment = shipments[index]
+                previousShipment.append(contentsOf: movedItems)
+                shipments[index] = previousShipment
             }
         })
     }

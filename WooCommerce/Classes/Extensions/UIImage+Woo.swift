@@ -569,6 +569,10 @@ extension UIImage {
         return UIImage.gridicon(.cog)
     }
 
+    static var wandAndRaysInverse: UIImage {
+        return UIImage(systemName: "wand.and.rays.inverse")!
+    }
+
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
         let image = UIImage(named: "login-prologue-background-bubbles")!
         return image.withTintColor(tint)

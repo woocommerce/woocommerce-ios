@@ -14,14 +14,18 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
 
     var onSelectionChange: (() -> Void)?
 
-    var hasSelectedAnItem: Bool {
+    var selectedShipmentIds: [String] {
         if mainShipmentRow.selected {
-            return true
+            if childShipmentRows.isNotEmpty {
+                return childShipmentRows.map { $0.shipmentId }
+            } else {
+                return [mainShipmentRow.shipmentId]
+            }
         }
 
         return childShipmentRows
             .filter { $0.selected }
-            .isNotEmpty
+            .map(\.shipmentId)
     }
 
     init(parentShipmentId: String,
@@ -50,6 +54,7 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     func selectAll() {
         mainShipmentRow.setSelected(true)
         childShipmentRows.forEach({ $0.setSelected(true) })
+        onSelectionChange?()
     }
 }
 

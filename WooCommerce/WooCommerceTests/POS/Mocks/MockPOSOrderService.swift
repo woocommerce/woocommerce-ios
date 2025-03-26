@@ -10,7 +10,7 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
 
-    func syncOrder(cart: [Yosemite.POSCartItem],
+    func syncOrder(cart: Yosemite.POSCart,
                    order: Yosemite.Order?,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
         syncOrderWasCalled = true

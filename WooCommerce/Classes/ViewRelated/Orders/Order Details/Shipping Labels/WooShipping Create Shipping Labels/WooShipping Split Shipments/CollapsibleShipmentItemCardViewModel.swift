@@ -3,7 +3,7 @@ import WooFoundation
 import Yosemite
 
 /// View model for `CollapsibleShipmentItemCard`.
-final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
+final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
     /// The main item row.
@@ -58,7 +58,7 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     }
 }
 
-private extension CollapsibleShipmentCardViewModel {
+private extension CollapsibleShipmentItemCardViewModel {
     func observeSelection() {
         mainItemRow.onSelectedChange = { [weak self] row in
             guard let self else { return }

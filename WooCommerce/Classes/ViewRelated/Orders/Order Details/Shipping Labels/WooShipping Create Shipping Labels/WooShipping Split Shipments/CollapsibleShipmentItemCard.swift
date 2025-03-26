@@ -5,9 +5,9 @@ import SwiftUI
 struct CollapsibleShipmentItemCard: View {
     @State private var isCollapsed: Bool = true
 
-    private let viewModel: CollapsibleShipmentCardViewModel
+    private let viewModel: CollapsibleShipmentItemCardViewModel
 
-    init(viewModel: CollapsibleShipmentCardViewModel) {
+    init(viewModel: CollapsibleShipmentItemCardViewModel) {
         self.viewModel = viewModel
     }
 

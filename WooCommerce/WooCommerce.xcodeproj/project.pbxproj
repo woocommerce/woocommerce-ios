@@ -3035,7 +3035,7 @@
 		EEB4E2DE29B61AAD00371C3C /* CouponInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */; };
 		EEBA02A32ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBA02A22ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift */; };
 		EEBA02A52ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBA02A42ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift */; };
-		EEBB816F2D8C082B008D6CE5 /* CollapsibleShipmentCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */; };
+		EEBB816F2D8C082B008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift */; };
 		EEBB81712D8C0839008D6CE5 /* CollapsibleShipmentItemCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */; };
 		EEBB9B3B2D8E5071008D6CE5 /* SelectableShipmentItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */; };
 		EEBB9B3D2D8E5099008D6CE5 /* SelectableShipmentItemRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */; };
@@ -6253,7 +6253,7 @@
 		EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponInputTransformer.swift; sourceTree = "<group>"; };
 		EEBA02A22ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDashboardView.swift; sourceTree = "<group>"; };
 		EEBA02A42ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDashboardViewModel.swift; sourceTree = "<group>"; };
-		EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentCardViewModel.swift; sourceTree = "<group>"; };
+		EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentItemCardViewModel.swift; sourceTree = "<group>"; };
 		EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentItemCard.swift; sourceTree = "<group>"; };
 		EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentItemRow.swift; sourceTree = "<group>"; };
 		EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentItemRowViewModel.swift; sourceTree = "<group>"; };
@@ -14030,7 +14030,7 @@
 				EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */,
 				EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */,
 				EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */,
-				EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */,
+				EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift */,
 				EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */,
 				EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */,
 				EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */,
@@ -15905,7 +15905,7 @@
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				20D2CCA52C7E328300051705 /* POSModalCloseButton.swift in Sources */,
-				EEBB816F2D8C082B008D6CE5 /* CollapsibleShipmentCardViewModel.swift in Sources */,
+				EEBB816F2D8C082B008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift in Sources */,
 				DA25ADDD2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift in Sources */,
 				01BB6C072D09DC560094D55B /* CardPresentModalLocationPreAlert.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,

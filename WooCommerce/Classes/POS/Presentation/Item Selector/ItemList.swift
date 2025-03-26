@@ -116,8 +116,13 @@ private struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
-        case .coupon:
-            EmptyView()
+        case let .coupon(coupon):
+            Button(action: {
+                posModel.addToCart(item)
+            }, label: {
+                CouponRowView(couponItem: .init(id: coupon.id,
+                                                code: coupon.code))
+            })
         }
     }
 }

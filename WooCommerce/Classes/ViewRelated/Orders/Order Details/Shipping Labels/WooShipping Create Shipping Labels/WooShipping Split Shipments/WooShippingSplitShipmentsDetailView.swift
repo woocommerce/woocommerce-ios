@@ -8,22 +8,22 @@ struct WooShippingSplitShipmentsDetailView: View {
 
     var body: some View {
         NavigationView {
-            if viewModel.shipments.count > 1 {
-                TopTabView(tabs: viewModel.topTabItems,
-                           showContent: .constant(false),
-                           selectedTabIndex: $viewModel.selectedShipmentIndex,
-                           tabsContainerHorizontalPadding: nil,
-                           selectedStateColor: .accentColor,
-                           unselectedStateColor: .secondary,
-                           selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
-                           tabPadding: Layout.tabPadding,
-                           tabsNameFont: Font.subheadline.bold(),
-                           tabsIconSize: nil,
-                           tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                           tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
-            }
-
             VStack {
+                if viewModel.shipments.count > 1 {
+                    TopTabView(tabs: viewModel.topTabItems,
+                               showContent: .constant(false),
+                               selectedTabIndex: $viewModel.selectedShipmentIndex,
+                               tabsContainerHorizontalPadding: nil,
+                               selectedStateColor: .accentColor,
+                               unselectedStateColor: .secondary,
+                               selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                               tabPadding: Layout.tabPadding,
+                               tabsNameFont: Font.subheadline.bold(),
+                               tabsIconSize: nil,
+                               tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                               tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+                }
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
                         AdaptiveStack(horizontalAlignment: .leading) {

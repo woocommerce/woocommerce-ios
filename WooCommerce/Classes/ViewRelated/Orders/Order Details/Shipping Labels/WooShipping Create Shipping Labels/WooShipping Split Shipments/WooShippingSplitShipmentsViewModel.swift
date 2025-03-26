@@ -9,7 +9,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let config: WooShippingConfig
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
- 
+
     typealias Shipment = [CollapsibleShipmentItemCardViewModel]
 
     @Published private(set) var shipments: [Shipment]
@@ -38,12 +38,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
     }
 
-    var currentShipment: [CollapsibleShipmentItemCardViewModel]? {
-        guard let index = selectedShipmentIndex,
-            let shipment = shipments[safe: index] else {
-            return nil
-        }
-        return shipment
+    var currentShipment: [CollapsibleShipmentItemCardViewModel] {
+        let index = selectedShipmentIndex ?? 0
+        return shipments[index]
     }
 
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
@@ -64,32 +61,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
 
-        let shipmentCardViewModels = {
-            var viewModels = [CollapsibleShipmentItemCardViewModel]()
-            for item in items {
-                // TODO: #15303 Set IDs based on web logic
-                let childShipmentIds: [String] = {
-                    guard item.quantity > 1 else {
-                        return []
-                    }
-
-                    var children: [String] = []
-                    for quantity in 0..<item.quantity.intValue {
-                        let childShipmentId = "\(item.productOrVariationID)-sub-\(quantity)"
-                        children.append(childShipmentId)
-                    }
-                    return children
-                }()
-
-                let viewModel = CollapsibleShipmentItemCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
-                                                                     childShipmentIds: childShipmentIds,
-                                                                     item: item,
-                                                                     currency: order.currency)
-                viewModels.append(viewModel)
-            }
-            return viewModels
-        }()
-        self.shipments = [shipmentCardViewModels]
+        let initialShipment = items.map { item in
+            CollapsibleShipmentItemCardViewModel(item: item, currency: order.currency)
+        }
+        self.shipments = [initialShipment]
 
         configureSectionHeader()
         configureSelectionCallback()
@@ -101,7 +76,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func selectAll() {
-        currentShipment?.forEach {
+        currentShipment.forEach {
             $0.selectAll()
         }
     }
@@ -114,7 +89,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
 private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
-        currentShipment?.forEach { viewModel in
+        currentShipment.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
                 self?.showMoveToNotice()
             }
@@ -128,17 +103,18 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func showMoveToNotice() {
-        let selectedItemsCount = {
-            currentShipment?.map { $0.selectedItemIds.count }.reduce(0, +) ?? 0
-        }()
+        let shipmentIndex = selectedShipmentIndex ?? 0
+        let selectedItemsCount = currentShipment
+            .map(\.numberOfSelectedItems)
+            .reduce(0, +)
 
-        guard selectedItemsCount > 0, let selectedShipmentIndex else {
+        guard selectedItemsCount > 0 else {
             return moveToNoticeViewModel = nil
         }
 
         moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
                                                               existingShipmentsCount: shipments.count,
-                                                              currentShipmentIndex: selectedShipmentIndex,
+                                                              currentShipmentIndex: shipmentIndex,
                                                               actionHandler: { [weak self] moveTo in
             guard let self else { return }
 
@@ -157,10 +133,7 @@ private extension WooShippingSplitShipmentsViewModel {
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {
-        guard let currentShipment else {
-            return
-        }
-        let items = currentShipment.map(\.item)
+        let items = currentShipment.map(\.packageItem)
         let itemsCount = items.map(\.quantity).reduce(0, +)
         itemsCountLabel = Localization.itemsCount(itemsCount)
         itemsWeightLabel = formatWeight(for: items)

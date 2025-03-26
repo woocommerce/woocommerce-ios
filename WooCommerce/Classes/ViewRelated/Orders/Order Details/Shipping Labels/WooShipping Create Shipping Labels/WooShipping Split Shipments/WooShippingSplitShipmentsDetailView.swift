@@ -34,11 +34,9 @@ struct WooShippingSplitShipmentsDetailView: View {
                                 .foregroundStyle(Color(.textSubtle))
                         }
 
-                        if let shipment = viewModel.currentShipment {
-                            VStack(spacing: Layout.verticalSpacing) {
-                                ForEach(shipment) { item in
-                                    CollapsibleShipmentItemCard(viewModel: item)
-                                }
+                        VStack(spacing: Layout.verticalSpacing) {
+                            ForEach(viewModel.currentShipment) { item in
+                                CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
                     }

@@ -16,8 +16,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published var selectedShipmentIndex: Int? = 0 {
         didSet {
-            moveToNoticeViewModel = nil
             configureSelectionCallback()
+            updateMoveToNotice()
         }
     }
 
@@ -77,7 +77,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     func onAppear() {
         showInstructionsNotice()
-        showMoveToNotice()
+        updateMoveToNotice()
     }
 
     func selectAll() {
@@ -96,7 +96,7 @@ private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
         currentShipment.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
-                self?.showMoveToNotice()
+                self?.updateMoveToNotice()
             }
         }
     }
@@ -107,7 +107,7 @@ private extension WooShippingSplitShipmentsViewModel {
         }
     }
 
-    func showMoveToNotice() {
+    func updateMoveToNotice() {
         let currentIndex = selectedShipmentIndex ?? 0
         let selectedItemsCount = currentShipment
             .map(\.numberOfSelectedItems)

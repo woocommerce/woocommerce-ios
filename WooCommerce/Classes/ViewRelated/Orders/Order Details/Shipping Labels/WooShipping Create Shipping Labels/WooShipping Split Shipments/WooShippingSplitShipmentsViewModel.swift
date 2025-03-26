@@ -9,8 +9,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let config: WooShippingConfig
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
+ 
+    typealias Shipment = [CollapsibleShipmentItemCardViewModel]
 
-    @Published private(set) var shipments: [[CollapsibleShipmentCardViewModel]]
+    @Published private(set) var shipments: [Shipment]
 
     @Published var selectedShipmentIndex: Int? = 0
 

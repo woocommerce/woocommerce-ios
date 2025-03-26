@@ -8,7 +8,7 @@ import struct Yosemite.POSCoupon
 import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 
-final class MockPointOfSaleCouponService: PointOfSaleItemServiceProtocol{
+final class MockPointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     var shouldReturnZeroItems = false
 
     func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {

@@ -16,11 +16,12 @@ struct MoveToShipmentNotice: View {
     let viewModel: MoveToShipmentNoticeViewModel
 
     var body: some View {
-        HStack {
+        AdaptiveStack(horizontalAlignment: .leading) {
             Text(String.localizedStringWithFormat(Localization.message, viewModel.selectedItemsCount))
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(Color(uiColor: .text))
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 

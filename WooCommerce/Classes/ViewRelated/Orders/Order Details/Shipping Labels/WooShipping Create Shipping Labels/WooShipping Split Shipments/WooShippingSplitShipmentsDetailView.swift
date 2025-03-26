@@ -23,7 +23,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                            tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             }
 
-            ZStack(alignment: .bottom) {
+            VStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
                         AdaptiveStack(horizontalAlignment: .leading) {
@@ -44,6 +44,8 @@ struct WooShippingSplitShipmentsDetailView: View {
                     }
                     .padding(Layout.contentPadding)
                 }
+
+                Spacer()
 
                 noticeStack
                     .padding(Layout.contentPadding)

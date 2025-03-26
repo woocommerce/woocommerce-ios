@@ -17,15 +17,15 @@ final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     var selectedShipmentIds: [String] {
         if mainItemRow.selected {
             if childItemRows.isNotEmpty {
-                return childItemRows.map { $0.shipmentId }
+                return childItemRows.map { $0.itemID }
             } else {
-                return [mainItemRow.shipmentId]
+                return [mainItemRow.itemID]
             }
         }
 
         return childItemRows
             .filter { $0.selected }
-            .map(\.shipmentId)
+            .map(\.itemID)
     }
 
     init(parentShipmentId: String,

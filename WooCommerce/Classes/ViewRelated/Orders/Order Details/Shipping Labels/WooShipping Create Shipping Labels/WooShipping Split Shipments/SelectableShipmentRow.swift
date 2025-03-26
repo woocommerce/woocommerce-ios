@@ -85,12 +85,12 @@ private extension SelectableShipmentRow {
 }
 
 #Preview {
-    SelectableShipmentRow(viewModel: SelectableShipmentItemRowViewModel(shipmentId: "123",
-                                                                    isSelectable: false,
-                                                                    item: WooShippingItemRowViewModel(imageUrl: nil,
-                                                                                                      quantityLabel: "3",
-                                                                                                      name: "Little Nap Brazil 250g",
-                                                                                                      detailsLabel: "15×10×8cm • Espresso",
-                                                                                                      weightLabel: "275g",
-                                                                                                      priceLabel: "$60.00")))
+    SelectableShipmentRow(viewModel: SelectableShipmentItemRowViewModel(itemID: "123",
+                                                                        isSelectable: false,
+                                                                        item: WooShippingItemRowViewModel(imageUrl: nil,
+                                                                                                          quantityLabel: "3",
+                                                                                                          name: "Little Nap Brazil 250g",
+                                                                                                          detailsLabel: "15×10×8cm • Espresso",
+                                                                                                          weightLabel: "275g",
+                                                                                                          priceLabel: "$60.00")))
 }

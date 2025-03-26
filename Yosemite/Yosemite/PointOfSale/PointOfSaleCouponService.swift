@@ -39,32 +39,30 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
         guard let storage = storage else {
             return []
         }
-// #2 Remote
+
         do {
             let remoteCoupons = try await couponsRemote.loadAllCoupons(for: siteID)
             return mapCouponsToPOSItems(coupons: remoteCoupons)
         } catch {
-            debugPrint(error)
-            return []
-        }
+            debugPrint("Failed to load coupons from remote:", error)
 
-// #1 Storage
-//        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-//        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-//                                          ascending: false)
-//
-//        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
-//                                                                matching: predicate,
-//                                                                sortedBy: [descriptor])
-//
-//        do {
-//            try resultsController.performFetch()
-//            let storeCoupons = resultsController.fetchedObjects
-//            return mapCouponsToPOSItems(coupons: storeCoupons)
-//        } catch {
-//            debugPrint(error)
-//            return []
-//        }
+            // Fetch from storage as remote fallback
+            let predicate = NSPredicate(format: "siteID == %lld", siteID)
+            let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                              ascending: false)
+
+            let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
+                                                                     matching: predicate,
+                                                                     sortedBy: [descriptor])
+            do {
+                try resultsController.performFetch()
+                let storeCoupons = resultsController.fetchedObjects
+                return mapCouponsToPOSItems(coupons: storeCoupons)
+            } catch {
+                debugPrint("Failed to load coupons from storage:", error)
+                return []
+            }
+        }
     }
 
     private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {

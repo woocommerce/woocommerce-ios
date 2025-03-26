@@ -44,7 +44,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         return shipment
     }
 
-    @Published var instructionsNotice: Notice?
+    @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
+
+    @Published private(set) var instructions: String?
+    private var dismissedInstructions: Bool = false
+
 
     init(order: Order,
          config: WooShippingConfig,
@@ -91,6 +95,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     func onAppear() {
         showInstructionsNotice()
+        showMoveToNotice()
     }
 
     func selectAll() {
@@ -98,35 +103,54 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             $0.selectAll()
         }
     }
+
+    func dismissInstructions() {
+        instructions = nil
+        dismissedInstructions = true
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
         currentShipment?.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
-                self?.checkSelectionAndHideInstructions()
+                self?.showMoveToNotice()
             }
         }
     }
 
     func showInstructionsNotice() {
-        if hasSelectedAnItem() == false {
-            instructionsNotice = Notice(message: Localization.SelectionInstructionsNotice.message,
-                                        feedbackType: .success,
-                                        actionTitle: Localization.SelectionInstructionsNotice.dismiss) { [weak self] in
-                self?.instructionsNotice = nil
+        if !dismissedInstructions {
+            instructions = Localization.SelectionInstructionsNotice.message
+        }
+    }
+
+    func showMoveToNotice() {
+        let selectedItemsCount = {
+            shipmentCardViewModels.map { $0.selectedShipmentIds.count }.reduce(0, +)
+        }()
+
+        guard selectedItemsCount > 0 else {
+            return self.moveToNoticeViewModel = nil
+        }
+
+        // TODO: Use count and index values from shipment tabs
+        moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
+                                                               existingShipmentsCount: 3,
+                                                               currentShipmentIndex: 2,
+                                                               actionHandler: { [weak self] moveTo in
+            guard let self else { return }
+
+            self.moveToNoticeViewModel = nil
+            self.instructions = nil
+
+            switch moveTo {
+            case .existingShipment:
+                break
+            case .newShipment:
+                break
             }
-        }
-    }
-
-    func checkSelectionAndHideInstructions() {
-        if hasSelectedAnItem() {
-            instructionsNotice = nil
-        }
-    }
-
-    func hasSelectedAnItem() -> Bool {
-        currentShipment?.contains(where: { $0.hasSelectedAnItem }) ?? false
+        })
     }
 
     /// Configures the labels in the section header.

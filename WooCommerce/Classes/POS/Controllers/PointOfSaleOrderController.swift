@@ -5,7 +5,9 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.PaymentGateway
+import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
@@ -27,7 +29,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
+    func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
@@ -63,13 +65,11 @@ protocol PointOfSaleOrderControllerProtocol {
     private var order: Order? = nil
 
     @MainActor @discardableResult
-    func syncOrder(for cartItems: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
-        let posCartItems = cartItems.map {
-            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
-        }
+        let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
+        guard !orderState.isSyncing, !posCart.matches(order: order) else {
             return .success(.orderNotChanged)
         }
 
@@ -77,7 +77,7 @@ protocol PointOfSaleOrderControllerProtocol {
         let isNewOrder = order == nil
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
+            let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                order: order,
                                                                currency: storeCurrency)
             self.order = syncedOrder
@@ -247,5 +247,15 @@ extension PointOfSaleOrderController {
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder
+    }
+}
+
+// MARK: - Mapping
+
+private extension POSCart {
+    init(cart: Cart) {
+        let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
+        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code) }
+        self.init(items: items, coupons: coupons)
     }
 }

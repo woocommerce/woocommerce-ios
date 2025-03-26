@@ -6,8 +6,14 @@ import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
+enum ItemType {
+    case products
+    case coupons
+}
+
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
+    ///
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
@@ -16,6 +22,8 @@ protocol PointOfSaleItemsControllerProtocol {
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
+
+
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -160,14 +168,6 @@ protocol PointOfSaleItemsControllerProtocol {
 
 @available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
-    func loadPointOfSaleCoupons() {
-        let posCoupons = itemProvider.providePointOfSaleCoupons()
-        debugPrint(posCoupons)
-    }
-}
-
-@available(iOS 17.0, *)
-private extension PointOfSaleItemsController {
     func setLoadingState(base: ItemListBaseItem) {
         switch base {
         case .root:
@@ -202,6 +202,7 @@ private extension PointOfSaleItemsController {
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+
             let newItems = pagedItems.items
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
             let uniqueNewItems = newItems.filter { newItem in

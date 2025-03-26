@@ -16,6 +16,7 @@ extension NSNotification.Name {
 /// Destination views that the hub menu can navigate to.
 enum HubMenuNavigationDestination: Hashable {
     case payments
+    case aiSettings
     case settings
     case blaze
     case blazeCampaignDetails(campaignID: String)
@@ -121,6 +122,10 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
+
+    private var shouldShowAISettings: Bool {
+        featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey)
+    }
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -356,6 +361,10 @@ private extension HubMenuViewModel {
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
 
+        if shouldShowAISettings {
+            items.append(AISettings())
+        }
+
         if eligibleForGoogleAds {
             items.append(GoogleAds())
         }
@@ -556,6 +565,23 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .settings
     }
 
+    struct AISettings: HubMenuItem {
+        static var id = "ai-settings"
+
+        let title: String = Localization.aiSettings
+        let description: String = Localization.aiSettingsDescription
+        let icon: UIImage = .wandAndRaysInverse
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "ai-settings"
+        let trackingOption: String = "ai-settings"
+        let iconBadge: HubMenuBadgeType?
+        let navigationDestination: HubMenuNavigationDestination? = .aiSettings
+
+        init(iconBadge: HubMenuBadgeType? = nil) {
+            self.iconBadge = iconBadge
+        }
+    }
+
     struct Payments: HubMenuItem {
 
         static var id = "payments"
@@ -731,6 +757,16 @@ extension HubMenuViewModel {
         static let payments = NSLocalizedString(
             "Payments",
             comment: "Title of the hub menu payments button")
+
+        static let aiSettings = NSLocalizedString(
+            "hubMenuViewModel.aiSettings",
+            value: "AI Settings",
+            comment: "Title of the hub menu AI settings button")
+
+        static let aiSettingsDescription = NSLocalizedString(
+            "hubMenuViewModel.aiSettingsDescription",
+            value: "Manage your store's AI-powered features",
+            comment: "Description of the hub menu AI settings button")
 
         static let paymentsDescription = NSLocalizedString(
             "Take payments on the go",

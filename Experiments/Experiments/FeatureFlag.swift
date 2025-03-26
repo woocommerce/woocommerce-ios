@@ -208,4 +208,8 @@ public enum FeatureFlag: Int {
     /// Supports managing notification settings from the app settings
     ///
     case notificationSettings
+
+    /// Allows merchants to use their own API keys for AI-powered features
+    ///
+    case allowMerchantAIAPIKey
 }

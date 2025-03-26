@@ -2,7 +2,7 @@ import Yosemite
 import SwiftUI
 
 /// Displays a single collapsible shipment item row or grouped parent and child shipment item rows
-struct CollapsibleShipmentCard: View {
+struct CollapsibleShipmentItemCard: View {
     @State private var isCollapsed: Bool = true
 
     private let viewModel: CollapsibleShipmentCardViewModel
@@ -41,7 +41,7 @@ struct CollapsibleShipmentCard: View {
     }
 }
 
-private extension CollapsibleShipmentCard {
+private extension CollapsibleShipmentItemCard {
     @ViewBuilder
     var mainShipmentRow: some View {
         if viewModel.childItemRows.isEmpty {
@@ -86,7 +86,7 @@ private extension CollapsibleShipmentCard {
     }
 }
 
-private extension CollapsibleShipmentCard {
+private extension CollapsibleShipmentItemCard {
     enum Layout {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5

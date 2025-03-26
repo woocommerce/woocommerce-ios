@@ -3036,7 +3036,7 @@
 		EEBA02A32ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBA02A22ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift */; };
 		EEBA02A52ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBA02A42ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift */; };
 		EEBB816F2D8C082B008D6CE5 /* CollapsibleShipmentCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */; };
-		EEBB81712D8C0839008D6CE5 /* CollapsibleShipmentCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentCard.swift */; };
+		EEBB81712D8C0839008D6CE5 /* CollapsibleShipmentItemCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */; };
 		EEBB9B3B2D8E5071008D6CE5 /* SelectableShipmentItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */; };
 		EEBB9B3D2D8E5099008D6CE5 /* SelectableShipmentItemRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */; };
 		EEBB9B402D8FE5B6008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBB9B3F2D8FE5B4008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift */; };
@@ -6254,7 +6254,7 @@
 		EEBA02A22ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDashboardView.swift; sourceTree = "<group>"; };
 		EEBA02A42ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDashboardViewModel.swift; sourceTree = "<group>"; };
 		EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentCardViewModel.swift; sourceTree = "<group>"; };
-		EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentCard.swift; sourceTree = "<group>"; };
+		EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentItemCard.swift; sourceTree = "<group>"; };
 		EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentItemRow.swift; sourceTree = "<group>"; };
 		EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableShipmentItemRowViewModel.swift; sourceTree = "<group>"; };
 		EEBB9B3F2D8FE5B4008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsViewModelTests.swift; sourceTree = "<group>"; };
@@ -14029,7 +14029,7 @@
 				EEBBC3BB2D92A1C6008D6CE5 /* MoveToShipmentNotice.swift */,
 				EEBB9B3C2D8E508E008D6CE5 /* SelectableShipmentItemRowViewModel.swift */,
 				EEBB9B3A2D8E5058008D6CE5 /* SelectableShipmentItemRow.swift */,
-				EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentCard.swift */,
+				EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */,
 				EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentCardViewModel.swift */,
 				EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */,
 				EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */,
@@ -16814,7 +16814,7 @@
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,
 				03E471D42942096B001A58AD /* BuiltInCardReaderPaymentAlertsProvider.swift in Sources */,
 				026826C72BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift in Sources */,
-				EEBB81712D8C0839008D6CE5 /* CollapsibleShipmentCard.swift in Sources */,
+				EEBB81712D8C0839008D6CE5 /* CollapsibleShipmentItemCard.swift in Sources */,
 				68E952CC287536010095A23D /* SafariView.swift in Sources */,
 				D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */,
 				EE9D03182B89E2B10077CED1 /* OrderStatusEnum+Analytics.swift in Sources */,

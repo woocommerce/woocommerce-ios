@@ -2,7 +2,7 @@ import SwiftUI
 import WooFoundation
 import Yosemite
 
-/// View model for `CollapsibleShipmentCard`.
+/// View model for `CollapsibleShipmentItemCard`.
 final class CollapsibleShipmentCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 

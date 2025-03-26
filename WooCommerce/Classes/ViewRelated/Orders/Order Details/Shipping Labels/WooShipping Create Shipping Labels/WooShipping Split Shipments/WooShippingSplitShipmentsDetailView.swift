@@ -21,7 +21,7 @@ struct WooShippingSplitShipmentsDetailView: View {
 
                         VStack(spacing: Layout.verticalSpacing) {
                             ForEach(viewModel.shipmentCardViewModels) { item in
-                                CollapsibleShipmentCard(viewModel: item)
+                                CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
                     }

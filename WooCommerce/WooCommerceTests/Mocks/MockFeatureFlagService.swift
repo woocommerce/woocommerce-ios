@@ -23,6 +23,8 @@ final class MockFeatureFlagService: FeatureFlagService {
     var favoriteProducts: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
     var hideSitesInStorePicker: Bool
+    var notificationSettings: Bool
+    var allowMerchantAIAPIKey: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -44,7 +46,9 @@ final class MockFeatureFlagService: FeatureFlagService {
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
-         hideSitesInStorePicker: Bool = false) {
+         hideSitesInStorePicker: Bool = false,
+         notificationSettings: Bool = false,
+         allowMerchantAIAPIKey: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -66,6 +70,8 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.favoriteProducts = favoriteProducts
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
         self.hideSitesInStorePicker = hideSitesInStorePicker
+        self.notificationSettings = notificationSettings
+        self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -112,6 +118,10 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isProductGlobalUniqueIdentifierSupported
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
+        case .notificationSettings:
+            return notificationSettings
+        case .allowMerchantAIAPIKey:
+            return allowMerchantAIAPIKey
         default:
             return false
         }

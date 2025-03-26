@@ -63,6 +63,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -93,6 +95,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(error))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -138,6 +142,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -184,7 +190,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -230,7 +236,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -464,7 +470,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(originAddresses))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress:
+            case .loadPackages, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -511,7 +517,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -552,7 +558,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(ShippingLabel.fake()))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -585,7 +591,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(ShippingLabel.fake()))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -685,7 +691,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(expectedShippingLabel))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -719,7 +725,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(packages, .success([]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress:
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -735,6 +741,41 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(isPurchasingLabelDuringPurchase)
         // Check isPurchaseLabel is false after purchase
         XCTAssertFalse(viewModel.isPurchasingLabel)
+    }
+
+    func test_purchaseLabel_sets_hazmat_category_correctly() {
+        // Given
+        var encodedHazmat: [String: Any]?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(shippingAddress: Address.fake()),
+                                                         selectedOriginAddress: WooShippingOriginAddress.fake(),
+                                                         selectedPackage: samplePackageData(),
+                                                         selectedRate: sampleSelectedRate(),
+                                                         stores: stores)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, completion):
+                encodedHazmat = package.encodedHazmat()
+                completion(.success(ShippingLabel.fake()))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success([]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.hazmatCategory = .class3
+        viewModel.purchaseLabel()
+
+        // Then
+        let shipmentDetails = encodedHazmat?["shipment_0"] as? [String: Any]
+        XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
+        XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
 
     func test_selectPackage_sets_selectedPackage_with_package_data() {
@@ -783,6 +824,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                     completion(.success(self.settings))
                 case .loadOriginAddresses(_, let completion):
                     completion(.success([]))
+                case .loadConfig:
+                    break
                 default:
                     XCTFail("Unexpected action: \(action)")
                 }
@@ -836,7 +879,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: false)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -864,7 +907,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -891,7 +934,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                       nameError: nil)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses:
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -915,6 +958,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.addressToEdit)
+    }
+
+    func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() {
+        // Given
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
+        XCTAssertNil(viewModel.hazmatNotice)
+
+        // When
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        waitUntil {
+            viewModel.hazmatNotice != nil
+        }
     }
 }
 

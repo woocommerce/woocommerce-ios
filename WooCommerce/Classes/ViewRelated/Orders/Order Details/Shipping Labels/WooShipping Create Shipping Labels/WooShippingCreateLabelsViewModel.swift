@@ -21,8 +21,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var debounceDuration: Double = 1
 
-    @Published var containsHazardousMaterials = false
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
+    @Published var hazmatNotice: Notice?
 
     @Published var labelPurchaseErrorNotice: Notice?
 
@@ -229,6 +229,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeSelectedPackage()
         observeForLabelRates()
         observeForCustomsForm()
+        observeHAZMATChanges()
         Task {
             await loadRequiredData()
         }
@@ -428,9 +429,27 @@ private extension WooShippingCreateLabelsViewModel {
     ///
     @MainActor
     func loadShipmentsInfo() async {
-        splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(siteID: order.siteID,
-                                                                     orderID: order.orderID,
-                                                                     stores: stores)
+        let config: WooShippingConfig? = await withCheckedContinuation { continuation in
+            let action = WooShippingAction.loadConfig(siteID: order.siteID,
+                                                      orderID: order.orderID) { result in
+                switch result {
+                case .success(let shipmentResponse):
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error loading config for Woo Shipping labels: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+
+        // TODO: Create view model only if order has more than 1 items that can be split into multiple shipments. (Check web logic)
+        if let config {
+            splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         config: config,
+                                                                         items: items.dataSource.items,
+                                                                         stores: stores)
+        }
     }
 
     /// Loads destination address of the order from remote.
@@ -553,6 +572,23 @@ private extension WooShippingCreateLabelsViewModel {
             .store(in: &subscriptions)
     }
 
+    func observeHAZMATChanges() {
+        $hazmatCategory
+            .dropFirst()
+            .scan((nil, nil)) { (previous: (current: ShippingLabelHazmatCategory?,
+                                            previous: ShippingLabelHazmatCategory?),
+                                 newValue: ShippingLabelHazmatCategory?) in
+                return (current: newValue, previous: previous.current)
+            }
+            .map { [weak self] (newValue, oldValue) in
+                let noticeTitle = newValue != nil ? Localization.hazmatSet : Localization.hazmatRemoved
+                return Notice(title: noticeTitle, actionTitle: Localization.undo, actionHandler: {
+                    self?.hazmatCategory = oldValue
+                })
+            }
+            .assign(to: &$hazmatNotice)
+    }
+
     func observeForCustomsForm() {
         $selectedOriginAddress.combineLatest($destinationAddress)
             .map { (originAddress, destinationAddress) -> Bool in
@@ -615,7 +651,7 @@ private extension WooShippingCreateLabelsViewModel {
                                      height: Double(packageData.height) ?? 0,
                                      weight: weight,
                                      isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
-                                     hazmatCategory: nil, // Hazmat support will be added in a future milestone
+                                     hazmatCategory: hazmatCategory?.rawValue,
                                      customsForm: customsForm)
     }
 }
@@ -679,6 +715,24 @@ private extension WooShippingCreateLabelsViewModel {
                                                    value: "Retry",
                                                    comment: "Button to retry label purchase when an error occurs")
         }
+
+        static let hazmatSet = NSLocalizedString(
+            "wooShipping.createLabels.hazmatSet",
+            value: "Hazardous materials category set",
+            comment: "Notice when a hazardous materials category is set on the shipping label creation screen"
+        )
+
+        static let hazmatRemoved = NSLocalizedString(
+            "wooShipping.createLabels.hazmatRemoved",
+            value: "Remove hazardous materials category",
+            comment: "Notice when a hazardous materials category is removed on the shipping label creation screen"
+        )
+
+        static let undo = NSLocalizedString(
+            "wooShipping.createLabels.undo",
+            value: "Undo",
+            comment: "Button to undo a change on the shipping label creation screen"
+        )
     }
 }
 

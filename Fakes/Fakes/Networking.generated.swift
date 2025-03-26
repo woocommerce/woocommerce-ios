@@ -2118,7 +2118,8 @@ extension Networking.ShippingLabelPurchase {
             refundableAmount: .fake(),
             status: .fake(),
             productIDs: .fake(),
-            productNames: .fake()
+            productNames: .fake(),
+            shipmentID: .fake()
         )
     }
 }
@@ -2804,6 +2805,26 @@ extension Networking.WooShippingCarrierPredefinedOptions {
         )
     }
 }
+extension Networking.WooShippingConfig {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingConfig {
+        .init(
+            siteID: .fake(),
+            shipments: .fake(),
+            shippingLabelData: .fake()
+        )
+    }
+}
+extension Networking.WooShippingConfigResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingConfigResponse {
+        .init(
+            config: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCreatePackageResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2954,6 +2975,16 @@ extension Networking.WooShippingSavedPredefinedPackage {
             groupTitle: .fake(),
             providerID: .fake(),
             package: .fake()
+        )
+    }
+}
+extension Networking.WooShippingShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingShipment {
+        .init(
+            id: .fake(),
+            subItems: .fake()
         )
     }
 }

@@ -1311,6 +1311,51 @@ extension Networking.NoteRange {
     }
 }
 
+extension Networking.NotificationSettings {
+    public func copy(
+        blogs: CopiableProp<[NotificationSettings.Blog]> = .copy
+    ) -> Networking.NotificationSettings {
+        let blogs = blogs ?? self.blogs
+
+        return Networking.NotificationSettings(
+            blogs: blogs
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Blog {
+    public func copy(
+        blogID: CopiableProp<Int64> = .copy,
+        devices: CopiableProp<[NotificationSettings.Device]> = .copy
+    ) -> Networking.NotificationSettings.Blog {
+        let blogID = blogID ?? self.blogID
+        let devices = devices ?? self.devices
+
+        return Networking.NotificationSettings.Blog(
+            blogID: blogID,
+            devices: devices
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Device {
+    public func copy(
+        deviceID: CopiableProp<Int64> = .copy,
+        newComment: CopiableProp<Bool> = .copy,
+        storeOrder: CopiableProp<Bool> = .copy
+    ) -> Networking.NotificationSettings.Device {
+        let deviceID = deviceID ?? self.deviceID
+        let newComment = newComment ?? self.newComment
+        let storeOrder = storeOrder ?? self.storeOrder
+
+        return Networking.NotificationSettings.Device(
+            deviceID: deviceID,
+            newComment: newComment,
+            storeOrder: storeOrder
+        )
+    }
+}
+
 extension Networking.Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -3232,7 +3277,8 @@ extension Networking.ShippingLabelPurchase {
         refundableAmount: CopiableProp<Double> = .copy,
         status: CopiableProp<ShippingLabelStatus> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
-        productNames: CopiableProp<[String]> = .copy
+        productNames: CopiableProp<[String]> = .copy,
+        shipmentID: NullableCopiableProp<String> = .copy
     ) -> Networking.ShippingLabelPurchase {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3246,6 +3292,7 @@ extension Networking.ShippingLabelPurchase {
         let status = status ?? self.status
         let productIDs = productIDs ?? self.productIDs
         let productNames = productNames ?? self.productNames
+        let shipmentID = shipmentID ?? self.shipmentID
 
         return Networking.ShippingLabelPurchase(
             siteID: siteID,
@@ -3259,7 +3306,8 @@ extension Networking.ShippingLabelPurchase {
             refundableAmount: refundableAmount,
             status: status,
             productIDs: productIDs,
-            productNames: productNames
+            productNames: productNames,
+            shipmentID: shipmentID
         )
     }
 }
@@ -4128,6 +4176,36 @@ extension Networking.WooShippingAddress {
     }
 }
 
+extension Networking.WooShippingConfig {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy,
+        shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
+    ) -> Networking.WooShippingConfig {
+        let siteID = siteID ?? self.siteID
+        let shipments = shipments ?? self.shipments
+        let shippingLabelData = shippingLabelData ?? self.shippingLabelData
+
+        return Networking.WooShippingConfig(
+            siteID: siteID,
+            shipments: shipments,
+            shippingLabelData: shippingLabelData
+        )
+    }
+}
+
+extension Networking.WooShippingConfigResponse {
+    public func copy(
+        config: CopiableProp<WooShippingConfig> = .copy
+    ) -> Networking.WooShippingConfigResponse {
+        let config = config ?? self.config
+
+        return Networking.WooShippingConfigResponse(
+            config: config
+        )
+    }
+}
+
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
@@ -4340,6 +4418,21 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingShipment {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        subItems: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.WooShippingShipment {
+        let id = id ?? self.id
+        let subItems = subItems ?? self.subItems
+
+        return Networking.WooShippingShipment(
+            id: id,
+            subItems: subItems
         )
     }
 }

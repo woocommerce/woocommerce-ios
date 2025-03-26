@@ -1,14 +1,22 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.1
+-----
+
+- [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+
 22.0
 -----
 - [*] Payments: Puerto Rico is now available in the list of countries that are supported by In-Person Payments, when using WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
 - [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 - [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
+- [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
+- [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
 - [internal] Update Stripe Terminal SDK to 4.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/15377]
+- [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
 
 21.9
 -----

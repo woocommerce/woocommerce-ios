@@ -25,7 +25,7 @@ struct MoveToShipmentNotice: View {
 
             Spacer()
 
-            if viewModel.existingShipmentsCount == 0 {
+            if viewModel.existingShipmentsCount == 1 {
                 moveToNewShipment
             } else {
                 menuWithExistingShipments

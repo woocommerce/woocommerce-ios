@@ -65,9 +65,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                 }()
 
                 let viewModel = CollapsibleShipmentItemCardViewModel(parentShipmentId: "\(item.productOrVariationID)",
-                                                                 childShipmentIds: childShipmentIds,
-                                                                 item: item,
-                                                                 currency: order.currency)
+                                                                     childShipmentIds: childShipmentIds,
+                                                                     item: item,
+                                                                     currency: order.currency)
                 viewModels.append(viewModel)
             }
             return viewModels

@@ -42,8 +42,8 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
             self.childItemRows = []
         } else {
             var childItemRows = [SelectableShipmentItemRowViewModel]()
-            for quantity in 0..<item.quantity.intValue {
-                let childShipmentId = "\(item.productOrVariationID)-sub-\(quantity)"
+            for index in 0..<item.quantity.intValue {
+                let childShipmentId = "\(item.productOrVariationID)-sub-\(index)"
                 childItemRows.append(SelectableShipmentItemRowViewModel(itemID: childShipmentId,
                                                                         isSelectable: true,
                                                                         item: childShippingItem,

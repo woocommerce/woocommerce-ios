@@ -51,10 +51,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
 
-    @Published private(set) var instructions: String?
+    @Published private(set) var instructions: AttributedString?
     private var dismissedInstructions: Bool = false
 
-    @Published private(set) var movingCompletionMessage: String?
+    @Published private(set) var movingCompletionMessage: AttributedString?
     private var undoMovingItemsHandler: (() -> Void)?
 
     init(order: Order,
@@ -189,7 +189,16 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let displayedShipmentIndex = (updatedShipmentIndex ?? 0) + 1
         let shipmentLabel = String.localizedStringWithFormat(Localization.shipmentFormat, displayedShipmentIndex)
         withAnimation {
-            movingCompletionMessage = String.localizedStringWithFormat(Localization.movingCompletionFormat, itemsCount, shipmentLabel)
+            movingCompletionMessage = {
+                let moveToNewShipmentTitle = MoveToShipmentNotice.Localization.moveToNewShipment.lowercased()
+                let content = String.localizedStringWithFormat(Localization.movingCompletionFormat, itemsCount, shipmentLabel)
+
+                var attributedText = AttributedString(content)
+                attributedText.font = .headline
+                attributedText.foregroundColor = Color(.textInverted)
+
+                return attributedText
+            }()
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.movingCompletionNoticeDuration) {
             withAnimation {
@@ -215,9 +224,26 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func showInstructionsNotice() {
-        if !dismissedInstructions {
-            instructions = Localization.SelectionInstructionsNotice.message
+        guard dismissedInstructions == false else {
+            return
         }
+        instructions = {
+            let moveToNewShipmentTitle = MoveToShipmentNotice.Localization.moveToNewShipment
+            let content = String.localizedStringWithFormat(Localization.SelectionInstructionsNotice.message, moveToNewShipmentTitle)
+
+            var attributedText = AttributedString(content)
+            attributedText.font = .body
+            attributedText.foregroundColor = Color(.textInverted)
+
+            if let range = attributedText.range(of: moveToNewShipmentTitle) {
+                let textStyleContainer = AttributeContainer()
+                    .font(.body.weight(.semibold))
+                    .foregroundColor(Color(.textInverted))
+                attributedText[range].setAttributes(textStyleContainer)
+            }
+
+            return attributedText
+        }()
     }
 
     func updateMoveToNotice() {
@@ -284,14 +310,13 @@ private extension WooShippingSplitShipmentsViewModel {
 
     enum Localization {
         enum SelectionInstructionsNotice {
-            static let message = NSLocalizedString("wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message",
-                                                   value: "To split, select the items, and tap **move to new shipment** when the toolbar appears.",
-                                                   comment: "Instructions to ask customer to select items to split during shipping label creation."
-                                                   + " The content inside two double asterisks **...** denote bolded text.")
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message",
+                value: "To split, select the items, and tap %1$@ when the toolbar appears.",
+                comment: "Instructions to ask customer to select items to split during shipping label creation. " +
+                "The placeholder is title of a button to move items to a new shipment ."
+            )
 
-            static let dismiss = NSLocalizedString("wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.dismiss",
-                                                   value: "Dismiss",
-                                                   comment: "Label of the button to dismiss the instructions notice in split shipments flow.")
         }
         static func itemsCount(_ count: Decimal) -> String {
             return String.pluralize(count, singular: Localization.itemsCountSingularFormat, plural: Localization.itemsCountPluralFormat)

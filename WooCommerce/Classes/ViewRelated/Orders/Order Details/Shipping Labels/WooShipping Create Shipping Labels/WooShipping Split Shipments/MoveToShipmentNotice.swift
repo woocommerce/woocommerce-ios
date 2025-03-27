@@ -82,8 +82,8 @@ private extension MoveToShipmentNotice {
     }
 }
 
-private extension MoveToShipmentNotice {
-    enum Layout {
+extension MoveToShipmentNotice {
+    private enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 22
         static let horizontalSpacing: CGFloat = 8

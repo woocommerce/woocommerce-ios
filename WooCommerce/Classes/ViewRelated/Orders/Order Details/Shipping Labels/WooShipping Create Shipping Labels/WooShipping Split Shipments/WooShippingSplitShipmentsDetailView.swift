@@ -100,7 +100,7 @@ private extension WooShippingSplitShipmentsDetailView {
 }
 
 private struct MessageSnackBar<IconContent: View>: View {
-    let message: String
+    let message: AttributedString
     var actionTitle: String?
     var verticalAlignment: VerticalAlignment = .center
     let icon: (() -> IconContent)
@@ -113,8 +113,7 @@ private struct MessageSnackBar<IconContent: View>: View {
         HStack(alignment: verticalAlignment, spacing: hSpacing) {
             icon()
 
-            BoldableTextView(message)
-                .foregroundStyle(Color(.textInverted))
+            Text(message)
 
             Spacer()
 
@@ -124,6 +123,8 @@ private struct MessageSnackBar<IconContent: View>: View {
                 if let actionTitle {
                     Text(actionTitle)
                         .font(.headline)
+                        .foregroundStyle(Color(UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade30),
+                                                       dark: .withColorStudio(.wooCommercePurple, shade: .shade40))))
                 } else {
                     Image(systemName: "xmark")
                         .foregroundStyle(Color(.withColorStudio(.gray)))

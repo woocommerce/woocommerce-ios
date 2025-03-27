@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 import SwiftUI
 import WordPressShared
 
@@ -40,6 +41,30 @@ class MagicLinkRequestViewController: LoginViewController {
 
 // MARK: Actions
 private extension MagicLinkRequestViewController {
+    func sendMagicLink() {
+        Task { @MainActor in
+            configureSubmitButton(animating: true)
+
+            let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
+
+            configureSubmitButton(animating: false)
+
+            switch result {
+            case .success:
+                let vc = MagicLinkRequestedViewController(email: loginFields.username) { [weak self] in
+                    self?.openFallbackScreen()
+                }
+
+                vc.loginFields = loginFields
+                navigationController?.pushViewController(vc, animated: true)
+
+            case .failure(let error):
+                WordPressAuthenticator.track(.loginMagicLinkFailed, error: error)
+                displayErrorAlert(Localization.magicLinkError, sourceTag: self.sourceTag)
+            }
+        }
+    }
+
     func openFallbackScreen() {
         let vc: LoginViewController?
         switch self.fallbackAction {
@@ -90,10 +115,7 @@ private extension MagicLinkRequestViewController {
         spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
         stackView.addArrangedSubview(spacer)
 
-        let primaryButton = NUXButton()
-        primaryButton.isPrimary = true
-        submitButton = primaryButton
-        primaryButton.setTitle(Localization.sendMagicLink, for: .normal)
+        let primaryButton = createPrimaryButton()
         stackView.addArrangedSubview(primaryButton)
         pinSubviewToHorizontalEdges(primaryButton)
     }
@@ -142,6 +164,18 @@ private extension MagicLinkRequestViewController {
         return fallbackButton
     }
 
+    private func createPrimaryButton() -> UIButton {
+        let primaryButton = NUXButton()
+        primaryButton.isPrimary = true
+        submitButton = primaryButton
+        primaryButton.setTitle(Localization.sendMagicLink, for: .normal)
+        primaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.sendMagicLink()
+        }
+
+        return primaryButton
+    }
+
     private func pinSubviewToHorizontalEdges(_ subView: UIView) {
         subView.translatesAutoresizingMaskIntoConstraints = false
         subView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: stackView.layoutMargins.left).isActive = true
@@ -170,6 +204,11 @@ private extension MagicLinkRequestViewController {
             "login.magicLinkRequest.wpcomUsernamePasswordFallback",
             value: "Use username and password instead",
             comment: "Button title to fallback to WordPress.com username and password login."
+        )
+        static let magicLinkError = NSLocalizedString(
+            "login.magicLinkRequest.error",
+            value: "Something went wrong. Please try again.",
+            comment: "Error message when magic link request fails."
         )
     }
 }

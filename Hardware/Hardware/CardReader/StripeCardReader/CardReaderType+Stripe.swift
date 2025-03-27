@@ -13,7 +13,7 @@ extension CardReaderType {
             return .stripeM2
         case .wisePad3:
             return .wisepad3
-        case .appleBuiltIn:
+        case .tapToPay:
             return appleBuiltIn
         default:
             return .other
@@ -29,7 +29,7 @@ extension CardReaderType {
         case .wisepad3:
             return .wisePad3
         case .appleBuiltIn:
-            return .appleBuiltIn
+            return .tapToPay
         case .other:
             return nil
         }

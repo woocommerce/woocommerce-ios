@@ -36,7 +36,7 @@ PODS:
     - Sourcery/CLI-Only (= 2.2.6)
   - Sourcery/CLI-Only (2.2.6)
   - Specta (1.0.7)
-  - StripeTerminal (3.9.1)
+  - StripeTerminal (4.2.0)
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
@@ -77,7 +77,7 @@ DEPENDENCIES:
   - Sentry (~> 8.43.0)
   - Sourcery (~> 2.2.6)
   - Specta (= 1.0.7)
-  - StripeTerminal (~> 3.9.1)
+  - StripeTerminal (~> 4.2.0)
   - SVProgressHUD (= 2.2.5)
   - SwiftLint (= 0.54.0)
   - UIDeviceIdentifier (~> 2.0)
@@ -139,7 +139,7 @@ SPEC CHECKSUMS:
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 4427fd22f0c12bd1ef75dd9045d50e01c17a43e1
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
-  StripeTerminal: f7f5e176979224ed76edb3724f41138fbb28053c
+  StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
@@ -158,6 +158,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 51e4e2fe15da596ac38202135c4b2b7ab42c49b8
+PODFILE CHECKSUM: f1435b14e58d62d2787b5a70da8047b4e4b93f56
 
 COCOAPODS: 1.16.2

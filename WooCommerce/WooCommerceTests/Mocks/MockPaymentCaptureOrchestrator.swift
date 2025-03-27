@@ -13,13 +13,13 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
-    var spyCollectPaymentMethodTypes: [String]? = nil
+    var spyCollectPaymentMethodTypes: [PaymentMethodType]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
     var spyChannel: PaymentChannel? = nil
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: () -> Void,

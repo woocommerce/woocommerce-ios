@@ -557,12 +557,13 @@ extension SiteCredentialsViewController {
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        guard configuration.enableManualSiteCredentialLogin else {
-            return validateFormAndLogin() // handles login with XMLRPC normally
+        if configuration.enableManualSiteCredentialLogin,
+           loginFields.siteAddress != "https://wordpress.com" {
+            // asks the delegate to handle the login
+            validateFormAndTriggerDelegate()
+        } else {
+            validateFormAndLogin()
         }
-
-        // asks the delegate to handle the login
-        validateFormAndTriggerDelegate()
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {

@@ -50,6 +50,7 @@ private extension MoveToShipmentNotice {
                 Text(Localization.moveToNewShipment)
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .multilineTextAlignment(.trailing)
             }
             .foregroundColor(Color(.accent))
         }

@@ -38,6 +38,28 @@ class MagicLinkRequestViewController: LoginViewController {
     }
 }
 
+// MARK: Actions
+private extension MagicLinkRequestViewController {
+    func openFallbackScreen() {
+        let vc: LoginViewController?
+        switch self.fallbackAction {
+        case .password:
+            vc = PasswordViewController.instantiate(from: .password)
+        case .wpcomUsernamePassword:
+            vc = SiteCredentialsViewController.instantiate(from: .siteAddress)
+        }
+
+        guard let vc else { return }
+
+        vc.loginFields = self.loginFields
+        if fallbackAction == .wpcomUsernamePassword {
+            vc.loginFields.siteAddress = "https://wordpress.com"
+        }
+
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
 // MARK: UI Setup
 private extension MagicLinkRequestViewController {
     private func configureStackView() {
@@ -115,24 +137,7 @@ private extension MagicLinkRequestViewController {
 
         fallbackButton.setTitle(fallbackAction.buttonTitle(), for: .normal)
         fallbackButton.on(.touchUpInside) { [weak self] _ in
-            guard let self else { return }
-
-            let vc: LoginViewController?
-            switch self.fallbackAction {
-            case .password:
-                vc = PasswordViewController.instantiate(from: .password)
-            case .wpcomUsernamePassword:
-                vc = SiteCredentialsViewController.instantiate(from: .siteAddress)
-            }
-
-            guard let vc else { return }
-
-            vc.loginFields = self.loginFields
-            if fallbackAction == .wpcomUsernamePassword {
-                vc.loginFields.siteAddress = "https://wordpress.com"
-            }
-
-            self.navigationController?.pushViewController(vc, animated: true)
+            self?.openFallbackScreen()
         }
         return fallbackButton
     }

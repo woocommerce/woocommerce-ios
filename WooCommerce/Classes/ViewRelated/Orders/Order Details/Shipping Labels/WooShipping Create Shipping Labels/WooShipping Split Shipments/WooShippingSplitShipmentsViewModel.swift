@@ -138,9 +138,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         shipments[currentIndex] = newShipment
 
         // Step 3: Add new or update existing shipment
+        let totalItemsMoved = movedItems
+            .map { $0.packageItem.quantity }
+            .reduce(0, +)
+        var updatedShipmentIndex: Int?
+
         switch destination {
         case .newShipment:
             shipments.append(movedItems)
+            updatedShipmentIndex = shipments.count - 1
 
         case .existingShipment(let index):
             var updatedShipment = Shipment()
@@ -164,6 +170,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             // Add the rest of the new items to the shipment
             updatedShipment.append(contentsOf: movedItems)
             shipments[index] = updatedShipment
+            updatedShipmentIndex = index
         }
 
         // Step 4: Remove the current shipment if it's empty.
@@ -176,6 +183,25 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
         configureSelectionCallback()
         configureSectionHeader()
+
+        // Step 5: Trigger notice for moving completion.
+        let itemsCount = Localization.itemsCount(totalItemsMoved)
+        let displayedShipmentIndex = (updatedShipmentIndex ?? 0) + 1
+        let shipmentLabel = String.localizedStringWithFormat(Localization.shipmentFormat, displayedShipmentIndex)
+        withAnimation {
+            movingCompletionMessage = String.localizedStringWithFormat(Localization.movingCompletionFormat, itemsCount, shipmentLabel)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.movingCompletionNoticeDuration) {
+            withAnimation {
+                self.movingCompletionMessage = nil
+            }
+            self.undoMovingItemsHandler = nil
+        }
+    }
+
+    func undoMovingItems() {
+        undoMovingItemsHandler?()
+        movingCompletionMessage = nil
     }
 }
 
@@ -252,6 +278,10 @@ private extension WooShippingSplitShipmentsViewModel {
 
 // MARK: Constants
 private extension WooShippingSplitShipmentsViewModel {
+    enum Constants {
+        static let movingCompletionNoticeDuration: Double = 3 // seconds
+    }
+
     enum Localization {
         enum SelectionInstructionsNotice {
             static let message = NSLocalizedString("wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message",
@@ -276,6 +306,14 @@ private extension WooShippingSplitShipmentsViewModel {
             "wooShipping.createLabels.splitShipment.shipmentFormat",
             value: "Shipment %1$d",
             comment: "Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1'"
+        )
+
+        static let movingCompletionFormat = NSLocalizedString(
+            "wooShipping.createLabels.splitShipment.movingCompletionFormat",
+            value: "Moved %1$@ to %2$@",
+            comment: "Message to be displayed after moving items between shipments in the shipping label creation flow. " +
+            "The placeholders are the number of items and shipment index respectively. " +
+            "Reads as: 'Moved 3 items to Shipment 2'."
         )
     }
 }

@@ -116,13 +116,23 @@ private extension MagicLinkRequestViewController {
         fallbackButton.setTitle(fallbackAction.buttonTitle(), for: .normal)
         fallbackButton.on(.touchUpInside) { [weak self] _ in
             guard let self else { return }
-            guard let passwordVC = PasswordViewController.instantiate(from: .password) else {
-                return
+
+            let vc: LoginViewController?
+            switch self.fallbackAction {
+            case .password:
+                vc = PasswordViewController.instantiate(from: .password)
+            case .wpcomUsernamePassword:
+                vc = SiteCredentialsViewController.instantiate(from: .siteAddress)
             }
 
-            passwordVC.loginFields = self.loginFields
+            guard let vc else { return }
 
-            self.navigationController?.pushViewController(passwordVC, animated: true)
+            vc.loginFields = self.loginFields
+            if fallbackAction == .wpcomUsernamePassword {
+                vc.loginFields.siteAddress = "https://wordpress.com"
+            }
+
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         return fallbackButton
     }

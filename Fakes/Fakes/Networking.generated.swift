@@ -1137,6 +1137,26 @@ extension Networking.OrderTaxLine {
         )
     }
 }
+extension Networking.POSProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.POSProduct {
+        .init(
+            siteID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            productTypeKey: .fake(),
+            sku: .fake(),
+            globalUniqueID: .fake(),
+            price: .fake(),
+            regularPrice: .fake(),
+            salePrice: .fake(),
+            onSale: .fake(),
+            images: .fake(),
+            attributes: .fake()
+        )
+    }
+}
 extension Networking.PaymentGateway {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -73,9 +73,21 @@ private extension WooShippingSplitShipmentsDetailView {
     var noticeStack: some View {
         VStack(spacing: Layout.contentPadding) {
             if let message = viewModel.instructions {
-                InstructionsSnackbar(message: message) {
+                MessageSnackBar(message: message, verticalAlignment: .top, icon: {
+                    EmptyView()
+                }, actionHandler: {
                     viewModel.dismissInstructions()
-                }
+                })
+            }
+
+            if let completionMessage = viewModel.movingCompletionMessage {
+                MessageSnackBar(message: completionMessage, actionTitle: Localization.undo, icon: {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.headline)
+                        .foregroundStyle(Color(.withColorStudio(.green, shade: .shade20)))
+                }, actionHandler: {
+                    viewModel.undoMovingItems()
+                })
             }
 
             if let moveTo = viewModel.moveToNoticeViewModel {
@@ -87,12 +99,20 @@ private extension WooShippingSplitShipmentsDetailView {
     }
 }
 
-private struct InstructionsSnackbar: View {
+private struct MessageSnackBar<IconContent: View>: View {
     let message: String
+    var actionTitle: String?
+    var verticalAlignment: VerticalAlignment = .center
+    let icon: (() -> IconContent)
     let actionHandler: () -> Void
 
+    private let hSpacing: CGFloat = 8
+    private let shadowColorOpacity: CGFloat = 0.16
+
     var body: some View {
-        HStack(alignment: .top, spacing: Layout.hSpacing) {
+        HStack(alignment: verticalAlignment, spacing: hSpacing) {
+            icon()
+
             BoldableTextView(message)
                 .foregroundStyle(Color(.textInverted))
 
@@ -101,23 +121,23 @@ private struct InstructionsSnackbar: View {
             Button {
                 actionHandler()
             } label: {
-                Image(systemName: "xmark")
-                    .foregroundStyle(Color(.withColorStudio(.gray)))
+                if let actionTitle {
+                    Text(actionTitle)
+                        .font(.headline)
+                } else {
+                    Image(systemName: "xmark")
+                        .foregroundStyle(Color(.withColorStudio(.gray)))
+                }
             }
         }
         .padding(WooShippingSplitShipmentsDetailView.Layout.contentPadding)
         .background {
             RoundedRectangle(cornerRadius: WooShippingSplitShipmentsDetailView.Layout.cornerRadius)
                 .fill(Color(.text))
-                .shadow(color: Color(.text).opacity(Layout.shadowColorOpacity),
+                .shadow(color: Color(.text).opacity(shadowColorOpacity),
                         radius: WooShippingSplitShipmentsDetailView.Layout.shadowRadius,
                         y: WooShippingSplitShipmentsDetailView.Layout.shadowYOffset)
         }
-    }
-
-    private enum Layout {
-        static let hSpacing: CGFloat = 8
-        static let shadowColorOpacity: CGFloat = 0.16
     }
 }
 
@@ -151,6 +171,11 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
             "wooShippingSplitShipmentsDetailView.done",
             value: "Done",
             comment: "Button to save split shipment configurations in the shipping label creation flow"
+        )
+        static let undo = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.undo",
+            value: "Undo",
+            comment: "Button to revert moving items between shipments in the shipping label creation flow"
         )
     }
 }

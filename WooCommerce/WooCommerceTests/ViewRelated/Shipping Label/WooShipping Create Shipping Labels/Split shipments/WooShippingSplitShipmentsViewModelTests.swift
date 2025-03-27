@@ -289,6 +289,39 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments[1][1].packageItem.quantity, 3)
     }
 
+    func test_moveSelectedItems_to_existing_shipments_merges_the_same_items() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.shipments.first?.last?.childItemRows.last?.handleTap()
+        viewModel.moveSelectedItems(to: .existingShipment(index: 1))
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 2)
+
+        XCTAssertEqual(viewModel.shipments[0].count, 3)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 1)
+
+        XCTAssertEqual(viewModel.shipments[1].count, 1)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
+    }
+
     func test_moveSelectedItems_to_new_shipments_updates_section_headers_for_current_shipment() {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),

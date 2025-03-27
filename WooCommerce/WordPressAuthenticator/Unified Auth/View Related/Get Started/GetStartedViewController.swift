@@ -746,7 +746,7 @@ private extension GetStartedViewController {
     /// Show Magic Link request screen, the screen allows the user to request a magic link to be sent to their email.
     ///
     func showMagicLinkRequestScreen() {
-        let vc = MagicLinkRequestViewController()
+        let vc = MagicLinkRequestViewController(fallbackAction: .wpcomUsernamePassword)
 
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock

@@ -4,6 +4,16 @@ import WordPressShared
 
 class MagicLinkRequestViewController: LoginViewController {
     private let stackView = UIStackView()
+    let fallbackAction: FallbackAction
+
+    init(fallbackAction: FallbackAction) {
+        self.fallbackAction = fallbackAction
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -103,7 +113,7 @@ private extension MagicLinkRequestViewController {
         fallbackButton.buttonStyle = .linkButtonStyle
         fallbackButton.customizeFont(.preferredFont(forTextStyle: .body))
 
-        fallbackButton.setTitle(Localization.passwordFallback, for: .normal)
+        fallbackButton.setTitle(fallbackAction.buttonTitle(), for: .normal)
         fallbackButton.on(.touchUpInside) { [weak self] _ in
             guard let self else { return }
             guard let passwordVC = PasswordViewController.instantiate(from: .password) else {
@@ -138,8 +148,29 @@ private extension MagicLinkRequestViewController {
         )
         static let passwordFallback = NSLocalizedString(
             "login.magicLinkRequest.passwordFallback",
-            value: "Or type your password",
+            value: "Use your password instead",
             comment: "Button title to fallback to password login."
         )
+        static let wpcomUsernamePasswordFallback = NSLocalizedString(
+            "login.magicLinkRequest.wpcomUsernamePasswordFallback",
+            value: "Use username and password instead",
+            comment: "Button title to fallback to WordPress.com username and password login."
+        )
+    }
+}
+
+extension MagicLinkRequestViewController {
+    enum FallbackAction {
+        case password
+        case wpcomUsernamePassword
+
+        func buttonTitle() -> String {
+            switch self {
+            case .password:
+                return Localization.passwordFallback
+            case .wpcomUsernamePassword:
+                return Localization.wpcomUsernamePasswordFallback
+            }
+        }
     }
 }

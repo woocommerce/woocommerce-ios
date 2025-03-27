@@ -30,6 +30,9 @@ class MagicLinkRequestViewController: LoginViewController {
             assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
         }
 
+        tracker.set(flow: .loginWithMagicLink)
+        tracker.track(step: .start)
+
         configureStackView()
     }
 
@@ -43,6 +46,7 @@ class MagicLinkRequestViewController: LoginViewController {
 private extension MagicLinkRequestViewController {
     func sendMagicLink() {
         Task { @MainActor in
+            tracker.track(click: .requestMagicLink)
             configureSubmitButton(animating: true)
 
             let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
@@ -70,8 +74,10 @@ private extension MagicLinkRequestViewController {
         let vc: LoginViewController?
         switch self.fallbackAction {
         case .password:
+            tracker.track(click: .loginWithAccountPassword)
             vc = PasswordViewController.instantiate(from: .password)
         case .wpcomUsernamePassword:
+            tracker.track(click: .loginWithWPComUsernamePassword)
             vc = SiteCredentialsViewController.instantiate(from: .siteAddress)
         }
 

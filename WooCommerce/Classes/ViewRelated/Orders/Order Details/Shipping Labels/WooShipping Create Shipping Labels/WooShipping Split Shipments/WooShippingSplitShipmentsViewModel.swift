@@ -105,20 +105,20 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             let remainingQuantity = initialQuantity - selectedQuantity
             if remainingQuantity == 0 {
                 movedItems.append(
-                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: self.order.currency)
+                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: order.currency)
                 )
             } else if selectedQuantity > 0 {
                 let newItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(remainingQuantity))
                 newShipment.append(
-                    CollapsibleShipmentItemCardViewModel(item: newItem, currency: self.order.currency)
+                    CollapsibleShipmentItemCardViewModel(item: newItem, currency: order.currency)
                 )
                 let movedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(selectedQuantity))
                 movedItems.append(
-                    CollapsibleShipmentItemCardViewModel(item: movedItem, currency: self.order.currency)
+                    CollapsibleShipmentItemCardViewModel(item: movedItem, currency: order.currency)
                 )
             } else if selectedQuantity == 0 {
                 newShipment.append(
-                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: self.order.currency)
+                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: order.currency)
                 )
             }
         }

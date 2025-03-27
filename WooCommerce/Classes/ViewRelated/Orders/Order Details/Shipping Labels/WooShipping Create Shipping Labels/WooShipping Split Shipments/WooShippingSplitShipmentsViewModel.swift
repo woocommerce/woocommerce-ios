@@ -190,7 +190,6 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let shipmentLabel = String.localizedStringWithFormat(Localization.shipmentFormat, displayedShipmentIndex)
         withAnimation {
             movingCompletionMessage = {
-                let moveToNewShipmentTitle = MoveToShipmentNotice.Localization.moveToNewShipment.lowercased()
                 let content = String.localizedStringWithFormat(Localization.movingCompletionFormat, itemsCount, shipmentLabel)
 
                 var attributedText = AttributedString(content)

@@ -18,7 +18,6 @@ import protocol WooFoundation.Analytics
 
 enum SyncOrderState {
     case newOrder
-    case orderUpdated
     case orderNotChanged
 }
 

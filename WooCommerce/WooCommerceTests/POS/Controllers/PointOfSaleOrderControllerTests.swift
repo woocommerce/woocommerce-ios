@@ -299,11 +299,10 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func syncOrder_when_updating_existing_order_returns_orderUpdated_result() async throws {
+    @Test func syncOrder_when_updating_existing_order_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService)
-        let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
 
@@ -316,9 +315,9 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         if case .success(let state) = result {
-            #expect(state == .orderUpdated)
+            #expect(state == .newOrder)
         } else {
-            #expect(Bool(false), "Expected success result with order updated")
+            #expect(Bool(false), "Expected success result with new order")
         }
     }
 

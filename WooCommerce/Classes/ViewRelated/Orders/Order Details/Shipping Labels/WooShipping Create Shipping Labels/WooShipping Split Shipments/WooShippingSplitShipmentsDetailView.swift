@@ -8,7 +8,22 @@ struct WooShippingSplitShipmentsDetailView: View {
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
+            VStack {
+                if viewModel.shipments.count > 1 {
+                    TopTabView(tabs: viewModel.topTabItems,
+                               showContent: .constant(false),
+                               selectedTabIndex: $viewModel.selectedShipmentIndex,
+                               tabsContainerHorizontalPadding: nil,
+                               selectedStateColor: .accentColor,
+                               unselectedStateColor: .secondary,
+                               selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                               tabPadding: Layout.tabPadding,
+                               tabsNameFont: Font.subheadline.bold(),
+                               tabsIconSize: nil,
+                               tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                               tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+                }
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
                         AdaptiveStack(horizontalAlignment: .leading) {
@@ -20,13 +35,15 @@ struct WooShippingSplitShipmentsDetailView: View {
                         }
 
                         VStack(spacing: Layout.verticalSpacing) {
-                            ForEach(viewModel.shipmentCardViewModels) { item in
+                            ForEach(viewModel.currentShipment) { item in
                                 CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
                     }
                     .padding(Layout.contentPadding)
                 }
+
+                Spacer()
 
                 noticeStack
                     .padding(Layout.contentPadding)
@@ -62,7 +79,9 @@ private extension WooShippingSplitShipmentsDetailView {
             }
 
             if let moveTo = viewModel.moveToNoticeViewModel {
-                MoveToShipmentNotice(viewModel: moveTo)
+                MoveToShipmentNotice(viewModel: moveTo, onMoving: { destination in
+                    viewModel.moveSelectedItems(to: destination)
+                })
             }
         }
     }
@@ -110,6 +129,10 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let shadowYOffset: CGFloat = 2
         static let borderWidth: CGFloat = 0.5
         static let verticalSpacing: CGFloat = 8
+        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let tabPadding: CGFloat = 9.0
+        static let tabItemContentHorizontalPadding: CGFloat = 16.0
+        static let tabItemContentVerticalPadding: CGFloat = 9.0
         static let cornerRadius: CGFloat = 8
     }
 

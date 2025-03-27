@@ -6,6 +6,8 @@ import Yosemite
 final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
+    let packageItem: ShippingLabelPackageItem
+
     /// The main item row.
     let mainItemRow: SelectableShipmentItemRowViewModel
 
@@ -14,39 +16,41 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
 
     var onSelectionChange: (() -> Void)?
 
-    var selectedItemIds: [String] {
-        if mainItemRow.selected {
-            if childItemRows.isNotEmpty {
-                return childItemRows.map { $0.itemID }
-            } else {
-                return [mainItemRow.itemID]
-            }
+    var numberOfSelectedItems: Int {
+        if childItemRows.isEmpty {
+            mainItemRow.selected ? 1 : 0
+        } else {
+            childItemRows.count { $0.selected }
         }
-
-        return childItemRows
-            .filter { $0.selected }
-            .map(\.itemID)
     }
 
-    init(parentShipmentId: String,
-         childShipmentIds: [String],
-         item: ShippingLabelPackageItem,
+    init(item: ShippingLabelPackageItem,
          currency: String) {
-        let mainShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: max(1.0, Decimal(childShipmentIds.count))),
+        self.packageItem = item
+
+        let mainShippingItem = WooShippingItemRowViewModel(item: item,
                                                            currency: currency)
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),
                                                             currency: currency)
 
-        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: parentShipmentId,
+        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: "\(item.productOrVariationID)",
                                                               isSelectable: true,
                                                               item: mainShippingItem,
                                                               showQuantity: true)
-        self.childItemRows = childShipmentIds.map({
-            SelectableShipmentItemRowViewModel(itemID: $0,
-                                               isSelectable: true,
-                                               item: childShippingItem,
-                                               showQuantity: false)
-        })
+
+        if item.quantity.intValue == 1 {
+            self.childItemRows = []
+        } else {
+            var childItemRows = [SelectableShipmentItemRowViewModel]()
+            for index in 0..<item.quantity.intValue {
+                let childShipmentId = "\(item.productOrVariationID)-sub-\(index)"
+                childItemRows.append(SelectableShipmentItemRowViewModel(itemID: childShipmentId,
+                                                                        isSelectable: true,
+                                                                        item: childShippingItem,
+                                                                        showQuantity: false))
+            }
+            self.childItemRows = childItemRows
+        }
 
         observeSelection()
     }

@@ -5,6 +5,7 @@
 -----
 
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
 
 22.0
 -----

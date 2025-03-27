@@ -142,11 +142,11 @@ extension StripeCardReaderService: CardReaderService {
                 throw error
             }
         case .localMobile:
-            let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
+            let tapToPayConfig = TapToPayDiscoveryConfigurationBuilder()
             do {
-                config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()
+                config = try tapToPayConfig.setSimulated(shouldUseSimulatedCardReader).build()
             } catch let error as UnderlyingError {
-                DDLogError("Failed to start LocalMobileDiscovery. Error:\(String(describing: error.failureReason))")
+                DDLogError("Failed to start TapToPayDiscovery. Error:\(String(describing: error.failureReason))")
                 throw error
             } catch {
                 DDLogError("\(error)")
@@ -158,8 +158,6 @@ extension StripeCardReaderService: CardReaderService {
                 CBCentralManager.authorization != .denied else {
             throw CardReaderServiceError.bluetoothDenied
         }
-
-        Terminal.shared.delegate = self
 
         // We're now ready to start discovery, but first we'll check that we're not starting or canceling
         // another discovery process.
@@ -198,7 +196,7 @@ extension StripeCardReaderService: CardReaderService {
     // as the simulator won't have Bluetooth available.
     // If we're using Tap to Pay on iPhone, bluetooth is not required.
     private func shouldSkipBluetoothCheck(discoveryConfiguration: DiscoveryConfiguration) -> Bool {
-        shouldUseSimulatedCardReader || discoveryConfiguration.discoveryMethod == .localMobile
+        shouldUseSimulatedCardReader || discoveryConfiguration.discoveryMethod == .tapToPay
     }
 
     public func cancelDiscovery() -> Future <Void, Error> {
@@ -273,7 +271,7 @@ extension StripeCardReaderService: CardReaderService {
             /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
             /// The completion block for disconnect, apparently, is called when the SDK has not really transitioned to an idle state.
             /// Clients might need to dispatch operations that rely on this completion block to start a second operation on the card reader.
-            /// (for example, starting a `localMobile` connection after a BlueTooth reader has been disconnected)
+            /// (for example, starting a `tapToPay` connection after a BlueTooth reader has been disconnected)
             Terminal.shared.disconnectReader { error in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     if let error = error {
@@ -453,7 +451,7 @@ extension StripeCardReaderService: CardReaderService {
 
         connectionAttemptInvalidated = false
         switch stripeReader.deviceType {
-        case .appleBuiltIn:
+        case .tapToPay:
             return getLocalMobileConfiguration(stripeReader, options: options).flatMap { configuration in
                 self.connect(stripeReader, configuration: configuration)
             }
@@ -480,7 +478,7 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    let buildConfig = BluetoothConnectionConfigurationBuilder(locationId: locationId)
+                    let buildConfig = BluetoothConnectionConfigurationBuilder(delegate: self, locationId: locationId)
                     do {
                         let config = try buildConfig.build()
                         return promise(.success(config))
@@ -497,7 +495,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader,
-                                             options: CardReaderConnectionOptions?) -> Future<LocalMobileConnectionConfiguration, Error> {
+                                             options: CardReaderConnectionOptions?) -> Future<TapToPayConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
@@ -509,7 +507,7 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    let localMobileConfig = LocalMobileConnectionConfigurationBuilder(locationId: locationId)
+                    let localMobileConfig = TapToPayConnectionConfigurationBuilder(delegate: self, locationId: locationId)
                     localMobileConfig.setMerchantDisplayName(nil)
                     localMobileConfig.setOnBehalfOf(nil)
                     localMobileConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
@@ -540,7 +538,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -573,14 +571,14 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: StripeTerminal.Reader, configuration: LocalMobileConnectionConfiguration) -> Future <CardReader, Error> {
+    public func connect(_ reader: StripeTerminal.Reader, configuration: TapToPayConnectionConfiguration) -> Future <CardReader, Error> {
         return Future { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
-            Terminal.shared.connectLocalMobileReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -873,7 +871,7 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 // MARK: - ReaderDisplayDelegate.
-extension StripeCardReaderService: BluetoothReaderDelegate {
+extension StripeCardReaderService: MobileReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
         softwareUpdateSubject.send(.available)
     }
@@ -960,29 +958,33 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
 
         connectedReadersSubject.send([connectedReaderWithUpdatedBatteryLevel])
     }
+
+    public func reader(_ reader: Reader, didDisconnect reason: DisconnectReason) {
+        connectedReadersSubject.send([])
+    }
 }
 
-extension StripeCardReaderService: LocalMobileReaderDelegate {
-    public func localMobileReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+extension StripeCardReaderService: TapToPayReaderDelegate {
+    public func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
         sendReaderEvent(CardReaderEvent.make(stripeReaderInputOptions: inputOptions))
     }
 
-    public func localMobileReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+    public func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
 
 
     // TODO: use a specific `deviceSetup` in these three functions instead of reusing the softwareUpdateSubject
     // https://github.com/woocommerce/woocommerce-ios/issues/8088
-    public func localMobileReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+    public func tapToPayReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
         softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
-    public func localMobileReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+    public func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
         softwareUpdateSubject.send(.installing(progress: progress))
     }
 
-    public func localMobileReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+    public func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         if let error = error {
             let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(
@@ -1002,15 +1004,8 @@ extension StripeCardReaderService: LocalMobileReaderDelegate {
         }
     }
 
-    public func localMobileReaderDidAcceptTermsOfService(_ reader: Reader) {
+    public func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
         builtInCardReaderAcceptToSSubject.send(())
-    }
-}
-
-// MARK: - Terminal delegate
-extension StripeCardReaderService: TerminalDelegate {
-    public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
-        connectedReadersSubject.send([])
     }
 }
 

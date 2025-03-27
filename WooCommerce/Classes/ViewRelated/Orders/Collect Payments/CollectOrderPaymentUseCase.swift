@@ -312,7 +312,7 @@ private extension CollectOrderPaymentUseCase {
                     for: self.order,
                     orderTotal: orderTotal,
                     paymentGatewayAccount: paymentGatewayAccount,
-                    paymentMethodTypes: self.configuration.paymentMethods.map(\.rawValue),
+                    paymentMethodTypes: self.configuration.paymentMethods,
                     stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
                     channel: channel,
                     onPreparingReader: { [weak self] in

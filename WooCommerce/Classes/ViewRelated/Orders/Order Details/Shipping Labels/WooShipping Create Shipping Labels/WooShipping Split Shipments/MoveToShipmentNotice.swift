@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MoveToShipmentNoticeViewModel {
-    enum MoveTo {
+    enum Destination {
         case existingShipment(index: Int)
         case newShipment
     }
@@ -9,22 +9,23 @@ struct MoveToShipmentNoticeViewModel {
     let selectedItemsCount: Int
     let existingShipmentsCount: Int
     let currentShipmentIndex: Int?
-    let actionHandler: ((MoveTo) -> Void)
 }
 
 struct MoveToShipmentNotice: View {
     let viewModel: MoveToShipmentNoticeViewModel
+    let onMoving: ((MoveToShipmentNoticeViewModel.Destination) -> Void)
 
     var body: some View {
-        HStack {
+        AdaptiveStack(horizontalAlignment: .leading) {
             Text(String.localizedStringWithFormat(Localization.message, viewModel.selectedItemsCount))
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(Color(uiColor: .text))
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 
-            if viewModel.existingShipmentsCount == 0 {
+            if viewModel.existingShipmentsCount == 1 {
                 moveToNewShipment
             } else {
                 menuWithExistingShipments
@@ -43,7 +44,7 @@ struct MoveToShipmentNotice: View {
 private extension MoveToShipmentNotice {
     var moveToNewShipment: some View {
         Button {
-            viewModel.actionHandler(.newShipment)
+            onMoving(.newShipment)
         } label: {
             HStack(spacing: Layout.horizontalSpacing) {
                 Text(Localization.moveToNewShipment)
@@ -59,13 +60,13 @@ private extension MoveToShipmentNotice {
             ForEach(0..<viewModel.existingShipmentsCount, id: \.self) { index in
                 if viewModel.currentShipmentIndex != index {
                     Button(String.localizedStringWithFormat(Localization.shipment, index + 1), action: {
-                        viewModel.actionHandler(.existingShipment(index: index))
+                        onMoving(.existingShipment(index: index))
                     })
                 }
             }
 
             Button(Localization.newShipment, action: {
-                viewModel.actionHandler(.newShipment)
+                onMoving(.newShipment)
             })
         } label: {
             HStack(spacing: Layout.horizontalSpacing) {
@@ -123,6 +124,6 @@ private extension MoveToShipmentNotice {
 #Preview {
     MoveToShipmentNotice(viewModel: MoveToShipmentNoticeViewModel(selectedItemsCount: 4,
                                                                   existingShipmentsCount: 3,
-                                                                  currentShipmentIndex: 1,
-                                                                  actionHandler: { _ in }))
+                                                                  currentShipmentIndex: 1),
+                         onMoving: { _ in })
 }

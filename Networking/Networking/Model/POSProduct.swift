@@ -1,6 +1,12 @@
 import Foundation
 import Codegen
 
+/// Represents a Product Entity, for use in Point of Sale.
+/// This deliberately only includes a subset of the fields available for Product.
+/// It's likely that most or all of a store's products will be fetched and stored for POS,
+/// so we wanted a smaller representation and to reduce the risk of decoding issues
+/// caused by plugin incompatibilities.
+///
 public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
@@ -62,6 +68,9 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw POSProductDecodingError.missingSiteID
         }
+
+        /// If you make a change which improves the safety of this decoding,
+        /// consider applying it to `Product` as well.
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let decimalString = AlternativeDecodingType.decimal { value in

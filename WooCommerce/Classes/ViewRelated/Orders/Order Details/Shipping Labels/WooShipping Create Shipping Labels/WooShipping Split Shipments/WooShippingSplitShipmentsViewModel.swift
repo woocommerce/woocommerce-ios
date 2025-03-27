@@ -54,6 +54,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @Published private(set) var instructions: String?
     private var dismissedInstructions: Bool = false
 
+    @Published private(set) var movingCompletionMessage: String?
+    private var undoMovingItemsHandler: (() -> Void)?
 
     init(order: Order,
          config: WooShippingConfig,
@@ -96,6 +98,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         moveToNoticeViewModel = nil
         instructions = nil
 
+        // Step 0: keep the details before changes to revert changes when undo is selected
+        let initialShipments = shipments
+        let currentIndex = selectedShipmentIndex ?? 0
+        undoMovingItemsHandler = { [weak self] in
+            guard let self else { return }
+            shipments = initialShipments
+            selectedShipmentIndex = currentIndex
+        }
+
         // Step 1: Split items
         var newShipment = Shipment()
         var movedItems = [CollapsibleShipmentItemCardViewModel]()
@@ -124,7 +135,6 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // Step 2: Update the current shipment
-        let currentIndex = selectedShipmentIndex ?? 0
         shipments[currentIndex] = newShipment
 
         // Step 3: Add new or update existing shipment

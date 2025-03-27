@@ -322,6 +322,32 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
     }
 
+    func test_moveSelectedItems_removes_empty_shipment_after_moving() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.last?.mainItemRow.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.shipments.first?.first?.mainItemRow.handleTap()
+        viewModel.moveSelectedItems(to: .existingShipment(index: 1))
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 1)
+
+        XCTAssertEqual(viewModel.shipments[0].count, 2)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 2)
+    }
+
     func test_moveSelectedItems_to_new_shipments_updates_section_headers_for_current_shipment() {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),

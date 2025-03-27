@@ -126,8 +126,6 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         // Step 2: Update the current shipment
         let currentIndex = selectedShipmentIndex ?? 0
         shipments[currentIndex] = newShipment
-        configureSelectionCallback()
-        configureSectionHeader()
 
         // Step 3: Add new or update existing shipment
         switch destination {
@@ -157,6 +155,17 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             updatedShipment.append(contentsOf: movedItems)
             shipments[index] = updatedShipment
         }
+
+        // Step 4: Remove the current shipment if it's empty.
+        // Then update the section header and selection callback
+        if currentShipment.isEmpty {
+            shipments.remove(at: currentIndex)
+            if shipments.count <= currentIndex {
+                selectedShipmentIndex = max(shipments.count - 1, 0)
+            }
+        }
+        configureSelectionCallback()
+        configureSectionHeader()
     }
 }
 

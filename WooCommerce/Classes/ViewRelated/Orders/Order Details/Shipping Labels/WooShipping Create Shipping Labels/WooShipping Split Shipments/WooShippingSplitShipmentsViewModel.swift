@@ -135,9 +135,27 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             shipments.append(movedItems)
 
         case .existingShipment(let index):
-            var previousShipment = shipments[index]
-            previousShipment.append(contentsOf: movedItems)
-            shipments[index] = previousShipment
+            var updatedShipment = Shipment()
+            for item in shipments[index] {
+                let matchingItemIndex = movedItems.firstIndex(where: {
+                    $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                })
+                if let matchingItemIndex {
+                    // Merge the quantity if the same item is moved to the shipment
+                    let updatedQuantity = item.packageItem.quantity + movedItems[matchingItemIndex].packageItem.quantity
+                    let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
+                    updatedShipment.append(
+                        CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+                    )
+                    movedItems.remove(at: matchingItemIndex)
+                } else {
+                    // Keep the item as-is
+                    updatedShipment.append(item)
+                }
+            }
+            // Add the rest of the new items to the shipment
+            updatedShipment.append(contentsOf: movedItems)
+            shipments[index] = updatedShipment
         }
     }
 }

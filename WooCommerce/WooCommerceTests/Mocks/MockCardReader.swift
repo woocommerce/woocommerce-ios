@@ -48,7 +48,7 @@ struct MockCardReader {
     static func tapToPay() -> CardReader {
         CardReader(serial: "APPLE-BUILT-IN-SIMULATOR-1",
                    vendorIdentifier: "SIMULATOR",
-                   name: "Simulated Apple Built In Reader",
+                   name: "Simulated Tap to Pay Reader",
                    status: .init(connected: false, remembered: false),
                    softwareVersion: nil,
                    batteryLevel: nil,

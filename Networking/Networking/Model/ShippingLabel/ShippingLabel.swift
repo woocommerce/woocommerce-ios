@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label.
 ///
-public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
 

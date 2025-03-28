@@ -472,6 +472,11 @@
 		453954D22C90D84200A3E64A /* meta-data-products-and-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = 453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */; };
 		453954D42C90E81300A3E64A /* MetaDataRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954D32C90E81300A3E64A /* MetaDataRemoteTests.swift */; };
 		453954D62C9193BC00A3E64A /* meta-data-products-orders-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 453954D52C9193BC00A3E64A /* meta-data-products-orders-update.json */; };
+		453B33FD2D47F1F4005C05B0 /* ShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254A7256373AB00A04423 /* ShippingLabel.swift */; };
+		453B33FE2D47F1FB005C05B0 /* ShippingLabelStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254AB2563781800A04423 /* ShippingLabelStatus.swift */; };
+		453B33FF2D47F203005C05B0 /* ShippingLabelRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549F25636F6900A04423 /* ShippingLabelRefund.swift */; };
+		453B34002D47F20A005C05B0 /* ShippingLabelRefundStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254AF256378D000A04423 /* ShippingLabelRefundStatus.swift */; };
+		453B34012D47F22C005C05B0 /* ShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549925636E1500A04423 /* ShippingLabelAddress.swift */; };
 		45551F122523E7F1007EF104 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
 		45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F132523E7FF007EF104 /* UserAgentTests.swift */; };
 		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
@@ -5014,11 +5019,13 @@
 				2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */,
 				2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */,
 				2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */,
+				453B34002D47F20A005C05B0 /* ShippingLabelRefundStatus.swift in Sources */,
 				2680B0CB2BED58B200E7F1D8 /* ApplicationPasswordNameAndUUID.swift in Sources */,
 				26373E0A2BFCEAAF008E6735 /* OrderItemTax.swift in Sources */,
 				2680B0CC2BED58B200E7F1D8 /* ApplicationPassword.swift in Sources */,
 				26373E122BFCEDB7008E6735 /* OrderFeeLine.swift in Sources */,
 				26F2CADD2BED579100F9A5E7 /* ApplicationPasswordUseCase.swift in Sources */,
+				453B33FF2D47F203005C05B0 /* ShippingLabelRefund.swift in Sources */,
 				26F2CADA2BED578200F9A5E7 /* RequestProcessor.swift in Sources */,
 				26F2CADB2BED578200F9A5E7 /* RequestAuthenticator.swift in Sources */,
 				26F2CADC2BED578200F9A5E7 /* RequestConverter.swift in Sources */,
@@ -5031,6 +5038,7 @@
 				263A6DBC2BEAA49B00C292B2 /* AnyDecodable.swift in Sources */,
 				263A6DBD2BEAA49B00C292B2 /* AnyEncodable.swift in Sources */,
 				263A6DB92BEAA46F00C292B2 /* SiteSummaryStatsMapper.swift in Sources */,
+				453B33FD2D47F1F4005C05B0 /* ShippingLabel.swift in Sources */,
 				26373E112BFCEDAE008E6735 /* OrderRefundCondensed.swift in Sources */,
 				263A6DBA2BEAA46F00C292B2 /* SiteSummaryStats.swift in Sources */,
 				263A6DB62BEAA46000C292B2 /* SiteVisitStatsMapper.swift in Sources */,
@@ -5089,6 +5097,7 @@
 				26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */,
 				26373E152BFCEDE9008E6735 /* OrderGiftCard.swift in Sources */,
 				269014CB2BEA9253006056E0 /* JetpackRequest.swift in Sources */,
+				453B34012D47F22C005C05B0 /* ShippingLabelAddress.swift in Sources */,
 				269014CA2BEA924B006056E0 /* NetworkError.swift in Sources */,
 				26373E092BFCEA90008E6735 /* OrderItemProductAddOn.swift in Sources */,
 				26373E162BFCEDFD008E6735 /* OrderAttributionInfo.swift in Sources */,
@@ -5101,6 +5110,7 @@
 				269014C32BEA9134006056E0 /* Mapper.swift in Sources */,
 				269014C22BEA912D006056E0 /* Request.swift in Sources */,
 				26373E182BFCEF79008E6735 /* KeyedDecodingContainer+Woo.swift in Sources */,
+				453B33FE2D47F1FB005C05B0 /* ShippingLabelStatus.swift in Sources */,
 				26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */,
 				26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */,
 				26CFDEDE2C0295CB005ABC31 /* NoteBlock.swift in Sources */,

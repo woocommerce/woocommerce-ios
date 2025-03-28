@@ -95,6 +95,28 @@ struct POSOrderServiceTests {
         #expect(createdOrderCoupons.contains(where: { $0.code == "FREESHIP" }))
         #expect(createdOrderCoupons.contains(where: { $0.code == "EXTRA5" }))
     }
+
+    @Test
+    func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
+        // Given
+        let cart = POSCart(items: [
+            makePOSCartItem(productID: 100, quantity: 2),
+            makePOSCartItem(productID: 101, quantity: 1)
+        ])
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let orderSentToRemote = try #require(mockOrdersRemote.spyCreatePOSOrder)
+
+        // Verify all items in the order are sanitized
+        for item in orderSentToRemote.items {
+            #expect(item.itemID == 0, "Item ID should be zero for new items")
+            #expect(item.total == "", "Total should be empty string")
+            #expect(item.subtotal == "", "Subtotal should be empty string")
+        }
+    }
 }
 
 private func makePOSCartItem(

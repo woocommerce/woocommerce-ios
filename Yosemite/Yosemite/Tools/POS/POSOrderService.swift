@@ -63,7 +63,9 @@ public final class POSOrderService: POSOrderServiceProtocol {
 private extension Order {
     func addItems(_ cartItems: [POSCartItem]) -> Order {
         let itemsToAdd = Array(cartItems.createGroupedOrderSyncProductInputs().values)
-        return ProductInputTransformer.updateMultipleItems(with: itemsToAdd, on: self, shouldUpdateOrDeleteZeroQuantities: .update)
+        return ProductInputTransformer
+            .updateMultipleItems(with: itemsToAdd, on: self, shouldUpdateOrDeleteZeroQuantities: .update)
+            .sanitizingLocalItems()
     }
 
     func addCoupons(_ coupons: [POSCoupon]) -> Order {

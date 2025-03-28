@@ -7,4 +7,23 @@ struct PointOfSaleOrderTotals: Equatable {
     let orderTotal: String
     let taxTotal: String
     let orderTotalDecimal: Decimal
+    let couponsTotals: [PointOfSaleCouponTotal]
+
+    init(cartTotal: String,
+         orderTotal: String,
+         taxTotal: String,
+         orderTotalDecimal: Decimal,
+         couponsTotals: [PointOfSaleCouponTotal] = []
+    ) {
+        self.cartTotal = cartTotal
+        self.orderTotal = orderTotal
+        self.taxTotal = taxTotal
+        self.orderTotalDecimal = orderTotalDecimal
+        self.couponsTotals = couponsTotals
+    }
+}
+
+struct PointOfSaleCouponTotal: Equatable {
+    let code: String
+    let total: String
 }

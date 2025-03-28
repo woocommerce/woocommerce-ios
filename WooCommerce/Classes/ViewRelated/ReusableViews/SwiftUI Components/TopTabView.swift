@@ -25,7 +25,8 @@ struct TopTabView<Content: View>: View {
     @State private var contentSize: CGSize = .zero
 
     @Binding var showTabs: Bool
-    @Binding var showContent: Bool
+    private let showContent: Bool
+
     @Binding var selectedTabIndex: Int?
 
     let tabs: [TopTabItem<Content>]
@@ -54,7 +55,7 @@ struct TopTabView<Content: View>: View {
 
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
-         showContent: Binding<Bool> = .constant(true),
+         showContent: Bool = true,
          selectedTabIndex: Binding<Int?> = .constant(nil),
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
@@ -67,7 +68,7 @@ struct TopTabView<Content: View>: View {
          tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
         self._showTabs = showTabs
-        self._showContent = showContent
+        self.showContent = showContent
         self._selectedTabIndex = selectedTabIndex
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
@@ -379,7 +380,7 @@ struct ContentView_Previews: PreviewProvider {
             .preferredColorScheme(.dark)
             .previewDisplayName("Carrier Packages Dark Style")
         TopTabView(tabs: carrierTabs,
-                   showContent: .constant(false),
+                   showContent: false,
                    tabsContainerHorizontalPadding: nil,
                    unselectedStateColor: .secondary,
                    selectedTabIndicatorHeight: 3.0,

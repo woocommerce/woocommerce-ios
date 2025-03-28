@@ -96,5 +96,5 @@ public enum WooShippingAction: Action {
     case updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
-                        completion: (Result<WooShippingUpdateShipmentResponse, Error>) -> Void)
+                        completion: (Result<[String: [WooShippingShipment]], Error>) -> Void)
 }

@@ -32,8 +32,15 @@ public final class MediaUploadSessionManager: NSObject {
     private var backgroundCompletionHandler: (() -> Void)?
     weak var delegate: MediaUploadSessionManagerDelegate?
 
-    public init(sessionIdentifier: String = "com.automattic.woocommerce.background.upload") {
-        self.backgroundSessionIdentifier = sessionIdentifier
+    
+    public init(sessionIdentifier: String? = nil) {
+        // Use bundle based identifiers as suggested here
+        // https://www.avanderlee.com/swift/urlsession-common-pitfalls-with-background-download-upload-tasks/#bundle-based-identifiers
+        let appBundleName = Bundle.main.bundleURL.lastPathComponent
+            .lowercased()
+            .replacingOccurrences(of: " ", with: ".")
+        let defaultSessionIdentifier = "com.background.\(appBundleName)"
+        self.backgroundSessionIdentifier = sessionIdentifier ?? defaultSessionIdentifier
         super.init()
     }
 
@@ -59,6 +66,7 @@ public final class MediaUploadSessionManager: NSObject {
             var modifiedRequest = request
             modifiedRequest.httpBody = nil
 
+            // Upload tasks in background works only if we use a file reference
             let task = backgroundSession.uploadTask(with: modifiedRequest, fromFile: tempFileURL)
             task.taskDescription = uploadID
             task.resume()

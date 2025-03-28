@@ -77,6 +77,11 @@ public final class WooShippingStore: Store {
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
+        case let .updateShipment(siteID, orderID, shipmentToUpdate, completion):
+            updateShipment(siteID: siteID,
+                           orderID: orderID,
+                           shipmentToUpdate: shipmentToUpdate,
+                           completion: completion)
         }
     }
 }
@@ -293,6 +298,13 @@ private extension WooShippingStore {
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
         remote.loadConfig(siteID: siteID, orderID: orderID, completion: completion)
+    }
+
+    func updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: @escaping (Result<WooShippingUpdateShipmentResponse, Error>) -> Void) {
+        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate, completion: completion)
     }
 }
 

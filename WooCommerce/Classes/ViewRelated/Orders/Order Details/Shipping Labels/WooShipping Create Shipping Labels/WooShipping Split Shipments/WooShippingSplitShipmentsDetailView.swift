@@ -48,6 +48,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                 noticeStack
                     .padding(Layout.contentPadding)
             }
+            .disabled(viewModel.isSavingShipmentInfo)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {
@@ -55,10 +56,23 @@ struct WooShippingSplitShipmentsDetailView: View {
                     Button(Localization.selectAll) {
                         viewModel.selectAll()
                     }
+                    .disabled(viewModel.isSavingShipmentInfo)
                 }
+
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
-                        dismiss()
+                    if viewModel.isSavingShipmentInfo {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else {
+                        Button(Localization.done) {
+                            Task {
+                                do {
+                                    try await viewModel.saveShipmentInfo()
+                                    dismiss()
+                                } catch {
+                                    // TODO: 15309 Show error
+                                }
+                            }
+                        }
                     }
                 }
             }

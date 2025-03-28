@@ -57,6 +57,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @Published private(set) var movingCompletionMessage: AttributedString?
     private var undoMovingItemsHandler: (() -> Void)?
 
+    @Published private(set) var isSavingShipmentInfo = false
+
     init(order: Order,
          config: WooShippingConfig,
          items: [ShippingLabelPackageItem],
@@ -210,6 +212,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     func undoMovingItems() {
         undoMovingItemsHandler?()
         movingCompletionMessage = nil
+    }
+
+    @MainActor
+    func saveShipmentInfo() async throws {
+        isSavingShipmentInfo = true
+        try? await Task.sleep(for: .seconds(2))
+        isSavingShipmentInfo = false
     }
 }
 

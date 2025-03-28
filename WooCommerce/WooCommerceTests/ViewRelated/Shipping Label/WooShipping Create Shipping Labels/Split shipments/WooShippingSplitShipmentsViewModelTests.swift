@@ -220,13 +220,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 1)
     }
 
@@ -248,11 +248,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 1)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
     }
 
@@ -277,15 +277,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 2)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[1][1].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][1].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][1].packageItem.quantity, 3)
     }
 
@@ -310,15 +310,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 3)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
     }
 
@@ -342,9 +342,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 1)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 2)
     }
 
@@ -449,10 +449,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Confidence checks
         XCTAssertEqual(viewModel.shipments.count, 2)
         XCTAssertEqual(viewModel.shipments[0].count, 1)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
 
         // When
@@ -462,9 +462,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 1)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
     }
 
@@ -513,7 +513,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 private extension WooShippingSplitShipmentsViewModelTests {
     func sampleItem(id: Int64, weight: Double, value: Double, quantity: Decimal) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
-                                 orderItemID: 123,
+                                 orderItemID: id,
                                  name: "Item",
                                  weight: weight,
                                  quantity: quantity,

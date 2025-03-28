@@ -210,7 +210,7 @@ private struct OrderDetailStoreManagerFactory {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .synchronizeShippingLabels(_, _, onCompletion):
-                onCompletion(.success(()))
+                onCompletion(.success([]))
             default:
                 break
             }

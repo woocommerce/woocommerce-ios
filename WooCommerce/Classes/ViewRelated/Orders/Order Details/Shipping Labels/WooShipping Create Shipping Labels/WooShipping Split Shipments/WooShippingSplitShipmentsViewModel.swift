@@ -217,7 +217,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @MainActor
     func saveShipmentInfo() async throws {
         isSavingShipmentInfo = true
-        try? await Task.sleep(for: .seconds(2))
+        try await updateShipment()
         isSavingShipmentInfo = false
     }
 }
@@ -307,6 +307,48 @@ private extension WooShippingSplitShipmentsViewModel {
         let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(totalPrice, with: order.currency) ?? totalPrice.description
+    }
+
+    @discardableResult
+    @MainActor
+    func updateShipment() async throws -> WooShippingUpdateShipmentResponse {
+        var shipmentsForRemote = [String: [WooShippingShipment]]()
+        var shipmentIdsToUpdate = [String]()
+        for (index, shipment) in shipments.enumerated() {
+            let key = "\(index)"
+            // TODO: 15309 Investigate which IDs need to be sent to remote
+            shipmentIdsToUpdate.append(key)
+
+            var items = [WooShippingShipment]()
+            for item in shipment {
+                if let mainItemID = Int(item.mainItemRow.itemID) {
+                    let i = WooShippingShipment(id: Int64(mainItemID),
+                                                subItems: item.childItemRows.map({ $0.itemID }))
+                    items.append(i)
+                } else {
+                    DDLogError("Unable to parse main item ID from \(item.mainItemRow.itemID)")
+                }
+            }
+
+            shipmentsForRemote[key] = items
+        }
+
+        let shipment = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
+                                                 shipments: shipmentsForRemote)
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = WooShippingAction.updateShipment(siteID: order.siteID,
+                                                          orderID: order.orderID,
+                                                          shipmentToUpdate: shipment) { result in
+                switch result {
+                case .success(let shipmentResponse):
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

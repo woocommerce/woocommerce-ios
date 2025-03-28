@@ -467,6 +467,47 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
     }
+
+    // MARK: - `saveShipmentInfo`
+
+    @MainActor
+    func test_save_shipping_info_sends_request_to_save() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        var receivedShipmentToUpdate: WooShippingUpdateShipment?
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, shipmentToUpdate, completion):
+                receivedShipmentToUpdate = shipmentToUpdate
+                completion(.success(WooShippingUpdateShipmentResponse.fake()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        try await viewModel.saveShipmentInfo()
+
+        // Then
+        let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: ["0", "1"],
+                                                                 shipments: ["1": [WooShippingShipment(id: 1, subItems: [])],
+                                                                             "0": [WooShippingShipment(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                                                                                   WooShippingShipment(id: 2, subItems: [])]])
+        XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

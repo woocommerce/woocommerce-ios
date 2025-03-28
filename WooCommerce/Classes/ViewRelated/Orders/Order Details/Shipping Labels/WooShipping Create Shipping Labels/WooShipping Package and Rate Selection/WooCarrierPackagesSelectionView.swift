@@ -96,7 +96,7 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+            if viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
                            showContent: false,
                            selectedTabIndex: $viewModel.selectedCarriersTabIndex,
@@ -119,18 +119,16 @@ struct WooCarrierPackagesSelectionView: View {
                 emptyStateView
             }
 
-            if let selectedCarrierTab = viewModel.selectedCarrierTab {
-                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
-                                       selectedPackageId: $viewModel.selectedCarriersPackageId,
-                                       starredPackages: $viewModel.starredCarriersPackages,
-                                       tapAction: { packageID in
-                    viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
-                }, starAction: { packageID in
-                    viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
-                }, onRefresh: {
-                    await viewModel.loadPackages()
-                })
-            }
+            WooCarrierPackagesView(carrierTab: viewModel.selectedCarrierTab,
+                                   selectedPackageId: $viewModel.selectedCarriersPackageId,
+                                   starredPackages: $viewModel.starredCarriersPackages,
+                                   tapAction: { packageID in
+                viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
+            }, starAction: { packageID in
+                viewModel.starUnstarPackage(packageID, carrierID: viewModel.selectedCarrierTab.carrier.rawValue)
+            }, onRefresh: {
+                await viewModel.loadPackages()
+            })
             Spacer()
             Divider()
             Button(selectionButtonText) {

@@ -18,7 +18,7 @@ struct TopTabItem<Content: View> {
 }
 
 struct TopTabView<Content: View>: View {
-    @State private var selectedTab = 0
+    @Binding private var selectedTab: Int
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
     @GestureState private var dragState: DragState = .inactive
@@ -26,8 +26,6 @@ struct TopTabView<Content: View>: View {
 
     @Binding var showTabs: Bool
     private let showContent: Bool
-
-    @Binding var selectedTabIndex: Int?
 
     let tabs: [TopTabItem<Content>]
 
@@ -56,7 +54,7 @@ struct TopTabView<Content: View>: View {
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
          showContent: Bool = true,
-         selectedTabIndex: Binding<Int?> = .constant(nil),
+         selectedTabIndex: Binding<Int> = .constant(0),
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
          unselectedStateColor: Color = .primary,
@@ -69,7 +67,7 @@ struct TopTabView<Content: View>: View {
         self.tabs = tabs
         self._showTabs = showTabs
         self.showContent = showContent
-        self._selectedTabIndex = selectedTabIndex
+        self._selectedTab = selectedTabIndex
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
         self.selectedStateColor = selectedStateColor
@@ -131,13 +129,7 @@ struct TopTabView<Content: View>: View {
                                                 }
                                             }
                                         })
-                                }
-                                .onAppear {
-                                    selectedTab = selectedTabIndex ?? 0
-                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
-                                    underlineOffset = calculateOffset(index: selectedTab)
-                                }
-                            }
+                                }                            }
                             .padding(.horizontal, tabPadding)
                             .overlay(
                                 Rectangle()
@@ -148,15 +140,7 @@ struct TopTabView<Content: View>: View {
                                 alignment: .bottomLeading
                             )
                             .onChange(of: selectedTab, perform: { newSelectedTab in
-                                let animate = selectedTabIndex != newSelectedTab
-                                selectedTabIndex = newSelectedTab
-                                if animate {
-                                    withAnimation {
-                                        scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
-                                        underlineOffset = calculateOffset(index: newSelectedTab)
-                                    }
-                                }
-                                else {
+                                withAnimation {
                                     scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
                                     underlineOffset = calculateOffset(index: newSelectedTab)
                                 }

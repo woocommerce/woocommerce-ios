@@ -1878,6 +1878,51 @@ extension Networking.OrderTaxLine {
     }
 }
 
+extension Networking.POSProduct {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productTypeKey: CopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        regularPrice: NullableCopiableProp<String> = .copy,
+        salePrice: NullableCopiableProp<String> = .copy,
+        onSale: CopiableProp<Bool> = .copy,
+        images: CopiableProp<[ProductImage]> = .copy,
+        attributes: CopiableProp<[ProductAttribute]> = .copy
+    ) -> Networking.POSProduct {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let name = name ?? self.name
+        let productTypeKey = productTypeKey ?? self.productTypeKey
+        let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
+        let price = price ?? self.price
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let onSale = onSale ?? self.onSale
+        let images = images ?? self.images
+        let attributes = attributes ?? self.attributes
+
+        return Networking.POSProduct(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            productTypeKey: productTypeKey,
+            sku: sku,
+            globalUniqueID: globalUniqueID,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            images: images,
+            attributes: attributes
+        )
+    }
+}
+
 extension Networking.PaymentGateway {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

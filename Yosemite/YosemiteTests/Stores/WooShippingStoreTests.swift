@@ -892,6 +892,53 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+
+    // MARK: `updateShipment`
+
+    func test_updateShipment_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expected = WooShippingUpdateShipmentResponse.fake().copy(shipments: ["0": [WooShippingShipment.fake()]])
+        remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .success(expected))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
+                                                          orderID: self.sampleOrderID,
+                                                          shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actual = try XCTUnwrap(result.get())
+        XCTAssertEqual(actual, expected)
+    }
+
+    func test_updateShipment_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+            let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
+                                                          orderID: self.sampleOrderID,
+                                                          shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

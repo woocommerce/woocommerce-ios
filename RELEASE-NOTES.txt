@@ -5,6 +5,7 @@
 -----
 
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [*] [Internal] Improved login flow for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15444]
 
 22.0
 -----

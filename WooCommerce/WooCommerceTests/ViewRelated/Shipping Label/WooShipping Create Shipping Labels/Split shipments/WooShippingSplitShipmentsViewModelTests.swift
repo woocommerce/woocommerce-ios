@@ -492,7 +492,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
             switch action {
             case let .updateShipment(_, _, shipmentToUpdate, completion):
                 receivedShipmentToUpdate = shipmentToUpdate
-                completion(.success(WooShippingUpdateShipmentResponse.fake()))
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }
@@ -503,9 +503,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: ["0", "1"],
-                                                                 shipments: ["1": [WooShippingShipment(id: 1, subItems: [])],
-                                                                             "0": [WooShippingShipment(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
-                                                                                   WooShippingShipment(id: 2, subItems: [])]])
+                                                                 shipments: ["1": [WooShippingShipmentItem(id: 1, subItems: [])],
+                                                                             "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                                                                                   WooShippingShipmentItem(id: 2, subItems: [])]])
         XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
     }
 }

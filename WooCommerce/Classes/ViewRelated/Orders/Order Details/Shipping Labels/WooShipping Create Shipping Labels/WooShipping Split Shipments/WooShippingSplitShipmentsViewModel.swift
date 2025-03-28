@@ -311,19 +311,19 @@ private extension WooShippingSplitShipmentsViewModel {
 
     @discardableResult
     @MainActor
-    func updateShipment() async throws -> WooShippingUpdateShipmentResponse {
-        var shipmentsForRemote = [String: [WooShippingShipment]]()
+    func updateShipment() async throws -> WooShippingShipments {
+        var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
         var shipmentIdsToUpdate = [String]()
         for (index, shipment) in shipments.enumerated() {
             let key = "\(index)"
             // TODO: 15309 Investigate which IDs need to be sent to remote
             shipmentIdsToUpdate.append(key)
 
-            var items = [WooShippingShipment]()
+            var items = [WooShippingShipmentItem]()
             for item in shipment {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
-                    let i = WooShippingShipment(id: Int64(mainItemID),
-                                                subItems: item.childItemRows.map({ $0.itemID }))
+                    let i = WooShippingShipmentItem(id: Int64(mainItemID),
+                                                    subItems: item.childItemRows.map({ $0.itemID }))
                     items.append(i)
                 } else {
                     DDLogError("Unable to parse main item ID from \(item.mainItemRow.itemID)")

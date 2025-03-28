@@ -10,7 +10,7 @@ struct CollectPaymentAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        AppDelegate.shared.tabBarController?.navigate(to: PaymentsMenuDestination.collectPayment)
+        AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
         ServiceLocator.analytics.track(event: .AppIntents.shortcutWasOpened(with: .collectPayment))
 
         return .result()

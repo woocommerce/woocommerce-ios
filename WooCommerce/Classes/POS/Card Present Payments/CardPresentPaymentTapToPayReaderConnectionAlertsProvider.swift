@@ -1,6 +1,6 @@
 import Foundation
 
-struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
+struct CardPresentPaymentTapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentEventDetails
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningForReaders(endSearch: cancel)

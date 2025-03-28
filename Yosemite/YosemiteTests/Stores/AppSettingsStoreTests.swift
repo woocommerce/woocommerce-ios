@@ -1065,7 +1065,7 @@ extension AppSettingsStoreTests {
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 1, cardReaderType: .appleBuiltIn) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 1, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1079,12 +1079,12 @@ extension AppSettingsStoreTests {
         // Given
         let siteID: Int64 = 1
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .appleBuiltIn)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .tapToPay)
         subject?.onAction(updateAction)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1098,12 +1098,12 @@ extension AppSettingsStoreTests {
     func test_given_a_date_was_only_previously_stored_for_another_site_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .appleBuiltIn)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .tapToPay)
         subject?.onAction(updateAction)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 100, cardReaderType: .appleBuiltIn) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 100, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1122,7 +1122,7 @@ extension AppSettingsStoreTests {
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)

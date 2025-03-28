@@ -16,7 +16,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
-    private let builtInCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
+    private let tapToPayCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
 
     private var connectionAttemptInvalidated: Bool = false
 
@@ -64,8 +64,8 @@ extension StripeCardReaderService: CardReaderService {
         softwareUpdateSubject.eraseToAnyPublisher()
     }
 
-    public var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
-        builtInCardReaderAcceptToSSubject.eraseToAnyPublisher()
+    public var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+        tapToPayCardReaderAcceptToSSubject.eraseToAnyPublisher()
     }
 
     // MARK: - CardReaderService conformance. Commands
@@ -141,7 +141,7 @@ extension StripeCardReaderService: CardReaderService {
                 DDLogError("\(error)")
                 throw error
             }
-        case .localMobile:
+        case .tapToPay:
             let tapToPayConfig = TapToPayDiscoveryConfigurationBuilder()
             do {
                 config = try tapToPayConfig.setSimulated(shouldUseSimulatedCardReader).build()
@@ -452,7 +452,7 @@ extension StripeCardReaderService: CardReaderService {
         connectionAttemptInvalidated = false
         switch stripeReader.deviceType {
         case .tapToPay:
-            return getLocalMobileConfiguration(stripeReader, options: options).flatMap { configuration in
+            return getTapToPayConfiguration(stripeReader, options: options).flatMap { configuration in
                 self.connect(stripeReader, configuration: configuration)
             }
             .share()
@@ -494,7 +494,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader,
+    private func getTapToPayConfiguration(_ reader: StripeTerminal.Reader,
                                              options: CardReaderConnectionOptions?) -> Future<TapToPayConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
@@ -507,12 +507,12 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    let localMobileConfig = TapToPayConnectionConfigurationBuilder(delegate: self, locationId: locationId)
-                    localMobileConfig.setMerchantDisplayName(nil)
-                    localMobileConfig.setOnBehalfOf(nil)
-                    localMobileConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
+                    let tapToPayConfig = TapToPayConnectionConfigurationBuilder(delegate: self, locationId: locationId)
+                    tapToPayConfig.setMerchantDisplayName(nil)
+                    tapToPayConfig.setOnBehalfOf(nil)
+                    tapToPayConfig.setTosAcceptancePermitted(options?.tapToPayOptions?.termsOfServiceAcceptancePermitted ?? true)
                     do {
-                        let config = try localMobileConfig.build()
+                        let config = try tapToPayConfig.build()
                         return promise(.success(config))
                     } catch {
                         let underlyingError = Self.logAndDecodeError(error)
@@ -1005,7 +1005,7 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
     }
 
     public func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
-        builtInCardReaderAcceptToSSubject.send(())
+        tapToPayCardReaderAcceptToSSubject.send(())
     }
 }
 

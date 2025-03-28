@@ -3,7 +3,7 @@ import Yosemite
 
 /// Modal presented under the Apple-provided built in reader modal, while the card is being collected.
 /// This may be visible for a moment or two either side of Apple's screen being shown.
-final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayFollowReaderInstructions: CardPresentPaymentsModalViewModel {
 
     /// Customer name
     private let name: String
@@ -22,7 +22,7 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
         amount
     }
 
-    let image: UIImage = .preparingBuiltInReader
+    let image: UIImage = .preparingTapToPayReader
 
     let primaryButtonTitle: String? = nil
 
@@ -61,7 +61,7 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
     }
 }
 
-private extension CardPresentModalBuiltInFollowReaderInstructions {
+private extension CardPresentModalTapToPayFollowReaderInstructions {
     enum Localization {
         static let readerIsReady = NSLocalizedString(
             "Tap to Pay on iPhone is ready",

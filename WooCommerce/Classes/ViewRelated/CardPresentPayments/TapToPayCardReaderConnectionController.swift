@@ -9,13 +9,13 @@ import Experiments
 /// Facilitates connecting to a card reader
 ///
 
-protocol BuiltInCardReaderConnectionControlling {
+protocol TapToPayCardReaderConnectionControlling {
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
 }
 
-final class BuiltInCardReaderConnectionController<AlertProvider: CardReaderConnectionAlertsProviding,
+final class TapToPayCardReaderConnectionController<AlertProvider: CardReaderConnectionAlertsProviding,
                                                   AlertPresenter: CardPresentPaymentAlertsPresenting>:
-                                                    BuiltInCardReaderConnectionControlling
+                                                    TapToPayCardReaderConnectionControlling
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private enum ControllerState {
         /// Initial state of the controller
@@ -98,7 +98,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let siteID: Int64
     private let alertsPresenter: AlertPresenter
-    private let merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting?
+    private let merchantEducationPresenter: TapToPayCardReaderMerchantEducationPresenting?
     private let configuration: CardPresentPaymentsConfiguration
 
     private let alertsProvider: AlertProvider
@@ -139,7 +139,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         stores: StoresManager = ServiceLocator.stores,
         alertsPresenter: AlertPresenter,
         alertsProvider: AlertProvider,
-        merchantEducationPresenter: BuiltInCardReaderMerchantEducationPresenting? = nil,
+        merchantEducationPresenter: TapToPayCardReaderMerchantEducationPresenting? = nil,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -177,7 +177,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     }
 }
 
-private extension BuiltInCardReaderConnectionController {
+private extension TapToPayCardReaderConnectionController {
     func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
             guard let self = self else { return }
@@ -263,7 +263,7 @@ private extension BuiltInCardReaderConnectionController {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: siteID,
-            discoveryMethod: .localMobile,
+            discoveryMethod: .tapToPay,
             onReaderDiscovered: { [weak self] cardReaders in
                 guard let self = self else {
                     return
@@ -441,7 +441,7 @@ private extension BuiltInCardReaderConnectionController {
 
 
         if let presenter = merchantEducationPresenter {
-            let onboardingAction = CardPresentPaymentAction.observeBuiltInCardReaderAcceptToS { [weak self] events in
+            let onboardingAction = CardPresentPaymentAction.observeTapToPayCardReaderAcceptToS { [weak self] events in
                 guard let self else { return }
 
                 events
@@ -467,7 +467,7 @@ private extension BuiltInCardReaderConnectionController {
 
 
         let options = CardReaderConnectionOptions(
-            builtInOptions: BuiltInCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
+            tapToPayOptions: TapToPayCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader, options: options) { [weak self] result in
             guard let self = self else { return }
@@ -501,7 +501,7 @@ private extension BuiltInCardReaderConnectionController {
             case .failure(let error):
                 // The TOS acceptance flow happens during connection, not discovery, and cancelations from Apple's
                 // screen are returned as failures here.
-                if case .connection(.appleBuiltInReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
+                if case .connection(.tapToPayReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
                     return self.state = .cancel(.appleTOSAcceptance)
                 } else {
                     self.analyticsTracker.connectionFailed(error: error,
@@ -664,10 +664,10 @@ private extension BuiltInCardReaderConnectionController {
 private extension CardReaderServiceUnderlyingError {
     var canBeResolvedByRetrying: Bool {
         switch self {
-        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn,
+        case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn,
                 .passcodeNotEnabled,
-                .appleBuiltInReaderDeviceBanned,
-                .appleBuiltInReaderMerchantBlocked,
+                .tapToPayReaderDeviceBanned,
+                .tapToPayReaderMerchantBlocked,
                 .nfcDisabled,
                 .unsupportedMobileDeviceConfiguration:
             return false
@@ -679,7 +679,7 @@ private extension CardReaderServiceUnderlyingError {
 
 // MARK: - Merchant Education
 
-private extension BuiltInCardReaderConnectionController {
+private extension TapToPayCardReaderConnectionController {
     private var isEducationInProgress: Bool {
         switch state {
         case .connecting(let educationInProgress),

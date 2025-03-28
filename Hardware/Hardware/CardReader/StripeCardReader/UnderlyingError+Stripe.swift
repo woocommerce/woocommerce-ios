@@ -93,23 +93,23 @@ extension UnderlyingError {
         case .passcodeNotEnabled:
             self = .passcodeNotEnabled
         case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn:
-            self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+            self = .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn
         case .nfcDisabled:
             self = .nfcDisabled
         case .tapToPayReaderFailedToPrepare:
-            self = .appleBuiltInReaderFailedToPrepare
+            self = .tapToPayReaderFailedToPrepare
         case .tapToPayReaderTOSAcceptanceCanceled:
-            self = .appleBuiltInReaderTOSAcceptanceCanceled
+            self = .tapToPayReaderTOSAcceptanceCanceled
         case .tapToPayReaderTOSNotYetAccepted:
-            self = .appleBuiltInReaderTOSNotYetAccepted
+            self = .tapToPayReaderTOSNotYetAccepted
         case .tapToPayReaderTOSAcceptanceFailed:
-            self = .appleBuiltInReaderTOSAcceptanceFailed
+            self = .tapToPayReaderTOSAcceptanceFailed
         case .tapToPayReaderMerchantBlocked:
-            self = .appleBuiltInReaderMerchantBlocked
+            self = .tapToPayReaderMerchantBlocked
         case .tapToPayReaderInvalidMerchant:
-            self = .appleBuiltInReaderInvalidMerchant
+            self = .tapToPayReaderInvalidMerchant
         case .tapToPayReaderDeviceBanned:
-            self = .appleBuiltInReaderDeviceBanned
+            self = .tapToPayReaderDeviceBanned
         case .unsupportedMobileDeviceConfiguration:
             self = .unsupportedMobileDeviceConfiguration
         case .readerNotAccessibleInBackground:
@@ -171,7 +171,7 @@ extension UnderlyingError {
         case .bluetoothReconnectStarted:
             self = .bluetoothReconnectStarted
         case .tapToPayReaderAccountDeactivated:
-            self = .appleBuiltInReaderAccountDeactivated
+            self = .tapToPayReaderAccountDeactivated
         case .readerMissingEncryptionKeys:
             self = .readerMissingEncryptionKeys
         case .unexpectedReaderError:

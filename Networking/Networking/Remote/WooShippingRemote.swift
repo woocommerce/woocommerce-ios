@@ -55,7 +55,7 @@ public protocol WooShippingRemoteProtocol {
     func updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
-                        completion: @escaping (Result<WooShippingUpdateShipmentResponse, Error>) -> Void)
+                        completion: @escaping (Result<WooShippingShipments, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -444,7 +444,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func updateShipment(siteID: Int64,
                                orderID: Int64,
                                shipmentToUpdate: WooShippingUpdateShipment,
-                               completion: @escaping (Result<WooShippingUpdateShipmentResponse, Error>) -> Void) {
+                               completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
         do {
             let parameters = try shipmentToUpdate.toDictionary()
             let path = Path.updateShipment(orderID: orderID)
@@ -454,7 +454,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            let mapper = WooShippingUpdateShipmentMapper(siteID: siteID, orderID: orderID)
+            let mapper = WooShippingUpdateShipmentMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

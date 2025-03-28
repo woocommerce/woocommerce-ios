@@ -682,7 +682,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "shipping-label-update-shipment")
 
         // When
-        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             remote.updateShipment(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
                                   shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -691,8 +691,8 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let config = try XCTUnwrap(result.get())
-        XCTAssertEqual(config.shipments.count, 3)
+        let shipments = try XCTUnwrap(result.get())
+        XCTAssertEqual(shipments.count, 3)
     }
 
     func test_updateShipment_returns_error_on_network_failure() {
@@ -701,7 +701,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "generic_error")
 
         // When
-        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             remote.updateShipment(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
                                   shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in

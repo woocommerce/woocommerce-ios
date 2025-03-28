@@ -16,13 +16,13 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
     public let siteID: Int64
 
     /// Shipments of this order. The keys are the ids of the shipment.
-    public let shipments: [String: [WooShippingShipment]]
+    public let shipments: WooShippingShipments
 
     /// Holds info about the shipping labels
     public let shippingLabelData: WooShippingLabelData?
 
     public init(siteID: Int64,
-                shipments: [String: [WooShippingShipment]],
+                shipments: WooShippingShipments,
                 shippingLabelData: WooShippingLabelData?) {
         self.siteID = siteID
         self.shipments = shipments
@@ -40,13 +40,13 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let shipments: [String: [WooShippingShipment]] = {
+        let shipments: WooShippingShipments = {
             guard let shipmentsString = try? container.decodeIfPresent(String.self, forKey: .shipments),
                   let data = shipmentsString.data(using: .utf8) else {
                 return [:]
             }
 
-            return (try? JSONDecoder().decode([String: [WooShippingShipment]].self, from: data)) ?? [:]
+            return (try? JSONDecoder().decode(WooShippingShipments.self, from: data)) ?? [:]
         }()
 
         let shippingLabelData = try container.decodeIfPresent(WooShippingLabelData.self, forKey: .shippingLabelData)

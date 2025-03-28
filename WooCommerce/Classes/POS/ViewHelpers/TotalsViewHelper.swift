@@ -73,4 +73,12 @@ final class TotalsViewHelper {
             return true
         }
     }
+
+    func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
+        guard cart.coupons.isNotEmpty else {
+            return false
+        }
+
+        return orderTotals == nil || orderTotals?.discountTotal != nil
+    }
 }

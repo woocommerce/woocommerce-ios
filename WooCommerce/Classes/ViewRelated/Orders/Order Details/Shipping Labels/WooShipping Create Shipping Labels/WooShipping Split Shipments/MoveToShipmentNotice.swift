@@ -50,6 +50,7 @@ private extension MoveToShipmentNotice {
                 Text(Localization.moveToNewShipment)
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .multilineTextAlignment(.trailing)
             }
             .foregroundColor(Color(.accent))
         }
@@ -82,8 +83,8 @@ private extension MoveToShipmentNotice {
     }
 }
 
-private extension MoveToShipmentNotice {
-    enum Layout {
+extension MoveToShipmentNotice {
+    private enum Layout {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 22
         static let horizontalSpacing: CGFloat = 8

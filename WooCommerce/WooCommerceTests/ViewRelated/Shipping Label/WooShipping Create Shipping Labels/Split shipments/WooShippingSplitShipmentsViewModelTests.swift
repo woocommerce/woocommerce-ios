@@ -407,6 +407,66 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.topTabItems.count, 2)
     }
+
+    func test_movingCompletionMessage_is_set_upon_moving_items_and_cleared_upon_tapping_undo() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+        XCTAssertNil(viewModel.movingCompletionMessage)
+
+        // When
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertNotNil(viewModel.movingCompletionMessage)
+
+        // When
+        viewModel.undoMovingItems()
+
+        // Then
+        XCTAssertNil(viewModel.movingCompletionMessage)
+    }
+
+    func test_shipments_are_reverted_upon_tapping_undo() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        viewModel.shipments.first?.first?.mainItemRow.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Confidence checks
+        XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.shipments[0].count, 1)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[1].count, 1)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
+
+        // When
+        viewModel.undoMovingItems()
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 1)
+
+        XCTAssertEqual(viewModel.shipments[0].count, 2)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

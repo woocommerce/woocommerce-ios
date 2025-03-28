@@ -5,7 +5,10 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.PaymentGateway
+import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
+import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
 import class WooFoundation.CurrencyFormatter
@@ -27,7 +30,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
+    func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
@@ -63,13 +66,11 @@ protocol PointOfSaleOrderControllerProtocol {
     private var order: Order? = nil
 
     @MainActor @discardableResult
-    func syncOrder(for cartItems: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
-        let posCartItems = cartItems.map {
-            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
-        }
+        let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
+        guard !orderState.isSyncing, !posCart.matches(order: order) else {
             return .success(.orderNotChanged)
         }
 
@@ -77,7 +78,7 @@ protocol PointOfSaleOrderControllerProtocol {
         let isNewOrder = order == nil
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
+            let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                order: order,
                                                                currency: storeCurrency)
             self.order = syncedOrder
@@ -102,13 +103,19 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private func setOrderStateToError(_ error: Error,
                                       retryHandler: @escaping () async -> Void) {
-        // Consider removing error or handle specific errors with our own formatting and localization
-        orderState = .error(.init(message: error.localizedDescription,
-                                  handler: {
-            Task {
-                await retryHandler()
-            }
-        }))
+        if let couponsError = CouponsError(underlyingError: error) {
+            orderState = .error(.invalidCoupon(couponsError.message), {
+                Task {
+                    await retryHandler()
+                }
+            })
+        } else {
+            orderState = .error(.other(error.localizedDescription), {
+                Task {
+                    await retryHandler()
+                }
+            })
+        }
     }
 
     func sendReceipt(recipientEmail: String) async throws {
@@ -192,7 +199,7 @@ enum PointOfSaleInternalOrderState {
     case idle
     case syncing
     case loaded(PointOfSaleOrderTotals, Order)
-    case error(PointOfSaleOrderSyncErrorMessageViewModel)
+    case error(PointOfSaleOrderState.OrderStateError, PointOfSaleOrderState.OrderStateRetryHandler)
 
     var isSyncing: Bool {
         switch self {
@@ -207,8 +214,8 @@ enum PointOfSaleInternalOrderState {
         switch self {
         case .idle:
             return .idle
-        case .error(let error):
-            return .error(error)
+        case .error(let error, let handler):
+            return .error(error, handler)
         case .loaded(let totals, _):
             return .loaded(totals)
         case .syncing:
@@ -222,9 +229,8 @@ extension PointOfSaleInternalOrderState: Equatable {
         switch (lhs, rhs) {
         case (.idle, .idle):
             return true
-        case (.error(let lhsError), .error(let rhsError)):
-            return lhsError.title == rhsError.title &&
-            lhsError.message == rhsError.message
+        case (.error(let lhsError, _), .error(let rhsError, _)):
+            return lhsError == rhsError
         case (.syncing, .syncing):
             return true
         case (.loaded(let lhsTotals, let lhsOrder), .loaded(let rhsTotals, let rhsOrder)):
@@ -247,5 +253,15 @@ extension PointOfSaleOrderController {
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder
+    }
+}
+
+// MARK: - Mapping
+
+private extension POSCart {
+    init(cart: Cart) {
+        let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
+        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code) }
+        self.init(items: items, coupons: coupons)
     }
 }

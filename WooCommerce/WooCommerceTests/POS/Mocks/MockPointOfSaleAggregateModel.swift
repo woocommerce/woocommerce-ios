@@ -47,16 +47,20 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func loadNextItems(base: ItemListBaseItem) async { }
 
-    var cart: [CartItem] = []
+    var cart: Cart = .init()
 
     func addToCart(_ item: POSItem) { }
 
     func remove(cartItem: CartItem) { }
 
+    func remove(cartCouponItem: CartCouponItem) { }
+
     var removeAllItemsFromCartCalled = false
     func removeAllItemsFromCart() {
         removeAllItemsFromCartCalled = true
     }
+
+    func removeAllCouponsFromCart() { }
 
     func checkOut() async { }
 

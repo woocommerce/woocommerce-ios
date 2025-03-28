@@ -4,6 +4,7 @@
 22.1
 -----
 - [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
+- [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
 
 22.0
 -----
@@ -14,6 +15,7 @@
 - [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
 - [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
+- [internal] Update Stripe Terminal SDK to 4.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/15377]
 - [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
 
 21.9

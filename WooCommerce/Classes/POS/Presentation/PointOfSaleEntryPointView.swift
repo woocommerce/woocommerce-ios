@@ -8,11 +8,13 @@ struct PointOfSaleEntryPointView: View {
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleItemsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -20,6 +22,7 @@ struct PointOfSaleEntryPointView: View {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
+        self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
@@ -40,6 +43,7 @@ struct PointOfSaleEntryPointView: View {
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             posModel = PointOfSaleAggregateModel(
                 itemsController: itemsController,
+                couponsController: couponsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
@@ -60,6 +64,7 @@ struct PointOfSaleEntryPointView: View {
 @available(iOS 17.0, *)
 #Preview {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
+                              couponsController: PointOfSalePreviewItemsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

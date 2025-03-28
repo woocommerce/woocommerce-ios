@@ -72,7 +72,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .enableCouponsInPointOfSale:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .googleAdsCampaignCreationOnWebView:
             return true
         case .backgroundTasks:
@@ -97,6 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .notificationSettings:
             return true
+        case .allowMerchantAIAPIKey:
+            return false
         default:
             return true
         }

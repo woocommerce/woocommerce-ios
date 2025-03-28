@@ -15,7 +15,7 @@ protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
@@ -69,7 +69,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
@@ -281,7 +281,7 @@ private extension PaymentCaptureOrchestrator {
                            orderTotal: NSDecimalNumber,
                            country: String,
                            statementDescriptor: String?,
-                           paymentMethodTypes: [String],
+                           paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
                            channel: PaymentChannel) -> PaymentParameters {
         let metadata = PaymentIntent.initMetadata(

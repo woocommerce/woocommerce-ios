@@ -34,32 +34,32 @@ private extension Hardware.PaymentIntentParameters {
 
     func build(_ builder: PaymentIntentParametersBuilder,
                with cardReaderMetadata: CardReaderMetadata? = nil) throws -> StripeTerminal.PaymentIntentParameters? {
-            builder.setPaymentMethodTypes(paymentMethodTypes)
-            builder.setStripeDescription(receiptDescription)
+        _ = builder.setPaymentMethodTypes(paymentMethodTypes.map(\.stripeTerminalPaymentMethodType))
+        builder.setStripeDescription(receiptDescription)
 
-            /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
-            /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
-            builder.setStatementDescriptor(nil)
+        /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
+        /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor
+        builder.setStatementDescriptor(nil)
 
-            let descriptor = statementDescription ?? ""
-            if !descriptor.isEmpty {
-                builder.setStatementDescriptor(descriptor)
-            }
+        let descriptor = statementDescription ?? ""
+        if !descriptor.isEmpty {
+            builder.setStatementDescriptor(descriptor)
+        }
 
-            if let applicationFee = applicationFee {
-                /// Stripe requires that "The amount must be provided as a boxed UInt in the currency's smallest unit."
-                /// Smallest-unit and UInt conversion is done in the same way as for the total amount, but that does not need to be boxed.
-                let applicationFeeForStripe = NSNumber(value: prepareAmountForStripe(applicationFee))
-                builder.setApplicationFeeAmount(applicationFeeForStripe)
-            }
+        if let applicationFee = applicationFee {
+            /// Stripe requires that "The amount must be provided as a boxed UInt in the currency's smallest unit."
+            /// Smallest-unit and UInt conversion is done in the same way as for the total amount, but that does not need to be boxed.
+            let applicationFeeForStripe = NSNumber(value: prepareAmountForStripe(applicationFee))
+            builder.setApplicationFeeAmount(applicationFeeForStripe)
+        }
 
-            builder.setReceiptEmail(receiptEmail)
+        builder.setReceiptEmail(receiptEmail)
 
-            let updatedMetadata = prepareMetadataForStripe(with: cardReaderMetadata)
-            builder.setMetadata(updatedMetadata)
+        let updatedMetadata = prepareMetadataForStripe(with: cardReaderMetadata)
+        builder.setMetadata(updatedMetadata)
 
-            // Return payment intent built configuration:
-            return try builder.build()
+        // Return payment intent built configuration:
+        return try builder.build()
     }
 
     /// Updates the existing PaymentIntentParameters metadata with our CardReader metadata, if any.
@@ -80,4 +80,16 @@ private extension Hardware.PaymentIntentParameters {
         return updatedMetadata
     }
 }
+
+private extension PaymentMethodType {
+    var stripeTerminalPaymentMethodType: StripeTerminal.PaymentMethodType {
+        switch self {
+        case .cardPresent:
+            return .cardPresent
+        case .interacPresent:
+            return .interacPresent
+        }
+    }
+}
+
 #endif

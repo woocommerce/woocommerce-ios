@@ -156,10 +156,6 @@ struct OrderFormPresentationWrapper: View {
                 },
                 dismissBarButton: {
                     Button {
-                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                        // but on split views we move this responsibility to the AdaptiveModalContainer
-                        viewModel.syncOrderItemSelectionStateOnDismiss()
                         dismissHandler()
                     } label: {
                         switch dismissLabel {

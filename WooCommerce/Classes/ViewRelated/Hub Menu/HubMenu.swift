@@ -40,6 +40,7 @@ struct HubMenu: View {
                        #available(iOS 17.0, *) {
                         PointOfSaleEntryPointView(
                             itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                            couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
                                 viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                             },
@@ -183,6 +184,8 @@ private extension HubMenu {
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
+            case .aiSettings:
+                AISettingsView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

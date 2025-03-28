@@ -129,7 +129,8 @@ struct TopTabView<Content: View>: View {
                                                 }
                                             }
                                         })
-                                }                            }
+                                }
+                            }
                             .padding(.horizontal, tabPadding)
                             .overlay(
                                 Rectangle()

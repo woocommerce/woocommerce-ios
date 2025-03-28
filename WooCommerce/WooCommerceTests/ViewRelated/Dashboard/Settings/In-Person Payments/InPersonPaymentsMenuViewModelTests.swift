@@ -354,40 +354,4 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertEqual(navigationPath.count, 1)
         XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
     }
-
-    func test_collectPaymentTapped_sets_orderViewModel() throws {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
-        XCTAssertNil(sut.orderViewModel)
-
-        // When
-        sut.collectPaymentTapped()
-        XCTAssertNotNil(sut.orderViewModel)
-        sut.orderViewModel?.syncRequired = true
-
-        // Then
-        let originalOrderViewModel = try XCTUnwrap(sut.orderViewModel)
-        XCTAssertTrue(originalOrderViewModel.syncRequired)
-    }
-
-    func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {
-        // Given
-        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
-        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
-
-        // When
-        sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
-        sut.hasPresentedCollectPaymentMigrationSheet = true
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
-        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
-    }
 }

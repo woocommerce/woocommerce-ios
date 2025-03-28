@@ -576,8 +576,8 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let printData: ShippingLabelPrintData = waitFor { promise in
             let action = WooShippingAction.printLabel(siteID: self.sampleSiteID,
-                                                     labelIDs: [123],
-                                                     paperSize: .letter) { result in
+                                                      labelIDs: [123],
+                                                      paperSize: .letter) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error printing shipping label: \(String(describing: result.failure))")
                     return
@@ -899,12 +899,12 @@ final class WooShippingStoreTests: XCTestCase {
     func test_updateShipment_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expected = WooShippingUpdateShipmentResponse.fake().copy(shipments: ["0": [WooShippingShipment.fake()]])
+        let expected = ["0": [WooShippingShipment.fake()]]
         remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .success(expected))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -926,7 +926,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<WooShippingUpdateShipmentResponse, Error> = waitFor { promise in
+        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -944,9 +944,9 @@ final class WooShippingStoreTests: XCTestCase {
 private extension WooShippingStoreTests {
     func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
-                                             defaultRates: [sampleLabelRate()],
-                                             signatureRequired: [],
-                                             adultSignatureRequired: [])]
+                                              defaultRates: [sampleLabelRate()],
+                                              signatureRequired: [],
+                                              adultSignatureRequired: [])]
     }
 
     func sampleLabelRate() -> ShippingLabelCarrierRate {

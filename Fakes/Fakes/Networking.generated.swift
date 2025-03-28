@@ -3003,8 +3003,6 @@ extension Networking.WooShippingUpdateShipmentResponse {
     ///
     public static func fake() -> Networking.WooShippingUpdateShipmentResponse {
         .init(
-            siteID: .fake(),
-            orderID: .fake(),
             shipments: .fake()
         )
     }

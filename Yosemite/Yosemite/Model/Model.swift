@@ -201,7 +201,6 @@ public typealias WooShippingDestinationAddress = Networking.WooShippingDestinati
 public typealias WooShippingDestinationAddressUpdate = Networking.WooShippingDestinationAddressUpdate
 public typealias WooShippingConfig = Networking.WooShippingConfig
 public typealias WooShippingUpdateShipment = Networking.WooShippingUpdateShipment
-public typealias WooShippingUpdateShipmentResponse = Networking.WooShippingUpdateShipmentResponse
 public typealias WooShippingShipment = Networking.WooShippingShipment
 public typealias WPComPlan = Networking.WPComPlan
 public typealias WPComSitePlan = Networking.WPComSitePlan

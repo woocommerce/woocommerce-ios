@@ -4,17 +4,14 @@ import XCTest
 /// Unit Tests for `WooShippingUpdateShipmentMapper`
 ///
 final class WooShippingUpdateShipmentMapperTests: XCTestCase {
-    private let sampleSiteID: Int64 = 1234
-    private let sampleOrderID: Int64 = 1234
-
     func test_shipments_are_properly_parsed() throws {
-        guard let config = mapLoadShippingLabelConfig() else {
+        guard let shipments = mapLoadShippingLabelConfig() else {
             XCTFail()
             return
         }
 
-        XCTAssertEqual(config.shipments.count, 3)
-        let shipment = try XCTUnwrap(config.shipments["0"])
+        XCTAssertEqual(shipments.count, 3)
+        let shipment = try XCTUnwrap(shipments["0"])
 
         let shipmentItem = try XCTUnwrap(shipment.first)
         XCTAssertEqual(shipmentItem.id, 209)
@@ -22,13 +19,13 @@ final class WooShippingUpdateShipmentMapperTests: XCTestCase {
     }
 
     func test_shipments_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        guard let config = mapLoadShippingLabelConfig() else {
+        guard let shipments = mapLoadShippingLabelConfig() else {
             XCTFail()
             return
         }
 
-        XCTAssertEqual(config.shipments.count, 3)
-        let shipment = try XCTUnwrap(config.shipments["1"])
+        XCTAssertEqual(shipments.count, 3)
+        let shipment = try XCTUnwrap(shipments["1"])
 
         let shipmentItem = try XCTUnwrap(shipment[safe: 2])
         XCTAssertEqual(shipmentItem.id, 212)
@@ -41,24 +38,23 @@ private extension WooShippingUpdateShipmentMapperTests {
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `filename` (Data Encoded)
     ///
-    func mapShippingLabelConfig(from filename: String) -> WooShippingUpdateShipmentResponse? {
+    func mapShippingLabelConfig(from filename: String) -> [String: [WooShippingShipment]]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! WooShippingUpdateShipmentMapper(siteID: sampleSiteID,
-                                                    orderID: sampleOrderID).map(response: response)
+        return try! WooShippingUpdateShipmentMapper().map(response: response)
     }
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `shipping-label-update-shipment`
     ///
-    func mapLoadShippingLabelConfig() -> WooShippingUpdateShipmentResponse? {
+    func mapLoadShippingLabelConfig() -> [String: [WooShippingShipment]]? {
         mapShippingLabelConfig(from: "shipping-label-update-shipment")
     }
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `shipping-label-update-shipment-without-data`
     ///
-    func mapLoadShippingLabelConfigWithoutDataEnvelope() -> WooShippingUpdateShipmentResponse? {
+    func mapLoadShippingLabelConfigWithoutDataEnvelope() -> [String: [WooShippingShipment]]? {
         mapShippingLabelConfig(from: "shipping-label-update-shipment-without-data")
     }
 }

@@ -174,7 +174,8 @@ private extension PointOfSaleOrderController {
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
-            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue)
+            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
+            couponsTotals: couponsTotals(order))
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -182,6 +183,15 @@ private extension PointOfSaleOrderController {
             return nil
         }
         return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
+        return order.coupons.compactMap { coupon in
+            PointOfSaleCouponTotal(
+                code: coupon.code,
+                total: formattedPrice(coupon.discount, currency: order.currency) ?? ""
+            )
+        }
     }
 }
 

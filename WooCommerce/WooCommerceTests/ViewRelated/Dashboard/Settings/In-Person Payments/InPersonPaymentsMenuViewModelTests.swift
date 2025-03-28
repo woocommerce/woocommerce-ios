@@ -102,16 +102,6 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryError.rawValue))
     }
 
-    func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
-        // Given
-
-        // When
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCollectPaymentTapped.rawValue))
-    }
-
     func test_setUpTryOutTapToPayTapped_tracks_setUpTryOutTapToPayOnIPhoneTapped() {
         // Given
 
@@ -248,110 +238,5 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.shouldShowTapToPaySection)
-    }
-
-    // MARK: - Collect Payment tests
-
-    func test_collectPaymentTapped_appends_collectPayment_to_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath()
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertTrue(sut.navigationPath.isEmpty)
-
-        // When
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
-    }
-
-    func test_navigate_to_collectPayment_appends_collectPayment_to_empty_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath()
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertTrue(sut.navigationPath.isEmpty)
-
-        // When
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-
-        // Then
-        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
-    }
-
-    func test_navigate_to_collectPayment_appends_collectPayment_to_non_empty_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath(["testPath"])
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
-
-        // When
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-
-        // Then
-        XCTAssertEqual(navigationPath.count, 2)
-        let expectedPath = {
-            var path = NavigationPath(["testPath"])
-            path.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
-            return path
-        }()
-        XCTAssertEqual(navigationPath.codable, expectedPath.codable)
-    }
-
-    func test_dismissPaymentCollection_pops_paths_down_to_before_the_first_colletPayment_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath(["testPath"])
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
-
-        // When navigating to collectPayment and pushing other views, then dismiss payment collection
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
-        navigationPath.append("anotherPath")
-        XCTAssertEqual(navigationPath.count, 4)
-        sut.dismissPaymentCollection()
-
-        // Then
-        XCTAssertEqual(navigationPath.count, 1)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
     }
 }

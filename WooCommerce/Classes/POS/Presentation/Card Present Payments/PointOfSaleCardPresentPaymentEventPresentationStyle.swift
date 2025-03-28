@@ -253,7 +253,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
         case .locationRequired(let cancel):
             self = .alert(.connectingFailedLocationRequired(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(
-                    cancelSearchAction: cancel)))
+                    cancelSearchAction: {
+                        cancel()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
         }
     }
 }

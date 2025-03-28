@@ -60,6 +60,11 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 self?.readerConnectionStatusSubject.send(.cancellingConnection)
                 endSearch()
             })))
+        case .locationRequired(let cancel):
+            paymentEventSubject.send(.show(eventDetails: .locationRequired(cancel: { [weak self] in
+                self?.readerConnectionStatusSubject.send(.cancellingConnection)
+                cancel()
+            })))
         default:
             paymentEventSubject.send(.show(eventDetails: eventDetails))
         }

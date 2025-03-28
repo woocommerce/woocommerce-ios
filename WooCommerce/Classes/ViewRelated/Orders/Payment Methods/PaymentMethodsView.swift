@@ -46,7 +46,7 @@ struct PaymentMethodsView: View {
                             MethodRow(icon: .tapToPayOnIPhoneIcon,
                                       title: Localization.tapToPay,
                                       accessibilityID: Accessibility.tapToPayMethod) {
-                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                                viewModel.collectPayment(using: .tapToPay, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
 
                             Divider()

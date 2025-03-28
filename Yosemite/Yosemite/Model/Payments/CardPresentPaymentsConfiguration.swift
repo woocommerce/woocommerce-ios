@@ -52,7 +52,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2, .appleBuiltIn],
+                supportedReaders: [.chipper, .stripeM2, .tapToPay],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
@@ -96,7 +96,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.GBP],
                 paymentGateways: [WCPayAccount.gatewayID],
-                supportedReaders: shouldAllowTapToPayInUK ? [.wisepad3, .appleBuiltIn] : [.wisepad3],
+                supportedReaders: shouldAllowTapToPayInUK ? [.wisepad3, .tapToPay] : [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,

@@ -17,7 +17,7 @@ public protocol CardReaderService {
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> { get }
 
     /// The Publisher that emits when TTP Terms and Services are accepted
-    var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> { get }
+    var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> { get }
 
     // MARK: - Commands
 

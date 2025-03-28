@@ -228,7 +228,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
             paymentMethods: [.cardPresent],
             currencies: [.INR],
             paymentGateways: [WCPayAccount.gatewayID],
-            supportedReaders: [.appleBuiltIn],
+            supportedReaders: [.tapToPay],
             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
             stripeSmallestCurrencyUnitMultiplier: 100,

@@ -2,8 +2,8 @@ import Foundation
 @testable import WooCommerce
 import Yosemite
 
-class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding {
-    typealias AlertProvider = BuiltInReaderConnectionAlertsProvider
+class MockTapToPayCardReaderConnectionControllerFactory: TapToPayCardReaderConnectionControllerBuilding {
+    typealias AlertProvider = TapToPayReaderConnectionAlertsProvider
     typealias AlertPresenter = SilenceablePassthroughCardPresentPaymentAlertsPresenter<CardPresentPaymentAlertsPresenter>
 
     var spyCreateConnectionControllerSiteID: Int64? = nil
@@ -14,20 +14,20 @@ class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnect
 
     var onSearchAndConnectCalled: (() -> Void)? = nil
 
-    var mockConnectionController: MockBuiltInCardReaderConnectionController? = nil
+    var mockConnectionController: MockTapToPayCardReaderConnectionController? = nil
 
     func createConnectionController(forSiteID siteID: Int64,
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
-                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
+                                    allowTermsOfServiceAcceptance: Bool) -> TapToPayCardReaderConnectionControlling {
         spyCreateConnectionControllerSiteID = siteID
         spyCreateConnectionControllerAlertsPresenter = alertPresenter
         spyCreateConnectionControllerConfiguration = configuration
         spyCreateConnectionControllerAnalyticsTracker = analyticsTracker
         spyCreateConnectionControllerAllowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance
 
-        let mockConnectionController = MockBuiltInCardReaderConnectionController(
+        let mockConnectionController = MockTapToPayCardReaderConnectionController(
             onSearchAndConnectCalled: onSearchAndConnectCalled)
         self.mockConnectionController = mockConnectionController
         connectionControllerCreated()
@@ -37,7 +37,7 @@ class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnect
     var connectionControllerCreated: () -> Void = {}
 }
 
-class MockBuiltInCardReaderConnectionController: BuiltInCardReaderConnectionControlling {
+class MockTapToPayCardReaderConnectionController: TapToPayCardReaderConnectionControlling {
     let onSearchAndConnectCalled: (() -> Void)?
 
     init(onSearchAndConnectCalled: (() -> Void)?) {

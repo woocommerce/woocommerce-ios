@@ -93,7 +93,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -126,7 +126,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -155,7 +155,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }

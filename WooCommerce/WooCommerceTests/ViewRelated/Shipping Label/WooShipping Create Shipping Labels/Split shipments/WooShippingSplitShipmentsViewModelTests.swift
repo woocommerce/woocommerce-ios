@@ -472,6 +472,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 private extension WooShippingSplitShipmentsViewModelTests {
     func sampleItem(id: Int64, weight: Double, value: Double, quantity: Decimal) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
+                                 orderItemID: 123,
                                  name: "Item",
                                  weight: weight,
                                  quantity: quantity,

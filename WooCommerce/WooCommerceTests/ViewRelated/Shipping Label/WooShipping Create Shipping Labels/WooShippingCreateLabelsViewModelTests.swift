@@ -1050,6 +1050,7 @@ private extension WooShippingCreateLabelsViewModelTests {
 
 private final class MockItemsDataSource: WooShippingItemsDataSource {
     var items = [ShippingLabelPackageItem(productOrVariationID: 1,
+                                          orderItemID: 123,
                                           name: "Shirt",
                                           weight: 0.5,
                                           quantity: 2,

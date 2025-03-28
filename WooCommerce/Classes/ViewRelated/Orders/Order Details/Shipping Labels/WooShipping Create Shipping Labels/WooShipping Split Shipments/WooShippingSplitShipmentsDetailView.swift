@@ -200,6 +200,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
     WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                       config: ShippingLabelSampleData.sampleWooShippingConfig(),
                                                                                       items: [ShippingLabelPackageItem(productOrVariationID: 1,
+                                                                                                                       orderItemID: 12,
                                                                                                                        name: "Shirt",
                                                                                                                        weight: 0.5,
                                                                                                                        quantity: 2,

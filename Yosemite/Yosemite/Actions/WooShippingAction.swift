@@ -16,12 +16,14 @@ public enum WooShippingAction: Action {
 
     /// Fetch list of shipping label rates for the order.
     ///
+    /// - Sends back the `packages` parameter value along with the result in the completion handler
+    ///
     case loadLabelRates(siteID: Int64,
                         orderID: Int64,
                         originAddress: WooShippingAddress,
                         destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
-                        completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
+                        completion: ([ShippingLabelPackageSelected], Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 
     /// Fetch list of packages.
     ///
@@ -82,4 +84,10 @@ public enum WooShippingAction: Action {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
+
+    /// Loads label config for a given order
+    ///
+    case loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: (Result<WooShippingConfig, Error>) -> Void)
 }

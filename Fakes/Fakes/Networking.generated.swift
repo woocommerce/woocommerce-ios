@@ -871,7 +871,8 @@ extension Networking.Order {
             customFields: .fake(),
             renewalSubscriptionID: .fake(),
             appliedGiftCards: .fake(),
-            attributionInfo: .fake()
+            attributionInfo: .fake(),
+            shippingLabels: .fake()
         )
     }
 }
@@ -1133,6 +1134,26 @@ extension Networking.OrderTaxLine {
             totalTax: .fake(),
             totalShippingTax: .fake(),
             ratePercent: .fake(),
+            attributes: .fake()
+        )
+    }
+}
+extension Networking.POSProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.POSProduct {
+        .init(
+            siteID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            productTypeKey: .fake(),
+            sku: .fake(),
+            globalUniqueID: .fake(),
+            price: .fake(),
+            regularPrice: .fake(),
+            salePrice: .fake(),
+            onSale: .fake(),
+            images: .fake(),
             attributes: .fake()
         )
     }
@@ -2118,7 +2139,8 @@ extension Networking.ShippingLabelPurchase {
             refundableAmount: .fake(),
             status: .fake(),
             productIDs: .fake(),
-            productNames: .fake()
+            productNames: .fake(),
+            shipmentID: .fake()
         )
     }
 }
@@ -2804,6 +2826,26 @@ extension Networking.WooShippingCarrierPredefinedOptions {
         )
     }
 }
+extension Networking.WooShippingConfig {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingConfig {
+        .init(
+            siteID: .fake(),
+            shipments: .fake(),
+            shippingLabelData: .fake()
+        )
+    }
+}
+extension Networking.WooShippingConfigResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingConfigResponse {
+        .init(
+            config: .fake()
+        )
+    }
+}
 extension Networking.WooShippingCreatePackageResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2954,6 +2996,16 @@ extension Networking.WooShippingSavedPredefinedPackage {
             groupTitle: .fake(),
             providerID: .fake(),
             package: .fake()
+        )
+    }
+}
+extension Networking.WooShippingShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingShipment {
+        .init(
+            id: .fake(),
+            subItems: .fake()
         )
     }
 }

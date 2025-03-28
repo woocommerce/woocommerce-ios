@@ -4,19 +4,29 @@ import Combine
 import WooFoundation
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
-    @Published var internationalTransactionNumber: String = ""
-    @Published var internationalTransactionNumberIsRequired: Bool = false
-    @Published var returnToSenderIfNotDelivered: Bool = false
+    enum ITNValidationError {
+        case missingForTotalShipmentValue
+        case missingForTariffClass
+        case missingForRequiredDestination
+        case invalidFormat
+    }
 
-    @Published var requiredInformationIsEntered: Bool = false
-    @Published var itemsRequiredInformationIsEntered: Bool = false
+    @Published var internationalTransactionNumber = ""
+    @Published var itnValidationError: ITNValidationError?
+    @Published var returnToSenderIfNotDelivered = false
 
-    @Published var contentExplanation: String = ""
-    @Published var restrictionDetails: String = ""
+    @Published var requiredInformationIsEntered = false
+    @Published var itemsRequiredInformationIsEntered = false
+
+    @Published var contentExplanation = ""
+    @Published var restrictionDetails = ""
     @Published var contentType: WooShippingContentType = .merchandise
     @Published var restrictionType: WooShippingRestrictionType = .none
 
     let itnInfoURL = URL(string: "https://pe.usps.com/text/imm/immc5_010.htm")
+
+    @Published private(set) var isMissingITN = false
+    @Published private(set) var destinationCountryCode: String?
 
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
@@ -44,7 +54,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             restrictionType: restrictionType.toFormRestrictionType(),
                                             restrictionComments: restrictionType == .other ? restrictionDetails : "",
                                             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
-                                            itn: isValidITN() ? internationalTransactionNumber : "",
+                                            itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {
             ShippingLabelCustomsForm.Item(description: $0.description,
                                           quantity: $0.orderItem.quantity,
@@ -58,56 +68,90 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         onCompletion(form)
     }
 
-    func isValidITN() -> Bool {
-        guard internationalTransactionNumber.isNotEmpty else {
-            return true
-        }
-
-        let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
-
-        do {
-            let regex = try NSRegularExpression(pattern: pattern)
-            let range = NSRange(internationalTransactionNumber.startIndex..<internationalTransactionNumber.endIndex, in: internationalTransactionNumber)
-            return regex.firstMatch(in: internationalTransactionNumber, options: [], range: range) != nil
-        } catch {
-            return false
-        }
+    func updateDestinationCountry(code: String) {
+        destinationCountryCode = code
     }
 }
 
 private extension WooShippingCustomsFormViewModel {
     func listenForRequiredInformation() {
         let firstBatch = Publishers.CombineLatest4($contentType, $contentExplanation, $restrictionType, $restrictionDetails)
-        let secondBatch = Publishers.CombineLatest3($itemsRequiredInformationIsEntered, $internationalTransactionNumber, $internationalTransactionNumberIsRequired)
+        let secondBatch = Publishers.CombineLatest($itemsRequiredInformationIsEntered, $isMissingITN)
 
-        firstBatch.combineLatest(secondBatch).sink { firstBatchOutput, secondBatchOutput in
-            let (contentType, contentExplanation, restrictionType, restrictionDetails) = firstBatchOutput
-            let (itemsRequiredInfo, internationalTransactionNumber, transactionNumberRequired) = secondBatchOutput
-
-            self.requiredInformationIsEntered = (contentType != .other || contentExplanation.isNotEmpty) &&
-            (restrictionType != .other || restrictionDetails.isNotEmpty) &&
-            itemsRequiredInfo &&
-            (!transactionNumberRequired || internationalTransactionNumber.isNotEmpty)
-        }.store(in: &cancellables)
+        firstBatch.combineLatest(secondBatch)
+            .map { firstBatchOutput, secondBatchOutput -> Bool in
+                let (contentType, contentExplanation, restrictionType, restrictionDetails) = firstBatchOutput
+                let (itemsRequiredInfo, isMissingITN) = secondBatchOutput
+                return (contentType != .other || contentExplanation.isNotEmpty) &&
+                (restrictionType != .other || restrictionDetails.isNotEmpty) &&
+                itemsRequiredInfo &&
+                !isMissingITN
+            }
+            .assign(to: &$requiredInformationIsEntered)
     }
 
     func listenForInternationalTransactionNumberIsRequired() {
-         $itemsViewModels
+        $itnValidationError
+            .map { error -> Bool in
+                guard let error else {
+                    return false
+                }
+                if case .invalidFormat = error {
+                    return false
+                }
+                return true
+            }
+            .assign(to: &$isMissingITN)
+
+         let hsTariffNumberTotalValueDictionary = $itemsViewModels
             .map { childViewModels in
                 childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
             }
             .flatMap { childPublishers in
                 childPublishers.combineLatest()
             }
-            .sink { [weak self] values in
+            .map { values in
                 var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
                 for (hsTariffNumber, totalValuePerItem) in values.compacted() {
                     hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
                 }
-
-                self?.internationalTransactionNumberIsRequired = hsTariffNumberTotalValueDictionary.values.contains { $0 > 2500 }
+                return hsTariffNumberTotalValueDictionary
             }
-            .store(in: &cancellables)
+
+        $internationalTransactionNumber.combineLatest(
+            $itemsViewModels,
+            hsTariffNumberTotalValueDictionary,
+            $destinationCountryCode)
+        .map { input -> ITNValidationError? in
+            let (itn, items, hsTariffNumberTotalValueDictionary, countryCode) = input
+            guard itn.isEmpty else {
+                return itn.isValidITN ? nil : .invalidFormat
+            }
+
+            let totalItemValue = items.reduce(0, { sum, item in
+                sum + item.totalValue
+            })
+            if hsTariffNumberTotalValueDictionary.isEmpty,
+                totalItemValue > Constants.minimumValueForRequiredITN {
+                return .missingForTotalShipmentValue
+            }
+
+            guard let countryCode, countryCode != Constants.ITNNonRequiredDestination else {
+                return nil
+            }
+
+            if Constants.ITNRequiredDestinationForUSPS.contains(countryCode) {
+                return .missingForRequiredDestination
+            }
+
+            for (_, value) in hsTariffNumberTotalValueDictionary {
+                if value > Constants.minimumValueForRequiredITN {
+                    return .missingForTariffClass
+                }
+            }
+            return nil
+        }
+        .assign(to: &$itnValidationError)
     }
 
     func listenToItemsRequiredInformationValues() {
@@ -133,6 +177,54 @@ private extension WooShippingCustomsFormViewModel {
             return ""
         }
         return ServiceLocator.currencySettings.symbol(from: currencyCode)
+    }
+}
+
+private extension WooShippingCustomsFormViewModel {
+    enum Constants {
+        static let minimumValueForRequiredITN = Decimal(2500) // USD
+        static let ITNRequiredDestinationForUSPS = ["IR", "SY", "KP", "CU", "SD"]
+        static let ITNNonRequiredDestination = "CA"
+    }
+}
+
+extension WooShippingCustomsFormViewModel.ITNValidationError {
+    var message: String {
+        switch self {
+        case .invalidFormat:
+            Localization.itnInvalidFormat
+        case .missingForTariffClass:
+            Localization.itnRequiredForTariffClass
+        case .missingForTotalShipmentValue:
+            Localization.itnRequiredForTotalValue
+        case .missingForRequiredDestination:
+            Localization.itnRequiredForDestination
+        }
+    }
+
+    private enum Localization {
+        static let itnInvalidFormat = NSLocalizedString(
+            "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat",
+            value: "Please enter a valid ITN in one of these formats: X12345678901234, AES X12345678901234, or NOEEI 30.37(a).",
+            comment: "Message when the ITN field is invalid in the customs form of a shipping label"
+        )
+        static let itnRequiredForTariffClass = NSLocalizedString(
+            "wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass",
+            value: "International Transaction Number is required for shipping items " +
+            "valued over $2,500 per tariff number.",
+            comment: "Message when the ITN field is missing for a Tariff class in the customs form of a shipping label"
+        )
+        static let itnRequiredForTotalValue = NSLocalizedString(
+            "wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue",
+            value: "For shipments over $2,500, you need to obtain a 14-digit " +
+            "AES ITN for U.S. export reporting verification.",
+            comment: "Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500"
+        )
+        static let itnRequiredForDestination = NSLocalizedString(
+            "wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination",
+            value: "International Transaction Number is required for shipments to the destination country.",
+            comment: "Message when the ITN field is missing in the customs form of a shipping label to the given destination country"
+        )
     }
 }
 
@@ -247,6 +339,24 @@ extension WooShippingContentType {
             return .documents
         case .other:
             return .other
+        }
+    }
+}
+
+private extension String {
+    var isValidITN: Bool {
+        guard self.isNotEmpty else {
+            return true
+        }
+
+        let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+
+        do {
+            let regex = try NSRegularExpression(pattern: pattern)
+            let range = NSRange(self.startIndex..<self.endIndex, in: self)
+            return regex.firstMatch(in: self, options: [], range: range) != nil
+        } catch {
+            return false
         }
     }
 }

@@ -139,6 +139,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleCashPaymentTapped,
+            WooAnalyticsStat.pointOfSaleCashPaymentFailed,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,
@@ -146,13 +148,13 @@ private extension TracksProvider {
 
             // Card Reader Connection
             WooAnalyticsStat.cardReaderSelectTypeShown,
-            WooAnalyticsStat.cardReaderSelectTypeBuiltInTapped,
+            WooAnalyticsStat.cardReaderSelectTypeTapToPayTapped,
             WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
             WooAnalyticsStat.cardReaderDisconnectTapped,
-            WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect,
+            WooAnalyticsStat.manageCardReadersTapToPayReaderAutoDisconnect,
             WooAnalyticsStat.cardReaderAutomaticDisconnect,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,

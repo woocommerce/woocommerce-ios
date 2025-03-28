@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncErrorMessageView: View {
-    let viewModel: PointOfSaleOrderSyncErrorMessageViewModel
+    let message: String
+    let retryHandler: () -> Void
 
     var body: some View {
         HStack(alignment: .center) {
@@ -11,17 +12,17 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 POSErrorExclamationMark(size: .large)
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.title)
+                    Text(Localization.title)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
 
-                    Text(viewModel.message)
+                    Text(message)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posBodyLargeRegular())
                         .padding([.leading, .trailing])
                 }
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-                Button(viewModel.actionModel.title, action: viewModel.actionModel.handler)
+                Button(Localization.actionTitle, action: retryHandler)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)
@@ -42,7 +43,22 @@ private extension PointOfSaleOrderSyncErrorMessageView {
     }
 }
 
+private extension PointOfSaleOrderSyncErrorMessageView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "pointOfSale.orderSync.error.title",
+            value: "Couldn't load totals",
+            comment: "Title of the error when failing to synchronize order and calculate order totals"
+        )
+
+        static let actionTitle = NSLocalizedString(
+            "pointOfSale.orderSync.error.tryAgain",
+            value: "Try again",
+            comment: "Button title to retry synchronizing order and calculating order totals"
+        )
+    }
+}
+
 #Preview {
-    PointOfSaleOrderSyncErrorMessageView(viewModel: PointOfSaleOrderSyncErrorMessageViewModel(message: "An error happened!",
-                                                                                              handler: {}))
+    PointOfSaleOrderSyncErrorMessageView(message: "An error happened!") {}
 }

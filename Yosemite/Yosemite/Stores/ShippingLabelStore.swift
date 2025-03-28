@@ -87,7 +87,7 @@ public final class ShippingLabelStore: Store {
 }
 
 private extension ShippingLabelStore {
-    func synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         remote.loadShippingLabels(siteID: siteID, orderID: orderID) { [weak self] result in
             guard let self = self else { return }
 
@@ -99,7 +99,7 @@ private extension ShippingLabelStore {
                                                                  orderID: orderID,
                                                                  shippingLabels: response.shippingLabels,
                                                                  settings: response.settings) {
-                    completion(.success(()))
+                    completion(.success(response.shippingLabels))
                 }
             }
         }

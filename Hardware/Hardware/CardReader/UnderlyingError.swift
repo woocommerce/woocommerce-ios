@@ -161,8 +161,8 @@ public enum UnderlyingError: Error, Equatable {
 
     /// The phone must have a signed-in iCloud account in order to accept the TOS for the built in reader.
     /// The signed-in account does not need to be the one used to connect the reader.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
-    case appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderTOSAcceptanceRequiresiCloudSignIn
+    case tapToPayReaderTOSAcceptanceRequiresiCloudSignIn
 
     /// NFC is disabled on the device. This could be a permissions issue, in particular due to a device management profile.
     /// It's unlikely that the user can directly correct this issue
@@ -170,32 +170,32 @@ public enum UnderlyingError: Error, Equatable {
     case nfcDisabled
 
     /// Preparing Tap to Pay on iPhone failed. This is a retriable error
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderFailedToPrepare
-    case appleBuiltInReaderFailedToPrepare
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderFailedToPrepare
+    case tapToPayReaderFailedToPrepare
 
     /// The user cancelled Tap to Pay on iPhone Terms of Service acceptance
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceCanceled
-    case appleBuiltInReaderTOSAcceptanceCanceled
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderTOSAcceptanceCanceled
+    case tapToPayReaderTOSAcceptanceCanceled
 
     /// Tap to Pay on iPhone Terms of Service have not been accepted. This error is retriable
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSNotYetAccepted
-    case appleBuiltInReaderTOSNotYetAccepted
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderTOSNotYetAccepted
+    case tapToPayReaderTOSNotYetAccepted
 
     /// Tap to Pay on iPhone Terms of Service could not be accepted. This may indicate an issue with the Apple ID used.
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderTOSAcceptanceFailed
-    case appleBuiltInReaderTOSAcceptanceFailed
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderTOSAcceptanceFailed
+    case tapToPayReaderTOSAcceptanceFailed
 
     /// This (Stripe) merchant account cannot be used with Tap to Pay on iPhone as it has been blocked
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderMerchantBlocked
-    case appleBuiltInReaderMerchantBlocked
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderMerchantBlocked
+    case tapToPayReaderMerchantBlocked
 
     /// The merchant account is invalid and cannot be used with Tap to Pay on iPhone
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderInvalidMerchant
-    case appleBuiltInReaderInvalidMerchant
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderInvalidMerchant
+    case tapToPayReaderInvalidMerchant
 
     /// Tap to Pay on iPhone on this device cannot be used because it has been banned
-    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorAppleBuiltInReaderDeviceBanned
-    case appleBuiltInReaderDeviceBanned
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderDeviceBanned
+    case tapToPayReaderDeviceBanned
 
     /// The device does not meet the minimum requirements for using Tap to Pay on iPhone
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorUnsupportedMobileDeviceConfiguration
@@ -317,7 +317,7 @@ public enum UnderlyingError: Error, Equatable {
 
     /// The Apple built-in reader account is deactivated.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorTapToPayReaderAccountDeactivated
-    case appleBuiltInReaderAccountDeactivated
+    case tapToPayReaderAccountDeactivated
 
     /// The reader is missing encryption keys.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorReaderMissingEncryptionKeys
@@ -629,7 +629,7 @@ extension UnderlyingError: LocalizedError {
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the device does not have a passcode set.")
 
-        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
+        case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn:
             return NSLocalizedString("Please sign in to iCloud on this device to use Tap to Pay on iPhone.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the device is not signed in to iCloud.")
@@ -640,25 +640,25 @@ extension UnderlyingError: LocalizedError {
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the device's NFC chipset has been disabled by a device management policy.")
 
-        case .appleBuiltInReaderFailedToPrepare, .readerNotAccessibleInBackground:
+        case .tapToPayReaderFailedToPrepare, .readerNotAccessibleInBackground:
             return NSLocalizedString("There was an issue preparing to use Tap to Pay on iPhone – please try again.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "there was some issue with the connection. Retryable.")
 
-        case .appleBuiltInReaderTOSAcceptanceCanceled, .appleBuiltInReaderTOSNotYetAccepted:
+        case .tapToPayReaderTOSAcceptanceCanceled, .tapToPayReaderTOSNotYetAccepted:
             return NSLocalizedString("Please try again, and accept Apple's Terms of Service, so you can use Tap to " +
                                      "Pay on iPhone.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the merchant cancelled or did not complete the Terms of Service acceptance flow")
 
-        case .appleBuiltInReaderTOSAcceptanceFailed:
+        case .tapToPayReaderTOSAcceptanceFailed:
             return NSLocalizedString("Please check your Apple ID is valid, and then try again. A valid Apple ID is " +
                                      "required to accept Apple's Terms of Service.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the Terms of Service acceptance flow failed, possibly due to issues with " +
                                      "the Apple ID")
 
-        case .appleBuiltInReaderMerchantBlocked, .appleBuiltInReaderInvalidMerchant, .appleBuiltInReaderDeviceBanned:
+        case .tapToPayReaderMerchantBlocked, .tapToPayReaderInvalidMerchant, .tapToPayReaderDeviceBanned:
             return NSLocalizedString("Please contact support – there was an issue starting Tap to Pay on iPhone",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "there is an issue with the merchant account or device.")
@@ -861,9 +861,9 @@ extension UnderlyingError: LocalizedError {
                 comment: "Error message when Bluetooth reconnect has started."
             )
 
-        case .appleBuiltInReaderAccountDeactivated:
+        case .tapToPayReaderAccountDeactivated:
             return NSLocalizedString(
-                "hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated",
+                "hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated",
                 value: "The linked Apple ID account has been deactivated.",
                 comment: "Error message when the Apple built-in reader account is deactivated."
             )

@@ -37,6 +37,10 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var isReadyToShowErrorNotice = false
+
+    @State private var showingCustomsForm = false
+
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
@@ -56,7 +60,7 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if viewModel.state == .ready {
+                if viewModel.state == .ready && viewModel.hazmatNotice == nil {
                     expandableBottomSheet
                 }
             }
@@ -84,7 +88,11 @@ struct WooShippingCreateLabelsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
+            .sheet(isPresented: $showingCustomsForm) {
+                WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
+            }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
+            .notice($viewModel.hazmatNotice)
         }
     }
 }
@@ -97,9 +105,14 @@ private extension WooShippingCreateLabelsView {
                     WooShippingPostPurchaseView(viewModel: postPurchase)
                 }
 
+                if !viewModel.canViewLabel, let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
+                    WooShippingSplitShipmentsRow(viewModel: splitShipmentsViewModel)
+                }
+
                 WooShippingItems(viewModel: viewModel.items)
 
-                WooShippingHazmat(enabled: !viewModel.canViewLabel)
+                WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
+                                     enabled: !viewModel.canViewLabel)
 
                 WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                       customsFormViewModel: viewModel.customsFormViewModel)
@@ -194,34 +207,57 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            // Unverified notice for origin address
-            if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                addressVerificationNotice(with: originAddressUnverifiedNoticeLabel,
-                                          isVerified: false,
-                                          onDismiss: {
-                    withAnimation {
-                        viewModel.originAddressUnverifiedNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    viewModel.editSelectedOriginAddress()
-                })
-            }
+            if isReadyToShowErrorNotice {
+                // Unverified notice for origin address
+                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        viewModel.editSelectedOriginAddress()
+                    })
+                }
 
-            // Verification notice for destination address
-            if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
-                addressVerificationNotice(with: destinationAddressStatusNoticeLabel,
-                                          isVerified: isDestinationAddressVerified,
-                                          onDismiss: {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                },
-                                          onTap: {
-                    if !isDestinationAddressVerified {
-                        viewModel.editDestinationAddress()
-                    }
-                })
+                // Verification notice for destination address
+                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    verificationNotice(with: destinationAddressStatusNoticeLabel,
+                                       isVerified: isDestinationAddressVerified,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.destinationAddressStatusNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        if !isDestinationAddressVerified {
+                            viewModel.editDestinationAddress()
+                        }
+                    })
+                }
+
+                // Verification notice for missing ITN in customs form
+                if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
+                    verificationNotice(with: itnMissingNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.itnMissingNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        showingCustomsForm = true
+                    })
+                }
+            }
+        }
+        .onAppear {
+            /// A brief delay in requesting user attention after the UI loads
+            /// to avoid overwhelming them with too many changes at once when opening the screen.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.isReadyToShowErrorNotice = true
             }
         }
     }
@@ -406,12 +442,12 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
-    /// View showing a notice about an address verification status.
+    /// View showing a notice about a verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String,
-                                   isVerified: Bool,
-                                   onDismiss: @escaping () -> Void,
-                                   onTap: @escaping () -> Void) -> some View {
+    func verificationNotice(with label: String,
+                            isVerified: Bool,
+                            onDismiss: @escaping () -> Void,
+                            onTap: @escaping () -> Void) -> some View {
         HStack(spacing: 8) {
             Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
             Text(label)
@@ -426,7 +462,7 @@ private extension WooShippingCreateLabelsView {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-            .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+            .fill(Color(uiColor: isVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
         .onTapGesture(perform: onTap)
     }
 }

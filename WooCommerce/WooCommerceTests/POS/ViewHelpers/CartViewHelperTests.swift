@@ -74,16 +74,16 @@ struct CartViewHelperTests {
     }
 
     @Test func shouldShowClearCartButton_empty_cart_false() async throws {
-        #expect(sut.shouldShowClearCartButton(cart: [], orderStage: .building) == false)
-        #expect(sut.shouldShowClearCartButton(cart: [], orderStage: .finalizing) == false)
+        #expect(sut.shouldShowClearCartButton(cart: .init(), orderStage: .building) == false)
+        #expect(sut.shouldShowClearCartButton(cart: .init(), orderStage: .finalizing) == false)
     }
 
     @Test func shouldShowClearCartButton_items_in_cart_and_building_true() async throws {
-        #expect(sut.shouldShowClearCartButton(cart: [makeItem()], orderStage: .building) == true)
+        #expect(sut.shouldShowClearCartButton(cart: .init(items: [makeItem()]), orderStage: .building) == true)
     }
 
     @Test func shouldShowClearCartButton_items_in_cart_and_finalizing_false() async throws {
-        #expect(sut.shouldShowClearCartButton(cart: [makeItem()], orderStage: .finalizing) == false)
+        #expect(sut.shouldShowClearCartButton(cart: .init(items: [makeItem()]), orderStage: .finalizing) == false)
     }
 }
 

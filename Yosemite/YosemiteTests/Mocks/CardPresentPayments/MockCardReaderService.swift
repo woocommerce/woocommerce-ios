@@ -20,7 +20,7 @@ final class MockCardReaderService: CardReaderService {
         CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none).eraseToAnyPublisher()
     }
 
-    var builtInCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
+    var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> {
         PassthroughSubject<Void, Never>().eraseToAnyPublisher()
     }
 

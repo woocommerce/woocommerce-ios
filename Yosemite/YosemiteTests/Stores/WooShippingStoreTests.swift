@@ -214,7 +214,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                           orderID: self.sampleOrderID,
                                                           originAddress: WooShippingAddress.fake(),
                                                           destinationAddress: WooShippingAddress.fake(),
-                                                          packages: [ShippingLabelPackageSelected.fake()]) { result in
+                                                          packages: [ShippingLabelPackageSelected.fake()]) { _, result in
                 promise(result)
             }
             store.onAction(action)
@@ -239,7 +239,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                           orderID: self.sampleOrderID,
                                                           originAddress: WooShippingAddress.fake(),
                                                           destinationAddress: WooShippingAddress.fake(),
-                                                          packages: [ShippingLabelPackageSelected.fake()]) { result in
+                                                          packages: [ShippingLabelPackageSelected.fake()]) { _, result in
                 promise(result)
             }
             store.onAction(action)
@@ -249,6 +249,63 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_loadLabelRates_returns_sent_packages_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedRates = sampleLabelRates()
+        remote.whenLoadLabelRates(siteID: sampleSiteID, thenReturn: .success(expectedRates))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let samplePackage = ShippingLabelPackageSelected.fake().copy(id: "test_package",
+                                                                     boxID: "test_box_id",
+                                                                     length: 11,
+                                                                     width: 12,
+                                                                     height: 10)
+
+        // When
+        let receivedValue: [ShippingLabelPackageSelected] = waitFor { promise in
+            let action = WooShippingAction.loadLabelRates(siteID: self.sampleSiteID,
+                                                          orderID: self.sampleOrderID,
+                                                          originAddress: WooShippingAddress.fake(),
+                                                          destinationAddress: WooShippingAddress.fake(),
+                                                          packages: [samplePackage]) { packages, _ in
+                promise(packages)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(receivedValue, [samplePackage])
+    }
+
+    func test_loadLabelRates_returns_sent_packages_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+        remote.whenLoadLabelRates(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let samplePackage = ShippingLabelPackageSelected.fake().copy(id: "test_package",
+                                                                     boxID: "test_box_id",
+                                                                     length: 11,
+                                                                     width: 12,
+                                                                     height: 10)
+        // When
+        let receivedValue: [ShippingLabelPackageSelected] = waitFor { promise in
+            let action = WooShippingAction.loadLabelRates(siteID: self.sampleSiteID,
+                                                          orderID: self.sampleOrderID,
+                                                          originAddress: WooShippingAddress.fake(),
+                                                          destinationAddress: WooShippingAddress.fake(),
+                                                          packages: [samplePackage]) { packages, _ in
+                promise(packages)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(receivedValue, [samplePackage])
     }
 
     // MARK: `loadPackages`
@@ -786,6 +843,50 @@ final class WooShippingStoreTests: XCTestCase {
         }
 
 
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    // MARK: `loadConfig`
+
+    func test_loadConfig_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipment.fake()]])
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            let action = WooShippingAction.loadConfig(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actualConfig = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualConfig, expectedConfig)
+    }
+
+    func test_loadConfig_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            let action = WooShippingAction.loadConfig(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
 
         // Then
         let error = try XCTUnwrap(result.failure)

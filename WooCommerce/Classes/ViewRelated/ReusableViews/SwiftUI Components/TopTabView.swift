@@ -122,6 +122,11 @@ struct TopTabView<Content: View>: View {
                                             Color.clear.onAppear {
                                                 if index < tabWidths.count {
                                                     tabWidths[index] = geometry.size.width
+                                                } else if index < tabs.count {
+                                                    /// Since `tabWidths` was initialized as a state for this view
+                                                    /// it would not be updated again when `tabs` change.
+                                                    /// Append a new width when the number of tabs increases.
+                                                    tabWidths.append(geometry.size.width)
                                                 }
                                             }
                                         })

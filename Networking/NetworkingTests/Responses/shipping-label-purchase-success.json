@@ -9,7 +9,8 @@
             "service_name": "USPS - First Class Mail",
             "status": "PURCHASE_IN_PROGRESS",
             "package_name": "Test",
-            "product_names": ["Beanie"]
+            "product_names": ["Beanie"],
+            "id": "0"
         }],
         "success": true
     }

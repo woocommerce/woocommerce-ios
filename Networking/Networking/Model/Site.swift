@@ -208,6 +208,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     }
 }
 
+extension Site: Identifiable {
+    public var id: Int64 { siteID }
+}
+
 public extension Site {
     /// Whether the site is connected to Jetpack with Jetpack Connection Package, and not with Jetpack-the-plugin.
     ///

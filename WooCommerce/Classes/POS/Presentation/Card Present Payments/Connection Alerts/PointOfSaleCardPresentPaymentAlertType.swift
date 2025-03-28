@@ -24,6 +24,7 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
     case connectingFailedChargeReader(viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
     case connectingFailedUpdateAddress(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
     case connectingFailedUpdatePostalCode(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
+    case connectingFailedLocationRequired(viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel)
     case connectionSuccess(viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel)
 
     var onDismiss: (() -> Void)? {
@@ -62,6 +63,8 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
         case .connectingFailedUpdateAddress(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectingFailedUpdatePostalCode(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedLocationRequired(viewModel: let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectionSuccess(let viewModel):
             return viewModel.buttonViewModel.actionHandler

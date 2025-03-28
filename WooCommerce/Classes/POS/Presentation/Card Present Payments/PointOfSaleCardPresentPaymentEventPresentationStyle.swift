@@ -250,10 +250,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
         case .locationRequestPreAlert(let requestPermission):
             requestPermission()
             self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
-            /// Skip location required step and rely on error during the payment process until POS view is created, showing `Connecting to reader` underneath.
         case .locationRequired(let cancel):
-            cancel()
-            self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
+            self = .alert(.connectingFailedLocationRequired(
+                viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(
+                    cancelSearchAction: cancel)))
         }
     }
 }

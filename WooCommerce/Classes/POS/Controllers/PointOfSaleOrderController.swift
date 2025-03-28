@@ -18,7 +18,6 @@ import protocol WooFoundation.Analytics
 
 enum SyncOrderState {
     case newOrder
-    case orderUpdated
     case orderNotChanged
 }
 
@@ -75,27 +74,20 @@ protocol PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
-        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
-                                                               order: order,
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            if isNewOrder {
-                analytics.track(.orderCreationSuccess)
-                return .success(.newOrder)
-            } else {
-                return .success(.orderUpdated)
-            }
+            analytics.track(.orderCreationSuccess)
+            return .success(.newOrder)
         } catch {
-            if isNewOrder {
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
-                    usesGiftCard: false,
-                    errorContext: String(describing: error),
-                    errorDescription: error.localizedDescription))
-            }
+            self.order = nil
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                usesGiftCard: false,
+                errorContext: String(describing: error),
+                errorDescription: error.localizedDescription))
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }

@@ -10,18 +10,10 @@ struct WooShippingSplitShipmentsDetailView: View {
         NavigationView {
             VStack {
                 if viewModel.shipments.count > 1 {
-                    TopTabView(tabs: viewModel.topTabItems,
-                               showContent: false,
-                               selectedTabIndex: $viewModel.selectedShipmentIndex,
-                               tabsContainerHorizontalPadding: nil,
-                               selectedStateColor: .accentColor,
-                               unselectedStateColor: .secondary,
-                               selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
-                               tabPadding: Layout.tabPadding,
-                               tabsNameFont: Font.subheadline.bold(),
-                               tabsIconSize: nil,
-                               tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                               tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+                    VStack(spacing: 0) {
+                        topTabView
+                        Divider()
+                    }
                 }
 
                 ScrollView {
@@ -70,6 +62,36 @@ struct WooShippingSplitShipmentsDetailView: View {
 }
 
 private extension WooShippingSplitShipmentsDetailView {
+    var topTabView: some View {
+        HStack(spacing: 0) {
+            TopTabView(tabs: viewModel.topTabItems,
+                       showContent: false,
+                       showDividerBelowTabs: false,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       tabsContainerHorizontalPadding: nil,
+                       selectedStateColor: .accentColor,
+                       unselectedStateColor: .secondary,
+                       selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                       tabPadding: Layout.tabPadding,
+                       tabsNameFont: Font.subheadline.bold(),
+                       tabsIconSize: nil,
+                       tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            .overlay(alignment: .trailing) {
+                LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
+                    .frame(width: Layout.gradientViewWidth)
+                    .renderedIf(viewModel.selectedShipmentIndex < viewModel.topTabItems.count - 1)
+            }
+
+            Button {
+                // TODO: show delete menu
+            } label: {
+                Image(systemName: "ellipsis")
+                    .padding()
+            }
+        }
+    }
+
     var noticeStack: some View {
         VStack(spacing: Layout.contentPadding) {
             if let message = viewModel.instructions {
@@ -155,6 +177,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let tabItemContentHorizontalPadding: CGFloat = 16.0
         static let tabItemContentVerticalPadding: CGFloat = 9.0
         static let cornerRadius: CGFloat = 8
+        static let gradientViewWidth: CGFloat = 32
     }
 
     enum Localization {

@@ -42,3 +42,40 @@ private extension PointOfSalePaymentState {
         }
     }
 }
+
+// MARK: - Coupons
+
+enum CouponRowState: Equatable {
+    case idle
+    case validating
+    case valid(PointOfSaleCouponTotal)
+    case invalid
+}
+
+extension CartViewHelper {
+    func couponRowState(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        couponItem: CartCouponItem
+    ) -> CouponRowState {
+        guard orderStage == .finalizing else {
+            return .idle
+        }
+
+        switch orderState {
+        case .syncing:
+            return .validating
+        case .loaded(let totals):
+            if let couponTotal = totals.couponsTotals
+                .first(where: { $0.code == couponItem.code }) {
+                    return .valid(couponTotal)
+                } else {
+                    return .idle
+                }
+        case .error(.invalidCoupon, _):
+            return .invalid
+        default:
+            return .idle
+        }
+    }
+}

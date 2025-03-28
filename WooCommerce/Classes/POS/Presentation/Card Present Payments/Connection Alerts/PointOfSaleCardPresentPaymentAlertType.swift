@@ -19,6 +19,7 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
     case updateFailedNonRetryable(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel)
     case updateFailedLowBattery(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel)
     case connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel)
+    case connectingLocationPreAlert(viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel)
     case connectingFailed(viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel)
     case connectingFailedNonRetryable(viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel)
     case connectingFailedChargeReader(viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
@@ -53,6 +54,8 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
         case .updateFailedLowBattery(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectingToReader:
+            return nil
+        case .connectingLocationPreAlert:
             return nil
         case .connectingFailed(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler

@@ -246,10 +246,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             /// Not-yet supported types
         case .selectSearchType:
             return nil
-            /// Immediately request location permission until POS view is created, showing `Connecting to reader` underneath.
         case .locationRequestPreAlert(let requestPermission):
-            requestPermission()
-            self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
+            self = .alert(.connectingLocationPreAlert(
+                viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel(
+                    requestPermissionAction: requestPermission)))
         case .locationRequired(let cancel):
             self = .alert(.connectingFailedLocationRequired(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(

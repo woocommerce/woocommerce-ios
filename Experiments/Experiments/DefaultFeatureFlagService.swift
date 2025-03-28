@@ -94,7 +94,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .filterHistoryOnOrderAndProductLists:
             return true
         case .backgroundProductImageUpload:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .notificationSettings:
             return true
         case .allowMerchantAIAPIKey:

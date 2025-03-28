@@ -434,7 +434,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             enqueue(request, mapper: mapper, completion: completion)
         }
     }
-    
+
     /// Updates shipment for a given order
     /// - Parameters:
     ///   - siteID: Remote ID of the site.

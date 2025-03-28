@@ -4,9 +4,9 @@ import Codegen
 /// Response after updating shipments of an order
 ///
 public struct WooShippingUpdateShipmentResponse: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
-    public let shipments: [String: [WooShippingShipment]]
+    public let shipments: WooShippingShipments
 
-    public init(shipments: [String: [WooShippingShipment]]) {
+    public init(shipments: WooShippingShipments) {
         self.shipments = shipments
     }
 
@@ -16,13 +16,13 @@ public struct WooShippingUpdateShipmentResponse: Decodable, Equatable, Generated
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let shipments: [String: [WooShippingShipment]] = {
+        let shipments: WooShippingShipments = {
             guard let shipmentsString = try? container.decodeIfPresent(String.self, forKey: .data),
                   let data = shipmentsString.data(using: .utf8) else {
                 return [:]
             }
 
-            return (try? JSONDecoder().decode([String: [WooShippingShipment]].self, from: data)) ?? [:]
+            return (try? JSONDecoder().decode(WooShippingShipments.self, from: data)) ?? [:]
         }()
 
         self.init(shipments: shipments)

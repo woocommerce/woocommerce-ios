@@ -303,7 +303,7 @@ private extension WooShippingStore {
     func updateShipment(siteID: Int64,
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
-                        completion: @escaping (Result<[String: [WooShippingShipment]], Error>) -> Void) {
+                        completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
         remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate, completion: completion)
     }
 }

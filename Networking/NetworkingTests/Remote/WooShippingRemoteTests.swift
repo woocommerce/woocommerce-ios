@@ -682,7 +682,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "shipping-label-update-shipment")
 
         // When
-        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             remote.updateShipment(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
                                   shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -701,7 +701,7 @@ final class WooShippingRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "generic_error")
 
         // When
-        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             remote.updateShipment(siteID: self.sampleSiteID,
                                   orderID: self.sampleOrderID,
                                   shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in

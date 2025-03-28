@@ -32,7 +32,7 @@ public final class MediaUploadSessionManager: NSObject {
     private var backgroundCompletionHandler: (() -> Void)?
     weak var delegate: MediaUploadSessionManagerDelegate?
 
-    
+
     public init(sessionIdentifier: String? = nil) {
         // Use bundle based identifiers as suggested here
         // https://www.avanderlee.com/swift/urlsession-common-pitfalls-with-background-download-upload-tasks/#bundle-based-identifiers

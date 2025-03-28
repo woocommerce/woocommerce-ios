@@ -4437,6 +4437,39 @@ extension Networking.WooShippingShipment {
     }
 }
 
+extension Networking.WooShippingUpdateShipment {
+    public func copy(
+        shipmentIdsToUpdate: CopiableProp<[String]> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy
+    ) -> Networking.WooShippingUpdateShipment {
+        let shipmentIdsToUpdate = shipmentIdsToUpdate ?? self.shipmentIdsToUpdate
+        let shipments = shipments ?? self.shipments
+
+        return Networking.WooShippingUpdateShipment(
+            shipmentIdsToUpdate: shipmentIdsToUpdate,
+            shipments: shipments
+        )
+    }
+}
+
+extension Networking.WooShippingUpdateShipmentResponse {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy
+    ) -> Networking.WooShippingUpdateShipmentResponse {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let shipments = shipments ?? self.shipments
+
+        return Networking.WooShippingUpdateShipmentResponse(
+            siteID: siteID,
+            orderID: orderID,
+            shipments: shipments
+        )
+    }
+}
+
 extension Networking.WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

@@ -83,6 +83,7 @@ protocol PointOfSaleOrderControllerProtocol {
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
+            self.order = nil
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
                 usesGiftCard: false,
                 errorContext: String(describing: error),

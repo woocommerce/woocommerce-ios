@@ -82,8 +82,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     @Published var starredCarriersPackages: Set<String> = []
     @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
     private var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
-    var selectedCarrierTab: WooShippingCarrierPackages {
-        carrierPackages[selectedCarriersTabIndex]
+    var selectedCarrierTab: WooShippingCarrierPackages? {
+        carrierPackages[safe: selectedCarriersTabIndex]
     }
     var selectedCarriersPackage: WooShippingPackageDataRepresentable? {
         guard let selectedCarriersPackageId else { return nil }

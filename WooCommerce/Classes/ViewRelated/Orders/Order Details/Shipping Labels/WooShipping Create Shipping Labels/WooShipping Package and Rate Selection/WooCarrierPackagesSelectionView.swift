@@ -119,16 +119,18 @@ struct WooCarrierPackagesSelectionView: View {
                 emptyStateView
             }
 
-            WooCarrierPackagesView(carrierTab: viewModel.selectedCarrierTab,
-                                   selectedPackageId: $viewModel.selectedCarriersPackageId,
-                                   starredPackages: $viewModel.starredCarriersPackages,
-                                   tapAction: { packageID in
-                viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
-            }, starAction: { packageID in
-                viewModel.starUnstarPackage(packageID, carrierID: viewModel.selectedCarrierTab.carrier.rawValue)
-            }, onRefresh: {
-                await viewModel.loadPackages()
-            })
+            if let selectedCarrierTab = viewModel.selectedCarrierTab {
+                WooCarrierPackagesView(carrierTab: selectedCarrierTab,
+                                       selectedPackageId: $viewModel.selectedCarriersPackageId,
+                                       starredPackages: $viewModel.starredCarriersPackages,
+                                       tapAction: { packageID in
+                    viewModel.selectedCarriersPackageId = viewModel.selectedCarriersPackageId == packageID ? nil : packageID
+                }, starAction: { packageID in
+                    viewModel.starUnstarPackage(packageID, carrierID: selectedCarrierTab.carrier.rawValue)
+                }, onRefresh: {
+                    await viewModel.loadPackages()
+                })
+            }
             Spacer()
             Divider()
             Button(selectionButtonText) {

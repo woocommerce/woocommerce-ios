@@ -77,8 +77,10 @@ final class EditableOrderViewModel: ObservableObject {
         switch flow {
         case .creation: // Creation can be dismissed when there aren't changes pending to commit.
             return !hasChanges
-        case .editing: // Editing can always be dismissed because changes are committed instantly.
-            return true
+        case .editing:
+            // In a single-view layout: Editing can always be dismissed because changes are committed instantly.
+            // In a split-view layout: Editing can be dismissed when there aren't product changes pending to recalculate.
+            return !(selectionSyncApproach == .onRecalculateButtonTap && syncRequired)
         }
     }
 

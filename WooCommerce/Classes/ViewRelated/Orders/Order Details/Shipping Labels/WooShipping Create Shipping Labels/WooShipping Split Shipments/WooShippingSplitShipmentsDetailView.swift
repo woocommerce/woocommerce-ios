@@ -83,12 +83,24 @@ private extension WooShippingSplitShipmentsDetailView {
                     .renderedIf(viewModel.selectedShipmentIndex < viewModel.topTabItems.count - 1)
             }
 
-            Button {
-                // TODO: show delete menu
-            } label: {
-                Image(systemName: "ellipsis")
-                    .padding()
+            removeShipmentMenu
+        }
+    }
+
+    var removeShipmentMenu: some View {
+        Menu {
+            ForEach(viewModel.topTabItems, id: \.name) { tab in
+                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat, tab.name.lowercased())) {
+                    // TODO
+                }
             }
+            Divider()
+            Button(Localization.mergeAll) {
+                // TODO
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .padding()
         }
     }
 
@@ -200,6 +212,17 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
             "wooShippingSplitShipmentsDetailView.undo",
             value: "Undo",
             comment: "Button to revert moving items between shipments in the shipping label creation flow"
+        )
+        static let removeShipmentFormat = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.removeShipmentFormat",
+            value: "Remove %1$@",
+            comment: "Button to remove a shipment in the shipping label creation flow. " +
+            "The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'."
+        )
+        static let mergeAll = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.mergeAll",
+            value: "Merge all unfulfilled"",
+            comment: "Button to merge all unfulfilled shipments in the shipping label creation flow."
         )
     }
 }

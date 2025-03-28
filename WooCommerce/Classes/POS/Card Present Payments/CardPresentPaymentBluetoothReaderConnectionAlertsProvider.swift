@@ -108,7 +108,7 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
         .locationRequestPreAlert(requestPermission: requestPermission)
     }
 
-    func locationRequired(dismiss: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .locationRequired(dismiss: dismiss)
+    func locationRequired(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .locationRequired(cancel: cancel)
     }
 }

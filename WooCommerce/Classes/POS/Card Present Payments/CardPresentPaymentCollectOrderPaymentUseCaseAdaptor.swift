@@ -161,8 +161,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             done()
         case .locationRequestPreAlert:
             return
-        case .locationRequired(let dismiss):
-            dismiss()
+        case .locationRequired(let cancel):
+            cancel()
         }
     }
 }

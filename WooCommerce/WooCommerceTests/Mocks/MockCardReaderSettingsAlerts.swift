@@ -182,9 +182,9 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func locationRequired(dismiss: @escaping () -> Void) -> any AlertDetails {
+    func locationRequired(cancel: @escaping () -> Void) -> any AlertDetails {
         if let onLocationRequired {
-            onLocationRequired(dismiss)
+            onLocationRequired(cancel)
         }
         return MockCardPresentPaymentsModalViewModel()
     }

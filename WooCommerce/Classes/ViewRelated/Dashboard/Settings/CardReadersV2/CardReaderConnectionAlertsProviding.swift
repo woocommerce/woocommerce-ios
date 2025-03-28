@@ -65,9 +65,9 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> AlertDetails
 
     /// Shows a modal requiring location permissions to proceed
-    /// Dismissal will cancel the connection and payment flow.
+    /// Cancellation will cancel the connection and payment flow.
     ///
-    func locationRequired(dismiss: @escaping () -> Void) -> AlertDetails
+    func locationRequired(cancel: @escaping () -> Void) -> AlertDetails
 }
 
 

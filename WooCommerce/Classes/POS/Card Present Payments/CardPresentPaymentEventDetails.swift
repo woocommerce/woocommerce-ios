@@ -56,5 +56,5 @@ enum CardPresentPaymentEventDetails {
     case validatingOrder(cancelPayment: () -> Void)
 
     case locationRequestPreAlert(requestPermission: () -> Void)
-    case locationRequired(dismiss: () -> Void)
+    case locationRequired(cancel: () -> Void)
 }

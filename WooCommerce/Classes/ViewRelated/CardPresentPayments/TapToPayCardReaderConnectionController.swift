@@ -376,11 +376,6 @@ private extension TapToPayCardReaderConnectionController {
                     guard let self else { return }
                     locationService.stopObservingPermissionChanges()
                     state = .cancel(.locationPermissionDenied)
-                },
-                skip: { [weak self] in
-                    guard let self else { return }
-                    locationService.stopObservingPermissionChanges()
-                    state = .connectToReader
                 }
             ))
         case .notDetermined:

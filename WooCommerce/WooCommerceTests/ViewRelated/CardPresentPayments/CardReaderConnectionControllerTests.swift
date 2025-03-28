@@ -536,54 +536,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.foundReader, source)
     }
 
-    func test_seachAndConnect_when_locationDenied_and_skipped_to_connect() {
-        // Given
-        let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [],
-            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
-            sessionManager: SessionManager.testingInstance,
-            storageManager: storageManager
-        )
-
-        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
-        let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
-        let mockLocationService = MockLocationService(status: .denied)
-        mockAlerts.onLocationRequired = { _, skip in
-            skip()
-        }
-
-        let controller = CardReaderConnectionController(
-            forSiteID: sampleSiteID,
-            storageManager: storageManager,
-            stores: mockStoresManager,
-            knownReaderProvider: mockKnownReaderProvider,
-            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
-            alertsProvider: mockAlerts,
-            configuration: Mocks.configuration,
-            analyticsTracker: .init(configuration: Mocks.configuration,
-                                    siteID: sampleSiteID,
-                                    connectionType: .userInitiated,
-                                    stores: mockStoresManager,
-                                    analytics: analytics),
-            locationService: mockLocationService
-        )
-
-        // When
-        let connectionResult: CardReaderConnectionResult = waitFor { promise in
-            controller.searchAndConnect() { result in
-                if case .success(let connectionResult) = result {
-                    promise(connectionResult)
-                }
-            }
-        }
-
-        // Then
-        guard case .connected(let reader) = connectionResult else {
-            return XCTFail("Expected reader to be connected")
-        }
-        assertEqual(MockCardReader.bbposChipper2XBT(), reader)
-    }
-
     func test_seachAndConnect_when_locationNotDetermined_and_later_authorized() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -650,7 +602,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             requestPermission()
         }
 
-        mockAlerts.onLocationRequired = { dismiss, _ in
+        mockAlerts.onLocationRequired = { dismiss in
             dismiss()
         }
 

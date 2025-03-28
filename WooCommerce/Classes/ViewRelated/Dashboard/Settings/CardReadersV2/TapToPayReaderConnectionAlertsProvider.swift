@@ -73,8 +73,7 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
         CardPresentModalLocationPreAlert(requestPermission: requestPermission)
     }
 
-    func locationRequired(dismiss: @escaping () -> Void,
-                          skip: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func locationRequired(dismiss: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalLocationRequired(dismiss: dismiss)
     }
 }

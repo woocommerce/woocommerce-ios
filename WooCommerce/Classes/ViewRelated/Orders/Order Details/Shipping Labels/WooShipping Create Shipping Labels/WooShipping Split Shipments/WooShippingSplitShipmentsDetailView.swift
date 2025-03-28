@@ -96,7 +96,7 @@ private extension WooShippingSplitShipmentsDetailView {
             }
             Divider()
             Button(Localization.mergeAll) {
-                // TODO
+                viewModel.mergeAllUnfulfilledShipments()
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -221,7 +221,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         )
         static let mergeAll = NSLocalizedString(
             "wooShippingSplitShipmentsDetailView.mergeAll",
-            value: "Merge all unfulfilled"",
+            value: "Merge all unfulfilled",
             comment: "Button to merge all unfulfilled shipments in the shipping label creation flow."
         )
     }

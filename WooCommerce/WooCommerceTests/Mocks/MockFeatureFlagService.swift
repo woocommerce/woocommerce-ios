@@ -23,6 +23,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var favoriteProducts: Bool
     var isProductGlobalUniqueIdentifierSupported: Bool
     var hideSitesInStorePicker: Bool
+    var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
     var allowMerchantAIAPIKey: Bool
 
@@ -47,6 +48,7 @@ final class MockFeatureFlagService: FeatureFlagService {
          favoriteProducts: Bool = false,
          isProductGlobalUniqueIdentifierSupported: Bool = false,
          hideSitesInStorePicker: Bool = false,
+         backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
          allowMerchantAIAPIKey: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -70,6 +72,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.favoriteProducts = favoriteProducts
         self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
         self.hideSitesInStorePicker = hideSitesInStorePicker
+        self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
     }
@@ -118,6 +121,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isProductGlobalUniqueIdentifierSupported
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
+        case .backgroundProductImageUpload:
+            return backgroundProductImageUpload
         case .notificationSettings:
             return notificationSettings
         case .allowMerchantAIAPIKey:

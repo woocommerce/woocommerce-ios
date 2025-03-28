@@ -289,7 +289,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let order = makeOrder()
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
-        insert(shippingLabel: refundedShippingLabel)
+        insert(shippingLabel: refundedShippingLabel, order: order)
 
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
@@ -306,9 +306,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
-        insert(shippingLabel: shippingLabel)
+        order = order.copy(shippingLabels: [shippingLabel])
+        insert(shippingLabel: shippingLabel, order: order)
 
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
@@ -356,9 +357,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
-        insert(shippingLabel: shippingLabel)
+        order = order.copy(shippingLabels: [shippingLabel])
+        insert(shippingLabel: shippingLabel, order: order)
 
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
@@ -451,9 +453,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
-        insert(shippingLabel: refundedShippingLabel)
+        order = order.copy(shippingLabels: [refundedShippingLabel])
+        insert(shippingLabel: refundedShippingLabel, order: order)
 
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
         dataSource.isEligibleForShippingLabelCreation = true
@@ -944,9 +947,12 @@ private extension OrderDetailsDataSourceTests {
         storageFee.order = storageOrder
     }
 
-    /// Inserts the shipping label into storage
+    /// Inserts the shipping label into storage, and then shipping label into order
     ///
-    func insert(shippingLabel: ShippingLabel) {
+    func insert(shippingLabel: ShippingLabel, order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+
         let storageShippingLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
         storageShippingLabel.update(with: shippingLabel)
         if let shippingLabelRefund = shippingLabel.refund {
@@ -954,6 +960,7 @@ private extension OrderDetailsDataSourceTests {
             storageRefund.update(with: shippingLabelRefund)
             storageShippingLabel.refund = storageRefund
         }
+        storageShippingLabel.order = storageOrder
     }
 
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {

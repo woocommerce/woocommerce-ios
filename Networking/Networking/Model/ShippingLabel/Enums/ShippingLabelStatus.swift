@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// The status of shipping label.
-public enum ShippingLabelStatus: GeneratedFakeable {
+public enum ShippingLabelStatus: Sendable, GeneratedFakeable {
     case purchased
     case purchaseError
     case purchaseInProgress

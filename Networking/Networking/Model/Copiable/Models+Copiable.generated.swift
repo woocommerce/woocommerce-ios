@@ -1395,7 +1395,8 @@ extension Networking.Order {
         customFields: CopiableProp<[MetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
-        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy
+        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy,
+        shippingLabels: CopiableProp<[ShippingLabel]> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -1435,6 +1436,7 @@ extension Networking.Order {
         let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
         let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
         let attributionInfo = attributionInfo ?? self.attributionInfo
+        let shippingLabels = shippingLabels ?? self.shippingLabels
 
         return Networking.Order(
             siteID: siteID,
@@ -1474,7 +1476,8 @@ extension Networking.Order {
             customFields: customFields,
             renewalSubscriptionID: renewalSubscriptionID,
             appliedGiftCards: appliedGiftCards,
-            attributionInfo: attributionInfo
+            attributionInfo: attributionInfo,
+            shippingLabels: shippingLabels
         )
     }
 }
@@ -1870,6 +1873,51 @@ extension Networking.OrderTaxLine {
             totalTax: totalTax,
             totalShippingTax: totalShippingTax,
             ratePercent: ratePercent,
+            attributes: attributes
+        )
+    }
+}
+
+extension Networking.POSProduct {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productTypeKey: CopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        regularPrice: NullableCopiableProp<String> = .copy,
+        salePrice: NullableCopiableProp<String> = .copy,
+        onSale: CopiableProp<Bool> = .copy,
+        images: CopiableProp<[ProductImage]> = .copy,
+        attributes: CopiableProp<[ProductAttribute]> = .copy
+    ) -> Networking.POSProduct {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let name = name ?? self.name
+        let productTypeKey = productTypeKey ?? self.productTypeKey
+        let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
+        let price = price ?? self.price
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let onSale = onSale ?? self.onSale
+        let images = images ?? self.images
+        let attributes = attributes ?? self.attributes
+
+        return Networking.POSProduct(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            productTypeKey: productTypeKey,
+            sku: sku,
+            globalUniqueID: globalUniqueID,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            images: images,
             attributes: attributes
         )
     }

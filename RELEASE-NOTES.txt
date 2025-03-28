@@ -5,6 +5,7 @@
 -----
 - [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
 
 22.0
 -----

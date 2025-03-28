@@ -854,7 +854,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_loadConfig_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipment.fake()]])
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipmentItem.fake()]])
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -899,12 +899,12 @@ final class WooShippingStoreTests: XCTestCase {
     func test_updateShipment_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expected = ["0": [WooShippingShipment.fake()]]
+        let expected = ["0": [WooShippingShipmentItem.fake()]]
         remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .success(expected))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
@@ -926,7 +926,7 @@ final class WooShippingStoreTests: XCTestCase {
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[String: [WooShippingShipment]], Error> = waitFor { promise in
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
             let action = WooShippingAction.updateShipment(siteID: self.sampleSiteID,
                                                           orderID: self.sampleOrderID,
                                                           shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in

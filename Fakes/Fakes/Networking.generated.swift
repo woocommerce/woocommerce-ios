@@ -2978,10 +2978,10 @@ extension Networking.WooShippingSavedPredefinedPackage {
         )
     }
 }
-extension Networking.WooShippingShipment {
+extension Networking.WooShippingShipmentItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingShipment {
+    public static func fake() -> Networking.WooShippingShipmentItem {
         .init(
             id: .fake(),
             subItems: .fake()

@@ -5,7 +5,7 @@ import Foundation
 struct WooShippingUpdateShipmentMapper: Mapper {
     /// (Attempts) to convert a dictionary into a dictionary of `WooShippingShipment` values.
     ///
-    func map(response: Data) throws -> [String: [WooShippingShipment]] {
+    func map(response: Data) throws -> WooShippingShipments {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             return try decoder.decode(WooShippingUpdateShipmentResponseEnvelope.self, from: response).data.shipments

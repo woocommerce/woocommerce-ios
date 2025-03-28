@@ -38,7 +38,7 @@ private extension WooShippingUpdateShipmentMapperTests {
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `filename` (Data Encoded)
     ///
-    func mapShippingLabelConfig(from filename: String) -> [String: [WooShippingShipment]]? {
+    func mapShippingLabelConfig(from filename: String) -> WooShippingShipments? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -48,13 +48,13 @@ private extension WooShippingUpdateShipmentMapperTests {
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `shipping-label-update-shipment`
     ///
-    func mapLoadShippingLabelConfig() -> [String: [WooShippingShipment]]? {
+    func mapLoadShippingLabelConfig() -> WooShippingShipments? {
         mapShippingLabelConfig(from: "shipping-label-update-shipment")
     }
 
     /// Returns the `WooShippingUpdateShipmentMapper` output upon receiving `shipping-label-update-shipment-without-data`
     ///
-    func mapLoadShippingLabelConfigWithoutDataEnvelope() -> [String: [WooShippingShipment]]? {
+    func mapLoadShippingLabelConfigWithoutDataEnvelope() -> WooShippingShipments? {
         mapShippingLabelConfig(from: "shipping-label-update-shipment-without-data")
     }
 }

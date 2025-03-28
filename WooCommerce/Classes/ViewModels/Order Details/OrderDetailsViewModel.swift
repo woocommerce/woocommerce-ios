@@ -267,26 +267,33 @@ extension OrderDetailsViewModel {
             // the order sync group to ensure the UI shows the latest data
             group.enter()
             Task { @MainActor [weak self] in
-                defer {
-                    group.leave()
-                }
+                guard let self else { return}
+
                 // Check Woo Shipping support first, to ensure correct flows are enabled for shipping labels.
-                self?.dataSource.isEligibleForWooShipping = ((await self?.isWooShippingSupported()) != nil)
+                dataSource.isEligibleForWooShipping = await isWooShippingSupported()
 
-                // Check creation eligibility
-                let isEligible = await self?.checkShippingLabelCreationEligibility()
-                self?.dataSource.isEligibleForShippingLabelCreation = isEligible ?? false
+                await withTaskGroup(of: Void.self) { taskGroup in
 
-                // Sync shipping labels and update order with the result if available
-                if let shippingLabels = await self?.syncShippingLabels() {
-                    // Update the order with the newly synced shipping labels
-                    if let updatedOrder = self?.order.copy(shippingLabels: shippingLabels) {
-                        self?.update(order: updatedOrder)
+                    taskGroup.addTask { [weak self] in
+                        guard let self else { return }
+                        // Check creation eligibility
+                        let isEligible = await checkShippingLabelCreationEligibility()
+                        dataSource.isEligibleForShippingLabelCreation = isEligible
+                    }
+
+                    taskGroup.addTask { [weak self] in
+                        guard let self else { return }
+                        // Sync shipping labels and update order with the result if available
+                        let shippingLabels = await syncShippingLabels()
+                        // Update the order with the newly synced shipping labels
+                        let updatedOrder = order.copy(shippingLabels: shippingLabels)
+                        update(order: updatedOrder)
                     }
                 }
 
                 // Reload UI after shipping labels are synced
                 onReloadSections?()
+                group.leave()
             }
         }
 
@@ -690,10 +697,10 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
-    func syncShippingLabels() async -> [ShippingLabel]? {
+    @discardableResult
+    @MainActor func syncShippingLabels() async -> [ShippingLabel] {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
-            return nil
+            return []
         }
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
@@ -708,7 +715,7 @@ extension OrderDetailsViewModel {
                         } else {
                             DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                         }
-                        continuation.resume(returning: nil)
+                        continuation.resume(returning: [])
                 }
             })
         }

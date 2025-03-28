@@ -3009,6 +3009,27 @@ extension Networking.WooShippingShipment {
         )
     }
 }
+extension Networking.WooShippingUpdateShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipment {
+        .init(
+            shipmentIdsToUpdate: .fake(),
+            shipments: .fake()
+        )
+    }
+}
+extension Networking.WooShippingUpdateShipmentResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipmentResponse {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            shipments: .fake()
+        )
+    }
+}
 extension Networking.WordPressMedia {
     /// Returns a "ready to use" type filled with fake values.
     ///

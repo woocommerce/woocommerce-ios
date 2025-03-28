@@ -339,7 +339,7 @@ private extension OrderDetailsViewController {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            viewController.modalPresentationStyle = .overFullScreen
+            viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
         } else {
             let navController = UINavigationController(rootViewController: viewController)
@@ -459,7 +459,7 @@ private extension OrderDetailsViewController {
             }
         })
         let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
-        shippingLabelCreationVC.modalPresentationStyle = .overFullScreen
+        shippingLabelCreationVC.modalPresentationStyle = .fullScreen
         navigationController?.present(shippingLabelCreationVC, animated: true)
     }
 

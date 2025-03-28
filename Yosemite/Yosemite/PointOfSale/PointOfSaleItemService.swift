@@ -102,7 +102,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     // Maps result to POSItem, and populate the output with:
     // - Formatted price based on store's currency settings.
     // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
+    private func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {
         return products.compactMap { product in
             let thumbnailSource = product.images.first?.src
 

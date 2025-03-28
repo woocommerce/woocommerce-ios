@@ -202,11 +202,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
     /// - productTypes: A list of product types to be included in the results.
-    /// - pageNumber: Number of page that should be retrieved.
+    /// - pageNumber: Index of page that should be retrieved.
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           pageNumber: Int = 1) async throws -> PagedItems<Product> {
+                                           pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
@@ -224,7 +224,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                      path: Path.products,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<POSProduct>(siteID: siteID)
 
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 

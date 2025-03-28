@@ -1311,6 +1311,51 @@ extension Networking.NoteRange {
     }
 }
 
+extension Networking.NotificationSettings {
+    public func copy(
+        blogs: CopiableProp<[NotificationSettings.Blog]> = .copy
+    ) -> Networking.NotificationSettings {
+        let blogs = blogs ?? self.blogs
+
+        return Networking.NotificationSettings(
+            blogs: blogs
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Blog {
+    public func copy(
+        blogID: CopiableProp<Int64> = .copy,
+        devices: CopiableProp<[NotificationSettings.Device]> = .copy
+    ) -> Networking.NotificationSettings.Blog {
+        let blogID = blogID ?? self.blogID
+        let devices = devices ?? self.devices
+
+        return Networking.NotificationSettings.Blog(
+            blogID: blogID,
+            devices: devices
+        )
+    }
+}
+
+extension Networking.NotificationSettings.Device {
+    public func copy(
+        deviceID: CopiableProp<Int64> = .copy,
+        newComment: CopiableProp<Bool> = .copy,
+        storeOrder: CopiableProp<Bool> = .copy
+    ) -> Networking.NotificationSettings.Device {
+        let deviceID = deviceID ?? self.deviceID
+        let newComment = newComment ?? self.newComment
+        let storeOrder = storeOrder ?? self.storeOrder
+
+        return Networking.NotificationSettings.Device(
+            deviceID: deviceID,
+            newComment: newComment,
+            storeOrder: storeOrder
+        )
+    }
+}
+
 extension Networking.Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1350,7 +1395,8 @@ extension Networking.Order {
         customFields: CopiableProp<[MetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
-        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy
+        attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy,
+        shippingLabels: CopiableProp<[ShippingLabel]> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -1390,6 +1436,7 @@ extension Networking.Order {
         let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
         let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
         let attributionInfo = attributionInfo ?? self.attributionInfo
+        let shippingLabels = shippingLabels ?? self.shippingLabels
 
         return Networking.Order(
             siteID: siteID,
@@ -1429,7 +1476,8 @@ extension Networking.Order {
             customFields: customFields,
             renewalSubscriptionID: renewalSubscriptionID,
             appliedGiftCards: appliedGiftCards,
-            attributionInfo: attributionInfo
+            attributionInfo: attributionInfo,
+            shippingLabels: shippingLabels
         )
     }
 }
@@ -1825,6 +1873,51 @@ extension Networking.OrderTaxLine {
             totalTax: totalTax,
             totalShippingTax: totalShippingTax,
             ratePercent: ratePercent,
+            attributes: attributes
+        )
+    }
+}
+
+extension Networking.POSProduct {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productTypeKey: CopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        regularPrice: NullableCopiableProp<String> = .copy,
+        salePrice: NullableCopiableProp<String> = .copy,
+        onSale: CopiableProp<Bool> = .copy,
+        images: CopiableProp<[ProductImage]> = .copy,
+        attributes: CopiableProp<[ProductAttribute]> = .copy
+    ) -> Networking.POSProduct {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let name = name ?? self.name
+        let productTypeKey = productTypeKey ?? self.productTypeKey
+        let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
+        let price = price ?? self.price
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let onSale = onSale ?? self.onSale
+        let images = images ?? self.images
+        let attributes = attributes ?? self.attributes
+
+        return Networking.POSProduct(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            productTypeKey: productTypeKey,
+            sku: sku,
+            globalUniqueID: globalUniqueID,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            images: images,
             attributes: attributes
         )
     }
@@ -3232,7 +3325,8 @@ extension Networking.ShippingLabelPurchase {
         refundableAmount: CopiableProp<Double> = .copy,
         status: CopiableProp<ShippingLabelStatus> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
-        productNames: CopiableProp<[String]> = .copy
+        productNames: CopiableProp<[String]> = .copy,
+        shipmentID: NullableCopiableProp<String> = .copy
     ) -> Networking.ShippingLabelPurchase {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3246,6 +3340,7 @@ extension Networking.ShippingLabelPurchase {
         let status = status ?? self.status
         let productIDs = productIDs ?? self.productIDs
         let productNames = productNames ?? self.productNames
+        let shipmentID = shipmentID ?? self.shipmentID
 
         return Networking.ShippingLabelPurchase(
             siteID: siteID,
@@ -3259,7 +3354,8 @@ extension Networking.ShippingLabelPurchase {
             refundableAmount: refundableAmount,
             status: status,
             productIDs: productIDs,
-            productNames: productNames
+            productNames: productNames,
+            shipmentID: shipmentID
         )
     }
 }
@@ -4128,6 +4224,36 @@ extension Networking.WooShippingAddress {
     }
 }
 
+extension Networking.WooShippingConfig {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy,
+        shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
+    ) -> Networking.WooShippingConfig {
+        let siteID = siteID ?? self.siteID
+        let shipments = shipments ?? self.shipments
+        let shippingLabelData = shippingLabelData ?? self.shippingLabelData
+
+        return Networking.WooShippingConfig(
+            siteID: siteID,
+            shipments: shipments,
+            shippingLabelData: shippingLabelData
+        )
+    }
+}
+
+extension Networking.WooShippingConfigResponse {
+    public func copy(
+        config: CopiableProp<WooShippingConfig> = .copy
+    ) -> Networking.WooShippingConfigResponse {
+        let config = config ?? self.config
+
+        return Networking.WooShippingConfigResponse(
+            config: config
+        )
+    }
+}
+
 extension Networking.WooShippingCreatePackageResponse {
     public func copy(
         customPackages: CopiableProp<[WooShippingCustomPackage]> = .copy,
@@ -4340,6 +4466,21 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingShipment {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        subItems: NullableCopiableProp<[String]> = .copy
+    ) -> Networking.WooShippingShipment {
+        let id = id ?? self.id
+        let subItems = subItems ?? self.subItems
+
+        return Networking.WooShippingShipment(
+            id: id,
+            subItems: subItems
         )
     }
 }

@@ -31,11 +31,11 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding,
+final class CollectOrderPaymentUseCase<TapToPayAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
     NSObject, CollectOrderPaymentProtocol
-where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
+where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
       BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter
     ///
@@ -199,7 +199,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
-        case .appleBuiltIn:
+        case .tapToPay:
             return tapToPayAlertsProvider
         default:
             return bluetoothAlertsProvider
@@ -312,7 +312,7 @@ private extension CollectOrderPaymentUseCase {
                     for: self.order,
                     orderTotal: orderTotal,
                     paymentGatewayAccount: paymentGatewayAccount,
-                    paymentMethodTypes: self.configuration.paymentMethods.map(\.rawValue),
+                    paymentMethodTypes: self.configuration.paymentMethods,
                     stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
                     channel: channel,
                     onPreparingReader: { [weak self] in

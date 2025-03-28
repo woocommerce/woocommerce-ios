@@ -6,8 +6,14 @@ import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
+enum ItemType {
+    case products
+    case coupons
+}
+
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
+    ///
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
     func loadItems(base: ItemListBaseItem) async
@@ -16,6 +22,8 @@ protocol PointOfSaleItemsControllerProtocol {
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
 }
+
+
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
@@ -141,7 +149,7 @@ protocol PointOfSaleItemsControllerProtocol {
                                                  parentItem: parent,
                                                  pageNumber: pageNumber,
                                                  appendToExistingItems: appendToExistingItems)
-        case .simpleProduct, .variation:
+        case .simpleProduct, .variation, .coupon:
             assertionFailure("Unsupported parent type for loading child items: \(parent)")
             return false
         }
@@ -194,6 +202,7 @@ private extension PointOfSaleItemsController {
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+
             let newItems = pagedItems.items
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
             let uniqueNewItems = newItems.filter { newItem in

@@ -12,7 +12,19 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.us)
-        assertEqual([.chipper, .stripeM2, .appleBuiltIn], configuration.supportedReaders)
+        assertEqual([.chipper, .stripeM2, .tapToPay], configuration.supportedReaders)
+    }
+
+    // MARK: - Puerto Rico Tests
+    func test_configuration_for_PR() throws {
+        let configuration = CardPresentPaymentsConfiguration(country: .PR)
+        XCTAssertTrue(configuration.isSupportedCountry)
+        XCTAssertEqual(configuration.currencies, [.USD])
+        XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
+        XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
+        XCTAssertEqual(configuration.supportedPluginVersions, [.init(plugin: .wcPay, minimumVersion: "9.0.0")])
+        assertEqual([.chipper, .stripeM2], configuration.supportedReaders)
+        // The `purchaseCardReaderUrl` for PR doesn't exist. On lack of country code, the URL redirection falls back to the M2 reader
     }
 
     // MARK: - Canada Tests
@@ -35,7 +47,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.gb)
-        assertEqual([.wisepad3, .appleBuiltIn], configuration.supportedReaders)
+        assertEqual([.wisepad3, .tapToPay], configuration.supportedReaders)
         assertEqual(10000, configuration.contactlessLimitAmount)
     }
 

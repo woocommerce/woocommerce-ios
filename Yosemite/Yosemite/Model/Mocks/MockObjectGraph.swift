@@ -385,7 +385,8 @@ extension MockObjectGraph {
             customFields: [],
             renewalSubscriptionID: nil,
             appliedGiftCards: [],
-            attributionInfo: nil
+            attributionInfo: nil,
+            shippingLabels: []
         )
     }
 }

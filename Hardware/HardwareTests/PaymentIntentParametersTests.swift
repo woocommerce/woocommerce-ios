@@ -7,7 +7,7 @@ final class PaymentIntentParametersTests: XCTestCase {
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
                                              receiptEmail: "validemail@validdomain.us",
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         XCTAssertNotNil(params.receiptEmail)
     }
@@ -17,7 +17,7 @@ final class PaymentIntentParametersTests: XCTestCase {
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
                                              receiptEmail: "woocommerce",
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         XCTAssertNil(params.receiptEmail)
     }
@@ -26,7 +26,7 @@ final class PaymentIntentParametersTests: XCTestCase {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "USD",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         XCTAssertEqual(params.currency, "usd")
     }
@@ -35,7 +35,7 @@ final class PaymentIntentParametersTests: XCTestCase {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "cesar",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         XCTAssertNil(params.toStripe())
     }
@@ -44,7 +44,7 @@ final class PaymentIntentParametersTests: XCTestCase {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         XCTAssertNil(params.toStripe())
     }
@@ -67,7 +67,7 @@ final class PaymentIntentParametersTests: XCTestCase {
         let params = PaymentIntentParameters(amount: amount,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
         let stripeParams = try XCTUnwrap(params.toStripe())
 
         XCTAssertEqual(expectation, stripeParams.amount)
@@ -79,7 +79,7 @@ final class PaymentIntentParametersTests: XCTestCase {
             currency: "usd",
             stripeSmallestCurrencyUnitMultiplier: 100,
             statementDescription: "A < DESCRIPTION' longer THAN 22 Characters",
-            paymentMethodTypes: ["card_present"]
+            paymentMethodTypes: [.cardPresent]
         )
 
         let statementDescription = try XCTUnwrap(params.statementDescription)
@@ -93,7 +93,7 @@ final class PaymentIntentParametersTests: XCTestCase {
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
                                              statementDescription: "A DESCRIPTION",
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         let statementDescription = try XCTUnwrap(params.statementDescription)
 
@@ -106,7 +106,7 @@ final class PaymentIntentParametersTests: XCTestCase {
             currency: "usd",
             stripeSmallestCurrencyUnitMultiplier: 100,
             statementDescription: "A DESCRIPTION LONGER THAN 22 CHARACTERS",
-            paymentMethodTypes: ["card_present"]
+            paymentMethodTypes: [.cardPresent]
         )
 
         let statementDescription = try XCTUnwrap(params.statementDescription)
@@ -119,7 +119,7 @@ final class PaymentIntentParametersTests: XCTestCase {
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
                                              statementDescription: "",
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         let stripeParameters = params.toStripe()
 
@@ -131,7 +131,7 @@ final class PaymentIntentParametersTests: XCTestCase {
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
                                              statementDescription: nil,
-                                             paymentMethodTypes: ["card_present"])
+                                             paymentMethodTypes: [.cardPresent])
 
         let stripeParameters = params.toStripe()
 
@@ -178,7 +178,7 @@ private extension PaymentIntentParametersTests {
         PaymentIntentParameters(amount: 100,
                                 currency: "usd",
                                 stripeSmallestCurrencyUnitMultiplier: 100,
-                                paymentMethodTypes: ["card_present"],
+                                paymentMethodTypes: [.cardPresent],
                                 metadata: withMetaKeys)
     }
 }

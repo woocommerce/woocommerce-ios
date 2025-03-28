@@ -75,8 +75,11 @@ struct TotalsView: View {
                                                                               cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
-            case .error(let viewModel):
-                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+            case .error(.other(let message), let handler):
+                PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
+                    .transition(.opacity)
+            case .error(.invalidCoupon(let message), let handler):
+                PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
             }
         }
@@ -440,6 +443,7 @@ private extension TotalsView {
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewItemsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

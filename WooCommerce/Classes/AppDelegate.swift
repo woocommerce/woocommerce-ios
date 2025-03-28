@@ -303,7 +303,6 @@ private extension AppDelegate {
     func setupWooAppearance() {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
-        UISearchBar.applyWooAppearance()
         UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color

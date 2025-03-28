@@ -27,7 +27,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
                             CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,

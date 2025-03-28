@@ -24,12 +24,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
-    /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
-    @Published var presentCollectPaymentMigrationSheet: Bool = false
-    /// Whether the migration sheet has been presented per payment collection session.
-    @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
-    /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
-    @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentPurchaseCardReader: Bool = false
@@ -41,9 +35,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var isLoadingPayoutSummary: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
-
-    /// Set to a non-nil value when order form is shown.
-    private(set) var orderViewModel: EditableOrderViewModel?
 
     let siteID: Int64
 
@@ -168,11 +159,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         await updateOutputProperties()
     }
 
-    func collectPaymentTapped() {
-        collectPayment()
-        analytics.track(.paymentsMenuCollectPaymentTapped)
-    }
-
     func setUpTryOutTapToPayTapped() {
         presentSetUpTryOutTapToPay = true
         analytics.track(.setUpTryOutTapToPayOnIPhoneTapped)
@@ -230,41 +216,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         }
         return onboardingViewModel
     }()
-}
-
-// MARK: - Collect payment
-
-private extension InPersonPaymentsMenuViewModel {
-    func collectPayment() {
-        let orderViewModel = EditableOrderViewModel(siteID: siteID)
-        self.orderViewModel = orderViewModel
-        orderViewModel.onFinished = { [weak self] _ in
-            self?.dismissPaymentCollection()
-        }
-        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            guard let self else { return }
-            self.paymentMethodsViewModel = paymentMethodsViewModel
-            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
-                .compactMap { $0 }
-                .sink { [weak self] notice in
-                    guard let self else { return }
-                    switch notice {
-                        case .created:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
-                        case .completed:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
-                        case .error(let description):
-                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
-                    }
-                }
-            navigationPath.append(CollectPaymentNavigationDestination.paymentMethods)
-        }
-
-        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
-        hasPresentedCollectPaymentMigrationSheet = false
-        navigationPathBeforePaymentCollection = navigationPath
-        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
-    }
 }
 
 // MARK: - Background onboarding
@@ -408,8 +359,6 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
             return
         }
         switch paymentsDestination {
-        case .collectPayment:
-            collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true
         case .aboutTapToPay:

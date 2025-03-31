@@ -54,7 +54,7 @@ private extension ChildItemList {
 
     @ViewBuilder
     var listView: some View {
-        VStack {
+        VStack(spacing: 0) {
             headerView
 
             ItemList(state: state,

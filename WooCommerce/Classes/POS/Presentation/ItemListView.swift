@@ -38,7 +38,7 @@ struct ItemListView: View {
     }
 
     var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             headerView
 
             HStack {

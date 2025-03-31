@@ -253,6 +253,36 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {
         shipments.filter { $0 != shipment }
     }
+
+    func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {
+        guard let removedShipmentIndex = shipments.firstIndex(where: { $0 == shipment }),
+              let mergedShipmentIndex = shipments.firstIndex(where: { $0 == otherShipment }) else {
+            DDLogWarn("⚠️ Cannot find shipments to remove or merge!")
+            return
+        }
+
+        var mergedContents = otherShipment.contents
+
+        for item in shipment.contents {
+            let matchingItemIndex = mergedContents.firstIndex(where: {
+                $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+            })
+            if let matchingItemIndex {
+                // Merge the quantity if the same item is merged to the shipment
+                let updatedQuantity = item.packageItem.quantity + mergedContents[matchingItemIndex].packageItem.quantity
+                let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
+                mergedContents[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+            } else {
+                // Append the item as-is
+                mergedContents.append(item)
+            }
+        }
+
+        let mergedShipment = createShipment(with: mergedContents)
+        shipments[mergedShipmentIndex] = mergedShipment
+        shipments.remove(at: removedShipmentIndex)
+        selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {
@@ -332,7 +362,7 @@ extension WooShippingSplitShipmentsViewModel {
     }
 
     struct Shipment: Identifiable, Equatable {
-        
+
         let id = UUID().uuidString
         let contents: [CollapsibleShipmentItemCardViewModel]
 

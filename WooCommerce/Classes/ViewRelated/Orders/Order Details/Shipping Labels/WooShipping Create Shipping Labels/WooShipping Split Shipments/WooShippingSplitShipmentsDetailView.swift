@@ -147,7 +147,9 @@ private extension WooShippingSplitShipmentsDetailView {
     }
 
     var mergeAllUnfulfilledSheet: some View {
-        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
+        ScrollableVStack(alignment: .leading,
+                         padding: Layout.contentPadding,
+                         spacing: Layout.verticalSpacing) {
             Text(Localization.MergeAllUnfulfilledSheet.title)
                 .font(.title3)
                 .bold()
@@ -228,7 +230,10 @@ private extension WooShippingSplitShipmentsDetailView {
 
             VStack {
                 Button("Remove \(viewModel.retrieveName(for: shipment))") {
-                    // TODO
+                    guard let shipmentToMergeInto else {
+                        return
+                    }
+                    viewModel.removeShipment(shipment, mergeInto: shipmentToMergeInto)
                     shipmentToRemove = nil
                 }
                 .buttonStyle(DestructiveButtonStyle())

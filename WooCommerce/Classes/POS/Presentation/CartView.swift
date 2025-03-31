@@ -17,7 +17,10 @@ struct CartView: View {
     }
 
     private var shouldApplyFooterTopShadow: Bool {
-        posModel.cart.isNotEmpty && cartContentHeight > scrollViewHeight
+        let maxOffset = cartContentHeight - scrollViewHeight
+        return posModel.cart.isNotEmpty &&
+        cartContentHeight > scrollViewHeight &&
+        abs(offSetPosition) < maxOffset
     }
 
     @State private var shouldShowItemImages: Bool = false

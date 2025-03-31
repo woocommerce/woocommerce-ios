@@ -7,7 +7,6 @@ struct WooShippingSplitShipmentsDetailView: View {
     @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
 
     @State private var showingMergeAllSheet = false
-    @State private var showingRemovalSheet = false
 
     var body: some View {
         NavigationView {

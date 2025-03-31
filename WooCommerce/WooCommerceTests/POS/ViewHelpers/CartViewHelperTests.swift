@@ -106,7 +106,6 @@ struct CartViewHelperTests {
         let coupon = CartCouponItem(id: UUID(), code: "TEST10")
 
         // When, Then
-
         #expect(sut.couponRowState(orderStage: .finalizing,
                                    orderState: .syncing,
                                    couponItem: coupon) == .validating)

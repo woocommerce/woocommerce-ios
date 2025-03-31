@@ -4227,7 +4227,7 @@ extension Networking.WooShippingAddress {
 extension Networking.WooShippingConfig {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        shipments: CopiableProp<[String: [WooShippingShipment]]> = .copy,
+        shipments: CopiableProp<WooShippingShipments> = .copy,
         shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
     ) -> Networking.WooShippingConfig {
         let siteID = siteID ?? self.siteID
@@ -4470,17 +4470,44 @@ extension Networking.WooShippingPackagesResponse {
     }
 }
 
-extension Networking.WooShippingShipment {
+extension Networking.WooShippingShipmentItem {
     public func copy(
         id: CopiableProp<Int64> = .copy,
         subItems: NullableCopiableProp<[String]> = .copy
-    ) -> Networking.WooShippingShipment {
+    ) -> Networking.WooShippingShipmentItem {
         let id = id ?? self.id
         let subItems = subItems ?? self.subItems
 
-        return Networking.WooShippingShipment(
+        return Networking.WooShippingShipmentItem(
             id: id,
             subItems: subItems
+        )
+    }
+}
+
+extension Networking.WooShippingUpdateShipment {
+    public func copy(
+        shipmentIdsToUpdate: CopiableProp<[String]> = .copy,
+        shipments: CopiableProp<WooShippingShipments> = .copy
+    ) -> Networking.WooShippingUpdateShipment {
+        let shipmentIdsToUpdate = shipmentIdsToUpdate ?? self.shipmentIdsToUpdate
+        let shipments = shipments ?? self.shipments
+
+        return Networking.WooShippingUpdateShipment(
+            shipmentIdsToUpdate: shipmentIdsToUpdate,
+            shipments: shipments
+        )
+    }
+}
+
+extension Networking.WooShippingUpdateShipmentResponse {
+    public func copy(
+        shipments: CopiableProp<WooShippingShipments> = .copy
+    ) -> Networking.WooShippingUpdateShipmentResponse {
+        let shipments = shipments ?? self.shipments
+
+        return Networking.WooShippingUpdateShipmentResponse(
+            shipments: shipments
         )
     }
 }

@@ -77,15 +77,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - carrier
 
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
-    @Published var selectedCarriersTabIndex: Int? = nil
+    @Published var selectedCarriersTabIndex = 0
     @Published var selectedCarriersPackageId: String? = nil
     @Published var starredCarriersPackages: Set<String> = []
     @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
     private var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
     var selectedCarrierTab: WooShippingCarrierPackages? {
-        guard let selectedCarriersTabIndex else { return nil }
-
-        return carrierPackages[selectedCarriersTabIndex]
+        carrierPackages[safe: selectedCarriersTabIndex]
     }
     var selectedCarriersPackage: WooShippingPackageDataRepresentable? {
         guard let selectedCarriersPackageId else { return nil }
@@ -207,17 +205,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 selectedPackageType = predefinedSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .carrier
             case .custom:
                 selectedPackageType = customSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .custom
-            }
-        }
-
-        if selectedCarriersTabIndex == nil {
-            // Select the carriers tab matching the previous selected carriers package, if it is the currently selected package
-            if let previousSelectedPackage, selectedCarriersPackageId == previousSelectedPackage.id {
-                selectedCarriersTabIndex = carrierPackages.firstIndex { carrierTab in
-                    return carrierTab.carrier.rawValue == previousSelectedPackage.source.sourceID
-                }
-            } else {
-                selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
             }
         }
     }

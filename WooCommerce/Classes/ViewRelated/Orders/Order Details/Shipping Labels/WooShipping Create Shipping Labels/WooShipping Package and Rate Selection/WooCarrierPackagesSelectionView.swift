@@ -96,9 +96,9 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+            if viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
-                           showContent: .constant(false),
+                           showContent: false,
                            selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,

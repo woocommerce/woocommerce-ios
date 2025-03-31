@@ -2999,13 +2999,32 @@ extension Networking.WooShippingSavedPredefinedPackage {
         )
     }
 }
-extension Networking.WooShippingShipment {
+extension Networking.WooShippingShipmentItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingShipment {
+    public static func fake() -> Networking.WooShippingShipmentItem {
         .init(
             id: .fake(),
             subItems: .fake()
+        )
+    }
+}
+extension Networking.WooShippingUpdateShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipment {
+        .init(
+            shipmentIdsToUpdate: .fake(),
+            shipments: .fake()
+        )
+    }
+}
+extension Networking.WooShippingUpdateShipmentResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipmentResponse {
+        .init(
+            shipments: .fake()
         )
     }
 }

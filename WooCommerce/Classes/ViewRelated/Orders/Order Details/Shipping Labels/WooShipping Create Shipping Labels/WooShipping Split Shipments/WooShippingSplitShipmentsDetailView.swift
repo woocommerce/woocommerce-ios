@@ -175,62 +175,70 @@ private extension WooShippingSplitShipmentsDetailView {
     }
 
     func removeShipmentSheet(for shipment: ViewModel.Shipment) -> some View {
-        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
-            Text("Remove shipment")
-                .font(.title3)
-                .bold()
-                .multilineTextAlignment(.leading)
-                .padding(.top)
+        ScrollableVStack(padding: Layout.contentPadding,
+                         spacing: Layout.contentPadding) {
+            VStack(alignment: .leading) {
+                Text("Remove shipment")
+                    .font(.title3)
+                    .bold()
 
-            Text("Choose where to move the \(shipment.quantity) in this shipment to.")
-                .font(.subheadline)
+                Text("Choose where to move the \(shipment.quantity) in this shipment to.")
+                    .font(.subheadline)
+            }
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top)
 
-            ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
-                HStack {
-                    Image(systemName: "arrow.turn.down.right")
-                        .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
-                        .subheadlineStyle()
-                        .bold()
-                    VStack(alignment: .leading) {
-                        Text(viewModel.retrieveName(for: otherShipment))
-                            .headlineStyle()
-                        AdaptiveStack(horizontalAlignment: .leading) {
-                            Text(otherShipment.quantity)
-                            Spacer()
-                            Text(otherShipment.itemsDetailLabel)
+            VStack {
+                ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
+                    HStack {
+                        Image(systemName: "arrow.turn.down.right")
+                            .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
+                            .subheadlineStyle()
+                            .bold()
+                        VStack(alignment: .leading) {
+                            Text(viewModel.retrieveName(for: otherShipment))
+                                .headlineStyle()
+                            AdaptiveStack(horizontalAlignment: .leading) {
+                                Text(otherShipment.quantity)
+                                Spacer()
+                                Text(otherShipment.itemsDetailLabel)
+                            }
+                            .font(.subheadline)
                         }
-                        .font(.subheadline)
                     }
-                }
-                .padding(Layout.contentPadding)
-                .if(otherShipment == shipmentToMergeInto) { view in
-                    view.background(
-                        Color(.listSelectedBackground)
-                            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                    )
-                }
-                .roundedBorder(cornerRadius: Layout.cornerRadius,
-                               lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
-                               lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    shipmentToMergeInto = otherShipment
+                    .padding(Layout.contentPadding)
+                    .if(otherShipment == shipmentToMergeInto) { view in
+                        view.background(
+                            Color(.listSelectedBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                        )
+                    }
+                    .roundedBorder(cornerRadius: Layout.cornerRadius,
+                                   lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
+                                   lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        shipmentToMergeInto = otherShipment
+                    }
                 }
             }
 
             Spacer()
 
-            Button("Remove \(viewModel.retrieveName(for: shipment))") {
-                // TODO
-                shipmentToRemove = nil
-            }
-            .buttonStyle(PrimaryButtonStyle())
-            .disabled(shipmentToMergeInto == nil)
+            VStack {
+                Button("Remove \(viewModel.retrieveName(for: shipment))") {
+                    // TODO
+                    shipmentToRemove = nil
+                }
+                .buttonStyle(DestructiveButtonStyle())
+                .disabled(shipmentToMergeInto == nil)
 
-            Button(Localization.cancel) {
-                shipmentToRemove = nil
+                Button(Localization.cancel) {
+                    shipmentToRemove = nil
+                }
+                .buttonStyle(SecondaryButtonStyle())
             }
-            .buttonStyle(SecondaryButtonStyle())
         }
         .presentationDetents([.medium, .large])
         .onDisappear {

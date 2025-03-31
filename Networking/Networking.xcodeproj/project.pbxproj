@@ -188,6 +188,7 @@
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20ABC0632D95632D0000EADD /* POSProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ABC0622D95632D0000EADD /* POSProduct.swift */; };
 		20ABC0672D95995C0000EADD /* ListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ABC0662D95995C0000EADD /* ListMapper.swift */; };
+		20B8B37D2D96B6920025734D /* ListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B8B37C2D96B6920025734D /* ListMapperTests.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
 		20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */; };
 		20F616482CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */; };
@@ -1537,6 +1538,7 @@
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20ABC0622D95632D0000EADD /* POSProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProduct.swift; sourceTree = "<group>"; };
 		20ABC0662D95995C0000EADD /* ListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMapper.swift; sourceTree = "<group>"; };
+		20B8B37C2D96B6920025734D /* ListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMapperTests.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
 		20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all-no-default-currency.json"; sourceTree = "<group>"; };
 		20F616472CF4B74600F9FA2A /* POSOrdersRemoteProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrdersRemoteProtocol.swift; sourceTree = "<group>"; };
@@ -4044,6 +4046,7 @@
 				DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */,
 				DEB387912C2D72160025256E /* GoogleAdsCampaignListMapperTests.swift */,
 				453954CD2C90D66B00A3E64A /* MetaDataMapperTests.swift */,
+				20B8B37C2D96B6920025734D /* ListMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -5775,6 +5778,7 @@
 				DE42F9632967C8B900D514C2 /* ReportOrderTotalsMapperTests.swift in Sources */,
 				453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */,
 				8617EDA62B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift in Sources */,
+				20B8B37D2D96B6920025734D /* ListMapperTests.swift in Sources */,
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				2670C3FC270F4E06002FE931 /* SiteListMapperTests.swift in Sources */,
 				EE065AD02B8E56C2009848CB /* BlazeCampaignListItemsMapperTests.swift in Sources */,

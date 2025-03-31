@@ -994,21 +994,6 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(queryParametersDictionary["include_types"] as? String, "simple,variable")
     }
 
-    func test_loadProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-        let pageNumber = 2
-        let expectedProductsFromResponse = 0
-
-        // When
-        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
-
-        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID, pageNumber: pageNumber)
-
-        // Then
-        XCTAssertEqual(pagedProducts.items.count, expectedProductsFromResponse)
-    }
-
     func test_loadProductsForPointOfSale_returns_hasMorePages_based_on_header_with_case_insensitive_name() async throws {
         // Given
         let remote = ProductsRemote(network: network)

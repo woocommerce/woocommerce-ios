@@ -1029,6 +1029,24 @@ final class ProductsRemoteTests: XCTestCase {
             XCTAssertTrue(pagedProducts.hasMorePages)
         }
     }
+
+    func test_searchProductsForPointOfSale_sets_correct_parameters() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "search terms",
+            productTypes: [.simple, .variable],
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParametersDictionary["downloadable"] as? String, String(false))
+        XCTAssertEqual(queryParametersDictionary["include_types"] as? String, "simple,variable")
+        XCTAssertEqual(queryParametersDictionary["search"] as? String, "search terms")
+    }
 }
 
 // MARK: - Private Helpers

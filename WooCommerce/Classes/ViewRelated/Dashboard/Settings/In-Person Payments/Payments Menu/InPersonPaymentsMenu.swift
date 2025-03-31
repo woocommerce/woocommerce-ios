@@ -232,11 +232,6 @@ private extension InPersonPaymentsMenu {
             value: "Payment options",
             comment: "Title for the section related to payments inside In-Person Payments settings")
 
-        static let paymentActionsSectionTitle = NSLocalizedString(
-            "menu.payments.actions.section.title",
-            value: "Actions",
-            comment: "Title for the section related to actions inside In-Person Payments settings")
-
         static let paymentSettingsSectionTitle = NSLocalizedString(
             "menu.payments.paymentSettings.section.title",
             value: "Settings",

@@ -4,8 +4,13 @@ import Testing
 struct ListMapperTests {
 
     @Test func test_item_fields_are_properly_parsed_from_jetpack_tunnelled_response() throws {
+        // Given a response from a tunnelled Jetpack connection
         let responseWithDataEnvelope = try #require(Loader.contentsOf("orders-load-all"))
+
+        // When we map orders
         let orders = try ListMapper<Order>(siteID: 123).map(response: responseWithDataEnvelope)
+
+        // Then they are correctly decoded
         #expect(orders.count == 4)
 
         let firstOrder = orders[0]
@@ -33,8 +38,13 @@ struct ListMapperTests {
     }
 
     @Test func test_item_fields_are_properly_parsed_from_direct_site_API_response() async throws {
+        // Given a response from a direct site connection
         let responseWithoutDataEnvelope = try #require(Loader.contentsOf("products-load-all-without-data"))
+
+        // When we map products
         let products = try ListMapper<Product>(siteID: 123).map(response: responseWithoutDataEnvelope)
+
+        // Then they are correctly decoded
         #expect(products.count == 10)
 
         let firstProduct = products[0]
@@ -100,12 +110,17 @@ struct ListMapperTests {
     }
 
     @Test func test_site_identifier_is_properly_injected_into_every_item() throws {
+        // Given 3 shipping classes in JSON
         let dummySiteID: Int64 = 242424
         let response = try #require(Loader.contentsOf("product-shipping-classes-load-all"))
+
+        // When we map them
         let productShippingClasses = try ListMapper<ProductShippingClass>(siteID: dummySiteID).map(response: response)
+
         #expect(productShippingClasses.count == 3)
 
         for productShippingClass in productShippingClasses {
+            // Then siteID is injected to each mapped model
             #expect(productShippingClass.siteID == dummySiteID)
         }
     }

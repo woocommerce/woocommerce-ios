@@ -235,6 +235,16 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         shipments = [mergedShipment]
         selectedShipmentIndex = 0
     }
+
+    func configureDescription(for shipment: Shipment, index: Int) -> ShipmentDescription {
+        let items = shipment.map(\.packageItem)
+        let itemsCount = items.map(\.quantity).reduce(0, +)
+        let quantity = Localization.itemsCount(itemsCount)
+        let weight = formatWeight(for: items)
+        let price = formatPrice(for: items)
+        let title = String.localizedStringWithFormat(Localization.shipmentFormat, index + 1)
+        return ShipmentDescription(title: title, quantity: quantity, weight: weight, price: price)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {
@@ -297,11 +307,10 @@ private extension WooShippingSplitShipmentsViewModel {
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {
-        let items = currentShipment.map(\.packageItem)
-        let itemsCount = items.map(\.quantity).reduce(0, +)
-        itemsCountLabel = Localization.itemsCount(itemsCount)
-        itemsWeightLabel = formatWeight(for: items)
-        itemsPriceLabel = formatPrice(for: items)
+        let description = configureDescription(for: currentShipment, index: selectedShipmentIndex)
+        itemsCountLabel = description.quantity
+        itemsWeightLabel = description.weight
+        itemsPriceLabel = description.price
     }
 
     /// Calculates and formats the total weight of the given items based on each item's weight and quantity.
@@ -322,6 +331,15 @@ private extension WooShippingSplitShipmentsViewModel {
         let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(totalPrice, with: order.currency) ?? totalPrice.description
+    }
+}
+
+extension WooShippingSplitShipmentsViewModel {
+    struct ShipmentDescription {
+        let title: String
+        let quantity: String
+        let weight: String
+        let price: String
     }
 }
 

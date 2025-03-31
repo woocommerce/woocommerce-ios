@@ -1,6 +1,6 @@
 import Foundation
 
-final class CartViewHelper {
+struct CartViewHelper {
     func itemsInCartLabel(for itemsCount: Int) -> String? {
         guard itemsCount > 0 else {
             return nil

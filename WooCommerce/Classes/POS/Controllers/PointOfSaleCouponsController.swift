@@ -1,5 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
+import enum Yosemite.CouponAction
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 
 @available(iOS 17.0, *)
@@ -47,8 +48,22 @@ private extension PointOfSaleCouponsController {
             itemsViewState = ItemsViewState(containerState: .content,
                                             itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
                                                               itemStates: [:]))
+
+            await syncCoupons()
         } catch {
             debugPrint(error)
         }
+    }
+
+    @MainActor
+    func syncCoupons() async {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        let action = CouponAction.synchronizeCoupons(siteID: siteID,
+                                                     pageNumber: 1,
+                                                     pageSize: 25,
+                                                     onCompletion: { _ in })
+        ServiceLocator.stores.dispatch(action)
     }
 }

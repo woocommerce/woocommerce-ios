@@ -40,28 +40,21 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
             return []
         }
 
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                          ascending: false)
+
+        let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
+                                                                 matching: predicate,
+                                                                 sortedBy: [descriptor])
+
         do {
-            let remoteCoupons = try await couponsRemote.loadAllCoupons(for: siteID)
-            return mapCouponsToPOSItems(coupons: remoteCoupons)
+            try resultsController.performFetch()
+            let storageCoupons = resultsController.fetchedObjects
+            return mapCouponsToPOSItems(coupons: storageCoupons)
         } catch {
-            debugPrint("Failed to load coupons from remote:", error)
-
-            // Fetch from storage as remote fallback
-            let predicate = NSPredicate(format: "siteID == %lld", siteID)
-            let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                              ascending: false)
-
-            let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
-                                                                     matching: predicate,
-                                                                     sortedBy: [descriptor])
-            do {
-                try resultsController.performFetch()
-                let storeCoupons = resultsController.fetchedObjects
-                return mapCouponsToPOSItems(coupons: storeCoupons)
-            } catch {
-                debugPrint("Failed to load coupons from storage:", error)
-                return []
-            }
+            debugPrint("Failed to load coupons from storage:", error)
+            return []
         }
     }
 

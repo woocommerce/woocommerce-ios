@@ -4,9 +4,14 @@ import Yosemite
 struct WooShippingSplitShipmentsDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
+    @ObservedObject var viewModel: ViewModel
 
     @State private var showingMergeAllSheet = false
+
+    @State private var shipmentToRemove: ViewModel.Shipment?
+    @State private var shipmentToMergeInto: ViewModel.Shipment?
+
+    typealias ViewModel = WooShippingSplitShipmentsViewModel
 
     var body: some View {
         NavigationView {
@@ -29,7 +34,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                         }
 
                         VStack(spacing: Layout.verticalSpacing) {
-                            ForEach(viewModel.currentShipment) { item in
+                            ForEach(viewModel.currentShipment.contents) { item in
                                 CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
@@ -63,6 +68,9 @@ struct WooShippingSplitShipmentsDetailView: View {
         .sheet(isPresented: $showingMergeAllSheet) {
             mergeAllUnfulfilledSheet
         }
+        .sheet(item: $shipmentToRemove) { shipment in
+            removeShipmentSheet(for: shipment)
+        }
     }
 }
 
@@ -94,9 +102,10 @@ private extension WooShippingSplitShipmentsDetailView {
 
     var removeShipmentMenu: some View {
         Menu {
-            ForEach(viewModel.topTabItems, id: \.name) { tab in
-                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat, tab.name.lowercased())) {
-                    // TODO
+            ForEach(viewModel.shipments) { shipment in
+                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat,
+                                                        viewModel.retrieveName(for: shipment).lowercased())) {
+                    shipmentToRemove = shipment
                 }
             }
             Divider()
@@ -163,6 +172,70 @@ private extension WooShippingSplitShipmentsDetailView {
             .buttonStyle(SecondaryButtonStyle())
         }
         .presentationDetents([.fraction(0.4), .medium, .large])
+    }
+
+    func removeShipmentSheet(for shipment: ViewModel.Shipment) -> some View {
+        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
+            Text("Remove shipment")
+                .font(.title3)
+                .bold()
+                .multilineTextAlignment(.leading)
+                .padding(.top)
+
+            Text("Choose where to move the \(shipment.quantity) in this shipment to.")
+                .font(.subheadline)
+
+            ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
+                HStack {
+                    Image(systemName: "arrow.turn.down.right")
+                        .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
+                        .subheadlineStyle()
+                        .bold()
+                    VStack(alignment: .leading) {
+                        Text(viewModel.retrieveName(for: otherShipment))
+                            .headlineStyle()
+                        AdaptiveStack(horizontalAlignment: .leading) {
+                            Text(otherShipment.quantity)
+                            Spacer()
+                            Text(otherShipment.itemsDetailLabel)
+                        }
+                        .font(.subheadline)
+                    }
+                }
+                .padding(Layout.contentPadding)
+                .if(otherShipment == shipmentToMergeInto) { view in
+                    view.background(
+                        Color(.listSelectedBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                    )
+                }
+                .roundedBorder(cornerRadius: Layout.cornerRadius,
+                               lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
+                               lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    shipmentToMergeInto = otherShipment
+                }
+            }
+
+            Spacer()
+
+            Button("Remove \(viewModel.retrieveName(for: shipment))") {
+                // TODO
+                shipmentToRemove = nil
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(shipmentToMergeInto == nil)
+
+            Button(Localization.cancel) {
+                shipmentToRemove = nil
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .presentationDetents([.medium, .large])
+        .onDisappear {
+            shipmentToMergeInto = nil
+        }
     }
 }
 

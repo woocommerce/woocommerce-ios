@@ -144,13 +144,11 @@ private extension WooShippingSplitShipmentsDetailView {
                 .font(.title3)
                 .bold()
                 .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top)
 
             Text(Localization.MergeAllUnfulfilledSheet.description)
                 .font(.subheadline)
                 .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
@@ -164,7 +162,7 @@ private extension WooShippingSplitShipmentsDetailView {
             }
             .buttonStyle(SecondaryButtonStyle())
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.fraction(0.4), .medium, .large])
     }
 }
 

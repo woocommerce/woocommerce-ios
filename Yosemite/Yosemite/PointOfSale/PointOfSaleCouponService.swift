@@ -10,25 +10,30 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let couponsRemote: CouponsRemote
+    private let stores: StoresManager?
     private let storage: StorageManagerType?
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
                 network: Network,
+                stores: StoresManager? = nil,
                 storage: StorageManagerType? = nil) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.couponsRemote = CouponsRemote(network: network)
+        self.stores = stores
         self.storage = storage
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
+                            stores: StoresManager,
                             storage: StorageManagerType) {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials),
+                  stores: stores,
                   storage: storage)
     }
 
@@ -72,6 +77,20 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     @MainActor
     public func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         let coupons = await providePointOfSaleCoupons()
+
+        syncCouponsFromRemote(pageNumber: pageNumber)
+
         return .init(items: coupons, hasMorePages: false)
+    }
+
+    private func syncCouponsFromRemote(pageNumber: Int) {
+        guard let stores = stores else {
+            return
+        }
+        let action = CouponAction.synchronizeCoupons(siteID: siteID,
+                                                             pageNumber: pageNumber,
+                                                             pageSize: 25,
+                                                             onCompletion: { _ in })
+        stores.dispatch(action)
     }
 }

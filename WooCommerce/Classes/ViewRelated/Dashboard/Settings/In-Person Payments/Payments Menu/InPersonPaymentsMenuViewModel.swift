@@ -41,7 +41,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     var payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol
 
     private(set) var paymentMethodsViewModel: PaymentMethodsViewModel?
-    private var paymentMethodsNoticeSubscription: AnyCancellable?
 
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration

@@ -7,9 +7,6 @@ import Combine
 
 @MainActor
 final class InPersonPaymentsMenuViewModel: ObservableObject {
-    @Binding var navigationPath: NavigationPath
-    private var navigationPathBeforePaymentCollection: NavigationPath?
-
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -92,11 +89,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          dependencies: Dependencies,
-         navigationPath: Binding<NavigationPath>,
          payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
-        self._navigationPath = navigationPath
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
@@ -109,13 +104,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
             InPersonPaymentsMenuViewController().createUserActivity().becomeCurrent()
-        }
-    }
-
-    /// Called when payment collection is shown to leave the payment collection flow.
-    func dismissPaymentCollection() {
-        while navigationPath != navigationPathBeforePaymentCollection {
-            navigationPath.removeLast()
         }
     }
 
@@ -364,12 +352,6 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
             presentAboutTapToPay = true
         }
     }
-}
-
-/// Destination views that the IPP menu can navigate to.
-/// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
-enum InPersonPaymentsMenuNavigationDestination {
-    case collectPayment
 }
 
 enum CollectPaymentNavigationDestination {

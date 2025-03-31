@@ -44,7 +44,6 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                         wooPaymentsPayoutService: mockPayoutService,
                                         systemStatusService: systemStatusService,
                                         analytics: analytics),
-                                      navigationPath: .constant(.init()),
                                       payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
@@ -201,8 +200,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                                        wooPaymentsPayoutService: mockPayoutService)
          sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                             dependencies: dependencies,
-                                             navigationPath: .constant(.init()))
+                                             dependencies: dependencies)
 
          // When
          await sut.onAppear()
@@ -230,8 +228,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                                       wooPaymentsPayoutService: mockPayoutService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
+                                            dependencies: dependencies)
 
         // When
         await sut.onAppear()

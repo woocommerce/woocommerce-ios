@@ -334,8 +334,7 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))),
-        navigationPath: .constant(NavigationPath()))
+            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
         NavigationStack {
             InPersonPaymentsMenu(viewModel: viewModel)

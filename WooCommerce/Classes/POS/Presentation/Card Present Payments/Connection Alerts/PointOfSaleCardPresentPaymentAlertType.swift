@@ -19,11 +19,13 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
     case updateFailedNonRetryable(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel)
     case updateFailedLowBattery(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel)
     case connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel)
+    case connectingLocationPreAlert(viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel)
     case connectingFailed(viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel)
     case connectingFailedNonRetryable(viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel)
     case connectingFailedChargeReader(viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
     case connectingFailedUpdateAddress(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
     case connectingFailedUpdatePostalCode(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
+    case connectingFailedLocationRequired(viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel)
     case connectionSuccess(viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel)
 
     var onDismiss: (() -> Void)? {
@@ -53,6 +55,8 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectingToReader:
             return nil
+        case .connectingLocationPreAlert:
+            return nil
         case .connectingFailed(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectingFailedNonRetryable(let viewModel):
@@ -62,6 +66,8 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
         case .connectingFailedUpdateAddress(let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectingFailedUpdatePostalCode(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedLocationRequired(viewModel: let viewModel):
             return viewModel.cancelButtonViewModel.actionHandler
         case .connectionSuccess(let viewModel):
             return viewModel.buttonViewModel.actionHandler

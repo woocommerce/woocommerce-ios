@@ -372,15 +372,10 @@ private extension TapToPayCardReaderConnectionController {
             analyticsTracker.cardReaderLocationPermissionRequiredShown()
             observePermissionChanges()
             alertsPresenter.present(viewModel: alertsProvider.locationRequired(
-                dismiss: { [weak self] in
+                cancel: { [weak self] in
                     guard let self else { return }
                     locationService.stopObservingPermissionChanges()
                     state = .cancel(.locationPermissionDenied)
-                },
-                skip: { [weak self] in
-                    guard let self else { return }
-                    locationService.stopObservingPermissionChanges()
-                    state = .connectToReader
                 }
             ))
         case .notDetermined:

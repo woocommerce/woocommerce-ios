@@ -364,6 +364,17 @@ extension StripeCardReaderService: CardReaderService {
                     self.processPayment(intent: intent)
                 }
                 .map(PaymentIntent.init(intent:))
+                .mapError { [weak self] error in
+                    if case CardReaderServiceError.paymentMethodCollection = error {
+                        // This is supposed to happen in `collectPaymentMethod(intent:)` when there's an error.
+                        // However when retrying some errors, `Terminal.shared.collectPaymentMethod` calls our
+                        // completion handler before it returns the payment cancellable which gets put in this property.
+                        // Nilling it here as well prevents future cancellations from never returning and making the UI
+                        // unresponsive, which can happen in `cancelPaymentIntent`.
+                        self?.paymentCancellable = nil
+                    }
+                    return error
+                }
                 .eraseToAnyPublisher()
         case .requiresConfirmation:
             return processPayment(intent: activePaymentIntent)

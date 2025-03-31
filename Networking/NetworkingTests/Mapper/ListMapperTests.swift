@@ -124,4 +124,15 @@ struct ListMapperTests {
             #expect(productShippingClass.siteID == dummySiteID)
         }
     }
+
+    @Test func test_emptyDataResponse_mapsToEmptyArray() throws {
+        // Given an empty response
+        let response =  try #require(Loader.contentsOf("empty-data-array"))
+
+        // When we map POSProducts
+        let posProducts = try ListMapper<POSProduct>(siteID: 123).map(response: response)
+
+        // Then we map to an empty array
+        #expect(posProducts == [])
+    }
 }

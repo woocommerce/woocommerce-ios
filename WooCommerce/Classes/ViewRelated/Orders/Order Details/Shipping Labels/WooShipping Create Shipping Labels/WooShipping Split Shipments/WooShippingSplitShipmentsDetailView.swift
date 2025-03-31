@@ -11,7 +11,7 @@ struct WooShippingSplitShipmentsDetailView: View {
             VStack {
                 if viewModel.shipments.count > 1 {
                     TopTabView(tabs: viewModel.topTabItems,
-                               showContent: .constant(false),
+                               showContent: false,
                                selectedTabIndex: $viewModel.selectedShipmentIndex,
                                tabsContainerHorizontalPadding: nil,
                                selectedStateColor: .accentColor,

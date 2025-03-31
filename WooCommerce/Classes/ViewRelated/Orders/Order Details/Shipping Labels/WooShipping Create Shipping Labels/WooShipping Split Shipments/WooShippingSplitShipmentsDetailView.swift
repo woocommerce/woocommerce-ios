@@ -6,6 +6,9 @@ struct WooShippingSplitShipmentsDetailView: View {
 
     @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
 
+    @State private var showingMergeAllSheet = false
+    @State private var showingRemovalSheet = false
+
     var body: some View {
         NavigationView {
             VStack {
@@ -58,6 +61,9 @@ struct WooShippingSplitShipmentsDetailView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .sheet(isPresented: $showingMergeAllSheet) {
+            mergeAllUnfulfilledSheet
+        }
     }
 }
 
@@ -96,7 +102,7 @@ private extension WooShippingSplitShipmentsDetailView {
             }
             Divider()
             Button(Localization.mergeAll) {
-                viewModel.mergeAllUnfulfilledShipments()
+                showingMergeAllSheet = true
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -130,6 +136,35 @@ private extension WooShippingSplitShipmentsDetailView {
                 })
             }
         }
+    }
+
+    var mergeAllUnfulfilledSheet: some View {
+        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
+            Text(Localization.MergeAllUnfulfilledSheet.title)
+                .font(.title3)
+                .bold()
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top)
+
+            Text(Localization.MergeAllUnfulfilledSheet.description)
+                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Button(Localization.MergeAllUnfulfilledSheet.confirmCTA) {
+                viewModel.mergeAllUnfulfilledShipments()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(Localization.cancel) {
+                showingMergeAllSheet = false
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .presentationDetents([.medium, .large])
     }
 }
 
@@ -213,6 +248,11 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
             value: "Undo",
             comment: "Button to revert moving items between shipments in the shipping label creation flow"
         )
+        static let cancel = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss a sheet in the shipping label creation flow"
+        )
         static let removeShipmentFormat = NSLocalizedString(
             "wooShippingSplitShipmentsDetailView.removeShipmentFormat",
             value: "Remove %1$@",
@@ -224,6 +264,24 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
             value: "Merge all unfulfilled",
             comment: "Button to merge all unfulfilled shipments in the shipping label creation flow."
         )
+
+        enum MergeAllUnfulfilledSheet {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title",
+                value: "Merge all unfulfilled shipments",
+                comment: "Title of the merge all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+            static let description = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description",
+                value: "This will remove all unfulfilled split shipments and move all items into one shipment",
+                comment: "Message on the merge all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+            static let confirmCTA = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA",
+                value: "Merge all shipments",
+                comment: "Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+        }
     }
 }
 

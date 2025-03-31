@@ -328,7 +328,6 @@ private extension InPersonPaymentsMenu {
     }
 
     enum AccessibilityIdentifiers {
-        static let collectPaymentRow = "collect-payment"
         static let cardReaderManualRow = "card-reader-manuals"
     }
 }

@@ -52,7 +52,7 @@ struct CartView: View {
                         .renderedIf(shouldShowClearCartButton)
                     }
                 })
-                .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
+                .if(shouldApplyHeaderBottomShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .bottom) })
                 .zIndex(1)
 
                 if posModel.cart.isNotEmpty {
@@ -132,7 +132,7 @@ struct CartView: View {
                             .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                             .padding(.vertical, Constants.checkoutButtonVerticalPadding)
                             .accessibilityAddTraits(.isHeader)
-                            .if(shouldApplyFooterTopShadow, transform: { $0.applyTopShadow(backgroundColor: backgroundColor) })
+                            .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                             .zIndex(1)
                     }
                 case .finalizing:

@@ -75,10 +75,14 @@ struct TotalsViewHelper {
     }
 
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
-        guard cart.coupons.isNotEmpty else {
+        let hasCoupons = cart.coupons.isNotEmpty
+        let orderIsLoading = orderTotals == nil
+        let hasDiscounts = orderTotals?.discountTotal != nil
+
+        guard hasCoupons else {
             return false
         }
 
-        return orderTotals == nil || orderTotals?.discountTotal != nil
+        return orderIsLoading || hasDiscounts
     }
 }

@@ -9,7 +9,7 @@ struct POSBottomShadowViewModifier: ViewModifier {
         content
             .background(
                 backgroundColor
-                    .shadow(color: Color(.secondarySystemFill), radius: 10, x: 0, y: 0)
+                    .posShadow(.medium)
                     .mask(Rectangle().padding(.bottom, -20))
             )
     }
@@ -30,7 +30,7 @@ struct POSTopShadowViewModifier: ViewModifier {
         content
             .background(
                 backgroundColor
-                    .shadow(color: Color(.secondarySystemFill), radius: 10, x: 0, y: 0)
+                    .posShadow(.medium)
                     .mask(Rectangle().padding(.top, -20))
             )
     }

@@ -130,4 +130,43 @@ struct POSProductsNetworkingTests {
         #expect(queryParametersDictionary["include_types"] == "simple,variable")
         #expect(queryParametersDictionary["search"] == "search terms")
     }
+
+    @Test func posProduct_provides_field_names_for_request() {
+        let fieldNames = POSProduct.requestFields
+        #expect(fieldNames.contains("id"))
+        #expect(fieldNames.contains("name"))
+        #expect(fieldNames.contains("type"))
+        #expect(fieldNames.contains("sku"))
+        #expect(fieldNames.contains("global_unique_id"))
+        #expect(fieldNames.contains("price"))
+        #expect(fieldNames.contains("regular_price"))
+        #expect(fieldNames.contains("sale_price"))
+        #expect(fieldNames.contains("on_sale"))
+        #expect(fieldNames.contains("images"))
+        #expect(fieldNames.contains("attributes"))
+    }
+
+    @Test func loadProductsForPointOfSale_requests_only_required_fields() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
+        #expect(queryParametersDictionary["_fields"] == POSProduct.requestFields.joined(separator: ","))
+    }
+
+    @Test func searchProductsForPointOfSale_requests_only_required_fields() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID, query: "search")
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
+        #expect(queryParametersDictionary["_fields"] == POSProduct.requestFields.joined(separator: ","))
+    }
 }

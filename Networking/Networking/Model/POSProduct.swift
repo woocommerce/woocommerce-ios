@@ -127,6 +127,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   images: images,
                   attributes: attributes)
     }
+
+    static let requestFields: [String] = {
+        CodingKeys.allCases.map( \.rawValue )
+    }()
 }
 
 // MARK: - Decoding Errors
@@ -138,7 +142,7 @@ enum POSProductDecodingError: Error {
 // MARK: - Coding Keys
 //
 private extension POSProduct {
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
         case productID = "id"
         case name
         case productTypeKey = "type"

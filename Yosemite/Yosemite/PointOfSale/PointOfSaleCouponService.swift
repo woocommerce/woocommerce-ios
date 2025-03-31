@@ -78,19 +78,37 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     public func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
         let coupons = await providePointOfSaleCoupons()
 
-        syncCouponsFromRemote(pageNumber: pageNumber)
-
-        return .init(items: coupons, hasMorePages: false)
+        if !coupons.isEmpty {
+            // Fire-and-forget sync
+            Task.detached {
+                await self.syncCouponsFromRemote(pageNumber: pageNumber)
+            }
+            return .init(items: coupons, hasMorePages: false)
+        } else {
+            // Wait for the sync to complete
+            await syncCouponsFromRemote(pageNumber: pageNumber)
+            let refreshedCoupons = await providePointOfSaleCoupons()
+            return .init(items: refreshedCoupons, hasMorePages: false)
+        }
     }
 
-    private func syncCouponsFromRemote(pageNumber: Int) {
+    private func syncCouponsFromRemote(pageNumber: Int) async {
         guard let stores = stores else {
             return
         }
-        let action = CouponAction.synchronizeCoupons(siteID: siteID,
-                                                             pageNumber: pageNumber,
-                                                             pageSize: 25,
-                                                             onCompletion: { _ in })
-        stores.dispatch(action)
+
+        await withCheckedContinuation { continuation in
+            let action = CouponAction.synchronizeCoupons(
+                siteID: siteID,
+                pageNumber: pageNumber,
+                pageSize: 25,
+                onCompletion: { _ in
+                    continuation.resume()
+                }
+            )
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
     }
 }

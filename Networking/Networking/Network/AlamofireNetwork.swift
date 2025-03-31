@@ -27,13 +27,10 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
-    public let credentials: Credentials?
-
     /// Public Initializer
     ///
     ///
     public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
-        self.credentials = credentials
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {

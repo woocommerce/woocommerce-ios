@@ -8,26 +8,39 @@ public final class MediaStore: Store {
     private let remote: MediaRemoteProtocol
     private let backgroundUploader: MediaUploadSessionManager
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
+    private let credentials: Credentials?
 
     public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = MediaRemote(network: network)
         let backgroundUploader = MediaUploadSessionManager()
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, backgroundUploader: backgroundUploader)
+        self.init(dispatcher: dispatcher, 
+                  storageManager: storageManager, 
+                  network: network, 
+                  remote: remote, 
+                  backgroundUploader: backgroundUploader,
+                  credentials: nil)
     }
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         backgroundUploader: MediaUploadSessionManager) {
+         backgroundUploader: MediaUploadSessionManager,
+         credentials: Credentials? = nil) {
         self.remote = remote
         self.backgroundUploader = backgroundUploader
+        self.credentials = credentials
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, backgroundUploader: MediaUploadSessionManager) {
+    public init(dispatcher: Dispatcher, 
+                storageManager: StorageManagerType, 
+                network: Network, 
+                backgroundUploader: MediaUploadSessionManager, 
+                credentials: Credentials? = nil) {
         self.remote = MediaRemote(network: network)
         self.backgroundUploader = backgroundUploader
+        self.credentials = credentials
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -35,14 +48,16 @@ public final class MediaStore: Store {
                      dispatcher: Dispatcher,
                      storageManager: StorageManagerType,
                      network: Network,
-                     backgroundUploader: MediaUploadSessionManager) {
+                     backgroundUploader: MediaUploadSessionManager,
+                     credentials: Credentials? = nil) {
         let remote = MediaRemote(network: network)
         self.init(mediaExportService: mediaExportService,
                   dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
                   remote: remote,
-                  backgroundUploader: backgroundUploader)
+                  backgroundUploader: backgroundUploader,
+                  credentials: credentials)
     }
 
     init(mediaExportService: MediaExportService,
@@ -50,9 +65,11 @@ public final class MediaStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: MediaRemoteProtocol,
-         backgroundUploader: MediaUploadSessionManager) {
+         backgroundUploader: MediaUploadSessionManager,
+         credentials: Credentials? = nil) {
         self.remote = remote
         self.backgroundUploader = backgroundUploader
+        self.credentials = credentials
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
     }
@@ -237,7 +254,8 @@ private extension MediaStore {
 
                 let request = try await remote.uploadMediaRequest(siteID: siteID,
                                                                   productID: productID,
-                                                                  mediaItem: uploadableMedia)
+                                                                  mediaItem: uploadableMedia,
+                                                                  credentials: credentials)
 
                 // Start background upload
                 backgroundUploader.uploadMedia(request: request,

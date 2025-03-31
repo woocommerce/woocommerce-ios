@@ -24,7 +24,8 @@ public protocol MediaRemoteProtocol {
     /// Creates a URLRequest for uploading media in background
     func uploadMediaRequest(siteID: Int64,
                             productID: Int64,
-                            mediaItem: UploadableMedia) async throws -> URLRequest
+                            mediaItem: UploadableMedia,
+                            credentials: Credentials?) async throws -> URLRequest
 }
 
 /// Media: Remote Endpoints
@@ -172,7 +173,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
 
     public func uploadMediaRequest(siteID: Int64,
                                    productID: Int64,
-                                   mediaItem: UploadableMedia) async throws -> URLRequest {
+                                   mediaItem: UploadableMedia,
+                                   credentials: Credentials? = nil) async throws -> URLRequest {
 
         let boundary = UUID().uuidString
         let path = "sites/\(siteID)/media"
@@ -183,16 +185,15 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                             parameters: nil,
                                             availableAsRESTRequest: true)
 
-        guard let network = network as? AlamofireNetwork else {
-            throw NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
-        }
-
-        let converter = RequestConverter(credentials: network.credentials)
+        // Use the provided credentials or fall back to network's credentials
+        let requestCredentials = credentials ?? (network as? AlamofireNetwork)?.credentials
+        
+        let converter = RequestConverter(credentials: requestCredentials)
         var request = try converter.convert(dotcomRequest).asURLRequest()
 
         // Authenticate the request if we have credentials
-        if let credentials = network.credentials {
-            request = try DefaultRequestAuthenticator(credentials: credentials).authenticate(request)
+        if let requestCredentials = requestCredentials {
+            request = try DefaultRequestAuthenticator(credentials: requestCredentials).authenticate(request)
         } else {
             throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
         }

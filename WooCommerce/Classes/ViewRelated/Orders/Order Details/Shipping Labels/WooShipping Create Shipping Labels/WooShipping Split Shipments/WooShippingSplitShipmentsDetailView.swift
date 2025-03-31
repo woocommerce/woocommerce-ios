@@ -153,6 +153,7 @@ private extension WooShippingSplitShipmentsDetailView {
 
             Button(Localization.MergeAllUnfulfilledSheet.confirmCTA) {
                 viewModel.mergeAllUnfulfilledShipments()
+                showingMergeAllSheet = false
             }
             .buttonStyle(PrimaryButtonStyle())
 

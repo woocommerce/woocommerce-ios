@@ -77,7 +77,7 @@ struct CartView: View {
                                     .transition(.opacity)
                                 }
                             }
-                            .padding(.bottom, Constants.cartItemSpacing)
+                            .padding(.bottom, Constants.cartLastItemBottomPadding)
                             .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
                             .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
                             .background(GeometryReader { geometry in
@@ -244,6 +244,7 @@ private extension CartView {
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
         static let cartItemSpacing: CGFloat = POSSpacing.small
+        static let cartLastItemBottomPadding: CGFloat = POSPadding.large
     }
 
     enum Localization {

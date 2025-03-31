@@ -13,6 +13,10 @@ struct CouponRowView: View {
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
+    private var dynamicSpacing: CGFloat {
+        Constants.itemTitleAndPriceSpacing * (1 / scale)
+    }
+
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             Rectangle()
@@ -24,7 +28,7 @@ struct CouponRowView: View {
                 }
                 .frame(width: Constants.couponCardSize, height: Constants.couponCardSize)
 
-            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+            VStack(alignment: .leading, spacing: dynamicSpacing) {
                 Text(couponItem.code)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)

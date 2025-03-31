@@ -9,9 +9,15 @@ struct CartView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var offSetPosition: CGFloat = 0.0
+    @State private var cartContentHeight: CGFloat = 0.0
+    @State private var scrollViewHeight: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
+    }
+
+    private var shouldApplyFooterTopShadow: Bool {
+        posModel.cart.isNotEmpty && cartContentHeight > scrollViewHeight
     }
 
     @State private var shouldShowItemImages: Bool = false
@@ -74,6 +80,7 @@ struct CartView: View {
                             .background(GeometryReader { geometry in
                                 Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                                        value: geometry.frame(in: coordinateSpace).origin.y)
+                                .preference(key: ContentHeightPreferenceKey.self, value: geometry.size.height)
                                 .onAppear {
                                     updateItemImageVisibility(cartListWidth: geometry.size.width)
                                 }
@@ -87,10 +94,21 @@ struct CartView: View {
                             .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                                 self.offSetPosition = position
                             }
+                            .onPreferenceChange(ContentHeightPreferenceKey.self) { height in
+                                self.cartContentHeight = height
+                            }
 
                             Spacer()
                                 .frame(height: floatingControlAreaSize.height)
                                 .renderedIf(posModel.orderStage == .finalizing)
+                        }
+                        .background {
+                            GeometryReader() { proxy in
+                                Color.clear.preference(key: ScrollViewHeightPreferenceKey.self, value: proxy.size.height)
+                            }
+                        }
+                        .onPreferenceChange(ScrollViewHeightPreferenceKey.self) { height in
+                            self.scrollViewHeight = height
                         }
                         .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                         .onChange(of: posModel.cart.items.first?.id) { itemToScrollTo in
@@ -101,8 +119,10 @@ struct CartView: View {
                             }
                         }
                     }
+                } else {
+                    Spacer()
                 }
-                Spacer()
+
                 switch posModel.orderStage {
                 case .building:
                     if posModel.cart.items.isEmpty {
@@ -112,6 +132,8 @@ struct CartView: View {
                             .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                             .padding(.vertical, Constants.checkoutButtonVerticalPadding)
                             .accessibilityAddTraits(.isHeader)
+                            .if(shouldApplyFooterTopShadow, transform: { $0.applyTopShadow(backgroundColor: backgroundColor) })
+                            .zIndex(1)
                     }
                 case .finalizing:
                     EmptyView()
@@ -131,6 +153,22 @@ struct CartView: View {
 }
 
 private struct ScrollOffSetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat { .zero }
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // No-op
+    }
+}
+
+private struct ContentHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat { .zero }
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // No-op
+    }
+}
+
+private struct ScrollViewHeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat { .zero }
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {

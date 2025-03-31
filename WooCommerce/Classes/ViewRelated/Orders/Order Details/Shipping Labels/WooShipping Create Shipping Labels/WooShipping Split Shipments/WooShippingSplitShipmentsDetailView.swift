@@ -73,6 +73,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                                 }
                             }
                         }
+                        .disabled(!viewModel.enableDoneButton)
                     }
                 }
             }

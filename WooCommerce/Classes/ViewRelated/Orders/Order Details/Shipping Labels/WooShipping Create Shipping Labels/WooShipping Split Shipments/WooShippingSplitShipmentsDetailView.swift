@@ -180,11 +180,11 @@ private extension WooShippingSplitShipmentsDetailView {
         ScrollableVStack(padding: Layout.contentPadding,
                          spacing: Layout.contentPadding) {
             VStack(alignment: .leading) {
-                Text("Remove shipment")
+                Text(Localization.RemoveShipmentSheet.title)
                     .font(.title3)
                     .bold()
 
-                Text("Choose where to move the \(shipment.quantity) in this shipment to.")
+                Text(String.localizedStringWithFormat(Localization.RemoveShipmentSheet.subtitle, shipment.quantity))
                     .font(.subheadline)
             }
             .multilineTextAlignment(.leading)
@@ -229,7 +229,8 @@ private extension WooShippingSplitShipmentsDetailView {
             Spacer()
 
             VStack {
-                Button("Remove \(viewModel.retrieveName(for: shipment))") {
+                Button(String.localizedStringWithFormat(Localization.RemoveShipmentSheet.confirmCTA,
+                                                        viewModel.retrieveName(for: shipment))) {
                     guard let shipmentToMergeInto else {
                         return
                     }
@@ -364,6 +365,28 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
                 "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA",
                 value: "Merge all shipments",
                 comment: "Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+        }
+
+        enum RemoveShipmentSheet {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.title",
+                value: "Remove shipment",
+                comment: "Title of the sheet to confirm removing a shipment in the shipping label creation flow."
+            )
+            static let subtitle = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle",
+                value: "Choose where to move the %1$@ in this shipment to.",
+                comment: "Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. " +
+                "Placeholder is the number of items in the shipment. " +
+                "Reads as: 'Choose where to move the 3 items in this shipment to.'"
+            )
+            static let confirmCTA = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA",
+                value: "Remove %1$@",
+                comment: "Button to confirm removing a shipment in the shipping label creation flow. " +
+                "Placeholder is the name of the shipment. " +
+                "Reads as: 'Remove Shipment 1.'"
             )
         }
     }

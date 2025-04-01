@@ -13,14 +13,14 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let couponsRemote: CouponsRemote
-    private let stores: StoresManager?
-    private let storage: StorageManagerType?
+    private let stores: StoresManager
+    private let storage: StorageManagerType
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
                 network: Network,
-                stores: StoresManager? = nil,
-                storage: StorageManagerType? = nil) {
+                stores: StoresManager,
+                storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.couponsRemote = CouponsRemote(network: network)
@@ -62,9 +62,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 private extension PointOfSaleCouponService {
     @MainActor
     func providePointOfSaleCoupons() async -> [POSItem] {
-        guard let storage = storage else {
-            return []
-        }
 
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
@@ -77,7 +74,7 @@ private extension PointOfSaleCouponService {
         do {
             try resultsController.performFetch()
             let storageCoupons = resultsController.fetchedObjects
-            return mapCouponsToPOSItems(coupons: storageCoupons)
+            return mapCouponsToPOSItems(coupons: storageCoupons) // storageCoupons    [Yosemite.Coupon]    0 values
         } catch {
             debugPrint("Failed to load coupons from storage:", error)
             return []
@@ -91,16 +88,13 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-        guard let stores = stores else {
-            return
-        }
 
         await withCheckedContinuation { continuation in
             let action = CouponAction.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
-                onCompletion: { _ in
+                onCompletion: { _ in // Q: Anything to do with the result from the completion?
                     continuation.resume()
                 }
             )

@@ -25,6 +25,9 @@ struct MockCouponActionHandler: MockActionHandler {
         case .loadCoupons(_, _, let onCompletion):
             save(mocks: objectGraph.coupons, as: StorageCoupon.self) { _ in }
             onCompletion(.success(objectGraph.coupons))
+        case .synchronizeCoupons(_, _, _, let onCompletion):
+            save(mocks: objectGraph.coupons, as: StorageCoupon.self) { _ in }
+            onCompletion(.success(true))
         default:
             unimplementedAction(action: action)
         }

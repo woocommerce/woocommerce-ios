@@ -22,7 +22,7 @@ final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtoco
     private let storage: StorageManagerType
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
-    
+
     private var service: PointOfSaleCouponService? = nil
 
     init(siteID: Int64, storage: StorageManagerType, currencySettings: CurrencySettings, stores: StoresManager) {
@@ -30,10 +30,10 @@ final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtoco
         self.storage = storage
         self.currencySettings = currencySettings
         self.stores = stores
-        
+
         service = makeService()
     }
-    
+
     private func makeService() -> PointOfSaleCouponService {
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
@@ -41,7 +41,7 @@ final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtoco
                                         stores: stores,
                                         storage: storage)
     }
-    
+
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<Yosemite.POSItem> {
         guard let service = service else {
             throw NSError(domain: "oopsie", code: -1)
@@ -147,15 +147,18 @@ final class HubMenuViewModel: ObservableObject {
         let currencySettings = ServiceLocator.currencySettings
         let stores = ServiceLocator.stores
 
-//        return PointOfSaleCouponService(siteID: siteID,
-//                                        currencySettings: currencySettings,
-//                                        credentials: credentials,
-//                                        stores: stores,
-//                                        storage: storage)
-        return WooCommercePointOfSaleCouponService(siteID: siteID,
-                                                   storage: storage,
-                                                   currencySettings: currencySettings,
-                                                   stores: stores)
+// 1. Yosemite.PointOfSaleCouponService
+        return PointOfSaleCouponService(siteID: siteID,
+                                        currencySettings: currencySettings,
+                                        credentials: credentials,
+                                        stores: stores,
+                                        storage: storage)
+
+// 2. WooCommerce.PointOfSaleCouponService
+//        return WooCommercePointOfSaleCouponService(siteID: siteID,
+//                                                   storage: storage,
+//                                                   currencySettings: currencySettings,
+//                                                   stores: stores)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

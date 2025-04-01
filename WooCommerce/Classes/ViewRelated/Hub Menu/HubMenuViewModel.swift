@@ -7,10 +7,47 @@ import Yosemite
 import protocol WooFoundation.Analytics
 import struct Storage.GeneralAppSettingsStorage
 
+import protocol Storage.StorageManagerType
+import WooFoundation
+import class Networking.AlamofireNetwork // No need to be exposed anymore
+
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
     ///
     public static let hubMenuViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.hubMenuViewDidAppear")
+}
+
+final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
+    private let siteID: Int64
+    private let storage: StorageManagerType
+    private let currencySettings: CurrencySettings
+    private let stores: StoresManager
+    
+    private var service: PointOfSaleCouponService? = nil
+
+    init(siteID: Int64, storage: StorageManagerType, currencySettings: CurrencySettings, stores: StoresManager) {
+        self.siteID = siteID
+        self.storage = storage
+        self.currencySettings = currencySettings
+        self.stores = stores
+        
+        service = makeService()
+    }
+    
+    private func makeService() -> PointOfSaleCouponService {
+        return PointOfSaleCouponService(siteID: siteID,
+                                        currencySettings: currencySettings,
+                                        network: AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials),
+                                        stores: stores,
+                                        storage: storage)
+    }
+    
+    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<Yosemite.POSItem> {
+        guard let service = service else {
+            throw NSError(domain: "oopsie", code: -1)
+        }
+        return try await service.providePointOfSaleCoupons(pageNumber: pageNumber)
+    }
 }
 
 /// Destination views that the hub menu can navigate to.
@@ -110,11 +147,15 @@ final class HubMenuViewModel: ObservableObject {
         let currencySettings = ServiceLocator.currencySettings
         let stores = ServiceLocator.stores
 
-        return PointOfSaleCouponService(siteID: siteID,
-                                        currencySettings: currencySettings,
-                                        credentials: credentials,
-                                        stores: stores,
-                                        storage: storage)
+//        return PointOfSaleCouponService(siteID: siteID,
+//                                        currencySettings: currencySettings,
+//                                        credentials: credentials,
+//                                        stores: stores,
+//                                        storage: storage)
+        return WooCommercePointOfSaleCouponService(siteID: siteID,
+                                                   storage: storage,
+                                                   currencySettings: currencySettings,
+                                                   stores: stores)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)

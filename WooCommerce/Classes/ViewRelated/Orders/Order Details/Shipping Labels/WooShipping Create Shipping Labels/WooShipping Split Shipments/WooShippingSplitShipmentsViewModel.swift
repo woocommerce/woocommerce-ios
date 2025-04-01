@@ -78,8 +78,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     var topTabItems: [TopTabItem<EmptyView>] {
         shipments.enumerated().map { (index, item) in
-            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
-                       content: { EmptyView() })
+            let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+            return TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                              icon: item.isPurchased ? purchasedIcon : nil,
+                              content: { EmptyView() })
         }
     }
 
@@ -414,6 +416,7 @@ extension WooShippingSplitShipmentsViewModel {
 
         let id = UUID().uuidString
         let contents: [CollapsibleShipmentItemCardViewModel]
+        let isPurchased: Bool
 
         let quantity: String
         let weight: String
@@ -426,10 +429,12 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         init(contents: [CollapsibleShipmentItemCardViewModel],
+             isPurchased: Bool = false,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.contents = contents
+            self.isPurchased = isPurchased
 
             let items = contents.map(\.packageItem)
             let itemsCount = items.map(\.quantity).reduce(0, +)

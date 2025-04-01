@@ -102,7 +102,9 @@ private extension WooShippingSplitShipmentsDetailView {
                        selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
                        tabPadding: Layout.tabPadding,
                        tabsNameFont: Font.subheadline.bold(),
-                       tabsIconSize: nil,
+                       tabsIconSize: Layout.purchasedIconWidth,
+                       tabsIconAlignment: .trailing,
+                       tabsIconForegroundColor: Color(.info),
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
                        tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             .overlay(alignment: .trailing) {
@@ -325,6 +327,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let tabItemContentVerticalPadding: CGFloat = 9.0
         static let cornerRadius: CGFloat = 8
         static let gradientViewWidth: CGFloat = 32
+        static let purchasedIconWidth: CGFloat = 16
     }
 
     enum Localization {

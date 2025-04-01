@@ -1,7 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
-import struct Yosemite.POSCoupon
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -22,6 +21,10 @@ struct ItemListView: View {
     }
 
     @State private var selectedItemType: ItemType = .products
+
+    // Coupon Creation
+    @State private var showCouponTypeSelectionModal: Bool = false
+    @State private var showCouponCreationModal: POSCouponDiscountType?
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -56,7 +59,7 @@ struct ItemListView: View {
                 Spacer()
 
                 Button(action: {
-                    posModel.createCoupon()
+                    showCouponTypeSelectionModal = true
                 }, label: {
                     Text(Image(systemName: "plus.circle.fill"))
                 })
@@ -87,6 +90,32 @@ struct ItemListView: View {
         .accessibilityElement(children: .contain)
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+        }
+        .sheet(isPresented: $showCouponTypeSelectionModal) {
+            let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createNewCouponTitle)
+            let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { selectedType in
+                showCouponTypeSelectionModal = false
+                showCouponCreationModal = .init(discountType: selectedType)
+            }
+            BottomSheetListSelector(
+                viewProperties: viewProperties,
+                command: command,
+                onDismiss: nil
+            )
+        }
+        .sheet(item: $showCouponCreationModal) { posDiscountType in
+            var view = AddEditCoupon(.init(discountType: posDiscountType.discountType, onSuccess: { coupon in
+            }))
+
+            view.dismissHandler = {
+                self.showCouponCreationModal = nil
+            }
+
+            view.onDisappear = {
+                self.showCouponCreationModal = nil
+            }
+
+            return view
         }
     }
 }
@@ -250,6 +279,12 @@ private extension ItemListView {
             "pos.itemlistview.headerBanner.learnMoreHint",
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let createNewCouponTitle = NSLocalizedString(
+            "pos.itemlistview.couponCreation.title",
+            value: "Create New Coupon",
+            comment: "A title for the view that creates a new coupon"
         )
     }
 }

@@ -266,10 +266,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func mergeAllUnfulfilledShipments() {
+        let (unfulfilledShipments, fulfilledShipments) = shipments.partitioned(by: { $0.isPurchased })
         var mergedShipmentContents = ShipmentContents()
 
-        // TODO-15440: check for fulfilled shipments and remove them from the list.
-        shipments.forEach { shipment in
+        unfulfilledShipments.forEach { shipment in
             for item in shipment.contents {
                 let matchingItemIndex = mergedShipmentContents.firstIndex(where: {
                     $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
@@ -286,7 +286,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        shipments = [createShipment(with: mergedShipmentContents)]
+        shipments = [createShipment(with: mergedShipmentContents)] + fulfilledShipments
         selectedShipmentIndex = 0
     }
 

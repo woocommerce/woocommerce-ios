@@ -3,25 +3,22 @@ import Testing
 import Foundation
 
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 
-final class MockPointOfSaleCouponService: PointOfSaleItemServiceProtocol {
+final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
 
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
         } else {
             return .init(items: Self.makeInitialCoupons(),
                          hasMorePages: false)
         }
-    }
-
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        return .init(items: [], hasMorePages: false)
     }
 
     static func makeInitialCoupons() -> [POSItem] {

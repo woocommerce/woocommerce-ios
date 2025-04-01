@@ -486,8 +486,6 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Moving items to 2 new shipments
         viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
-        viewModel.shipments.first?.contents.last?.childItemRows.last?.handleTap()
-        viewModel.moveSelectedItems(to: .newShipment)
 
         var receivedShipmentToUpdate: WooShippingUpdateShipment?
 
@@ -600,9 +598,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                                                             shippingSettingsService: shippingSettingsService)
 
         // Moving items to 2 new shipments
-        viewModel.shipments.first?.last?.childItemRows.first?.handleTap()
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
-        viewModel.shipments.first?.last?.childItemRows.last?.handleTap()
+        viewModel.shipments.first?.contents.last?.childItemRows.last?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Confidence checks
@@ -613,13 +611,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 1)
-        XCTAssertEqual(viewModel.shipments[0].count, 3)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.orderItemID, items[2].orderItemID)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 3)
+        XCTAssertEqual(viewModel.shipments[0].contents.count, 3)
+        XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
+        XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
+        XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.orderItemID, items[1].orderItemID)
+        XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[0].contents[2].packageItem.orderItemID, items[2].orderItemID)
+        XCTAssertEqual(viewModel.shipments[0].contents[2].packageItem.quantity, 3)
     }
 
     // MARK: - `enableDoneButton`
@@ -655,7 +653,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                                                            shippingSettingsService: shippingSettingsService)
 
         // When
-        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Then
@@ -691,7 +689,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                                                            shippingSettingsService: shippingSettingsService)
 
         // When
-        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Then
@@ -727,7 +725,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                                                            shippingSettingsService: shippingSettingsService)
 
         // When
-        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
         viewModel.undoMovingItems()
 

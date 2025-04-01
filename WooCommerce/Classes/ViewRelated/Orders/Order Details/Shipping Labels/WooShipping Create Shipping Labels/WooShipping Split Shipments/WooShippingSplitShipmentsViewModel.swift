@@ -37,7 +37,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             shipmentIdsToUpdate.append(key)
 
             var items = [WooShippingShipmentItem]()
-            for item in shipment {
+            for item in shipment.contents {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
                     let i = WooShippingShipmentItem(id: Int64(mainItemID),
                                                     subItems: item.childItemRows.map({ $0.itemID }))

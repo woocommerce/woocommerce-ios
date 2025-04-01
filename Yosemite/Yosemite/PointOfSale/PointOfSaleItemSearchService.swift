@@ -1,8 +1,4 @@
 import Foundation
-import protocol Networking.Network
-import class WooFoundation.CurrencyFormatter
-import class WooFoundation.CurrencySettings
-import Storage
 
 public protocol PointOfSaleItemSearchServiceProtocol: PointOfSaleItemServiceProtocol {
     func updateSearchTerm(_ searchTerm: String)
@@ -10,23 +6,10 @@ public protocol PointOfSaleItemSearchServiceProtocol: PointOfSaleItemServiceProt
 
 public final class PointOfSaleItemSearchService: PointOfSaleItemSearchServiceProtocol {
 
-    private var siteID: Int64
-    private let currencyFormatter: CurrencyFormatter
-    private let storage: StorageManagerType?
-
     private var itemService: PointOfSaleItemService
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                network: Network,
-                storage: StorageManagerType? = nil) {
-        self.siteID = siteID
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.storage = storage
-
-        self.itemService = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
+    public init(itemService: PointOfSaleItemService) {
+        self.itemService = itemService
     }
 
     private var searchTerm: String = ""

@@ -1,5 +1,4 @@
 import protocol Networking.Network
-import protocol Networking.ProductVariationsRemoteProtocol
 import class Networking.CouponsRemote
 import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
@@ -41,10 +40,28 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    // TODO:
-    // gh-15326 - Return PagedItems<POSItem> instead.
     @MainActor
-    private func providePointOfSaleCoupons() async -> [POSItem] {
+    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        let coupons = await providePointOfSaleCoupons()
+
+        if !coupons.isEmpty {
+            // Fire-and-forget sync
+            Task.detached {
+                await self.syncCouponsFromRemote(pageNumber: pageNumber)
+            }
+            return .init(items: coupons, hasMorePages: false)
+        } else {
+            // Wait for the sync to complete
+            await syncCouponsFromRemote(pageNumber: pageNumber)
+            let refreshedCoupons = await providePointOfSaleCoupons()
+            return .init(items: refreshedCoupons, hasMorePages: false)
+        }
+    }
+}
+
+private extension PointOfSaleCouponService {
+    @MainActor
+    func providePointOfSaleCoupons() async -> [POSItem] {
         guard let storage = storage else {
             return []
         }
@@ -67,31 +84,13 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         }
     }
 
-    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
+    func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
                 .coupon(POSCoupon(id: UUID(), code: coupon.code))
         }
     }
 
-    @MainActor
-    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let coupons = await providePointOfSaleCoupons()
-
-        if !coupons.isEmpty {
-            // Fire-and-forget sync
-            Task.detached {
-                await self.syncCouponsFromRemote(pageNumber: pageNumber)
-            }
-            return .init(items: coupons, hasMorePages: false)
-        } else {
-            // Wait for the sync to complete
-            await syncCouponsFromRemote(pageNumber: pageNumber)
-            let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons, hasMorePages: false)
-        }
-    }
-
-    private func syncCouponsFromRemote(pageNumber: Int) async {
+    func syncCouponsFromRemote(pageNumber: Int) async {
         guard let stores = stores else {
             return
         }

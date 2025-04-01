@@ -25,6 +25,23 @@ struct WooShippingSplitShipmentsDetailView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                        if viewModel.currentShipment.isPurchased {
+                            VStack {
+                                Text(Localization.PurchasedShipment.title)
+                                    .bold()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text(Localization.PurchasedShipment.subtitle)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .multilineTextAlignment(.leading)
+                            .foregroundStyle(Layout.green)
+                            .padding(Layout.contentPadding)
+                            .background(
+                                Layout.greenBackground
+                                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                            )
+                        }
+
                         AdaptiveStack(horizontalAlignment: .leading) {
                             Text(viewModel.itemsCountLabel)
                                 .headlineStyle()
@@ -104,7 +121,7 @@ private extension WooShippingSplitShipmentsDetailView {
                        tabsNameFont: Font.subheadline.bold(),
                        tabsIconSize: Layout.purchasedIconWidth,
                        tabsIconAlignment: .trailing,
-                       tabsIconForegroundColor: Color(.info),
+                       tabsIconForegroundColor: Layout.green,
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
                        tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             .overlay(alignment: .trailing) {
@@ -328,6 +345,10 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let cornerRadius: CGFloat = 8
         static let gradientViewWidth: CGFloat = 32
         static let purchasedIconWidth: CGFloat = 16
+
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let greenBackground = Color.withColorStudio(name: .green, shade: .shade0)
     }
 
     enum Localization {
@@ -405,6 +426,19 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
                 comment: "Button to confirm removing a shipment in the shipping label creation flow. " +
                 "Placeholder is the name of the shipment. " +
                 "Reads as: 'Remove Shipment 1.'"
+            )
+        }
+
+        enum PurchasedShipment {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.purchasedShipment.title",
+                value: "You purchased a label for this shipment.",
+                comment: "Title label displayed on a shipment whose label is purchased in the shipping label creation flow."
+            )
+            static let subtitle = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle",
+                value: "You can't move products into or out of it.",
+                comment: "Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow."
             )
         }
     }

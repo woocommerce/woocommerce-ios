@@ -231,7 +231,6 @@
 		023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */; };
 		023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */; };
 		023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */; };
-		024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */; };
 		024124842AC54C3D0035A247 /* ConfigurableBundleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024124832AC54C3D0035A247 /* ConfigurableBundleItemView.swift */; };
 		0242CFB629F278010080F500 /* ProductFormAIEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0242CFB529F278010080F500 /* ProductFormAIEligibilityChecker.swift */; };
 		0242CFB829F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0242CFB729F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift */; };
@@ -3472,7 +3471,6 @@
 		023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSKUValidationStoresManager.swift; sourceTree = "<group>"; };
 		023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductInventorySettingsViewModel+VariationTests.swift"; sourceTree = "<group>"; };
 		023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableProductVariationModelTests.swift; sourceTree = "<group>"; };
-		0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsMigrationView.swift; sourceTree = "<group>"; };
 		024124832AC54C3D0035A247 /* ConfigurableBundleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleItemView.swift; sourceTree = "<group>"; };
 		0242CFB529F278010080F500 /* ProductFormAIEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormAIEligibilityChecker.swift; sourceTree = "<group>"; };
 		0242CFB729F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -8417,7 +8415,6 @@
 				20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */,
 				20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */,
 				20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */,
-				0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */,
 				02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */,
 			);
 			path = "Payments Menu";
@@ -15612,7 +15609,6 @@
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				EE8B42182BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift in Sources */,
 				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
-				024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */,
 				DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */,
 				AE9E04752776213E003FA09E /* LegacyOrderCustomerSection.swift in Sources */,
 				026826C22BF59E410036F959 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift in Sources */,

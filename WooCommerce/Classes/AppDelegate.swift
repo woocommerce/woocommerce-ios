@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tabBarController.navigate(to: OrdersDestination.orderList)
             completionHandler(true)
         case QuickAction.collectPayment:
-            tabBarController.navigate(to: PaymentsMenuDestination.collectPayment)
+            tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         }
     }

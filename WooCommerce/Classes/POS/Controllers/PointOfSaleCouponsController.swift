@@ -1,6 +1,5 @@
 import Observation
 import enum Yosemite.POSItem
-import enum Yosemite.CouponAction
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 

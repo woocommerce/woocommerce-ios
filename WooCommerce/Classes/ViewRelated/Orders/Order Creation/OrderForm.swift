@@ -812,7 +812,7 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 HStack() {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    Image(systemName: "barcode.viewfinder")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: Layout.scanImageSize * scale)
@@ -838,7 +838,7 @@ private extension ProductsSection {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
             } else {
-                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                Image(systemName: "barcode.viewfinder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.scanImageSize * scale)

@@ -4,9 +4,14 @@ import Yosemite
 struct WooShippingSplitShipmentsDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
+    @ObservedObject var viewModel: ViewModel
 
     @State private var showingMergeAllSheet = false
+
+    @State private var shipmentToRemove: ViewModel.Shipment?
+    @State private var shipmentToMergeInto: ViewModel.Shipment?
+
+    typealias ViewModel = WooShippingSplitShipmentsViewModel
 
     var body: some View {
         NavigationView {
@@ -29,7 +34,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                         }
 
                         VStack(spacing: Layout.verticalSpacing) {
-                            ForEach(viewModel.currentShipment) { item in
+                            ForEach(viewModel.currentShipment.contents) { item in
                                 CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
@@ -78,6 +83,9 @@ struct WooShippingSplitShipmentsDetailView: View {
         .sheet(isPresented: $showingMergeAllSheet) {
             mergeAllUnfulfilledSheet
         }
+        .sheet(item: $shipmentToRemove) { shipment in
+            removeShipmentSheet(for: shipment)
+        }
     }
 }
 
@@ -109,9 +117,10 @@ private extension WooShippingSplitShipmentsDetailView {
 
     var removeShipmentMenu: some View {
         Menu {
-            ForEach(viewModel.topTabItems, id: \.name) { tab in
-                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat, tab.name.lowercased())) {
-                    // TODO
+            ForEach(viewModel.shipments) { shipment in
+                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat,
+                                                        viewModel.retrieveName(for: shipment).lowercased())) {
+                    shipmentToRemove = shipment
                 }
             }
             Divider()
@@ -153,7 +162,9 @@ private extension WooShippingSplitShipmentsDetailView {
     }
 
     var mergeAllUnfulfilledSheet: some View {
-        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
+        ScrollableVStack(alignment: .leading,
+                         padding: Layout.contentPadding,
+                         spacing: Layout.verticalSpacing) {
             Text(Localization.MergeAllUnfulfilledSheet.title)
                 .font(.title3)
                 .bold()
@@ -178,6 +189,82 @@ private extension WooShippingSplitShipmentsDetailView {
             .buttonStyle(SecondaryButtonStyle())
         }
         .presentationDetents([.fraction(0.4), .medium, .large])
+    }
+
+    func removeShipmentSheet(for shipment: ViewModel.Shipment) -> some View {
+        ScrollableVStack(padding: Layout.contentPadding,
+                         spacing: Layout.contentPadding) {
+            VStack(alignment: .leading) {
+                Text(Localization.RemoveShipmentSheet.title)
+                    .font(.title3)
+                    .bold()
+
+                Text(String.localizedStringWithFormat(Localization.RemoveShipmentSheet.subtitle, shipment.quantity))
+                    .font(.subheadline)
+            }
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top)
+
+            VStack {
+                ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
+                    HStack {
+                        Image(systemName: "arrow.turn.down.right")
+                            .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
+                            .subheadlineStyle()
+                            .bold()
+                        VStack(alignment: .leading) {
+                            Text(viewModel.retrieveName(for: otherShipment))
+                                .headlineStyle()
+                            AdaptiveStack(horizontalAlignment: .leading) {
+                                Text(otherShipment.quantity)
+                                Spacer()
+                                Text(otherShipment.itemsDetailLabel)
+                            }
+                            .font(.subheadline)
+                        }
+                    }
+                    .padding(Layout.contentPadding)
+                    .if(otherShipment == shipmentToMergeInto) { view in
+                        view.background(
+                            Color(.listSelectedBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                        )
+                    }
+                    .roundedBorder(cornerRadius: Layout.cornerRadius,
+                                   lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
+                                   lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        shipmentToMergeInto = otherShipment
+                    }
+                }
+            }
+
+            Spacer()
+
+            VStack {
+                Button(String.localizedStringWithFormat(Localization.RemoveShipmentSheet.confirmCTA,
+                                                        viewModel.retrieveName(for: shipment))) {
+                    guard let shipmentToMergeInto else {
+                        return
+                    }
+                    viewModel.removeShipment(shipment, mergeInto: shipmentToMergeInto)
+                    shipmentToRemove = nil
+                }
+                .buttonStyle(DestructiveButtonStyle())
+                .disabled(shipmentToMergeInto == nil)
+
+                Button(Localization.cancel) {
+                    shipmentToRemove = nil
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .onDisappear {
+            shipmentToMergeInto = nil
+        }
     }
 }
 
@@ -293,6 +380,28 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
                 "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA",
                 value: "Merge all shipments",
                 comment: "Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+        }
+
+        enum RemoveShipmentSheet {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.title",
+                value: "Remove shipment",
+                comment: "Title of the sheet to confirm removing a shipment in the shipping label creation flow."
+            )
+            static let subtitle = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle",
+                value: "Choose where to move the %1$@ in this shipment to.",
+                comment: "Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. " +
+                "Placeholder is the number of items in the shipment. " +
+                "Reads as: 'Choose where to move the 3 items in this shipment to.'"
+            )
+            static let confirmCTA = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA",
+                value: "Remove %1$@",
+                comment: "Button to confirm removing a shipment in the shipping label creation flow. " +
+                "Placeholder is the name of the shipment. " +
+                "Reads as: 'Remove Shipment 1.'"
             )
         }
     }

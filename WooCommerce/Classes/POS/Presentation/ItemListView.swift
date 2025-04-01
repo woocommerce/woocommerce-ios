@@ -52,7 +52,19 @@ struct ItemListView: View {
                 }, label: {
                     Text("Coupons")
                 })
+
+                Spacer()
+
+                Button(action: {
+                    posModel.createCoupon()
+                }, label: {
+                    Text(Image(systemName: "plus.circle.fill"))
+                })
+                .font(.posButtonSymbolLarge)
+                .foregroundStyle(Color.posOnSurface)
+                .renderedIf(selectedItemType == .coupons)
             }
+            .padding(POSPadding.medium)
             .renderedIf(shouldShowCoupons)
 
             switch itemListState {

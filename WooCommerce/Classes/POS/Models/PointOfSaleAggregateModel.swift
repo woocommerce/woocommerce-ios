@@ -520,3 +520,8 @@ private extension PointOfSaleAggregateModel {
         static let initialPage: Int = 1
     }
 }
+
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func createCoupon() {}
+}

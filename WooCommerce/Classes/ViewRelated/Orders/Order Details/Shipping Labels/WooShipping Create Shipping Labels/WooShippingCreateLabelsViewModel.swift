@@ -268,13 +268,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                     await self.loadStoreOptions()
                 }
             }
-            
+
             if originAddress.isEmpty {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }
             }
-            
+
             let totalOrderItems = order.items.map(\.quantity).reduce(0, +)
             if totalOrderItems > 1 {
                 // Only fetch shipments info if there are more than one order items.

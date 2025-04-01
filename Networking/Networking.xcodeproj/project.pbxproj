@@ -184,6 +184,7 @@
 		09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */; };
 		204CBD2B2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */; };
 		207D816C2D4A30A30097012E /* products-load-simple-products-empty-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */; };
+		20887FAB2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */; };
 		209AD3C32AC196E300825D76 /* WooPaymentsPayoutsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */; };
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20ABC0632D95632D0000EADD /* POSProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ABC0622D95632D0000EADD /* POSProduct.swift */; };
@@ -1534,6 +1535,7 @@
 		14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release.xcconfig"; sourceTree = "<group>"; };
 		204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error-site-credentials.json"; sourceTree = "<group>"; };
 		207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-simple-products-empty-price.json"; sourceTree = "<group>"; };
+		20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductsNetworkingTests.swift; sourceTree = "<group>"; };
 		209AD3C22AC196E300825D76 /* WooPaymentsPayoutsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverview.swift; sourceTree = "<group>"; };
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20ABC0622D95632D0000EADD /* POSProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProduct.swift; sourceTree = "<group>"; };
@@ -2885,6 +2887,7 @@
 				D8FBFF1B22D51C34006E3336 /* OrderStatsRemoteV4Tests.swift */,
 				261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */,
 				74749B9422413119005C4CF2 /* ProductsRemoteTests.swift */,
+				20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */,
 				D88D5A4C230BD010007B6E01 /* ProductReviewsRemoteTests.swift */,
 				45152814257A83DD0076B03C /* ProductAttributesRemoteTests.swift */,
 				CEB9BF2E2BB18F430007978A /* ProductBundleStatsRemoteTests.swift */,
@@ -5863,6 +5866,7 @@
 				6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */,
 				261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */,
 				261C466D2A67478800734070 /* ApplicationPasswordEncoderTests.swift in Sources */,
+				20887FAB2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift in Sources */,
 				453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */,
 				45C6D0E429B9F327009CE29C /* CookieNonceAuthenticatorTests.swift in Sources */,
 				24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */,

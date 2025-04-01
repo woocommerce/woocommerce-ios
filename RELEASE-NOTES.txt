@@ -8,6 +8,7 @@
 - [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
 - [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
 - [internal] POS: Show location pre-alert and error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/15456].
+- [internal] Payments: update reader preparation spinner color [https://github.com/woocommerce/woocommerce-ios/pull/15460]
 
 22.0
 -----

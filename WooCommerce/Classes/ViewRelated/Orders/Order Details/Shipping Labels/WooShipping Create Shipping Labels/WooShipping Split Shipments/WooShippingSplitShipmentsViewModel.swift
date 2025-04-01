@@ -400,11 +400,11 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 }
 
-// MARK: Create shipments
+// MARK: Shipments
 
 extension WooShippingSplitShipmentsViewModel {
 
-    static func createShipments(with config: WooShippingConfig,
+    private static func createShipments(with config: WooShippingConfig,
                                 packageItems: [ShippingLabelPackageItem],
                                 currency: String,
                                 currencySettings: CurrencySettings,
@@ -455,7 +455,7 @@ extension WooShippingSplitShipmentsViewModel {
         return shipments
     }
 
-    func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
         Shipment(contents: contents,
                  currency: order.currency,
                  currencySettings: currencySettings,
@@ -520,7 +520,7 @@ extension WooShippingSplitShipmentsViewModel {
 
     @discardableResult
     @MainActor
-    func updateShipment() async throws -> WooShippingShipments {
+    private func updateShipment() async throws -> WooShippingShipments {
         let shipments = editedShipmentsInfo
         return try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.updateShipment(siteID: order.siteID,

@@ -210,6 +210,31 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         undoMovingItemsHandler?()
         movingCompletionMessage = nil
     }
+
+    func mergeAllUnfulfilledShipments() {
+        var mergedShipment = Shipment()
+
+        // TODO-15440: check for fulfilled shipments and remove them from the list.
+        shipments.forEach { shipment in
+            for item in shipment {
+                let matchingItemIndex = mergedShipment.firstIndex(where: {
+                    $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                })
+                if let matchingItemIndex {
+                    // Merge the quantity if the same item is merged to the shipment
+                    let updatedQuantity = item.packageItem.quantity + mergedShipment[matchingItemIndex].packageItem.quantity
+                    let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
+                    mergedShipment[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+                } else {
+                    // Keep the item as-is
+                    mergedShipment.append(item)
+                }
+            }
+        }
+
+        shipments = [mergedShipment]
+        selectedShipmentIndex = 0
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {

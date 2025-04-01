@@ -467,6 +467,42 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
     }
+
+    // MARK: - `mergeAllUnfulfilledShipments`
+
+    func test_mergeAllUnfulfilledShipments_updates_shipments_correctly() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // Moving items to 2 new shipments
+        viewModel.shipments.first?.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.shipments.first?.last?.childItemRows.last?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Confidence checks
+        XCTAssertEqual(viewModel.shipments.count, 3)
+
+        // When
+        viewModel.mergeAllUnfulfilledShipments()
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 1)
+        XCTAssertEqual(viewModel.shipments[0].count, 3)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 3)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

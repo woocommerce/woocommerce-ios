@@ -25,6 +25,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
     }
 
     init(item: ShippingLabelPackageItem,
+         isSelectable: Bool = true,
          currency: String) {
         self.packageItem = item
 
@@ -34,7 +35,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
                                                             currency: currency)
 
         self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: "\(item.orderItemID)",
-                                                              isSelectable: true,
+                                                              isSelectable: isSelectable,
                                                               item: mainShippingItem,
                                                               showQuantity: true)
 
@@ -45,7 +46,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
             for index in 0..<item.quantity.intValue {
                 let childShipmentId = "\(item.orderItemID)-sub-\(index)"
                 childItemRows.append(SelectableShipmentItemRowViewModel(itemID: childShipmentId,
-                                                                        isSelectable: true,
+                                                                        isSelectable: isSelectable,
                                                                         item: childShippingItem,
                                                                         showQuantity: false))
             }

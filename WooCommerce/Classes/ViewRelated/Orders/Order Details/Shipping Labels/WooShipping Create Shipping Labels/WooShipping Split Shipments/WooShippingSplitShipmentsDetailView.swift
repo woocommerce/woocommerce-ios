@@ -140,7 +140,7 @@ private extension WooShippingSplitShipmentsDetailView {
                 Button(String.localizedStringWithFormat(Localization.removeShipmentFormat,
                                                         viewModel.retrieveName(for: shipment).lowercased())) {
                     shipmentToRemove = shipment
-                }
+                }.disabled(shipment.isPurchased)
             }
             Divider()
             Button(Localization.mergeAll) {
@@ -227,36 +227,37 @@ private extension WooShippingSplitShipmentsDetailView {
 
             VStack {
                 ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
-                    HStack {
-                        Image(systemName: "arrow.turn.down.right")
-                            .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
-                            .subheadlineStyle()
-                            .bold()
-                        VStack(alignment: .leading) {
-                            Text(viewModel.retrieveName(for: otherShipment))
-                                .headlineStyle()
-                            AdaptiveStack(horizontalAlignment: .leading) {
-                                Text(otherShipment.quantity)
-                                Spacer()
-                                Text(otherShipment.itemsDetailLabel)
-                            }
-                            .font(.subheadline)
-                        }
-                    }
-                    .padding(Layout.contentPadding)
-                    .if(otherShipment == shipmentToMergeInto) { view in
-                        view.background(
-                            Color(.listSelectedBackground)
-                                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                        )
-                    }
-                    .roundedBorder(cornerRadius: Layout.cornerRadius,
-                                   lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
-                                   lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
+                    Button {
                         shipmentToMergeInto = otherShipment
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.turn.down.right")
+                                .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
+                                .font(.subheadline)
+                                .bold()
+                            VStack(alignment: .leading) {
+                                Text(viewModel.retrieveName(for: otherShipment))
+                                    .font(.headline)
+                                AdaptiveStack(horizontalAlignment: .leading) {
+                                    Text(otherShipment.quantity)
+                                    Spacer()
+                                    Text(otherShipment.itemsDetailLabel)
+                                }
+                                .font(.subheadline)
+                            }
+                        }
+                        .padding(Layout.contentPadding)
+                        .if(otherShipment == shipmentToMergeInto) { view in
+                            view.background(
+                                Color(.listSelectedBackground)
+                                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                            )
+                        }
+                        .roundedBorder(cornerRadius: Layout.cornerRadius,
+                                       lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
+                                       lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
+                    .disabled(otherShipment.isPurchased)
                 }
             }
 

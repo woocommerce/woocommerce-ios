@@ -25,7 +25,9 @@ struct TopTabView<Content: View>: View {
     @State private var contentSize: CGSize = .zero
 
     @Binding var showTabs: Bool
+
     private let showContent: Bool
+    private let showDividerBelowTabs: Bool
 
     let tabs: [TopTabItem<Content>]
 
@@ -54,6 +56,7 @@ struct TopTabView<Content: View>: View {
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
          showContent: Bool = true,
+         showDividerBelowTabs: Bool = true,
          selectedTabIndex: Binding<Int> = .constant(0),
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
@@ -67,6 +70,7 @@ struct TopTabView<Content: View>: View {
         self.tabs = tabs
         self._showTabs = showTabs
         self.showContent = showContent
+        self.showDividerBelowTabs = showDividerBelowTabs
         self._selectedTab = selectedTabIndex
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
@@ -151,6 +155,7 @@ struct TopTabView<Content: View>: View {
                     }
                 }
                 Divider()
+                    .renderedIf(showDividerBelowTabs)
             }
 
             if showContent {

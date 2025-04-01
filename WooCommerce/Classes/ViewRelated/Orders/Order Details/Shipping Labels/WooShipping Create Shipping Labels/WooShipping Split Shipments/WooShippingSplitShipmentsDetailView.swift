@@ -6,22 +6,16 @@ struct WooShippingSplitShipmentsDetailView: View {
 
     @ObservedObject var viewModel: WooShippingSplitShipmentsViewModel
 
+    @State private var showingMergeAllSheet = false
+
     var body: some View {
         NavigationView {
             VStack {
                 if viewModel.shipments.count > 1 {
-                    TopTabView(tabs: viewModel.topTabItems,
-                               showContent: false,
-                               selectedTabIndex: $viewModel.selectedShipmentIndex,
-                               tabsContainerHorizontalPadding: nil,
-                               selectedStateColor: .accentColor,
-                               unselectedStateColor: .secondary,
-                               selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
-                               tabPadding: Layout.tabPadding,
-                               tabsNameFont: Font.subheadline.bold(),
-                               tabsIconSize: nil,
-                               tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                               tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+                    VStack(spacing: 0) {
+                        topTabView
+                        Divider()
+                    }
                 }
 
                 ScrollView {
@@ -81,10 +75,55 @@ struct WooShippingSplitShipmentsDetailView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .sheet(isPresented: $showingMergeAllSheet) {
+            mergeAllUnfulfilledSheet
+        }
     }
 }
 
 private extension WooShippingSplitShipmentsDetailView {
+    var topTabView: some View {
+        HStack(spacing: 0) {
+            TopTabView(tabs: viewModel.topTabItems,
+                       showContent: false,
+                       showDividerBelowTabs: false,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       tabsContainerHorizontalPadding: nil,
+                       selectedStateColor: .accentColor,
+                       unselectedStateColor: .secondary,
+                       selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                       tabPadding: Layout.tabPadding,
+                       tabsNameFont: Font.subheadline.bold(),
+                       tabsIconSize: nil,
+                       tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            .overlay(alignment: .trailing) {
+                LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
+                    .frame(width: Layout.gradientViewWidth)
+                    .renderedIf(viewModel.selectedShipmentIndex < viewModel.topTabItems.count - 1)
+            }
+
+            removeShipmentMenu
+        }
+    }
+
+    var removeShipmentMenu: some View {
+        Menu {
+            ForEach(viewModel.topTabItems, id: \.name) { tab in
+                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat, tab.name.lowercased())) {
+                    // TODO
+                }
+            }
+            Divider()
+            Button(Localization.mergeAll) {
+                showingMergeAllSheet = true
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .padding()
+        }
+    }
+
     var noticeStack: some View {
         VStack(spacing: Layout.contentPadding) {
             if let message = viewModel.instructions {
@@ -111,6 +150,34 @@ private extension WooShippingSplitShipmentsDetailView {
                 })
             }
         }
+    }
+
+    var mergeAllUnfulfilledSheet: some View {
+        ScrollableVStack(alignment: .leading, spacing: Layout.contentPadding) {
+            Text(Localization.MergeAllUnfulfilledSheet.title)
+                .font(.title3)
+                .bold()
+                .multilineTextAlignment(.leading)
+                .padding(.top)
+
+            Text(Localization.MergeAllUnfulfilledSheet.description)
+                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+
+            Spacer()
+
+            Button(Localization.MergeAllUnfulfilledSheet.confirmCTA) {
+                viewModel.mergeAllUnfulfilledShipments()
+                showingMergeAllSheet = false
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(Localization.cancel) {
+                showingMergeAllSheet = false
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .presentationDetents([.fraction(0.4), .medium, .large])
     }
 }
 
@@ -170,6 +237,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let tabItemContentHorizontalPadding: CGFloat = 16.0
         static let tabItemContentVerticalPadding: CGFloat = 9.0
         static let cornerRadius: CGFloat = 8
+        static let gradientViewWidth: CGFloat = 32
     }
 
     enum Localization {
@@ -193,6 +261,40 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
             value: "Undo",
             comment: "Button to revert moving items between shipments in the shipping label creation flow"
         )
+        static let cancel = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss a sheet in the shipping label creation flow"
+        )
+        static let removeShipmentFormat = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.removeShipmentFormat",
+            value: "Remove %1$@",
+            comment: "Button to remove a shipment in the shipping label creation flow. " +
+            "The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'."
+        )
+        static let mergeAll = NSLocalizedString(
+            "wooShippingSplitShipmentsDetailView.mergeAll",
+            value: "Merge all unfulfilled",
+            comment: "Button to merge all unfulfilled shipments in the shipping label creation flow."
+        )
+
+        enum MergeAllUnfulfilledSheet {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title",
+                value: "Merge all unfulfilled shipments",
+                comment: "Title of the merge all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+            static let description = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description",
+                value: "This will remove all unfulfilled split shipments and move all items into one shipment",
+                comment: "Message on the merge all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+            static let confirmCTA = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA",
+                value: "Merge all shipments",
+                comment: "Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow."
+            )
+        }
     }
 }
 

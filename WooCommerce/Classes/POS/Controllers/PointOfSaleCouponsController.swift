@@ -1,5 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
+import enum Yosemite.CouponAction
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 
 @available(iOS 17.0, *)

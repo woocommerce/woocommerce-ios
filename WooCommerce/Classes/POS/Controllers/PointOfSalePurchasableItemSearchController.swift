@@ -6,9 +6,14 @@ import protocol Yosemite.PointOfSaleItemSearchServiceProtocol
 protocol PointOfSalePurchasableItemSearchControllerProtocol {
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given search term.
-    func searchItems(searchTerm: String) async
+    func searchItems(searchTerm: String, base: ItemListBaseItem) async
     /// Loads the next page of items for the most recent search term.
-    func loadNextItems() async
+    func loadNextItems(base: ItemListBaseItem) async
+
+    func loadItems(base: ItemListBaseItem) async
+    /// Refreshes the items for a given base item – will result in showing only the first page.
+    func refreshItems(base: ItemListBaseItem) async
+    /// Loads the next page of items for a given base item.
 }
 
 
@@ -26,13 +31,21 @@ protocol PointOfSalePurchasableItemSearchControllerProtocol {
         self.itemsController = PointOfSaleItemsController(itemProvider: itemProvider)
     }
 
-    func searchItems(searchTerm: String) async {
+    func searchItems(searchTerm: String, base: ItemListBaseItem = .root) async {
         itemProvider.updateSearchTerm(searchTerm)
-        await itemsController.loadItems(base: .root)
+        await itemsController.loadItems(base: base)
     }
 
-    func loadNextItems() async {
-        await itemsController.loadNextItems(base: .root)
+    func loadNextItems(base: ItemListBaseItem) async {
+        await itemsController.loadNextItems(base: base)
+    }
+
+    func loadItems(base: ItemListBaseItem) async {
+        await itemsController.loadItems(base: base)
+    }
+
+    func refreshItems(base: ItemListBaseItem) async {
+        await itemsController.refreshItems(base: base)
     }
 
 }

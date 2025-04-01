@@ -18,6 +18,11 @@ struct TopTabItem<Content: View> {
 }
 
 struct TopTabView<Content: View>: View {
+    enum TabsIconAlignment {
+        case leading
+        case trailing
+    }
+
     @Binding private var selectedTab: Int
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
@@ -50,6 +55,9 @@ struct TopTabView<Content: View>: View {
     // Specifies the height and width of the icon
     // - Applied with the conditional modifier
     let tabsIconSize: CGFloat?
+    let tabsIconAlignment: TabsIconAlignment
+    let tabsIconForegroundColor: Color?
+
     let tabItemContentHorizontalPadding: CGFloat?
     let tabItemContentVerticalPadding: CGFloat?
 
@@ -65,6 +73,8 @@ struct TopTabView<Content: View>: View {
          tabPadding: CGFloat = Layout.tabPadding,
          tabsNameFont: Font = .headline,
          tabsIconSize: CGFloat? = 20.0,
+         tabsIconAlignment: TabsIconAlignment = .leading,
+         tabsIconForegroundColor: Color? = nil,
          tabItemContentHorizontalPadding: CGFloat? = nil,
          tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
@@ -80,24 +90,26 @@ struct TopTabView<Content: View>: View {
         self.tabPadding = tabPadding
         self.tabsNameFont = tabsNameFont
         self.tabsIconSize = tabsIconSize
+        self.tabsIconAlignment = tabsIconAlignment
+        self.tabsIconForegroundColor = tabsIconForegroundColor
         self.tabItemContentHorizontalPadding = tabItemContentHorizontalPadding
         self.tabItemContentVerticalPadding = tabItemContentVerticalPadding
     }
 
     private func tabItemContentView(_ index: Int, selected: Bool) -> some View {
         HStack {
-            if let icon = tabs[index].icon {
-                Image(uiImage: icon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .if(tabsIconSize != nil) {
-                        $0.frame(width: tabsIconSize, height: tabsIconSize)
-                    }
+            if let icon = tabs[index].icon, tabsIconAlignment == .leading {
+                tabIconView(with: icon)
             }
+
             Text(tabs[index].name)
                 .font(tabsNameFont)
                 .foregroundColor(selected ? selectedStateColor : unselectedStateColor)
                 .id(index)
+
+            if let icon = tabs[index].icon, tabsIconAlignment == .trailing {
+                tabIconView(with: icon)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -108,6 +120,18 @@ struct TopTabView<Content: View>: View {
         }
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(selected ? [.isSelected, .isHeader] : [])
+    }
+
+    func tabIconView(with icon: UIImage) -> some View {
+        Image(uiImage: icon)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .if(tabsIconForegroundColor != nil) {
+                $0.foregroundStyle(tabsIconForegroundColor ?? .clear)
+            }
+            .if(tabsIconSize != nil) {
+                $0.frame(width: tabsIconSize, height: tabsIconSize)
+            }
     }
 
     var body: some View {

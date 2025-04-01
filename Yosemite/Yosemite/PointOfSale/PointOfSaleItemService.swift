@@ -51,9 +51,36 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
     public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
+        try await providePointOfSaleItems(pageNumber: pageNumber) { [weak self] siteID, productTypes, pageNumber in
+            guard let self else {
+                throw PointOfSaleItemServiceError.unknown
+            }
+            return try await productsRemote.loadProductsForPointOfSale(
+                for: siteID,
+                productTypes: productTypes,
+                pageNumber: pageNumber)
+        }
+    }
+
+    func provideSearchedPointOfSaleItems(query: String, pageNumber: Int) async throws -> PagedItems<POSItem> {
+        try await providePointOfSaleItems(pageNumber: pageNumber) { [weak self] siteID, productTypes, pageNumber in
+            guard let self else {
+                throw PointOfSaleItemServiceError.unknown
+            }
+            return try await productsRemote.searchProductsForPointOfSale(
+                for: siteID,
+                query: query,
+                productTypes: productTypes,
+                pageNumber: pageNumber)
+        }
+    }
+
+    private func providePointOfSaleItems(
+        pageNumber: Int,
+        fetch: (Int64, [ProductType], Int) async throws -> PagedItems<POSProduct>) async throws -> PagedItems<POSItem> {
         let productTypes: [ProductType] = [.simple, .variable]
         do {
-            let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+            let pagedProducts = try await fetch(siteID, productTypes, pageNumber)
             let products = pagedProducts.items
 
             if pageNumber != 1 && products.count == 0 {

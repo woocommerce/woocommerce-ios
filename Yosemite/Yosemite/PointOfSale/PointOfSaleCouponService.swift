@@ -6,7 +6,11 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import Storage
 
-public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
+public protocol PointOfSaleCouponServiceProtocol {
+    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
+}
+
+public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let couponsRemote: CouponsRemote
@@ -40,7 +44,7 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
     // TODO:
     // gh-15326 - Return PagedItems<POSItem> instead.
     @MainActor
-    public func providePointOfSaleCoupons() async -> [POSItem] {
+    private func providePointOfSaleCoupons() async -> [POSItem] {
         guard let storage = storage else {
             return []
         }
@@ -69,13 +73,8 @@ public final class PointOfSaleCouponService: PointOfSaleItemServiceProtocol {
         }
     }
 
-    // TODO: Remove this conformance
-    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        return .init(items: [], hasMorePages: false)
-    }
-
     @MainActor
-    public func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         let coupons = await providePointOfSaleCoupons()
 
         if !coupons.isEmpty {

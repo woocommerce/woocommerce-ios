@@ -42,6 +42,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                 noticeStack
                     .padding(Layout.contentPadding)
             }
+            .disabled(viewModel.isSavingShipmentInfo)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {
@@ -49,10 +50,24 @@ struct WooShippingSplitShipmentsDetailView: View {
                     Button(Localization.selectAll) {
                         viewModel.selectAll()
                     }
+                    .disabled(viewModel.isSavingShipmentInfo)
                 }
+
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
-                        dismiss()
+                    if viewModel.isSavingShipmentInfo {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else {
+                        Button(Localization.done) {
+                            Task {
+                                do {
+                                    try await viewModel.saveShipmentInfo()
+                                    dismiss()
+                                } catch {
+                                    // TODO: 15309 Show error
+                                }
+                            }
+                        }
+                        .disabled(!viewModel.enableDoneButton)
                     }
                 }
             }
@@ -288,6 +303,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
     WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                       config: ShippingLabelSampleData.sampleWooShippingConfig(),
                                                                                       items: [ShippingLabelPackageItem(productOrVariationID: 1,
+                                                                                                                       orderItemID: 12,
                                                                                                                        name: "Shirt",
                                                                                                                        weight: 0.5,
                                                                                                                        quantity: 2,

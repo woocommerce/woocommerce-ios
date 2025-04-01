@@ -220,13 +220,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 1)
     }
 
@@ -248,11 +248,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 1)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
     }
 
@@ -277,15 +277,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 2)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[1][1].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][1].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][1].packageItem.quantity, 3)
     }
 
@@ -310,15 +310,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 2)
 
         XCTAssertEqual(viewModel.shipments[0].count, 3)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][2].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 1)
 
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[2].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
     }
 
@@ -342,9 +342,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 1)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 2)
     }
 
@@ -449,10 +449,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Confidence checks
         XCTAssertEqual(viewModel.shipments.count, 2)
         XCTAssertEqual(viewModel.shipments[0].count, 1)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 1)
         XCTAssertEqual(viewModel.shipments[1].count, 1)
-        XCTAssertEqual(viewModel.shipments[1][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[1][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1][0].packageItem.quantity, 2)
 
         // When
@@ -462,52 +462,207 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments.count, 1)
 
         XCTAssertEqual(viewModel.shipments[0].count, 2)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+        XCTAssertEqual(viewModel.shipments[0][1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
     }
 
-    // MARK: - `mergeAllUnfulfilledShipments`
+    // MARK: - `saveShipmentInfo`
 
-    func test_mergeAllUnfulfilledShipments_updates_shipments_correctly() {
+    @MainActor
+    func test_save_shipping_info_sends_request_to_save() async throws {
         // Given
-        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
-                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
-                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: WooShippingConfig.fake(),
                                                            items: items,
+                                                           stores: stores,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
 
-        // Moving items to 2 new shipments
-        viewModel.shipments.first?.last?.childItemRows.first?.handleTap()
-        viewModel.moveSelectedItems(to: .newShipment)
-        viewModel.shipments.first?.last?.childItemRows.last?.handleTap()
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 
-        // Confidence checks
-        XCTAssertEqual(viewModel.shipments.count, 3)
+        var receivedShipmentToUpdate: WooShippingUpdateShipment?
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, shipmentToUpdate, completion):
+                receivedShipmentToUpdate = shipmentToUpdate
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
 
         // When
-        viewModel.mergeAllUnfulfilledShipments()
+        try await viewModel.saveShipmentInfo()
 
         // Then
-        XCTAssertEqual(viewModel.shipments.count, 1)
-        XCTAssertEqual(viewModel.shipments[0].count, 3)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
-        XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
-        XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
-        XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 3)
+        let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: ["0", "1"],
+                                                                 shipments: ["1": [WooShippingShipmentItem(id: 1, subItems: [])],
+                                                                             "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                                                                                   WooShippingShipmentItem(id: 2, subItems: [])]])
+        XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
+    }
+
+    // MARK: - `enableDoneButton`
+
+    @MainActor
+    func test_enableDoneButton_is_false_initially() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // Then
+        XCTAssertFalse(viewModel.enableDoneButton)
+    }
+
+    @MainActor
+    func test_enableDoneButton_turns_true_when_changes_made_to_shipments() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertTrue(viewModel.enableDoneButton)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, _, completion):
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        try await viewModel.saveShipmentInfo()
+
+        // Then
+        XCTAssertFalse(viewModel.enableDoneButton)
+    }
+
+    @MainActor
+    func test_enableDoneButton_turns_false_when_shipment_changes_are_saved_to_remote() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertTrue(viewModel.enableDoneButton)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, _, completion):
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        try await viewModel.saveShipmentInfo()
+
+        // Then
+        XCTAssertFalse(viewModel.enableDoneButton)
+    }
+
+    @MainActor
+    func test_enableDoneButton_turns_false_when_shipment_changes_are_undone() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.undoMovingItems()
+
+        // Then
+        XCTAssertFalse(viewModel.enableDoneButton)
+
+        // MARK: - `mergeAllUnfulfilledShipments`
+
+        func test_mergeAllUnfulfilledShipments_updates_shipments_correctly() {
+            // Given
+            let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                         sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
+                         sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+            let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                               config: WooShippingConfig.fake(),
+                                                               items: items,
+                                                               currencySettings: currencySettings,
+                                                               shippingSettingsService: shippingSettingsService)
+
+            // Moving items to 2 new shipments
+            viewModel.shipments.first?.last?.childItemRows.first?.handleTap()
+            viewModel.moveSelectedItems(to: .newShipment)
+            viewModel.shipments.first?.last?.childItemRows.last?.handleTap()
+            viewModel.moveSelectedItems(to: .newShipment)
+
+            // Confidence checks
+            XCTAssertEqual(viewModel.shipments.count, 3)
+
+            // When
+            viewModel.mergeAllUnfulfilledShipments()
+
+            // Then
+            XCTAssertEqual(viewModel.shipments.count, 1)
+            XCTAssertEqual(viewModel.shipments[0].count, 3)
+            XCTAssertEqual(viewModel.shipments[0][0].packageItem.productOrVariationID, items[0].productOrVariationID)
+            XCTAssertEqual(viewModel.shipments[0][0].packageItem.quantity, 2)
+            XCTAssertEqual(viewModel.shipments[0][1].packageItem.productOrVariationID, items[1].productOrVariationID)
+            XCTAssertEqual(viewModel.shipments[0][1].packageItem.quantity, 1)
+            XCTAssertEqual(viewModel.shipments[0][2].packageItem.productOrVariationID, items[2].productOrVariationID)
+            XCTAssertEqual(viewModel.shipments[0][2].packageItem.quantity, 3)
+        }
     }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {
     func sampleItem(id: Int64, weight: Double, value: Double, quantity: Decimal) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
+                                 orderItemID: id,
                                  name: "Item",
                                  weight: weight,
                                  quantity: quantity,

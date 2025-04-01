@@ -33,7 +33,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
         let childShippingItem = WooShippingItemRowViewModel(item: ShippingLabelPackageItem(copy: item, quantity: 1.0),
                                                             currency: currency)
 
-        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: "\(item.productOrVariationID)",
+        self.mainItemRow = SelectableShipmentItemRowViewModel(itemID: "\(item.orderItemID)",
                                                               isSelectable: true,
                                                               item: mainShippingItem,
                                                               showQuantity: true)
@@ -43,7 +43,7 @@ final class CollapsibleShipmentItemCardViewModel: ObservableObject, Identifiable
         } else {
             var childItemRows = [SelectableShipmentItemRowViewModel]()
             for index in 0..<item.quantity.intValue {
-                let childShipmentId = "\(item.productOrVariationID)-sub-\(index)"
+                let childShipmentId = "\(item.orderItemID)-sub-\(index)"
                 childItemRows.append(SelectableShipmentItemRowViewModel(itemID: childShipmentId,
                                                                         isSelectable: true,
                                                                         item: childShippingItem,

@@ -22,6 +22,45 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
     }
 
+    /// Shipment info saved in remote. Used to compare with locally edited info and enable "Done" button
+    ///
+    @Published private var shipmentsSavedInRemote: WooShippingUpdateShipment?
+
+    /// Edited shipments info to send to remote
+    ///
+    private var editedShipmentsInfo: WooShippingUpdateShipment {
+        var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
+        var shipmentIdsToUpdate = [String]()
+        for (index, shipment) in shipments.enumerated() {
+            let key = "\(index)"
+            // TODO: 15309 Investigate which IDs need to be sent to remote
+            shipmentIdsToUpdate.append(key)
+
+            var items = [WooShippingShipmentItem]()
+            for item in shipment {
+                if let mainItemID = Int(item.mainItemRow.itemID) {
+                    let i = WooShippingShipmentItem(id: Int64(mainItemID),
+                                                    subItems: item.childItemRows.map({ $0.itemID }))
+                    items.append(i)
+                } else {
+                    DDLogError("Unable to parse main item ID from \(item.mainItemRow.itemID)")
+                }
+            }
+
+            shipmentsForRemote[key] = items
+        }
+
+        let shipment = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
+                                                 shipments: shipmentsForRemote)
+        return shipment
+    }
+
+    /// Enables "Done" button only if shipments are edited
+    ///
+    var enableDoneButton: Bool {
+        shipmentsSavedInRemote != editedShipmentsInfo
+    }
+
     /// Label with the total number of items to ship.
     @Published private(set) var itemsCountLabel: String = ""
 
@@ -56,6 +95,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @Published private(set) var movingCompletionMessage: AttributedString?
     private var undoMovingItemsHandler: (() -> Void)?
 
+    @Published private(set) var isSavingShipmentInfo = false
+
     init(order: Order,
          config: WooShippingConfig,
          items: [ShippingLabelPackageItem],
@@ -72,6 +113,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             CollapsibleShipmentItemCardViewModel(item: item, currency: order.currency)
         }
         self.shipments = [initialShipment]
+        shipmentsSavedInRemote = editedShipmentsInfo
 
         configureSectionHeader()
         configureSelectionCallback()
@@ -211,6 +253,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         movingCompletionMessage = nil
     }
 
+    @MainActor
+    func saveShipmentInfo() async throws {
+        isSavingShipmentInfo = true
+        try await updateShipment()
+        isSavingShipmentInfo = false
+    }
+
     func mergeAllUnfulfilledShipments() {
         var mergedShipment = Shipment()
 
@@ -322,6 +371,29 @@ private extension WooShippingSplitShipmentsViewModel {
         let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(totalPrice, with: order.currency) ?? totalPrice.description
+    }
+
+    @discardableResult
+    @MainActor
+    func updateShipment() async throws -> WooShippingShipments {
+        let shipments = editedShipmentsInfo
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = WooShippingAction.updateShipment(siteID: order.siteID,
+                                                          orderID: order.orderID,
+                                                          shipmentToUpdate: shipments) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let shipmentResponse):
+                    shipmentsSavedInRemote = shipments
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

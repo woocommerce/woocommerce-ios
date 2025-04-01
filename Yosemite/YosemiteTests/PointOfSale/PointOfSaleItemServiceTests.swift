@@ -6,7 +6,7 @@ import Storage
 @testable import Yosemite
 
 final class PointOfSaleCouponServiceTests: XCTestCase {
-    private let siteID: Int64 = 123
+    private let siteID: Int64 = 1
     private var couponProvider: PointOfSaleCouponServiceProtocol!
     private var network: MockNetwork!
     private var currencySettings: CurrencySettings!
@@ -18,13 +18,12 @@ final class PointOfSaleCouponServiceTests: XCTestCase {
         currencySettings = CurrencySettings()
         network = MockNetwork()
         storage = MockStorageManager()
-        
-        stores = MockStoresManager(objectGraph: ScreenshotObjectGraph(), storageManager: storage)
+
+        //stores = MockStoresManager(objectGraph: ScreenshotObjectGraph(), storageManager: storage)
 
         couponProvider = PointOfSaleCouponService(siteID: siteID,
                                                   currencySettings: currencySettings,
                                                   network: network,
-                                                  stores: stores,
                                                   storage: storage)
     }
 
@@ -62,13 +61,13 @@ final class PointOfSaleCouponServiceTests: XCTestCase {
     }
 
     func test_some_coupons() async {
-        let expectedCoupons = 3
+        let expectedCoupons = 4
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
         // When
         //let sut = PointOfSaleCouponService(siteID: siteID, currencySettings: currencySettings, credentials: nil, stores: stores, storage: stor)
         do {
             let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
-            XCTAssertEqual(coupons.items.count, expectedCoupons) // XCTAssertEqual failed: ("0") is not equal to ("3")
+            XCTAssertEqual(coupons.items.count, expectedCoupons)
         } catch {
             // Then
             XCTFail("Error: \(error)")

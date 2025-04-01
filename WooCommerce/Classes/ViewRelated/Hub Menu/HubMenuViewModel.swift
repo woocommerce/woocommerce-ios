@@ -17,38 +17,38 @@ extension NSNotification.Name {
     public static let hubMenuViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.hubMenuViewDidAppear")
 }
 
-final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
-    private let siteID: Int64
-    private let storage: StorageManagerType
-    private let currencySettings: CurrencySettings
-    private let stores: StoresManager
-
-    private var service: PointOfSaleCouponService? = nil
-
-    init(siteID: Int64, storage: StorageManagerType, currencySettings: CurrencySettings, stores: StoresManager) {
-        self.siteID = siteID
-        self.storage = storage
-        self.currencySettings = currencySettings
-        self.stores = stores
-
-        service = makeService()
-    }
-
-    private func makeService() -> PointOfSaleCouponService {
-        return PointOfSaleCouponService(siteID: siteID,
-                                        currencySettings: currencySettings,
-                                        network: AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials),
-                                        stores: stores,
-                                        storage: storage)
-    }
-
-    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<Yosemite.POSItem> {
-        guard let service = service else {
-            throw NSError(domain: "oopsie", code: -1)
-        }
-        return try await service.providePointOfSaleCoupons(pageNumber: pageNumber)
-    }
-}
+//final class WooCommercePointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
+//    private let siteID: Int64
+//    private let storage: StorageManagerType
+//    private let currencySettings: CurrencySettings
+//    private let stores: StoresManager
+//
+//    private var service: PointOfSaleCouponService? = nil
+//
+//    init(siteID: Int64, storage: StorageManagerType, currencySettings: CurrencySettings, stores: StoresManager) {
+//        self.siteID = siteID
+//        self.storage = storage
+//        self.currencySettings = currencySettings
+//        self.stores = stores
+//
+//        service = makeService()
+//    }
+//
+//    private func makeService() -> PointOfSaleCouponService {
+//        return PointOfSaleCouponService(siteID: siteID,
+//                                        currencySettings: currencySettings,
+//                                        network: AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials),
+//                                        stores: stores,
+//                                        storage: storage)
+//    }
+//
+//    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<Yosemite.POSItem> {
+//        guard let service = service else {
+//            throw NSError(domain: "oopsie", code: -1)
+//        }
+//        return try await service.providePointOfSaleCoupons(pageNumber: pageNumber)
+//    }
+//}
 
 /// Destination views that the hub menu can navigate to.
 enum HubMenuNavigationDestination: Hashable {
@@ -146,6 +146,8 @@ final class HubMenuViewModel: ObservableObject {
         let storage = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
         let stores = ServiceLocator.stores
+        
+        
 
 // 1. Yosemite.PointOfSaleCouponService
         return PointOfSaleCouponService(siteID: siteID,

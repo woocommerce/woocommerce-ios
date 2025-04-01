@@ -14,6 +14,13 @@ public final class CouponStore: Store {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
+    
+    convenience init(storageManager: StorageManagerType,
+                     network: Network,
+                     remote: CouponsRemoteProtocol) {
+        self.init(dispatcher: Dispatcher(), storageManager: storageManager, network: network, remote: remote)
+        
+    }
 
     /// Initialize a new CouponStore
     /// - Parameters:

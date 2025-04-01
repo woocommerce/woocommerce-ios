@@ -13,19 +13,19 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let couponsRemote: CouponsRemote
-    private let stores: StoresManager
     private let storage: StorageManagerType
+    private let couponsStore: CouponStore
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
                 network: Network,
-                stores: StoresManager,
                 storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.couponsRemote = CouponsRemote(network: network)
-        self.stores = stores
         self.storage = storage
+        
+        self.couponsStore = CouponStore(storageManager: storage, network: network, remote: couponsRemote)
     }
 
     public convenience init(siteID: Int64,
@@ -36,7 +36,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials),
-                  stores: stores,
                   storage: storage)
     }
 
@@ -99,7 +98,8 @@ private extension PointOfSaleCouponService {
                 }
             )
             Task { @MainActor in
-                stores.dispatch(action)
+                //stores.dispatch(action)
+                couponsStore.onAction(action)
             }
         }
     }

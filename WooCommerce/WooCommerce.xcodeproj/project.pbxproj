@@ -866,6 +866,10 @@
 		2084B7AC2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084B7AB2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift */; };
 		2084B7AE2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */; };
 		208628742D48E4CB003F45DC /* TotalsViewHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208628732D48E4CB003F45DC /* TotalsViewHelperTests.swift */; };
+		20886D3D2D96E0F900F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20886D3C2D96E0F900F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift */; };
+		20886D3F2D96E5EA00F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20886D3E2D96E5EA00F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift */; };
+		2088784B2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */; };
+		2088784D2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */; };
 		20897C9E2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */; };
 		209566252D4CF00100977124 /* PointOfSalePaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
@@ -4107,6 +4111,10 @@
 		2084B7AB2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift; sourceTree = "<group>"; };
 		2084B7AD2C77845C00EFBD2E /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTests.swift; sourceTree = "<group>"; };
 		208628732D48E4CB003F45DC /* TotalsViewHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsViewHelperTests.swift; sourceTree = "<group>"; };
+		20886D3C2D96E0F900F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift; sourceTree = "<group>"; };
+		20886D3E2D96E5EA00F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift; sourceTree = "<group>"; };
+		2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift; sourceTree = "<group>"; };
+		2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift; sourceTree = "<group>"; };
 		20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleUnsupportedWidthView.swift; sourceTree = "<group>"; };
 		20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.debug.xcconfig"; sourceTree = "<group>"; };
 		209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentMethod.swift; sourceTree = "<group>"; };
@@ -8234,6 +8242,8 @@
 				026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */,
 				203163B42C1C5EB2001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView.swift */,
 				203163BA2C1C5F72001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */,
+				20886D3E2D96E5EA00F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift */,
+				2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */,
 				203163B62C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift */,
 				026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReaderView.swift */,
 				0220F4942C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift */,
@@ -8274,6 +8284,8 @@
 				205B7EC42C19FC4F00D14A36 /* PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel.swift */,
 				203163AE2C1C5C6B001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift */,
 				203163B02C1C5C87001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift */,
+				20886D3C2D96E0F900F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift */,
+				2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */,
 				203163AC2C1C5C54001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift */,
 				203163B22C1C5DAC001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift */,
 				205B7EBE2C19FBCA00D14A36 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel.swift */,
@@ -15767,6 +15779,7 @@
 				77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */,
 				26CE6F392B7E71AA008DB858 /* ConnectivityTool.swift in Sources */,
 				020EF5EB2A8C7105009D2169 /* SiteSnapshotTracker.swift in Sources */,
+				2088784B2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift in Sources */,
 				029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */,
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
@@ -15967,6 +15980,7 @@
 				02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
+				2088784D2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift in Sources */,
 				EEC099382BF3C6A900FBCF6C /* MostActiveCouponsCardViewModel.swift in Sources */,
 				B943E7252AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
@@ -16001,6 +16015,7 @@
 				451A04EA2386D28300E368C9 /* ProductImagesHeaderViewModel.swift in Sources */,
 				02307924258731B2008EADEE /* PrintShippingLabelViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
+				20886D3D2D96E0F900F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel.swift in Sources */,
 				204CB8102C10BB88000C9773 /* CardPresentPaymentPreviewService.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				035F2308275690970019E1B0 /* CardPresentModalConnectingFailedUpdatePostalCode.swift in Sources */,
@@ -16156,6 +16171,7 @@
 				039298C82A45EE3900F393D5 /* MyStoreRoute.swift in Sources */,
 				0221121E288973C20028F0AF /* LocalNotification.swift in Sources */,
 				451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */,
+				20886D3F2D96E5EA00F7AE03 /* PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView.swift in Sources */,
 				CEAEB75A2CD0F9A300C3E117 /* WooShippingPostPurchaseView.swift in Sources */,
 				02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,

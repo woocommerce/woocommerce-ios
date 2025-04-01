@@ -7,9 +7,8 @@ public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
-    ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: POSCart, order: Order?, currency: CurrencyCode) async throws -> Order
+    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(order: Order, recipientEmail: String) async throws
 }
 
@@ -36,19 +35,14 @@ public final class POSOrderService: POSOrderServiceProtocol {
     // MARK: - Protocol conformance
 
     public func syncOrder(cart: POSCart,
-                          order posOrder: Order?,
                           currency: CurrencyCode) async throws -> Order {
-        let initialOrder: Order = posOrder ?? OrderFactory.newOrder(currency: currency)
-            .copy(siteID: siteID,
-                  status: .autoDraft)
-        let order = updateOrder(initialOrder, cart: cart).sanitizingLocalItems()
-        let syncedOrder: Order
-        if posOrder != nil {
-            syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items, .couponLines])
-        } else {
-            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
-        }
-        return syncedOrder
+        let order = OrderFactory
+            .newOrder(currency: currency)
+            .copy(siteID: siteID, status: .autoDraft)
+            .addItems(cart.items)
+            .addCoupons(cart.coupons)
+
+        return try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
     }
 
     public func updatePOSOrder(order: Order, recipientEmail: String) async throws {
@@ -66,73 +60,19 @@ public final class POSOrderService: POSOrderServiceProtocol {
     }
 }
 
-private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol, Hashable {
-    let productID: Int64
-    let price: String
-    // Not used in POS but have to be included for the app usage.
-    let productType: ProductType
-    let bundledItems: [ProductBundleItem]
-
-    init(productID: Int64, price: String, productType: ProductType, bundledItems: [ProductBundleItem] = []) {
-        self.productID = productID
-        self.price = price
-        self.productType = productType
-        self.bundledItems = bundledItems
-    }
-}
-
-private extension POSOrderService {
-    func updateOrder(_ order: Order, cart: POSCart) -> Order {
-        // Removes all existing items by setting quantity to 0.
-        let itemsToRemove = order.items.compactMap {
-            Self.removalProductInput(item: $0)
-        }
-
-        // Adds items from the latest cart grouping by item.
-        let itemsToAdd = cart.items.createGroupedOrderSyncProductInputs().values
-        let itemsToSync = itemsToRemove + itemsToAdd
-
-        var order = ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
-        order = updateCoupons(cart.coupons, on: order)
-
-        return order
+private extension Order {
+    func addItems(_ cartItems: [POSCartItem]) -> Order {
+        let itemsToAdd = Array(cartItems.createGroupedOrderSyncProductInputs().values)
+        return ProductInputTransformer
+            .updateMultipleItems(with: itemsToAdd, on: self, shouldUpdateOrDeleteZeroQuantities: .update)
+            .sanitizingLocalItems()
     }
 
-    func updateCoupons(_ coupons: [POSCoupon], on order: Order) -> Order {
-        // Get coupon codes from cart
-        let cartCouponCodes = Set(coupons.map { $0.code })
-
-        // Keep existing coupons that are still in the cart
-        let remainingCoupons = order.coupons.filter { orderCoupon in
-            cartCouponCodes.contains(orderCoupon.code)
-        }
-
-        // Find new coupons that need to be added (in cart but not in order)
-        let existingCouponCodes = Set(order.coupons.map { $0.code })
+    func addCoupons(_ coupons: [POSCoupon]) -> Order {
         let newCoupons = coupons
-            .filter { !existingCouponCodes.contains($0.code) }
             .map { OrderFactory.newOrderCouponLine(code: $0.code) }
 
-        // Update order with remaining + new coupons
-        return order.copy(coupons: remainingCoupons + newCoupons)
-    }
-
-    /// Creates a new `OrderSyncProductInput` type meant to remove an existing item from `OrderSynchronizer`
-    ///
-    static func removalProductInput(item: OrderItem) -> OrderSyncProductInput? {
-        let productForRemoval = POSProductForRemoval(productID: item.productID)
-        // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID,
-                                     product: .product(productForRemoval),
-                                     quantity: 0)
-    }
-
-    /// A simplified product struct, intended to contain only the `productID`
-    struct POSProductForRemoval: OrderSyncProductTypeProtocol {
-        var price: String = ""
-        var productID: Int64
-        var productType: ProductType = .simple
-        var bundledItems: [ProductBundleItem] = []
+        return self.copy(coupons: newCoupons)
     }
 }
 

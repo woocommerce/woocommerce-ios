@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// The status of shipping label refund.
-public enum ShippingLabelRefundStatus: GeneratedFakeable {
+public enum ShippingLabelRefundStatus: Sendable, GeneratedFakeable {
     case pending
     case unknown
 }

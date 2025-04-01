@@ -2,7 +2,7 @@ import UIKit
 
 /// Modal presented when we are connecting to a reader
 ///
-final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayConnectingToReader: CardPresentPaymentsModalViewModel {
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .none
 
@@ -10,7 +10,7 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
 
     var topSubtitle: String?
 
-    let image: UIImage = .preparingBuiltInReader
+    let image: UIImage = .preparingTapToPayReader
 
     let primaryButtonTitle: String? = nil
 
@@ -35,7 +35,7 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
 
-private extension CardPresentModalBuiltInConnectingToReader {
+private extension CardPresentModalTapToPayConnectingToReader {
     enum Localization {
         static let title = NSLocalizedString(
             "Preparing Tap to Pay on iPhone",

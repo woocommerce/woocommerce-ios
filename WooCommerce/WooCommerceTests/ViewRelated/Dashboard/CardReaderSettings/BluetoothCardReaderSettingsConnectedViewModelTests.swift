@@ -524,7 +524,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_when_connected_to_a_built_in_reader_it_isnt_displayed() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.appleBuiltIn()],
+            connectedReaders: [MockCardReader.tapToPay()],
             discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -549,7 +549,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_when_connected_to_a_built_in_reader_it_disconnects() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.appleBuiltIn()],
+            connectedReaders: [MockCardReader.tapToPay()],
             discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -579,7 +579,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_when_automatically_disconnects_from_built_in_reader_it_tracks_that_in_analytics() throws {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.appleBuiltIn()],
+            connectedReaders: [MockCardReader.tapToPay()],
             discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -596,7 +596,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         // Then
-        let expectedEvent = WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect.rawValue
+        let expectedEvent = WooAnalyticsStat.manageCardReadersTapToPayReaderAutoDisconnect.rawValue
         let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: expectedEvent))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[eventIndex])
         assertEqual(WooAnalyticsEvent.InPersonPayments.unknownGatewayID, eventProperties[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String)

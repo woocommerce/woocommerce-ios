@@ -18,7 +18,7 @@ final class MockCardReaderSettingsAlerts {
     private var didPresentFoundReader: Bool
 
     var onLocationRequestPreAlert: ((_ onLocationRequestPreAlert: @escaping () -> Void) -> Void)?
-    var onLocationRequired: ((_ dismiss: @escaping () -> Void, _ skip: @escaping () -> Void) -> Void)?
+    var onLocationRequired: ((_ dismiss: @escaping () -> Void) -> Void)?
 
     init(mode: MockCardReaderSettingsAlertsMode) {
         self.mode = mode
@@ -182,9 +182,9 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func locationRequired(dismiss: @escaping () -> Void, skip: @escaping () -> Void) -> any AlertDetails {
+    func locationRequired(cancel: @escaping () -> Void) -> any AlertDetails {
         if let onLocationRequired {
-            onLocationRequired(dismiss, skip)
+            onLocationRequired(cancel)
         }
         return MockCardPresentPaymentsModalViewModel()
     }

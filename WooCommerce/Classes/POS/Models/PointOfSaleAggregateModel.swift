@@ -172,13 +172,13 @@ private extension PointOfSaleAggregateModel {
         }
     }
 
-    // Tracks when the order is created or updated successfully
+    // Tracks when the order is created successfully
     // pdfdoF-6hn#comment-7625-p2
     func trackOrderSyncState(_ result: Result<SyncOrderState, Error>) {
         switch result {
         case .success(let syncState):
             switch syncState {
-            case .newOrder, .orderUpdated:
+            case .newOrder:
                 collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
             default:
                 break

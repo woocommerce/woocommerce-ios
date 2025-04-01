@@ -14,7 +14,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var shipments: [Shipment]
 
-    @Published var selectedShipmentIndex: Int? = 0 {
+    @Published var selectedShipmentIndex = 0 {
         didSet {
             configureSectionHeader()
             configureSelectionCallback()
@@ -84,8 +84,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     var currentShipment: [CollapsibleShipmentItemCardViewModel] {
-        let index = selectedShipmentIndex ?? 0
-        return shipments[index]
+        shipments[selectedShipmentIndex]
     }
 
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
@@ -142,7 +141,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         // Step 0: keep the details before changes to revert changes when undo is selected
         let initialShipments = shipments
-        let currentIndex = selectedShipmentIndex ?? 0
+        let currentIndex = selectedShipmentIndex
         undoMovingItemsHandler = { [weak self] in
             guard let self else { return }
             shipments = initialShipments
@@ -295,7 +294,7 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func updateMoveToNotice() {
-        let currentIndex = selectedShipmentIndex ?? 0
+        let currentIndex = selectedShipmentIndex
         let selectedItemsCount = currentShipment
             .map(\.numberOfSelectedItems)
             .reduce(0, +)

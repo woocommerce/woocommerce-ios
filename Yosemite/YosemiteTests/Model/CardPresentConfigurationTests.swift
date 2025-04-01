@@ -12,7 +12,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.us)
-        assertEqual([.chipper, .stripeM2, .appleBuiltIn], configuration.supportedReaders)
+        assertEqual([.chipper, .stripeM2, .tapToPay], configuration.supportedReaders)
     }
 
     // MARK: - Puerto Rico Tests
@@ -47,7 +47,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])
         XCTAssertEqual(configuration.paymentMethods, [.cardPresent])
         XCTAssertEqual(configuration.purchaseCardReaderUrl(utmProvider: MockUTMParameterProvider()).absoluteString, Constants.PurchaseURL.gb)
-        assertEqual([.wisepad3, .appleBuiltIn], configuration.supportedReaders)
+        assertEqual([.wisepad3, .tapToPay], configuration.supportedReaders)
         assertEqual(10000, configuration.contactlessLimitAmount)
     }
 

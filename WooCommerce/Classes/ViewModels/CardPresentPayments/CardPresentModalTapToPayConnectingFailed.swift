@@ -3,7 +3,7 @@ import Yosemite
 
 /// Modal presented when an error occurs while connecting to a reader
 ///
-final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayConnectingFailed: CardPresentPaymentsModalViewModel {
     private let continueSearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
@@ -14,7 +14,7 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .builtInReaderError
+    let image: UIImage = .tapToPayReaderError
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
@@ -38,7 +38,7 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
 
         switch error {
         case CardReaderServiceError.connection(_):
-            bottomTitle = builtInReaderDescription(for: error)
+            bottomTitle = tapToPayReaderDescription(for: error)
         default:
             break
         }
@@ -55,7 +55,7 @@ final class CardPresentModalBuiltInConnectingFailed: CardPresentPaymentsModalVie
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-extension CardPresentModalBuiltInConnectingFailed: ReaderConnectionUnderlyingErrorDisplaying {
+extension CardPresentModalTapToPayConnectingFailed: ReaderConnectionUnderlyingErrorDisplaying {
     func errorDescription(underlyingError: CardReaderServiceUnderlyingError) -> String? {
         switch underlyingError {
         case .internalServiceError:
@@ -69,7 +69,7 @@ extension CardPresentModalBuiltInConnectingFailed: ReaderConnectionUnderlyingErr
     }
 }
 
-private extension CardPresentModalBuiltInConnectingFailed {
+private extension CardPresentModalTapToPayConnectingFailed {
     enum Localization {
         static let title = NSLocalizedString(
             "Setup failed",

@@ -3,7 +3,7 @@ import Yosemite
 
 /// Modal presented when an error occurs while connecting to a reader
 ///
-final class CardPresentModalBuiltInConnectingFailedNonRetryable: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayConnectingFailedNonRetryable: CardPresentPaymentsModalViewModel {
     private let closeAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -13,7 +13,7 @@ final class CardPresentModalBuiltInConnectingFailedNonRetryable: CardPresentPaym
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .builtInReaderError
+    let image: UIImage = .tapToPayReaderError
 
     let primaryButtonTitle: String? = Localization.close
 
@@ -35,7 +35,7 @@ final class CardPresentModalBuiltInConnectingFailedNonRetryable: CardPresentPaym
 
         switch error {
         case CardReaderServiceError.connection(_):
-            bottomTitle = builtInReaderDescription(for: error)
+            bottomTitle = tapToPayReaderDescription(for: error)
         default:
             break
         }
@@ -50,7 +50,7 @@ final class CardPresentModalBuiltInConnectingFailedNonRetryable: CardPresentPaym
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-extension CardPresentModalBuiltInConnectingFailedNonRetryable: ReaderConnectionUnderlyingErrorDisplaying {
+extension CardPresentModalTapToPayConnectingFailedNonRetryable: ReaderConnectionUnderlyingErrorDisplaying {
     func errorDescription(underlyingError: CardReaderServiceUnderlyingError) -> String? {
         switch underlyingError {
         case .internalServiceError:
@@ -64,7 +64,7 @@ extension CardPresentModalBuiltInConnectingFailedNonRetryable: ReaderConnectionU
     }
 }
 
-private extension CardPresentModalBuiltInConnectingFailedNonRetryable {
+private extension CardPresentModalTapToPayConnectingFailedNonRetryable {
     enum Localization {
         static let title = NSLocalizedString(
             "Setup failed",

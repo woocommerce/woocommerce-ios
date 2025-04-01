@@ -4,18 +4,18 @@ import MessageUI
 import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
-final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
+final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
     var name: String = ""
     var amount: String = ""
 
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(bottomTitle: Localization.validatingOrderBottomTitle,
-                                        cancelAction: onCancel)
+                                            cancelAction: onCancel)
     }
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(bottomTitle: Localization.preparingReaderBottomTitle,
-                                        cancelAction: onCancel)
+                                            cancelAction: onCancel)
     }
 
     func tapOrInsertCard(title: String,
@@ -24,10 +24,10 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                          onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
-        return CardPresentModalBuiltInFollowReaderInstructions(name: name,
-                                              amount: amount,
-                                              transactionType: .collectPayment,
-                                              inputMethods: inputMethods)
+        return CardPresentModalTapToPayFollowReaderInstructions(name: name,
+                                                                amount: amount,
+                                                                transactionType: .collectPayment,
+                                                                inputMethods: inputMethods)
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {
@@ -38,21 +38,21 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
 
     func processingTransaction(title: String) -> CardPresentPaymentsModalViewModel {
         name = title
-        return CardPresentModalBuiltInReaderProcessing(name: name, amount: amount)
+        return CardPresentModalTapToPayReaderProcessing(name: name, amount: amount)
     }
 
     func success(receiptState: CardReaderTransactionAlertReceiptState) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email, printReceiptAction, noReceiptAction):
-            return CardPresentModalBuiltInSuccessEmailSent(printReceipt: printReceiptAction,
-                                                           noReceiptAction: noReceiptAction,
-                                                           email: email)
+            return CardPresentModalTapToPaySuccessEmailSent(printReceipt: printReceiptAction,
+                                                            noReceiptAction: noReceiptAction,
+                                                            email: email)
         case let .promptToSendEmailReceipt(printReceiptAction, emailReceiptAction, noReceiptAction):
-            return CardPresentModalBuiltInSuccess(printReceipt: printReceiptAction,
-                                                  emailReceipt: emailReceiptAction,
-                                                  noReceiptAction: noReceiptAction)
+            return CardPresentModalTapToPaySuccess(printReceipt: printReceiptAction,
+                                                   emailReceipt: emailReceiptAction,
+                                                   noReceiptAction: noReceiptAction)
         case let .emailSendingNotSupported(printReceiptAction, noReceiptAction):
-            return CardPresentModalBuiltInSuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
+            return CardPresentModalTapToPaySuccessWithoutEmail(printReceipt: printReceiptAction, noReceiptAction: noReceiptAction)
         }
     }
 
@@ -62,25 +62,25 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
-            return CardPresentModalErrorEmailSent(errorDescription: builtInReaderDescription(for: error),
+            return CardPresentModalErrorEmailSent(errorDescription: tapToPayReaderDescription(for: error),
                                                   transactionType: .collectPayment,
-                                                  image: .builtInReaderError,
+                                                  image: .tapToPayReaderError,
                                                   email: email,
                                                   requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                   tryAgainAction: tryAgain,
                                                   dismissCompletion: dismissCompletion)
         case let .promptToSendEmailReceipt(emailReceiptAction):
-            return CardPresentModalError(errorDescription: builtInReaderDescription(for: error),
+            return CardPresentModalError(errorDescription: tapToPayReaderDescription(for: error),
                                          transactionType: .collectPayment,
-                                         image: .builtInReaderError,
+                                         image: .tapToPayReaderError,
                                          requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                          tryAgainAction: tryAgain,
                                          emailReceiptAction: emailReceiptAction,
                                          dismissCompletion: dismissCompletion)
         case .noEmailReceipt:
-            return CardPresentModalErrorWithoutEmail(errorDescription: builtInReaderDescription(for: error),
+            return CardPresentModalErrorWithoutEmail(errorDescription: tapToPayReaderDescription(for: error),
                                                      transactionType: .collectPayment,
-                                                     image: .builtInReaderError,
+                                                     image: .tapToPayReaderError,
                                                      requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                      tryAgainAction: tryAgain,
                                                      dismissCompletion: dismissCompletion)
@@ -93,22 +93,22 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             CardPresentModalNonRetryableErrorEmailSent(amount: amount,
-                                                       errorDescription: builtInReaderDescription(for: error),
-                                                       image: .builtInReaderError,
+                                                       errorDescription: tapToPayReaderDescription(for: error),
+                                                       image: .tapToPayReaderError,
                                                        email: email,
                                                        requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                        onDismiss: dismissCompletion)
         case let .promptToSendEmailReceipt(emailReceiptAction):
             CardPresentModalNonRetryableError(amount: amount,
-                                              errorDescription: builtInReaderDescription(for: error),
-                                              image: .builtInReaderError,
+                                              errorDescription: tapToPayReaderDescription(for: error),
+                                              image: .tapToPayReaderError,
                                               requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                               onDismiss: dismissCompletion,
                                               emailReceiptAction: emailReceiptAction)
         case .noEmailReceipt:
             CardPresentModalNonRetryableErrorWithoutEmail(amount: amount,
-                                                          errorDescription: builtInReaderDescription(for: error),
-                                                          image: .builtInReaderError,
+                                                          errorDescription: tapToPayReaderDescription(for: error),
+                                                          image: .tapToPayReaderError,
                                                           requiresFallbackPaymentMethod: errorRequiresFallbackPaymentMethod(error),
                                                           onDismiss: dismissCompletion)
         }
@@ -119,8 +119,8 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     }
 }
 
-private extension BuiltInCardReaderPaymentAlertsProvider {
-    func builtInReaderDescription(for error: Error) -> String? {
+private extension TapToPayCardReaderPaymentAlertsProvider {
+    func tapToPayReaderDescription(for error: Error) -> String? {
         if let error = error as? CardReaderServiceError {
             switch error {
             case .connection(let underlyingError),

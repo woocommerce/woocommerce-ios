@@ -2,47 +2,41 @@ import UIKit
 
 /// Modal presented when the payment has been collected successfully
 /// No customer attached to order therefore an email receipt is not sent automatically
-/// Email receipt can be sent after payment
-final class CardPresentModalBuiltInSuccess: CardPresentPaymentsModalViewModel {
+/// Email receipt cannot be sent after the payment due to missing email client and too low WooCommerce API version
+final class CardPresentModalTapToPaySuccessWithoutEmail: CardPresentPaymentsModalViewModel {
 
     /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
 
-
     /// Closure to execute when secondary button is tapped
-    private let emailReceiptAction: () -> Void
-
-    /// Closure to execute when auxiliary button is tapped.
     private let noReceiptAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .noBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .twoActionAndAuxiliary
+    let actionsMode: PaymentsModalActionsMode = .twoAction
 
     let topTitle: String = Localization.paymentSuccessful
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .builtInReaderSuccess
+    let image: UIImage = .tapToPayReaderSuccess
 
     let primaryButtonTitle: String? = Localization.printReceipt
 
-    let secondaryButtonTitle: String? = Localization.emailReceipt
+    let secondaryButtonTitle: String? = Localization.saveReceiptAndContinue
 
-    let auxiliaryButtonTitle: String? = Localization.saveReceiptAndContinue
+    let auxiliaryButtonTitle: String? = nil
 
     let bottomTitle: String? = nil
 
     let bottomSubtitle: String? = nil
 
     var accessibilityLabel: String? {
-        return topTitle
+        return Localization.paymentSuccessful
     }
 
     init(printReceipt: @escaping () -> Void,
-         emailReceipt: @escaping () -> Void,
          noReceiptAction: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
-        self.emailReceiptAction = emailReceipt
         self.noReceiptAction = noReceiptAction
     }
 
@@ -53,17 +47,15 @@ final class CardPresentModalBuiltInSuccess: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        emailReceiptAction()
-    }
-
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true) { [weak self] in
             self?.noReceiptAction()
         }
     }
+
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
 
-private extension CardPresentModalBuiltInSuccess {
+private extension CardPresentModalTapToPaySuccessWithoutEmail {
     enum Localization {
         static let paymentSuccessful = NSLocalizedString(
             "Payment successful",
@@ -75,14 +67,9 @@ private extension CardPresentModalBuiltInSuccess {
             comment: "Button to print receipts. Presented to users after a payment has been successfully collected"
         )
 
-        static let emailReceipt = NSLocalizedString(
-            "Email receipt",
-            comment: "Button to email receipts. Presented to users after a payment has been successfully collected"
-        )
-
         static let saveReceiptAndContinue = NSLocalizedString(
             "Save receipt and continue",
-            comment: "Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected"
+            comment: "Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected"
         )
     }
 }

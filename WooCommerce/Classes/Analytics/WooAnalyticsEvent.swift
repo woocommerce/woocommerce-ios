@@ -1257,7 +1257,7 @@ extension WooAnalyticsEvent {
 
         enum CardReaderType: String {
             case external
-            case builtIn = "built_in"
+            case tapToPay = "built_in"
         }
 
         /// Common event keys
@@ -1436,8 +1436,8 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
+        static func cardReaderSelectTypeTapToPayTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeTapToPayTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: safeGatewayID(for: forGatewayID)
@@ -1467,8 +1467,8 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
+        static func manageCardReadersTapToPayReaderAutoDisconnect(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .manageCardReadersTapToPayReaderAutoDisconnect,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: safeGatewayID(for: forGatewayID)

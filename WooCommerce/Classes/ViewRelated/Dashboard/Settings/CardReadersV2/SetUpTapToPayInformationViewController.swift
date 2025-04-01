@@ -14,15 +14,15 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
     private var viewModel: SetUpTapToPayInformationViewModel
 
     private lazy var alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
-    private lazy var merchantEducationPresenter = BuiltInCardReaderMerchantEducationPresenter(rootViewController: self)
+    private lazy var merchantEducationPresenter = TapToPayCardReaderMerchantEducationPresenter(rootViewController: self)
 
     /// Connection Controller (helps connect readers)
     ///
-    private lazy var connectionController: BuiltInCardReaderConnectionController = {
-        return BuiltInCardReaderConnectionController(
+    private lazy var connectionController: TapToPayCardReaderConnectionController = {
+        return TapToPayCardReaderConnectionController(
             forSiteID: viewModel.siteID,
             alertsPresenter: alertsPresenter,
-            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            alertsProvider: TapToPayReaderConnectionAlertsProvider(),
             merchantEducationPresenter: merchantEducationPresenter,
             configuration: viewModel.configuration,
             analyticsTracker: viewModel.connectionAnalyticsTracker)
@@ -97,7 +97,7 @@ struct SetUpTapToPayInformationView: View {
                     .multilineTextAlignment(.center)
                     .padding([.leading, .trailing])
                     .fixedSize(horizontal: false, vertical: true)
-                Image(uiImage: .setUpBuiltInReader)
+                Image(uiImage: .setUpTapToPayReader)
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: imageMaxHeight)

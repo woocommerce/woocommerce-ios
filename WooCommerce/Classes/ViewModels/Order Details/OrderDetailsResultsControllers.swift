@@ -34,15 +34,6 @@ final class OrderDetailsResultsControllers {
     ///
     private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = getProductVariationResultsController()
 
-    /// Fee lines Results Controller.
-    ///
-    private lazy var feeLinesResultsController: ResultsController<StorageOrderFeeLine> = {
-        let predicate = NSPredicate(format: "order.orderID == %ld", order.orderID)
-        let descriptor = NSSortDescriptor(key: "feeID", ascending: true)
-
-        return ResultsController<StorageOrderFeeLine>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -61,17 +52,6 @@ final class OrderDetailsResultsControllers {
         let descriptor = NSSortDescriptor(keyPath: \StorageRefund.dateCreated, ascending: true)
 
         return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// ShippingLabel Results Controller.
-    ///
-    private lazy var shippingLabelResultsController: ResultsController<StorageShippingLabel> = {
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", order.siteID, order.orderID)
-        let dateCreatedDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.dateCreated, ascending: false)
-        let shippingLabelIDDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.shippingLabelID, ascending: false)
-        return ResultsController<StorageShippingLabel>(storageManager: storageManager,
-                                                       matching: predicate,
-                                                       sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
     /// AddOnGroup ResultsController.
@@ -128,7 +108,7 @@ final class OrderDetailsResultsControllers {
     /// Shipping labels for an Order
     ///
     var shippingLabels: [ShippingLabel] {
-        return shippingLabelResultsController.fetchedObjects
+        return order.shippingLabels
     }
 
     /// Site's add-on groups.
@@ -142,7 +122,7 @@ final class OrderDetailsResultsControllers {
     }
 
     var feeLines: [OrderFeeLine] {
-        return feeLinesResultsController.fetchedObjects
+        return order.fees
     }
 
     /// Shipping methods list
@@ -169,10 +149,8 @@ final class OrderDetailsResultsControllers {
         configureProductResultsController(onReload: onReload)
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
-        configureShippingLabelResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
-        configureFeeLinesResultsController(onReload: onReload)
         configureShippingMethodsResultsController(onReload: onReload)
     }
 
@@ -286,24 +264,6 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
-    private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
-        shippingLabelResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        shippingLabelResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try shippingLabelResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch ShippingLabels for Site \(siteID) and Order \(order.orderID): \(error)")
-        }
-    }
-
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
         addOnGroupResultsController.onDidChangeContent = {
             onReload()
@@ -340,24 +300,6 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
-    private func configureFeeLinesResultsController(onReload: @escaping () -> Void) {
-        feeLinesResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        feeLinesResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try feeLinesResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch Order Fee lines for Site \(siteID): \(error)")
-        }
-    }
-
     private func configureShippingMethodsResultsController(onReload: @escaping () -> Void) {
         shippingMethodsResultsController.onDidChangeContent = {
             onReload()
@@ -384,7 +326,6 @@ private extension OrderDetailsResultsControllers {
         try? refundResultsController.performFetch()
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
-        try? shippingLabelResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
         try? shippingMethodsResultsController.performFetch()

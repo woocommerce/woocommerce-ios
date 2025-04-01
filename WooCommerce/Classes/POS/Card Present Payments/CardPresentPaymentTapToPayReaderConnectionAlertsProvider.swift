@@ -1,6 +1,6 @@
 import Foundation
 
-struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
+struct CardPresentPaymentTapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentEventDetails
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningForReaders(endSearch: cancel)
@@ -82,8 +82,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
         .locationRequestPreAlert(requestPermission: requestPermission)
     }
 
-    func locationRequired(dismiss: @escaping () -> Void,
-                          skip: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .locationRequired(dismiss: dismiss, skip: skip)
+    func locationRequired(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .locationRequired(cancel: cancel)
     }
 }

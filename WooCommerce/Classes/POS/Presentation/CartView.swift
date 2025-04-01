@@ -277,6 +277,9 @@ private extension CartView {
         VStack {
             ForEach(posModel.cart.coupons, id: \.id) { couponItem in
                 CouponRowView(couponItem: couponItem,
+                              couponRowState: viewHelper.couponRowState(orderStage: posModel.orderStage,
+                                                                        orderState: posModel.orderState,
+                                                                        couponItem: couponItem),
                               onItemRemoveTapped: posModel.orderStage == .building ? {
                     posModel.remove(cartCouponItem: couponItem)
                 } : nil)

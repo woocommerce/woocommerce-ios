@@ -27,7 +27,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
                             CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
@@ -161,8 +161,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             done()
         case .locationRequestPreAlert:
             return
-        case .locationRequired(let dismiss, _):
-            dismiss()
+        case .locationRequired(let cancel):
+            cancel()
         }
     }
 }

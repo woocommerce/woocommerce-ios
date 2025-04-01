@@ -18,7 +18,6 @@ import protocol WooFoundation.Analytics
 
 enum SyncOrderState {
     case newOrder
-    case orderUpdated
     case orderNotChanged
 }
 
@@ -75,27 +74,20 @@ protocol PointOfSaleOrderControllerProtocol {
         }
 
         orderState = .syncing
-        let isNewOrder = order == nil
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
-                                                               order: order,
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            if isNewOrder {
-                analytics.track(.orderCreationSuccess)
-                return .success(.newOrder)
-            } else {
-                return .success(.orderUpdated)
-            }
+            analytics.track(.orderCreationSuccess)
+            return .success(.newOrder)
         } catch {
-            if isNewOrder {
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
-                    usesGiftCard: false,
-                    errorContext: String(describing: error),
-                    errorDescription: error.localizedDescription))
-            }
+            self.order = nil
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+                usesGiftCard: false,
+                errorContext: String(describing: error),
+                errorDescription: error.localizedDescription))
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }
@@ -182,7 +174,10 @@ private extension PointOfSaleOrderController {
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
-            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue)
+            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
+            discountTotal: formattedDiscount(totalsCalculator.discountTotal,
+                                             currency: order.currency),
+            couponsTotals: couponsTotals(order))
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -190,6 +185,24 @@ private extension PointOfSaleOrderController {
             return nil
         }
         return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
+        return order.coupons.compactMap { coupon in
+            PointOfSaleCouponTotal(
+                code: coupon.code,
+                total: formattedPrice(coupon.discount, currency: order.currency) ?? ""
+            )
+        }
+    }
+
+    func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
+        guard !discount.isZero(),
+              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency) else {
+            return nil
+        }
+
+        return formattedDiscount
     }
 }
 

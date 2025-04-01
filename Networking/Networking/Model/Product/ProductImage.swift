@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductImage entity.
 ///
-public struct ProductImage: Codable, Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductImage: Codable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let imageID: Int64
     public let dateCreated: Date    // gmt
     public let dateModified: Date?  // gmt
@@ -55,6 +55,20 @@ public struct ProductImage: Codable, Equatable, Sendable, GeneratedCopiable, Gen
     }
 }
 
+extension ProductImage: Equatable {
+    public static func == (lhs: ProductImage, rhs: ProductImage) -> Bool {
+        // Convert timestamps to integers to ignore fractional seconds, ensuring date comparisons
+        // are accurate to the nearest second and avoiding test discrepancies from millisecond differences.
+        let lhsTimestamp = Int(lhs.dateCreated.timeIntervalSince1970)
+        let rhsTimestamp = Int(rhs.dateCreated.timeIntervalSince1970)
+
+        return lhs.imageID == rhs.imageID &&
+               lhsTimestamp == rhsTimestamp &&
+               lhs.src == rhs.src &&
+               lhs.name == rhs.name &&
+               lhs.alt == rhs.alt
+    }
+}
 
 /// Defines all the ProductImage CodingKeys.
 ///

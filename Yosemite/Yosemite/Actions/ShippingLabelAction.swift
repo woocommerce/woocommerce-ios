@@ -3,7 +3,7 @@ import Networking
 public enum ShippingLabelAction: Action {
     /// Syncs shipping labels for a given order.
     ///
-    case synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: (Result<Void, Error>) -> Void)
+    case synchronizeShippingLabels(siteID: Int64, orderID: Int64, completion: (Result<[ShippingLabel], Error>) -> Void)
 
     /// Generates a shipping label document for printing.
     ///

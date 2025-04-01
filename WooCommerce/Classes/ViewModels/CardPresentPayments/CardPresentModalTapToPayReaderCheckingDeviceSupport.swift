@@ -2,7 +2,7 @@ import UIKit
 
 /// Modal presented when we are scanning for a reader to connect to
 ///
-final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayReaderCheckingDeviceSupport: CardPresentPaymentsModalViewModel {
     /// Called when cancel button is tapped
     private let cancelAction: () -> Void
 
@@ -13,7 +13,7 @@ final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPayme
 
     var topSubtitle: String?
 
-    let image: UIImage = .preparingBuiltInReader
+    let image: UIImage = .preparingTapToPayReader
 
     let primaryButtonTitle: String? = nil
 
@@ -50,7 +50,7 @@ final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPayme
     }
 }
 
-private extension CardPresentModalBuiltInReaderCheckingDeviceSupport {
+private extension CardPresentModalTapToPayReaderCheckingDeviceSupport {
     enum Constants {
         static let learnMoreURL = WooConstants.URLs.inPersonPaymentsLearnMoreWCPay
     }

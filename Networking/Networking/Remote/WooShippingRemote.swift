@@ -52,6 +52,10 @@ public protocol WooShippingRemoteProtocol {
     func loadConfig(siteID: Int64,
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void)
+    func updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: @escaping (Result<WooShippingShipments, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -430,6 +434,32 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             enqueue(request, mapper: mapper, completion: completion)
         }
     }
+
+    /// Updates shipment for a given order
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - shipmentToUpdate: shipment info to send to remote
+    ///   - completion: Closure to be executed upon completion.
+    public func updateShipment(siteID: Int64,
+                               orderID: Int64,
+                               shipmentToUpdate: WooShippingUpdateShipment,
+                               completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
+        do {
+            let parameters = try shipmentToUpdate.toDictionary()
+            let path = Path.updateShipment(orderID: orderID)
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = WooShippingUpdateShipmentMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constants
@@ -452,6 +482,9 @@ private extension WooShippingRemote {
         }
         static func config(orderID: Int64) -> String {
             "config/label-purchase/\(orderID)"
+        }
+        static func updateShipment(orderID: Int64) -> String {
+            "shipments/\(orderID)"
         }
     }
 

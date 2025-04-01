@@ -90,7 +90,9 @@ private extension OrderFormHostingController {
     }
 
     func discardOrderAndDismiss() {
-        viewModel.discardOrder()
+        if viewModel.flow == .creation {
+            viewModel.discardOrder()
+        }
         dismiss(animated: true)
     }
 

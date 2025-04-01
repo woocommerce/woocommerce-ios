@@ -110,6 +110,7 @@ extension Order {
                                   customFields: [],
                                   renewalSubscriptionID: nil,
                                   appliedGiftCards: [],
-                                  attributionInfo: nil)
+                                  attributionInfo: nil,
+                                  shippingLabels: [])
 }
 #endif

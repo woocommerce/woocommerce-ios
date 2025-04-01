@@ -35,8 +35,8 @@ final class TapToPayBadgePromotionChecker {
         }
 
         let supportDeterminer = CardReaderSupportDeterminer(siteID: siteID)
-        guard supportDeterminer.siteSupportsLocalMobileReader(),
-              await supportDeterminer.deviceSupportsLocalMobileReader(),
+        guard supportDeterminer.siteSupportsTapToPayReader(),
+              await supportDeterminer.deviceSupportsTapToPayReader(),
               await !supportDeterminer.hasPreviousTapToPayUsage() else {
             return shouldShowTapToPayBadges = false
         }

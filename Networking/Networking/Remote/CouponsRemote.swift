@@ -372,6 +372,23 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     }
 }
 
+extension CouponsRemote {
+    public func loadAllCoupons(for siteID: Int64,
+                               pageNumber: Int = CouponsRemote.Default.pageNumber,
+                               pageSize: Int = CouponsRemote.Default.pageSize) async throws -> [Coupon] {
+        try await withCheckedThrowingContinuation { continuation in
+            loadAllCoupons(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+                switch result {
+                case .success(let coupons):
+                    continuation.resume(returning: coupons)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Constants
 //
 public extension CouponsRemote {

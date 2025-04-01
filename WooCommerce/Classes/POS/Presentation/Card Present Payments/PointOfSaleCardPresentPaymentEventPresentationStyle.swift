@@ -246,14 +246,17 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             /// Not-yet supported types
         case .selectSearchType:
             return nil
-            /// Immediately request location permission until POS view is created, showing `Connecting to reader` underneath.
         case .locationRequestPreAlert(let requestPermission):
-            requestPermission()
-            self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
-            /// Skip location required step and rely on error during the payment process until POS view is created, showing `Connecting to reader` underneath.
-        case .locationRequired(_, let skip):
-            skip()
-            self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
+            self = .alert(.connectingLocationPreAlert(
+                viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel(
+                    requestPermissionAction: requestPermission)))
+        case .locationRequired(let cancel):
+            self = .alert(.connectingFailedLocationRequired(
+                viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(
+                    cancelSearchAction: {
+                        cancel()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
         }
     }
 }

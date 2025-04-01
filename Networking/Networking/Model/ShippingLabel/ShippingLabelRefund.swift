@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label Refund.
 ///
-public struct ShippingLabelRefund: Equatable, GeneratedFakeable {
+public struct ShippingLabelRefund: Equatable, Sendable, GeneratedFakeable {
     /// The date of refund request.
     public let dateRequested: Date
 

@@ -4,7 +4,7 @@ import WooFoundation
 
 /// Represents a shipment in Shipping Labels for the WooCommerce Shipping extension.
 ///
-public struct WooShippingShipment: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct WooShippingShipmentItem: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     /// ID of the shipment
     public let id: Int64
 
@@ -16,3 +16,5 @@ public struct WooShippingShipment: Codable, Equatable, GeneratedFakeable, Genera
         self.subItems = subItems
     }
 }
+
+public typealias WooShippingShipments = [String: [WooShippingShipmentItem]]

@@ -2,7 +2,7 @@ import UIKit
 
 /// Modal presented when a firmware update is being installed
 ///
-final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsModalViewModel, CardPresentModalProgressDisplaying {
+final class CardPresentModalTapToPayConfigurationProgress: CardPresentPaymentsModalViewModel, CardPresentModalProgressDisplaying {
     /// Called when cancel button is tapped
     private let cancelAction: (() -> Void)?
 
@@ -51,7 +51,7 @@ final class CardPresentModalBuiltInConfigurationProgress: CardPresentPaymentsMod
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
 
-private extension CardPresentModalBuiltInConfigurationProgress {
+private extension CardPresentModalTapToPayConfigurationProgress {
     enum Localization {
         static let title = NSLocalizedString(
             "Configuring iPhone",

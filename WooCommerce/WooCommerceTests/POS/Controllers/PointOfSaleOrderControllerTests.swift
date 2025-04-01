@@ -299,11 +299,10 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func syncOrder_when_updating_existing_order_returns_orderUpdated_result() async throws {
+    @Test func syncOrder_when_updating_existing_order_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService)
-        let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
 
@@ -316,9 +315,9 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         if case .success(let state) = result {
-            #expect(state == .orderUpdated)
+            #expect(state == .newOrder)
         } else {
-            #expect(Bool(false), "Expected success result with order updated")
+            #expect(Bool(false), "Expected success result with new order")
         }
     }
 
@@ -522,6 +521,51 @@ struct PointOfSaleOrderControllerTests {
             .syncing,
             .error(.invalidCoupon(errorMessage), {})
         ])
+    }
+
+    @available(iOS 17.0, *)
+    @Test func syncOrder_when_fails_sets_order_to_nil() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+
+        // First create a successful order
+        let orderItem = OrderItem.fake().copy(quantity: 1)
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        let cartItem = makeItem(orderItemsToMatch: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync succeeds
+        let initialResult = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        switch initialResult {
+        case .success(.newOrder):
+            break
+        default:
+            #expect(Bool(false), "Expected success with new order, got \(initialResult)")
+        }
+
+        // Then simulate a failure
+        mockOrderService.errorToReturn = SyncOrderStateError.syncFailure
+        let failureResult = await sut.syncOrder(for: .init(items: [cartItem, cartItem]), retryHandler: {})
+        switch failureResult {
+        case .failure(SyncOrderStateError.syncFailure):
+            break
+        default:
+            #expect(Bool(false), "Expected sync failure, got \(failureResult)")
+        }
+
+        // When - try syncing with the same cart again
+        mockOrderService.errorToReturn = nil
+        mockOrderService.orderToReturn = fakeOrder // Restore mock to return success
+        let subsequentResult = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+
+        // Then - should be treated as new order since previous order was cleared
+        switch subsequentResult {
+        case .success(.newOrder):
+            break
+        default:
+            #expect(Bool(false), "Expected new order after failure cleared previous order, got \(subsequentResult)")
+        }
     }
 
     struct AnalyticsTests {

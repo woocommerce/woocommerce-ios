@@ -19,9 +19,9 @@ internal class CouponService: CouponServiceProtocol {
 
     init(
         storageManager: StorageManagerType,
-        network: Network
+        remote: CouponsRemoteProtocol
     ) {
-        self.remote = CouponsRemote(network: network)
+        self.remote = remote
         self.storageManager = storageManager
     }
 

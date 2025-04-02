@@ -30,9 +30,10 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                             credentials: Credentials?,
                             storage: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials)
+        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  couponService: CouponService(storageManager: storage, network: network),
+                  couponService: CouponService(storageManager: storage, remote: remote),
                   storage: storage)
     }
 

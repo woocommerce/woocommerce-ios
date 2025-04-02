@@ -13,7 +13,7 @@ public final class CouponStore: Store {
          network: Network,
          remote: CouponsRemoteProtocol) {
         self.remote = remote
-        self.service = CouponService(storageManager: storageManager, network: network)
+        self.service = CouponService(storageManager: storageManager, remote: remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

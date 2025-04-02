@@ -448,3 +448,25 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(
+        order: ShippingLabelSampleData.sampleOrder(),
+        shipments: [
+            WooShippingSplitShipmentsViewModel.Shipment(contents: [ShippingLabelPackageItem(productOrVariationID: 1,
+                                                                                            orderItemID: 12,
+                                                                                            name: "Shirt",
+                                                                                            weight: 0.5,
+                                                                                            quantity: 2,
+                                                                                            value: 9.99,
+                                                                                            dimensions: ProductDimensions(length: "",
+                                                                                                                          width: "",
+                                                                                                                          height: ""),
+                                                                                            attributes: [],
+                                                                                            imageURL: nil)], currency: "$",
+                                                        currencySettings: ServiceLocator.currencySettings,
+                                                        shippingSettingsService: ServiceLocator.shippingSettingsService)
+        ]))
+}
+#endif

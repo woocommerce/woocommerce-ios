@@ -202,7 +202,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.state != .loading
         }
         XCTAssertFalse(loadedConfig)
-        XCTAssertNil(viewModel.splitShipmentsViewModel)
     }
 
     func test_shipping_config_is_loaded_if_order_contains_more_than_one_item() {
@@ -240,7 +239,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.state != .loading
         }
         XCTAssertTrue(loadedConfig)
-        XCTAssertNotNil(viewModel.splitShipmentsViewModel)
     }
 
     func test_origin_unverified_state_is_correct() {

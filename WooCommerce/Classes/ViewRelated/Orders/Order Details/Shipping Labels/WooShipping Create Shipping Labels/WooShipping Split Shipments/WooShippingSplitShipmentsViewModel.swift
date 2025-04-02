@@ -76,9 +76,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
+    private let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
     var topTabItems: [TopTabItem<EmptyView>] {
         shipments.enumerated().map { (index, item) in
-            let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
             return TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                               icon: item.isPurchased ? purchasedIcon : nil,
                               content: { EmptyView() })

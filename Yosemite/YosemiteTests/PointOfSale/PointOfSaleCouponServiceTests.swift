@@ -3,9 +3,9 @@ import Testing
 import class WooFoundation.CurrencySettings
 
 struct PointOfSaleCouponServiceTests {
-    let sut: PointOfSaleCouponService
-    let couponService: MockCouponService
-    let storage: MockStorageManager
+    private let sut: PointOfSaleCouponService
+    private let couponService: MockCouponService
+    private let storage: MockStorageManager
 
     init() {
         self.couponService = MockCouponService()
@@ -17,38 +17,63 @@ struct PointOfSaleCouponServiceTests {
         )
     }
 
-    @Test func synchronizeCalled() async throws {
-//        try await sut.providePointOfSaleCoupons(pageNumber: 0)
-//
-//        #expect(couponService.synchronizeCalled == true)
-    }
-
-    @Test func coupons() async throws {
+    @Test func providePointOfSaleCoupons_when_one_coupon_in_store_then_one_coupon_returned() async throws {
+        // Given
         let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
         storage.insertSampleCoupon(readOnlyCoupon: coupon)
 
+        // When
         let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
 
+        // Then
         #expect(coupons.items.count == 1)
     }
 
-    @Test func multipleCoupons() async throws {
-        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
+    @Test func providePointOfSaleCoupons_when_two_coupons_in_store_then_two_coupons_returned() async throws {
+        // Given
+        let coupon = Coupon.fake().copy(siteID: 123, couponID: 0, code: "coupon")
         storage.insertSampleCoupon(readOnlyCoupon: coupon)
-        let coupon2 = Coupon.fake().copy(siteID: 123, code: "coupon2")
+        let coupon2 = Coupon.fake().copy(siteID: 123, couponID: 1, code: "coupon2")
         storage.insertSampleCoupon(readOnlyCoupon: coupon2)
 
+        // When
         let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
 
+        // Then
         #expect(coupons.items.count == 2)
     }
 
-}
+    @Test func providePointOfSaleCoupons_when_no_coupons_then_synchronize_called() async throws {
+        try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
 
-class MockCouponService: CouponServiceProtocol {
-    var synchronizeCalled = false
-    func synchronizeCoupons(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
-        synchronizeCalled = true
+        #expect(couponService.synchronizeCalled == true)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func providePointOfSaleCoupons_when_some_coupons_then_synchronize_called_later() async throws {
+        // Given
+        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
+        storage.insertSampleCoupon(readOnlyCoupon: coupon)
+
+        try await confirmation(expectedCount: 1) { confirmation in
+            couponService.onSynchronizeCalled = {
+                // Then
+                confirmation()
+            }
+
+            // When
+            try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
+        }
+
     }
 }
 
+private class MockCouponService: CouponServiceProtocol {
+    var synchronizeCalled = false
+    var onSynchronizeCalled: () -> Void = {}
+    func synchronizeCoupons(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
+        synchronizeCalled = true
+        onCompletion(.success(true))
+        onSynchronizeCalled()
+    }
+}

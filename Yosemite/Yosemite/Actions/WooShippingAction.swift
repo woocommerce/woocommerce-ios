@@ -90,4 +90,11 @@ public enum WooShippingAction: Action {
     case loadConfig(siteID: Int64,
                     orderID: Int64,
                     completion: (Result<WooShippingConfig, Error>) -> Void)
+
+    /// Updates shipments for given order
+    ///
+    case updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: (Result<WooShippingShipments, Error>) -> Void)
 }

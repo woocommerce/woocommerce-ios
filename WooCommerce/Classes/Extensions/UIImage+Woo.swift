@@ -43,12 +43,6 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
-    /// Bell icon
-    ///
-    static var bell: UIImage {
-        UIImage(named: "bell")!
-    }
-
     /// Blaze icon
     ///
     static var blaze: UIImage {
@@ -279,10 +273,6 @@ extension UIImage {
 
     static var tapToPayOnIPhoneIcon: UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
-    }
-
-    static var bankIcon: UIImage {
-        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
     }
 
     static var scanToPayIcon: UIImage {
@@ -1326,32 +1316,32 @@ extension UIImage {
         return UIImage(named: "card-payments-select-reader-type")!
     }
 
-    /// Preparing built-in card reader: intended for use before we're ready to take payment
+    /// Preparing tap-to-pay card reader: intended for use before we're ready to take payment
     ///
-    static var preparingBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-preparing")!
+    static var preparingTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-preparing")!
     }
 
-    /// Built-in reader Processing: intended for use when a payment is
+    /// Tap to Pay reader Processing: intended for use when a payment is
     /// underway with the iPhone's built in reader.
     ///
-    static var builtInReaderProcessing: UIImage {
-        return UIImage(named: "built-in-reader-processing")!
+    static var tapToPayReaderProcessing: UIImage {
+        return UIImage(named: "tap-to-pay-reader-processing")!
     }
 
-    /// Built-in reader Success: intended for use when a transaction is complete
-    /// with the built-in reader
+    /// Tap to Pay reader Success: intended for use when a transaction is complete
+    /// with the tap-to-pay reader
     ///
-    static var builtInReaderSuccess: UIImage {
-        return UIImage(named: "built-in-reader-payment-success")!
+    static var tapToPayReaderSuccess: UIImage {
+        return UIImage(named: "tap-to-pay-reader-payment-success")!
     }
 
-    static var builtInReaderError: UIImage {
-        return UIImage(named: "built-in-reader-error")!
+    static var tapToPayReaderError: UIImage {
+        return UIImage(named: "tap-to-pay-reader-error")!
     }
 
-    static var setUpBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-set-up")!
+    static var setUpTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-set-up")!
     }
 
     static var shippingIcon: UIImage {

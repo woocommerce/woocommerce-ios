@@ -1,14 +1,14 @@
 import Foundation
 
 public struct CardReaderConnectionOptions {
-    public let builtInOptions: BuiltInCardReaderConnectionOptions?
+    public let tapToPayOptions: TapToPayCardReaderConnectionOptions?
 
-    public init(builtInOptions: BuiltInCardReaderConnectionOptions?) {
-        self.builtInOptions = builtInOptions
+    public init(tapToPayOptions: TapToPayCardReaderConnectionOptions?) {
+        self.tapToPayOptions = tapToPayOptions
     }
 }
 
-public struct BuiltInCardReaderConnectionOptions {
+public struct TapToPayCardReaderConnectionOptions {
     public let termsOfServiceAcceptancePermitted: Bool
 
     public init(termsOfServiceAcceptancePermitted: Bool) {

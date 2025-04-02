@@ -10,16 +10,55 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
 
-    typealias Shipment = [CollapsibleShipmentItemCardViewModel]
+    typealias ShipmentContents = [CollapsibleShipmentItemCardViewModel]
 
     @Published private(set) var shipments: [Shipment]
 
-    @Published var selectedShipmentIndex: Int? = 0 {
+    @Published var selectedShipmentIndex = 0 {
         didSet {
             configureSectionHeader()
             configureSelectionCallback()
             updateMoveToNotice()
         }
+    }
+
+    /// Shipment info saved in remote. Used to compare with locally edited info and enable "Done" button
+    ///
+    @Published private var shipmentsSavedInRemote: WooShippingUpdateShipment?
+
+    /// Edited shipments info to send to remote
+    ///
+    private var editedShipmentsInfo: WooShippingUpdateShipment {
+        var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
+        var shipmentIdsToUpdate = [String]()
+        for (index, shipment) in shipments.enumerated() {
+            let key = "\(index)"
+            // TODO: 15309 Investigate which IDs need to be sent to remote
+            shipmentIdsToUpdate.append(key)
+
+            var items = [WooShippingShipmentItem]()
+            for item in shipment.contents {
+                if let mainItemID = Int(item.mainItemRow.itemID) {
+                    let i = WooShippingShipmentItem(id: Int64(mainItemID),
+                                                    subItems: item.childItemRows.map({ $0.itemID }))
+                    items.append(i)
+                } else {
+                    DDLogError("Unable to parse main item ID from \(item.mainItemRow.itemID)")
+                }
+            }
+
+            shipmentsForRemote[key] = items
+        }
+
+        let shipment = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
+                                                 shipments: shipmentsForRemote)
+        return shipment
+    }
+
+    /// Enables "Done" button only if shipments are edited
+    ///
+    var enableDoneButton: Bool {
+        shipmentsSavedInRemote != editedShipmentsInfo
     }
 
     /// Label with the total number of items to ship.
@@ -37,16 +76,18 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
+    private let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
     var topTabItems: [TopTabItem<EmptyView>] {
         shipments.enumerated().map { (index, item) in
-            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
-                       content: { EmptyView() })
+            return TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                              icon: item.isPurchased ? purchasedIcon : nil,
+                              content: { EmptyView() })
         }
     }
 
-    var currentShipment: [CollapsibleShipmentItemCardViewModel] {
-        let index = selectedShipmentIndex ?? 0
-        return shipments[index]
+    var currentShipment: Shipment {
+        shipments[selectedShipmentIndex]
     }
 
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
@@ -56,6 +97,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var movingCompletionMessage: AttributedString?
     private var undoMovingItemsHandler: (() -> Void)?
+
+    @Published private(set) var isSavingShipmentInfo = false
 
     init(order: Order,
          config: WooShippingConfig,
@@ -69,10 +112,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
 
-        let initialShipment = items.map { item in
-            CollapsibleShipmentItemCardViewModel(item: item, currency: order.currency)
-        }
-        self.shipments = [initialShipment]
+        self.shipments = Self.createShipments(with: config,
+                                              packageItems: items,
+                                              currency: order.currency,
+                                              currencySettings: currencySettings,
+                                              shippingSettingsService: shippingSettingsService)
+
+        shipmentsSavedInRemote = editedShipmentsInfo
 
         configureSectionHeader()
         configureSelectionCallback()
@@ -84,7 +130,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func selectAll() {
-        currentShipment.forEach {
+        currentShipment.contents.forEach {
             $0.selectAll()
         }
     }
@@ -100,7 +146,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         // Step 0: keep the details before changes to revert changes when undo is selected
         let initialShipments = shipments
-        let currentIndex = selectedShipmentIndex ?? 0
+        let currentIndex = selectedShipmentIndex
         undoMovingItemsHandler = { [weak self] in
             guard let self else { return }
             shipments = initialShipments
@@ -108,9 +154,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // Step 1: Split items
-        var newShipment = Shipment()
-        var movedItems = [CollapsibleShipmentItemCardViewModel]()
-        for item in currentShipment {
+        var newShipmentContents = ShipmentContents()
+        var movedItems = ShipmentContents()
+        for item in currentShipment.contents {
             let initialQuantity = item.packageItem.quantity.intValue
             let selectedQuantity = item.numberOfSelectedItems
             let remainingQuantity = initialQuantity - selectedQuantity
@@ -120,7 +166,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                 )
             } else if selectedQuantity > 0 {
                 let newItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(remainingQuantity))
-                newShipment.append(
+                newShipmentContents.append(
                     CollapsibleShipmentItemCardViewModel(item: newItem, currency: order.currency)
                 )
                 let movedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(selectedQuantity))
@@ -128,14 +174,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                     CollapsibleShipmentItemCardViewModel(item: movedItem, currency: order.currency)
                 )
             } else if selectedQuantity == 0 {
-                newShipment.append(
+                newShipmentContents.append(
                     CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: order.currency)
                 )
             }
         }
 
         // Step 2: Update the current shipment
-        shipments[currentIndex] = newShipment
+        shipments[currentIndex] = createShipment(with: newShipmentContents)
 
         // Step 3: Add new or update existing shipment
         let totalItemsMoved = movedItems
@@ -145,12 +191,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         switch destination {
         case .newShipment:
-            shipments.append(movedItems)
+            let newShipment = createShipment(with: movedItems)
+            shipments.append(newShipment)
             updatedShipmentIndex = shipments.count - 1
 
         case .existingShipment(let index):
-            var updatedShipment = Shipment()
-            for item in shipments[index] {
+            var updatedShipmentContents = ShipmentContents()
+            for item in shipments[index].contents {
                 let matchingItemIndex = movedItems.firstIndex(where: {
                     $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
                 })
@@ -158,24 +205,24 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                     // Merge the quantity if the same item is moved to the shipment
                     let updatedQuantity = item.packageItem.quantity + movedItems[matchingItemIndex].packageItem.quantity
                     let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
-                    updatedShipment.append(
+                    updatedShipmentContents.append(
                         CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
                     )
                     movedItems.remove(at: matchingItemIndex)
                 } else {
                     // Keep the item as-is
-                    updatedShipment.append(item)
+                    updatedShipmentContents.append(item)
                 }
             }
             // Add the rest of the new items to the shipment
-            updatedShipment.append(contentsOf: movedItems)
-            shipments[index] = updatedShipment
+            updatedShipmentContents.append(contentsOf: movedItems)
+            shipments[index] = createShipment(with: updatedShipmentContents)
             updatedShipmentIndex = index
         }
 
         // Step 4: Remove the current shipment if it's empty.
         // Then update the section header and selection callback
-        if currentShipment.isEmpty {
+        if currentShipment.contents.isEmpty {
             shipments.remove(at: currentIndex)
             if shipments.count <= currentIndex {
                 selectedShipmentIndex = max(shipments.count - 1, 0)
@@ -211,11 +258,86 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         undoMovingItemsHandler?()
         movingCompletionMessage = nil
     }
+
+    @MainActor
+    func saveShipmentInfo() async throws {
+        isSavingShipmentInfo = true
+        try await updateShipment()
+        isSavingShipmentInfo = false
+    }
+
+    func mergeAllUnfulfilledShipments() {
+        let (unfulfilledShipments, fulfilledShipments) = shipments.partitioned(by: { $0.isPurchased })
+        var mergedShipmentContents = ShipmentContents()
+
+        unfulfilledShipments.forEach { shipment in
+            for item in shipment.contents {
+                let matchingItemIndex = mergedShipmentContents.firstIndex(where: {
+                    $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                })
+                if let matchingItemIndex {
+                    // Merge the quantity if the same item is merged to the shipment
+                    let updatedQuantity = item.packageItem.quantity + mergedShipmentContents[matchingItemIndex].packageItem.quantity
+                    let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
+                    mergedShipmentContents[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+                } else {
+                    // Keep the item as-is
+                    mergedShipmentContents.append(item)
+                }
+            }
+        }
+
+        shipments = [createShipment(with: mergedShipmentContents)] + fulfilledShipments
+        selectedShipmentIndex = 0
+    }
+
+    func retrieveName(for shipment: Shipment) -> String {
+        guard let index = shipments.firstIndex(where: { $0.id == shipment.id }) else {
+            DDLogWarn("⚠️ Cannot retrieve name for shipment \(shipment)")
+            return ""
+        }
+
+        return String.localizedStringWithFormat(Localization.shipmentFormat, index + 1)
+    }
+
+    func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {
+        shipments.filter { $0 != shipment }
+    }
+
+    func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {
+        guard let removedShipmentIndex = shipments.firstIndex(where: { $0 == shipment }),
+              let mergedShipmentIndex = shipments.firstIndex(where: { $0 == otherShipment }) else {
+            DDLogWarn("⚠️ Cannot find shipments to remove or merge!")
+            return
+        }
+
+        var mergedContents = otherShipment.contents
+
+        for item in shipment.contents {
+            let matchingItemIndex = mergedContents.firstIndex(where: {
+                $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+            })
+            if let matchingItemIndex {
+                // Merge the quantity if the same item is merged to the shipment
+                let updatedQuantity = item.packageItem.quantity + mergedContents[matchingItemIndex].packageItem.quantity
+                let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
+                mergedContents[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+            } else {
+                // Append the item as-is
+                mergedContents.append(item)
+            }
+        }
+
+        let mergedShipment = createShipment(with: mergedContents)
+        shipments[mergedShipmentIndex] = mergedShipment
+        shipments.remove(at: removedShipmentIndex)
+        selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
-        currentShipment.forEach { viewModel in
+        currentShipment.contents.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
                 self?.updateMoveToNotice()
             }
@@ -246,8 +368,8 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 
     func updateMoveToNotice() {
-        let currentIndex = selectedShipmentIndex ?? 0
-        let selectedItemsCount = currentShipment
+        let currentIndex = selectedShipmentIndex
+        let selectedItemsCount = currentShipment.contents
             .map(\.numberOfSelectedItems)
             .reduce(0, +)
 
@@ -255,7 +377,7 @@ private extension WooShippingSplitShipmentsViewModel {
             return moveToNoticeViewModel = nil
         }
 
-        let totalItemCount = currentShipment
+        let totalItemCount = currentShipment.contents
             .map { $0.packageItem.quantity }
             .reduce(0, +).intValue
 
@@ -273,31 +395,151 @@ private extension WooShippingSplitShipmentsViewModel {
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {
-        let items = currentShipment.map(\.packageItem)
-        let itemsCount = items.map(\.quantity).reduce(0, +)
-        itemsCountLabel = Localization.itemsCount(itemsCount)
-        itemsWeightLabel = formatWeight(for: items)
-        itemsPriceLabel = formatPrice(for: items)
+        itemsCountLabel = currentShipment.quantity
+        itemsWeightLabel = currentShipment.weight
+        itemsPriceLabel = currentShipment.price
     }
+}
 
-    /// Calculates and formats the total weight of the given items based on each item's weight and quantity.
-    ///
-    func formatWeight(for items: [ShippingLabelPackageItem]) -> String {
-        let totalWeight = items
-            .map { item in
-                item.weight * Double(truncating: item.quantity as NSDecimalNumber)
+// MARK: Shipments
+
+extension WooShippingSplitShipmentsViewModel {
+
+    private static func createShipments(with config: WooShippingConfig,
+                                packageItems: [ShippingLabelPackageItem],
+                                currency: String,
+                                currencySettings: CurrencySettings,
+                                shippingSettingsService: ShippingSettingsService) -> [Shipment] {
+        guard config.shipments.isEmpty == false else {
+            let contents = packageItems.map { item in
+                CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
-            .reduce(0, +)
-        let weightFormatter = WeightFormatter(weightUnit: shippingSettingsService.weightUnit ?? "")
-        return weightFormatter.formatWeight(weight: totalWeight)
+            let shipment = Shipment(contents: contents,
+                                    currency: currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+            return [shipment]
+        }
+
+        let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
+        var shipments = [Shipment]()
+
+        for key in config.shipments.keys.sorted() {
+            guard let shipmentItems = config.shipments[key] else {
+                continue
+            }
+
+            let isPurchased = (currentOrderLabels.filter { $0.shipmentID == key}).isNotEmpty
+
+            var shipmentContents = ShipmentContents()
+            for shipmentItem in shipmentItems {
+                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
+                      let subItems = shipmentItem.subItems else {
+                    continue
+                }
+
+                let quantity = subItems.count > 0 ? subItems.count : 1
+                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
+                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
+                                                                   isSelectable: !isPurchased,
+                                                                   currency: currency)
+                shipmentContents.append(content)
+            }
+
+            let shipment = Shipment(contents: shipmentContents,
+                                    isPurchased: isPurchased,
+                                    currency: currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+            shipments.append(shipment)
+        }
+        return shipments
     }
 
-    /// Calculates and formats the price of the given item based on the item quantity and unit price.
-    ///
-    func formatPrice(for items: [ShippingLabelPackageItem]) -> String {
-        let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return currencyFormatter.formatAmount(totalPrice, with: order.currency) ?? totalPrice.description
+    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+        Shipment(contents: contents,
+                 currency: order.currency,
+                 currencySettings: currencySettings,
+                 shippingSettingsService: shippingSettingsService)
+    }
+
+    struct Shipment: Identifiable, Equatable {
+
+        let id = UUID().uuidString
+        let contents: [CollapsibleShipmentItemCardViewModel]
+        let isPurchased: Bool
+
+        let quantity: String
+        let weight: String
+        let price: String
+
+        /// Label with the details of the items to ship.
+        /// Includes total weight and total price for all items in the current shipment.
+        var itemsDetailLabel: String {
+            "\(weight) • \(price)"
+        }
+
+        init(contents: [CollapsibleShipmentItemCardViewModel],
+             isPurchased: Bool = false,
+             currency: String,
+             currencySettings: CurrencySettings,
+             shippingSettingsService: ShippingSettingsService) {
+            self.contents = contents
+            self.isPurchased = isPurchased
+
+            let items = contents.map(\.packageItem)
+            let itemsCount = items.map(\.quantity).reduce(0, +)
+            self.quantity = Localization.itemsCount(itemsCount)
+            self.weight = formatWeight(for: items)
+            self.price = formatPrice(for: items)
+
+            /// Calculates and formats the total weight of the given items based on each item's weight and quantity.
+            ///
+            func formatWeight(for items: [ShippingLabelPackageItem]) -> String {
+                let totalWeight = items
+                    .map { item in
+                        item.weight * Double(truncating: item.quantity as NSDecimalNumber)
+                    }
+                    .reduce(0, +)
+                let weightFormatter = WeightFormatter(weightUnit: shippingSettingsService.weightUnit ?? "")
+                return weightFormatter.formatWeight(weight: totalWeight)
+            }
+
+            /// Calculates and formats the price of the given item based on the item quantity and unit price.
+            ///
+            func formatPrice(for items: [ShippingLabelPackageItem]) -> String {
+                let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
+                let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+                return currencyFormatter.formatAmount(totalPrice, with: currency) ?? totalPrice.description
+            }
+        }
+
+        static func == (lhs: WooShippingSplitShipmentsViewModel.Shipment, rhs: WooShippingSplitShipmentsViewModel.Shipment) -> Bool {
+            lhs.id == rhs.id
+        }
+    }
+
+    @discardableResult
+    @MainActor
+    private func updateShipment() async throws -> WooShippingShipments {
+        let shipments = editedShipmentsInfo
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = WooShippingAction.updateShipment(siteID: order.siteID,
+                                                          orderID: order.orderID,
+                                                          shipmentToUpdate: shipments) { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let shipmentResponse):
+                    shipmentsSavedInRemote = shipments
+                    continuation.resume(returning: shipmentResponse)
+                case .failure(let error):
+                    DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

@@ -23,7 +23,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedSavedPackage)
 
         XCTAssertEqual(viewModel.carrierPackages.count, 0)
-        XCTAssertEqual(viewModel.selectedCarriersTabIndex, nil)
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, 0)
         XCTAssertEqual(viewModel.selectedCarriersPackageId, nil)
         XCTAssertEqual(viewModel.starredCarriersPackages.count, 0)
         XCTAssertEqual(viewModel.carrierTabs.count, 0)

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label Address.
 ///
-public struct ShippingLabelAddress: GeneratedCopiable, Equatable, GeneratedFakeable {
+public struct ShippingLabelAddress: GeneratedCopiable, Equatable, Sendable, GeneratedFakeable {
     /// The name of the company at the address.
     public let company: String
 

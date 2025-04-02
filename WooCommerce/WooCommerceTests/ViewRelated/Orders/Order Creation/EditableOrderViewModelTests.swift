@@ -3312,6 +3312,45 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual(customerData.billing, orderToUpdate.billingAddress)
         assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
     }
+
+    func test_canBeDismissed_whenEditing_withNoChanges_returnsTrue() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = false
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_whenEditing_withPendingRecalculation_returnsFalse() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = true
+
+        // Then
+        XCTAssertFalse(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_whenEditing_withImmediateSync_returnsTrue() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .immediate
+        viewModel.syncRequired = true
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
 }
 
 private extension EditableOrderViewModelTests {

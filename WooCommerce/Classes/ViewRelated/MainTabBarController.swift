@@ -227,12 +227,6 @@ final class MainTabBarController: UITabBarController {
         hubMenuTabCoordinator = nil
     }
 
-    func presentCollectPayment() {
-        navigateTo(.hubMenu) { [weak self] in
-            self?.hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
-        }
-    }
-
     // MARK: - iPadOS 18 tabs support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -579,13 +573,6 @@ extension MainTabBarController {
         switchToHubMenuTab { hubMenuViewController in
             hubMenuViewController?.showPrivacySettings()
         }
-    }
-
-    static func presentCollectPayment() {
-        guard let tabBar = AppDelegate.shared.tabBarController else {
-            return
-        }
-        tabBar.presentCollectPayment()
     }
 }
 

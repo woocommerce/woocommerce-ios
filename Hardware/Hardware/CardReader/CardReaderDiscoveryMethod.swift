@@ -1,6 +1,6 @@
 import Foundation
 
 public enum CardReaderDiscoveryMethod {
-    case localMobile
+    case tapToPay
     case bluetoothScan
 }

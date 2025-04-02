@@ -354,6 +354,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             throw ProductDecodingError.missingSiteID
         }
 
+        /// If you make a change which improves the safety of this decoding,
+        /// consider applying it to `POSProduct` as well, if the field is included there..
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let productID = try container.decode(Int64.self, forKey: .productID)

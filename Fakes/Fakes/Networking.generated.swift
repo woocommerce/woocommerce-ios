@@ -871,7 +871,8 @@ extension Networking.Order {
             customFields: .fake(),
             renewalSubscriptionID: .fake(),
             appliedGiftCards: .fake(),
-            attributionInfo: .fake()
+            attributionInfo: .fake(),
+            shippingLabels: .fake()
         )
     }
 }
@@ -1133,6 +1134,26 @@ extension Networking.OrderTaxLine {
             totalTax: .fake(),
             totalShippingTax: .fake(),
             ratePercent: .fake(),
+            attributes: .fake()
+        )
+    }
+}
+extension Networking.POSProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.POSProduct {
+        .init(
+            siteID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            productTypeKey: .fake(),
+            sku: .fake(),
+            globalUniqueID: .fake(),
+            price: .fake(),
+            regularPrice: .fake(),
+            salePrice: .fake(),
+            onSale: .fake(),
+            images: .fake(),
             attributes: .fake()
         )
     }
@@ -2978,13 +2999,32 @@ extension Networking.WooShippingSavedPredefinedPackage {
         )
     }
 }
-extension Networking.WooShippingShipment {
+extension Networking.WooShippingShipmentItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.WooShippingShipment {
+    public static func fake() -> Networking.WooShippingShipmentItem {
         .init(
             id: .fake(),
             subItems: .fake()
+        )
+    }
+}
+extension Networking.WooShippingUpdateShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipment {
+        .init(
+            shipmentIdsToUpdate: .fake(),
+            shipments: .fake()
+        )
+    }
+}
+extension Networking.WooShippingUpdateShipmentResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingUpdateShipmentResponse {
+        .init(
+            shipments: .fake()
         )
     }
 }

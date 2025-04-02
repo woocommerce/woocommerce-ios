@@ -1,6 +1,8 @@
 import Observation
 import enum Yosemite.POSItem
+import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleItemsControllerProtocol {
@@ -9,17 +11,18 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
-    private let itemProvider: PointOfSaleItemServiceProtocol
+    private let couponProvider: PointOfSaleCouponServiceProtocol
 
-    init(itemProvider: PointOfSaleItemServiceProtocol) {
-        self.itemProvider = itemProvider
+    init(itemProvider: PointOfSaleCouponServiceProtocol) {
+        self.couponProvider = itemProvider
         self.paginationTracker = .init()
     }
 
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         // TODO:
-        // Handle unhappy path
+        // Handle unhappy path:
+        // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
         await loadFirstPage()
     }
 
@@ -43,12 +46,21 @@ private extension PointOfSaleCouponsController {
     @MainActor
     func loadFirstPage() async {
         do {
-            let coupons = try await itemProvider.providePointOfSaleItems(pageNumber: 1).items
+            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1).items
             itemsViewState = ItemsViewState(containerState: .content,
                                             itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
                                                               itemStates: [:]))
         } catch {
-            debugPrint(error)
+            if let couponError = error as? PointOfSaleCouponServiceError {
+                switch couponError {
+                case .couponsLoadingError:
+                    itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
+                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+                case .couponsDisabled:
+                    itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
+                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+                }
+            }
         }
     }
 }

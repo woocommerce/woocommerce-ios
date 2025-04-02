@@ -2,7 +2,7 @@ import UIKit
 
 
 /// Modal presented while processing a payment
-final class CardPresentModalBuiltInReaderProcessing: CardPresentPaymentsModalViewModel {
+final class CardPresentModalTapToPayReaderProcessing: CardPresentPaymentsModalViewModel {
 
     /// Customer name
     private let name: String
@@ -21,7 +21,7 @@ final class CardPresentModalBuiltInReaderProcessing: CardPresentPaymentsModalVie
         amount
     }
 
-    let image: UIImage = .builtInReaderProcessing
+    let image: UIImage = .tapToPayReaderProcessing
 
     let primaryButtonTitle: String? = nil
 
@@ -55,7 +55,7 @@ final class CardPresentModalBuiltInReaderProcessing: CardPresentPaymentsModalVie
     }
 }
 
-private extension CardPresentModalBuiltInReaderProcessing {
+private extension CardPresentModalTapToPayReaderProcessing {
     enum Localization {
         static let processingPayment = NSLocalizedString(
             "Processing payment...",

@@ -9,9 +9,18 @@ struct CartView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var offSetPosition: CGFloat = 0.0
+    @State private var cartContentHeight: CGFloat = 0.0
+    @State private var scrollViewHeight: CGFloat = 0.0
     private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
     private var shouldApplyHeaderBottomShadow: Bool {
         posModel.cart.isNotEmpty && offSetPosition < 0
+    }
+
+    private var shouldApplyFooterTopShadow: Bool {
+        let maxOffset = cartContentHeight - scrollViewHeight
+        return posModel.cart.isNotEmpty &&
+        cartContentHeight > scrollViewHeight &&
+        abs(offSetPosition) < maxOffset
     }
 
     @State private var shouldShowItemImages: Bool = false
@@ -21,112 +30,148 @@ struct CartView: View {
     }
 
     var body: some View {
-        VStack {
-            POSPageHeaderView(title: Localization.cartTitle,
-                              backButtonConfiguration: backButtonConfiguration,
-                              trailingContent: {
-                DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
-                    if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.items.count) {
-                        Text(itemsInCartLabel)
-                            .font(Constants.itemsFont)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            .foregroundColor(Color.posOnSurfaceVariantLowest)
-                    }
+        ZStack {
+            VStack(spacing: 0) {
+                POSPageHeaderView(title: Localization.cartTitle,
+                                  backButtonConfiguration: backButtonConfiguration,
+                                  trailingContent: {
+                    DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
+                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.items.count) {
+                            Text(itemsInCartLabel)
+                                .font(Constants.itemsFont)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                        }
 
-                    Button {
-                        posModel.removeAllItemsFromCart()
-                        ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
-                    } label: {
-                        Text(Localization.clearButtonTitle)
+                        Button {
+                            posModel.removeAllItemsFromCart()
+                            ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
+                        } label: {
+                            Text(Localization.clearButtonTitle)
+                        }
+                        .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                        .renderedIf(shouldShowClearCartButton)
                     }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
-                    .renderedIf(shouldShowClearCartButton)
+                })
+                .if(shouldApplyHeaderBottomShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .bottom) })
+                .zIndex(1)
+
+                if posModel.cart.isNotEmpty {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(spacing: Constants.cartItemSpacing) {
+                                if shouldShowCoupons {
+                                    couponsCartSectionView
+                                }
+
+                                ForEach(posModel.cart.items, id: \.id) { cartItem in
+                                    ItemRowView(cartItem: cartItem,
+                                                showImage: $shouldShowItemImages,
+                                                onItemRemoveTapped: posModel.orderStage == .building ? {
+                                        ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
+                                        posModel.remove(cartItem: cartItem)
+                                    } : nil)
+                                    .id(cartItem.id)
+                                    .transition(.opacity)
+                                }
+                            }
+                            .padding(.bottom, Constants.cartLastItemBottomPadding)
+                            .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
+                            .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
+                            .background(GeometryReader { geometry in
+                                Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
+                                                       value: geometry.frame(in: coordinateSpace).origin.y)
+                                .preference(key: ContentHeightPreferenceKey.self, value: geometry.size.height)
+                                .onAppear {
+                                    updateItemImageVisibility(cartListWidth: geometry.size.width)
+                                }
+                                .onChange(of: geometry.size.width) {
+                                    updateItemImageVisibility(cartListWidth: $0)
+                                }
+                                .onChange(of: dynamicTypeSize) {
+                                    updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
+                                }
+                            })
+                            .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
+                                self.offSetPosition = position
+                            }
+                            .onPreferenceChange(ContentHeightPreferenceKey.self) { height in
+                                self.cartContentHeight = height
+                            }
+
+                            Spacer()
+                                .frame(height: floatingControlAreaSize.height)
+                                .renderedIf(posModel.orderStage == .finalizing)
+                        }
+                        .background {
+                            GeometryReader() { proxy in
+                                Color.clear.preference(key: ScrollViewHeightPreferenceKey.self, value: proxy.size.height)
+                            }
+                        }
+                        .onPreferenceChange(ScrollViewHeightPreferenceKey.self) { height in
+                            self.scrollViewHeight = height
+                        }
+                        .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
+                        .onChange(of: posModel.cart.items.first?.id) { itemToScrollTo in
+                            if posModel.orderStage == .building {
+                                withAnimation {
+                                    proxy.scrollTo(itemToScrollTo)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Spacer()
+                }
+
+                switch posModel.orderStage {
+                case .building:
+                    if posModel.cart.items.isEmpty {
+                        EmptyView()
+                    } else {
+                        checkoutButton
+                            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                            .padding(.vertical, Constants.checkoutButtonVerticalPadding)
+                            .accessibilityAddTraits(.isHeader)
+                            .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
+                            .zIndex(1)
+                    }
+                case .finalizing:
+                    EmptyView()
+                }
+            }
+            .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
+            .frame(maxWidth: .infinity)
+            .background(content: {
+                if posModel.cart.isEmpty {
+                    cartEmptyView
                 }
             })
-            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow(backgroundColor: backgroundColor) })
-
-            if posModel.cart.isNotEmpty {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(spacing: Constants.cartItemSpacing) {
-                            if shouldShowCoupons {
-                                couponsCartSectionView
-                            }
-
-                            ForEach(posModel.cart.items, id: \.id) { cartItem in
-                                ItemRowView(cartItem: cartItem,
-                                            showImage: $shouldShowItemImages,
-                                            onItemRemoveTapped: posModel.orderStage == .building ? {
-                                    ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
-                                    posModel.remove(cartItem: cartItem)
-                                } : nil)
-                                .id(cartItem.id)
-                                .transition(.opacity)
-                            }
-                        }
-                        .animation(Constants.cartAnimation, value: posModel.cart.items.map(\.id))
-                        .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
-                        .background(GeometryReader { geometry in
-                            Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
-                                                   value: geometry.frame(in: coordinateSpace).origin.y)
-                            .onAppear {
-                                updateItemImageVisibility(cartListWidth: geometry.size.width)
-                            }
-                            .onChange(of: geometry.size.width) {
-                                updateItemImageVisibility(cartListWidth: $0)
-                            }
-                            .onChange(of: dynamicTypeSize) {
-                                updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
-                            }
-                        })
-                        .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
-                            self.offSetPosition = position
-                        }
-
-                        Spacer()
-                            .frame(height: floatingControlAreaSize.height)
-                            .renderedIf(posModel.orderStage == .finalizing)
-                    }
-                    .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
-                    .onChange(of: posModel.cart.items.first?.id) { itemToScrollTo in
-                        if posModel.orderStage == .building {
-                            withAnimation {
-                                proxy.scrollTo(itemToScrollTo)
-                            }
-                        }
-                    }
-                }
-            }
-            Spacer()
-            switch posModel.orderStage {
-            case .building:
-                if posModel.cart.items.isEmpty {
-                    EmptyView()
-                } else {
-                    checkoutButton
-                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                        .padding(.vertical, Constants.checkoutButtonVerticalPadding)
-                        .accessibilityAddTraits(.isHeader)
-                }
-            case .finalizing:
-                EmptyView()
-            }
+            .background(backgroundColor.ignoresSafeArea(.all))
+            .accessibilityElement(children: .contain)
         }
-        .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
-        .frame(maxWidth: .infinity)
-        .background(content: {
-            if posModel.cart.isEmpty {
-                cartEmptyView
-            }
-        })
-        .background(backgroundColor.ignoresSafeArea(.all))
-        .accessibilityElement(children: .contain)
     }
 }
 
 private struct ScrollOffSetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat { .zero }
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // No-op
+    }
+}
+
+private struct ContentHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat { .zero }
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // No-op
+    }
+}
+
+private struct ScrollViewHeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat { .zero }
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
@@ -199,6 +244,7 @@ private extension CartView {
         static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
         static let cartItemSpacing: CGFloat = POSSpacing.small
+        static let cartLastItemBottomPadding: CGFloat = POSPadding.large
     }
 
     enum Localization {
@@ -277,6 +323,9 @@ private extension CartView {
         VStack {
             ForEach(posModel.cart.coupons, id: \.id) { couponItem in
                 CouponRowView(couponItem: couponItem,
+                              couponRowState: viewHelper.couponRowState(orderStage: posModel.orderStage,
+                                                                        orderState: posModel.orderState,
+                                                                        couponItem: couponItem),
                               onItemRemoveTapped: posModel.orderStage == .building ? {
                     posModel.remove(cartCouponItem: couponItem)
                 } : nil)

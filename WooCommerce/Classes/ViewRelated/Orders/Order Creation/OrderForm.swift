@@ -90,7 +90,9 @@ private extension OrderFormHostingController {
     }
 
     func discardOrderAndDismiss() {
-        viewModel.discardOrder()
+        if viewModel.flow == .creation {
+            viewModel.discardOrder()
+        }
         dismiss(animated: true)
     }
 
@@ -810,7 +812,7 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 HStack() {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    Image(systemName: "barcode.viewfinder")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: Layout.scanImageSize * scale)
@@ -836,7 +838,7 @@ private extension ProductsSection {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
             } else {
-                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                Image(systemName: "barcode.viewfinder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.scanImageSize * scale)

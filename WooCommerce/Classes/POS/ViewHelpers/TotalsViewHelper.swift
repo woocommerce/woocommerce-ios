@@ -1,6 +1,6 @@
 import Foundation
 
-final class TotalsViewHelper {
+struct TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
         case .card(let cardPaymentState):
@@ -72,5 +72,17 @@ final class TotalsViewHelper {
         default:
             return true
         }
+    }
+
+    func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
+        let hasCoupons = cart.coupons.isNotEmpty
+        let orderIsLoading = orderTotals == nil
+        let hasDiscounts = orderTotals?.discountTotal != nil
+
+        guard hasCoupons else {
+            return false
+        }
+
+        return orderIsLoading || hasDiscounts
     }
 }

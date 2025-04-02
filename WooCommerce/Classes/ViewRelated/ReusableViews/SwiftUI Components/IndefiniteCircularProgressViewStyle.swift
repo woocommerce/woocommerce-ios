@@ -4,8 +4,8 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     var size: CGFloat
     var lineWidth: CGFloat = Constants.lineWidth
     var lineCap: CGLineCap = .round
-    var circleColor: Color = Color(.primary).opacity(Constants.backgroundOpacity)
-    var fillColor: Color = Color(.primary)
+    var circleColor: Color = Color(.primaryButtonBackground).opacity(Constants.backgroundOpacity)
+    var fillColor: Color = Color(.primaryButtonBackground)
 
     private let arcStart: Double = Constants.initialArcStart
     private let animationDuration: Double = 1.6

@@ -2,11 +2,11 @@ import Foundation
 import SwiftUI
 import UIKit
 
-protocol BuiltInCardReaderMerchantEducationPresenting {
+protocol TapToPayCardReaderMerchantEducationPresenting {
     func presentMerchantEducation(completion: @escaping () -> Void)
 }
 
-final class BuiltInCardReaderMerchantEducationPresenter: @preconcurrency BuiltInCardReaderMerchantEducationPresenting {
+final class TapToPayCardReaderMerchantEducationPresenter: @preconcurrency TapToPayCardReaderMerchantEducationPresenting {
     private weak var rootViewController: ViewControllerPresenting?
 
     init(rootViewController: UIViewController) {

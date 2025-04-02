@@ -163,7 +163,7 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_TOS_requires_iCloud_signin_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn, domainError(stripeCode: 2960))
+        XCTAssertEqual(.tapToPayReaderTOSAcceptanceRequiresiCloudSignIn, domainError(stripeCode: 2960))
     }
 
     func test_stripe_nfc_disabled_maps_to_expected_error() {
@@ -171,31 +171,31 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_built_in_reader_failed_to_prepare_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderFailedToPrepare, domainError(stripeCode: 3910))
+        XCTAssertEqual(.tapToPayReaderFailedToPrepare, domainError(stripeCode: 3910))
     }
 
     func test_stripe_TOS_acceptance_cancelled_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderTOSAcceptanceCanceled, domainError(stripeCode: 2970))
+        XCTAssertEqual(.tapToPayReaderTOSAcceptanceCanceled, domainError(stripeCode: 2970))
     }
 
     func test_stripe_TOS_not_yet_accepted_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderTOSNotYetAccepted, domainError(stripeCode: 3930))
+        XCTAssertEqual(.tapToPayReaderTOSNotYetAccepted, domainError(stripeCode: 3930))
     }
 
     func test_stripe_TOS_acceptance_failed_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderTOSAcceptanceFailed, domainError(stripeCode: 3940))
+        XCTAssertEqual(.tapToPayReaderTOSAcceptanceFailed, domainError(stripeCode: 3940))
     }
 
     func test_stripe_merchant_blocked_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderMerchantBlocked, domainError(stripeCode: 3950))
+        XCTAssertEqual(.tapToPayReaderMerchantBlocked, domainError(stripeCode: 3950))
     }
 
     func test_stripe_invalid_merchant_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderInvalidMerchant, domainError(stripeCode: 3960))
+        XCTAssertEqual(.tapToPayReaderInvalidMerchant, domainError(stripeCode: 3960))
     }
 
     func test_stripe_device_banned_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderDeviceBanned, domainError(stripeCode: 3920))
+        XCTAssertEqual(.tapToPayReaderDeviceBanned, domainError(stripeCode: 3920))
     }
 
     func test_stripe_unsupported_mobile_device_maps_to_expected_error() {
@@ -315,7 +315,7 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_apple_built_in_reader_account_deactivated_maps_to_expected_error() {
-        XCTAssertEqual(.appleBuiltInReaderAccountDeactivated, domainError(stripeCode: 3970))
+        XCTAssertEqual(.tapToPayReaderAccountDeactivated, domainError(stripeCode: 3970))
     }
 
     func test_stripe_reader_missing_encryption_keys_maps_to_expected_error() {

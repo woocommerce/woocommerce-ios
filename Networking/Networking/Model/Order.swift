@@ -61,6 +61,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let attributionInfo: OrderAttributionInfo?
 
+    /// Shipping labels associated with the order
+    ///
+    public let shippingLabels: [ShippingLabel]
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -100,7 +104,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 customFields: [MetaData],
                 renewalSubscriptionID: String?,
                 appliedGiftCards: [OrderGiftCard],
-                attributionInfo: OrderAttributionInfo?) {
+                attributionInfo: OrderAttributionInfo?,
+                shippingLabels: [ShippingLabel]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -145,6 +150,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.renewalSubscriptionID = renewalSubscriptionID
         self.appliedGiftCards = appliedGiftCards
         self.attributionInfo = attributionInfo
+        self.shippingLabels = shippingLabels
     }
 
 
@@ -239,6 +245,11 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
             return OrderAttributionInfo(metaData: allOrderMetaData)
         }()
 
+        // Shipping labels
+        /// This will be an empty array by default because it's not directly parsed from the Order details, so it won't be decoded.
+        /// It's fetched with a specific API request, while at the same time it has a relationship in Core Data with Order.
+        let shippingLabels: [ShippingLabel] = []
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -276,7 +287,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   customFields: customFields,
                   renewalSubscriptionID: renewalSubscriptionID,
                   appliedGiftCards: appliedGiftCards,
-                  attributionInfo: attributionInfo)
+                  attributionInfo: attributionInfo,
+                  shippingLabels: shippingLabels)
     }
 
     public static var empty: Order {
@@ -317,7 +329,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   customFields: [],
                   renewalSubscriptionID: nil,
                   appliedGiftCards: [],
-                  attributionInfo: nil)
+                  attributionInfo: nil,
+                  shippingLabels: [])
     }
 }
 
@@ -365,6 +378,7 @@ internal extension Order {
         case taxLines           = "tax_lines"
         case metadata           = "meta_data"
         case giftCards          = "gift_cards"
+        case shippingLabels     = "shipping_labels"
     }
 }
 
@@ -407,7 +421,8 @@ extension Order: Equatable {
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted() &&
             lhs.customerNote == rhs.customerNote &&
-            lhs.attributionInfo == rhs.attributionInfo
+            lhs.attributionInfo == rhs.attributionInfo &&
+            lhs.shippingLabels == rhs.shippingLabels
     }
 }
 

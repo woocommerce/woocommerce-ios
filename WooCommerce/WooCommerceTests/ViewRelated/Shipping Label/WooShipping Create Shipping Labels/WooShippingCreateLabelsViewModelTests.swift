@@ -167,6 +167,82 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddresses.addresses, [originAddress])
     }
 
+    func test_shipping_config_is_not_loaded_if_order_contains_one_item() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = NetworkError.notFound(response: nil)
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+
+        var loadedConfig = false
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                loadedConfig = true
+                completion(.success(WooShippingConfig.fake()))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let order = Order.fake().copy(items: [OrderItem.fake().copy(quantity: Decimal(1))])
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.state != .loading
+        }
+        XCTAssertFalse(loadedConfig)
+        XCTAssertNil(viewModel.splitShipmentsViewModel)
+    }
+
+    func test_shipping_config_is_loaded_if_order_contains_more_than_one_item() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = NetworkError.notFound(response: nil)
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
+
+        var loadedConfig = false
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.failure(error))
+            case .loadConfig(_, _, let completion):
+                loadedConfig = true
+                completion(.success(WooShippingConfig.fake()))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let order = Order.fake().copy(items: [OrderItem.fake().copy(quantity: Decimal(2))])
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.state != .loading
+        }
+        XCTAssertTrue(loadedConfig)
+        XCTAssertNotNil(viewModel.splitShipmentsViewModel)
+    }
+
     func test_origin_unverified_state_is_correct() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1050,6 +1126,7 @@ private extension WooShippingCreateLabelsViewModelTests {
 
 private final class MockItemsDataSource: WooShippingItemsDataSource {
     var items = [ShippingLabelPackageItem(productOrVariationID: 1,
+                                          orderItemID: 123,
                                           name: "Shirt",
                                           weight: 0.5,
                                           quantity: 2,

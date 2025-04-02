@@ -43,7 +43,8 @@ enum ShippingLabelSampleData {
                      customFields: [],
                      renewalSubscriptionID: nil,
                      appliedGiftCards: [],
-                     attributionInfo: nil)
+                     attributionInfo: nil,
+                     shippingLabels: [])
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {
@@ -55,7 +56,7 @@ enum ShippingLabelSampleData {
 
     static func sampleWooShippingConfig() -> WooShippingConfig {
         WooShippingConfig(siteID: 123,
-                          shipments: ["0": [sampleWooShippingShipment()]],
+                          shipments: ["0": [sampleWooShippingShipmentItem()]],
                           shippingLabelData: nil)
     }
 }
@@ -63,8 +64,8 @@ enum ShippingLabelSampleData {
 // MARK: Helper methods
 //
 private extension ShippingLabelSampleData {
-    static func sampleWooShippingShipment() -> WooShippingShipment {
-        WooShippingShipment(id: 123, subItems: ["123-sub-0", "123-sub-1"])
+    static func sampleWooShippingShipmentItem() -> WooShippingShipmentItem {
+        WooShippingShipmentItem(id: 123, subItems: ["123-sub-0", "123-sub-1"])
     }
 
     static func sampleAddress() -> Address {

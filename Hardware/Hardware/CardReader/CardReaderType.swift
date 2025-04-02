@@ -8,7 +8,7 @@ public enum CardReaderType: String, CaseIterable {
     /// BBPOS WisePad 3
     case wisepad3
     /// Tap on Mobile: Apple built in reader
-    case appleBuiltIn
+    case tapToPay
     /// Other
     case other
 }
@@ -28,7 +28,7 @@ extension CardReaderType {
             return "STRIPE_M2"
         case .wisepad3:
             return "WISEPAD_3"
-        case .appleBuiltIn:
+        case .tapToPay:
             return "COTS_DEVICE"
         default:
             return "UNKNOWN"

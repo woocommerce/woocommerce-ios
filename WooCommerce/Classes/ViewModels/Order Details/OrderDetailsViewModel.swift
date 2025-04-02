@@ -262,6 +262,39 @@ extension OrderDetailsViewModel {
             self.syncSubscriptions { _ in
                 group.leave()
             }
+
+            // Shipping labels need to be synced after the order but before we complete
+            // the order sync group to ensure the UI shows the latest data
+            group.enter()
+            Task { @MainActor [weak self] in
+                guard let self else { return}
+
+                // Check Woo Shipping support first, to ensure correct flows are enabled for shipping labels.
+                dataSource.isEligibleForWooShipping = await isWooShippingSupported()
+
+                await withTaskGroup(of: Void.self) { taskGroup in
+
+                    taskGroup.addTask { [weak self] in
+                        guard let self else { return }
+                        // Check creation eligibility
+                        let isEligible = await checkShippingLabelCreationEligibility()
+                        dataSource.isEligibleForShippingLabelCreation = isEligible
+                    }
+
+                    taskGroup.addTask { [weak self] in
+                        guard let self else { return }
+                        // Sync shipping labels and update order with the result if available
+                        let shippingLabels = await syncShippingLabels()
+                        // Update the order with the newly synced shipping labels
+                        let updatedOrder = order.copy(shippingLabels: shippingLabels)
+                        update(order: updatedOrder)
+                    }
+                }
+
+                // Reload UI after shipping labels are synced
+                onReloadSections?()
+                group.leave()
+            }
         }
 
         group.enter()
@@ -280,22 +313,6 @@ extension OrderDetailsViewModel {
             }
             await syncTrackingsWhenShipmentTrackingIsEnabled()
             onReloadSections?()
-        }
-
-        group.enter()
-        Task { @MainActor in
-            defer {
-                onReloadSections?()
-                group.leave()
-            }
-            // Check Woo Shipping support first, to ensure correct flows are enabled for shipping labels.
-            dataSource.isEligibleForWooShipping = await isWooShippingSupported()
-
-            // Then sync shipping labels and check creation eligibility concurrently.
-            async let syncShippingLabels: () = syncShippingLabels()
-            async let isEligibleForShippingLabelCreation = checkShippingLabelCreationEligibility()
-            _ = await syncShippingLabels
-            dataSource.isEligibleForShippingLabelCreation = await isEligibleForShippingLabelCreation
         }
 
         group.enter()
@@ -680,17 +697,17 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
-    func syncShippingLabels() async {
+    @discardableResult
+    @MainActor func syncShippingLabels() async -> [ShippingLabel] {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
-            return
+            return []
         }
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
-                    case .success:
+                    case .success(let shippingLabels):
                         ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
-                        continuation.resume(returning: ())
+                        continuation.resume(returning: shippingLabels)
                     case .failure(let error):
                         ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
                         if error as? DotcomError == .noRestRoute {
@@ -698,7 +715,7 @@ extension OrderDetailsViewModel {
                         } else {
                             DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                         }
-                        continuation.resume(returning: ())
+                        continuation.resume(returning: [])
                 }
             })
         }

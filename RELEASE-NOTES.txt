@@ -3,9 +3,14 @@
 
 22.1
 -----
-
+- [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
 - [*] [Internal] Improved login flow for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15444]
+- [*] Order Creation/Editing: Fixed blurry icons for product scanning, QR code & Tap To Pay payment methods. Polished checkmark icon color in selected product row. [https://github.com/woocommerce/woocommerce-ios/pull/15465]
+- [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
+- [internal] POS: Show location pre-alert and error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/15456].
+- [internal] Payments: update reader preparation spinner color [https://github.com/woocommerce/woocommerce-ios/pull/15460]
 
 22.0
 -----

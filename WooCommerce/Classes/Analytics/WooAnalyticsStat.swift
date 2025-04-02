@@ -359,13 +359,13 @@ enum WooAnalyticsStat: String {
     // MARK: Card Reader Connection Events
     //
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
-    case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
+    case cardReaderSelectTypeTapToPayTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
-    case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
+    case manageCardReadersTapToPayReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
@@ -1152,7 +1152,6 @@ enum WooAnalyticsStat: String {
     case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
 
     // MARK: Payments Menu
-    case paymentsMenuCollectPaymentTapped = "payments_hub_collect_payment_tapped"
     case paymentsMenuOnboardingErrorTapped = "payments_hub_onboarding_error_tapped"
     case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
     case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"

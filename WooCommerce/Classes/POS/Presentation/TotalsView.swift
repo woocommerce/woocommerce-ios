@@ -130,6 +130,15 @@ private extension TotalsView {
                               shimmeringActive: totalsLoading,
                               matchedGeometryId: Constants.matchedGeometrySubtotalId)
             Spacer().frame(height: Constants.subtotalsVerticalSpacing)
+
+            if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
+                subtotalFieldView(title: Localization.discount,
+                                  formattedPrice: orderTotals?.discountTotal,
+                                  shimmeringActive: totalsLoading,
+                                  matchedGeometryId: Constants.matchedGeometryDiscountId)
+                Spacer().frame(height: Constants.subtotalsVerticalSpacing)
+            }
+
             subtotalFieldView(title: Localization.taxes,
                               formattedPrice: orderTotals?.taxTotal,
                               shimmeringActive: totalsLoading,
@@ -411,6 +420,7 @@ private extension TotalsView {
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
+        static let matchedGeometryDiscountId: String = "pos_totals_view_subtotal_matched_discount_id"
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
         static let matchedGeometryCashId: String = "pos_totals_view_cash_matched_geometry_id"
@@ -431,6 +441,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
+        static let discount = NSLocalizedString(
+            "pos.totalsView.discountTotal",
+            value: "Discount",
+            comment: "Title for discount amount field")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",

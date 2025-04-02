@@ -30,7 +30,8 @@ final class JetpackSetupCoordinator {
               allowAccountCreation: true,
               accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkUIRequest: showMagicLinkUI,
+              onMagicLinkRequest: showMagicLinkRequestUI,
+              onMagicLinkSent: showMagicLinkSentUI,
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -365,7 +366,11 @@ private extension JetpackSetupCoordinator {
         pushOrInitLoginViewController(emailLoginController)
     }
 
-    func showMagicLinkUI(email: String, isSignup: Bool) {
+    func showMagicLinkRequestUI(email: String) {
+        // TODO: Implement the magic link request UI
+    }
+
+    func showMagicLinkSentUI(email: String, isSignup: Bool) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,

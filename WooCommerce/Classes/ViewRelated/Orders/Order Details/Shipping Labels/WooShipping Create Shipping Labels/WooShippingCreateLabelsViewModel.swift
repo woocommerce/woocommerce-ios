@@ -107,15 +107,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
     }
 
-    /// Possible statuses for a Woo Shipping destination address.
-    enum DestinationAddressStatus {
-        case verified
-        case unverified
-        case missing
-    }
-
     /// The current destination address status.
-    @Published private(set) var destinationAddressStatus: DestinationAddressStatus?
+    @Published private(set) var destinationAddressStatus: WooShippingAddressStatus?
 
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
@@ -472,7 +465,7 @@ private extension WooShippingCreateLabelsViewModel {
                     destinationAddress = orderShippingAddress
                     destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
                 } else {
-                    destinationAddressStatus = .missing
+                    destinationAddressStatus = .missingInformation
                 }
             }
         }
@@ -529,7 +522,7 @@ private extension WooShippingCreateLabelsViewModel {
                     return Localization.DestinationAddressStatus.verified
                 case .unverified:
                     return Localization.DestinationAddressStatus.unverified
-                case .missing:
+                case .missingInformation:
                     return Localization.DestinationAddressStatus.missing
                 }
             }

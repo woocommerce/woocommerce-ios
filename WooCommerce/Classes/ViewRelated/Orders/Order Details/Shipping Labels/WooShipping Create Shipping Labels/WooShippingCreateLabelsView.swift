@@ -580,13 +580,13 @@ private extension WooShippingCreateLabelsView {
         }
 
         enum AddressVerification {
-            static func label(for status: WooShippingCreateLabelsViewModel.DestinationAddressStatus) -> String {
+            static func label(for status: WooShippingAddressStatus) -> String {
                 switch status {
                 case .verified:
                     return verified
                 case .unverified:
                     return unverified
-                case .missing:
+                case .missingInformation:
                     return missing
                 }
             }

@@ -6,7 +6,6 @@ import WooFoundation
 final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let order: Order
     private let stores: StoresManager
-    private let config: WooShippingConfig
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
 
@@ -101,22 +100,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @Published private(set) var isSavingShipmentInfo = false
 
     init(order: Order,
-         config: WooShippingConfig,
-         items: [ShippingLabelPackageItem],
+         shipments: [Shipment],
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.order = order
-        self.config = config
         self.stores = stores
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
-
-        self.shipments = Self.createShipments(with: config,
-                                              packageItems: items,
-                                              currency: order.currency,
-                                              currencySettings: currencySettings,
-                                              shippingSettingsService: shippingSettingsService)
+        self.shipments = shipments
 
         shipmentsSavedInRemote = editedShipmentsInfo
 
@@ -404,57 +396,6 @@ private extension WooShippingSplitShipmentsViewModel {
 // MARK: Shipments
 
 extension WooShippingSplitShipmentsViewModel {
-
-    private static func createShipments(with config: WooShippingConfig,
-                                packageItems: [ShippingLabelPackageItem],
-                                currency: String,
-                                currencySettings: CurrencySettings,
-                                shippingSettingsService: ShippingSettingsService) -> [Shipment] {
-        guard config.shipments.isEmpty == false else {
-            let contents = packageItems.map { item in
-                CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
-            }
-            let shipment = Shipment(contents: contents,
-                                    currency: currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-            return [shipment]
-        }
-
-        let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
-        var shipments = [Shipment]()
-
-        for key in config.shipments.keys.sorted() {
-            guard let shipmentItems = config.shipments[key] else {
-                continue
-            }
-
-            let isPurchased = (currentOrderLabels.filter { $0.shipmentID == key}).isNotEmpty
-
-            var shipmentContents = ShipmentContents()
-            for shipmentItem in shipmentItems {
-                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
-                      let subItems = shipmentItem.subItems else {
-                    continue
-                }
-
-                let quantity = subItems.count > 0 ? subItems.count : 1
-                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
-                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
-                                                                   isSelectable: !isPurchased,
-                                                                   currency: currency)
-                shipmentContents.append(content)
-            }
-
-            let shipment = Shipment(contents: shipmentContents,
-                                    isPurchased: isPurchased,
-                                    currency: currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-            shipments.append(shipment)
-        }
-        return shipments
-    }
 
     private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
         Shipment(contents: contents,

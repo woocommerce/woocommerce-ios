@@ -97,8 +97,11 @@ private extension MagicLinkRequestViewController {
     func configureStackView() {
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 16
-        stackView.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        stackView.spacing = Layout.defaultSpacing
+        stackView.layoutMargins = UIEdgeInsets(top: Layout.stackViewPadding,
+                                               left: Layout.stackViewPadding,
+                                               bottom: Layout.stackViewPadding,
+                                               right: Layout.stackViewPadding)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
@@ -129,17 +132,20 @@ private extension MagicLinkRequestViewController {
 
     func createHeader() -> UIView {
         let headerStackView = UIStackView()
-        headerStackView.spacing = 16
-        headerStackView.layoutMargins = UIEdgeInsets(top: 24, left: 16, bottom: 24, right: 16)
+        headerStackView.spacing = Layout.defaultSpacing
+        headerStackView.layoutMargins = UIEdgeInsets(top: Layout.headerVerticalPadding,
+                                                     left: Layout.headerHorizontalPadding,
+                                                     bottom: Layout.headerVerticalPadding,
+                                                     right: Layout.headerHorizontalPadding)
         headerStackView.isLayoutMarginsRelativeArrangement = true
         headerStackView.axis = .horizontal
 
         let gravatar = UIImageView()
         gravatar.addConstraints([
-            gravatar.widthAnchor.constraint(equalToConstant: 32),
-            gravatar.heightAnchor.constraint(equalToConstant: 32)
+            gravatar.widthAnchor.constraint(equalToConstant: Layout.gravatarSize),
+            gravatar.heightAnchor.constraint(equalToConstant: Layout.gravatarSize)
         ])
-        let placeholder = UIImage.gridicon(.userCircle, size: CGSize(width: 32, height: 32))
+        let placeholder = UIImage.gridicon(.userCircle, size: CGSize(width: Layout.gravatarSize, height: Layout.gravatarSize))
         gravatar.downloadGravatarWithEmail(loginFields.username, placeholderImage: placeholder)
         gravatar.tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         headerStackView.addArrangedSubview(gravatar)
@@ -151,8 +157,8 @@ private extension MagicLinkRequestViewController {
         emailLabel.textColor = WordPressAuthenticator.shared.unifiedStyle?.gravatarEmailTextColor ?? WordPressAuthenticator.shared.unifiedStyle?.textSubtleColor ?? WordPressAuthenticator.shared.style.subheadlineColor
         headerStackView.addArrangedSubview(emailLabel)
 
-        headerStackView.layer.cornerRadius = 8
-        headerStackView.layer.borderWidth = 1
+        headerStackView.layer.cornerRadius = Layout.headerCornerRadius
+        headerStackView.layer.borderWidth = Layout.headerBorderWidth
         headerStackView.layer.borderColor = UIColor.systemGray3.cgColor
 
         return headerStackView
@@ -192,6 +198,16 @@ private extension MagicLinkRequestViewController {
 }
 
 private extension MagicLinkRequestViewController {
+    struct Layout {
+        static let defaultSpacing: CGFloat = 16
+        static let stackViewPadding: CGFloat = 16
+        static let headerVerticalPadding: CGFloat = 24
+        static let headerHorizontalPadding: CGFloat = 16
+        static let headerCornerRadius: CGFloat = 8
+        static let headerBorderWidth: CGFloat = 1
+        static let gravatarSize: CGFloat = 32
+    }
+
     struct Localization {
         static let description = NSLocalizedString(
             "login.magicLinkRequest.description",

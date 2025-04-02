@@ -15,14 +15,25 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private let storage: StorageManagerType?
     private let couponService: CouponServiceProtocol
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                couponService: CouponServiceProtocol,
-                storage: StorageManagerType? = nil) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings,
+         couponService: CouponServiceProtocol,
+         storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
         self.couponService = couponService
+    }
+
+    public convenience init(siteID: Int64,
+                            currencySettings: CurrencySettings,
+                            credentials: Credentials?,
+                            storage: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials)
+        self.init(siteID: siteID,
+                  currencySettings: currencySettings,
+                  couponService: CouponService(storageManager: storage, network: network),
+                  storage: storage)
     }
 
     @MainActor
@@ -76,6 +87,15 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-//        couponService.synchronizeCoupons(siteID: , pageNumber: , pageSize: , onCompletion: )
+        await withCheckedContinuation { continuation in
+            couponService.synchronizeCoupons(
+                siteID: siteID,
+                pageNumber: pageNumber,
+                pageSize: 25,
+                onCompletion: { _ in
+                    continuation.resume()
+                }
+            )
+        }
     }
 }

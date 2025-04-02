@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0139C2B02D91D1C600C78FDE /* POSCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0139C2AF2D91D1C400C78FDE /* POSCart.swift */; };
 		016A776B2D9D30C90004FCD6 /* PointOfSaleCouponServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016A776A2D9D30C10004FCD6 /* PointOfSaleCouponServiceTests.swift */; };
+		016A89D82D9D6DB50004FCD6 /* CouponService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016A89D72D9D6DAE0004FCD6 /* CouponService.swift */; };
 		016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */; };
 		016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */; };
 		01AAD8122D92DE110081D60B /* CouponsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8112D92DE0F0081D60B /* CouponsError.swift */; };
@@ -557,6 +558,7 @@
 /* Begin PBXFileReference section */
 		0139C2AF2D91D1C400C78FDE /* POSCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCart.swift; sourceTree = "<group>"; };
 		016A776A2D9D30C10004FCD6 /* PointOfSaleCouponServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCouponServiceTests.swift; sourceTree = "<group>"; };
+		016A89D72D9D6DAE0004FCD6 /* CouponService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponService.swift; sourceTree = "<group>"; };
 		016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePrice.swift"; sourceTree = "<group>"; };
 		016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePriceTests.swift"; sourceTree = "<group>"; };
 		01AAD8112D92DE0F0081D60B /* CouponsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponsError.swift; sourceTree = "<group>"; };
@@ -1113,6 +1115,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		016A89D42D9D6D980004FCD6 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				016A89D72D9D6DAE0004FCD6 /* CouponService.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		0202B68E238790B900F3EBE0 /* PListStorage */ = {
 			isa = PBXGroup;
 			children = (
@@ -1727,6 +1737,7 @@
 		B5BC736320D1A98500B5B6FA /* Stores */ = {
 			isa = PBXGroup;
 			children = (
+				016A89D42D9D6D980004FCD6 /* Helpers */,
 				5758EB2E24DC7777009ED8A6 /* AppSettings */,
 				5726456D250BD177005BBD7C /* Order */,
 				570B05CD246B6A2F00C186AE /* ProductReview */,
@@ -2397,6 +2408,7 @@
 				CE4FD4522350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift in Sources */,
 				31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */,
 				02FF055223D983F30058E6E7 /* MediaExportService.swift in Sources */,
+				016A89D82D9D6DB50004FCD6 /* CouponService.swift in Sources */,
 				45010695239A6CDE00E24722 /* TaxAction.swift in Sources */,
 				B9DFE4C02AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift in Sources */,
 				03FBDA222631521100ACE257 /* CouponAction.swift in Sources */,

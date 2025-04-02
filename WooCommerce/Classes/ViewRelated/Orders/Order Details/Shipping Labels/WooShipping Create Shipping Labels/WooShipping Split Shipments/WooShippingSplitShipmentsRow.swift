@@ -42,22 +42,3 @@ private extension WooShippingSplitShipmentsRow {
                                                       comment: "Title for button in shipping label creation to start split shipments flow.")
     }
 }
-
-#if DEBUG
-#Preview {
-    WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
-                                                                               config: ShippingLabelSampleData.sampleWooShippingConfig(),
-                                                                               items: [ShippingLabelPackageItem(productOrVariationID: 1,
-                                                                                                                orderItemID: 12,
-                                                                                                                name: "Shirt",
-                                                                                                                weight: 0.5,
-                                                                                                                quantity: 2,
-                                                                                                                value: 9.99,
-                                                                                                                dimensions: ProductDimensions(length: "",
-                                                                                                                                              width: "",
-                                                                                                                                              height: ""),
-                                                                                                                attributes: [],
-                                                                                                                imageURL: nil)]))
-    .padding()
-}
-#endif

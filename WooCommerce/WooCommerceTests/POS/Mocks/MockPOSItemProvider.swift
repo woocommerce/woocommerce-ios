@@ -1,11 +1,6 @@
 import Foundation
-import protocol Yosemite.PointOfSaleItemServiceProtocol
-import enum Yosemite.POSItem
-import protocol Yosemite.POSOrderableItem
-@testable import struct Yosemite.POSSimpleProduct
-@testable import struct Yosemite.POSVariation
-import struct Yosemite.PagedItems
-import struct Yosemite.POSVariableParentProduct
+@testable import Yosemite
+import struct Networking.PagedItems
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// An array of pages of items, returned when other flags are not set.
@@ -45,6 +40,8 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
         return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations)
     }
+
+    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
 }
 
 extension MockPointOfSaleItemService {
@@ -126,5 +123,15 @@ extension MockPointOfSaleItemService {
                                       variationID: 4,
                                       parentProductName: "Ice cream")
         return [.variation(variation3), .variation(variation4)]
+    }
+}
+
+struct MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        return .init(items: [], hasMorePages: false)
+    }
+    
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        return .init(items: [], hasMorePages: false)
     }
 }

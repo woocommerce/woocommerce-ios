@@ -15,7 +15,7 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
 
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
+    public var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
     public init(currencySettings: CurrencySettings,
                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) {
@@ -23,7 +23,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         self.fetchStrategy = fetchStrategy
     }
 
-    /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
+    /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,
     /// and maps them to POSItem type.
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1

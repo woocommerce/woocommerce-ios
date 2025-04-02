@@ -31,7 +31,7 @@ struct PointOfSaleErrorState: Equatable {
 
     static func errorCouponsNotFound() -> Self {
         PointOfSaleErrorState(title: Constants.noCouponsFoundTitle,
-                              subtitle: Constants.noCouponsFoundSubtitle
+                              subtitle: Constants.noCouponsFoundSubtitle,
                               buttonText: Constants.noCouponsFoundButtonTitle)
     }
 

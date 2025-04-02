@@ -82,9 +82,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// View model for split shipments.
     var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel {
-        return WooShippingSplitShipmentsViewModel(order: order,
-                                                  shipments: shipments,
-                                                  stores: stores)
+        WooShippingSplitShipmentsViewModel(order: order,
+                                           shipments: shipments,
+                                           stores: stores) { [weak self] updatedShipments in
+            self?.selectedShipmentIndex = 0
+            self?.shipments = updatedShipments
+        }
     }
 
     var shouldDisplaySplitShipmentRow: Bool {

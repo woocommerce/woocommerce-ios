@@ -8,6 +8,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
+    private let onShipmentsUpdate: ([Shipment]) -> Void
 
     typealias ShipmentContents = [CollapsibleShipmentItemCardViewModel]
 
@@ -103,12 +104,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
          shipments: [Shipment],
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
+         onShipmentsUpdate: @escaping ([Shipment]) -> Void) {
         self.order = order
         self.stores = stores
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
         self.shipments = shipments
+        self.onShipmentsUpdate = onShipmentsUpdate
 
         shipmentsSavedInRemote = editedShipmentsInfo
 
@@ -254,8 +257,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @MainActor
     func saveShipmentInfo() async throws {
         isSavingShipmentInfo = true
-        try await updateShipment()
-        isSavingShipmentInfo = false
+        do {
+            try await updateShipment()
+            onShipmentsUpdate(shipments)
+            isSavingShipmentInfo = false
+        } catch {
+            isSavingShipmentInfo = false
+            throw error
+        }
     }
 
     func mergeAllUnfulfilledShipments() {

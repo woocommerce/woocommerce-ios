@@ -34,7 +34,7 @@ struct PointOfSaleErrorState: Equatable {
     }
 
     static func errorCouponsDisabled() -> Self {
-        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons", buttonText: "Enable")
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons in WooCommerce Settings, and tap Retry", buttonText: "Retry")
     }
 
     enum Constants {

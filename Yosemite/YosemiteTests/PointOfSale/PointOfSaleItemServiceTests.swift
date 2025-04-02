@@ -13,9 +13,12 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         super.setUp()
         network = MockNetwork()
         currencySettings = CurrencySettings()
-        itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                 currencySettings: currencySettings,
-                                                 network: network)
+        let fetchStrategy = PointOfSaleDefaultPurchasableItemFetchStrategy(
+            siteID: siteID,
+            productsRemote: ProductsRemote(network: network),
+            variationsRemote: ProductVariationsRemote(network: network))
+        itemProvider = PointOfSaleItemService(currencySettings: currencySettings,
+                                              fetchStrategy: fetchStrategy)
     }
 
     override func tearDown() {
@@ -111,9 +114,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleItems_sets_types_parameters_correctly() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                     currencySettings: currencySettings,
-                                                     network: network)
 
         // When
         _ = try? await itemProvider.providePointOfSaleItems()
@@ -124,9 +124,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_returns_variations_with_non_downloadable_filter_when_load_succeeds() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -166,9 +163,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_returns_variation_page_details_when_load_succeeds() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -201,9 +195,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                            currencySettings: currencySettings,
-                                            network: network)
         let parentProductID: Int64 = 123
         let expectedError = PointOfSaleItemServiceError.requestFailed
 
@@ -230,9 +221,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_formats_empty_prices_as_zero() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When

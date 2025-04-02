@@ -39,7 +39,10 @@ struct HubMenu: View {
                                                           credentials: viewModel.credentials),
                        #available(iOS 17.0, *) {
                         PointOfSaleEntryPointView(
-                            itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                            itemsController: PointOfSaleItemsController(
+                                itemProvider: PointOfSaleItemService(
+                                    currencySettings: ServiceLocator.currencySettings,
+                                    fetchStrategy: viewModel.posItemFetchStrategyFactory.defaultStrategy)),
                             couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
                                 viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)

@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSItem
+import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct

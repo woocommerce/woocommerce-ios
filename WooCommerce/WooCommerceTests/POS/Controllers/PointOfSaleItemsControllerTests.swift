@@ -5,6 +5,7 @@ import struct Yosemite.POSVariableParentProduct
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleItemServiceError
 import class Yosemite.PointOfSaleItemFetchStrategyFactory
+@testable import struct Yosemite.PointOfSaleSearchPurchasableItemFetchStrategy
 import Observation
 
 final class PointOfSaleItemsControllerTests {
@@ -698,6 +699,22 @@ final class PointOfSaleItemsControllerTests {
         #expect(hasMoreItems)
     }
 
+    @available(iOS 17.0, *)
+    @Test func search_sets_a_fetch_strategy_with_search_term_on_the_service() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(
+            itemProvider: itemProvider,
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+        )
+
+        // When
+        await sut.searchItems(searchTerm: "green mug", baseItem: .root)
+
+        // Then
+        let fetchStrategy = try #require(itemProvider.fetchStrategy as? PointOfSaleSearchPurchasableItemFetchStrategy)
+        #expect(fetchStrategy.searchTerm == "green mug")
+    }
 
     enum MockError: Error {
         case requestFailed

@@ -90,6 +90,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         }
     }
 
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
+
     func refreshItems(base: ItemListBaseItem) async {
         await loadItems(base: base)
     }

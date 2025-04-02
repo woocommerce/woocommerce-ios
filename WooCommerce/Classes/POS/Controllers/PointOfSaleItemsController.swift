@@ -25,16 +25,21 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 }
 
+@available(iOS 17.0, *)
+protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
+    /// Searches for items
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
+}
 
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+@Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
-    private let itemProvider: PointOfSaleItemServiceProtocol
+    private var itemProvider: PointOfSaleItemServiceProtocol
     private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
 
     init(itemProvider: PointOfSaleItemServiceProtocol, itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory) {
@@ -52,6 +57,12 @@ protocol PointOfSaleItemsControllerProtocol {
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         await loadFirstPage(base: base)
+    }
+
+    @MainActor
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
+        itemProvider.fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        await loadFirstPage(base: baseItem)
     }
 
     @MainActor

@@ -20,9 +20,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
-                let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { _ in
-                    onSuccess()
-                })
+                let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { _ in })
                 var view = AddEditCoupon(viewModel)
 
                 view.dismissHandler = {
@@ -32,6 +30,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                 view.onDisappear = { success in
                     if success {
                         selectedType = nil
+                        onSuccess()
                     }
                 }
 

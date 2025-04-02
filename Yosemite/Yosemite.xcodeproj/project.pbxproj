@@ -149,6 +149,7 @@
 		077F39E526A5C98200ABEADC /* SystemStatusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39E426A5C98200ABEADC /* SystemStatusStoreTests.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		204CBD2F2D43C516006FF89A /* PaymentsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CBD2E2D43C516006FF89A /* PaymentsError.swift */; };
+		20716F322D9DA24C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20716F312D9DA24C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */; };
 		207D2D1B2CFA06BD00F79204 /* POSCartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207D2D192CFA06BD00F79204 /* POSCartItemTests.swift */; };
 		207D2D1D2CFA0CEF00F79204 /* MockPOSOrderableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207D2D1C2CFA0CEF00F79204 /* MockPOSOrderableItem.swift */; };
 		2095A6492D9D81C900CA1849 /* PointOfSaleItemFetchStrategyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2095A6482D9D81C900CA1849 /* PointOfSaleItemFetchStrategyFactory.swift */; };
@@ -697,6 +698,7 @@
 		077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		077F39E426A5C98200ABEADC /* SystemStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusStoreTests.swift; sourceTree = "<group>"; };
 		204CBD2E2D43C516006FF89A /* PaymentsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsError.swift; sourceTree = "<group>"; };
+		20716F312D9DA24C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSalePurchasableItemFetchStrategy.swift; sourceTree = "<group>"; };
 		207D2D192CFA06BD00F79204 /* POSCartItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCartItemTests.swift; sourceTree = "<group>"; };
 		207D2D1C2CFA0CEF00F79204 /* MockPOSOrderableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSOrderableItem.swift; sourceTree = "<group>"; };
 		2095A6482D9D81C900CA1849 /* PointOfSaleItemFetchStrategyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemFetchStrategyFactory.swift; sourceTree = "<group>"; };
@@ -2011,6 +2013,7 @@
 				022F9318257F24730011CD94 /* MockShippingLabel.swift */,
 				022F931C257F27B40011CD94 /* MockShippingLabelAddress.swift */,
 				20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */,
+				20716F312D9DA24C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */,
 				20D035012CDBBE2A00C0F901 /* MockCardReaderCapableRemote.swift */,
 			);
 			path = Mocks;
@@ -2801,6 +2804,7 @@
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				0248B36B2459127200A271A4 /* MockNetwork+Path.swift in Sources */,
 				CE606DA22BE3C331001CB424 /* ShippingMethodStoreTests.swift in Sources */,
+				20716F322D9DA24C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift in Sources */,
 				03FBDA2E2632A9B400ACE257 /* MockCouponsRemote.swift in Sources */,
 				DED91DF42AD67E9400CDCC53 /* BlazeStoreTests.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockActionsProcessor.swift in Sources */,

@@ -125,13 +125,3 @@ extension MockPointOfSaleItemService {
         return [.variation(variation3), .variation(variation4)]
     }
 }
-
-struct MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
-    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return .init(items: [], hasMorePages: false)
-    }
-    
-    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
-        return .init(items: [], hasMorePages: false)
-    }
-}

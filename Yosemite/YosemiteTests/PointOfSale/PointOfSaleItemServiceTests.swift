@@ -276,6 +276,19 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             }
         }
     }
+
+    func test_providePointOfSaleItems_uses_current_fetch_strategy() async throws {
+        // Given
+        let fetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
+        itemProvider.fetchStrategy = fetchStrategy
+
+        // When
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 5)
+
+        // Then
+        XCTAssertTrue(fetchStrategy.fetchProductsCalled)
+        XCTAssertEqual(fetchStrategy.spyFetchProductsPageNumber, 5)
+    }
 }
 
 private extension PointOfSaleItemServiceTests {

@@ -43,6 +43,11 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 private extension PointOfSaleCouponsController {
     @MainActor
     func loadFirstPage() async {
+        // WIP
+        let containerState = ItemsContainerState.content
+        let stackState = ItemsStackState(root: .inlineError([], error: .errorCouponsNotFound()), itemStates: [:])
+        itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
+        return
         do {
             let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1).items
             itemsViewState = ItemsViewState(containerState: .content,

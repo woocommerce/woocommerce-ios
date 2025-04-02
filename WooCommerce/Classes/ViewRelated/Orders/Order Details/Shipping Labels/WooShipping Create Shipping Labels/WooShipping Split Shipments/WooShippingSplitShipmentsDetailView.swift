@@ -26,20 +26,7 @@ struct WooShippingSplitShipmentsDetailView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
                         if viewModel.currentShipment.isPurchased {
-                            VStack {
-                                Text(Localization.PurchasedShipment.title)
-                                    .bold()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text(Localization.PurchasedShipment.subtitle)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .multilineTextAlignment(.leading)
-                            .foregroundStyle(Layout.green)
-                            .padding(Layout.contentPadding)
-                            .background(
-                                Layout.greenBackground
-                                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                            )
+                            fulfilledShipmentView
                         }
 
                         AdaptiveStack(horizontalAlignment: .leading) {
@@ -150,6 +137,23 @@ private extension WooShippingSplitShipmentsDetailView {
             Image(systemName: "ellipsis")
                 .padding()
         }
+    }
+
+    var fulfilledShipmentView: some View {
+        VStack {
+            Text(Localization.PurchasedShipment.title)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(Localization.PurchasedShipment.subtitle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .multilineTextAlignment(.leading)
+        .foregroundStyle(Layout.green)
+        .padding(Layout.contentPadding)
+        .background(
+            Layout.greenBackground
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+        )
     }
 
     var noticeStack: some View {

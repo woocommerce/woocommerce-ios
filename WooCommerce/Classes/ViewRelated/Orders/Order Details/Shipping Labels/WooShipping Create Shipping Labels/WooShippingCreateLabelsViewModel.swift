@@ -457,13 +457,13 @@ private extension WooShippingCreateLabelsViewModel {
             switch result {
             case .success(let address):
                 destinationAddress = address.normalizedAddress.toWooShippingAddress()
-                destinationAddressStatus = address.isVerified ? .verified : .unverified
+                destinationAddressStatus = calculateDestinationAddressStatus(isVerified: address.isVerified)
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
 
                 if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
                     destinationAddress = orderShippingAddress
-                    destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
+                    destinationAddressStatus = calculateDestinationAddressStatus(isVerified: false)
                 } else {
                     destinationAddressStatus = .missingInformation
                 }
@@ -649,6 +649,16 @@ private extension WooShippingCreateLabelsViewModel {
                                      isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
                                      hazmatCategory: hazmatCategory?.rawValue,
                                      customsForm: customsForm)
+    }
+
+    func calculateDestinationAddressStatus(isVerified: Bool) -> WooShippingAddressStatus {
+        let viewModel = WooShippingEditAddressViewModel(address: destinationAddress,
+                                                        orderID: order.orderID,
+                                                        email: destinationEmail,
+                                                        isVerified: isVerified,
+                                                        originCountryCode: selectedOriginAddress?.country,
+                                                        originStateCode: selectedOriginAddress?.state)
+        return viewModel.status
     }
 }
 

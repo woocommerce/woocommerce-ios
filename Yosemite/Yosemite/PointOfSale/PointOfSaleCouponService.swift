@@ -137,22 +137,4 @@ private extension PointOfSaleCouponService {
             }
         }
     }
-
-    private func enableStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
-                switch result {
-                case .success:
-                    debugPrint("Coupons enabled")
-                    continuation.resume(returning: true)
-                case let .failure(error):
-                    debugPrint("Error when attempting to enable Coupons: \(error)")
-                    continuation.resume(returning: false)
-                }
-            }
-            Task { @MainActor in
-                stores?.dispatch(action)
-            }
-        }
-    }
 }

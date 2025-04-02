@@ -3,6 +3,7 @@ import Observation
 import enum Yosemite.POSItem
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import class Yosemite.PointOfSaleItemFetchStrategyFactory
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
@@ -34,9 +35,11 @@ protocol PointOfSaleItemsControllerProtocol {
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let itemProvider: PointOfSaleItemServiceProtocol
+    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
 
-    init(itemProvider: PointOfSaleItemServiceProtocol) {
+    init(itemProvider: PointOfSaleItemServiceProtocol, itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory) {
         self.itemProvider = itemProvider
+        self.itemFetchStrategyFactory = itemFetchStrategyFactory
         self.paginationTracker = .init()
     }
 

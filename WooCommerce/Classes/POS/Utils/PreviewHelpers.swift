@@ -12,6 +12,9 @@ import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
+import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
+import struct Yosemite.POSProduct
+import struct Yosemite.ProductVariation
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -55,6 +58,18 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
+    }
+
+    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
+}
+
+struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        return .init(items: [], hasMorePages: true)
+    }
+
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        return .init(items: [], hasMorePages: true)
     }
 }
 

@@ -94,7 +94,7 @@ private extension MagicLinkRequestViewController {
 
 // MARK: UI Setup
 private extension MagicLinkRequestViewController {
-    private func configureStackView() {
+    func configureStackView() {
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.spacing = 16
@@ -127,7 +127,7 @@ private extension MagicLinkRequestViewController {
         pinSubviewToHorizontalEdges(primaryButton)
     }
 
-    private func createHeader() -> UIView {
+    func createHeader() -> UIView {
         let headerStackView = UIStackView()
         headerStackView.spacing = 16
         headerStackView.layoutMargins = UIEdgeInsets(top: 24, left: 16, bottom: 24, right: 16)
@@ -158,7 +158,7 @@ private extension MagicLinkRequestViewController {
         return headerStackView
     }
 
-    private func createFallbackButton() -> UIButton {
+    func createFallbackButton() -> UIButton {
         let fallbackButton = NUXButton()
         fallbackButton.contentInsets = .zero
         fallbackButton.buttonStyle = .linkButtonStyle
@@ -172,7 +172,7 @@ private extension MagicLinkRequestViewController {
         return fallbackButton
     }
 
-    private func createPrimaryButton() -> UIButton {
+    func createPrimaryButton() -> UIButton {
         let primaryButton = NUXButton()
         primaryButton.isPrimary = true
         submitButton = primaryButton
@@ -184,7 +184,7 @@ private extension MagicLinkRequestViewController {
         return primaryButton
     }
 
-    private func pinSubviewToHorizontalEdges(_ subView: UIView) {
+    func pinSubviewToHorizontalEdges(_ subView: UIView) {
         subView.translatesAutoresizingMaskIntoConstraints = false
         subView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: stackView.layoutMargins.left).isActive = true
         subView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -stackView.layoutMargins.right).isActive = true
@@ -220,7 +220,7 @@ private extension MagicLinkRequestViewController {
         )
     }
 
-    private func fallbackButtonTitle() -> String {
+    func fallbackButtonTitle() -> String {
         switch fallbackAction {
         case .password:
             return Localization.passwordFallback

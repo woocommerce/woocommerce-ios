@@ -29,6 +29,14 @@ struct PointOfSaleErrorState: Equatable {
                               buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
+    static func errorOnLoadingCoupons() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Error loading coupons", buttonText: "Retry")
+    }
+
+    static func errorCouponsDisabled() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons in WooCommerce Settings, and tap Retry", buttonText: "Retry")
+    }
+
     enum Constants {
         static let failedToLoadProductsTitle = NSLocalizedString(
             "pos.itemList.failedToLoadProductsTitle",

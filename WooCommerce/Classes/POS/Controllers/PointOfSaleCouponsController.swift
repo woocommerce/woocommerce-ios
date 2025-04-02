@@ -1,5 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
+import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
@@ -20,7 +21,8 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         // TODO:
-        // Handle unhappy path
+        // Handle unhappy path:
+        // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
         await loadFirstPage()
     }
 
@@ -49,7 +51,16 @@ private extension PointOfSaleCouponsController {
                                             itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
                                                               itemStates: [:]))
         } catch {
-            debugPrint(error)
+            if let couponError = error as? PointOfSaleCouponServiceError {
+                switch couponError {
+                case .couponsLoadingError:
+                    itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
+                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+                case .couponsDisabled:
+                    itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
+                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+                }
+            }
         }
     }
 }

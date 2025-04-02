@@ -123,19 +123,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -345,19 +345,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_customsFormRequired_when_origin_and_destination_in_US_then_returns_false() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
         let order = Order.fake().copy(shippingAddress: address)
@@ -372,19 +372,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_customsFormRequired_when_origin_address_is_US_military_then_returns_true() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "AA",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "AA",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
         let order = Order.fake().copy(shippingAddress: address)
@@ -399,19 +399,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_customsFormRequired_when_destination_address_is_US_military_then_returns_true() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "Military City", state: "AA", postcode: "12345", country: "US")
         let order = Order.fake().copy(shippingAddress: address)
@@ -426,19 +426,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_customsFormRequired_when_destination_address_is_not_in_US_then_returns_true() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "London", state: "LD", postcode: "12345", country: "GB")
         let order = Order.fake().copy(shippingAddress: address)
@@ -453,19 +453,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_itnMissingNoticeLabel_when_customs_form_is_not_required() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
         let order = Order.fake().copy(shippingAddress: address)
@@ -480,19 +480,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_itnMissingNoticeLabel_when_customs_form_is_required() {
         // Given
         let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
 
         let address = Address.fake().copy(address1: "1 Main Street", city: "London", state: "LD", postcode: "12345", country: "GB")
         let order = Order.fake().copy(shippingAddress: address)
@@ -944,13 +944,28 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_destinationAddressStatus_unverified_and_noticeLabel_set_for_unverified_address() {
         // Given
-        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let address = Address.fake().copy(firstName: "JANE",
+                                          lastName: "DOE",
+                                          address1: "1 Main Street",
+                                          city: "San Francisco",
+                                          state: "CA",
+                                          postcode: "12345",
+                                          country: "US",
+                                          email: "jane@example.com")
         let order = Order.fake().copy(shippingAddress: address)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .verifyDestinationAddress(_, _, let completion):
-                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
+                let address = WooShippingNormalizedAddress.fake().copy(firstName: "JANE",
+                                                                       lastName: "DOE",
+                                                                       phone: "223-456-7890",
+                                                                       country: "US",
+                                                                       state: "CA",
+                                                                       address1: "1 Main Street",
+                                                                       city: "San Francisco",
+                                                                       postcode: "12345")
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: address,
                                                                                isTrivialNormalization: false,
                                                                                isVerified: false)))
             case .loadAccountSettings(_, let completion):
@@ -972,13 +987,28 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_destinationAddressStatus_verified_and_noticeLabel_set_for_verified_address() {
         // Given
-        let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
+        let address = Address.fake().copy(firstName: "JANE",
+                                          lastName: "DOE",
+                                          address1: "1 Main Street",
+                                          city: "San Francisco",
+                                          state: "CA",
+                                          postcode: "12345",
+                                          country: "US",
+                                          email: "jane@example.com")
         let order = Order.fake().copy(shippingAddress: address)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .verifyDestinationAddress(_, _, let completion):
-                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
+                let address = WooShippingNormalizedAddress.fake().copy(firstName: "JANE",
+                                                                       lastName: "DOE",
+                                                                       phone: "223-456-7890",
+                                                                       country: "US",
+                                                                       state: "CA",
+                                                                       address1: "1 Main Street",
+                                                                       city: "San Francisco",
+                                                                       postcode: "12345")
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: address,
                                                                                isTrivialNormalization: nil,
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
@@ -1021,7 +1051,46 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
 
         // Then
-        XCTAssertEqual(viewModel.destinationAddressStatus, .missing)
+        XCTAssertEqual(viewModel.destinationAddressStatus, .missingInformation)
+        XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
+    }
+
+    func test_destinationAddressStatus_missing_and_noticeLabel_set_for_address_with_missing_information() {
+        // Given
+        let addressMissingName = Address.fake().copy(address1: "1 Main Street",
+                                                     city: "San Francisco",
+                                                     state: "CA",
+                                                     postcode: "12345",
+                                                     country: "US",
+                                                     email: "jane@addressMissingName.com")
+        let order = Order.fake().copy(shippingAddress: addressMissingName)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .verifyDestinationAddress(_, _, let completion):
+                let addressMissingName = WooShippingNormalizedAddress.fake().copy(phone: "223-456-7890",
+                                                                                  country: "US",
+                                                                                  state: "CA",
+                                                                                  address1: "1 Main Street",
+                                                                                  city: "San Francisco",
+                                                                                  postcode: "12345")
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: addressMissingName,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .loadOriginAddresses, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddressStatus, .missingInformation)
         XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
 
@@ -1083,33 +1152,33 @@ private extension WooShippingCreateLabelsViewModelTests {
                                                                deliveryDays: 2,
                                                                deliveryDateGuaranteed: false),
                                 signatureRate: signatureRequirement == .signatureRequired ?
-                                    ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                                             insurance: "100",
-                                                             retailRate: 42.76,
-                                                             rate: 42.76,
-                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
-                                                             serviceID: "",
-                                                             carrierID: "usps",
-                                                             shipmentID: "",
-                                                             hasTracking: true,
-                                                             isSelected: false,
-                                                             isPickupFree: true,
-                                                             deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil,
+                                ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                                         insurance: "100",
+                                                         retailRate: 42.76,
+                                                         rate: 42.76,
+                                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
+                                                         serviceID: "",
+                                                         carrierID: "usps",
+                                                         shipmentID: "",
+                                                         hasTracking: true,
+                                                         isSelected: false,
+                                                         isPickupFree: true,
+                                                         deliveryDays: 2,
+                                                         deliveryDateGuaranteed: false) : nil,
                                 adultSignatureRate: signatureRequirement == .adultSignatureRequired ?
-                                    ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                                             insurance: "100",
-                                                             retailRate: 46.96,
-                                                             rate: 46.96,
-                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
-                                                             serviceID: "",
-                                                             carrierID: "usps",
-                                                             shipmentID: "",
-                                                             hasTracking: true,
-                                                             isSelected: false,
-                                                             isPickupFree: true,
-                                                             deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil)
+                                ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                                         insurance: "100",
+                                                         retailRate: 46.96,
+                                                         rate: 46.96,
+                                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
+                                                         serviceID: "",
+                                                         carrierID: "usps",
+                                                         shipmentID: "",
+                                                         hasTracking: true,
+                                                         isSelected: false,
+                                                         isPickupFree: true,
+                                                         deliveryDays: 2,
+                                                         deliveryDateGuaranteed: false) : nil)
     }
 
     func samplePackageData() -> WooShippingPackageDataRepresentable {

@@ -9,7 +9,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
 
-    typealias ShipmentContents = [CollapsibleShipmentItemCardViewModel]
+    typealias ShipmentContents = [ShippingLabelPackageItem]
 
     @Published private(set) var shipments: [Shipment]
 
@@ -36,7 +36,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             shipmentIdsToUpdate.append(key)
 
             var items = [WooShippingShipmentItem]()
-            for item in shipment.contents {
+            for item in shipment.splitShipmentViewModels {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
                     let i = WooShippingShipmentItem(id: Int64(mainItemID),
                                                     subItems: item.childItemRows.map({ $0.itemID }))
@@ -122,7 +122,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func selectAll() {
-        currentShipment.contents.forEach {
+        currentShipment.splitShipmentViewModels.forEach {
             $0.selectAll()
         }
     }
@@ -148,27 +148,19 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         // Step 1: Split items
         var newShipmentContents = ShipmentContents()
         var movedItems = ShipmentContents()
-        for item in currentShipment.contents {
+        for item in currentShipment.splitShipmentViewModels {
             let initialQuantity = item.packageItem.quantity.intValue
             let selectedQuantity = item.numberOfSelectedItems
             let remainingQuantity = initialQuantity - selectedQuantity
             if remainingQuantity == 0 {
-                movedItems.append(
-                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: order.currency)
-                )
+                movedItems.append(item.packageItem)
             } else if selectedQuantity > 0 {
                 let newItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(remainingQuantity))
-                newShipmentContents.append(
-                    CollapsibleShipmentItemCardViewModel(item: newItem, currency: order.currency)
-                )
+                newShipmentContents.append(newItem)
                 let movedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: Decimal(selectedQuantity))
-                movedItems.append(
-                    CollapsibleShipmentItemCardViewModel(item: movedItem, currency: order.currency)
-                )
+                movedItems.append(movedItem)
             } else if selectedQuantity == 0 {
-                newShipmentContents.append(
-                    CollapsibleShipmentItemCardViewModel(item: item.packageItem, currency: order.currency)
-                )
+                newShipmentContents.append(item.packageItem)
             }
         }
 
@@ -177,7 +169,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         // Step 3: Add new or update existing shipment
         let totalItemsMoved = movedItems
-            .map { $0.packageItem.quantity }
+            .map { $0.quantity }
             .reduce(0, +)
         var updatedShipmentIndex: Int?
 
@@ -191,15 +183,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             var updatedShipmentContents = ShipmentContents()
             for item in shipments[index].contents {
                 let matchingItemIndex = movedItems.firstIndex(where: {
-                    $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                    $0.productOrVariationID == item.productOrVariationID
                 })
                 if let matchingItemIndex {
                     // Merge the quantity if the same item is moved to the shipment
-                    let updatedQuantity = item.packageItem.quantity + movedItems[matchingItemIndex].packageItem.quantity
-                    let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
-                    updatedShipmentContents.append(
-                        CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
-                    )
+                    let updatedQuantity = item.quantity + movedItems[matchingItemIndex].quantity
+                    let updatedItem = ShippingLabelPackageItem(copy: item, quantity: updatedQuantity)
+                    updatedShipmentContents.append(updatedItem)
                     movedItems.remove(at: matchingItemIndex)
                 } else {
                     // Keep the item as-is
@@ -265,13 +255,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         unfulfilledShipments.forEach { shipment in
             for item in shipment.contents {
                 let matchingItemIndex = mergedShipmentContents.firstIndex(where: {
-                    $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                    $0.productOrVariationID == item.productOrVariationID
                 })
                 if let matchingItemIndex {
                     // Merge the quantity if the same item is merged to the shipment
-                    let updatedQuantity = item.packageItem.quantity + mergedShipmentContents[matchingItemIndex].packageItem.quantity
-                    let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
-                    mergedShipmentContents[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+                    let updatedQuantity = item.quantity + mergedShipmentContents[matchingItemIndex].quantity
+                    let updatedItem = ShippingLabelPackageItem(copy: item, quantity: updatedQuantity)
+                    mergedShipmentContents[matchingItemIndex] = updatedItem
                 } else {
                     // Keep the item as-is
                     mergedShipmentContents.append(item)
@@ -307,13 +297,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         for item in shipment.contents {
             let matchingItemIndex = mergedContents.firstIndex(where: {
-                $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
+                $0.productOrVariationID == item.productOrVariationID
             })
             if let matchingItemIndex {
                 // Merge the quantity if the same item is merged to the shipment
-                let updatedQuantity = item.packageItem.quantity + mergedContents[matchingItemIndex].packageItem.quantity
-                let updatedItem = ShippingLabelPackageItem(copy: item.packageItem, quantity: updatedQuantity)
-                mergedContents[matchingItemIndex] = CollapsibleShipmentItemCardViewModel(item: updatedItem, currency: order.currency)
+                let updatedQuantity = item.quantity + mergedContents[matchingItemIndex].quantity
+                let updatedItem = ShippingLabelPackageItem(copy: item, quantity: updatedQuantity)
+                mergedContents[matchingItemIndex] = updatedItem
             } else {
                 // Append the item as-is
                 mergedContents.append(item)
@@ -329,7 +319,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
 private extension WooShippingSplitShipmentsViewModel {
     func configureSelectionCallback() {
-        currentShipment.contents.forEach { viewModel in
+        currentShipment.splitShipmentViewModels.forEach { viewModel in
             viewModel.onSelectionChange = { [weak self] in
                 self?.updateMoveToNotice()
             }
@@ -361,7 +351,7 @@ private extension WooShippingSplitShipmentsViewModel {
 
     func updateMoveToNotice() {
         let currentIndex = selectedShipmentIndex
-        let selectedItemsCount = currentShipment.contents
+        let selectedItemsCount = currentShipment.splitShipmentViewModels
             .map(\.numberOfSelectedItems)
             .reduce(0, +)
 
@@ -370,7 +360,7 @@ private extension WooShippingSplitShipmentsViewModel {
         }
 
         let totalItemCount = currentShipment.contents
-            .map { $0.packageItem.quantity }
+            .map { $0.quantity }
             .reduce(0, +).intValue
 
         if shipments.count == 1 &&
@@ -397,7 +387,7 @@ private extension WooShippingSplitShipmentsViewModel {
 
 extension WooShippingSplitShipmentsViewModel {
 
-    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+    private func createShipment(with contents: [ShippingLabelPackageItem]) -> Shipment {
         Shipment(contents: contents,
                  currency: order.currency,
                  currencySettings: currencySettings,
@@ -407,7 +397,8 @@ extension WooShippingSplitShipmentsViewModel {
     struct Shipment: Identifiable, Equatable {
 
         let id = UUID().uuidString
-        let contents: [CollapsibleShipmentItemCardViewModel]
+        let contents: [ShippingLabelPackageItem]
+        let splitShipmentViewModels: [CollapsibleShipmentItemCardViewModel]
         let isPurchased: Bool
 
         let quantity: String
@@ -420,19 +411,21 @@ extension WooShippingSplitShipmentsViewModel {
             "\(weight) • \(price)"
         }
 
-        init(contents: [CollapsibleShipmentItemCardViewModel],
+        init(contents: [ShippingLabelPackageItem],
              isPurchased: Bool = false,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.contents = contents
+            self.splitShipmentViewModels = contents.map {
+                CollapsibleShipmentItemCardViewModel(item: $0, isSelectable: !isPurchased, currency: currency)
+            }
             self.isPurchased = isPurchased
 
-            let items = contents.map(\.packageItem)
-            let itemsCount = items.map(\.quantity).reduce(0, +)
+            let itemsCount = contents.map(\.quantity).reduce(0, +)
             self.quantity = Localization.itemsCount(itemsCount)
-            self.weight = formatWeight(for: items)
-            self.price = formatPrice(for: items)
+            self.weight = formatWeight(for: contents)
+            self.price = formatPrice(for: contents)
 
             /// Calculates and formats the total weight of the given items based on each item's weight and quantity.
             ///

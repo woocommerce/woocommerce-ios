@@ -681,10 +681,7 @@ private extension WooShippingCreateLabelsViewModel {
                                 currencySettings: CurrencySettings,
                                 shippingSettingsService: ShippingSettingsService) -> [Shipment] {
         guard let config, config.shipments.isEmpty == false else {
-            let contents = packageItems.map { item in
-                CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
-            }
-            let shipment = Shipment(contents: contents,
+            let shipment = Shipment(contents: packageItems,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
@@ -701,7 +698,7 @@ private extension WooShippingCreateLabelsViewModel {
 
             let isPurchased = (currentOrderLabels.filter { $0.shipmentID == key}).isNotEmpty
 
-            var shipmentContents = [CollapsibleShipmentItemCardViewModel]()
+            var shipmentContents = [ShippingLabelPackageItem]()
             for shipmentItem in shipmentItems {
                 guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
                       let subItems = shipmentItem.subItems else {
@@ -710,10 +707,7 @@ private extension WooShippingCreateLabelsViewModel {
 
                 let quantity = subItems.count > 0 ? subItems.count : 1
                 let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
-                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
-                                                                   isSelectable: !isPurchased,
-                                                                   currency: currency)
-                shipmentContents.append(content)
+                shipmentContents.append(updatedItem)
             }
 
             let shipment = Shipment(contents: shipmentContents,

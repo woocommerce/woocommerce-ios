@@ -162,6 +162,7 @@ private extension MagicLinkRequestViewController {
         let fallbackButton = NUXButton()
         fallbackButton.contentInsets = .zero
         fallbackButton.buttonStyle = .linkButtonStyle
+        fallbackButton.titleLabel?.numberOfLines = 0
         fallbackButton.customizeFont(.preferredFont(forTextStyle: .body))
 
         fallbackButton.setTitle(fallbackButtonTitle(), for: .normal)

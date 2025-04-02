@@ -85,6 +85,11 @@ private extension View {
     }
 }
 
+private struct POSCouponDiscountType: Identifiable, Equatable {
+    var id: String { discountType.rawValue }
+    let discountType: Coupon.DiscountType
+}
+
 private enum Localization {
     static let selectCouponTypeTitle = NSLocalizedString(
         "pos.couponCreationSheet.selectCoupon.title",

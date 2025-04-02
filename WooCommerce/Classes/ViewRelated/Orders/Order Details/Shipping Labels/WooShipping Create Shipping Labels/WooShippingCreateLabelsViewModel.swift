@@ -55,7 +55,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     typealias Shipment = WooShippingSplitShipmentsViewModel.Shipment
 
-    @Published private(set) var shipments: [Shipment]
+    private var shipments: [Shipment] {
+        didSet {
+            splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         shipments: shipments,
+                                                                         stores: stores)
+        }
+    }
 
     /// Selected package data for the shipping label.
     @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
@@ -67,11 +73,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var shippingService: WooShippingServiceViewModel?
 
     /// View model for split shipments.
-    var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel {
-        return WooShippingSplitShipmentsViewModel(order: order,
-                                                  shipments: shipments,
-                                                  stores: stores)
-    }
+    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel?
 
     /// Selected shipping rate when creating a shipping label.
     @Published private var selectedRate: WooShippingSelectedRate?

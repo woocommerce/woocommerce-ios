@@ -249,6 +249,7 @@ private extension WooShippingSplitShipmentsDetailView {
                                 }
                                 .font(.subheadline)
                             }
+                            .foregroundStyle(Color(.text))
                         }
                         .padding(Layout.contentPadding)
                         .if(otherShipment == shipmentToMergeInto) { view in

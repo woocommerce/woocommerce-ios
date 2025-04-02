@@ -64,8 +64,11 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
-        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
-            !isEligibleForPayment
+        if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
+            // TODO-15375: update logic to show shipping label creation button
+            return isEligibleForShippingLabelCreation && !isEligibleForPayment
+        }
+        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty && !isEligibleForPayment
     }
 
     /// Whether the option to re-create shipping labels should be visible.

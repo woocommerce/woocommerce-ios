@@ -25,6 +25,10 @@ struct WooShippingSplitShipmentsDetailView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                        if viewModel.currentShipment.isPurchased {
+                            fulfilledShipmentView
+                        }
+
                         AdaptiveStack(horizontalAlignment: .leading) {
                             Text(viewModel.itemsCountLabel)
                                 .headlineStyle()
@@ -102,7 +106,9 @@ private extension WooShippingSplitShipmentsDetailView {
                        selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
                        tabPadding: Layout.tabPadding,
                        tabsNameFont: Font.subheadline.bold(),
-                       tabsIconSize: nil,
+                       tabsIconSize: Layout.purchasedIconWidth,
+                       tabsIconAlignment: .trailing,
+                       tabsIconForegroundColor: Layout.green,
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
                        tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             .overlay(alignment: .trailing) {
@@ -121,7 +127,7 @@ private extension WooShippingSplitShipmentsDetailView {
                 Button(String.localizedStringWithFormat(Localization.removeShipmentFormat,
                                                         viewModel.retrieveName(for: shipment).lowercased())) {
                     shipmentToRemove = shipment
-                }
+                }.disabled(shipment.isPurchased)
             }
             Divider()
             Button(Localization.mergeAll) {
@@ -131,6 +137,23 @@ private extension WooShippingSplitShipmentsDetailView {
             Image(systemName: "ellipsis")
                 .padding()
         }
+    }
+
+    var fulfilledShipmentView: some View {
+        VStack {
+            Text(Localization.PurchasedShipment.title)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(Localization.PurchasedShipment.subtitle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .multilineTextAlignment(.leading)
+        .foregroundStyle(Layout.green)
+        .padding(Layout.contentPadding)
+        .background(
+            Layout.greenBackground
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+        )
     }
 
     var noticeStack: some View {
@@ -208,36 +231,37 @@ private extension WooShippingSplitShipmentsDetailView {
 
             VStack {
                 ForEach(viewModel.shipmentsToMerge(for: shipment)) { otherShipment in
-                    HStack {
-                        Image(systemName: "arrow.turn.down.right")
-                            .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
-                            .subheadlineStyle()
-                            .bold()
-                        VStack(alignment: .leading) {
-                            Text(viewModel.retrieveName(for: otherShipment))
-                                .headlineStyle()
-                            AdaptiveStack(horizontalAlignment: .leading) {
-                                Text(otherShipment.quantity)
-                                Spacer()
-                                Text(otherShipment.itemsDetailLabel)
-                            }
-                            .font(.subheadline)
-                        }
-                    }
-                    .padding(Layout.contentPadding)
-                    .if(otherShipment == shipmentToMergeInto) { view in
-                        view.background(
-                            Color(.listSelectedBackground)
-                                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                        )
-                    }
-                    .roundedBorder(cornerRadius: Layout.cornerRadius,
-                                   lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
-                                   lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
+                    Button {
                         shipmentToMergeInto = otherShipment
+                    } label: {
+                        HStack {
+                            Image(systemName: "arrow.turn.down.right")
+                                .foregroundStyle(otherShipment == shipmentToMergeInto ? Color.accentColor : Color.secondary)
+                                .font(.subheadline)
+                                .bold()
+                            VStack(alignment: .leading) {
+                                Text(viewModel.retrieveName(for: otherShipment))
+                                    .font(.headline)
+                                AdaptiveStack(horizontalAlignment: .leading) {
+                                    Text(otherShipment.quantity)
+                                    Spacer()
+                                    Text(otherShipment.itemsDetailLabel)
+                                }
+                                .font(.subheadline)
+                            }
+                        }
+                        .padding(Layout.contentPadding)
+                        .if(otherShipment == shipmentToMergeInto) { view in
+                            view.background(
+                                Color(.listSelectedBackground)
+                                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                            )
+                        }
+                        .roundedBorder(cornerRadius: Layout.cornerRadius,
+                                       lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
+                                       lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
+                    .disabled(otherShipment.isPurchased)
                 }
             }
 
@@ -325,6 +349,11 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
         static let tabItemContentVerticalPadding: CGFloat = 9.0
         static let cornerRadius: CGFloat = 8
         static let gradientViewWidth: CGFloat = 32
+        static let purchasedIconWidth: CGFloat = 16
+
+        static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
+                                         dark: .withColorStudio(.green, shade: .shade40)))
+        static let greenBackground = Color.withColorStudio(name: .green, shade: .shade0)
     }
 
     enum Localization {
@@ -402,6 +431,19 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
                 comment: "Button to confirm removing a shipment in the shipping label creation flow. " +
                 "Placeholder is the name of the shipment. " +
                 "Reads as: 'Remove Shipment 1.'"
+            )
+        }
+
+        enum PurchasedShipment {
+            static let title = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.purchasedShipment.title",
+                value: "You purchased a label for this shipment.",
+                comment: "Title label displayed on a shipment whose label is purchased in the shipping label creation flow."
+            )
+            static let subtitle = NSLocalizedString(
+                "wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle",
+                value: "You can't move products into or out of it.",
+                comment: "Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow."
             )
         }
     }

@@ -76,10 +76,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         "\(itemsWeightLabel) • \(itemsPriceLabel)"
     }
 
+    private let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
     var topTabItems: [TopTabItem<EmptyView>] {
         shipments.enumerated().map { (index, item) in
-            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
-                       content: { EmptyView() })
+            return TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                              icon: item.isPurchased ? purchasedIcon : nil,
+                              content: { EmptyView() })
         }
     }
 
@@ -109,14 +112,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
 
-        let contents = items.map { item in
-            CollapsibleShipmentItemCardViewModel(item: item, currency: order.currency)
-        }
-        let shipment = Shipment(contents: contents,
-                                currency: order.currency,
-                                currencySettings: currencySettings,
-                                shippingSettingsService: shippingSettingsService)
-        self.shipments = [shipment]
+        self.shipments = Self.createShipments(with: config,
+                                              packageItems: items,
+                                              currency: order.currency,
+                                              currencySettings: currencySettings,
+                                              shippingSettingsService: shippingSettingsService)
+
         shipmentsSavedInRemote = editedShipmentsInfo
 
         configureSectionHeader()
@@ -266,10 +267,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func mergeAllUnfulfilledShipments() {
+        let (unfulfilledShipments, fulfilledShipments) = shipments.partitioned(by: { $0.isPurchased })
         var mergedShipmentContents = ShipmentContents()
 
-        // TODO-15440: check for fulfilled shipments and remove them from the list.
-        shipments.forEach { shipment in
+        unfulfilledShipments.forEach { shipment in
             for item in shipment.contents {
                 let matchingItemIndex = mergedShipmentContents.firstIndex(where: {
                     $0.packageItem.productOrVariationID == item.packageItem.productOrVariationID
@@ -286,7 +287,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        shipments = [createShipment(with: mergedShipmentContents)]
+        shipments = [createShipment(with: mergedShipmentContents)] + fulfilledShipments
         selectedShipmentIndex = 0
     }
 
@@ -400,10 +401,62 @@ private extension WooShippingSplitShipmentsViewModel {
     }
 }
 
-// MARK: Shipment
+// MARK: Shipments
+
 extension WooShippingSplitShipmentsViewModel {
 
-    func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+    private static func createShipments(with config: WooShippingConfig,
+                                packageItems: [ShippingLabelPackageItem],
+                                currency: String,
+                                currencySettings: CurrencySettings,
+                                shippingSettingsService: ShippingSettingsService) -> [Shipment] {
+        guard config.shipments.isEmpty == false else {
+            let contents = packageItems.map { item in
+                CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
+            }
+            let shipment = Shipment(contents: contents,
+                                    currency: currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+            return [shipment]
+        }
+
+        let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
+        var shipments = [Shipment]()
+
+        for key in config.shipments.keys.sorted() {
+            guard let shipmentItems = config.shipments[key] else {
+                continue
+            }
+
+            let isPurchased = (currentOrderLabels.filter { $0.shipmentID == key}).isNotEmpty
+
+            var shipmentContents = ShipmentContents()
+            for shipmentItem in shipmentItems {
+                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
+                      let subItems = shipmentItem.subItems else {
+                    continue
+                }
+
+                let quantity = subItems.count > 0 ? subItems.count : 1
+                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
+                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
+                                                                   isSelectable: !isPurchased,
+                                                                   currency: currency)
+                shipmentContents.append(content)
+            }
+
+            let shipment = Shipment(contents: shipmentContents,
+                                    isPurchased: isPurchased,
+                                    currency: currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+            shipments.append(shipment)
+        }
+        return shipments
+    }
+
+    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
         Shipment(contents: contents,
                  currency: order.currency,
                  currencySettings: currencySettings,
@@ -414,6 +467,7 @@ extension WooShippingSplitShipmentsViewModel {
 
         let id = UUID().uuidString
         let contents: [CollapsibleShipmentItemCardViewModel]
+        let isPurchased: Bool
 
         let quantity: String
         let weight: String
@@ -426,10 +480,12 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         init(contents: [CollapsibleShipmentItemCardViewModel],
+             isPurchased: Bool = false,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.contents = contents
+            self.isPurchased = isPurchased
 
             let items = contents.map(\.packageItem)
             let itemsCount = items.map(\.quantity).reduce(0, +)
@@ -465,7 +521,7 @@ extension WooShippingSplitShipmentsViewModel {
 
     @discardableResult
     @MainActor
-    func updateShipment() async throws -> WooShippingShipments {
+    private func updateShipment() async throws -> WooShippingShipments {
         let shipments = editedShipmentsInfo
         return try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.updateShipment(siteID: order.siteID,

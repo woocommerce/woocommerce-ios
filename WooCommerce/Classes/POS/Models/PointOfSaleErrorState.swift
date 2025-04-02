@@ -28,7 +28,7 @@ struct PointOfSaleErrorState: Equatable {
                               subtitle: Constants.failedToLoadVariationsNextPageSubtitle,
                               buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
-    
+
     static func errorCouponsNotFound() -> Self {
         PointOfSaleErrorState(title: "No coupons found",
                               subtitle: "Boost your business by sending customers special offers and discounts",

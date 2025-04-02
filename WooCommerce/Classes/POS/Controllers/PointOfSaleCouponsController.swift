@@ -49,7 +49,6 @@ private extension PointOfSaleCouponsController {
                 let containerState = ItemsContainerState.content
                 let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
                 itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
-                
             } else {
                 itemsViewState = ItemsViewState(containerState: .content,
                                                 itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),

@@ -42,6 +42,18 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+
+        loadStoreCouponSettings { result in
+            switch result {
+            case let .success(isEnabled):
+                debugPrint("Coupons enabled? \(isEnabled)")
+                break
+            case let .failure(error):
+                debugPrint("Coupons settings error: \(error)")
+                break
+            }
+        }
+
         let coupons = await providePointOfSaleCoupons()
 
         if !coupons.isEmpty {
@@ -56,6 +68,13 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             let refreshedCoupons = await providePointOfSaleCoupons()
             return .init(items: refreshedCoupons, hasMorePages: false)
         }
+    }
+
+    private func loadStoreCouponSettings(onCompletion: @escaping ((Result<Bool, Error>) -> Void)) {
+        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            onCompletion(result)
+        }
+        stores?.dispatch(action)
     }
 }
 

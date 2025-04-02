@@ -112,8 +112,7 @@ final class HubMenuViewModel: ObservableObject {
 
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
-                                        credentials: credentials,
-                                        stores: stores,
+                                        couponService: CouponService(storageManager: storage, credentials: credentials),
                                         storage: storage)
     }()
 

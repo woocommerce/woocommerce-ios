@@ -6,12 +6,14 @@ import Storage
 //
 public final class CouponStore: Store {
     private let remote: CouponsRemoteProtocol
+    private let service: CouponService
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: CouponsRemoteProtocol) {
         self.remote = remote
+        self.service = CouponService(storageManager: storageManager, network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -84,7 +86,6 @@ public final class CouponStore: Store {
     }
 }
 
-
 // MARK: - Services
 //
 private extension CouponStore {
@@ -104,24 +105,7 @@ private extension CouponStore {
                             pageNumber: Int,
                             pageSize: Int,
                             onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
-        remote.loadAllCoupons(for: siteID,
-                              pageNumber: pageNumber,
-                              pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-
-            case .success(let coupons):
-                let shouldClearData = pageNumber == Default.firstPageNumber
-                let hasNextPage = coupons.count == pageSize
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
-                                                     siteID: siteID,
-                                                     shouldClearExistingCoupons: shouldClearData) {
-                    onCompletion(.success(hasNextPage))
-                }
-            }
-        }
+        service.synchronizeCoupons(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
     }
 
     /// Deletes a coupon from a Site with what is persisted in the storage layer.
@@ -336,15 +320,7 @@ private extension CouponStore {
                                          siteID: Int64,
                                          shouldClearExistingCoupons: Bool = false,
                                          onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
-            if shouldClearExistingCoupons {
-                storage.deleteCoupons(siteID: siteID)
-            }
-            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
-                                in: storage,
-                                siteID: siteID)
-        }, completion: onCompletion, on: .main)
+        service.upsertStoredCouponsInBackground(readOnlyCoupons: readOnlyCoupons, siteID: siteID, shouldClearExistingCoupons: shouldClearExistingCoupons, onCompletion: onCompletion)
     }
 
     /// Updates or Inserts the specified Coupon entities
@@ -352,17 +328,7 @@ private extension CouponStore {
     func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
                              in storage: StorageType,
                              siteID: Int64) {
-        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
-        for coupon in readOnlyCoupons {
-            let storageCoupon: Storage.Coupon = {
-                if let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) {
-                    return storedCoupon
-                }
-                return storage.insertNewObject(ofType: Storage.Coupon.self)
-            }()
-
-            storageCoupon.update(with: coupon)
-        }
+        self.upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: storage, siteID: siteID)
     }
 
     /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
@@ -403,4 +369,89 @@ private extension CouponStore {
 
 public enum CouponError: Error {
     case unexpectedCouponDeleted
+}
+
+
+// MARK: - Coupon Service
+
+
+public protocol CouponServiceProtocol {
+    func synchronizeCoupons(siteID: Int64,
+                            pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void)
+}
+
+public class CouponService: CouponServiceProtocol {
+    private let remote: CouponsRemoteProtocol
+    public let storageManager: StorageManagerType
+
+    public init(storageManager: StorageManagerType,
+         network: Network) {
+        self.remote = CouponsRemote(network: network)
+        self.storageManager = storageManager
+    }
+
+    public convenience init(storageManager: StorageManagerType,
+         credentials: Credentials?) {
+        self.init(
+            storageManager: storageManager,
+            network: AlamofireNetwork(credentials: credentials)
+        )
+    }
+
+    public func synchronizeCoupons(siteID: Int64,
+                            pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
+        remote.loadAllCoupons(for: siteID,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+
+            case .success(let coupons):
+                let shouldClearData = pageNumber == Remote.Default.firstPageNumber
+                let hasNextPage = coupons.count == pageSize
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
+                                                     siteID: siteID,
+                                                     shouldClearExistingCoupons: shouldClearData) {
+                    onCompletion(.success(hasNextPage))
+                }
+            }
+        }
+    }
+
+    func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
+                                         siteID: Int64,
+                                         shouldClearExistingCoupons: Bool = false,
+                                         onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            if shouldClearExistingCoupons {
+                storage.deleteCoupons(siteID: siteID)
+            }
+            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
+                                in: storage,
+                                siteID: siteID)
+        }, completion: onCompletion, on: .main)
+    }
+
+    func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
+                             in storage: StorageType,
+                             siteID: Int64) {
+        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
+        for coupon in readOnlyCoupons {
+            let storageCoupon: Storage.Coupon = {
+                if let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) {
+                    return storedCoupon
+                }
+                return storage.insertNewObject(ofType: Storage.Coupon.self)
+            }()
+
+            storageCoupon.update(with: coupon)
+        }
+    }
 }

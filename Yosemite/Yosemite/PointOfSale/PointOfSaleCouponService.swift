@@ -12,32 +12,17 @@ public protocol PointOfSaleCouponServiceProtocol {
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let couponsRemote: CouponsRemote
-    private let stores: StoresManager?
     private let storage: StorageManagerType?
+    private let couponService: CouponServiceProtocol
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
-                network: Network,
-                stores: StoresManager? = nil,
+                couponService: CouponServiceProtocol,
                 storage: StorageManagerType? = nil) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.couponsRemote = CouponsRemote(network: network)
-        self.stores = stores
         self.storage = storage
-    }
-
-    public convenience init(siteID: Int64,
-                            currencySettings: CurrencySettings,
-                            credentials: Credentials?,
-                            stores: StoresManager,
-                            storage: StorageManagerType) {
-        self.init(siteID: siteID,
-                  currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  stores: stores,
-                  storage: storage)
+        self.couponService = couponService
     }
 
     @MainActor
@@ -91,22 +76,6 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-        guard let stores = stores else {
-            return
-        }
-
-        await withCheckedContinuation { continuation in
-            let action = CouponAction.synchronizeCoupons(
-                siteID: siteID,
-                pageNumber: pageNumber,
-                pageSize: 25,
-                onCompletion: { _ in
-                    continuation.resume()
-                }
-            )
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
-        }
+//        couponService.synchronizeCoupons(siteID: , pageNumber: , pageSize: , onCompletion: )
     }
 }

@@ -42,18 +42,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-
-        loadStoreCouponSettings { result in
-            switch result {
-            case let .success(isEnabled):
-                debugPrint("Coupons enabled? \(isEnabled)")
-                break
-            case let .failure(error):
-                debugPrint("Coupons settings error: \(error)")
-                break
-            }
-        }
-
+        let couponsEnabled = await checkStoreCouponSettings()
         let coupons = await providePointOfSaleCoupons()
 
         if !coupons.isEmpty {
@@ -68,13 +57,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             let refreshedCoupons = await providePointOfSaleCoupons()
             return .init(items: refreshedCoupons, hasMorePages: false)
         }
-    }
-
-    private func loadStoreCouponSettings(onCompletion: @escaping ((Result<Bool, Error>) -> Void)) {
-        let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
-            onCompletion(result)
-        }
-        stores?.dispatch(action)
     }
 }
 
@@ -125,6 +107,24 @@ private extension PointOfSaleCouponService {
             )
             Task { @MainActor in
                 stores.dispatch(action)
+            }
+        }
+    }
+
+    private func checkStoreCouponSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+                switch result {
+                case let .success(isEnabled):
+                    debugPrint("Coupons enabled? \(isEnabled)")
+                    continuation.resume(returning: isEnabled)
+                case let .failure(error):
+                    debugPrint("Coupons settings error: \(error)")
+                    continuation.resume(returning: false)
+                }
+            }
+            Task { @MainActor in
+                stores?.dispatch(action)
             }
         }
     }

@@ -40,6 +40,7 @@ struct WooShippingCreateLabelsView: View {
     @State private var isReadyToShowErrorNotice = false
 
     @State private var showingCustomsForm = false
+    @State private var showingSplittingShipmentsDetails = false
 
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
@@ -54,7 +55,13 @@ struct WooShippingCreateLabelsView: View {
                     ProgressView()
                         .progressViewStyle(.circular)
                 case .ready:
-                    mainForm
+                    VStack(spacing: 0) {
+                        if viewModel.shipments.count > 1 {
+                            topTabView
+                            Divider()
+                        }
+                        mainForm
+                    }
                 case .missingRequiredData:
                     missingDataState
                 }
@@ -91,6 +98,9 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $showingCustomsForm) {
                 WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
             }
+            .fullScreenCover(isPresented: $showingSplittingShipmentsDetails) {
+                WooShippingSplitShipmentsDetailView(viewModel: viewModel.splitShipmentsViewModel)
+            }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
         }
@@ -101,15 +111,16 @@ private extension WooShippingCreateLabelsView {
     var mainForm: some View {
         ScrollView {
             VStack(spacing: Layout.verticalSpacing) {
+                WooShippingSplitShipmentsRow(viewModel: viewModel.splitShipmentsViewModel)
+                    .renderedIf(viewModel.shouldDisplaySplitShipmentRow)
+
                 if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
                     WooShippingPostPurchaseView(viewModel: postPurchase)
                 }
 
-                if !viewModel.canViewLabel, let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
-                    WooShippingSplitShipmentsRow(viewModel: splitShipmentsViewModel)
-                }
-
-                WooShippingItems(viewModel: viewModel.items)
+                WooShippingItems(itemsCountLabel: viewModel.currentShipment.quantity,
+                                 itemsDetailLabel: viewModel.currentShipment.itemsDetailLabel,
+                                 items: viewModel.items)
 
                 WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
                                      enabled: !viewModel.canViewLabel)
@@ -291,6 +302,37 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
+    var topTabView: some View {
+        HStack(spacing: 0) {
+            TopTabView(tabs: viewModel.topTabItems,
+                       showContent: false,
+                       showDividerBelowTabs: false,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       tabsContainerHorizontalPadding: nil,
+                       selectedStateColor: .accentColor,
+                       unselectedStateColor: .secondary,
+                       selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                       tabPadding: Layout.tabPadding,
+                       tabsNameFont: Font.subheadline.bold(),
+                       tabsIconSize: Layout.purchasedIconWidth,
+                       tabsIconAlignment: .trailing,
+                       tabsIconForegroundColor: Layout.green,
+                       tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            .overlay(alignment: .trailing) {
+                LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
+                    .frame(width: Layout.gradientViewWidth)
+                    .renderedIf(viewModel.selectedShipmentIndex < viewModel.topTabItems.count - 1)
+            }
+            Button {
+                showingSplittingShipmentsDetails = true
+            } label: {
+                Image(systemName: "pencil")
+                    .padding(.horizontal)
+            }
+        }
+    }
+
     /// View showing the origin ("Ship From") address.
     var shipFromAddress: some View {
         HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
@@ -366,10 +408,10 @@ private extension WooShippingCreateLabelsView {
             AdaptiveStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
-                Text(viewModel.items.itemsCountLabel)
+                Text(viewModel.currentShipment.quantity)
                     .bold()
                 Spacer()
-                Text(viewModel.items.itemsPriceLabel)
+                Text(viewModel.currentShipment.price)
             }
             .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in
@@ -514,6 +556,12 @@ private extension WooShippingCreateLabelsView {
                                          dark: .withColorStudio(.green, shade: .shade40)))
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
+        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let tabPadding: CGFloat = 9.0
+        static let tabItemContentHorizontalPadding: CGFloat = 16.0
+        static let tabItemContentVerticalPadding: CGFloat = 9.0
+        static let gradientViewWidth: CGFloat = 32
+        static let purchasedIconWidth: CGFloat = 16
     }
 
     enum Localization {

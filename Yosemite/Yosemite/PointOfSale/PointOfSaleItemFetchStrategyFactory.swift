@@ -20,4 +20,11 @@ public final class PointOfSaleItemFetchStrategyFactory {
                                                        productsRemote: productsRemote,
                                                        variationsRemote: variationsRemote)
     }
+
+    public func searchStrategy(searchTerm: String) -> PointOfSaleSearchPurchasableItemFetchStrategy {
+        PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
+                                                      searchTerm: searchTerm,
+                                                      productsRemote: productsRemote,
+                                                      variationsRemote: variationsRemote)
+    }
 }

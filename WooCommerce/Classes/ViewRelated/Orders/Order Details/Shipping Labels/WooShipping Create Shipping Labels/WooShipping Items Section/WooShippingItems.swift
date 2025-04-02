@@ -36,10 +36,10 @@ struct WooShippingItems: View {
                 }
             }
         })
-        .padding()
         .frame(maxWidth: .infinity, alignment: .center)
         .if(isCollapsed) { view in
             view
+                .padding(.vertical)
                 .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
         }
     }

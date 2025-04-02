@@ -20,6 +20,10 @@ final class SiteCredentialsViewController: LoginViewController {
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
     private let configuration = WordPressAuthenticator.shared.configuration
 
+    private var isWPCom: Bool {
+        return loginFields.siteAddress == "https://wordpress.com"
+    }
+
     init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         self.isDismissible = isDismissible
         self.completionHandler = onCompletion
@@ -293,8 +297,17 @@ private extension SiteCredentialsViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
-        let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
+        let text: String
+        if isWPCom {
+            text = NSLocalizedString(
+                "login.sitecredentials.wpcom_instructions",
+                value: "Enter your WordPress.com username and password to log in.",
+                comment: "Instructions for logging in to WordPress.com using username and password."
+            )
+        } else {
+            let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
+            text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
+        }
         cell.configureLabel(text: text, style: .body)
     }
 
@@ -558,7 +571,7 @@ extension SiteCredentialsViewController {
     ///
     @objc func validateForm() {
         if configuration.enableManualSiteCredentialLogin,
-           loginFields.siteAddress != "https://wordpress.com" {
+           !isWPCom {
             // asks the delegate to handle the login
             validateFormAndTriggerDelegate()
         } else {

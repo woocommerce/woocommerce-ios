@@ -5,6 +5,11 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import Storage
 
+public enum PointOfSaleCouponServiceError: Error {
+    case couponsLoadingError
+    case couponsDisabled
+}
+
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
 }
@@ -43,6 +48,10 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         let couponsEnabled = await checkStoreCouponSettings()
+        if !couponsEnabled {
+            throw PointOfSaleCouponServiceError.couponsDisabled
+        }
+
         let coupons = await providePointOfSaleCoupons()
 
         if !coupons.isEmpty {
@@ -120,6 +129,24 @@ private extension PointOfSaleCouponService {
                     continuation.resume(returning: isEnabled)
                 case let .failure(error):
                     debugPrint("Coupons settings error: \(error)")
+                    continuation.resume(returning: false)
+                }
+            }
+            Task { @MainActor in
+                stores?.dispatch(action)
+            }
+        }
+    }
+
+    private func enableStoreCouponSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    debugPrint("Coupons enabled")
+                    continuation.resume(returning: true)
+                case let .failure(error):
+                    debugPrint("Error when attempting to enable Coupons: \(error)")
                     continuation.resume(returning: false)
                 }
             }

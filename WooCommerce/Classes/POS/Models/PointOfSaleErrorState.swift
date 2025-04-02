@@ -29,6 +29,14 @@ struct PointOfSaleErrorState: Equatable {
                               buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
+    static func errorOnLoadingCoupons() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Error loading coupons", buttonText: "Retry")
+    }
+
+    static func errorCouponsDisabled() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons", buttonText: "Enable")
+    }
+
     enum Constants {
         static let failedToLoadProductsTitle = NSLocalizedString(
             "pos.itemList.failedToLoadProductsTitle",

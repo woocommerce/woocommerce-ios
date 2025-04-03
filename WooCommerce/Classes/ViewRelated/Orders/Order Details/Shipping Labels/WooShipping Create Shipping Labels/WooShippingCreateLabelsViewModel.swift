@@ -198,11 +198,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Initialize the view model without an existing shipping label.
     init(order: Order,
          selectedOriginAddress: WooShippingOriginAddress? = nil,
-         selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         selectedRate: WooShippingSelectedRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         userDefaults: UserDefaults = .standard,
          stores: StoresManager = ServiceLocator.stores,
          itemsDataSource: WooShippingItemsDataSource? = nil,
          debounceDuration: Double = 1,
@@ -217,8 +214,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.selectedOriginAddress = selectedOriginAddress
-        self.selectedPackage = selectedPackage
-        self.selectedRate = selectedRate
         self.stores = stores
         self.debounceDuration = debounceDuration
         self.shippingSettingsService = shippingSettingsService

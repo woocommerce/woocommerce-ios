@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		012848DC2D9ED55B00A9C69B /* SettingStoreMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012848DB2D9ED55700A9C69B /* SettingStoreMethods.swift */; };
 		0139C2B02D91D1C600C78FDE /* POSCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0139C2AF2D91D1C400C78FDE /* POSCart.swift */; };
 		016A776B2D9D30C90004FCD6 /* PointOfSaleCouponServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016A776A2D9D30C10004FCD6 /* PointOfSaleCouponServiceTests.swift */; };
 		016A89D82D9D6DB50004FCD6 /* CouponStoreMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016A89D72D9D6DAE0004FCD6 /* CouponStoreMethods.swift */; };
@@ -556,6 +557,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		012848DB2D9ED55700A9C69B /* SettingStoreMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStoreMethods.swift; sourceTree = "<group>"; };
 		0139C2AF2D91D1C400C78FDE /* POSCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCart.swift; sourceTree = "<group>"; };
 		016A776A2D9D30C10004FCD6 /* PointOfSaleCouponServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCouponServiceTests.swift; sourceTree = "<group>"; };
 		016A89D72D9D6DAE0004FCD6 /* CouponStoreMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponStoreMethods.swift; sourceTree = "<group>"; };
@@ -1118,6 +1120,7 @@
 		016A89D42D9D6D980004FCD6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				012848DB2D9ED55700A9C69B /* SettingStoreMethods.swift */,
 				016A89D72D9D6DAE0004FCD6 /* CouponStoreMethods.swift */,
 			);
 			path = Helpers;
@@ -2629,6 +2632,7 @@
 				B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */,
 				CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
+				012848DC2D9ED55B00A9C69B /* SettingStoreMethods.swift in Sources */,
 				247CE87A258332B400F9D9D1 /* MockNotificationActionHandler.swift in Sources */,
 				CCCF3A8129C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift in Sources */,
 				B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */,

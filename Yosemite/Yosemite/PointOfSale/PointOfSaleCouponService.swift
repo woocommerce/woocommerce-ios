@@ -18,16 +18,16 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType?
-    private let couponService: CouponServiceProtocol
+    private let couponStoreMethods: CouponStoreMethodsProtocol
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
-         couponService: CouponServiceProtocol,
+         couponStoreMethods: CouponStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
-        self.couponService = couponService
+        self.couponStoreMethods = couponStoreMethods
     }
 
     public convenience init(siteID: Int64,
@@ -38,7 +38,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  couponService: CouponService(storageManager: storage, remote: remote),
+                  couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
                   storage: storage)
     }
 
@@ -99,7 +99,7 @@ private extension PointOfSaleCouponService {
 
     func syncCouponsFromRemote(pageNumber: Int) async {
         await withCheckedContinuation { continuation in
-            couponService.synchronizeCoupons(
+            couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
@@ -111,20 +111,6 @@ private extension PointOfSaleCouponService {
     }
 
     private func checkStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
-                switch result {
-                case let .success(isEnabled):
-                    debugPrint("Coupons enabled? \(isEnabled)")
-                    continuation.resume(returning: isEnabled)
-                case let .failure(error):
-                    debugPrint("Coupons settings error: \(error)")
-                    continuation.resume(returning: false)
-                }
-            }
-            Task { @MainActor in
-                stores?.dispatch(action)
-            }
-        }
+        return true
     }
 }

@@ -1,10 +1,10 @@
 import Networking
 import Storage
 
-/// CouponService extracts functionality of CouponStore that needs be reused within Yosemite
-/// Service is intentionally internal not to be exposed outside the module
+/// CouponStoreMethods extracts functionality of CouponStore that needs be reused within Yosemite
+/// CouponStoreMethods is intentionally internal not to be exposed outside the module
 ///
-internal protocol CouponServiceProtocol {
+internal protocol CouponStoreMethodsProtocol {
     func synchronizeCoupons(
         siteID: Int64,
         pageNumber: Int,
@@ -13,7 +13,7 @@ internal protocol CouponServiceProtocol {
     )
 }
 
-internal class CouponService: CouponServiceProtocol {
+internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     private let remote: CouponsRemoteProtocol
     private let storageManager: StorageManagerType
 

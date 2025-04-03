@@ -6,14 +6,14 @@ import Storage
 //
 public final class CouponStore: Store {
     private let remote: CouponsRemoteProtocol
-    private let service: CouponService
+    private let methods: CouponStoreMethods
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: CouponsRemoteProtocol) {
         self.remote = remote
-        self.service = CouponService(storageManager: storageManager, remote: remote)
+        self.methods = CouponStoreMethods(storageManager: storageManager, remote: remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -52,7 +52,7 @@ public final class CouponStore: Store {
 
         switch action {
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
-            service.synchronizeCoupons(siteID: siteID,
+            methods.synchronizeCoupons(siteID: siteID,
                                        pageNumber: pageNumber,
                                        pageSize: pageSize,
                                        onCompletion: onCompletion)
@@ -110,7 +110,7 @@ private extension CouponStore {
                                "while expecting couponID \(couponID) and site \(siteID)")
                     return
                 }
-                self.service.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
+                self.methods.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
                     onCompletion(.success(()))
                 }
             }
@@ -133,7 +133,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let updatedCoupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
+                self.methods.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
                     onCompletion(.success(updatedCoupon))
                 }
             }
@@ -156,7 +156,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let createdCoupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
+                self.methods.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
                     onCompletion(.success(createdCoupon))
                 }
             }
@@ -222,7 +222,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupons):
-                self.service.upsertSearchResultsInBackground(siteID: siteID,
+                self.methods.upsertSearchResultsInBackground(siteID: siteID,
                                                      keyword: keyword,
                                                      readOnlyCoupons: coupons) {
                     onCompletion(.success(()))
@@ -249,7 +249,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
+                self.methods.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
                     onCompletion(.success(coupon))
                 }
             }
@@ -270,7 +270,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupons):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
+                self.methods.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
                     onCompletion(.success(coupons))
                 }
             }

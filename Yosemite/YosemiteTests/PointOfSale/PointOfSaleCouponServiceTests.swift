@@ -4,15 +4,15 @@ import class WooFoundation.CurrencySettings
 
 struct PointOfSaleCouponServiceTests {
     private let sut: PointOfSaleCouponService
-    private let couponService: MockCouponService
+    private let couponStoreMethods: MockCouponStoreMethods
     private let storage: MockStorageManager
 
     init() {
-        self.couponService = MockCouponService()
+        self.couponStoreMethods = MockCouponStoreMethods()
         self.storage = MockStorageManager()
         self.sut = .init(siteID: 123,
                          currencySettings: CurrencySettings(),
-                         couponService: couponService,
+                         couponStoreMethods: couponStoreMethods,
                          storage: storage
         )
     }
@@ -46,7 +46,7 @@ struct PointOfSaleCouponServiceTests {
     @Test func providePointOfSaleCoupons_when_no_coupons_then_synchronize_called() async throws {
         try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
 
-        #expect(couponService.synchronizeCalled == true)
+        #expect(couponStoreMethods.synchronizeCalled == true)
     }
 
     @available(iOS 17.0, *)
@@ -56,7 +56,7 @@ struct PointOfSaleCouponServiceTests {
         storage.insertSampleCoupon(readOnlyCoupon: coupon)
 
         try await confirmation(expectedCount: 1) { confirmation in
-            couponService.onSynchronizeCalled = {
+            couponStoreMethods.onSynchronizeCalled = {
                 // Then
                 confirmation()
             }
@@ -68,7 +68,7 @@ struct PointOfSaleCouponServiceTests {
     }
 }
 
-private class MockCouponService: CouponServiceProtocol {
+private class MockCouponStoreMethods: CouponStoreMethodsProtocol {
     var synchronizeCalled = false
     var onSynchronizeCalled: () -> Void = {}
     func synchronizeCoupons(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, any Error>) -> Void) {

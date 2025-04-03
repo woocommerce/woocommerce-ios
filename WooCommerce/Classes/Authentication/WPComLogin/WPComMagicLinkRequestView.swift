@@ -94,5 +94,8 @@ private extension WPComMagicLinkRequestView {
 
 #Preview {
     WPComMagicLinkRequestView(title: "Connect Jetpack",
-                              viewModel: WPComMagicLinkRequestViewModel(email: "test@example.com"))
+                              viewModel: WPComMagicLinkRequestViewModel(email: "test@example.com",
+                                                                        onMagicLinkSent: { _ in },
+                                                                        onError: { _ in })
+    )
 }

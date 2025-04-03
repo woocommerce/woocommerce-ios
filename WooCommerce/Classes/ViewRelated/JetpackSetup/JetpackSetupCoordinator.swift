@@ -368,7 +368,13 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkRequestUI(email: String) {
         let magicLinkRequestController = WPComMagicLinkRequestHostingController(title: loginViewTitle,
-                                                                                viewModel: .init(email: email))
+                                                                                viewModel: .init(email: email,
+                                                                                                 onMagicLinkSent: { [weak self] email in
+            self?.showMagicLinkSentUI(email: email, isSignup: false)
+        },
+                                                                                                 onError: { [weak self] message in
+            self?.showAlert(message: message)
+        }))
         pushOrInitLoginViewController(magicLinkRequestController)
     }
 

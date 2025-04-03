@@ -1,46 +1,75 @@
 import Foundation
 
 struct PointOfSaleErrorState: Equatable {
+    enum ErrorType: Equatable {
+        case productsLoadError
+        case variationsLoadError
+        case productsNextPageError
+        case variationsNextPageError
+        case couponsNotFound
+        case couponsLoadError
+        case couponsDisabled
+    }
+
+    let errorType: ErrorType
     let title: String
     let subtitle: String
     let buttonText: String
 
     static func errorOnLoadingProducts() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadProductsTitle,
-                              subtitle: Constants.failedToLoadProductsSubtitle,
-                              buttonText: Constants.failedToLoadProductsButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .productsLoadError,
+            title: Constants.failedToLoadProductsTitle,
+            subtitle: Constants.failedToLoadProductsSubtitle,
+            buttonText: Constants.failedToLoadProductsButtonTitle)
     }
 
     static func errorOnLoadingVariations() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadVariationsTitle,
-                              subtitle: Constants.failedToLoadVariationsSubtitle,
-                              buttonText: Constants.failedToLoadVariationsButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .variationsLoadError,
+            title: Constants.failedToLoadVariationsTitle,
+            subtitle: Constants.failedToLoadVariationsSubtitle,
+            buttonText: Constants.failedToLoadVariationsButtonTitle)
     }
 
     static func errorOnLoadingProductsNextPage() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadProductsNextPageTitle,
-                              subtitle: Constants.failedToLoadProductsNextPageSubtitle,
-                              buttonText: Constants.failedToLoadProductsNextPageButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .productsNextPageError,
+            title: Constants.failedToLoadProductsNextPageTitle,
+            subtitle: Constants.failedToLoadProductsNextPageSubtitle,
+            buttonText: Constants.failedToLoadProductsNextPageButtonTitle)
     }
 
     static func errorOnLoadingVariationsNextPage() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadVariationsNextPageTitle,
-                              subtitle: Constants.failedToLoadVariationsNextPageSubtitle,
-                              buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .variationsNextPageError,
+            title: Constants.failedToLoadVariationsNextPageTitle,
+            subtitle: Constants.failedToLoadVariationsNextPageSubtitle,
+            buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
     static func errorCouponsNotFound() -> Self {
-        PointOfSaleErrorState(title: Constants.noCouponsFoundTitle,
-                              subtitle: Constants.noCouponsFoundSubtitle,
-                              buttonText: Constants.noCouponsFoundButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .couponsNotFound,
+            title: Constants.noCouponsFoundTitle,
+            subtitle: Constants.noCouponsFoundSubtitle,
+            buttonText: Constants.noCouponsFoundButtonTitle)
     }
 
     static func errorOnLoadingCoupons() -> Self {
-        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Error loading coupons", buttonText: "Retry")
+        PointOfSaleErrorState(
+            errorType: .couponsLoadError,
+            title: "Error loading coupons",
+            subtitle: "Error loading coupons",
+            buttonText: "Retry")
     }
 
     static func errorCouponsDisabled() -> Self {
-        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons in WooCommerce Settings, and tap Retry", buttonText: "Retry")
+        PointOfSaleErrorState(
+            errorType: .couponsDisabled,
+            title: "Error loading coupons",
+            subtitle: "Please enable the use of coupon codes in your store",
+            buttonText: "Enable")
     }
 
     enum Constants {

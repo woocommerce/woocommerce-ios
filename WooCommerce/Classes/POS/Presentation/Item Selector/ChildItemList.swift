@@ -83,7 +83,7 @@ private extension ChildItemList {
                 Spacer()
             }
 
-            PointOfSaleItemListErrorView(error: error, onRetry: {
+            PointOfSaleItemListErrorView(error: error, onAction: {
                 Task {
                     await posModel.loadItems(base: .parent(parentItem))
                 }

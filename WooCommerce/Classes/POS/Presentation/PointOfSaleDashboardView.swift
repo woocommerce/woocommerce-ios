@@ -25,9 +25,17 @@ struct PointOfSaleDashboardView: View {
                         PointOfSaleItemListEmptyView(base: .root)
                     }
                 case .error(let errorContents):
-                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
-                        Task {
-                            await posModel.loadItems(base: .root)
+                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onAction: {
+                        if errorContents.errorType == .couponsDisabled {
+                            Task {
+                                //TODO
+                                // 1. Enable coupons
+                                // 2. refreshItems
+                            }
+                        } else {
+                            Task {
+                                await posModel.loadItems(base: .root)
+                            }
                         }
                     })
                 case .content:

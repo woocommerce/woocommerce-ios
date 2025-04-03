@@ -62,7 +62,7 @@ struct ItemListView: View {
                 listView(items)
             case .error(let errorState):
                 if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onRetry: {
+                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
                         // TODO
                     })
                 } else {

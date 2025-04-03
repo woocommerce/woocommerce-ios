@@ -91,6 +91,7 @@ struct ItemListView: View {
         }
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
+                posModel.addToCart(couponItem)
                 await posModel.refreshItems(base: .root)
             }
         })

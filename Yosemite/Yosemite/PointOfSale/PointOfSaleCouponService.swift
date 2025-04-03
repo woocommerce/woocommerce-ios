@@ -111,6 +111,7 @@ private extension PointOfSaleCouponService {
     }
 
     private func checkStoreCouponSettings() async -> Bool {
+        // TODO: WOOMOB-250
         return true
     }
 }

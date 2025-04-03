@@ -4,7 +4,7 @@ import enum Yosemite.POSItem
 enum ItemListBaseItem {
     case root(ItemType)
     case parent(POSItem, ItemType)
-    
+
     var itemType: ItemType {
         switch self {
         case .root(let type):

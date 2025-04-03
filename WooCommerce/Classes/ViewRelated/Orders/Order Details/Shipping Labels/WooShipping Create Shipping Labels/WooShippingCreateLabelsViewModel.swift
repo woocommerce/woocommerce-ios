@@ -275,8 +275,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            group.addTask {
-                await self.loadShipmentsInfo()
+            let totalOrderItems = order.items.map(\.quantity).reduce(0, +)
+            if totalOrderItems > 1 {
+                // Only fetch shipments info if there are more than one order items.
+                group.addTask {
+                    await self.loadShipmentsInfo()
+                }
             }
         }
 
@@ -443,7 +447,6 @@ private extension WooShippingCreateLabelsViewModel {
             stores.dispatch(action)
         }
 
-        // TODO: Create view model only if order has more than 1 items that can be split into multiple shipments. (Check web logic)
         if let config {
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,

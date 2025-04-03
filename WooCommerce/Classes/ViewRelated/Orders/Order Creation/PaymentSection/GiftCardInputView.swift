@@ -28,7 +28,7 @@ struct GiftCardInputView: View {
                             Button {
                                 showsScanner = true
                             } label: {
-                                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                                Image(systemName: "barcode.viewfinder")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxHeight: Constants.scanImageSize * scale)

@@ -5,6 +5,7 @@
 -----
 - [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
 - [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [*] Order Creation: Updated the customer first/last name parsing after selecting a customer to support multi-word last names. [https://github.com/woocommerce/woocommerce-ios/pull/15462]
 - [*] Order Creation/Editing: Fixed blurry icons for product scanning, QR code & Tap To Pay payment methods. Polished checkmark icon color in selected product row. [https://github.com/woocommerce/woocommerce-ios/pull/15465]
 - [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
 - [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]

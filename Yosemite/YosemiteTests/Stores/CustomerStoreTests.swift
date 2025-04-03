@@ -123,11 +123,16 @@ final class CustomerStoreTests: XCTestCase {
         assertEqual(1, customers[1].customerID)
         assertEqual(2, customers[2].customerID)
         assertEqual(3, customers[3].customerID)
-        assertEqual("Matt The", customers[0].firstName)
-        assertEqual("Unregistered", customers[0].lastName)
+        // 3-word name.
+        assertEqual("Matt", customers[0].firstName)
+        assertEqual("The Unregistered", customers[0].lastName)
+        // 1-word name.
         assertEqual("John", customers[1].firstName)
         XCTAssertTrue(customers[1].lastName?.isEmpty ?? true)
-        assertEqual("Paul", customers[2].firstName)
+        // Empty name.
+        XCTAssertTrue(customers[2].firstName?.isEmpty ?? true)
+        XCTAssertTrue(customers[2].lastName?.isEmpty ?? true)
+        // 2-word name.
         assertEqual("John", customers[3].firstName)
         assertEqual("Doe", customers[3].lastName)
     }
@@ -298,7 +303,7 @@ final class CustomerStoreTests: XCTestCase {
         assertEqual(3, customers[3].customerID)
         assertEqual("Matt The Unregistered", customers[0].name)
         assertEqual("John", customers[1].name)
-        assertEqual("Paul", customers[2].name)
+        assertEqual("", customers[2].name)
         assertEqual("John Doe", customers[3].name)
     }
 

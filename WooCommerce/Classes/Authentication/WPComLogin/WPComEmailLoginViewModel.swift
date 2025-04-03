@@ -21,7 +21,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let titleString: String
     let subtitleString: String
 
-    @Published var emailAddress: String = ""
+    @Published var emailOrUsername: String = ""
 
     let termsAttributedString: NSAttributedString
 
@@ -76,17 +76,17 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func checkWordPressComAccount(email: String) async {
+    func checkWordPressComAccount(emailOrUsername: String) async {
         do {
             let passwordless = try await withCheckedThrowingContinuation { continuation in
-                accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                accountService.isPasswordlessAccount(username: emailOrUsername, success: { passwordless in
                     continuation.resume(returning: passwordless)
                 }, failure: { error in
                     DDLogError("⛔️ Error checking for passwordless account: \(error)")
                     continuation.resume(throwing: error)
                 })
             }
-            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+            await startAuthentication(emailOrUsername: emailOrUsername, isPasswordlessAccount: passwordless)
         } catch {
             let apiErrorCode: String? = {
                 if let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
@@ -98,12 +98,12 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
             if allowAccountCreation,
                apiErrorCode == Constants.unknownUserErrorCode {
-                await handleUnkownUserError(emailOrUsername: email, error: error)
+                await handleUnkownUserError(emailOrUsername: emailOrUsername, error: error)
                 return
             }
 
             if apiErrorCode == Constants.emailNotAllowed {
-                onMagicLinkRequest(email)
+                onMagicLinkRequest(emailOrUsername)
                 return
             }
 
@@ -113,11 +113,11 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+    private func startAuthentication(emailOrUsername: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
-            await requestAuthenticationLink(email: email)
+            await requestAuthenticationLink(email: emailOrUsername)
         } else {
-            onPasswordUIRequest(email)
+            onPasswordUIRequest(emailOrUsername)
         }
     }
 

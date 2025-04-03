@@ -108,7 +108,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         XCTAssertFalse(mockAccountService.triggeredRequestAuthenticationLink)
 
         // When
-        await viewModel.checkWordPressComAccount(email: "mail@example.com")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
 
         // Then
         XCTAssertTrue(mockAccountService.triggeredIsPasswordlessAccount)
@@ -128,7 +128,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onMagicLinkUIRequest: { _, _ in },
                                                  onError: { _ in triggeredOnError = true })
         // When
-        await viewModel.checkWordPressComAccount(email: "mail@example.com")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
 
         // Then
         XCTAssertTrue(triggeredOnError)
@@ -147,7 +147,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onMagicLinkUIRequest: { _, _ in },
                                                  onError: { _ in })
         // When
-        await viewModel.checkWordPressComAccount(email: "mail@example.com")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
 
         // Then
         XCTAssertTrue(triggeredPasswordUIRequest)
@@ -209,7 +209,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onError: { _ in })
 
         // When
-        await viewModel.checkWordPressComAccount(email: "mail@example.com")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
 
         // Then
         XCTAssertTrue(triggeredOnMagicLinkUIRequest)
@@ -234,7 +234,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onError: { _ in triggeredOnError = true })
 
         // When
-        await viewModel.checkWordPressComAccount(email: "mail@example.com")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
 
         // Then
         XCTAssertTrue(triggeredOnError)
@@ -259,7 +259,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onError: { errorMessage = $0 })
 
         // When
-        await viewModel.checkWordPressComAccount(email: "unknown_username")
+        await viewModel.checkWordPressComAccount(emailOrUsername: "unknown_username")
 
         // Then
         XCTAssertEqual(errorMessage, WPComEmailLoginViewModel.Localization.unknownUsername)

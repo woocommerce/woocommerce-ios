@@ -92,11 +92,11 @@ final class JetpackSetupCoordinator {
         return true
     }
 
-    func startAuthentication(with email: String?) {
-        if let email {
+    func startAuthentication(with emailOrUsername: String?) {
+        if let emailOrUsername {
             Task { @MainActor in
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
-                await emailLoginViewModel.checkWordPressComAccount(email: email)
+                await emailLoginViewModel.checkWordPressComAccount(emailOrUsername: emailOrUsername)
             }
         } else {
             showWPComEmailLogin()

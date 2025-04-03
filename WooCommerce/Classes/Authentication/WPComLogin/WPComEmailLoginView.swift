@@ -76,7 +76,7 @@ struct WPComEmailLoginView: View {
                     header: Localization.emailLabel,
                     placeholder: Localization.enterEmail,
                     keyboardType: .emailAddress,
-                    text: $viewModel.emailAddress,
+                    text: $viewModel.emailOrUsername,
                     isSecure: false,
                     errorMessage: nil,
                     isFocused: isEmailFieldFocused,
@@ -101,12 +101,12 @@ struct WPComEmailLoginView: View {
                     ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
-                        await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)
+                        await viewModel.checkWordPressComAccount(emailOrUsername: viewModel.emailOrUsername)
                         isPrimaryButtonLoading = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(viewModel.emailAddress.isEmpty)
+                .disabled(viewModel.emailOrUsername.isEmpty)
 
                 // Terms label
                 AttributedText(viewModel.termsAttributedString)

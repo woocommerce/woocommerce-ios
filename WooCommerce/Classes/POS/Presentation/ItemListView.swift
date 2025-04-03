@@ -38,7 +38,7 @@ struct ItemListView: View {
     }
 
     var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             headerView
 
             HStack {
@@ -60,10 +60,14 @@ struct ItemListView: View {
                     .loaded(let items, _),
                     .inlineError(let items, _):
                 listView(items)
-            case .error:
-                // Currently unused, but this will show errors that are displayed inline with previously
-                // loaded items, e.g. when loading a new page or refreshing.
-                EmptyView()
+            case .error(let errorState):
+                if errorState == .errorCouponsNotFound() {
+                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onRetry: {
+                        // TODO
+                    })
+                } else {
+                    EmptyView()
+                }
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,

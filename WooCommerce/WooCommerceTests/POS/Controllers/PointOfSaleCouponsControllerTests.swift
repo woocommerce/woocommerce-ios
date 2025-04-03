@@ -3,25 +3,22 @@ import Testing
 import Foundation
 
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 
-final class MockPointOfSaleCouponService: PointOfSaleItemServiceProtocol {
+final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
 
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)
         } else {
             return .init(items: Self.makeInitialCoupons(),
                          hasMorePages: false)
         }
-    }
-
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        return .init(items: [], hasMorePages: false)
     }
 
     static func makeInitialCoupons() -> [POSItem] {
@@ -34,13 +31,13 @@ final class MockPointOfSaleCouponService: PointOfSaleItemServiceProtocol {
 
 struct PointOfSaleCouponsControllerTests {
     @available(iOS 17.0, *)
-    @Test func loadItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func loadItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
@@ -68,13 +65,13 @@ struct PointOfSaleCouponsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func refreshItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func refreshItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
@@ -102,13 +99,13 @@ struct PointOfSaleCouponsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func loadNextItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func loadNextItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When

@@ -104,7 +104,9 @@ extension ShippingLabelPurchase: Decodable {
         let productIDs = try container.decodeIfPresent([Int64].self, forKey: .productIDs) ?? []
         let productNames = try container.decode([String].self, forKey: .productNames)
 
-        let shipmentID = try container.decodeIfPresent(String.self, forKey: .shipmentID)
+        let shipmentID = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                           forKey: .shipmentID,
+                                                           alternativeTypes: [.integer(transform: { String($0) })])
 
         self.init(siteID: siteID,
                   orderID: orderID,

@@ -207,7 +207,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
                                            pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
-        let parameters = [
+        let parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productTypes: productTypes)
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
+    }
+
+    private func pointOfSaleProductFetchParameters(pageNumber: Int,
+                                                   productTypes: [ProductType]) -> [String: String] {
+        [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
@@ -217,7 +229,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
             ParameterKey.downloadable: String(false),
+            ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+    }
+
+    private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
+                                                     pageNumber: Int,
+                                                     parameters: [String: String]) async throws -> PagedItems<POSProduct> {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
@@ -235,6 +253,22 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
 
         return .init(items: products, hasMorePages: hasMorePages)
+    }
+
+    public func searchProductsForPointOfSale(for siteID: Int64,
+                                             query: String,
+                                             productTypes: [ProductType] = [.simple],
+                                             pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+        var parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productTypes: productTypes)
+
+        parameters.updateValue(query, forKey: ParameterKey.search)
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

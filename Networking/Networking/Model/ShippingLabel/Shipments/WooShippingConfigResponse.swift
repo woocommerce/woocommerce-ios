@@ -60,7 +60,7 @@ public struct WooShippingLabelData: Decodable, Equatable {
     /// Labels purchased for the current order
     public let currentOrderLabels: [ShippingLabelPurchase]
 
-    init(currentOrderLabels: [ShippingLabelPurchase]) {
+    public init(currentOrderLabels: [ShippingLabelPurchase]) {
         self.currentOrderLabels = currentOrderLabels
     }
 

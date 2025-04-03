@@ -29,7 +29,36 @@ struct PointOfSaleErrorState: Equatable {
                               buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
+    static func errorCouponsNotFound() -> Self {
+        PointOfSaleErrorState(title: Constants.noCouponsFoundTitle,
+                              subtitle: Constants.noCouponsFoundSubtitle,
+                              buttonText: Constants.noCouponsFoundButtonTitle)
+    }
+
+    static func errorOnLoadingCoupons() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Error loading coupons", buttonText: "Retry")
+    }
+
+    static func errorCouponsDisabled() -> Self {
+        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons in WooCommerce Settings, and tap Retry", buttonText: "Retry")
+    }
+
     enum Constants {
+        static let noCouponsFoundTitle = NSLocalizedString(
+            "pos.itemList.noCouponsFoundTitle",
+            value: "No coupons found",
+            comment: "Text appearing on the coupon list screen when there's no coupons found."
+        )
+        static let noCouponsFoundSubtitle = NSLocalizedString(
+            "pos.itemList.noCouponsFoundSubtitle",
+            value: "Boost your business by sending customers special offers and discounts",
+            comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
+        )
+        static let noCouponsFoundButtonTitle = NSLocalizedString(
+            "pos.itemList.noCouponsFoundButtonTitleButtonTitle",
+            value: "Create coupon",
+            comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
+        )
         static let failedToLoadProductsTitle = NSLocalizedString(
             "pos.itemList.failedToLoadProductsTitle",
             value: "Error loading products",

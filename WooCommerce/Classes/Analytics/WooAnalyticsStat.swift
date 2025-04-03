@@ -1152,7 +1152,6 @@ enum WooAnalyticsStat: String {
     case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
 
     // MARK: Payments Menu
-    case paymentsMenuCollectPaymentTapped = "payments_hub_collect_payment_tapped"
     case paymentsMenuOnboardingErrorTapped = "payments_hub_onboarding_error_tapped"
     case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
     case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"

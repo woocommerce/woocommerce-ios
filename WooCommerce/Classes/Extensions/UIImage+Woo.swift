@@ -43,12 +43,6 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
-    /// Bell icon
-    ///
-    static var bell: UIImage {
-        UIImage(named: "bell")!
-    }
-
     /// Blaze icon
     ///
     static var blaze: UIImage {
@@ -279,10 +273,6 @@ extension UIImage {
 
     static var tapToPayOnIPhoneIcon: UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
-    }
-
-    static var bankIcon: UIImage {
-        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
     }
 
     static var scanToPayIcon: UIImage {

@@ -96,18 +96,19 @@ private struct ItemListRow: View {
             if #available(iOS 18.0, *) {
                 NavigationLink(value: item) {
                     ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
+                                        imageSource: parentProduct.productImageSource,
+                                        detailText: Localization.variationsAvailable)
                 }
             } else {
                 // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
                 // we still have to use the NavigationView approach here.
                 NavigationLink(destination: {
-                    ChildItemList(parentItem: item, title: parentProduct.name)
+                    let itemsStack = node.itemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
+                    ChildItemList(parentItem: item, title: parentProduct.name, itemsStack: itemsStack)
                 }) {
                     ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
+                                        imageSource: parentProduct.productImageSource,
+                                        detailText: Localization.variationsAvailable)
                 }
             }
         case let .variation(variation):
@@ -122,7 +123,7 @@ private struct ItemListRow: View {
                 posModel.addToCart(item)
             }, label: {
                 CouponRowView(couponItem: .init(id: coupon.id,
-                                                code: coupon.code))
+                                               code: coupon.code))
             })
         }
     }

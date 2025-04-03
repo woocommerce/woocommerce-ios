@@ -10,31 +10,28 @@ struct PointOfSaleItemListEmptyView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                Spacer()
-                Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
-                    .foregroundColor(.posOnSurfaceVariantHighest)
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                Text(title)
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .font(. posHeadingBold)
-                Text(subtitle)
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
-                Text(hint)
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .font(.posBodyLargeRegular())
-                    .padding([.leading, .trailing])
-                Spacer()
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            }
-            .padding(.bottom, floatingControlAreaSize.height)
+        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+            Spacer()
+            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                .foregroundColor(.posOnSurfaceVariantHighest)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+            Text(title)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .font(.posHeadingBold)
+            Text(subtitle)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .font(.posBodyLargeRegular())
+                .padding([.leading, .trailing])
+            Text(hint)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .font(.posBodyLargeRegular())
+                .padding([.leading, .trailing])
+            Spacer()
         }
+        .padding(.bottom, floatingControlAreaSize.height)
     }
 }
 

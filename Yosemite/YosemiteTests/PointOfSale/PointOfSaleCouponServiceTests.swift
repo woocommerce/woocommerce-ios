@@ -67,13 +67,3 @@ struct PointOfSaleCouponServiceTests {
 
     }
 }
-
-private class MockCouponStoreMethods: CouponStoreMethodsProtocol {
-    var synchronizeCalled = false
-    var onSynchronizeCalled: () -> Void = {}
-    func synchronizeCoupons(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
-        synchronizeCalled = true
-        onCompletion(.success(true))
-        onSynchronizeCalled()
-    }
-}

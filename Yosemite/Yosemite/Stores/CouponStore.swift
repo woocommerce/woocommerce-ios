@@ -5,14 +5,12 @@ import Storage
 // MARK: - CouponStore
 //
 public final class CouponStore: Store {
-    private let remote: CouponsRemoteProtocol
     private let methods: CouponStoreMethods
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: CouponsRemoteProtocol) {
-        self.remote = remote
         self.methods = CouponStoreMethods(storageManager: storageManager, remote: remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

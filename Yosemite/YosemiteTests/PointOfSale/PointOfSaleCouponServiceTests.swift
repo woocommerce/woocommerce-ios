@@ -5,14 +5,17 @@ import class WooFoundation.CurrencySettings
 struct PointOfSaleCouponServiceTests {
     private let sut: PointOfSaleCouponService
     private let couponStoreMethods: MockCouponStoreMethods
+    private let settingStoreMethods: MockSettingStoreMethods
     private let storage: MockStorageManager
 
     init() {
         self.couponStoreMethods = MockCouponStoreMethods()
+        self.settingStoreMethods = MockSettingStoreMethods()
         self.storage = MockStorageManager()
         self.sut = .init(siteID: 123,
                          currencySettings: CurrencySettings(),
                          couponStoreMethods: couponStoreMethods,
+                         settingStoreMethods: settingStoreMethods,
                          storage: storage
         )
     }

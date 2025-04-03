@@ -19,15 +19,18 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType?
     private let couponStoreMethods: CouponStoreMethodsProtocol
+    private let settingsStoreMethods: SettingStoreMethodsProtocol
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
          couponStoreMethods: CouponStoreMethodsProtocol,
+         settingStoreMethods: SettingStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
         self.couponStoreMethods = couponStoreMethods
+        self.settingsStoreMethods = settingStoreMethods
     }
 
     public convenience init(siteID: Int64,
@@ -39,6 +42,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
+                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
                   storage: storage)
     }
 
@@ -111,7 +115,17 @@ private extension PointOfSaleCouponService {
     }
 
     private func checkStoreCouponSettings() async -> Bool {
-        // TODO: WOOMOB-250
-        return true
+        await withCheckedContinuation { continuation in
+            settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
+                switch result {
+                case let .success(isEnabled):
+                    debugPrint("Coupons enabled? \(isEnabled)")
+                    continuation.resume(returning: isEnabled)
+                case let .failure(error):
+                    debugPrint("Coupons settings error: \(error)")
+                    continuation.resume(returning: false)
+                }
+            }
+        }
     }
 }

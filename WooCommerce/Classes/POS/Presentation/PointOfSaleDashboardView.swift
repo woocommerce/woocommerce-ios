@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.SettingAction
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
@@ -24,13 +25,12 @@ struct PointOfSaleDashboardView: View {
                     PointOfSaleItemListFullscreenView {
                         PointOfSaleItemListEmptyView(base: .root)
                     }
-                case .error(let errorContents):
-                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onAction: {
-                        if errorContents.errorType == .couponsDisabled {
+                case .error(let error):
+                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                        if error.errorType == .couponsDisabled {
                             Task {
-                                //TODO
-                                // 1. Enable coupons
-                                // 2. refreshItems
+                                await enableCoupons()
+                                await posModel.loadItems(base: .root)
                             }
                         } else {
                             Task {
@@ -168,6 +168,28 @@ extension EnvironmentValues {
     var floatingControlAreaSize: CGSize {
         get { self[FloatingControlAreaSizeKey.self] }
         set { self[FloatingControlAreaSizeKey.self] = newValue }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleDashboardView {
+    func enableCoupons() async {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        _ = await withCheckedContinuation { continuation in
+            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case let .failure(error):
+                    continuation.resume(returning: false)
+                }
+            }
+            Task { @MainActor in
+                ServiceLocator.stores.dispatch(action)
+            }
+        }
     }
 }
 

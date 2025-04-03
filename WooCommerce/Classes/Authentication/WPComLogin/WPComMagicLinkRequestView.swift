@@ -13,6 +13,11 @@ class WPComMagicLinkRequestHostingController: UIHostingController<WPComMagicLink
                                              viewModel: viewModel)
         super.init(rootView: view)
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+    }
 }
 
 struct WPComMagicLinkRequestView: View {

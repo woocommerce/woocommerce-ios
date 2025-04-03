@@ -91,7 +91,7 @@ internal class CouponService: CouponServiceProtocol {
     /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
     /// Triggers `onCompletion` on the main thread when done.
     ///
-    func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
+    private func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
                              in storage: StorageType,
                              siteID: Int64) {
         let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
@@ -119,7 +119,7 @@ internal class CouponService: CouponServiceProtocol {
 
     /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    func upsertStoredResults(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], in storage: StorageType) {
+    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], in storage: StorageType) {
         let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
         searchResult.keyword = keyword
 

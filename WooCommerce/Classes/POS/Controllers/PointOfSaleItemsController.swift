@@ -55,7 +55,7 @@ protocol PointOfSaleItemsControllerProtocol {
         switch base {
         case .root:
             await loadRootItems()
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadChildItems(for: parent)
         }
     }
@@ -79,7 +79,7 @@ protocol PointOfSaleItemsControllerProtocol {
         switch base {
         case .root:
             await loadNextRootItems()
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadNextChildItems(for: parent)
         }
     }
@@ -172,7 +172,7 @@ private extension PointOfSaleItemsController {
         switch base {
         case .root:
             setRootLoadingState()
-        case .parent(let parent):
+        case .parent(let parent, _):
             setChildLoadingState(for: parent)
         }
     }

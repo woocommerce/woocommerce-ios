@@ -22,12 +22,12 @@ struct PointOfSaleDashboardView: View {
                         .ignoresSafeArea()
                 case .empty:
                     PointOfSaleItemListFullscreenView {
-                        PointOfSaleItemListEmptyView(base: .root)
+                        PointOfSaleItemListEmptyView(base: .root(.products))
                     }
                 case .error(let errorContents):
                     PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
                         Task {
-                            await posModel.loadItems(base: .root)
+                            await posModel.loadItems(base: .root(.products))
                         }
                     })
                 case .content:
@@ -83,7 +83,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root)
+            await posModel.loadItems(base: .root(.products))
         }
         .ignoresSafeArea(.keyboard)
     }

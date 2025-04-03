@@ -15,7 +15,7 @@ struct ItemList<HeaderView: View>: View {
     private let headerView: HeaderView
 
     init(state: ItemListState,
-         node: ItemListBaseItem = .root,
+         node: ItemListBaseItem,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.state = state
         self.node = node
@@ -36,7 +36,7 @@ struct ItemList<HeaderView: View>: View {
                     headerView
 
                     ForEach(state.items) { item in
-                        ItemListRow(item: item)
+                        ItemListRow(item: item, node: node)
                     }
 
                     footerRows
@@ -79,8 +79,9 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    let analytics: Analytics = ServiceLocator.analytics
+    let node: ItemListBaseItem
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    let analytics: Analytics = ServiceLocator.analytics
 
     var body: some View {
         switch item {
@@ -164,7 +165,8 @@ private extension ItemListRow {
                         )
                     ],
                     hasMoreItems: false
-                )
+                ),
+        node: .root(.products)
     )
 }
 
@@ -176,7 +178,7 @@ private extension ItemListRow {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    ItemList(state: .loading([]))
+    ItemList(state: .loading([]), node: .root(.products))
         .environment(posModel)
 }
 

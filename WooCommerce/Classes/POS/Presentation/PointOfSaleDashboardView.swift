@@ -27,15 +27,11 @@ struct PointOfSaleDashboardView: View {
                     }
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                        if error.errorType == .couponsDisabled {
-                            Task {
+                        Task {
+                            if error.errorType == .couponsDisabled {
                                 await enableCoupons()
-                                await posModel.loadItems(base: .root)
                             }
-                        } else {
-                            Task {
-                                await posModel.loadItems(base: .root)
-                            }
+                            await posModel.loadItems(base: .root)
                         }
                     })
                 case .content:

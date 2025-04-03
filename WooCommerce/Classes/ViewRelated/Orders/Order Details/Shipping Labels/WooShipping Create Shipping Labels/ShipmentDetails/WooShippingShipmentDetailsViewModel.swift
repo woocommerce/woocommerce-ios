@@ -26,10 +26,21 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel != nil
     }
 
-    private let shipmentItems: [ShippingLabelPackageItem]
+    let shipment: Shipment
 
-    /// ID for the shipment.
-    private let shipmentID: String
+    var itemsCountLabel: String {
+        shipment.quantity
+    }
+
+    var itemsDetailLabel: String {
+        shipment.itemsDetailLabel
+    }
+
+    var itemsRowViewModels: [WooShippingItemRowViewModel] {
+        shipment.items.map {
+            WooShippingItemRowViewModel(item: $0, currency: order.currency)
+        }
+    }
 
     /// Selected package data for the shipping label.
     @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
@@ -51,6 +62,11 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         })
     }()
 
+    /// Whether the custom information is completed or not.
+    var customsInformationIsCompleted: Bool {
+        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
+    }
+
     /// Check for the need of customs form
     ///
     @Published private(set) var customsFormRequired: Bool = false
@@ -60,15 +76,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private var debounceDuration: Double = 1
 
     init(order: Order,
-         shipmentID: String,
-         shipmentItems: [ShippingLabelPackageItem],
+         shipment: Shipment,
          originAddress: AnyPublisher<WooShippingOriginAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.stores = stores
-        self.shipmentID = shipmentID
-        self.shipmentItems = shipmentItems
+        self.shipment = shipment
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
 
@@ -77,12 +91,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         observeCustomsForm()
         observeHAZMATChanges()
     }
+
+    /// Handles package selection for the shipping label.
+    /// Selecting a package also refreshes the available rates for the shipping service.
+    func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
+        selectedPackage = packageData
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModel {
     /// Observes the selected package and updates the shipment weight.
     func observeSelectedPackage() {
-        let itemsWeight = shipmentItems.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
+        let itemsWeight = shipment.items.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
         $selectedPackage
             .map { selectedPackage in
                 guard let selectedPackage else {
@@ -101,7 +121,10 @@ private extension WooShippingShipmentDetailsViewModel {
             .combineLatest($selectedPackage)
             .sink { [weak self] weight, selectedPackage in
                 guard let self, let selectedPackage, let shippingService else { return }
-                shippingService.loadLabelRates(for: buildSelectedPackage(selectedPackage, weight: Double(weight) ?? 0, shipmentID: shipmentID))
+                let package = buildSelectedPackage(selectedPackage,
+                                                   weight: Double(weight) ?? 0,
+                                                   shipmentID: shipment.id)
+                shippingService.loadLabelRates(for: package)
             }
             .store(in: &subscriptions)
     }

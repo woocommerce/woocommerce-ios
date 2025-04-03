@@ -2,6 +2,8 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
+typealias Shipment = WooShippingSplitShipmentsViewModel.Shipment
+
 /// ViewModel for `WooShippingSplitShipmentsDetailView`
 final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let order: Order
@@ -477,6 +479,10 @@ extension WooShippingSplitShipmentsViewModel {
         /// Includes total weight and total price for all items in the current shipment.
         var itemsDetailLabel: String {
             "\(weight) • \(price)"
+        }
+
+        var items: [ShippingLabelPackageItem] {
+            contents.map(\.packageItem)
         }
 
         init(contents: [CollapsibleShipmentItemCardViewModel],

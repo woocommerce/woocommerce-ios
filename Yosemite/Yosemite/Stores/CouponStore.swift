@@ -6,12 +6,14 @@ import Storage
 //
 public final class CouponStore: Store {
     private let remote: CouponsRemoteProtocol
+    private let service: CouponService
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: CouponsRemoteProtocol) {
         self.remote = remote
+        self.service = CouponService(storageManager: storageManager, remote: remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -50,10 +52,10 @@ public final class CouponStore: Store {
 
         switch action {
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
-            synchronizeCoupons(siteID: siteID,
-                               pageNumber: pageNumber,
-                               pageSize: pageSize,
-                               onCompletion: onCompletion)
+            service.synchronizeCoupons(siteID: siteID,
+                                       pageNumber: pageNumber,
+                                       pageSize: pageSize,
+                                       onCompletion: onCompletion)
         case .deleteCoupon(let siteID, let couponID, let onCompletion):
             deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
@@ -84,46 +86,9 @@ public final class CouponStore: Store {
     }
 }
 
-
 // MARK: - Services
 //
 private extension CouponStore {
-
-    /// Synchronizes coupons from a Site with what is persisted in the storage layer.
-    /// A successful sync of the first page will delete all coupons for the specified site from
-    /// storage, in order to reflect deletions made on other devices.
-    ///
-    /// - Parameters:
-    ///   - siteId: The site to synchronizes coupons for.
-    ///   - pageNumber: Page number of coupons to fetch from the API
-    ///   - pageSize: Number of coupons per page to fetch from the API
-    ///   - onCompletion: Closure to call after sychronizing is complete. Called on the main thread.
-    ///   - result: `.success(hasNextPage: Bool)` or `.failure(error: Error)`
-    ///
-    func synchronizeCoupons(siteID: Int64,
-                            pageNumber: Int,
-                            pageSize: Int,
-                            onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
-        remote.loadAllCoupons(for: siteID,
-                              pageNumber: pageNumber,
-                              pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-
-            case .success(let coupons):
-                let shouldClearData = pageNumber == Default.firstPageNumber
-                let hasNextPage = coupons.count == pageSize
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
-                                                     siteID: siteID,
-                                                     shouldClearExistingCoupons: shouldClearData) {
-                    onCompletion(.success(hasNextPage))
-                }
-            }
-        }
-    }
-
     /// Deletes a coupon from a Site with what is persisted in the storage layer.
     /// After the API request succeeds, the stored coupon should be removed from the local storage.
     /// - Parameters:
@@ -145,7 +110,7 @@ private extension CouponStore {
                                "while expecting couponID \(couponID) and site \(siteID)")
                     return
                 }
-                self.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
+                self.service.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
                     onCompletion(.success(()))
                 }
             }
@@ -168,7 +133,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let updatedCoupon):
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
+                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
                     onCompletion(.success(updatedCoupon))
                 }
             }
@@ -191,7 +156,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let createdCoupon):
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
+                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
                     onCompletion(.success(createdCoupon))
                 }
             }
@@ -257,7 +222,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupons):
-                self.upsertSearchResultsInBackground(siteID: siteID,
+                self.service.upsertSearchResultsInBackground(siteID: siteID,
                                                      keyword: keyword,
                                                      readOnlyCoupons: coupons) {
                     onCompletion(.success(()))
@@ -284,7 +249,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupon):
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
+                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
                     onCompletion(.success(coupon))
                 }
             }
@@ -305,7 +270,7 @@ private extension CouponStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let coupons):
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
+                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
                     onCompletion(.success(coupons))
                 }
             }
@@ -320,83 +285,6 @@ private extension CouponStore {
             case let .failure(error):
                 onCompletion(.failure(error))
             }
-        }
-    }
-}
-
-
-// MARK: - Storage: Coupon
-//
-private extension CouponStore {
-
-    /// Updates or Inserts specified Coupon Entities in a background thread
-    /// `onCompletion` will be called on the main thread.
-    ///
-    func upsertStoredCouponsInBackground(readOnlyCoupons: [Networking.Coupon],
-                                         siteID: Int64,
-                                         shouldClearExistingCoupons: Bool = false,
-                                         onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
-            if shouldClearExistingCoupons {
-                storage.deleteCoupons(siteID: siteID)
-            }
-            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons,
-                                in: storage,
-                                siteID: siteID)
-        }, completion: onCompletion, on: .main)
-    }
-
-    /// Updates or Inserts the specified Coupon entities
-    ///
-    func upsertStoredCoupons(readOnlyCoupons: [Networking.Coupon],
-                             in storage: StorageType,
-                             siteID: Int64) {
-        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
-        for coupon in readOnlyCoupons {
-            let storageCoupon: Storage.Coupon = {
-                if let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) {
-                    return storedCoupon
-                }
-                return storage.insertNewObject(ofType: Storage.Coupon.self)
-            }()
-
-            storageCoupon.update(with: coupon)
-        }
-    }
-
-    /// Deletes the Storage.Coupon with the specified `siteID` and `couponID` in a background thread.
-    /// Triggers `onCompletion` on the main thread when done.
-    ///
-    func deleteStoredCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
-            storage.deleteCoupon(siteID: siteID, couponID: couponID)
-        }, completion: onCompletion, on: .main)
-    }
-
-    /// Upserts the Coupons, and associates them to the SearchResults Entity (in Background)
-    ///
-    func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
-            upsertStoredCoupons(readOnlyCoupons: readOnlyCoupons, in: storage, siteID: siteID)
-            upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyCoupons: readOnlyCoupons, in: storage)
-        }, completion: onCompletion, on: .main)
-    }
-
-    /// Upserts the Coupons, and associates them to the Search Results Entity (in the specified Storage)
-    ///
-    func upsertStoredResults(siteID: Int64, keyword: String, readOnlyCoupons: [Networking.Coupon], in storage: StorageType) {
-        let searchResult = storage.loadCouponSearchResult(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.CouponSearchResult.self)
-        searchResult.keyword = keyword
-
-        let storedCoupons = storage.loadCoupons(siteID: siteID, with: readOnlyCoupons.map { $0.couponID })
-        for coupon in readOnlyCoupons {
-            guard let storedCoupon = storedCoupons.first(where: { $0.couponID == coupon.couponID }) else {
-                continue
-            }
-
-            storedCoupon.addToSearchResults(searchResult)
         }
     }
 }

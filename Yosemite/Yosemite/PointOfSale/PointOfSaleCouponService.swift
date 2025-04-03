@@ -17,31 +17,28 @@ public protocol PointOfSaleCouponServiceProtocol {
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let couponsRemote: CouponsRemote
-    private let stores: StoresManager?
     private let storage: StorageManagerType?
+    private let couponService: CouponServiceProtocol
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                network: Network,
-                stores: StoresManager? = nil,
-                storage: StorageManagerType? = nil) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings,
+         couponService: CouponServiceProtocol,
+         storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.couponsRemote = CouponsRemote(network: network)
-        self.stores = stores
         self.storage = storage
+        self.couponService = couponService
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
-                            stores: StoresManager,
                             storage: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials)
+        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  stores: stores,
+                  couponService: CouponService(storageManager: storage, remote: remote),
                   storage: storage)
     }
 
@@ -101,12 +98,8 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-        guard let stores = stores else {
-            return
-        }
-
         await withCheckedContinuation { continuation in
-            let action = CouponAction.synchronizeCoupons(
+            couponService.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
@@ -114,9 +107,6 @@ private extension PointOfSaleCouponService {
                     continuation.resume()
                 }
             )
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
         }
     }
 

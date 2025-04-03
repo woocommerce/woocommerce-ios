@@ -2846,6 +2846,8 @@
 		DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
+		DEDC5F5E2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDC5F5D2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift */; };
+		DEDC5F602D9E7CEA005E38BD /* WooShippingShipmentDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDC5F5F2D9E7CDD005E38BD /* WooShippingShipmentDetailsViewModel.swift */; };
 		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
 		DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */; };
 		DEE2152D2D113EF1004A11F3 /* EditStoreListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */; };
@@ -6069,6 +6071,8 @@
 		DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModelTests.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
+		DEDC5F5D2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingShipmentDetailsView.swift; sourceTree = "<group>"; };
+		DEDC5F5F2D9E7CDD005E38BD /* WooShippingShipmentDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingShipmentDetailsViewModel.swift; sourceTree = "<group>"; };
 		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
 		DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupInterruptedView.swift; sourceTree = "<group>"; };
 		DEE2152C2D113EF1004A11F3 /* EditStoreListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditStoreListView.swift; sourceTree = "<group>"; };
@@ -12517,6 +12521,7 @@
 		CEAB739A2C81E3A000A7EB39 /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				DEDC5F5C2D9E7CB8005E38BD /* ShipmentDetails */,
 				EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */,
 				B90DD08C2D12FA6600EFC06A /* WooShipping Customs */,
 				CE6E11092C91DA3D00563DD4 /* WooShipping Items Section */,
@@ -13644,6 +13649,15 @@
 				DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */,
 			);
 			path = Themes;
+			sourceTree = "<group>";
+		};
+		DEDC5F5C2D9E7CB8005E38BD /* ShipmentDetails */ = {
+			isa = PBXGroup;
+			children = (
+				DEDC5F5D2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift */,
+				DEDC5F5F2D9E7CDD005E38BD /* WooShippingShipmentDetailsViewModel.swift */,
+			);
+			path = ShipmentDetails;
 			sourceTree = "<group>";
 		};
 		DEE2152E2D113F61004A11F3 /* EditStoreList */ = {
@@ -15741,6 +15755,7 @@
 				DED91DFA2AD78A3A00CDCC53 /* BlazeCampaignItemView.swift in Sources */,
 				31FC8CE727B47591004B9456 /* CardReaderSettingsDataSource.swift in Sources */,
 				02B2829027C352DA004A332A /* RefreshableScrollView.swift in Sources */,
+				DEDC5F5E2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift in Sources */,
 				DE6D84A92C3D07850014FBFF /* WooAnalyticsEvent+GoogleAds.swift in Sources */,
 				683DF5FF2C6AF46500A5CDC6 /* POSHeaderTitleView.swift in Sources */,
 				DEA90D392C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift in Sources */,
@@ -16338,6 +16353,7 @@
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
 				B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */,
 				205E794B2C2051B5001BA266 /* PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView.swift in Sources */,
+				DEDC5F602D9E7CEA005E38BD /* WooShippingShipmentDetailsViewModel.swift in Sources */,
 				267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */,
 				D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */,
 				DAAF53B82CF75701006D8880 /* WooShippingAddPackageViewModel.swift in Sources */,

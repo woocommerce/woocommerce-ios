@@ -3005,7 +3005,7 @@
 		EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */; };
 		EE6C6B6E2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */; };
 		EE7E75A82D83EB1F00E6FF5B /* WooShippingSplitShipmentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */; };
-		EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */; };
+		EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsView.swift */; };
 		EE7E75AC2D84080D00E6FF5B /* WooShippingSplitShipmentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
 		EE8A302B2B70B63E001D7C66 /* MockImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A302A2B70B63E001D7C66 /* MockImageService.swift */; };
@@ -6227,7 +6227,7 @@
 		EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThemeInstaller.swift; sourceTree = "<group>"; };
 		EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSourceTests.swift; sourceTree = "<group>"; };
 		EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsRow.swift; sourceTree = "<group>"; };
-		EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsDetailView.swift; sourceTree = "<group>"; };
+		EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsView.swift; sourceTree = "<group>"; };
 		EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingSplitShipmentsViewModel.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
 		EE8A302A2B70B63E001D7C66 /* MockImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageService.swift; sourceTree = "<group>"; };
@@ -14044,7 +14044,7 @@
 				EEBB81702D8C0834008D6CE5 /* CollapsibleShipmentItemCard.swift */,
 				EEBB816E2D8C0821008D6CE5 /* CollapsibleShipmentItemCardViewModel.swift */,
 				EE7E75AB2D84080A00E6FF5B /* WooShippingSplitShipmentsViewModel.swift */,
-				EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsDetailView.swift */,
+				EE7E75A92D84066800E6FF5B /* WooShippingSplitShipmentsView.swift */,
 				EE7E75A72D83EB0700E6FF5B /* WooShippingSplitShipmentsRow.swift */,
 			);
 			path = "WooShipping Split Shipments";
@@ -16730,7 +16730,7 @@
 				025FDD3223717D2900824006 /* EditorFactory.swift in Sources */,
 				45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */,
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
-				EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsDetailView.swift in Sources */,
+				EE7E75AA2D84066C00E6FF5B /* WooShippingSplitShipmentsView.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
 				DEE6437826D8DAD900888A75 /* InProgressView.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,

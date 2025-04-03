@@ -1,7 +1,7 @@
 import SwiftUI
 import Yosemite
 
-struct WooShippingSplitShipmentsDetailView: View {
+struct WooShippingSplitShipmentsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject var viewModel: ViewModel
@@ -93,7 +93,7 @@ struct WooShippingSplitShipmentsDetailView: View {
     }
 }
 
-private extension WooShippingSplitShipmentsDetailView {
+private extension WooShippingSplitShipmentsView {
     var topTabView: some View {
         HStack(spacing: 0) {
             TopTabView(tabs: viewModel.topTabItems,
@@ -324,18 +324,18 @@ private struct MessageSnackBar<IconContent: View>: View {
                 }
             }
         }
-        .padding(WooShippingSplitShipmentsDetailView.Layout.contentPadding)
+        .padding(WooShippingSplitShipmentsView.Layout.contentPadding)
         .background {
-            RoundedRectangle(cornerRadius: WooShippingSplitShipmentsDetailView.Layout.cornerRadius)
+            RoundedRectangle(cornerRadius: WooShippingSplitShipmentsView.Layout.cornerRadius)
                 .fill(Color(.text))
                 .shadow(color: Color(.text).opacity(shadowColorOpacity),
-                        radius: WooShippingSplitShipmentsDetailView.Layout.shadowRadius,
-                        y: WooShippingSplitShipmentsDetailView.Layout.shadowYOffset)
+                        radius: WooShippingSplitShipmentsView.Layout.shadowRadius,
+                        y: WooShippingSplitShipmentsView.Layout.shadowYOffset)
         }
     }
 }
 
-fileprivate extension WooShippingSplitShipmentsDetailView {
+fileprivate extension WooShippingSplitShipmentsView {
     enum Layout {
         static let contentPadding: CGFloat = 16
         static let borderCornerRadius: CGFloat = 8
@@ -451,7 +451,7 @@ fileprivate extension WooShippingSplitShipmentsDetailView {
 
 #if DEBUG
 #Preview {
-    WooShippingSplitShipmentsDetailView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
+    WooShippingSplitShipmentsView(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
                                                                                       config: ShippingLabelSampleData.sampleWooShippingConfig(),
                                                                                       items: [ShippingLabelPackageItem(productOrVariationID: 1,
                                                                                                                        orderItemID: 12,

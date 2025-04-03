@@ -22,7 +22,7 @@ struct WooShippingSplitShipmentsRow: View {
         }
         .padding(.vertical, Layout.verticalPadding)
         .fullScreenCover(isPresented: $isShowingDetailView) {
-            WooShippingSplitShipmentsDetailView(viewModel: viewModel)
+            WooShippingSplitShipmentsView(viewModel: viewModel)
         }
     }
 }

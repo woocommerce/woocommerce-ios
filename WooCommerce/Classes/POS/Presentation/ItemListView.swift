@@ -1,7 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
-import struct Yosemite.POSCoupon
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -22,6 +21,8 @@ struct ItemListView: View {
     }
 
     @State private var selectedItemType: ItemType = .products
+
+    @State private var showCouponCreationModal: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -52,7 +53,19 @@ struct ItemListView: View {
                 }, label: {
                     Text("Coupons")
                 })
+
+                Spacer()
+
+                Button(action: {
+                    showCouponCreationModal = true
+                }, label: {
+                    Text(Image(systemName: "plus.circle.fill"))
+                })
+                .font(.posButtonSymbolLarge)
+                .foregroundStyle(Color.posOnSurface)
+                .renderedIf(selectedItemType == .coupons)
             }
+            .padding(POSPadding.medium)
             .renderedIf(shouldShowCoupons)
 
             switch itemListState {
@@ -80,6 +93,12 @@ struct ItemListView: View {
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
         }
+        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
+            Task { @MainActor in
+                posModel.addToCart(couponItem)
+                await posModel.refreshItems(base: .root)
+            }
+        })
     }
 }
 

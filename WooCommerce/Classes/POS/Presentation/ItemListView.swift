@@ -89,8 +89,8 @@ struct ItemListView: View {
         .posModal(isPresented: $showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
         }
-        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: {
-            Task {
+        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
+            Task { @MainActor in
                 await posModel.refreshItems(base: .root)
             }
         })

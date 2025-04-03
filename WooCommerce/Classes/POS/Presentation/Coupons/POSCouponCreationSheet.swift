@@ -1,10 +1,12 @@
 import SwiftUI
 import struct Yosemite.Coupon
+import enum Yosemite.POSItem
+import struct Yosemite.POSCoupon
 
 extension View {
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
-        onSuccess: @escaping () -> Void
+        onSuccess: @escaping (POSItem) -> Void
     ) -> some View {
         modifier(POSCouponCreationSheetModifier(isPresented: isPresented, onSuccess: onSuccess))
     }
@@ -12,7 +14,7 @@ extension View {
 
 private struct POSCouponCreationSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
-    let onSuccess: () -> Void
+    let onSuccess: (POSItem) -> Void
 
     @State private var selectedType: POSCouponDiscountType?
     @State private var showCouponSelectionSheet: Bool = false
@@ -20,17 +22,21 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
-                let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { _ in })
+                var addedCouponItem: POSItem?
+                let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { coupon in
+                    addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code))
+                })
                 var view = AddEditCoupon(viewModel)
 
                 view.dismissHandler = {
                     selectedType = nil
                 }
 
-                view.onDisappear = { success in
-                    if success {
+                view.onDisappear = {
+                    if let couponItem = addedCouponItem {
                         selectedType = nil
-                        onSuccess()
+                        onSuccess(couponItem)
+                        addedCouponItem = nil
                     }
                 }
 

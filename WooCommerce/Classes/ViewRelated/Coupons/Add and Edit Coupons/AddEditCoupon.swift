@@ -6,7 +6,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
 
     private let viewModel: AddEditCouponViewModel
 
-    init(viewModel: AddEditCouponViewModel, onDisappear: @escaping (_ success: Bool) -> Void) {
+    init(viewModel: AddEditCouponViewModel, onDisappear: @escaping () -> Void) {
         self.viewModel = viewModel
         super.init(rootView: AddEditCoupon(viewModel))
 
@@ -60,7 +60,7 @@ struct AddEditCoupon: View {
 
     /// Set this closure with SwiftUI onDisappear code. Needed because we need to set this event from a UIKit object.
     ///
-    var onDisappear: (_ success: Bool) -> Void = { _ in }
+    var onDisappear: () -> Void = {}
 
     /// Set this closure to display the bottom sheet for discount type selection the UIKit way.
     ///
@@ -305,7 +305,7 @@ struct AddEditCoupon: View {
                     let _ = DDLogError("⛔️ Error acquiring the coupon code after creation")
                 }
                 CouponCreationSuccess(couponCode: couponCode, shareMessage: viewModel.shareCouponMessage) {
-                    onDisappear(true)
+                    onDisappear()
                 }
             }
             .toolbar {
@@ -322,7 +322,7 @@ struct AddEditCoupon: View {
         }
         .navigationViewStyle(.stack)
         .onDisappear {
-            onDisappear(false)
+            onDisappear()
         }
     }
 }

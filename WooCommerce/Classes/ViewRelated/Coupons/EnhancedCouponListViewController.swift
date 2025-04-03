@@ -114,7 +114,7 @@ private extension EnhancedCouponListViewController {
                                                onSuccess: { [weak self] _ in
             self?.couponListViewController?.refreshCouponList()
         })
-        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] _ in
+        let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
         })

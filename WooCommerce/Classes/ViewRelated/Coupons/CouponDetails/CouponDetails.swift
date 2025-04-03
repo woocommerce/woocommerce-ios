@@ -20,7 +20,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
             guard let self = self else { return }
             let addEditHostingController = AddEditCouponHostingController(
                 viewModel: addEditCouponViewModel,
-                onDisappear: { _ in
+                onDisappear: {
                     viewModel.resetAddEditViewModel()
                 })
             self.present(addEditHostingController, animated: true)

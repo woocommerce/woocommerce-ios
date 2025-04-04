@@ -31,17 +31,17 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 struct PointOfSaleCouponsControllerTests {
     @available(iOS 17.0, *)
-    @Test func loadItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func loadItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -58,24 +58,24 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
     }
 
     @available(iOS 17.0, *)
-    @Test func refreshItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func refreshItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.refreshItems(base: .root)
+        await sut.refreshItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -92,24 +92,24 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.refreshItems(base: .root)
+        await sut.refreshItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
     }
 
     @available(iOS 17.0, *)
-    @Test func loadNextItems_when_empty_coupons_then_results_in_empty_loaded_state() async throws {
+    @Test func loadNextItems_when_empty_coupons_then_results_in_errorCouponsNotFound_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         couponProvider.shouldReturnZeroItems = true
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded([], hasMoreItems: false), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -126,7 +126,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)

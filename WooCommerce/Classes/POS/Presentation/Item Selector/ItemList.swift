@@ -10,42 +10,63 @@ struct ItemList<HeaderView: View>: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
+    // Navigation only uses this on iOS 17
+    @State private var activeNavigationItem: POSItem? = nil
+
     let state: ItemListState
+    let itemsStack: ItemsStackState
     private let node: ItemListBaseItem
     private let headerView: HeaderView
 
     init(state: ItemListState,
-         node: ItemListBaseItem = .root,
+         itemsStack: ItemsStackState,
+         node: ItemListBaseItem,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.state = state
+        self.itemsStack = itemsStack
         self.node = node
         self.headerView = headerView()
     }
 
     var body: some View {
-        InfiniteScrollView(
-            triggerDeterminer: infiniteScrollTriggerDeterminer,
-            loadMore: {
-                guard case .loaded(_, let hasMoreItems) = state,
-                      hasMoreItems
-                else { return }
-                await posModel.loadNextItems(base: node)
-            },
-            content: {
-                LazyVStack(spacing: Constants.itemSpacing) {
-                    headerView
+        ZStack {
+            InfiniteScrollView(
+                triggerDeterminer: infiniteScrollTriggerDeterminer,
+                loadMore: {
+                    guard case .loaded(_, let hasMoreItems) = state,
+                          hasMoreItems
+                    else { return }
+                    await posModel.loadNextItems(base: node)
+                },
+                content: {
+                    LazyVStack(spacing: Constants.itemSpacing) {
+                        headerView
 
-                    ForEach(state.items) { item in
-                        ItemListRow(item: item)
+                        ForEach(state.items) { item in
+                            ItemListRow(item: item, itemsStack: itemsStack, activeNavigationItem: $activeNavigationItem)
+                        }
+
+                        footerRows
                     }
-
-                    footerRows
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, Constants.itemListPadding)
+                    .padding(.bottom, floatingControlAreaSize.height)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, Constants.itemListPadding)
-                .padding(.bottom, floatingControlAreaSize.height)
+            )
+
+            // Programmatic navigation overlay for iOS 17
+            if #available(iOS 18.0, *) {
+                EmptyView()
+            } else if let activeItem = activeNavigationItem,
+               case let .variableParentProduct(parentProduct) = activeItem {
+                NavigationLink(
+                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsStack: itemsStack),
+                    label: { EmptyView() }
+                )
+                .opacity(0)
+                .frame(width: 0, height: 0)
             }
-        )
+        }
     }
 
     @ViewBuilder var footerRows: some View {
@@ -79,8 +100,10 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    let analytics: Analytics = ServiceLocator.analytics
+    let itemsStack: ItemsStackState
+    @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    let analytics: Analytics = ServiceLocator.analytics
 
     var body: some View {
         switch item {
@@ -99,15 +122,22 @@ private struct ItemListRow: View {
                                           detailText: Localization.variationsAvailable)
                 }
             } else {
+                // Use a button to trigger navigation programmatically on iOS 17.
+
                 // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
                 // we still have to use the NavigationView approach here.
-                NavigationLink(destination: {
-                    ChildItemList(parentItem: item, title: parentProduct.name)
-                }) {
+                // When we remove it, itemsStack will no longer be a dependency of ItemList
+
+                // Note that we don't use Navigation Link as this row can be redrawn if the dynamic type size
+                // is changed enough to push it offscreen. When that happens while viewing a child list,
+                // the navigation gets cancelled and the user is sent back to the root.
+                Button(action: {
+                    activeNavigationItem = item
+                }, label: {
                     ParentProductCardView(name: parentProduct.name,
                                           imageSource: parentProduct.productImageSource,
                                           detailText: Localization.variationsAvailable)
-                }
+                })
             }
         case let .variation(variation):
             Button(action: {
@@ -121,7 +151,7 @@ private struct ItemListRow: View {
                 posModel.addToCart(item)
             }, label: {
                 CouponRowView(couponItem: .init(id: coupon.id,
-                                                code: coupon.code))
+                                               code: coupon.code))
             })
         }
     }
@@ -141,30 +171,32 @@ private extension ItemListRow {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview("Loaded with items") {
-    ItemList(
-        state:
-                .loaded(
-                    [
-                        .simpleProduct(
-                            .init(
-                                id: .init(),
-                                name: "Strong latte 16oz",
-                                formattedPrice: "$4.00",
-                                productID: 12,
-                                price: "4.00"
-                            )
-                        ),
-                        .variableParentProduct(
-                            .init(
-                                id: .init(),
-                                name: "Variable mocha",
-                                productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
-                                productID: 16
-                            )
-                        )
-                    ],
-                    hasMoreItems: false
+    let itemList: ItemListState = .loaded(
+        [
+            .simpleProduct(
+                .init(
+                    id: .init(),
+                    name: "Strong latte 16oz",
+                    formattedPrice: "$4.00",
+                    productID: 12,
+                    price: "4.00"
                 )
+            ),
+            .variableParentProduct(
+                .init(
+                    id: .init(),
+                    name: "Variable mocha",
+                    productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
+                    productID: 16
+                )
+            )
+        ],
+        hasMoreItems: false
+    )
+    ItemList(
+        state: itemList,
+        itemsStack: .init(root: itemList, itemStates: [:]),
+        node: .root(.products)
     )
 }
 
@@ -176,7 +208,9 @@ private extension ItemListRow {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    ItemList(state: .loading([]))
+    ItemList(state: .loading([]),
+             itemsStack: .init(root: .loading([]), itemStates: [:]),
+             node: .root(.products))
         .environment(posModel)
 }
 

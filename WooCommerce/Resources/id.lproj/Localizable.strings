@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-25 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Perbarui preferensi Anda";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "Diperbarui %ld jam lalu";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "Diperbarui %ld jam lalu";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "Diperbarui %ld menit lalu";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "Diperbarui %ld menit lalu";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Diperbarui sesaat lalu";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Diperbarui pada %@";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Memperbarui perangkat lunak";
 
@@ -9969,6 +9951,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Konfigurasi selesai";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "Memecahkan Masalah Koneksi";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Edit jumlah";
 
@@ -10962,6 +10947,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "tidak ada periode sebelumnya";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "Batalkan";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "Aktifkan pemberitahuan";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "Tidak dapat memuat pengaturan pemberitahuan untuk toko Anda.";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "Tidak dapat menyimpan pengaturan pemberitahuan";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "Pesanan baru";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "Pemberitahuan dinonaktifkan untuk Woo";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "Pemberitahuan diaktifkan";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "Dengan pengingat dan pemberitahuan push jarak jauh.";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "Nonaktif";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "Tinjauan produk";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "Coba lagi";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "Simpan";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "Ubah";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "Sesuaikan preferensi pemberitahuan untuk setiap toko.";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "Toko Anda";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "Pengaturan Pemberitahuan";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "Pengaturan disimpan!";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Pilih satu variasi spesifik.";
 
@@ -11323,14 +11359,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Pesanan baru";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Lakukan verifikasi pembayaran di perangkat dengan koneksi jaringan yang aktif. Jika gagal, ulangi pembayaran. JIka berhasil, mulai pesanan baru.";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Coba lagi pembayaran";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "Karena error jaringan, kami tidak dapat mengonfirmasi apakah pembayaran berhasil.";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Karena error jaringan, kami tidak dapat mengonfirmasi apakah pembayaran berhasil. Lakukan verifikasi pembayaran di perangkat dengan koneksi jaringan yang aktif. Jika gagal, ulangi pembayaran. JIka berhasil, mulai pesanan baru.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Error pembayaran";
@@ -12265,6 +12298,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pembayaran Selesai";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "Memecahkan Masalah Koneksi";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "Pengaturan Pemberitahuan";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Tema";
 
@@ -12322,6 +12361,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "Terima Pembayaran telah dipindahkan";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "Batalkan";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "Pesanan baru";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "Pengaturan pemberitahuan push yang muncul di perangkat seluler Anda.";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "Tinjauan produk";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "Jenis pemberitahuan";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "Perbarui";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "Interval harian";
@@ -12904,7 +12961,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "Gunakan Paket yang Dipilih";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "Apakah Anda mengirim barang berisiko atau bahan berbahaya?";
+"wooShipping.createLabel.hazmatRow.label" = "Apakah Anda mengirim barang berisiko atau bahan berbahaya?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "Tidak";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "Ya";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "Masukkan dimensi paket Anda atau pilih opsi paket operator untuk melihat tarif pengiriman yang tersedia.";
@@ -13071,6 +13134,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "ITN wajib diisi.";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "Kami tidak dapat membeli label pengiriman. Coba lagi.";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "Coba lagi";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "Terjadi error saat membeli label pengiriman.";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "Kami tidak dapat memuat data wajib";
 
@@ -13130,6 +13205,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Tambahkan alamat tujuan untuk mendapatkan tarif pengiriman";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "Kami tidak dapat menemukan layanan pengiriman untuk kombinasi paket yang dipilih dan total berat pengiriman. Sesuaikan input dan coba lagi.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Kami perlu mengetahui berat paket ini sebelum dapat menampilkan tarif pengiriman yang tersedia.";
@@ -13226,9 +13304,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Info selengkapnya tentang ITN";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "Masukkan ITN yang valid";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Rincian Produk";
@@ -13343,6 +13418,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "Coba lagi";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "Buat paket khusus";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "Belum ada paket yang disimpan";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "Kami tidak dapat memuat paket yang disimpan";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "Coba lagi";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "Produk";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "Pisahkan pengiriman";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "Tidak dapat menyimpan paket";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "Coba lagi";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Masukkan ITN yang valid dalam salah satu format berikut: X12345678901234, AES X12345678901234, atau NOEEI 30.37(a).";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "Nomor Transaksi Internasional (ITN) diperlukan untuk pengiriman ke negara tujuan.";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "Nomor Transaksi Internasional (ITN) diperlukan untuk pengiriman item dengan nilai lebih dari $2.500 per nomor tarif.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "Untuk pengiriman melebihi $2.500, Anda perlu memperoleh AES ITN 14 digit untuk verifikasi pelaporan ekspor AS.";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "Batalkan";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "Pilih Kategori";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "Batalkan";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "Bahan berbahaya meliputi baterai, es kering, cairan yang mudah terbakar, aerosol, amunisi, kembang api, cat kuku, parfum, cat, pelarut, dan lain-lain. Item-item yang berbahaya harus dikirimkan dalam paket-paket terpisah.";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "Pelajari cara mengemas, melabeli, dan mengirim HAZMAT secara aman dengan USPS® di %1$@. Gunakan %2$@ untuk mencari tahu apakah produk Anda dapat dikirim.";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping saat ini tidak menyediakan pengiriman HAZMAT melalui %1$@.";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "Alat Pencarian USPS HAZMAT";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "Pilih Kategori";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "Mengandung bahan berbahaya";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "Apakah Anda mengirim barang berisiko atau bahan berbahaya?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "Selesai";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "Pilih Semua";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "Pisahkan Pengiriman";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, toko saya, hari ini, minggu ini, bulan ini, tahun ini, pesanan, pengunjung, konversi, konversi teratas, item terjual";

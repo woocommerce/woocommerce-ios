@@ -17,31 +17,32 @@ public protocol PointOfSaleCouponServiceProtocol {
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let couponsRemote: CouponsRemote
-    private let stores: StoresManager?
     private let storage: StorageManagerType?
+    private let couponStoreMethods: CouponStoreMethodsProtocol
+    private let settingsStoreMethods: SettingStoreMethodsProtocol
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                network: Network,
-                stores: StoresManager? = nil,
-                storage: StorageManagerType? = nil) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings,
+         couponStoreMethods: CouponStoreMethodsProtocol,
+         settingStoreMethods: SettingStoreMethodsProtocol,
+         storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.couponsRemote = CouponsRemote(network: network)
-        self.stores = stores
         self.storage = storage
+        self.couponStoreMethods = couponStoreMethods
+        self.settingsStoreMethods = settingStoreMethods
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
-                            stores: StoresManager,
                             storage: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials)
+        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  stores: stores,
+                  couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
+                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
                   storage: storage)
     }
 
@@ -101,12 +102,8 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-        guard let stores = stores else {
-            return
-        }
-
         await withCheckedContinuation { continuation in
-            let action = CouponAction.synchronizeCoupons(
+            couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
@@ -114,15 +111,12 @@ private extension PointOfSaleCouponService {
                     continuation.resume()
                 }
             )
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
         }
     }
 
     private func checkStoreCouponSettings() async -> Bool {
         await withCheckedContinuation { continuation in
-            let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
                     debugPrint("Coupons enabled? \(isEnabled)")
@@ -131,9 +125,6 @@ private extension PointOfSaleCouponService {
                     debugPrint("Coupons settings error: \(error)")
                     continuation.resume(returning: false)
                 }
-            }
-            Task { @MainActor in
-                stores?.dispatch(action)
             }
         }
     }

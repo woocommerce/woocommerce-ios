@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-11 09:54:14+0000 */
+/* Translation-Revision-Date: 2025-03-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Обновить настройки";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "Обновлено %ld час назад";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "Обновлено %ld ч. назад";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "Обновлено %ld минуту назад";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "Обновлено %ld мин. назад";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Обновлено только что";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Обновлено %@";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Обновление программного обеспечения";
 
@@ -9972,6 +9954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Настройка выполнена";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "Устранение неполадок при подключении";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Изменить сумму";
 
@@ -10965,6 +10950,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "Отмена";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "Включить уведомления";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "Не удалось загрузить настройки уведомлений для ваших магазинов.";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "Не удалось сохранить настройки уведомлений";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "Новые заказы";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "Уведомления в Woo отключены";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "Уведомления включены";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "Включая напоминания и дистанционные всплывающие уведомления.";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "Выкл.";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "Обзоры товаров";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "Повторить попытку";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "Сохранить";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "Изменить";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "Настройте параметры уведомлений для каждого магазина.";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "Ваши магазины";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "Настройки уведомлений";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "Настройки сохранены.";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Выберите конкретный вариант.";
 
@@ -11326,14 +11362,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Новый заказ";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Проверьте платёж на устройстве, подключённом к Интернету. Если платёж не был выполнен, повторите его. Если платёж был выполнен, создайте новый заказ.";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Повторить платёж";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "Из-за ошибки подключения не удалось подтвердить выполнение платежа.";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Из-за ошибки подключения не удалось подтвердить выполнение платежа. Проверьте платёж на устройстве, подключённом к Интернету. Если платёж не был выполнен, повторите его. Если платёж был выполнен, создайте новый заказ.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Ошибка платежа";
@@ -12268,6 +12301,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Платёж завершён";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "Устранение неполадок при подключении";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "Настройки уведомлений";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Темы";
 
@@ -12325,6 +12364,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "Раздел «Получение платежа» был перемещён";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "Отмена";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "Новые заказы";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "Настройки всплывающих уведомлений на вашем мобильном устройстве.";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "Обзоры товаров";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "Типы уведомлений";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "Обновить";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "Периоды по дням";
@@ -12907,7 +12964,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "Применить выбранную упаковку";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "Имеются ли в вашем отправлении опасные товары или материалы?";
+"wooShipping.createLabel.hazmatRow.label" = "Имеются ли в вашем отправлении опасные товары или вещества?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "Нет";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "Да";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "Введите размеры посылки или выберите одну из упаковок перевозчика, чтобы узнать доступные тарифы на доставку.";
@@ -13074,6 +13137,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "Необходимо ввести номер ITN.";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "Не удалось приобрести транспортную этикетку. Повторите попытку.";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "Повторить попытку";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "Ошибка при покупке этикетки.";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "Не удалось загрузить необходимые данные";
 
@@ -13133,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Добавьте адрес назначения, чтобы узнать тарифы на доставку";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "Не удалось найти службу доставки по комбинации выбранных данных упаковки и общего веса посылки. Уточните данные и повторите попытку.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Чтобы сообщить вам тарифы на доставку, нам необходимо знать вес посылки.";
@@ -13229,9 +13307,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Подробнее об ITN";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "Укажите действительный номер ITN.";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Сведения о товаре";
@@ -13346,6 +13421,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "Повторить попытку";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "Создать индивидуальную упаковку";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "Нет сохранённых упаковок";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "Не удалось загрузить сохранённые типы упаковки";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "Повторить попытку";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "Товары";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "Раздельная доставка";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "Не удалось сохранить упаковку";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "Повторить попытку";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Введите действительный номер ITN в одном из следующих форматов: X12345678901234, AES X12345678901234 или NOEEI 30.37(a).";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "Для доставки в страну назначения необходим международный номер транзакции (ITN).";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "Международный номер транзакции (ITN) необходимо указывать для посылок стоимостью более 2500 долл. США за тарифный код.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "При доставке посылок стоимостью от 2500 долл. США необходимо получить 14-значный номер AES ITN для проверки экспортной отчётности в США.";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "Отмена";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "Выбрать рубрику";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "Отмена";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "К потенциально опасным материалам относятся: батарейки и аккумуляторы, сухой лёд, воспламеняющиеся жидкости, аэрозоли, боеприпасы, фейерверки, лаки для ногтей, духи и одеколоны, краски, растворители и т. д. Опасные товары должны доставляться в отдельной упаковке.";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "Узнайте, как надёжно упаковать опасные вещества, выполнить адресацию и доставить их с помощью USPS® в %1$@. Выясните, можно ли доставить ваш товар с помощью %2$@.";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "В настоящее время WooCommerce Shipping не поддерживает доставку опасных веществ с помощью %1$@.";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "Инструмент поиска опасных веществ USPS";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "Выбрать рубрику";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "Содержит опасные вещества";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "Имеются ли в вашем отправлении опасные товары или вещества?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "Готово";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "Выбрать все";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "Раздельная доставка";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, мой магазин, сегодня, на этой неделе, в этом месяце, в этом году, заказы, посетители, конверсия, лучшая конверсия, проданные единицы";

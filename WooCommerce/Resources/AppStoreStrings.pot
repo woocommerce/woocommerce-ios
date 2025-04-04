@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v22.0-whats-new"
+msgctxt "v22.1-whats-new"
 msgid ""
-"This update adds the option to set different notification preferences for each store. In Orders and Products, your filters stay around as you move through the app, and we've fixed a crash that could happen when you choose pictures for your products. Payments is improved too, with support for Puerto Rico in WooPayments, and better accessibility.\n"
+"We’ve squashed bugs and polished your WooCommerce experience! Enjoy smoother order creation with fixes for unsaved changes, recalculations, and multi-word names. Plus, sharper icons for scanning and payments. Behind the scenes, we’ve improved login flows, POS functionality, and app performance. Update now!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -11,8 +11,10 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateMorePages = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    var spyItemsFetchStrategy: PointOfSalePurchasableItemFetchStrategy?
+    func providePointOfSaleItems(pageNumber: Int, fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
+        spyItemsFetchStrategy = fetchStrategy
         if let errorToThrow {
             throw errorToThrow
         }
@@ -29,7 +31,11 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
     var shouldSimulateTwoPagesOfVariations = false
     var shouldSimulateMorePagesOfVariations = false
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    var spyVariationsFetchStrategy: PointOfSalePurchasableItemFetchStrategy?
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        spyVariationsFetchStrategy = fetchStrategy
         if let errorToThrow {
             throw errorToThrow
         }
@@ -40,8 +46,6 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
 
         return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations)
     }
-
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
 }
 
 extension MockPointOfSaleItemService {

@@ -42,11 +42,14 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleItems(pageNumber: Int,
+                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         .init(items: [], hasMorePages: true)
     }
 
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         .init(items: mockVariationItems, hasMorePages: true)
     }
 

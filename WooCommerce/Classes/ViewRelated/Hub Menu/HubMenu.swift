@@ -41,8 +41,7 @@ struct HubMenu: View {
                         PointOfSaleEntryPointView(
                             itemsController: PointOfSaleItemsController(
                                 itemProvider: PointOfSaleItemService(
-                                    currencySettings: ServiceLocator.currencySettings,
-                                    fetchStrategy: viewModel.posItemFetchStrategyFactory.defaultStrategy),
+                                    currencySettings: ServiceLocator.currencySettings),
                                 itemFetchStrategyFactory: viewModel.posItemFetchStrategyFactory),
                             couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider),
                             onPointOfSaleModeActiveStateChange: { isEnabled in

@@ -56,15 +56,9 @@ public extension Sequence where Element == POSOrderableItem {
 }
 
 public protocol PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem>
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem>
-    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy { get set }
-}
-
-// Default implementation for convenience, so we do not need to pass the first page explicitly
-// if no pageNumber is given.
-extension PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
-        try await providePointOfSaleItems(pageNumber: pageNumber)
-    }
+    func providePointOfSaleItems(pageNumber: Int,
+                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem>
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem>
 }

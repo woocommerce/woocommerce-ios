@@ -15,12 +15,8 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
 
-    public var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
-
-    public init(currencySettings: CurrencySettings,
-                fetchStrategy: PointOfSalePurchasableItemFetchStrategy) {
+    public init(currencySettings: CurrencySettings) {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.fetchStrategy = fetchStrategy
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,
@@ -28,7 +24,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleItems(pageNumber: Int = 1,
+                                        fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
             let pagedProducts = try await fetchStrategy.fetchProducts(pageNumber: pageNumber)
             let products = pagedProducts.items
@@ -43,7 +40,9 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
     }
 
-    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                                 pageNumber: Int,
+                                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
             let pagedVariations = try await fetchStrategy.fetchVariations(parentProductID: parentProduct.productID,
                                                                           pageNumber: pageNumber)

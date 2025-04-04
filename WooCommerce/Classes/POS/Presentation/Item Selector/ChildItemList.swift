@@ -63,6 +63,7 @@ private extension ChildItemList {
             headerView
 
             ItemList(state: state,
+                     itemsStack: itemsStack,
                      node: node)
                 .transition(.opacity)
                 .refreshable {

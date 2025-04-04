@@ -11,13 +11,16 @@ struct ItemList<HeaderView: View>: View {
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     let state: ItemListState
+    let itemsStack: ItemsStackState
     private let node: ItemListBaseItem
     private let headerView: HeaderView
 
     init(state: ItemListState,
+         itemsStack: ItemsStackState,
          node: ItemListBaseItem,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.state = state
+        self.itemsStack = itemsStack
         self.node = node
         self.headerView = headerView()
     }
@@ -36,7 +39,7 @@ struct ItemList<HeaderView: View>: View {
                     headerView
 
                     ForEach(state.items) { item in
-                        ItemListRow(item: item, node: node)
+                        ItemListRow(item: item, itemsStack: itemsStack)
                     }
 
                     footerRows
@@ -79,7 +82,7 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    let node: ItemListBaseItem
+    let itemsStack: ItemsStackState
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
 
@@ -96,19 +99,23 @@ private struct ItemListRow: View {
             if #available(iOS 18.0, *) {
                 NavigationLink(value: item) {
                     ParentProductCardView(name: parentProduct.name,
-                                        imageSource: parentProduct.productImageSource,
-                                        detailText: Localization.variationsAvailable)
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
                 }
             } else {
                 // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
                 // we still have to use the NavigationView approach here.
+                // When we remove it, itemsStack will no longer be a dependency of ItemList
+
+                // Note that this row can be redrawn if the dynamic type size is changed enough to push it
+                // offscreen. When that happens while viewing a child list, the navigation will be cancelled
+                // and the user sent back to the root.
                 NavigationLink(destination: {
-                    let itemsStack = node.itemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
                     ChildItemList(parentItem: item, title: parentProduct.name, itemsStack: itemsStack)
                 }) {
                     ParentProductCardView(name: parentProduct.name,
-                                        imageSource: parentProduct.productImageSource,
-                                        detailText: Localization.variationsAvailable)
+                                          imageSource: parentProduct.productImageSource,
+                                          detailText: Localization.variationsAvailable)
                 }
             }
         case let .variation(variation):
@@ -143,30 +150,31 @@ private extension ItemListRow {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview("Loaded with items") {
+    let itemList: ItemListState = .loaded(
+        [
+            .simpleProduct(
+                .init(
+                    id: .init(),
+                    name: "Strong latte 16oz",
+                    formattedPrice: "$4.00",
+                    productID: 12,
+                    price: "4.00"
+                )
+            ),
+            .variableParentProduct(
+                .init(
+                    id: .init(),
+                    name: "Variable mocha",
+                    productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
+                    productID: 16
+                )
+            )
+        ],
+        hasMoreItems: false
+    )
     ItemList(
-        state:
-                .loaded(
-                    [
-                        .simpleProduct(
-                            .init(
-                                id: .init(),
-                                name: "Strong latte 16oz",
-                                formattedPrice: "$4.00",
-                                productID: 12,
-                                price: "4.00"
-                            )
-                        ),
-                        .variableParentProduct(
-                            .init(
-                                id: .init(),
-                                name: "Variable mocha",
-                                productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
-                                productID: 16
-                            )
-                        )
-                    ],
-                    hasMoreItems: false
-                ),
+        state: itemList,
+        itemsStack: .init(root: itemList, itemStates: [:]),
         node: .root(.products)
     )
 }
@@ -179,7 +187,9 @@ private extension ItemListRow {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    ItemList(state: .loading([]), node: .root(.products))
+    ItemList(state: .loading([]),
+             itemsStack: .init(root: .loading([]), itemStates: [:]),
+             node: .root(.products))
         .environment(posModel)
 }
 

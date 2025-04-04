@@ -10,11 +10,15 @@ struct ItemListView: View {
 
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
+        itemsStack.root
+    }
+
+    private var itemsStack: ItemsStackState {
         switch selectedItemType {
         case .products:
-            return posModel.itemsViewState.itemsStack.root
+            return posModel.itemsViewState.itemsStack
         case .coupons:
-            return posModel.couponsViewState.itemsStack.root
+            return posModel.couponsViewState.itemsStack
         }
     }
 
@@ -161,7 +165,7 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, node: .root(selectedItemType)) {
+        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }

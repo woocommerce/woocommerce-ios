@@ -1,5 +1,4 @@
 import SwiftUI
-import enum Yosemite.SettingAction
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
@@ -29,7 +28,7 @@ struct PointOfSaleDashboardView: View {
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
                             if error.errorType == .couponsDisabled {
-                                await enableCoupons()
+                                await posModel.enableCoupons()
                             }
                             await posModel.loadItems(base: .root)
                         }
@@ -164,28 +163,6 @@ extension EnvironmentValues {
     var floatingControlAreaSize: CGSize {
         get { self[FloatingControlAreaSizeKey.self] }
         set { self[FloatingControlAreaSizeKey.self] = newValue }
-    }
-}
-
-@available(iOS 17.0, *)
-private extension PointOfSaleDashboardView {
-    func enableCoupons() async {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-        _ = await withCheckedContinuation { continuation in
-            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: true)
-                case let .failure(error):
-                    continuation.resume(returning: false)
-                }
-            }
-            Task { @MainActor in
-                ServiceLocator.stores.dispatch(action)
-            }
-        }
     }
 }
 

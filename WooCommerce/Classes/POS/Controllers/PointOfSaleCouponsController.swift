@@ -1,6 +1,7 @@
 import Observation
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleCouponServiceError
+import enum Yosemite.SettingAction
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
@@ -66,6 +67,28 @@ private extension PointOfSaleCouponsController {
                     itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
                                                     itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
                 }
+            }
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+extension PointOfSaleCouponsController {
+    func enableCoupons() async {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        _ = await withCheckedContinuation { continuation in
+            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case let .failure(error):
+                    continuation.resume(returning: false)
+                }
+            }
+            Task { @MainActor in
+                ServiceLocator.stores.dispatch(action)
             }
         }
     }

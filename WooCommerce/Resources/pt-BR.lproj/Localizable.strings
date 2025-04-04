@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-12 09:54:06+0000 */
+/* Translation-Revision-Date: 2025-03-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Atualize suas preferências";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "Atualizado há %ld hora";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "Atualizado há %ld horas";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "Atualizado há %ld minuto";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "Atualizado há %ld minutos";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Atualizado há alguns instantes";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Atualizado em %@";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Atualizando software";
 
@@ -9972,6 +9954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Configuração concluída";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "Solucionar problema de conexão";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Editar valor";
 
@@ -10965,6 +10950,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "nenhum período anterior";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "Cancelar";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "Ativar notificações";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "Não foi possível carregar as configurações de notificação das suas lojas.";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "Não foi possível salvar as configurações de notificação";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "Novos pedidos";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "As notificações estão desativadas para o Woo";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "Notificações ativadas";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "Incluindo lembretes e notificações por push remotas.";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "Desativadas";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "Avaliações de produto";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "Tentar novamente";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "Salvar";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "Alterar";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "Personalize suas preferências de notificação para cada loja.";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "Suas lojas";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "Configurações de notificação";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "Configurações salvas!";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Selecione uma variação específica.";
 
@@ -11326,14 +11362,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Novo pedido";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Verifique o pagamento em um dispositivo que tenha conexão com a internet. Se não foi concluído, refaça o pagamento. Se foi, faça um novo pedido.";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Tentar pagar novamente";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "Devido a um erro de rede, não foi possível confirmar o pagamento.";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Devido a um erro de rede, não foi possível confirmar se o pagamento foi efetuado. Verifique o pagamento em um dispositivo que tenha conexão com a Internet. Se não foi concluído, refaça o pagamento. Se foi, faça um novo pedido.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Erro no pagamento";
@@ -12268,6 +12301,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pagamento concluído";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "Solucionar problema de conexão";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "Configurações de notificação";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Temas";
 
@@ -12325,6 +12364,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "O recebimento de pagamentos mudou de lugar";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "Cancelar";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "Novos pedidos";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "Configurações de notificações por push que são exibidas em seu dispositivo móvel.";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "Avaliações de produto";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "Tipos de notificação";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "Atualizar";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "Intervalos diários";
@@ -12907,7 +12964,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "Usar pacote selecionado";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "Você está enviando mercadorias ou materiais perigosos?";
+"wooShipping.createLabel.hazmatRow.label" = "Você está enviando mercadorias ou materiais perigosos?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "Não";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "Sim";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "Insira as dimensões do seu pacote ou escolha uma opção de pacote de transportadora para ver as taxas de envio disponíveis.";
@@ -13074,6 +13137,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "O ITN é obrigatório.";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "Não foi possível comprar a etiqueta de envio. Tente novamente.";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "Tentar novamente";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "Erro ao comprar etiqueta de envio.";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "Não foi possível carregar os dados necessários";
 
@@ -13133,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Adicione um endereço de destino para conferir as taxas de envio";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "Não foi possível encontrar um serviço de envio para a combinação de pacote selecionado e peso total do envio. Ajuste sua entrada e tente novamente.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Precisamos saber o peso da remessa para mostrar as taxas de envio disponíveis.";
@@ -13229,9 +13307,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "Mais informações sobre o número de transação internacional";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "Digite um ITN válido";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Detalhes do produto";
@@ -13346,6 +13421,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "Tentar novamente";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "Criar pacote personalizado";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "Nenhum pacote salvo ainda";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "Não foi possível carregar os pacotes salvos";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "Tentar novamente";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "Produtos";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "Envios fracionados";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "Não foi possível salvar o pacote";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "Tentar novamente";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Insira um ITN válido em um destes formatos: X12345678901234, AES X12345678901234 ou NOEEI 30.37(a).";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "O número de transação internacional é obrigatório em envios para o país de destino.";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "É obrigatório um número de transação internacional (ITN) para enviar itens com valor superior a US$ 2.500 por código tarifário.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "Para envios acima de US$ 2.500, você precisa obter um número de 14 dígitos do AES chamado de ITN para a verificação dos relatórios de exportação dos EUA.";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "Cancelar";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "Selecionar categoria";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "Cancelar";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "Os materiais que podem ser perigosos incluem itens como baterias, gelo seco, líquidos inflamáveis, aerossol, munição, fogos de artifício, esmalte de unha, perfume, tinta, solventes, entre outros. Itens perigosos devem ser transportados em pacotes separados.";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "Saiba como embalar, etiquetar e enviar produtos HAZMAT com segurança pela USPS® em %1$@. Determine a adequação do seu produto para envio usando %2$@.";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "No momento, o WooCommerce Shipping não permite envios de materiais perigosos (HAZMAT) pela %1$@.";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "Ferramenta de pesquisa de HAZMAT da USPS";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "Selecionar categoria";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "Contém materiais perigosos";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "Você está enviando mercadorias ou materiais perigosos?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "Concluído";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "Selecionar tudo";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "Envios fracionados";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, principais caminhos de conversão, itens vendidos";

@@ -53,7 +53,7 @@ struct ItemList<HeaderView: View>: View {
                     .padding(.bottom, floatingControlAreaSize.height)
                 }
             )
-            
+
             // Programmatic navigation overlay for iOS 17
             if #available(iOS 18.0, *) {
                 EmptyView()

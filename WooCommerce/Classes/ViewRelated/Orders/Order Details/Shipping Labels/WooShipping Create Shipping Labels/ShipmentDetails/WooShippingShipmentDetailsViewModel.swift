@@ -91,7 +91,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                     shipmentID: shipment.id)
     }
 
-    private var debounceDuration: Double = 1
+    private var debounceDuration: Double
 
     init(order: Order,
          shipment: Shipment,
@@ -99,7 +99,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          originAddress: AnyPublisher<WooShippingOriginAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         debounceDuration: Double = 1) {
         self.order = order
         self.stores = stores
         self.shipment = shipment
@@ -107,6 +108,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.debounceDuration = debounceDuration
 
         if let shippingLabel {
             self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
@@ -123,6 +125,10 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
+    }
+
+    func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
+        customsForm = form
     }
 
     func didPurchase(_ shippingLabel: ShippingLabel) {

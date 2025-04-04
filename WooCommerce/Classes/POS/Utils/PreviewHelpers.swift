@@ -70,7 +70,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadInitialChildItems(for: parent)
         }
     }

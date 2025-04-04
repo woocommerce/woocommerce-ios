@@ -43,7 +43,7 @@ private extension PointOfSaleItemListEmptyView {
         switch baseItem {
         case .root:
             return Localization.emptyProductsTitle
-        case .parent(.variableParentProduct):
+        case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductTitle
         default:
             assertionFailure("No title defined for \(baseItem)")
@@ -55,7 +55,7 @@ private extension PointOfSaleItemListEmptyView {
         switch baseItem {
         case .root:
             return Localization.emptyProductsSubtitle
-        case .parent(.variableParentProduct):
+        case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductSubtitle
         default:
             assertionFailure("No subtitle defined for \(baseItem)")
@@ -67,7 +67,7 @@ private extension PointOfSaleItemListEmptyView {
         switch baseItem {
         case .root:
             return Localization.emptyProductsHint
-        case .parent(.variableParentProduct):
+        case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductHint
         default:
             assertionFailure("No hint defined for \(baseItem)")

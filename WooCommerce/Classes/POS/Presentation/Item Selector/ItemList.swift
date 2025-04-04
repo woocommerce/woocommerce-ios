@@ -61,8 +61,11 @@ struct ItemList<HeaderView: View>: View {
                case let .variableParentProduct(parentProduct) = activeItem {
                 NavigationLink(
                     destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsStack: itemsStack),
-                    label: { EmptyView() }
-                )
+                    isActive: Binding(
+                        get: { activeNavigationItem != nil },
+                        set: { if !$0 { activeNavigationItem = nil } }
+                    ),
+                    label: { EmptyView() })
                 .opacity(0)
                 .frame(width: 0, height: 0)
             }

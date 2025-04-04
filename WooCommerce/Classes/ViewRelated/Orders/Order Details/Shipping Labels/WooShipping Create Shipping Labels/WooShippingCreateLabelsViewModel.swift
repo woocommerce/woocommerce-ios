@@ -287,7 +287,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")
         }
-        isPurchasingLabel = true
+        isPurchasingLabel = false
     }
 
     func editSelectedOriginAddress() {

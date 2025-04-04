@@ -453,7 +453,9 @@ private extension WooShippingCreateLabelsView {
     /// View showing the shipping label purchase button.
     var purchaseButton: some View {
         Button {
-            viewModel.purchaseLabel()
+            Task {
+                await viewModel.purchaseLabel()
+            }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }

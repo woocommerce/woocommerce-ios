@@ -31,6 +31,7 @@ struct PointOfSaleItemListEmptyView: View {
                 .padding([.leading, .trailing])
             Spacer()
         }
+        .multilineTextAlignment(.center)
         .padding(.bottom, floatingControlAreaSize.height)
     }
 }

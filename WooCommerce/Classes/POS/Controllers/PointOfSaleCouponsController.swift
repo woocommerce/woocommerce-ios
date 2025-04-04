@@ -1,7 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleCouponServiceError
-import enum Yosemite.SettingAction
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 

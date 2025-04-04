@@ -103,6 +103,7 @@ struct WooShippingCreateLabelsView: View {
             .fullScreenCover(isPresented: $showingSplitShipments) {
                 WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
                     viewModel.updateShipments(updatedShipments)
+                    isShipmentDetailsExpanded = false
                 }
             }
         }

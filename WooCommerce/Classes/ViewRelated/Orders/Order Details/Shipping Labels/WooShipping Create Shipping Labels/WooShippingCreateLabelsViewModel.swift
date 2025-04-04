@@ -38,6 +38,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var selectedShipmentIndex = 0 {
         didSet {
             observeHAZMATNotices()
+            observeSelectedPackage()
+            observeSelectedRates()
         }
     }
 
@@ -48,9 +50,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var labelPurchaseErrorNotice: Notice?
 
     @Published private(set) var state = ContentState.loading
-
-    /// View model for the label shipping service.
-    private(set) var shippingService: WooShippingServiceViewModel?
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel {
@@ -127,7 +126,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     var shippingRates: [(title: String, amount: String)] {
         if let shippingLabel {
             return [formatShippingRate(name: shippingLabel.serviceName, rate: shippingLabel.rate)]
-        } else if let selectedRate = currentShipmentDetailsViewModel.selectedRate {
+        } else if let selectedRate {
             let baseRate = selectedRate.rate.rate
             let formattedBaseRate = formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
             let formattedSignatureRate = [
@@ -160,8 +159,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shippingLabel == nil
         // or if any required fields are missing
         && selectedOriginAddress != nil && destinationAddress != nil
-        && currentShipmentDetailsViewModel.selectedPackage != nil
-        && currentShipmentDetailsViewModel.selectedRate != nil
+        && selectedPackage != nil
+        && selectedRate != nil
     }
 
     /// If the label purchase is in progress.
@@ -174,6 +173,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var dimensionsUnit = ""
 
     @Published var hazmatNotice: Notice?
+
+    /// Selected package data for the shipping label.
+    @Published private var selectedPackage: WooShippingPackageDataRepresentable?
+
+    /// Selected shipment rate for the shipping label
+    @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
@@ -284,7 +289,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         guard isPurchaseButtonEnabled, !isPurchasingLabel,
               let selectedOriginAddress, let destinationAddress,
               let package = currentShipmentDetailsViewModel.currentPackage,
-              let selectedRate = currentShipmentDetailsViewModel.selectedRate else {
+              let selectedRate = selectedRate else {
             return
         }
         isPurchasingLabel = true
@@ -465,6 +470,16 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$hazmatNotice)
     }
 
+    func observeSelectedPackage() {
+        currentShipmentDetailsViewModel.$selectedPackage
+            .assign(to: &$selectedPackage)
+    }
+
+    func observeSelectedRates() {
+        currentShipmentDetailsViewModel.$selectedRate
+            .assign(to: &$selectedRate)
+    }
+
     func updateShipmentDetailsViewModels() {
         shipments = splitShipmentsViewModel.shipments
         shipmentDetailViewModels = shipments.map {
@@ -477,6 +492,8 @@ private extension WooShippingCreateLabelsViewModel {
                                                        stores: stores)
         }
         observeHAZMATNotices()
+        observeSelectedPackage()
+        observeSelectedRates()
     }
 
     /// Observes the selected origin address and updates the displayed origin address and shipping service.
@@ -491,13 +508,6 @@ private extension WooShippingCreateLabelsViewModel {
                     }
                     return nil
                 }()
-
-                shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                              destinationAddress: destinationAddress,
-                                                              stores: stores) { [weak self] selectedRate in
-                    self?.currentShipmentDetailsViewModel.updateSelectedRate(selectedRate)
-                }
             }
             .store(in: &subscriptions)
     }
@@ -525,23 +535,6 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
-
-        /// Observe destination address and update the shipping service.
-        $destinationAddress
-            .sink { [weak self] destinationAddress in
-                guard let self else { return }
-                let shippingService = WooShippingServiceViewModel(order: order,
-                                                                  originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                                  destinationAddress: destinationAddress,
-                                                                  stores: stores) { [weak self] selectedRate in
-                    self?.currentShipmentDetailsViewModel.updateSelectedRate(selectedRate)
-                }
-                self.shippingService = shippingService
-                if let package = currentShipmentDetailsViewModel.currentPackage {
-                    shippingService.loadLabelRates(for: package)
-                }
-            }
-            .store(in: &subscriptions)
     }
 
     /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
@@ -631,7 +624,7 @@ private extension WooShippingCreateLabelsViewModel {
     }
 }
 
-private extension WooShippingOriginAddress {
+extension WooShippingOriginAddress {
     /// Converts the origin address to a `WooShippingAddress`.
     ///
     /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.

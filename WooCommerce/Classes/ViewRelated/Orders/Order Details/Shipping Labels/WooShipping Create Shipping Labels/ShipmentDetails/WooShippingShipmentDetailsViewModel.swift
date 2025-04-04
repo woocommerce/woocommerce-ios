@@ -50,7 +50,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     @Published var shipmentWeight: String = ""
 
     /// View model for the label shipping service.
-    private(set) var shippingService: WooShippingServiceViewModel?
+    @Published private(set) var shippingService: WooShippingServiceViewModel?
 
     /// Selected shipping rate when creating a shipping label.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
@@ -112,6 +112,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
         }
 
+        observeAddresses()
         observeSelectedPackage()
         observeLabelRates()
         observeCustomsForm()
@@ -128,13 +129,35 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         self.shippingLabel = shippingLabel
         postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
     }
-
-    func updateSelectedRate(_ selectedRate: WooShippingSelectedRate) {
-        self.selectedRate = selectedRate
-    }
 }
 
 private extension WooShippingShipmentDetailsViewModel {
+    func observeAddresses() {
+        originAddress.combineLatest(destinationAddress)
+            .map { [weak self] originAddress, destinationAddress in
+                guard let self else { return nil }
+                return WooShippingServiceViewModel(order: order,
+                                                   originAddress: originAddress?.toWooShippingAddress(),
+                                                   destinationAddress: destinationAddress,
+                                                   stores: stores) { [weak self] selectedRate in
+                    self?.selectedRate = selectedRate
+                }
+            }
+            .assign(to: &$shippingService)
+
+        originAddress.combineLatest(destinationAddress)
+            .map { (originAddress, destinationAddress) -> Bool in
+                guard let originAddress, let destinationAddress else {
+                    return false
+                }
+                return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
+                                                                        originState: originAddress.state,
+                                                                        destinationCountry: destinationAddress.country,
+                                                                        destinationState: destinationAddress.state)
+            }
+            .assign(to: &$customsFormRequired)
+    }
+
     /// Observes the selected package and updates the shipment weight.
     func observeSelectedPackage() {
         let itemsWeight = shipment.items.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
@@ -153,8 +176,8 @@ private extension WooShippingShipmentDetailsViewModel {
         $shipmentWeight
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .removeDuplicates()
-            .combineLatest($selectedPackage)
-            .sink { [weak self] weight, selectedPackage in
+            .combineLatest($selectedPackage, $shippingService)
+            .sink { [weak self] weight, selectedPackage, shippingService in
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
@@ -182,18 +205,6 @@ private extension WooShippingShipmentDetailsViewModel {
     }
 
     func observeCustomsForm() {
-        originAddress.combineLatest(destinationAddress)
-            .map { (originAddress, destinationAddress) -> Bool in
-                guard let originAddress, let destinationAddress else {
-                    return false
-                }
-                return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
-                                                                        originState: originAddress.state,
-                                                                        destinationCountry: destinationAddress.country,
-                                                                        destinationState: destinationAddress.state)
-            }
-            .assign(to: &$customsFormRequired)
-
         customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
             .map { (isMissingITN, customsFormRequired) -> String? in
                 if customsFormRequired, isMissingITN {

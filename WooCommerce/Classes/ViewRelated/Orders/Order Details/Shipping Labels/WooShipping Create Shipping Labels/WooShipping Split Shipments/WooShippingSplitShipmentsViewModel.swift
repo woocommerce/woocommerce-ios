@@ -430,7 +430,7 @@ extension WooShippingSplitShipmentsViewModel {
             }
 
             let purchasedLabelID = currentOrderLabels
-                .first(where: { $0.shipmentID == key})
+                .first(where: { $0.shipmentID == key && $0.status == .purchased })
                 .map(\.shippingLabelID)
 
             let isPurchased = purchasedLabelID != nil

@@ -56,7 +56,7 @@ struct WooShippingCreateLabelsView: View {
                         .progressViewStyle(.circular)
                 case .ready:
                     VStack(spacing: 0) {
-                        if viewModel.shipmentDetailViewModels.count > 1 {
+                        if viewModel.shipments.count > 1 {
                             topTabView
                             Divider()
                         }
@@ -101,7 +101,9 @@ struct WooShippingCreateLabelsView: View {
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
             .fullScreenCover(isPresented: $showingSplitShipments) {
-                WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel)
+                WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
+                    viewModel.updateShipments(updatedShipments)
+                }
             }
         }
     }

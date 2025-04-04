@@ -34,7 +34,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         currentShipmentDetailsViewModel.postPurchase
     }
 
-    @Published private(set) var shipments: [Shipment] = []
+    @Published private(set) var shipments: [Shipment] {
+        didSet {
+            updateShipmentDetailsViewModels()
+        }
+    }
+
     @Published var selectedShipmentIndex = 0 {
         didSet {
             observeHAZMATNotices()
@@ -52,11 +57,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var state = ContentState.loading
 
     /// View model for split shipments.
-    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel {
-        didSet {
-            updateShipmentDetailsViewModels()
-        }
-    }
+    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
     var splitShipmentsAvailable: Bool {
         itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
@@ -212,6 +213,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                                          items: itemsDataSource.items,
                                                                          stores: stores)
         self.splitShipmentsViewModel = splitShipmentsViewModel
+        self.shipments = splitShipmentsViewModel.shipments
 
         updateShipmentDetailsViewModels()
         loadDestinationAddress()
@@ -247,6 +249,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                                          items: itemsDataSource.items,
                                                                          stores: stores)
         self.splitShipmentsViewModel = splitShipmentsViewModel
+        self.shipments = splitShipmentsViewModel.shipments
 
         updateShipmentDetailsViewModels()
 
@@ -286,6 +289,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         } else {
             state = .ready
         }
+    }
+
+    func updateShipments(_ shipments: [Shipment]) {
+        self.selectedShipmentIndex = 0
+        self.shipments = shipments
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -438,6 +446,7 @@ private extension WooShippingCreateLabelsViewModel {
                                                                          config: config,
                                                                          items: itemsDataSource.items,
                                                                          stores: stores)
+            shipments = splitShipmentsViewModel.shipments
         }
     }
 
@@ -485,7 +494,6 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func updateShipmentDetailsViewModels() {
-        shipments = splitShipmentsViewModel.shipments
         shipmentDetailViewModels = shipments.map {
             let isMatchingLabel = shippingLabel?.shippingLabelID == $0.purchasedLabelID
             return WooShippingShipmentDetailsViewModel(order: order,

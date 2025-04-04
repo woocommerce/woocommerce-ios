@@ -6,6 +6,8 @@ struct WooShippingSplitShipmentsView: View {
 
     @ObservedObject var viewModel: ViewModel
 
+    var onShipmentUpdate: ([Shipment]) -> Void
+
     @State private var showingMergeAllSheet = false
 
     @State private var shipmentToRemove: ViewModel.Shipment?
@@ -70,6 +72,7 @@ struct WooShippingSplitShipmentsView: View {
                             Task {
                                 do {
                                     try await viewModel.saveShipmentInfo()
+                                    onShipmentUpdate(viewModel.shipments)
                                     dismiss()
                                 } catch {
                                     // TODO: 15309 Show error
@@ -463,6 +466,7 @@ fileprivate extension WooShippingSplitShipmentsView {
                                                                                                                                                      width: "",
                                                                                                                                                      height: ""),
                                                                                                                        attributes: [],
-                                                                                                                       imageURL: nil)]))
+                                                                                                                       imageURL: nil)]),
+                                  onShipmentUpdate: { _ in })
 }
 #endif

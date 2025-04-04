@@ -59,7 +59,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
     var splitShipmentsAvailable: Bool {
-        itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
+        itemsDataSource.items.map(\.quantity).reduce(0, +) > 1 &&
+        shipments.count == 1 &&
+        canViewLabel == false
     }
 
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []

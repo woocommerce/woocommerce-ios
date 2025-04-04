@@ -157,7 +157,7 @@ private extension WooShippingCreateLabelsView {
     var mainView: some View {
         ScrollView {
             VStack(spacing: Layout.verticalSpacing) {
-                if viewModel.splitShipmentsAvailable, !viewModel.canViewLabel {
+                if viewModel.splitShipmentsAvailable {
                     WooShippingSplitShipmentsRow(onShowingSplitShipments: {
                         showingSplitShipments = true
                     })

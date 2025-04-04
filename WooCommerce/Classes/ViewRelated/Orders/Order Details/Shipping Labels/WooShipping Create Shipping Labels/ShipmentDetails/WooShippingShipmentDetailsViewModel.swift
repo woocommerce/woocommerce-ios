@@ -94,6 +94,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         && originAddress != nil && destinationAddress != nil
         && selectedPackage != nil
         && selectedRate != nil
+        && (!customsFormRequired || customsInformationIsCompleted)
     }
 
     /// Shipping rates for the purchased label, with formatted amount.

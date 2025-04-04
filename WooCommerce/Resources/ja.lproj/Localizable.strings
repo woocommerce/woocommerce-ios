@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-25 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "設定を更新する";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "%ld時間前に更新";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "%ld時間前に更新";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "%ld分前に更新";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "%ld分前に更新";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Updated moments ago";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "%@ に更新";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "ソフトウェアを更新しています";
 
@@ -9972,6 +9954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "設定が完了しました";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "接続のトラブルシューティング";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
 
@@ -10965,6 +10950,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "前の期間はありません";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "キャンセル";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "通知を有効化";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "ストアの通知設定を読み込めません。";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "通知設定を保存できません";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "新しい注文";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "Woo の通知は無効になっています";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "通知が有効";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "リマインダーとリモートプッシュ通知を含む。";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "オフ";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "商品レビュー";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "もう一度お試しください";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "保存";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "変更";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "各ストアの通知設定をカスタマイズします。";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "あなたのストア";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "通知設定";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "設定を保存しました";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "特定のバリエーションを選択してください。";
 
@@ -11326,14 +11362,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "新しい注文";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "ネットワーク接続が可能な端末で支払いを確認してください。 支払いが完了していない場合はもう一度お試しください。 正常に完了したら新しい注文を開始します。";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "再度支払いを試す";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "ネットワークエラーにより、お支払いが正常に完了したことを確認できません。";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "ネットワークエラーにより、お支払いが正常に完了したことを確認できません。 ネットワーク接続が可能な端末で支払いを確認してください。 支払いが完了していない場合はもう一度お試しください。 正常に完了したら新しい注文を開始します。";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "支払いエラー";
@@ -12268,6 +12301,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "支払いが完了しました";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "接続のトラブルシューティング";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "通知設定";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "テーマ";
 
@@ -12325,6 +12364,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "「支払いを受け取る」が削除されました";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "キャンセル";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "新しい注文";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "モバイル端末に表示されるプッシュ通知の設定。";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "商品レビュー";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "通知の種類";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "更新";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "日ごと";
@@ -12907,7 +12964,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "選択済みの荷物を使用";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "危険物または有害物質を発送しようとしていますか ?";
+"wooShipping.createLabel.hazmatRow.label" = "危険物または有害物質を発送しようとしていますか ?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "いいえ";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "はい";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "荷物の寸法を入力するか、配送業者の荷物オプションを選択して、利用可能な配送料金を確認してください。";
@@ -13074,6 +13137,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "ITN は必須項目です。";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "配送ラベルを購入できません。 もう一度お試しください。";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "再試行";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "配送ラベルの購入時にエラーが発生しました。";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "必須データを読み込めません";
 
@@ -13133,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "配送先住所を追加して配送料金を取得";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "指定された貨物と配送総重量の組み合わせに対応する配送サービスが見つかりませんでした。 入力内容を調整して再度お試しください。";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "利用可能な配送料金を表示するには、配送重量を入力する必要があります。";
@@ -13229,9 +13307,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "ITN に関する詳細";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "有効な ITN を入力してください";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "商品情報";
@@ -13346,6 +13421,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "再試行";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "カスタム荷物を作成";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "保存された荷物はまだありません";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "保存された荷物を読み込めません。";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "再試行";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "商品";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "分割配送";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "荷物を保存できません";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "再試行";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "有効な ITN を X12345678901234、AES X12345678901234、NOEEI 30.37(a) のいずれかの形式で入力してください";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "宛先の国への配送には国際取引番号が必要です。";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "出荷アイテムの価値が HS コードあたり $2,500を超える荷物の出荷には国際取引番号が必要です。";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "$2,500を超える荷物の出荷には、米国の輸出申告確認用に14桁の AES ITN が必要です。";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "キャンセル";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "カテゴリーを選択";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "キャンセル";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "危険性が高いと考えられる品目には、電池、ドライアイス、可燃性液体、エアロゾル、弾薬、花火、マニキュア、香水、塗料、溶剤などがあります。 危険物は個別に梱包して発送する必要があります。";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "USPS® (%1$@) で危険物を安全に梱包、ラベル付け、発送する方法についてご確認ください。 %2$@ を使用すると商品が郵送可能かわかります。";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping は現在、%1$@ による危険物の発送には対応していません。";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "USPS 危険物検索ツール";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "カテゴリーを選択";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "有害物質を含む";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "危険物または有害物質を発送しようとしていますか ?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "完了";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "すべて選択";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "分割配送";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";

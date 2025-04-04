@@ -18,16 +18,19 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType?
-    private let couponService: CouponServiceProtocol
+    private let couponStoreMethods: CouponStoreMethodsProtocol
+    private let settingsStoreMethods: SettingStoreMethodsProtocol
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
-         couponService: CouponServiceProtocol,
+         couponStoreMethods: CouponStoreMethodsProtocol,
+         settingStoreMethods: SettingStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
-        self.couponService = couponService
+        self.couponStoreMethods = couponStoreMethods
+        self.settingsStoreMethods = settingStoreMethods
     }
 
     public convenience init(siteID: Int64,
@@ -38,7 +41,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  couponService: CouponService(storageManager: storage, remote: remote),
+                  couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
+                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
                   storage: storage)
     }
 
@@ -99,7 +103,7 @@ private extension PointOfSaleCouponService {
 
     func syncCouponsFromRemote(pageNumber: Int) async {
         await withCheckedContinuation { continuation in
-            couponService.synchronizeCoupons(
+            couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
@@ -111,7 +115,17 @@ private extension PointOfSaleCouponService {
     }
 
     private func checkStoreCouponSettings() async -> Bool {
-        // TODO: WOOMOB-250
-        return true
+        await withCheckedContinuation { continuation in
+            settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
+                switch result {
+                case let .success(isEnabled):
+                    debugPrint("Coupons enabled? \(isEnabled)")
+                    continuation.resume(returning: isEnabled)
+                case let .failure(error):
+                    debugPrint("Coupons settings error: \(error)")
+                    continuation.resume(returning: false)
+                }
+            }
+        }
     }
 }

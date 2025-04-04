@@ -5,15 +5,13 @@ import Storage
 // MARK: - CouponStore
 //
 public final class CouponStore: Store {
-    private let remote: CouponsRemoteProtocol
-    private let service: CouponService
+    private let methods: CouponStoreMethods
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: CouponsRemoteProtocol) {
-        self.remote = remote
-        self.service = CouponService(storageManager: storageManager, remote: remote)
+        self.methods = CouponStoreMethods(storageManager: storageManager, remote: remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -52,243 +50,36 @@ public final class CouponStore: Store {
 
         switch action {
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
-            service.synchronizeCoupons(siteID: siteID,
+            methods.synchronizeCoupons(siteID: siteID,
                                        pageNumber: pageNumber,
                                        pageSize: pageSize,
                                        onCompletion: onCompletion)
         case .deleteCoupon(let siteID, let couponID, let onCompletion):
-            deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+            methods.deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
-            updateCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
+            methods.updateCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
         case .createCoupon(let coupon, let siteTimezone, let onCompletion):
-            createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
+            methods.createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
-            loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
+            methods.loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
         case .loadMostActiveCoupons(let siteID, let numberOfCouponsToLoad, let timeRange, let siteTimezone, let onCompletion):
-            loadMostActiveCoupons(siteID: siteID,
-                                  numberOfCouponsToLoad: numberOfCouponsToLoad,
-                                  timeRange: timeRange,
-                                  siteTimezone: siteTimezone,
-                                  onCompletion: onCompletion)
+            methods.loadMostActiveCoupons(siteID: siteID,
+                                          numberOfCouponsToLoad: numberOfCouponsToLoad,
+                                          timeRange: timeRange,
+                                          siteTimezone: siteTimezone,
+                                          onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
-            searchCoupons(siteID: siteID,
-                          keyword: keyword,
-                          pageNumber: pageNumber,
-                          pageSize: pageSize,
-                          onCompletion: onCompletion)
+            methods.searchCoupons(siteID: siteID,
+                                  keyword: keyword,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize,
+                                  onCompletion: onCompletion)
         case .retrieveCoupon(let siteID, let couponID, let onCompletion):
-            retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+            methods.retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .validateCouponCode(let code, let siteID, let onCompletion):
-            validateCouponCode(code: code, siteID: siteID, onCompletion: onCompletion)
+            methods.validateCouponCode(code: code, siteID: siteID, onCompletion: onCompletion)
         case .loadCoupons(let siteID, let couponIDs, let onCompletion):
-            loadCoupons(siteID: siteID, couponIDs: couponIDs, onCompletion: onCompletion)
+            methods.loadCoupons(siteID: siteID, couponIDs: couponIDs, onCompletion: onCompletion)
         }
     }
-}
-
-// MARK: - Services
-//
-private extension CouponStore {
-    /// Deletes a coupon from a Site with what is persisted in the storage layer.
-    /// After the API request succeeds, the stored coupon should be removed from the local storage.
-    /// - Parameters:
-    ///   - siteID: The site that the deleted coupon belongs to.
-    ///   - couponID: The ID of the coupon to be deleted.
-    ///   - onCompletion: Closure to call after deletion is complete. Called on the main thread.
-    ///
-    func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupon):
-                // This is unlikely to happen, but worth checking
-                guard coupon.siteID == siteID, coupon.couponID == couponID else {
-                    onCompletion(.failure(CouponError.unexpectedCouponDeleted))
-                    DDLogError("⛔️ Unexpected coupon: Deleted couponID \(coupon.couponID) for site \(coupon.siteID) " +
-                               "while expecting couponID \(couponID) and site \(siteID)")
-                    return
-                }
-                self.service.deleteStoredCoupon(siteID: siteID, couponID: couponID) {
-                    onCompletion(.success(()))
-                }
-            }
-        }
-    }
-
-    /// Updates a coupon given its details.
-    /// After the API request succeeds, the stored coupon should be updated accordingly.
-    /// - Parameters:
-    ///   - coupon: The coupon to be updated
-    ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
-    ///   - onCompletion: Closure to call after update is complete. Called on the main thread.
-    ///
-    func updateCoupon(_ coupon: Coupon,
-                      siteTimezone: TimeZone? = nil,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.updateCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let updatedCoupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [updatedCoupon], siteID: updatedCoupon.siteID) {
-                    onCompletion(.success(updatedCoupon))
-                }
-            }
-        }
-    }
-
-    /// Creates a coupon given its details.
-    /// After the API request succeeds, a new stored coupon should be inserted into the local storage.
-    /// - Parameters:
-    ///   - coupon: The coupon to be created
-    ///   - siteTimezone: the timezone configured on the site (also know as local time of the site).
-    ///   - onCompletion: Closure to call after creation is complete. Called on the main thread.
-    ///
-    func createCoupon(_ coupon: Coupon,
-                      siteTimezone: TimeZone? = nil,
-                      onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
-        remote.createCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let createdCoupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [createdCoupon], siteID: createdCoupon.siteID) {
-                    onCompletion(.success(createdCoupon))
-                }
-            }
-        }
-    }
-
-    /// Loads analytics report for a coupon with the specified coupon ID and site ID.
-    ///
-    /// - Parameters:
-    ///     - siteID: ID of the site that the coupon belongs to.
-    ///     - couponID: ID of the coupon to load the analytics report for.
-    ///     - startDate: the start of the date range to load the analytics report for.
-    ///     - onCompletion: invoked when the creation finishes.
-    ///
-    func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
-        remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
-    }
-
-    /// Loads top 3 most active coupons report within the specified time range and site ID.
-    ///
-    /// - `siteID`: site ID.
-    /// - `numberOfCouponsToLoad`: Number of coupons to load.
-    /// - `timeRange`: Time range to fetch report for.
-    /// - `siteTimezone`: site's timezone
-    /// - `onCompletion`: invoked when the reports are fetched.
-    ///
-    func loadMostActiveCoupons(siteID: Int64,
-                               numberOfCouponsToLoad: Int,
-                               timeRange: StatsTimeRangeV4,
-                               siteTimezone: TimeZone,
-                               onCompletion: @escaping (Result<[CouponReport], Error>) -> Void) {
-        let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
-        let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
-        remote.loadMostActiveCoupons(for: siteID,
-                                     numberOfCouponsToLoad: numberOfCouponsToLoad,
-                                     from: from,
-                                     to: to,
-                                     completion: onCompletion)
-    }
-
-    /// Search coupons from a Site that match a specified keyword.
-    /// Search results are persisted in the local storage to ensure
-    /// good performance for future search of the same keyword.
-    ///
-    /// - Parameters:
-    ///   - siteId: The site to search coupons for.
-    ///   - keyword: The string to match the results with.
-    ///   - pageNumber: Page number of coupons to fetch from the API
-    ///   - pageSize: Number of coupons per page to fetch from the API
-    ///   - onCompletion: Closure to call after the search is complete. Called on the main thread.
-    ///
-    func searchCoupons(siteID: Int64,
-                       keyword: String,
-                       pageNumber: Int,
-                       pageSize: Int,
-                       onCompletion: @escaping (_ result: Result<Void, Error>) -> Void) {
-        remote.searchCoupons(for: siteID,
-                             keyword: keyword,
-                             pageNumber: pageNumber,
-                             pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupons):
-                self.service.upsertSearchResultsInBackground(siteID: siteID,
-                                                     keyword: keyword,
-                                                     readOnlyCoupons: coupons) {
-                    onCompletion(.success(()))
-                }
-            }
-        }
-    }
-
-    /// Retrieve a coupon from a Site given.
-    /// The fetched coupon is persisted to the local storage.
-    ///
-    /// - Parameters:
-    ///   - siteID: The site to retrieve the coupon for.
-    ///   - couponID: ID of the coupon to be retrieved.
-    ///   - onCompletion: Closure to call upon completion. Called on the main thread.
-    ///
-    func retrieveCoupon(siteID: Int64,
-                        couponID: Int64,
-                        onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void) {
-        remote.retrieveCoupon(for: siteID,
-                              couponID: couponID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupon):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
-                    onCompletion(.success(coupon))
-                }
-            }
-        }
-    }
-    /// Loads the coupons for a site given all the coupon IDs
-    ///
-    /// - `siteID`: the site for which coupons should be fetched.
-    /// - `couponIDs`: IDs of the coupons to be retrieved.
-    /// - `onCompletion`: invoked upon completion.
-    ///
-    func loadCoupons(siteID: Int64,
-                     couponIDs: [Int64],
-                     onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
-        remote.loadCoupons(for: siteID, by: couponIDs) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupons):
-                self.service.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
-                    onCompletion(.success(coupons))
-                }
-            }
-        }
-    }
-
-    func validateCouponCode(code: String, siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.searchCoupons(for: siteID, keyword: code, pageNumber: Remote.Default.firstPageNumber, pageSize: 25) { result in
-            switch result {
-            case let .success(coupons):
-                onCompletion(.success(coupons.contains(where: { $0.code == code })))
-            case let .failure(error):
-                onCompletion(.failure(error))
-            }
-        }
-    }
-}
-
-public enum CouponError: Error {
-    case unexpectedCouponDeleted
 }

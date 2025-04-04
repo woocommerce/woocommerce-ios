@@ -23,7 +23,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var orderItems: WooShippingItemsViewModel
 
     /// The purchased shipping label.
-    @Published private var shippingLabel: ShippingLabel?
+    @Published private var shippingLabels: [ShippingLabel] = []
 
     var canViewLabel: Bool {
         currentShipmentDetailsViewModel.canViewLabel
@@ -206,7 +206,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.shippingSettingsService = shippingSettingsService
-        self.shippingLabel = shippingLabel
+        self.shippingLabels = [shippingLabel]
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
@@ -399,6 +399,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
+            // TODO-15483: map `shippingLabels` using `config`'s purchased labels.
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,
@@ -451,11 +452,11 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func updateShipmentDetailsViewModels() {
-        shipmentDetailViewModels = shipments.map {
-            let isMatchingLabel = shippingLabel?.shippingLabelID == $0.purchasedLabelID
+        shipmentDetailViewModels = shipments.map { shipment in
+            let matchingShippingLabel = shippingLabels.first(where: { $0.shippingLabelID == shipment.purchasedLabelID })
             return WooShippingShipmentDetailsViewModel(order: order,
-                                                       shipment: $0,
-                                                       shippingLabel: isMatchingLabel ? shippingLabel : nil,
+                                                       shipment: shipment,
+                                                       shippingLabel: matchingShippingLabel,
                                                        originAddress: $selectedOriginAddress.eraseToAnyPublisher(),
                                                        destinationAddress: $destinationAddress.eraseToAnyPublisher(),
                                                        stores: stores) { [weak self] in

@@ -9,6 +9,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private let stores: StoresManager
     private let originAddress: AnyPublisher<WooShippingOriginAddress?, Never>
     private let destinationAddress: AnyPublisher<WooShippingAddress?, Never>
+    private let currencyFormatter: CurrencyFormatter
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -52,11 +53,11 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private(set) var shippingService: WooShippingServiceViewModel?
 
     /// Selected shipping rate when creating a shipping label.
-    @Published private var selectedRate: WooShippingSelectedRate?
+    @Published private(set) var selectedRate: WooShippingSelectedRate?
 
     private var customsForm: ShippingLabelCustomsForm?
 
-    lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
+    lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
         WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
             self?.customsForm = form
         })
@@ -73,18 +74,43 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     @Published var itnMissingNoticeLabel: String?
 
+    /// Total cost of the shipping label, formatted for display.
+    var totalCost: String? {
+        guard let amount = shippingLabel?.rate ?? selectedRate?.totalRate else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(Decimal(amount))
+    }
+
+    var currentPackage: ShippingLabelPackageSelected? {
+        guard let selectedPackage else {
+            return nil
+        }
+        return buildSelectedPackage(selectedPackage,
+                                    weight: Double(shipmentWeight) ?? 0,
+                                    shipmentID: shipment.id)
+    }
+
     private var debounceDuration: Double = 1
 
     init(order: Order,
          shipment: Shipment,
+         shippingLabel: ShippingLabel?,
          originAddress: AnyPublisher<WooShippingOriginAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
         self.stores = stores
         self.shipment = shipment
+        self.shippingLabel = shippingLabel
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+
+        if let shippingLabel {
+            self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+        }
 
         observeSelectedPackage()
         observeLabelRates()
@@ -96,6 +122,15 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
+    }
+
+    func didPurchase(_ shippingLabel: ShippingLabel) {
+        self.shippingLabel = shippingLabel
+        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+    }
+
+    func updateSelectedRate(_ selectedRate: WooShippingSelectedRate) {
+        self.selectedRate = selectedRate
     }
 }
 

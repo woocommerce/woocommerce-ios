@@ -89,7 +89,7 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .sheet(isPresented: $showingCustomsForm) {
-                WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
+                WooShippingCustomsForm(viewModel: viewModel.currentShipmentDetailsViewModel.customsFormViewModel)
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
@@ -101,35 +101,12 @@ private extension WooShippingCreateLabelsView {
     var mainForm: some View {
         ScrollView {
             VStack(spacing: Layout.verticalSpacing) {
-                if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                    WooShippingPostPurchaseView(viewModel: postPurchase)
+
+                if !viewModel.canViewLabel {
+                    WooShippingSplitShipmentsRow(viewModel: viewModel.splitShipmentsViewModel)
                 }
 
-                if !viewModel.canViewLabel, let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
-                    WooShippingSplitShipmentsRow(viewModel: splitShipmentsViewModel)
-                }
-
-                WooShippingItems(viewModel: viewModel.items)
-
-                WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
-                                     enabled: !viewModel.canViewLabel)
-
-                WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
-                                      customsFormViewModel: viewModel.customsFormViewModel)
-                    .padding(.bottom, Layout.contentSpacing)
-                    .renderedIf(viewModel.customsFormRequired)
-
-                if viewModel.canViewLabel {
-                    EmptyView()
-                } else if let package = viewModel.selectedPackage,
-                          let shippingService = viewModel.shippingService {
-                    WooShippingSelectedPackageView(package: package,
-                                                   totalWeight: $viewModel.shipmentWeight,
-                                                   updateSelectedPackage: viewModel.selectPackage)
-                    WooShippingServiceView(viewModel: shippingService)
-                } else {
-                    WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
-                }
+                WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
             }
             .disabled(viewModel.isPurchasingLabel)
             .padding(Layout.contentSpacing)
@@ -239,12 +216,12 @@ private extension WooShippingCreateLabelsView {
                 }
 
                 // Verification notice for missing ITN in customs form
-                if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
+                if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
                     verificationNotice(with: itnMissingNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.itnMissingNoticeLabel = nil
+                            viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel = nil
                         }
                     },
                                        onTap: {
@@ -272,14 +249,14 @@ private extension WooShippingCreateLabelsView {
                             .font(.subheadline)
                             .tint(Color(.primary))
                     }
-                    if isShipmentDetailsExpanded || viewModel.selectedPackage != nil {
+                    if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
                     }
                 }
             }
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
-                    if viewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                    if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
                         Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                             .font(.subheadline)
                             .tint(Color(.primary))
@@ -366,10 +343,10 @@ private extension WooShippingCreateLabelsView {
             AdaptiveStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
-                Text(viewModel.items.itemsCountLabel)
+                Text(viewModel.orderItems.itemsCountLabel)
                     .bold()
                 Spacer()
-                Text(viewModel.items.itemsPriceLabel)
+                Text(viewModel.orderItems.itemsPriceLabel)
             }
             .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in

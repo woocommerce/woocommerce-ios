@@ -41,8 +41,8 @@
         {
             "id":2,
             "user_id":2,
-            "username":"Paul",
-            "name":"Paul",
+            "username":"empty-name",
+            "name":"",
             "email":"paul.doe@example.com",
             "country":"US",
             "city":"San Francisco",

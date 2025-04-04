@@ -71,9 +71,9 @@ extension Storage.Customer: ReadOnlyConvertible {
         username = customer.username
 
         if let nameComponents = customer.name?.components(separatedBy: " ") {
-            // Handle case when there is a middle name: it goes to first name
-            firstName = nameComponents.count > 1 ? nameComponents.dropLast().joined(separator: " ") : nameComponents.first
-            lastName = nameComponents.count > 1 ? nameComponents.last : nil
+            // First component is the first name, the rest goes to last name. This behavior matches the Android implementation.
+            firstName = nameComponents.first
+            lastName = nameComponents.count > 1 ? nameComponents.dropFirst().joined(separator: " ") : nil
         }
 
         // Reuse information for addresses

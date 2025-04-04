@@ -40,6 +40,11 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         // Pagination https://github.com/woocommerce/woocommerce-ios/issues/15343
         await loadFirstPage()
     }
+
+    @MainActor
+    func enableCoupons() async {
+        await couponProvider.enableCoupons()
+    }
 }
 
 @available(iOS 17.0, *)
@@ -67,28 +72,6 @@ private extension PointOfSaleCouponsController {
                     itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
                                                     itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
                 }
-            }
-        }
-    }
-}
-
-@available(iOS 17.0, *)
-extension PointOfSaleCouponsController {
-    func enableCoupons() async {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-        _ = await withCheckedContinuation { continuation in
-            let action = SettingAction.enableCouponSetting(siteID: siteID) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: true)
-                case let .failure(error):
-                    continuation.resume(returning: false)
-                }
-            }
-            Task { @MainActor in
-                ServiceLocator.stores.dispatch(action)
             }
         }
     }

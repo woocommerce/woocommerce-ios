@@ -10,6 +10,10 @@ struct ChildItemList: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
 
+    private var node: ItemListBaseItem {
+        .parent(parentItem, .products)
+    }
+
     private var state: ItemListState {
         itemsStack.itemStates[parentItem] ??
             .loading([])
@@ -38,7 +42,7 @@ struct ChildItemList: View {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadItems(base: .parent(parentItem, .products))
+            await posModel.loadItems(base: node)
         }
     }
 }
@@ -59,11 +63,11 @@ private extension ChildItemList {
             headerView
 
             ItemList(state: state,
-                     node: .parent(parentItem, .products))
+                     node: node)
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
-                    await posModel.refreshItems(base: .parent(parentItem, .products))
+                    await posModel.refreshItems(base: node)
                 }
         }
     }
@@ -72,7 +76,7 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(base: .parent(parentItem, .products))
+            PointOfSaleItemListEmptyView(base: node)
         }
     }
 
@@ -86,7 +90,7 @@ private extension ChildItemList {
 
             PointOfSaleItemListErrorView(error: error, onRetry: {
                 Task {
-                    await posModel.loadItems(base: .parent(parentItem, .products))
+                    await posModel.loadItems(base: node)
                 }
             })
             .zIndex(1)

@@ -709,7 +709,7 @@ final class PointOfSaleItemsControllerTests {
         )
 
         // When
-        await sut.searchItems(searchTerm: "green mug", baseItem: .root)
+        await sut.searchItems(searchTerm: "green mug", baseItem: .root(.products))
 
         // Then
         let fetchStrategy = try #require(itemProvider.spyItemsFetchStrategy as? PointOfSaleSearchPurchasableItemFetchStrategy)

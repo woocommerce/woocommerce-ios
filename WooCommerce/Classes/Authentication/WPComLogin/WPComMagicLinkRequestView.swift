@@ -53,7 +53,9 @@ struct WPComMagicLinkRequestView: View {
         }.safeAreaInset(edge: .bottom) {
             VStack {
                 Button(Localization.sendLinkButton) {
-                    viewModel.sendMagicLink()
+                    Task {
+                        await viewModel.sendMagicLink()
+                    }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
 

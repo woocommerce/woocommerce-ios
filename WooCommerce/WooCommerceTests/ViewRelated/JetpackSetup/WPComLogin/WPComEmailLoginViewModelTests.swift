@@ -11,7 +11,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  requiresConnectionOnly: false,
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
 
         // When
@@ -28,7 +29,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  requiresConnectionOnly: true,
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
 
         // When
@@ -45,7 +47,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  requiresConnectionOnly: false,
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
 
         // When
@@ -62,7 +65,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  requiresConnectionOnly: true,
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
 
         // When
@@ -79,7 +83,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  requiresConnectionOnly: true,
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
 
         // When
@@ -101,7 +106,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
         // Confidence checks
         XCTAssertFalse(mockAccountService.triggeredIsPasswordlessAccount)
@@ -125,7 +131,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in triggeredOnError = true })
         // When
         await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
@@ -144,7 +151,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in triggeredPasswordUIRequest = true },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in })
         // When
         await viewModel.checkWordPressComAccount(emailOrUsername: "mail@example.com")
@@ -162,7 +170,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in triggeredOnMagicLinkUIRequest = true },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in triggeredOnMagicLinkUIRequest = true},
                                                  onError: { _ in })
         // When
         await viewModel.requestAuthenticationLink(email: "mail@example.com")
@@ -181,7 +190,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in triggeredOnError = true })
         // When
         await viewModel.requestAuthenticationLink(email: "mail@example.com")
@@ -205,7 +215,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: true,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, isSignup in triggeredOnMagicLinkUIRequest = isSignup },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, isSignup in triggeredOnMagicLinkUIRequest = isSignup },
                                                  onError: { _ in })
 
         // When
@@ -230,7 +241,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { _ in triggeredOnError = true })
 
         // When
@@ -255,7 +267,8 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  allowAccountCreation: true,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
-                                                 onMagicLinkUIRequest: { _, _ in },
+                                                 onMagicLinkRequest: { _ in },
+                                                 onMagicLinkSent: { _, _ in },
                                                  onError: { errorMessage = $0 })
 
         // When
@@ -263,5 +276,31 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(errorMessage, WPComEmailLoginViewModel.Localization.unknownUsername)
+    }
+
+    func test_given_emailLoginNotAllowed_when_signingIn_then_trigger_onMagicLinkRequest() async {
+        // Given
+        let mockAccountService = MockWordPressComAccountService()
+        mockAccountService.passwordlessAccountCheckError = WordPressAPIError.endpointError(
+            WordPressComRestApiEndpointError(
+                code: WordPressComRestApiErrorCode.unknown,
+                apiErrorCode: "email_login_not_allowed"
+            )
+        )
+        var triggeredOnMagicLinkRequest = false
+        let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
+                                                 requiresConnectionOnly: true,
+                                                 allowAccountCreation: true,
+                                                 accountService: mockAccountService,
+                                                 onPasswordUIRequest: { _ in },
+                                                 onMagicLinkRequest: { _ in triggeredOnMagicLinkRequest = true },
+                                                 onMagicLinkSent: { _, _ in },
+                                                 onError: { _ in })
+
+        // When
+        await viewModel.checkWordPressComAccount(emailOrUsername: "email@example.com")
+
+        // Then
+        XCTAssertTrue(triggeredOnMagicLinkRequest)
     }
 }

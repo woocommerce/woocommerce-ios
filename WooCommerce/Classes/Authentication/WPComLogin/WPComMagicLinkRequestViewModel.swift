@@ -33,12 +33,11 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
         self.analytics = analytics
     }
 
-    func sendMagicLink() {
-        Task { @MainActor in
-            isLoading = true
-            await handleSendingMagicLink()
-            isLoading = false
-        }
+    @MainActor
+    func sendMagicLink() async {
+        isLoading = true
+        await handleSendingMagicLink()
+        isLoading = false
     }
 
     func useUsernamePassword() {
@@ -47,6 +46,7 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
 }
 
 private extension WPComMagicLinkRequestViewModel {
+    @MainActor
     func handleSendingMagicLink() async {
         do {
             try await withCheckedThrowingContinuation { continuation in

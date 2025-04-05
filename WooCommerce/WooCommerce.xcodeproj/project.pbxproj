@@ -1817,6 +1817,7 @@
 		95B6C60C2D9DA5E900E1A661 /* WPComMagicLinkRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B6C60B2D9DA5E900E1A661 /* WPComMagicLinkRequestView.swift */; };
 		95B6C60E2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B6C60D2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift */; };
 		95B6C6102D9DADAA00E1A661 /* WPComLoginGravatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B6C60F2D9DAD9600E1A661 /* WPComLoginGravatarView.swift */; };
+		95B6C6142DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B6C6132DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift */; };
 		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
 		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
 		A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
@@ -5015,6 +5016,7 @@
 		95B6C60B2D9DA5E900E1A661 /* WPComMagicLinkRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComMagicLinkRequestView.swift; sourceTree = "<group>"; };
 		95B6C60D2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComMagicLinkRequestViewModel.swift; sourceTree = "<group>"; };
 		95B6C60F2D9DAD9600E1A661 /* WPComLoginGravatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComLoginGravatarView.swift; sourceTree = "<group>"; };
+		95B6C6132DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComMagicLinkRequestViewModelTests.swift; sourceTree = "<group>"; };
 		9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Yosemite/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
@@ -13745,6 +13747,7 @@
 				DE4D239F29B09D71003A4B5D /* WPComMagicLinkViewModelTests.swift */,
 				DE4D23A729B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift */,
 				DE4D23AF29B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift */,
+				95B6C6132DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift */,
 			);
 			path = WPComLogin;
 			sourceTree = "<group>";
@@ -17958,6 +17961,7 @@
 				011D39712D0A324200DB1445 /* LocationServiceTests.swift in Sources */,
 				028E1F722833E954001F8829 /* DashboardViewModelTests.swift in Sources */,
 				02BC5AA424D27F8900C43326 /* ProductVariationFormViewModel+ObservablesTests.swift in Sources */,
+				95B6C6142DA18E3A00E1A661 /* WPComMagicLinkRequestViewModelTests.swift in Sources */,
 				CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */,
 				D41C9F3126D9A43200993558 /* WhatsNewViewModelTests.swift in Sources */,
 				02A275BE23FE57DC005C560F /* ProductUIImageLoaderTests.swift in Sources */,

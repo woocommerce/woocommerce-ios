@@ -6,8 +6,8 @@ import WordPressUI
 class WPComMagicLinkRequestViewModel: ObservableObject {
     let email: String
 
-    private(set) var avatarURL: URL?
     @Published private(set) var isLoading = false
+    let avatarURL: URL?
 
     private let onMagicLinkSent: (String) -> Void
     private let onUseUsernamePassword: () -> Void

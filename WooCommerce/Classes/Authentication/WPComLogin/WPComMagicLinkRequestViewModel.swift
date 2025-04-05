@@ -10,6 +10,7 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
     @Published private(set) var isLoading = false
 
     private let onMagicLinkSent: (String) -> Void
+    private let onUseUsernamePassword: () -> Void
     private let onError: (String) -> Void
 
     private let accountService: WordPressComAccountServiceProtocol
@@ -17,6 +18,7 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
 
     init(email: String,
          onMagicLinkSent: @escaping (String) -> Void,
+            onUseUsernamePassword: @escaping () -> Void,
          onError: @escaping (String) -> Void,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics) {
@@ -24,6 +26,7 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
         self.avatarURL = Gravatar.gravatarUrl(for: email, defaultImage: .mp)
 
         self.onMagicLinkSent = onMagicLinkSent
+        self.onUseUsernamePassword = onUseUsernamePassword
         self.onError = onError
 
         self.accountService = accountService
@@ -36,6 +39,10 @@ class WPComMagicLinkRequestViewModel: ObservableObject {
             await handleSendingMagicLink()
             isLoading = false
         }
+    }
+
+    func useUsernamePassword() {
+        onUseUsernamePassword()
     }
 }
 

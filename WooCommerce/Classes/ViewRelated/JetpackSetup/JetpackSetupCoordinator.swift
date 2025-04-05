@@ -362,8 +362,22 @@ private extension JetpackSetupCoordinator {
 
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
+        emailLoginViewModel.usernameOnly = false
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
         pushOrInitLoginViewController(emailLoginController)
+    }
+
+    func showWPComUsernameLogin() {
+        emailLoginViewModel.usernameOnly = true
+        emailLoginViewModel.emailOrUsername = ""
+
+        let emailViewController = loginNavigationController?.viewControllers.first(where: { $0 is WPComEmailLoginHostingController })
+        if let emailViewController {
+            loginNavigationController?.popToViewController(emailViewController, animated: true)
+        } else {
+            loginNavigationController?.dismiss(animated: true, completion: nil)
+            pushOrInitLoginViewController(WPComEmailLoginHostingController(viewModel: emailLoginViewModel))
+        }
     }
 
     func showMagicLinkRequestUI(email: String) {
@@ -372,6 +386,7 @@ private extension JetpackSetupCoordinator {
                                                                                                  onMagicLinkSent: { [weak self] email in
             self?.showMagicLinkSentUI(email: email, isSignup: false)
         },
+                                                                                                 onUseUsernamePassword: showWPComUsernameLogin,
                                                                                                  onError: { [weak self] message in
             self?.showAlert(message: message)
         }))

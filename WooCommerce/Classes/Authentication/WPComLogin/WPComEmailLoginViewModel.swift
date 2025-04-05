@@ -22,6 +22,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let subtitleString: String
 
     @Published var emailOrUsername: String = ""
+    @Published var usernameOnly: Bool = false
 
     let termsAttributedString: NSAttributedString
 

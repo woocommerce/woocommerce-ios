@@ -73,9 +73,9 @@ struct WPComEmailLoginView: View {
 
                 // Email field
                 AuthenticationFormFieldView(viewModel: .init(
-                    header: Localization.emailLabel,
-                    placeholder: Localization.enterEmail,
-                    keyboardType: .emailAddress,
+                    header: viewModel.usernameOnly ? Localization.usernameLabel : Localization.emailLabel,
+                    placeholder: viewModel.usernameOnly ? Localization.enterUsername : Localization.enterEmail,
+                    keyboardType: viewModel.usernameOnly ? .default : .emailAddress,
                     text: $viewModel.emailOrUsername,
                     isSecure: false,
                     errorMessage: nil,
@@ -84,7 +84,8 @@ struct WPComEmailLoginView: View {
                 ))
                 .focused($isEmailFieldFocused)
 
-                if viewModel.allowAccountCreation {
+                if viewModel.allowAccountCreation,
+                   !viewModel.usernameOnly {
                     // Account creation hint
                     Text(Localization.accountCreationHint)
                         .footnoteStyle()
@@ -129,9 +130,19 @@ private extension WPComEmailLoginView {
             "Email Address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
+        static let usernameLabel = NSLocalizedString(
+            "wpComEmailLoginView.usernameLabel",
+            value: "Username",
+            comment: "Label for the username field on the WPCom email login screen of the Jetpack setup flow."
+        )
         static let enterEmail = NSLocalizedString(
             "Enter email or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
+        )
+        static let enterUsername = NSLocalizedString(
+            "wpComEmailLoginView.enterUsername",
+            value: "Enter username",
+            comment: "Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let accountCreationHint = NSLocalizedString(
             "wpComEmailLoginView.accountCreationHint",

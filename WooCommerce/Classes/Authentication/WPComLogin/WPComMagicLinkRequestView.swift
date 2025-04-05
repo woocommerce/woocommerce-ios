@@ -58,7 +58,7 @@ struct WPComMagicLinkRequestView: View {
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
 
                 Button(Localization.fallbackButton) {
-                    // TODO: handle fallback action
+                    viewModel.useUsernamePassword()
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }
@@ -101,6 +101,7 @@ private extension WPComMagicLinkRequestView {
     WPComMagicLinkRequestView(title: "Connect Jetpack",
                               viewModel: WPComMagicLinkRequestViewModel(email: "test@example.com",
                                                                         onMagicLinkSent: { _ in },
+                                                                        onUseUsernamePassword: {},
                                                                         onError: { _ in })
     )
 }

@@ -3,7 +3,7 @@
 
 22.2
 -----
-
+- [*] [Internal] Improved login flow during Jetpack Setup for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15491]
 
 22.1
 -----

@@ -14,7 +14,7 @@ struct CouponRowView: View {
     }
 
     private var dynamicSpacing: CGFloat {
-        Constants.itemTitleAndPriceSpacing * (1 / scale)
+        Constants.titleSummarySpacing * (1 / scale)
     }
 
     var body: some View {
@@ -23,7 +23,7 @@ struct CouponRowView: View {
                 .foregroundColor(.posSurfaceDim)
                 .overlay {
                     Text(Image(systemName: "tag"))
-                        .font(.posButtonSymbolLarge)
+                        .font(.posButtonSymbolMedium)
                         .foregroundColor(.posOnSurfaceVariantLowest)
                 }
                 .frame(width: Constants.couponCardSize, height: Constants.couponCardSize)
@@ -31,23 +31,27 @@ struct CouponRowView: View {
             VStack(alignment: .leading, spacing: dynamicSpacing) {
                 Text(couponItem.code)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
-                    .font(Constants.itemTitleFont)
+                    .font(Constants.titleFont)
+
+                Text(couponItem.summary)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                    .font(Constants.summaryFont)
 
                 switch couponRowState {
                 case .valid(let couponTotal):
                     Text("-\(couponTotal.total)")
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
+                        .font(Constants.summaryFont)
                 case .idle, .none:
                     EmptyView()
                 case .invalid:
                     Text("Invalid coupon")
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
+                        .font(Constants.summaryFont)
                 case .validating:
                     Text("Validating...")
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
+                        .font(Constants.summaryFont)
                 }
             }
             .animation(.default, value: couponRowState)
@@ -77,9 +81,9 @@ private extension CouponRowView {
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
-        static let itemTitleFont: POSFontStyle = .posBodySmallBold
-        static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
-        static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+        static let titleFont: POSFontStyle = .posBodySmallBold
+        static let titleSummarySpacing: CGFloat = POSSpacing.xSmall
+        static let summaryFont: POSFontStyle = .posBodySmallRegular()
     }
 }
 

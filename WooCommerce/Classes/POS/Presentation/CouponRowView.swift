@@ -86,6 +86,6 @@ private extension CouponRowView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    CouponRowView(couponItem: CartCouponItem(id: UUID(), code: "10-Discount"), couponRowState: .idle) {}
+    CouponRowView(couponItem: CartCouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
 }
 #endif

@@ -24,7 +24,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
             .sheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
                 var addedCouponItem: POSItem?
                 let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { coupon in
-                    addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code))
+                    addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code, summary: coupon.summary()))
                 })
                 var view = AddEditCoupon(viewModel)
 

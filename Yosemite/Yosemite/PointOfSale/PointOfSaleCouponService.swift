@@ -16,6 +16,7 @@ public protocol PointOfSaleCouponServiceProtocol {
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
+    private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType?
     private let couponStoreMethods: CouponStoreMethodsProtocol
@@ -27,6 +28,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
          settingStoreMethods: SettingStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
+        self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
         self.couponStoreMethods = couponStoreMethods
@@ -97,7 +99,11 @@ private extension PointOfSaleCouponService {
 
     func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(), code: coupon.code))
+                .coupon(POSCoupon(
+                    id: UUID(),
+                    code: coupon.code,
+                    summary: coupon.summary(currencySettings: currencySettings)
+                ))
         }
     }
 

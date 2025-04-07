@@ -31,3 +31,13 @@ private extension WPComLoginGravatarView {
         static let avatarPadding: EdgeInsets = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 }
+
+struct WPComLoginGravatarView_Previews: PreviewProvider {
+    static var previews: some View {
+        WPComLoginGravatarView(
+            email: "example@example.com",
+            gravatarURL: URL(string: "https://www.gravatar.com/avatar/example")
+        )
+        .previewLayout(.sizeThatFits)
+    }
+}

@@ -3,7 +3,7 @@ import WooFoundation
 import WordPressAuthenticator
 import WordPressUI
 
-class WPComMagicLinkRequestViewModel: ObservableObject {
+final class WPComMagicLinkRequestViewModel: ObservableObject {
     let email: String
 
     @Published private(set) var isLoading = false

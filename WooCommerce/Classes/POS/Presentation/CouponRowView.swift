@@ -53,18 +53,14 @@ struct CouponRowView: View {
                 switch couponRowState {
                 case .valid(let couponTotal):
                     Text("-\(couponTotal.total)")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.summaryFont)
-                case .idle, .none:
-                    EmptyView()
+                        .foregroundColor(.posSuccess)
+                        .font(.posBodySmallRegular())
                 case .invalid:
                     Text(Localization.invalidCoupon)
                         .foregroundColor(.posError)
                         .font(.posBodySmallRegular())
-                case .validating:
-                    Text("Validating...")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.summaryFont)
+                case .idle, .validating, .none:
+                    EmptyView()
                 }
             }
             .animation(.default, value: couponRowState)

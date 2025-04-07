@@ -21,7 +21,7 @@ final class WPComMagicLinkRequestHostingController: UIHostingController<WPComMag
 }
 
 struct WPComMagicLinkRequestView: View {
-    @ObservedObject private var viewModel: WPComMagicLinkRequestViewModel
+    @StateObject private var viewModel: WPComMagicLinkRequestViewModel
 
     /// Title to display at the top of the view.
     private let title: String
@@ -29,7 +29,7 @@ struct WPComMagicLinkRequestView: View {
     init(title: String,
          viewModel: WPComMagicLinkRequestViewModel) {
         self.title = title
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {

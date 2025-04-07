@@ -75,9 +75,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         _ = await withCheckedContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {
-                case .success(let success):
+                case .success:
                     continuation.resume(returning: true)
-                case .failure(let failure):
+                case .failure:
                     continuation.resume(returning: false)
                 }
             }

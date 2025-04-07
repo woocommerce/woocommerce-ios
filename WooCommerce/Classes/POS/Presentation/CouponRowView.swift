@@ -58,9 +58,9 @@ struct CouponRowView: View {
                 case .idle, .none:
                     EmptyView()
                 case .invalid:
-                    Text("Invalid coupon")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.summaryFont)
+                    Text(Localization.invalidCoupon)
+                        .foregroundColor(.posError)
+                        .font(.posBodySmallRegular())
                 case .validating:
                     Text("Validating...")
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
@@ -96,6 +96,15 @@ private extension CouponRowView {
         static let titleFont: POSFontStyle = .posBodySmallBold
         static let titleSummarySpacing: CGFloat = POSSpacing.xSmall
         static let summaryFont: POSFontStyle = .posBodySmallRegular()
+    }
+}
+
+private extension CouponRowView {
+    private enum Localization {
+        static let invalidCoupon = NSLocalizedString(
+            "pointOfSale.couponRow.invalidCoupon",
+            value: "Coupon not applied",
+            comment: "A message shown on the coupon if's not valid after attempting to apply it")
     }
 }
 

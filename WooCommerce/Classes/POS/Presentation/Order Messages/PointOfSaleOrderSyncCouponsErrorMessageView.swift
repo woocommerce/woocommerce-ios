@@ -30,7 +30,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                 POSErrorExclamationMark(size: .large)
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text("Invalid coupons")
+                    Text(Localization.title)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
 
@@ -38,11 +38,19 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .padding([.leading, .trailing])
                 }
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-                Button("Continue without coupons", action: {
-                    posModel.removeAllCouponsFromCart()
-                    retryHandler()
-                })
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                VStack(spacing: POSSpacing.medium) {
+                    Button(Localization.retryActionTitle, action: {
+                        posModel.removeAllCouponsFromCart()
+                        retryHandler()
+                    })
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                    Button(Localization.editOrderTitle, action: {
+                        posModel.addMoreToCart()
+                    })
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                }
                 .padding([.leading, .trailing], Constants.buttonSidePadding)
                 .padding([.bottom], Constants.buttonBottomPadding)
 
@@ -64,23 +72,28 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     }
 }
 
-// MARK: - TODO https://github.com/woocommerce/woocommerce-ios/issues/15424
-//
-//private extension PointOfSaleOrderSyncErrorMessageView {
-//    enum Localization {
-//        static let title = NSLocalizedString(
-//            "pointOfSale.orderSync.couponsError.title",
-//            value: "Invalid coupons",
-//            comment: "Title of the error when failing to validate coupons and calculate order totals"
-//        )
-//
-//        static let actionTitle = NSLocalizedString(
-//            "pointOfSale.orderSync.couponsError.proceed",
-//            value: "Continue without coupons",
-//            comment: "Button title to remove coupons and retry synchronizing order and calculating order totals"
-//        )
-//    }
-//}
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderSyncCouponsErrorMessageView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "pointOfSale.orderSync.couponsError.title",
+            value: "Couldn't apply coupon",
+            comment: "Title of the error when failing to validate coupons and calculate order totals"
+        )
+
+        static let retryActionTitle = NSLocalizedString(
+            "pointOfSale.orderSync.couponsError.removeCoupons",
+            value: "Remove coupons",
+            comment: "Button title to remove coupons and retry synchronizing order and calculating order totals"
+        )
+
+        static let editOrderTitle =  NSLocalizedString(
+            "pointOfSale.orderSync.couponsError.editOrder",
+            value: "Edit order",
+            comment: "Button to come back to order editing when coupon validation fails."
+        )
+    }
+}
 
 #Preview {
     if #available(iOS 17.0, *) {

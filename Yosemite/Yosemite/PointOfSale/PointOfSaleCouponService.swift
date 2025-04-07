@@ -12,7 +12,7 @@ public enum PointOfSaleCouponServiceError: Error {
 
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
-    func enableCoupons() async
+    func enableCoupons() async throws
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
@@ -71,7 +71,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     }
 
     @MainActor
-    public func enableCoupons() async {
+    public func enableCoupons() async throws {
         _ = await withCheckedContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {

@@ -28,7 +28,7 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         return [coupon1, coupon2, coupon3]
     }
 
-    func enableCoupons() async {
+    func enableCoupons() async throws {
         // no-op
     }
 }

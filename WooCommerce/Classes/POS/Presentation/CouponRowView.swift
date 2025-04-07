@@ -22,7 +22,7 @@ struct CouponRowView: View {
             Rectangle()
                 .foregroundColor(.posSurfaceDim)
                 .overlay {
-                    Text(Image(systemName: "tag.square.fill"))
+                    Text(Image(systemName: "tag"))
                         .font(.posButtonSymbolLarge)
                         .foregroundColor(.posOnSurfaceVariantLowest)
                 }

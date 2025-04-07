@@ -6,15 +6,25 @@ struct CouponRowView: View {
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Binding private var showImage: Bool
 
-    init(couponItem: CartCouponItem, couponRowState: CouponRowState? = nil, onItemRemoveTapped: (() -> Void)? = nil) {
+    init(couponItem: CartCouponItem,
+         couponRowState: CouponRowState? = nil,
+         showImage: Binding<Bool> = .constant(true),
+         onItemRemoveTapped: (() -> Void)? = nil
+    ) {
         self.couponItem = couponItem
         self.couponRowState = couponRowState
+        self._showImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
     private var dynamicSpacing: CGFloat {
         Constants.titleSummarySpacing * (1 / scale)
+    }
+
+    private var dimension: CGFloat {
+        min(Constants.couponCardSize * scale, Constants.maximumCouponCardSize)
     }
 
     var body: some View {
@@ -26,7 +36,10 @@ struct CouponRowView: View {
                         .font(.posButtonSymbolMedium)
                         .foregroundColor(.posOnSurfaceVariantLowest)
                 }
-                .frame(width: Constants.couponCardSize, height: Constants.couponCardSize)
+                .frame(width: dimension)
+                .frame(minHeight: dimension)
+                .accessibilityHidden(true)
+                .renderedIf(showImage)
 
             VStack(alignment: .leading, spacing: dynamicSpacing) {
                 Text(couponItem.code)
@@ -56,15 +69,13 @@ struct CouponRowView: View {
             }
             .animation(.default, value: couponRowState)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, showImage ? 0 : Constants.cardContentHorizontalPadding)
+            .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
-                Button(action: {
+                CartRowRemoveButton {
                     onItemRemoveTapped()
-                }, label: {
-                    Text(Image(systemName: "xmark.circle"))
-                        .font(.posButtonSymbolMedium)
-                })
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
@@ -78,6 +89,7 @@ struct CouponRowView: View {
 private extension CouponRowView {
     enum Constants {
         static let couponCardSize: CGFloat = 96
+        static let maximumCouponCardSize: CGFloat = Self.couponCardSize * 1.5
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium

@@ -326,6 +326,7 @@ private extension CartView {
                               couponRowState: viewHelper.couponRowState(orderStage: posModel.orderStage,
                                                                         orderState: posModel.orderState,
                                                                         couponItem: couponItem),
+                              showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
                     posModel.remove(cartCouponItem: couponItem)
                 } : nil)

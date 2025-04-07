@@ -23,41 +23,44 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: POSSpacing.none) {
+        GeometryReader { geometry in
+            HStack(alignment: .center) {
                 Spacer()
-                POSErrorExclamationMark(size: .large)
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(Localization.title)
-                        .foregroundStyle(Color.posOnSurface)
-                        .font(.posHeadingBold)
+                VStack(alignment: .center, spacing: POSSpacing.none) {
+                    Spacer()
+                    POSErrorXMark()
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                    VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                        Text(Localization.title)
+                            .foregroundStyle(Color.posOnSurface)
+                            .font(.posHeadingBold)
 
-                    Text(attributedMessage)
-                        .padding([.leading, .trailing])
+                        Text(attributedMessage)
+                            .padding([.leading, .trailing])
+                    }
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
+                    VStack(spacing: POSSpacing.medium) {
+                        Button(Localization.retryActionTitle, action: {
+                            posModel.removeAllCouponsFromCart()
+                            retryHandler()
+                        })
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+
+                        Button(Localization.editOrderTitle, action: {
+                            posModel.addMoreToCart()
+                        })
+                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    }
+                    .frame(width: geometry.size.width / 2)
+                    .padding([.leading, .trailing], Constants.buttonSidePadding)
+                    .padding([.bottom], Constants.buttonBottomPadding)
+
+                    Spacer()
                 }
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-
-                VStack(spacing: POSSpacing.medium) {
-                    Button(Localization.retryActionTitle, action: {
-                        posModel.removeAllCouponsFromCart()
-                        retryHandler()
-                    })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
-
-                    Button(Localization.editOrderTitle, action: {
-                        posModel.addMoreToCart()
-                    })
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                }
-                .padding([.leading, .trailing], Constants.buttonSidePadding)
-                .padding([.bottom], Constants.buttonBottomPadding)
-
+                .multilineTextAlignment(.center)
                 Spacer()
             }
-            .multilineTextAlignment(.center)
-            Spacer()
         }
     }
 }
@@ -76,7 +79,7 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSale.orderSync.couponsError.title",
+            "pointOfSale.orderSync.couponsError.errorTitle",
             value: "Couldn't apply coupon",
             comment: "Title of the error when failing to validate coupons and calculate order totals"
         )

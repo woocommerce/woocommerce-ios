@@ -332,8 +332,6 @@ private extension CartView {
                 .id(couponItem.id)
                 .transition(.opacity)
             }
-
-            Spacer(minLength: 48)
         }
     }
 }

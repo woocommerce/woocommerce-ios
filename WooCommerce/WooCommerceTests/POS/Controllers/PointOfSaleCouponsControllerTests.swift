@@ -45,7 +45,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -62,7 +62,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -79,7 +79,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.refreshItems(base: .root)
+        await sut.refreshItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -96,7 +96,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.refreshItems(base: .root)
+        await sut.refreshItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -113,7 +113,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)
@@ -130,7 +130,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        await sut.loadNextItems(base: .root)
+        await sut.loadNextItems(base: .root(.coupons))
 
         // Then
         #expect(sut.itemsViewState == expectedViewState)

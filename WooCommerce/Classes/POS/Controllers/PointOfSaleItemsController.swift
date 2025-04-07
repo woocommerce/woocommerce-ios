@@ -1,7 +1,10 @@
 import Foundation
 import Observation
 import enum Yosemite.POSItem
+import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import class Yosemite.PointOfSaleItemFetchStrategyFactory
+import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
@@ -33,17 +36,28 @@ extension PointOfSaleItemsControllerProtocol {
 }
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
+protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
+    /// Searches for items
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
+}
+
+
+@available(iOS 17.0, *)
+@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol, PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
-    private let itemProvider: PointOfSaleItemServiceProtocol
+    private var itemProvider: PointOfSaleItemServiceProtocol
+    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
+    private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
-    init(itemProvider: PointOfSaleItemServiceProtocol) {
+    init(itemProvider: PointOfSaleItemServiceProtocol, itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory) {
         self.itemProvider = itemProvider
+        self.itemFetchStrategyFactory = itemFetchStrategyFactory
         self.paginationTracker = .init()
+        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
     }
 
     @MainActor
@@ -58,11 +72,17 @@ extension PointOfSaleItemsControllerProtocol {
     }
 
     @MainActor
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
+        fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        await loadFirstPage(base: baseItem)
+    }
+
+    @MainActor
     private func loadFirstPage(base: ItemListBaseItem) async {
         switch base {
         case .root:
             await loadRootItems()
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadChildItems(for: parent)
         }
     }
@@ -86,7 +106,7 @@ extension PointOfSaleItemsControllerProtocol {
         switch base {
         case .root:
             await loadNextRootItems()
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadNextChildItems(for: parent)
         }
     }
@@ -179,7 +199,7 @@ private extension PointOfSaleItemsController {
         switch base {
         case .root:
             setRootLoadingState()
-        case .parent(let parent):
+        case .parent(let parent, _):
             setChildLoadingState(for: parent)
         }
     }
@@ -208,7 +228,8 @@ private extension PointOfSaleItemsController {
     @MainActor
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
-            let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
+            let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber,
+                                                                            fetchStrategy: fetchStrategy)
 
             let newItems = pagedItems.items
             var allItems = appendToExistingItems ? itemsViewState.itemsStack.root.items : []
@@ -248,7 +269,8 @@ private extension PointOfSaleItemsController {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleVariationItems(
                 for: parentProduct,
-                pageNumber: pageNumber
+                pageNumber: pageNumber,
+                fetchStrategy: fetchStrategy
             )
             let newItems = pagedItems.items
             var allItems: [POSItem] = appendToExistingItems ? (itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []) : []

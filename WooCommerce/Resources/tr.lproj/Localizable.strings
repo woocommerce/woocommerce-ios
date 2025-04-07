@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-11 14:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-25 11:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Tercihlerinizi güncelleyin";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "%ld saat önce güncellendi";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "%ld saat önce güncellendi";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "%ld dakika önce güncellendi";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "%ld dakika önce güncellendi";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "Az önce güncellendi";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "Son güncelleme zamanı: %@";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Yazılım güncelleniyor";
 
@@ -9969,6 +9951,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Yapılandırma tamamlandı";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "Bağlantı Sorununu Giderin";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Tutarı düzenleyin";
 
@@ -10962,6 +10947,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "önceki dönem yok";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "İptal Et";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "Bildirimleri etkinleştir";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "Mağazalarınız için bildirim ayarları yüklenemiyor.";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "Bildirim ayarları kaydedilemedi";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "Yeni siparişler";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "Woo için bildirimler devre dışı bırakıldı";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "Bildirimler etkinleştirildi";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "Hatırlatıcılar ve uzaktan anlık bildirimler dahil.";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "Kapalı";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "Ürün incelemeleri";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "Tekrar dene";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "Kaydet";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "Değiştir";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "Her mağaza için bildirim tercihlerinizi özelleştirin.";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "Mağazalarınız";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "Bildirim Ayarları";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "Ayarlar kaydedildi!";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Lütfen belirli bir varyasyon seçin.";
 
@@ -11323,14 +11359,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Yeni sipariş";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Çalışan bir ağ bağlantısı olan bir cihazda ödemeyi doğrulayın. Başarısız olursa ödemeyi yeniden deneyin. Başarılı olursa yeni bir sipariş başlatın.";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Ödemeyi tekrar dene";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "Bir ağ hatasından dolayı ödemenin başarılı olup olmadığını onaylayamıyoruz.";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "Bir ağ hatasından dolayı ödemenin başarılı olup olmadığını onaylayamıyoruz. Çalışan bir ağ bağlantısı olan bir cihazda ödemeyi doğrulayın. Başarısız olursa ödemeyi yeniden deneyin. Başarılı olursa yeni bir sipariş başlatın.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Ödeme hatası";
@@ -12265,6 +12298,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Ödeme Tamamlandı";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "Bağlantı Sorununu Giderin";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "Bildirim Ayarları";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Temalar";
 
@@ -12322,6 +12361,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "Ödeme Alma taşındı";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "İptal Et";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "Yeni siparişler";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "Mobil cihazınızda görünen anlık bildirimlerin ayarları.";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "Ürün incelemeleri";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "Bildirim türleri";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "Güncelle";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "Günlük aralıklar";
@@ -12904,7 +12961,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "Seçilen Paketi Kullan";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
+"wooShipping.createLabel.hazmatRow.label" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "Hayır";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "Evet";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "Mevcut gönderim ücretlerini görmek için paketinizin ölçülerini girin veya bir kargo paketi seçeneği seçin.";
@@ -13071,6 +13134,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "ITN zorunludur.";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "Gönderim etiketini satın alamıyoruz. Lütfen tekrar deneyin.";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "Tekrar dene";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "Gönderim etiketi satın alınırken hata oluştu.";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "Gerekli verileri yükleyemedik";
 
@@ -13130,6 +13205,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Gönderim ücretlerini almak için bir hedef adres ekleyin";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "Seçilen paket ve toplam gönderim ağırlığı kombinasyonunun gönderim hizmeti bulunamadı. Lütfen girdinizi ayarlayın ve yeniden deneyin.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Mevcut gönderim ücretlerini göstermeden önce gönderim ağırlığını bilmemiz gerekiyor.";
@@ -13226,9 +13304,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "ITN hakkında daha fazla bilgi";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "Lütfen geçerli bir ITN girin";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "Ürün Ayrıntıları";
@@ -13343,6 +13418,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "Tekrar dene";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "Özel paket oluştur";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "Henüz kaydedilmiş paket yok";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "Kaydedilen paketleri yükleyemiyoruz";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "Tekrar dene";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "Ürünler";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "Gönderimleri böl";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "Paket kaydedilemiyor";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "Tekrar dene";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Lütfen şu biçimlerden birine geçerli bir ITN girin: X12345678901234, AES X1234568901234 veya NOEI 30.37(a).";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "Hedef ülkeye olan gönderimler için Uluslararası İşlem Numarası gereklidir.";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "Tarife numarasına göre değeri 2.500 ABD Dolarının üzerindeki gönderiler için Uluslararası İşlem Numarası gereklidir.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "2.500 ABD Dolarının üzerindeki gönderimlerde ABD ihracat raporlaması doğrulaması için 14 haneli AES ITN almanız gerekir.";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "İptal Et";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "Kategori Seçin";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "İptal Et";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "Potansiyel olarak tehlikeli maddeler arasında piller, kuru buz, yanıcı sıvılar, aerosoller, mühimmat, havai fişekler, oje, parfüm, boya, çözücüler ve daha fazlası yer almaktadır. Tehlikeli maddeler ayrı paketlerde gönderilmelidir.";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "%1$@ adresinden USPS® yoluyla Tehlikeli Maddelerin nasıl güvenli bir şekilde paketleneceğini, etiketleneceğini ve gönderileceğini öğrenin. %2$@ kullanarak ürününüzün postayla gönderilebilir olup olmadığını öğrenin.";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping, şu anda %1$@ yoluyla Tehlikeli Madde gönderimlerini desteklemiyor.";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "USPS Tehlikeli Madde Arama Aracı";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "Kategori Seçin";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "Tehlikeli maddeler içerir";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "Tamam";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "Tümünü Seç";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "Gönderimleri Bölün";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";

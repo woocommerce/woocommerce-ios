@@ -10,7 +10,16 @@ struct ItemListView: View {
 
     @State private var showSimpleProductsModal: Bool = false
     private var itemListState: ItemListState {
-        posModel.itemsViewState.itemsStack.root
+        itemsStack.root
+    }
+
+    private var itemsStack: ItemsStackState {
+        switch selectedItemType {
+        case .products:
+            return posModel.itemsViewState.itemsStack
+        case .coupons:
+            return posModel.couponsViewState.itemsStack
+        }
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -96,7 +105,7 @@ struct ItemListView: View {
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
-                await posModel.refreshItems(base: .root)
+                await posModel.refreshItems(base: .root(.coupons))
             }
         })
     }
@@ -156,14 +165,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState) {
+        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root)
+            await posModel.refreshItems(base: .root(selectedItemType))
         }
     }
 
@@ -172,7 +181,8 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            ChildItemList(parentItem: parentItem, title: parentProduct.name)
+            let itemsStack = selectedItemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
+            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
         default:
             EmptyView()
         }
@@ -188,7 +198,7 @@ private extension ItemListView {
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
         Task { @MainActor in
-            await posModel.switchToItemType(itemType)
+            await posModel.loadItems(base: .root(itemType))
         }
     }
 }
@@ -271,7 +281,7 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadItems(base: .root)
+        await itemsController.loadItems(base: .root(.products))
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

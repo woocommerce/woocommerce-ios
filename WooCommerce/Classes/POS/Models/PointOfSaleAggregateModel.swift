@@ -54,14 +54,14 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { currentController.itemsViewState }
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
 
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
-    private var currentController: PointOfSaleItemsControllerProtocol
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let couponsController: PointOfSaleItemsControllerProtocol
 
@@ -82,7 +82,6 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
-        self.currentController = itemsController // Default current controller set to products
         self.itemsController = itemsController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
@@ -101,23 +100,20 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await currentController.loadItems(base: base)
+        let controller = base.itemType == .products ? itemsController : couponsController
+        await controller.loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await currentController.refreshItems(base: base)
+        let controller = base.itemType == .products ? itemsController : couponsController
+        await controller.refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await currentController.loadNextItems(base: base)
-    }
-
-    func switchToItemType(_ type: ItemType) async {
-        let newController = type == .products ? itemsController : couponsController
-        currentController = newController
-        await refreshItems(base: .root)
+        let controller = base.itemType == .products ? itemsController : couponsController
+        await controller.loadNextItems(base: base)
     }
 }
 

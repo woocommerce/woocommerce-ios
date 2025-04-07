@@ -22,7 +22,7 @@ struct PointOfSaleDashboardView: View {
                         .ignoresSafeArea()
                 case .empty:
                     PointOfSaleItemListFullscreenView {
-                        PointOfSaleItemListEmptyView(base: .root)
+                        PointOfSaleItemListEmptyView(base: .root(.products))
                     }
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
@@ -30,7 +30,7 @@ struct PointOfSaleDashboardView: View {
                             if error.errorType == .couponsDisabled {
                                 await posModel.enableCoupons()
                             }
-                            await posModel.loadItems(base: .root)
+                            await posModel.loadItems(base: .root(.products))
                         }
                     })
                 case .content:
@@ -86,7 +86,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root)
+            await posModel.loadItems(base: .root(.products))
         }
         .ignoresSafeArea(.keyboard)
     }

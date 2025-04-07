@@ -12,6 +12,9 @@ import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
+import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
+import struct Yosemite.POSProduct
+import struct Yosemite.ProductVariation
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -39,11 +42,14 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleItems(pageNumber: Int,
+                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         .init(items: [], hasMorePages: true)
     }
 
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         .init(items: mockVariationItems, hasMorePages: true)
     }
 
@@ -55,6 +61,18 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
         POSProductPreview(id: UUID(),
                           name: "Product 1",
                           formattedPrice: "$1.00")
+    }
+
+    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
+}
+
+struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        return .init(items: [], hasMorePages: true)
+    }
+
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        return .init(items: [], hasMorePages: true)
     }
 }
 
@@ -70,10 +88,12 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent):
+        case .parent(let parent, _):
             await loadInitialChildItems(for: parent)
         }
     }
+
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
 
     func refreshItems(base: ItemListBaseItem) async {
         await loadItems(base: base)

@@ -86,7 +86,7 @@ private extension WPComMagicLinkRequestView {
         static let sendLinkButton = NSLocalizedString(
             "wpcomMagicLinkRequestView.primaryAction",
             value: "Send link by email",
-            comment: "Button title for the action of logging in with a password."
+            comment: "Button title for the action of sending a magic link email to log in to WordPress.com."
         )
         // For now this is hardcoded for the username/password fallback, if we need to support email/password in the future,
         // we can add a  way to configure the fallback action.

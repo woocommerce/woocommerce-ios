@@ -18,7 +18,7 @@ final class WPComMagicLinkRequestViewModel: ObservableObject {
 
     init(email: String,
          onMagicLinkSent: @escaping (String) -> Void,
-            onUseUsernamePassword: @escaping () -> Void,
+         onUseUsernamePassword: @escaping () -> Void,
          onError: @escaping (String) -> Void,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics) {

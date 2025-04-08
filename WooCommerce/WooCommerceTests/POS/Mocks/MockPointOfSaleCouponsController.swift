@@ -3,7 +3,7 @@
 @available(iOS 17.0, *)
 final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     func enableCoupons() async { }
-    
+
     var itemsViewState: ItemsViewState = .init(containerState: .empty,
                                                itemsStack: .init(root: .loaded([], hasMoreItems: false),
                                                                  itemStates: [:]))

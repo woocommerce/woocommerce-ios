@@ -32,12 +32,9 @@ private extension WPComLoginGravatarView {
     }
 }
 
-struct WPComLoginGravatarView_Previews: PreviewProvider {
-    static var previews: some View {
-        WPComLoginGravatarView(
-            email: "example@example.com",
-            gravatarURL: URL(string: "https://www.gravatar.com/avatar/example")
-        )
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    WPComLoginGravatarView(
+        email: "example@example.com",
+        gravatarURL: URL(string: "https://www.gravatar.com/avatar/example")
+    )
 }

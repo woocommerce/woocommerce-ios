@@ -1,13 +1,8 @@
 import Foundation
-import protocol Networking.Network
-import protocol Networking.ProductVariationsRemoteProtocol
-import class Networking.ProductsRemote
-import class Networking.ProductVariationsRemote
-import class Networking.AlamofireNetwork
 import enum Alamofire.AFError
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
-import Storage
+import struct Networking.PagedItems
 
 public enum PointOfSaleItemServiceError: Error, Equatable {
     case requestFailed
@@ -18,42 +13,21 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 /// Product provider for the Point of Sale feature
 ///
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let productsRemote: ProductsRemote
-    private let variationRemote: ProductVariationsRemoteProtocol
-    private let storage: StorageManagerType?
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                network: Network,
-                storage: StorageManagerType? = nil) {
-        self.siteID = siteID
+    public init(currencySettings: CurrencySettings) {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.productsRemote = ProductsRemote(network: network)
-        self.variationRemote = ProductVariationsRemote(network: network)
-        self.storage = storage
     }
 
-    public convenience init(siteID: Int64,
-                            currencySettings: CurrencySettings,
-                            credentials: Credentials?,
-                            storage: StorageManagerType) {
-        self.init(siteID: siteID,
-                  currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  storage: storage)
-    }
-
-    /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
+    /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,
     /// and maps them to POSItem type.
     ///
     /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
     ///
-    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> PagedItems<POSItem> {
-        let productTypes: [ProductType] = [.simple, .variable]
+    public func providePointOfSaleItems(pageNumber: Int = 1,
+                                        fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
-            let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID, productTypes: productTypes, pageNumber: pageNumber)
+            let pagedProducts = try await fetchStrategy.fetchProducts(pageNumber: pageNumber)
             let products = pagedProducts.items
 
             if pageNumber != 1 && products.count == 0 {
@@ -66,12 +40,12 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
         }
     }
 
-    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                                 pageNumber: Int,
+                                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
-            let pagedVariations = try await variationRemote
-                .loadVariationsForPointOfSale(for: siteID,
-                                              parentProductID: parentProduct.productID,
-                                              pageNumber: pageNumber)
+            let pagedVariations = try await fetchStrategy.fetchVariations(parentProductID: parentProduct.productID,
+                                                                          pageNumber: pageNumber)
             let variations = pagedVariations.items
             // Remove this when WC version 9.7 has significant adoption in POS stores.
                 .filter { !$0.downloadable }

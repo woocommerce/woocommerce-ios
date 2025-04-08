@@ -12,36 +12,38 @@ public enum PointOfSaleCouponServiceError: Error {
 
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func enableCoupons() async throws
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencyFormatter: CurrencyFormatter
-    private let couponsRemote: CouponsRemote
-    private let stores: StoresManager?
     private let storage: StorageManagerType?
+    private let couponStoreMethods: CouponStoreMethodsProtocol
+    private let settingsStoreMethods: SettingStoreMethodsProtocol
 
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
-                network: Network,
-                stores: StoresManager? = nil,
-                storage: StorageManagerType? = nil) {
+    init(siteID: Int64,
+         currencySettings: CurrencySettings,
+         couponStoreMethods: CouponStoreMethodsProtocol,
+         settingStoreMethods: SettingStoreMethodsProtocol,
+         storage: StorageManagerType) {
         self.siteID = siteID
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.couponsRemote = CouponsRemote(network: network)
-        self.stores = stores
         self.storage = storage
+        self.couponStoreMethods = couponStoreMethods
+        self.settingsStoreMethods = settingStoreMethods
     }
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
-                            stores: StoresManager,
                             storage: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials)
+        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  network: AlamofireNetwork(credentials: credentials),
-                  stores: stores,
+                  couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
+                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
                   storage: storage)
     }
 
@@ -65,6 +67,20 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             await syncCouponsFromRemote(pageNumber: pageNumber)
             let refreshedCoupons = await providePointOfSaleCoupons()
             return .init(items: refreshedCoupons, hasMorePages: false)
+        }
+    }
+
+    @MainActor
+    public func enableCoupons() async throws {
+        _ = await withCheckedContinuation { continuation in
+            settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case .failure:
+                    continuation.resume(returning: false)
+                }
+            }
         }
     }
 }
@@ -101,12 +117,8 @@ private extension PointOfSaleCouponService {
     }
 
     func syncCouponsFromRemote(pageNumber: Int) async {
-        guard let stores = stores else {
-            return
-        }
-
         await withCheckedContinuation { continuation in
-            let action = CouponAction.synchronizeCoupons(
+            couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: 25,
@@ -114,26 +126,18 @@ private extension PointOfSaleCouponService {
                     continuation.resume()
                 }
             )
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
         }
     }
 
     private func checkStoreCouponSettings() async -> Bool {
         await withCheckedContinuation { continuation in
-            let action = SettingAction.retrieveCouponSetting(siteID: siteID) { result in
+            settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
-                    debugPrint("Coupons enabled? \(isEnabled)")
                     continuation.resume(returning: isEnabled)
-                case let .failure(error):
-                    debugPrint("Coupons settings error: \(error)")
+                case .failure:
                     continuation.resume(returning: false)
                 }
-            }
-            Task { @MainActor in
-                stores?.dispatch(action)
             }
         }
     }

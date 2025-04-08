@@ -5,7 +5,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleCouponsController: PointOfSaleItemsControllerProtocol {
+@Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
@@ -38,6 +38,19 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         // TODO:
         // Pagination https://github.com/woocommerce/woocommerce-ios/issues/15343
         await loadFirstPage()
+    }
+
+    @MainActor
+    func enableCoupons() async {
+        // TODO: WOOMOB-255
+        // Handle loading state while coupons are being enabled
+        do {
+            try await couponProvider.enableCoupons()
+        } catch {
+            // TODO: WOOMOB-267
+            // Handle error when failed to enable, and allow retry action
+            debugPrint(error)
+        }
     }
 }
 

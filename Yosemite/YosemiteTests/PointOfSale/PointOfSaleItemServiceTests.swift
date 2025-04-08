@@ -8,14 +8,17 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     private var itemProvider: PointOfSaleItemServiceProtocol!
     private var network: MockNetwork!
     private let siteID: Int64 = 123
+    private var defaultFetchStrategy: PointOfSaleDefaultPurchasableItemFetchStrategy!
 
     override func setUp() {
         super.setUp()
         network = MockNetwork()
         currencySettings = CurrencySettings()
-        itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                 currencySettings: currencySettings,
-                                                 network: network)
+        defaultFetchStrategy = PointOfSaleDefaultPurchasableItemFetchStrategy(
+            siteID: siteID,
+            productsRemote: ProductsRemote(network: network),
+            variationsRemote: ProductVariationsRemote(network: network))
+        itemProvider = PointOfSaleItemService(currencySettings: currencySettings)
     }
 
     override func tearDown() {
@@ -31,7 +34,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
         // When
         do {
-            _ = try await itemProvider.providePointOfSaleItems()
+            _ = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
@@ -44,7 +47,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
         // When
-        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 2)
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 2, fetchStrategy: defaultFetchStrategy)
 
         // Then
         XCTAssertTrue(pagedItems.items.isEmpty)
@@ -54,7 +57,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given/When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
-        let pagedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
 
         // Then
         XCTAssertTrue(pagedItems.items.isEmpty)
@@ -70,7 +73,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
-        let pagedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
 
         // Then
         let expectedItems = pagedItems.items
@@ -91,7 +94,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
-        let pagedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
 
         // Then
         let items = pagedItems.items
@@ -111,12 +114,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleItems_sets_types_parameters_correctly() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                     currencySettings: currencySettings,
-                                                     network: network)
 
         // When
-        _ = try? await itemProvider.providePointOfSaleItems()
+        _ = try? await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
 
         // Then
         XCTAssertEqual(network.queryParametersDictionary?["include_types"] as? String, "simple,variable")
@@ -124,9 +124,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_returns_variations_with_non_downloadable_filter_when_load_succeeds() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -139,7 +136,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 productID: parentProductID,
                 allAttributes: teaAttributes
             ),
-            pageNumber: 1
+            pageNumber: 1,
+            fetchStrategy: defaultFetchStrategy
         )
 
         // Then
@@ -166,9 +164,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_returns_variation_page_details_when_load_succeeds() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -192,7 +187,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                         )
                     ]
             ),
-            pageNumber: 1
+            pageNumber: 1,
+            fetchStrategy: defaultFetchStrategy
         )
 
         // Then
@@ -201,9 +197,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                            currencySettings: currencySettings,
-                                            network: network)
         let parentProductID: Int64 = 123
         let expectedError = PointOfSaleItemServiceError.requestFailed
 
@@ -220,7 +213,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                     productID: parentProductID,
                     allAttributes: []
                 ),
-                pageNumber: 1
+                pageNumber: 1,
+                fetchStrategy: defaultFetchStrategy
             )
             XCTFail("An error is expected.")
         } catch {
@@ -230,9 +224,6 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     func test_providePointOfSaleVariationItems_formats_empty_prices_as_zero() async throws {
         // Given
-        let itemProvider = PointOfSaleItemService(siteID: siteID,
-                                                  currencySettings: currencySettings,
-                                                  network: network)
         let parentProductID: Int64 = 123
 
         // When
@@ -245,7 +236,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 productID: parentProductID,
                 allAttributes: teaAttributes
             ),
-            pageNumber: 1
+            pageNumber: 1,
+            fetchStrategy: defaultFetchStrategy
         )
 
         // Then
@@ -271,7 +263,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-simple-products-empty-price")
-        let pagedItems = try await itemProvider.providePointOfSaleItems()
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: defaultFetchStrategy)
 
         // Then
         let items = pagedItems.items
@@ -287,6 +279,18 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                 XCTFail("Test does not handle non-empty prices")
             }
         }
+    }
+
+    func test_providePointOfSaleItems_uses_passed_fetch_strategy() async throws {
+        // Given
+        let fetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
+
+        // When
+        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 5, fetchStrategy: fetchStrategy)
+
+        // Then
+        XCTAssertTrue(fetchStrategy.fetchProductsCalled)
+        XCTAssertEqual(fetchStrategy.spyFetchProductsPageNumber, 5)
     }
 }
 

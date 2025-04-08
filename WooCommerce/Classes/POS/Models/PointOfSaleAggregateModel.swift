@@ -25,6 +25,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func trackCardPaymentsOnboardingShown()
 
     var itemsViewState: ItemsViewState { get }
+
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
 
@@ -54,16 +55,17 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { currentController.itemsViewState }
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
+    var currentViewState: ItemsViewState
 
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
-    private var currentController: PointOfSaleItemsControllerProtocol
     private let itemsController: PointOfSaleItemsControllerProtocol
-    private let couponsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleCouponsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -76,13 +78,12 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
-         couponsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleCouponsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
-        self.currentController = itemsController // Default current controller set to products
         self.itemsController = itemsController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
@@ -90,6 +91,9 @@ protocol PointOfSaleAggregateModelProtocol {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.paymentState = paymentState
+        // Initial, set to items (products)
+        self.currentViewState = itemsController.itemsViewState
+
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
@@ -99,25 +103,33 @@ protocol PointOfSaleAggregateModelProtocol {
 // MARK: - ItemList
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
+    func updateCurrentViewState(base: ItemListBaseItem) {
+        let viewState = base.itemType == .products ? itemsViewState : couponsViewState
+        currentViewState = viewState
+    }
+
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await currentController.loadItems(base: base)
+        let controller = base.itemType == .products ? itemsController : couponsController
+
+        await controller.loadItems(base: base)
+        updateCurrentViewState(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await currentController.refreshItems(base: base)
+        let controller = base.itemType == .products ? itemsController : couponsController
+
+        await controller.refreshItems(base: base)
+        updateCurrentViewState(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await currentController.loadNextItems(base: base)
-    }
+        let controller = base.itemType == .products ? itemsController : couponsController
 
-    func switchToItemType(_ type: ItemType) async {
-        let newController = type == .products ? itemsController : couponsController
-        currentController = newController
-        await refreshItems(base: .root)
+        await controller.loadNextItems(base: base)
+        updateCurrentViewState(base: base)
     }
 }
 
@@ -158,6 +170,14 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
+    }
+}
+
+// MARK: - Coupons
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func enableCoupons() async {
+        await couponsController.enableCoupons()
     }
 }
 

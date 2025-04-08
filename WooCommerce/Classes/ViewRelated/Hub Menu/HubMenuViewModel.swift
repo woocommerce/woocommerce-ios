@@ -95,25 +95,17 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
-        let storage = ServiceLocator.storageManager
-        let currencySettings = ServiceLocator.currencySettings
-
-        return PointOfSaleItemService(siteID: siteID,
-                                      currencySettings: currencySettings,
-                                      credentials: credentials,
-                                      storage: storage)
+    private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
+        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
     }()
 
     private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
         let storage = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
-        let stores = ServiceLocator.stores
 
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,
-                                        stores: stores,
                                         storage: storage)
     }()
 

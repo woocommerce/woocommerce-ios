@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-11 16:54:04+0000 */
+/* Translation-Revision-Date: 2025-03-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -7983,24 +7983,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "לעדכן את ההעדפות שלך";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
-"Updated %ld hour ago" = "עודכן לפני שעה %ld";
-
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
-"Updated %ld hours ago" = "עודכן לפני %ld שעות";
-
-/* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
-"Updated %ld minute ago" = "עודכן לפני דקה %ld";
-
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
-"Updated %ld minutes ago" = "עודכן לפני %ld דקות";
-
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
-"Updated moments ago" = "עודכן לפני מספר רגעים";
-
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
-"Updated on %@" = "עודכן בתאריך %@";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "מעדכן את התוכנה";
 
@@ -9972,6 +9954,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "הושלמו הגדרות התצורה";
 
+/* Screen title for the connectivity tool */
+"connectivityTool.title" = "פתרון בעיות לחיבור";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "לערוך תגובה";
 
@@ -10965,6 +10950,57 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "אין תקופה קודמת";
 
+/* Button to cancel saving site settings on the notification settings view */
+"notificationSettingsView.cancel" = "ביטול";
+
+/* Button to enable notifications on the notification settings view */
+"notificationSettingsView.enableNotificationsCTA" = "להפעיל הודעות";
+
+/* Error message when loading site settings fails on the notification settings view */
+"notificationSettingsView.errorLoadingSiteSettings" = "אין אפשרות לטעון את ההגדרות של ההודעות עבור החנויות שלך.";
+
+/* Error message when saving site settings fails on the notification settings view */
+"notificationSettingsView.errorSavingSiteSettings" = "לא ניתן לשמור הגדרות של הודעות";
+
+/* Label indicating that new orders notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.newOrders" = "הזמנות חדשות";
+
+/* Label indicating notifications are disabled on the notification settings view */
+"notificationSettingsView.notificationsDisabled" = "ההודעות מושבתות עבור Woo";
+
+/* Label indicating notifications are enabled on the notification settings view */
+"notificationSettingsView.notificationsEnabled" = "הודעות מופעלות";
+
+/* Footer of the notifications section on the notification settings view */
+"notificationSettingsView.notificationsFooter" = "כולל תזכורות והודעות דחיפה מרחוק.";
+
+/* Label indicating that notifications are disabled for a site on the notification settings view */
+"notificationSettingsView.off" = "כבוי";
+
+/* Label indicating that product reviews notifications are enabled for a site on the notification settings view */
+"notificationSettingsView.productReviews" = "ביקורות על מוצר";
+
+/* Button to reload site settings on the notification settings view */
+"notificationSettingsView.retry" = "יש לנסות שוב";
+
+/* Button to save site settings on the notification settings view */
+"notificationSettingsView.save" = "לשמור";
+
+/* Button to open the app's notification settings in the Settings app */
+"notificationSettingsView.settingsAppCTA" = "לשנות";
+
+/* Footer of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionFooter" = "להתאים אישית את העדפות ההודעות עבור כל חנות.";
+
+/* Header of the store list section on the notification settings view */
+"notificationSettingsView.storeListSectionHeader" = "החנויות שלך";
+
+/* Title of the notification settings view */
+"notificationSettingsView.title" = "הגדרות של הודעות";
+
+/* Notice displayed when saving notification settings succeeds. */
+"notificationSettingsViewModel.successNotice" = "ההגדרות נשמרו!";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "יש לבחור סוג ספציפי.";
 
@@ -11326,14 +11362,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "הזמנה חדשה";
 
-/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "עליך לאמת את התשלום במכשיר עם חיבור פעיל לרשת. אם הפעולה לא הצליחה, יש לנסות את התשלום שוב. אם הפעולה הצליחה, יש ליצור הזמנה חדשה.";
-
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "עקב שגיאת רשת, אנחנו לא יכולים לאשר שהתשלום בוצע בהצלחה.";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1" = "עקב שגיאת רשת, אנחנו לא יכולים לאשר שהתשלום בוצע בהצלחה. עליך לאמת את התשלום במכשיר עם חיבור פעיל לרשת. אם הפעולה לא הצליחה, יש לנסות את התשלום שוב. אם הפעולה הצליחה, יש ליצור הזמנה חדשה.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "שגיאת תשלום";
@@ -12268,6 +12301,12 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "התשלום הושלם";
 
+/* Navigates to connectivity test screen. */
+"settingsViewController.connectivity" = "פתרון בעיות לחיבור";
+
+/* Navigates to the Notification Settings screen */
+"settingsViewController.notificationSettings" = "הגדרות של הודעות";
+
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "תבניות";
 
@@ -12325,6 +12364,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the simple payments migration view. */
 "simplePaymentsMigrationSheet.title" = "האפשרות 'לגבות תשלום' הועברה";
+
+/* Button to dismiss the site notification settings view */
+"siteNotificationSettingsView.cancel" = "ביטול";
+
+/* Label of the toggle to enable/disable new order notifications on the site notification settings view */
+"siteNotificationSettingsView.newOrders" = "הזמנות חדשות";
+
+/* Footer of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.notificationTypesFooter" = "הגדרות עבור הודעות בדחיפה שמופיעות במכשיר הנייד שלך.";
+
+/* Label of the toggle to enable/disable product reviews notifications on the site notification settings view */
+"siteNotificationSettingsView.productReviews" = "ביקורות על מוצר";
+
+/* Header of the notification types section on the site notification settings view */
+"siteNotificationSettingsView.title" = "סוגי הודעות";
+
+/* Button to confirm the settings on the site notification settings view */
+"siteNotificationSettingsView.update" = "לעדכן";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "תדירות יומית";
@@ -12907,7 +12964,13 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabel.editPackage.useSelectedPackage" = "להשתמש בחבילה שנבחרה";
 
 /* Label for section in shipping label creation to declare when a package contains hazardous materials. */
-"wooShipping.createLabel.hazmatLabel" = "המשלוח שלך כולל סחורות מסוכנות או חומרים מסוכנים?";
+"wooShipping.createLabel.hazmatRow.label" = "המשלוח שלך כולל סחורות מסוכנות או חומרים מסוכנים?";
+
+/* Value for section in shipping label creation to declare when a package does not contain hazardous materials. */
+"wooShipping.createLabel.hazmatRow.no" = "לא";
+
+/* Value for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatRow.yes" = "כן";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "יש להזין את ממדי החבילה או לבחור אפשרות של חבילת ספק כדי להציג את תעריפי המשלוח.";
@@ -13074,6 +13137,18 @@ which should be translated separately and considered part of this sentence. */
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
 
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.createLabels.itnMissing" = "יש להזין ITN.";
+
+/* Message in the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.message" = "לא הצלחנו לרכוש את תווית המשלוח. יש לנסות שוב.";
+
+/* Button to retry label purchase when an error occurs */
+"wooShipping.createLabels.labelPurchaseError.retry" = "לנסות שוב";
+
+/* Title of the notice when purchasing a shipping label fails */
+"wooShipping.createLabels.labelPurchaseError.title" = "אירעה שגיאה ברכישה של תווית המשלוח.";
+
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "לא הצלחנו לטעון את הנתונים הנדרשים";
 
@@ -13133,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "יש להוסיף כתובת יעד כדי להציג את תעריפי המשלוח";
+
+/* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailable" = "לא מצאנו שירות משלוחים עבור השילוב של החבילה שנבחרה ומשקל המשלוח הכולל. יש להתאים את הקלט ולנסות שוב.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "אנחנו צריכים לדעת את משקל המשלוח לפני שנוכל להציג את תעריפי המשלוח הזמינים.";
@@ -13229,9 +13307,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Explanatory text for the international transaction number in customs */
 "wooShipping.customs.internationalTransactionNumber.infoText" = "מידע נוסף על ITN";
-
-/* Customs validation warning for the ITN field */
-"wooShipping.customs.itnValidation" = "יש להזין כתובת ITN תקינה";
 
 /* Product Details Section title */
 "wooShipping.customs.productDetails" = "פרטי המוצר";
@@ -13346,6 +13421,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading carrier packages in the shipping label creation flow */
 "wooShipping.packagesSelectionView.retryCTA" = "לנסות שוב";
+
+/* Button to navigate to the custom package screen in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.createCustomPackageCTA" = "ליצור חבילה מותאמת אישית";
+
+/* Message when there are no saved packages loaded in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.emptyStateMessage" = "עדיין אין חבילות שנשמרו";
+
+/* Error message when loading saved packages failed in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.loadingPackageError" = "לא הצלחנו לטעון את החבילות שנשמרו";
+
+/* Button to retry loading saved packages in the shipping label creation flow */
+"wooShipping.savedPackagesSelectionView.retryCTA" = "לנסות שוב";
+
+/* Label for section in shipping label creation to split shipments. */
+"wooShipping.splitShipments.products" = "מוצרים";
+
+/* Title for button in shipping label creation to start split shipments flow. */
+"wooShipping.splitShipments.splitShipmentsButtonTitle" = "לפצל את המשלוחים";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageFailure" = "אין אפשרות לשמור את החבילה";
+
+/* Button to retry saving a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.savingPackageRetry" = "לנסות שוב";
+
+/* Message when the ITN field is invalid in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "יש להזין ITN תקף באחד מהפורמטים הבאים: X12345678901234‏, AES X12345678901234 או NOEEI 30.37(a)‎.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "במשלוחים למדינת היעד חובה לציין מספר עסקה בינלאומית (ITN ‏ – International Transaction Number).";
+
+/* Message when the ITN field is missing for a Tariff class in the customs form of a shipping label */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass" = "יש לציין מספר עסקה בינלאומית (ITN) למשלוח פריטים שערכם גדול מ-2,500 $ לכל מספר תעריף.";
+
+/* Message when the ITN field is missing in the customs form of a shipping label for a total shipment value of over $2,500 */
+"wooShippingCustomsFormViewModel.ITNValidationError.missingForTotalShipmentValue" = "במשלוחים מעל 2,500 $, עליך לקבל מספר ITN של AES באורך 14 ספרות לצורך דיווח לרשויות הייצוא של ארה\"ב.";
+
+/* Button to dismiss the hazardous material category screen in the shipping label creation flow */
+"wooShippingHazmatCategoryList.cancel" = "ביטול";
+
+/* Title of the screen to select a category for hazardous materials in the shipping label creation flow */
+"wooShippingHazmatCategoryList.title" = "בחירת קטגוריה";
+
+/* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.cancel" = "ביטול";
+
+/* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.detailLine1" = "חומרים שעלולים להיות מסוכנים כוללים פריטים כגון סוללות, קרח יבש, נוזלים דליקים, תרסיסים, תחמושת, זיקוקים, לק לציפורניים, בושם, צבע, חומרים ממסים ועוד. יש לשלוח חומרים מסוכנים באריזות נפרדות.";
+
+/* Second line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholders are links to detail pages for HAZMAT. */
+"wooShippingHazmatDetailView.detailLine2" = "ללמוד איך לארוז חבילות HAZMAT, להכין תוויות עבורן ולשלוח אותן דרך USPS®‎ באתר %1$@. לקבוע את אפשרויות השליחה של המוצר שלך בדואר באמצעות %2$@.";
+
+/* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
+"wooShippingHazmatDetailView.detailLine3" = "השירות של WooCommerce Shipping כרגע לא תומך במשלוחי HAZMAT דרך %1$@.";
+
+/* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
+"wooShippingHazmatDetailView.searchTool" = "כלי החיפוש של USPS HAZMAT";
+
+/* Button to select hazardous material category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.selectCategory" = "בחירת קטגוריה";
+
+/* Label of the toggle on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.switchLabel" = "מכיל חומרים מסוכנים";
+
+/* Title of the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.title" = "המשלוח שלך כולל סחורות מסוכנות או חומרים מסוכנים?";
+
+/* Button to save split shipment configurations in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.done" = "בוצע";
+
+/* Button to select all items in the shipment detail in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.selectAll" = "לבחור הכול";
+
+/* Title of the split shipments detail view in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.title" = "לפצל את המשלוחים";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "WooCommerce, החנות שלי, היום, השבוע, החודש, השנה, הזמנות, מבקרים, המרות, המרות מובילות, פריטים שנמכרו";

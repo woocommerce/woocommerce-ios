@@ -175,7 +175,7 @@ private extension PointOfSaleOrderController {
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
             orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
-            discountTotal: formattedDiscount(totalsCalculator.discountTotal,
+            discountTotal: formattedDiscount(totalsCalculator.discountTotal.multiplying(by: -1),
                                              currency: order.currency),
             couponsTotals: couponsTotals(order))
     }

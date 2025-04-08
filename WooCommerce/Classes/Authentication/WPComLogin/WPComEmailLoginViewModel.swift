@@ -144,6 +144,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
 }
 
 private extension WPComEmailLoginViewModel {
+    @MainActor
     func handleUnkownUserError(emailOrUsername: String, error: Error) async {
         guard emailOrUsername.isValidEmail() else {
             analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))

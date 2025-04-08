@@ -43,7 +43,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleItemsController: PointOfSaleItemsControllerProtocol, PointOfSaleSearchingItemsControllerProtocol {
+@Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

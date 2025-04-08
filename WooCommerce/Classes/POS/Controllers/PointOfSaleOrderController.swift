@@ -191,7 +191,7 @@ private extension PointOfSaleOrderController {
         return order.coupons.compactMap { coupon in
             PointOfSaleCouponTotal(
                 code: coupon.code,
-                total: formattedPrice(coupon.discount, currency: order.currency) ?? ""
+                total: formattedPrice("-\(coupon.discount)", currency: order.currency) ?? ""
             )
         }
     }

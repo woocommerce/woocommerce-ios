@@ -52,7 +52,7 @@ struct CouponRowView: View {
 
                 switch couponRowState {
                 case .valid(let couponTotal):
-                    Text("-\(couponTotal.total)")
+                    Text(couponTotal.total)
                         .foregroundColor(.posSuccess)
                         .font(.posBodySmallRegular())
                 case .invalid:

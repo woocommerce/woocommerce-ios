@@ -38,7 +38,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor.ignoresSafeArea(.all))
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                                 .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
                                 .geometryGroup()
                         }
@@ -49,7 +49,7 @@ struct TotalsView: View {
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(1)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
@@ -66,7 +66,7 @@ struct TotalsView: View {
                             .font(POSFontStyle.posBodyLargeBold)
                     })
                     .layoutPriority(1)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)

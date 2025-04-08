@@ -1583,6 +1583,7 @@
 		683DF5FF2C6AF46500A5CDC6 /* POSHeaderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */; };
 		684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */; };
 		684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */; };
+		68503C362DA53E0A00C07909 /* MockPointOfSaleCouponsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68503C352DA53E0800C07909 /* MockPointOfSaleCouponsController.swift */; };
 		6850C5EE2B69E6580026A93B /* ReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6850C5ED2B69E6580026A93B /* ReceiptViewModel.swift */; };
 		6850C5F12B69E74D0026A93B /* ReceiptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6850C5F02B69E74D0026A93B /* ReceiptViewController.swift */; };
 		6850C5F42B6A11CA0026A93B /* ReceiptViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6850C5F32B6A11CA0026A93B /* ReceiptViewModelTests.swift */; };
@@ -4770,6 +4771,7 @@
 		683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHeaderTitleView.swift; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsView.swift; sourceTree = "<group>"; };
 		684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModel.swift; sourceTree = "<group>"; };
+		68503C352DA53E0800C07909 /* MockPointOfSaleCouponsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleCouponsController.swift; sourceTree = "<group>"; };
 		6850C5ED2B69E6580026A93B /* ReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModel.swift; sourceTree = "<group>"; };
 		6850C5F02B69E74D0026A93B /* ReceiptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewController.swift; sourceTree = "<group>"; };
 		6850C5F32B6A11CA0026A93B /* ReceiptViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModelTests.swift; sourceTree = "<group>"; };
@@ -7800,6 +7802,7 @@
 		02CD3BFC2C35D01600E575C4 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				68503C352DA53E0800C07909 /* MockPointOfSaleCouponsController.swift */,
 				02CD3BFD2C35D04C00E575C4 /* MockCardPresentPaymentService.swift */,
 				6801E4162D0FFF0100F9DF46 /* MockReceiptService.swift */,
 				207E71CA2C60F765008540FC /* MockPOSOrderService.swift */,
@@ -17718,6 +17721,7 @@
 				CE29FEF62C009F5F007679C2 /* ShippingLineRowViewModelTests.swift in Sources */,
 				20CCBF212B0E15C0003102E6 /* WooPaymentsPayoutsCurrencyOverviewViewModelTests.swift in Sources */,
 				2602A64227BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift in Sources */,
+				68503C362DA53E0A00C07909 /* MockPointOfSaleCouponsController.swift in Sources */,
 				DE6D84A52C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift in Sources */,
 				0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */,
 				4535EE80281BE4E0004212B4 /* CouponAmountInputFormatterTests.swift in Sources */,

@@ -27,7 +27,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var productsViewState: ItemsViewState
+    var itemsViewState: ItemsViewState
 
     var blockReturnToItemSelection: Bool = false
 
@@ -38,7 +38,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
          orderState: PointOfSaleOrderState = .idle,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
-        self.productsViewState = itemsViewState
+        self.itemsViewState = itemsViewState
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState

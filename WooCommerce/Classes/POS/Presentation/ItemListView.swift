@@ -16,7 +16,7 @@ struct ItemListView: View {
     private var itemsStack: ItemsStackState {
         switch selectedItemType {
         case .products:
-            return posModel.productsViewState.itemsStack
+            return posModel.itemsViewState.itemsStack
         case .coupons:
             return posModel.couponsViewState.itemsStack
         }
@@ -181,7 +181,7 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            let itemsStack = selectedItemType == .products ? posModel.productsViewState.itemsStack : posModel.couponsViewState.itemsStack
+            let itemsStack = selectedItemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
             ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
         default:
             EmptyView()

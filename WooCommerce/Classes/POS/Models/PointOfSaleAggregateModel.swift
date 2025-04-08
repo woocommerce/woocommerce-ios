@@ -24,7 +24,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var productsViewState: ItemsViewState { get }
+    var itemsViewState: ItemsViewState { get }
 
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
@@ -55,7 +55,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var productsViewState: ItemsViewState { itemsController.itemsViewState }
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
     var couponsViewState: ItemsViewState { couponsController.itemsViewState }
     var currentViewState: ItemsViewState
 
@@ -104,7 +104,7 @@ protocol PointOfSaleAggregateModelProtocol {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func updateCurrentViewState(base: ItemListBaseItem) {
-        let viewState = base.itemType == .products ? productsViewState : couponsViewState
+        let viewState = base.itemType == .products ? itemsViewState : couponsViewState
         currentViewState = viewState
     }
 

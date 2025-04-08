@@ -132,7 +132,7 @@ private extension TotalsView {
             Spacer().frame(height: Constants.subtotalsVerticalSpacing)
 
             if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
-                subtotalFieldView(title: Localization.discount,
+                subtotalFieldView(title: Localization.discountTotal,
                                   formattedPrice: orderTotals?.discountTotal,
                                   shimmeringActive: totalsLoading,
                                   matchedGeometryId: Constants.matchedGeometryDiscountId)
@@ -441,10 +441,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let discount = NSLocalizedString(
-            "pos.totalsView.discountTotal",
-            value: "Discount",
-            comment: "Title for discount amount field")
+        static let discountTotal = NSLocalizedString(
+            "pos.totalsView.discountTotal2",
+            value: "Discount total",
+            comment: "Title for discount total amount field")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",

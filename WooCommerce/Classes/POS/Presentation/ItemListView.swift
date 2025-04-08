@@ -84,7 +84,7 @@ struct ItemListView: View {
                 listView(items)
             case .error(let errorState):
                 if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onRetry: {
+                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
                         // TODO
                     })
                 } else {
@@ -285,7 +285,7 @@ private extension ItemListView {
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -297,7 +297,7 @@ private extension ItemListView {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

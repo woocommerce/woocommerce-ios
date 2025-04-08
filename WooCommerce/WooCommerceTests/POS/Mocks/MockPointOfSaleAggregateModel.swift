@@ -28,6 +28,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     var orderState: WooCommerce.PointOfSaleOrderState
 
     var itemsViewState: ItemsViewState
+
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,

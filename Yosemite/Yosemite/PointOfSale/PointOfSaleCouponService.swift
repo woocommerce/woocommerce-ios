@@ -12,6 +12,7 @@ public enum PointOfSaleCouponServiceError: Error {
 
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func enableCoupons() async throws
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
@@ -68,6 +69,20 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             return .init(items: refreshedCoupons, hasMorePages: false)
         }
     }
+
+    @MainActor
+    public func enableCoupons() async throws {
+        _ = await withCheckedContinuation { continuation in
+            settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case .failure:
+                    continuation.resume(returning: false)
+                }
+            }
+        }
+    }
 }
 
 private extension PointOfSaleCouponService {
@@ -119,10 +134,8 @@ private extension PointOfSaleCouponService {
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
-                    debugPrint("Coupons enabled? \(isEnabled)")
                     continuation.resume(returning: isEnabled)
-                case let .failure(error):
-                    debugPrint("Coupons settings error: \(error)")
+                case .failure:
                     continuation.resume(returning: false)
                 }
             }

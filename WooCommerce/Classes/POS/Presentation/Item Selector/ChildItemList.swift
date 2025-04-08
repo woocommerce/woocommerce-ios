@@ -77,7 +77,9 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(base: node)
+            ScrollView {
+                PointOfSaleItemListEmptyView(base: node)
+            }
         }
     }
 

@@ -4,23 +4,10 @@ import SwiftUI
 struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     let message: String
     let retryHandler: () -> Void
+    @State private var attributedMessage: AttributedString = ""
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
-    private var attributedMessage: AttributedString {
-        if let data = message.data(using: .utf8),
-           let nsAttributedString = try? NSAttributedString(
-               data: data,
-               options: [.documentType: NSAttributedString.DocumentType.html],
-               documentAttributes: nil) {
-            var attributedString = AttributedString(nsAttributedString)
-            attributedString.font = POSFontStyle.posBodyLargeRegular().font()
-            attributedString.foregroundColor = UIColor(Color.posOnSurface)
-            return attributedString
-        }
-        return AttributedString(message)
-    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -62,6 +49,11 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                 Spacer()
             }
         }
+        .onAppear {
+            // Setting attributed string once in onAppear to prevent a SwiftUI crash
+            // Building attributed HTML string within SwiftUI body causes never-ending redraw cycles
+            attributedMessage = message.attributedHTMLString
+        }
     }
 }
 
@@ -101,5 +93,21 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
 #Preview {
     if #available(iOS 17.0, *) {
         PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
+    }
+}
+
+private extension String {
+    var attributedHTMLString: AttributedString {
+        if let data = self.data(using: .utf8),
+           let nsAttributedString = try? NSAttributedString(
+               data: data,
+               options: [.documentType: NSAttributedString.DocumentType.html],
+               documentAttributes: nil) {
+            var attributedString = AttributedString(nsAttributedString)
+            attributedString.font = POSFontStyle.posBodyLargeRegular().font()
+            attributedString.foregroundColor = UIColor(Color.posOnSurface)
+            return attributedString
+        }
+        return AttributedString(self)
     }
 }

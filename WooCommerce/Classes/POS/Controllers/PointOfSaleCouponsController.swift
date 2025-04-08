@@ -5,7 +5,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleCouponsController: PointOfSaleItemsControllerProtocol {
+@Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

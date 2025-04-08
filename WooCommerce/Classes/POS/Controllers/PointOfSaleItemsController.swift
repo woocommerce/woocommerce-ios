@@ -24,15 +24,12 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
-    /// Enables coupons in store settings, if needed
-    func enableCoupons() async
 }
 
 @available(iOS 17.0, *)
-extension PointOfSaleItemsControllerProtocol {
-    func enableCoupons() async {
-        // Default: no-op
-    }
+protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
+    /// Enables coupons in store settings, if needed
+    func enableCoupons() async
 }
 
 @available(iOS 17.0, *)

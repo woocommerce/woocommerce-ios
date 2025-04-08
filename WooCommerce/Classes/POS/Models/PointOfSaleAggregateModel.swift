@@ -65,7 +65,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     private let itemsController: PointOfSaleItemsControllerProtocol
-    private let couponsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleCouponsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -78,7 +78,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
-         couponsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleCouponsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,

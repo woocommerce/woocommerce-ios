@@ -8,13 +8,13 @@ struct PointOfSaleEntryPointView: View {
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
-    private let couponsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleCouponsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
-         couponsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleCouponsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -64,7 +64,7 @@ struct PointOfSaleEntryPointView: View {
 @available(iOS 17.0, *)
 #Preview {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
-                              couponsController: PointOfSalePreviewItemsController(),
+                              couponsController: PointOfSalePreviewCouponsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

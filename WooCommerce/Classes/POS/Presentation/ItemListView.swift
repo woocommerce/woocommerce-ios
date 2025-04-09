@@ -77,10 +77,6 @@ struct ItemListView: View {
                 listView(items)
             case .error(let errorState):
                 switch errorState {
-                case .errorCouponsNotFound():
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
-                        showCouponCreationModal = true
-                    })
                 default:
                     PointOfSaleItemListErrorView(error: errorState, onAction: {
                         Task {
@@ -91,6 +87,8 @@ struct ItemListView: View {
                         }
                     })
                 }
+            case .empty:
+                emptyView
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
@@ -188,6 +186,18 @@ private extension ItemListView {
             EmptyView()
         }
     }
+
+    @ViewBuilder
+    var emptyView: some View {
+        switch posModel.selectedItemType {
+        case .products:
+            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType))
+        case .coupons:
+            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType)) {
+                showCouponCreationModal = true
+            }
+        }
+    }
 }
 
 @available(iOS 17.0, *)
@@ -211,7 +221,7 @@ private extension ItemListState {
                 .loaded,
                 .inlineError:
             return true
-        case .error:
+        case .error, .empty:
             return false
         }
     }

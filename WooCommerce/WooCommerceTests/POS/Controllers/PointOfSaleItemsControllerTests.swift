@@ -321,7 +321,8 @@ final class PointOfSaleItemsControllerTests {
         )
 
         itemProvider.errorToThrow = MockError.requestFailed
-        let expectedError = PointOfSaleErrorState(title: "Error loading products",
+        let expectedError = PointOfSaleErrorState(errorType: .productsLoadError,
+                                                  title: "Error loading products",
                                                   subtitle: "Give it another go?",
                                                   buttonText: "Retry")
         try #require(sut.itemsViewState.containerState == .loading)

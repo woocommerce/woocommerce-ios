@@ -37,7 +37,15 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
     func loadNextItems(base: ItemListBaseItem) async {
         // TODO:
         // Pagination WOOMOB-129
-        await fetchCoupons(pageNumber: 1)
+        do {
+            try await paginationTracker.resync { [weak self] pageNumber in
+                guard let self else { return true }
+                await fetchCoupons(pageNumber: pageNumber)
+                return true
+            }
+        } catch {
+            debugPrint(error)
+        }
     }
 
     @MainActor
@@ -59,11 +67,12 @@ private extension PointOfSaleCouponsController {
     @MainActor
     func fetchCoupons(pageNumber: Int = Constants.firstPage) async {
         do {
-            let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber).items
-            if pagedCoupons.isEmpty {
+            let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
+            let hasMoreItems = pagedCoupons.hasMorePages
+            if pagedCoupons.items.isEmpty {
                 setCouponsEmptyViewState()
             } else {
-                setCouponsLoadedViewState(pagedCoupons)
+                setCouponsLoadedViewState(pagedCoupons.items, hasMoreItems: hasMoreItems)
             }
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
@@ -83,9 +92,9 @@ private extension PointOfSaleCouponsController {
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 
-    func setCouponsLoadedViewState(_ coupons: [POSItem]) {
+    func setCouponsLoadedViewState(_ coupons: [POSItem], hasMoreItems: Bool) {
         itemsViewState = ItemsViewState(containerState: .content,
-                                        itemsStack: .init(root: .loaded(coupons, hasMoreItems: true),
+                                        itemsStack: .init(root: .loaded(coupons, hasMoreItems: hasMoreItems),
                                                           itemStates: [:]))
     }
 

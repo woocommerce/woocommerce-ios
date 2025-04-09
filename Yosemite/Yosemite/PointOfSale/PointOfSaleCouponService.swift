@@ -56,17 +56,17 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
         let coupons = await providePointOfSaleCoupons()
 
-        if !coupons.isEmpty {
+        if !coupons.items.isEmpty {
             // Fire-and-forget sync
             Task.detached {
                 await self.syncCouponsFromRemote(pageNumber: pageNumber)
             }
-            return .init(items: coupons, hasMorePages: false)
+            return .init(items: coupons.items, hasMorePages: true)
         } else {
             // Wait for the sync to complete
             await syncCouponsFromRemote(pageNumber: pageNumber)
             let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons, hasMorePages: false)
+            return .init(items: refreshedCoupons.items, hasMorePages: true)
         }
     }
 
@@ -87,9 +87,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func providePointOfSaleCoupons() async -> [POSItem] {
+    func providePointOfSaleCoupons() async -> PagedItems<POSItem> {
         guard let storage = storage else {
-            return []
+            return .init(items: [], hasMorePages: false)
         }
 
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -103,10 +103,11 @@ private extension PointOfSaleCouponService {
         do {
             try resultsController.performFetch()
             let storageCoupons = resultsController.fetchedObjects
-            return mapCouponsToPOSItems(coupons: storageCoupons)
+            let posItems = mapCouponsToPOSItems(coupons: storageCoupons)
+            return .init(items: posItems, hasMorePages: true)
         } catch {
             debugPrint("Failed to load coupons from storage:", error)
-            return []
+            return .init(items: [], hasMorePages: false)
         }
     }
 

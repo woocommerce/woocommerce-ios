@@ -6,7 +6,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
-    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker

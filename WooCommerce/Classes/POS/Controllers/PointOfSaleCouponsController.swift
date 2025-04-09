@@ -37,7 +37,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
     func loadNextItems(base: ItemListBaseItem) async {
         // TODO:
         // Pagination WOOMOB-129
-        await fetchCoupons()
+        await fetchCoupons(pageNumber: 1)
     }
 
     @MainActor
@@ -85,7 +85,7 @@ private extension PointOfSaleCouponsController {
 
     func setCouponsLoadedViewState(_ coupons: [POSItem]) {
         itemsViewState = ItemsViewState(containerState: .content,
-                                        itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
+                                        itemsStack: .init(root: .loaded(coupons, hasMoreItems: true),
                                                           itemStates: [:]))
     }
 

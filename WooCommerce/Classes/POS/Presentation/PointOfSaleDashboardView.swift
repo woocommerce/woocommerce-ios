@@ -20,10 +20,6 @@ struct PointOfSaleDashboardView: View {
                     PointOfSaleLoadingView()
                         .transition(.opacity)
                         .ignoresSafeArea()
-                case .empty:
-                    PointOfSaleItemListFullscreenView {
-                        PointOfSaleItemListEmptyView(base: .root(.products))
-                    }
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {

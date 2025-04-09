@@ -59,27 +59,44 @@ private extension PointOfSaleCouponsController {
     @MainActor
     func fetchCoupons(pageNumber: Int = Constants.firstPage) async {
         do {
-            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber).items
-            if coupons.isEmpty {
-                let containerState = ItemsContainerState.content
-                let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
-                itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
+            let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber).items
+            if pagedCoupons.isEmpty {
+                setCouponsEmptyViewState()
             } else {
-                itemsViewState = ItemsViewState(containerState: .content,
-                                                itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
-                                                                  itemStates: [:]))
+                setCouponsLoadedViewState(pagedCoupons)
             }
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
-                switch couponError {
-                case .couponsLoadingError:
-                    itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
-                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
-                case .couponsDisabled:
-                    itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
-                                                    itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
-                }
+                setCouponsErrorViewState(couponError)
             }
+        }
+    }
+}
+
+// MARK: - View state helpers
+//
+@available(iOS 17.0, *)
+private extension PointOfSaleCouponsController {
+    func setCouponsEmptyViewState() {
+        let containerState = ItemsContainerState.content
+        let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
+        itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
+    }
+
+    func setCouponsLoadedViewState(_ coupons: [POSItem]) {
+        itemsViewState = ItemsViewState(containerState: .content,
+                                        itemsStack: .init(root: .loaded(coupons, hasMoreItems: false),
+                                                          itemStates: [:]))
+    }
+
+    func setCouponsErrorViewState(_ couponError: PointOfSaleCouponServiceError) {
+        switch couponError {
+        case .couponsLoadingError:
+            itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
+                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+        case .couponsDisabled:
+            itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
+                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
         }
     }
 }

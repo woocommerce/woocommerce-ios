@@ -7,6 +7,8 @@ struct PointOfSaleItemListEmptyView: View {
 
     private let onAction: (() -> Void)?
 
+    @State private var viewWidth: CGFloat = 0
+
     init(base: ItemListBaseItem, onAction: (() -> Void)? = nil) {
         self.baseItem = base
         self.onAction = onAction
@@ -51,11 +53,16 @@ struct PointOfSaleItemListEmptyView: View {
                         Text(buttonTitle)
                     })
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
+                    .frame(width: viewWidth / 2)
                     .padding([.leading, .trailing])
                 }
             }
             Spacer()
+        }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .padding(.bottom, floatingControlAreaSize.height)
+        .measureWidth { width in
+            viewWidth = width
         }
     }
 }

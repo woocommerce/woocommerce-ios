@@ -18,6 +18,13 @@ struct CartItem {
 struct CartCouponItem {
     let id: UUID
     let code: String
+    let summary: String
+
+    init(id: UUID, code: String, summary: String) {
+        self.id = id
+        self.code = code
+        self.summary = summary
+    }
 }
 
 // MARK: - Helper Methods
@@ -34,7 +41,7 @@ extension Cart {
         case .variableParentProduct:
             return
         case .coupon(let coupon):
-            let couponItem = CartCouponItem(id: UUID(), code: coupon.code)
+            let couponItem = CartCouponItem(id: UUID(), code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
         }
     }

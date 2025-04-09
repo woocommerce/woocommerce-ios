@@ -16,6 +16,7 @@
 		016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */; };
 		016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */; };
 		01AAD8122D92DE110081D60B /* CouponsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8112D92DE0F0081D60B /* CouponsError.swift */; };
+		01C9C59D2DA3B09200CD81D8 /* Coupon+Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59C2DA3B08800CD81D8 /* Coupon+Summary.swift */; };
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */; };
@@ -571,6 +572,7 @@
 		016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePrice.swift"; sourceTree = "<group>"; };
 		016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePriceTests.swift"; sourceTree = "<group>"; };
 		01AAD8112D92DE0F0081D60B /* CouponsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponsError.swift; sourceTree = "<group>"; };
+		01C9C59C2DA3B08800CD81D8 /* Coupon+Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Summary.swift"; sourceTree = "<group>"; };
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsFeatureSwitch.swift"; sourceTree = "<group>"; };
@@ -1134,6 +1136,14 @@
 				016A89D72D9D6DAE0004FCD6 /* CouponStoreMethods.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		01C9C59B2DA3B08200CD81D8 /* Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				01C9C59C2DA3B08800CD81D8 /* Coupon+Summary.swift */,
+			);
+			path = Coupons;
 			sourceTree = "<group>";
 		};
 		0202B68E238790B900F3EBE0 /* PListStorage */ = {
@@ -1708,6 +1718,7 @@
 		B53D89E720E6C7DC00F90866 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				01C9C59B2DA3B08200CD81D8 /* Coupons */,
 				0331A7032A38B9D7001D2C2C /* WooPlans */,
 				02F6AAA827055655002425D0 /* Copiable */,
 				247CE7AF2582DBD000F9D9D1 /* Mocks */,
@@ -2640,6 +2651,7 @@
 				02EF1668292DB68C00D90AD6 /* PaymentAction.swift in Sources */,
 				CE0FBB232D0C65C8008B7789 /* WooShippingSavedPredefinedPackage+ReadOnlyConvertible.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
+				01C9C59D2DA3B09200CD81D8 /* Coupon+Summary.swift in Sources */,
 				02FF056123D98FD40058E6E7 /* ImageSourceWriter.swift in Sources */,
 				0212AC5E242C67FA00C51F6C /* ProductsSortOrder.swift in Sources */,
 				026CF626237D8EFB009563D4 /* ProductVariationStore.swift in Sources */,

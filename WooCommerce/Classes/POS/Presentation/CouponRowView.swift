@@ -6,15 +6,25 @@ struct CouponRowView: View {
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Binding private var showImage: Bool
 
-    init(couponItem: CartCouponItem, couponRowState: CouponRowState? = nil, onItemRemoveTapped: (() -> Void)? = nil) {
+    init(couponItem: CartCouponItem,
+         couponRowState: CouponRowState? = nil,
+         showImage: Binding<Bool> = .constant(true),
+         onItemRemoveTapped: (() -> Void)? = nil
+    ) {
         self.couponItem = couponItem
         self.couponRowState = couponRowState
+        self._showImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
     private var dynamicSpacing: CGFloat {
-        Constants.itemTitleAndPriceSpacing * (1 / scale)
+        Constants.titleSummarySpacing * (1 / scale)
+    }
+
+    private var dimension: CGFloat {
+        min(Constants.couponCardSize * scale, Constants.maximumCouponCardSize)
     }
 
     var body: some View {
@@ -22,45 +32,46 @@ struct CouponRowView: View {
             Rectangle()
                 .foregroundColor(.posSurfaceDim)
                 .overlay {
-                    Text(Image(systemName: "tag.square.fill"))
-                        .font(.posButtonSymbolLarge)
+                    Text(Image(systemName: "tag"))
+                        .font(.posButtonSymbolMedium)
                         .foregroundColor(.posOnSurfaceVariantLowest)
                 }
-                .frame(width: Constants.couponCardSize, height: Constants.couponCardSize)
+                .frame(width: dimension)
+                .frame(minHeight: dimension)
+                .accessibilityHidden(true)
+                .renderedIf(showImage)
 
             VStack(alignment: .leading, spacing: dynamicSpacing) {
                 Text(couponItem.code)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
-                    .font(Constants.itemTitleFont)
+                    .font(Constants.titleFont)
+
+                Text(couponItem.summary)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                    .font(Constants.summaryFont)
 
                 switch couponRowState {
                 case .valid(let couponTotal):
-                    Text("-\(couponTotal.total)")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
-                case .idle, .none:
-                    EmptyView()
+                    Text(couponTotal.total)
+                        .foregroundColor(.posSuccess)
+                        .font(.posBodySmallRegular())
                 case .invalid:
-                    Text("Invalid coupon")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
-                case .validating:
-                    Text("Validating...")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
+                    Text(Localization.invalidCoupon)
+                        .foregroundColor(.posError)
+                        .font(.posBodySmallRegular())
+                case .idle, .validating, .none:
+                    EmptyView()
                 }
             }
             .animation(.default, value: couponRowState)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, showImage ? 0 : Constants.cardContentHorizontalPadding)
+            .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
-                Button(action: {
+                CartRowRemoveButton {
                     onItemRemoveTapped()
-                }, label: {
-                    Text(Image(systemName: "xmark.circle"))
-                        .font(.posButtonSymbolMedium)
-                })
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
@@ -74,18 +85,28 @@ struct CouponRowView: View {
 private extension CouponRowView {
     enum Constants {
         static let couponCardSize: CGFloat = 96
+        static let maximumCouponCardSize: CGFloat = Self.couponCardSize * 1.5
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
-        static let itemTitleFont: POSFontStyle = .posBodySmallBold
-        static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
-        static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+        static let titleFont: POSFontStyle = .posBodySmallBold
+        static let titleSummarySpacing: CGFloat = POSSpacing.xSmall
+        static let summaryFont: POSFontStyle = .posBodySmallRegular()
+    }
+}
+
+private extension CouponRowView {
+    private enum Localization {
+        static let invalidCoupon = NSLocalizedString(
+            "pointOfSale.couponRow.invalidCoupon",
+            value: "Coupon not applied",
+            comment: "A message shown on the coupon if's not valid after attempting to apply it")
     }
 }
 
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    CouponRowView(couponItem: CartCouponItem(id: UUID(), code: "10-Discount"), couponRowState: .idle) {}
+    CouponRowView(couponItem: CartCouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
 }
 #endif

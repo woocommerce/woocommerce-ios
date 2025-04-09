@@ -154,7 +154,8 @@ private struct ItemListRow: View {
                 posModel.addToCart(item)
             }, label: {
                 CouponRowView(couponItem: .init(id: coupon.id,
-                                               code: coupon.code))
+                                                code: coupon.code,
+                                                summary: coupon.summary))
             })
         }
     }

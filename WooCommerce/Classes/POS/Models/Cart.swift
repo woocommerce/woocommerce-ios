@@ -20,7 +20,7 @@ struct CartCouponItem {
     let code: String
     let summary: String
 
-    init(id: UUID, code: String, summary: String = "") {
+    init(id: UUID, code: String, summary: String) {
         self.id = id
         self.code = code
         self.summary = summary

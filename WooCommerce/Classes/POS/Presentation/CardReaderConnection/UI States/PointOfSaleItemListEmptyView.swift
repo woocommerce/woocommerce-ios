@@ -5,42 +5,68 @@ struct PointOfSaleItemListEmptyView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let baseItem: ItemListBaseItem
 
-    init(base: ItemListBaseItem) {
+    private let onAction: (() -> Void)?
+
+    init(base: ItemListBaseItem, onAction: (() -> Void)? = nil) {
         self.baseItem = base
+        self.onAction = onAction
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+        VStack {
             Spacer()
-            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            Text(title)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posHeadingBold)
-            Text(subtitle)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
-            Text(hint)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
+            VStack(alignment: .center, spacing: POSSpacing.none) {
+                POSErrorExclamationMark(size: .large)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+
+                Text(title)
+                    .accessibilityAddTraits(.isHeader)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
+                    .multilineTextAlignment(.center)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+
+                Text(subtitle)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
+                    .padding([.leading, .trailing])
+                    .multilineTextAlignment(.center)
+
+                if let hint {
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                    Text(hint)
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .font(.posBodyLargeRegular())
+                        .padding([.leading, .trailing])
+                }
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
+                if let onAction, let buttonTitle {
+                    Button(action: {
+                        onAction()
+                    }, label: {
+                        Text(buttonTitle)
+                    })
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
+                    .padding([.leading, .trailing])
+                }
+            }
             Spacer()
         }
-        .multilineTextAlignment(.center)
-        .padding(.bottom, floatingControlAreaSize.height)
     }
 }
 
 private extension PointOfSaleItemListEmptyView {
     var title: String {
         switch baseItem {
-        case .root:
+        case .root(.products):
             return Localization.emptyProductsTitle
+        case .root(.coupons):
+            return Localization.emptyCouponsTitle
         case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductTitle
         default:
@@ -51,8 +77,10 @@ private extension PointOfSaleItemListEmptyView {
 
     var subtitle: String {
         switch baseItem {
-        case .root:
+        case .root(.products):
             return Localization.emptyProductsSubtitle
+        case .root(.coupons):
+            return Localization.emptyCouponsSubtitle
         case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductSubtitle
         default:
@@ -61,15 +89,26 @@ private extension PointOfSaleItemListEmptyView {
         }
     }
 
-    var hint: String {
+    var hint: String? {
         switch baseItem {
-        case .root:
+        case .root(.products):
             return Localization.emptyProductsHint
+        case .root(.coupons):
+            return nil
         case .parent(.variableParentProduct, _):
             return Localization.emptyVariableParentProductHint
         default:
             assertionFailure("No hint defined for \(baseItem)")
             return Localization.emptyProductsTitle
+        }
+    }
+
+    var buttonTitle: String? {
+        switch baseItem {
+        case .root(.coupons):
+            return Localization.emptyCouponsButtonTitle
+        default:
+            return nil
         }
     }
 
@@ -108,6 +147,22 @@ private extension PointOfSaleItemListEmptyView {
             "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint",
             value: "To add one, exit POS and edit this product in the Products tab.",
             comment: "Text hinting the merchant to create a product."
+        )
+
+        static let emptyCouponsTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle",
+            value: "No coupons found.",
+            comment: "Text appearing on the coupon list screen when there's no coupons found."
+        )
+        static let emptyCouponsSubtitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle",
+            value: "Boost your business by sending customers special offers and discounts.",
+            comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
+        )
+        static let emptyCouponsButtonTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle",
+            value: "Create coupon",
+            comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
         )
     }
 }

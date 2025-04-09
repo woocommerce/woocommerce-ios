@@ -789,6 +789,39 @@ final class SettingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    func test_retrieveCouponSetting_does_not_remove_other_settings_in_same_group() {
+        // Given
+        let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
+        let otherSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_currency", value: "USD", settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: otherSetting)
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        // Verify coupon setting was updated
+        let updatedCouponSetting = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons")?.toReadOnly()
+        XCTAssertEqual(updatedCouponSetting?.value, "yes")
+
+        // Verify other setting still exists and wasn't modified
+        let otherSettingAfterUpdate = viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_currency")?.toReadOnly()
+        XCTAssertEqual(otherSettingAfterUpdate?.value, "USD")
+
+        // Verify total count of settings in the group remains the same
+        let allSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: "general")
+        XCTAssertEqual(allSettings?.count, 2)
+    }
 }
 
 

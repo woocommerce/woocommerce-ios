@@ -73,7 +73,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let setting):
-                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     let isEnabled = setting.value == SettingValue.yes
                     onCompletion(.success(isEnabled))
                 }
@@ -90,7 +90,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let setting):
-                self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     onCompletion(.success(Void()))
                 }
             case .failure(let error):
@@ -106,7 +106,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let setting):
-                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     let isEnabled = setting.value == SettingValue.yes
                     onCompletion(.success(isEnabled))
                 }
@@ -126,7 +126,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let setting):
-                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     onCompletion(.success(Void()))
                 }
             case .failure(let error):
@@ -142,7 +142,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let setting):
-                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
                     guard let taxBasedOnSetting = TaxBasedOnSetting(backendValue: setting.value) else {
                         onCompletion(.failure(SettingError.parseError))
                         return
@@ -207,6 +207,28 @@ private extension SettingStoreMethods {
                     storage.deleteObject(storageItem)
                 }
             })
+        }
+    }
+
+    /// Updates (OR Inserts) a single ReadOnly `SiteSetting` entity **in a background thread**. `onCompletion` will be called
+    /// on the main thread!
+    ///
+    /// Doesn't remove other settings
+    ///
+    func upsertSingleStoredSettingInBackground(siteID: Int64, readOnlySiteSetting: Networking.SiteSetting, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertSingleSetting(readOnlySiteSetting, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
+    }
+
+    func upsertSingleSetting(_ readOnlySiteSetting: SiteSetting, in storage: StorageType, siteID: Int64) {
+        let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: readOnlySiteSetting.settingGroupKey)
+
+        if let existingStorageItem = storageSiteSettings?.first(where: { $0.settingID == readOnlySiteSetting.settingID }) {
+            existingStorageItem.update(with: readOnlySiteSetting)
+        } else {
+            let newStorageItem = storage.insertNewObject(ofType: Storage.SiteSetting.self)
+            newStorageItem.update(with: readOnlySiteSetting)
         }
     }
 }

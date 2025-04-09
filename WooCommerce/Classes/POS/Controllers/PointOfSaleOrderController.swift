@@ -175,16 +175,16 @@ private extension PointOfSaleOrderController {
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
             orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
-            discountTotal: formattedDiscount(totalsCalculator.discountTotal.multiplying(by: -1),
+            discountTotal: formattedDiscount(totalsCalculator.discountTotal,
                                              currency: order.currency),
             couponsTotals: couponsTotals(order))
     }
 
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
+    func formattedPrice(_ price: String?, currency: String?, isNegative: Bool = false) -> String? {
         guard let price, let currency else {
             return nil
         }
-        return currencyFormatter.formatAmount(price, with: currency)
+        return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
     }
 
     func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
@@ -198,7 +198,7 @@ private extension PointOfSaleOrderController {
 
     func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
         guard !discount.isZero(),
-              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency) else {
+              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency, isNegative: true) else {
             return nil
         }
 

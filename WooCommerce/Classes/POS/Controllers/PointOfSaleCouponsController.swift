@@ -50,8 +50,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
     @MainActor
     func enableCoupons() async {
-        // TODO: WOOMOB-255
-        // Handle loading state while coupons are being enabled
+        itemsViewState.itemsStack.root = .loading([])
         do {
             try await couponProvider.enableCoupons()
         } catch {

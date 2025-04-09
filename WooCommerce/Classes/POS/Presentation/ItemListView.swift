@@ -44,32 +44,6 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            HStack {
-                Button(action: {
-                    displayItemType(.products)
-                }, label: {
-                    Text("Products")
-                })
-                Button(action: {
-                    displayItemType(.coupons)
-                }, label: {
-                    Text("Coupons")
-                })
-
-                Spacer()
-
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-                .renderedIf(posModel.selectedItemType == .coupons)
-            }
-            .padding(POSPadding.medium)
-            .renderedIf(shouldShowCoupons)
-
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
@@ -118,6 +92,7 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
+                temporaryProductsCouponsSwitcher
                 Button(action: {
                     ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                     showSimpleProductsModal = true
@@ -135,6 +110,33 @@ private extension ItemListView {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
+    }
+
+    var temporaryProductsCouponsSwitcher: some View {
+        HStack {
+            Button(action: {
+                displayItemType(.products)
+            }, label: {
+                Text("Products")
+            })
+            Button(action: {
+                displayItemType(.coupons)
+            }, label: {
+                Text("Coupons")
+            })
+
+            Spacer()
+
+            Button(action: {
+                showCouponCreationModal = true
+            }, label: {
+                Text(Image(systemName: "plus.circle.fill"))
+            })
+            .font(.posButtonSymbolLarge)
+            .foregroundStyle(Color.posOnSurface)
+            .renderedIf(posModel.selectedItemType == .coupons)
+        }
+        .renderedIf(shouldShowCoupons)
     }
 
     var bannerCardView: some View {

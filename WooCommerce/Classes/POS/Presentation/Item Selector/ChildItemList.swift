@@ -77,7 +77,9 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(base: node)
+            ScrollView {
+                PointOfSaleItemListEmptyView(base: node)
+            }
         }
     }
 
@@ -89,7 +91,7 @@ private extension ChildItemList {
                 Spacer()
             }
 
-            PointOfSaleItemListErrorView(error: error, onRetry: {
+            PointOfSaleItemListErrorView(error: error, onAction: {
                 Task {
                     await posModel.loadItems(base: node)
                 }
@@ -152,7 +154,7 @@ private extension ChildItemList {
                 ], hasMoreItems: false)])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -177,7 +179,7 @@ private extension ChildItemList {
         ])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

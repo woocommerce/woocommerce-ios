@@ -1,49 +1,108 @@
 import Foundation
 
 struct PointOfSaleErrorState: Equatable {
+    enum ErrorType: Equatable {
+        case productsLoadError
+        case variationsLoadError
+        case productsNextPageError
+        case variationsNextPageError
+        case couponsNotFound
+        case couponsLoadError
+        case couponsDisabled
+    }
+
+    let errorType: ErrorType
     let title: String
     let subtitle: String
     let buttonText: String
 
     static func errorOnLoadingProducts() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadProductsTitle,
-                              subtitle: Constants.failedToLoadProductsSubtitle,
-                              buttonText: Constants.failedToLoadProductsButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .productsLoadError,
+            title: Constants.failedToLoadProductsTitle,
+            subtitle: Constants.failedToLoadProductsSubtitle,
+            buttonText: Constants.failedToLoadProductsButtonTitle)
     }
 
     static func errorOnLoadingVariations() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadVariationsTitle,
-                              subtitle: Constants.failedToLoadVariationsSubtitle,
-                              buttonText: Constants.failedToLoadVariationsButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .variationsLoadError,
+            title: Constants.failedToLoadVariationsTitle,
+            subtitle: Constants.failedToLoadVariationsSubtitle,
+            buttonText: Constants.failedToLoadVariationsButtonTitle)
     }
 
     static func errorOnLoadingProductsNextPage() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadProductsNextPageTitle,
-                              subtitle: Constants.failedToLoadProductsNextPageSubtitle,
-                              buttonText: Constants.failedToLoadProductsNextPageButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .productsNextPageError,
+            title: Constants.failedToLoadProductsNextPageTitle,
+            subtitle: Constants.failedToLoadProductsNextPageSubtitle,
+            buttonText: Constants.failedToLoadProductsNextPageButtonTitle)
     }
 
     static func errorOnLoadingVariationsNextPage() -> Self {
-        PointOfSaleErrorState(title: Constants.failedToLoadVariationsNextPageTitle,
-                              subtitle: Constants.failedToLoadVariationsNextPageSubtitle,
-                              buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .variationsNextPageError,
+            title: Constants.failedToLoadVariationsNextPageTitle,
+            subtitle: Constants.failedToLoadVariationsNextPageSubtitle,
+            buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
     static func errorCouponsNotFound() -> Self {
-        PointOfSaleErrorState(title: Constants.noCouponsFoundTitle,
-                              subtitle: Constants.noCouponsFoundSubtitle,
-                              buttonText: Constants.noCouponsFoundButtonTitle)
+        PointOfSaleErrorState(
+            errorType: .couponsNotFound,
+            title: Constants.noCouponsFoundTitle,
+            subtitle: Constants.noCouponsFoundSubtitle,
+            buttonText: Constants.noCouponsFoundButtonTitle)
     }
 
     static func errorOnLoadingCoupons() -> Self {
-        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Error loading coupons", buttonText: "Retry")
+        PointOfSaleErrorState(
+            errorType: .couponsLoadError,
+            title: Constants.loadingCouponsErrorTitle,
+            subtitle: Constants.loadingCouponsErrorSubtitle,
+            buttonText: Constants.loadingCouponsErrorRetry)
     }
 
     static func errorCouponsDisabled() -> Self {
-        PointOfSaleErrorState(title: "Error loading coupons", subtitle: "Please enable coupons in WooCommerce Settings, and tap Retry", buttonText: "Retry")
+        PointOfSaleErrorState(
+            errorType: .couponsDisabled,
+            title: Constants.loadingCouponsDisabledTitle,
+            subtitle: Constants.loadingCouponsDisabledSubtitle,
+            buttonText: Constants.loadingCouponsDisabledAction)
     }
 
     enum Constants {
+        static let loadingCouponsErrorTitle = NSLocalizedString(
+            "pos.itemList.loadingCouponsErrorTitle",
+            value: "Error loading coupons",
+            comment: "Title appearing on the coupon list screen when there's an error loading coupons."
+        )
+        static let loadingCouponsErrorSubtitle = NSLocalizedString(
+            "pos.itemList.loadingCouponsErrorSubtitle",
+            value: "Error loading coupons",
+            comment: "Subtitle appearing on the coupon list screen when there's an error loading coupons."
+        )
+        static let loadingCouponsErrorRetry = NSLocalizedString(
+            "pos.itemList.loadingCouponsErrorRetry",
+            value: "Retry",
+            comment: "Text of the button appearing on the coupon list screen when there's an error loading coupons."
+        )
+        static let loadingCouponsDisabledTitle = NSLocalizedString(
+            "pos.itemList.loadingCouponsDisabledTitle",
+            value: "Error loading coupons",
+            comment: "Title appearing on the coupon list screen when coupons are disabled."
+        )
+        static let loadingCouponsDisabledSubtitle = NSLocalizedString(
+            "pos.itemList.loadingCouponsDisabledSubtitle",
+            value: "Please enable the use of coupon codes in your store.",
+            comment: "Subtitle appearing on the coupon list screen when coupons are disabled."
+        )
+        static let loadingCouponsDisabledAction = NSLocalizedString(
+            "pos.itemList.loadingCouponsDisabledAction",
+            value: "Enable",
+            comment: "Text of the button appearing on the coupon list screen when coupons are disabled."
+        )
         static let noCouponsFoundTitle = NSLocalizedString(
             "pos.itemList.noCouponsFoundTitle",
             value: "No coupons found",

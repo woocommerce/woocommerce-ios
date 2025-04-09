@@ -3,11 +3,11 @@ import SwiftUI
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct PointOfSaleItemListErrorView: View {
     private let error: PointOfSaleErrorState
-    private let onRetry: (() -> Void)?
+    private let onAction: (() -> Void)?
 
-    init(error: PointOfSaleErrorState, onRetry: (() -> Void)? = nil) {
+    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
         self.error = error
-        self.onRetry = onRetry
+        self.onAction = onAction
     }
 
     var body: some View {
@@ -33,7 +33,7 @@ struct PointOfSaleItemListErrorView: View {
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
                 Button(action: {
-                    onRetry?()
+                    onAction?()
                 }, label: {
                     Text(error.buttonText)
                 })
@@ -47,5 +47,5 @@ struct PointOfSaleItemListErrorView: View {
 }
 
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts(), onRetry: nil)
+    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts(), onAction: nil)
 }

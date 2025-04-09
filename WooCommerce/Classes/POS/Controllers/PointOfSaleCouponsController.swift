@@ -23,21 +23,21 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         // TODO:
         // Handle unhappy path:
         // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
-        await loadFirstPage()
+        await fetchCoupons()
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         // TODO:
         // Handle unhappy path
-        await loadFirstPage()
+        await fetchCoupons()
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         // TODO:
-        // Pagination https://github.com/woocommerce/woocommerce-ios/issues/15343
-        await loadFirstPage()
+        // Pagination WOOMOB-129
+        await fetchCoupons()
     }
 
     @MainActor
@@ -57,9 +57,9 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
     @MainActor
-    func loadFirstPage() async {
+    func fetchCoupons(pageNumber: Int = Constants.firstPage) async {
         do {
-            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1).items
+            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber).items
             if coupons.isEmpty {
                 let containerState = ItemsContainerState.content
                 let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
@@ -81,5 +81,12 @@ private extension PointOfSaleCouponsController {
                 }
             }
         }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleCouponsController {
+    enum Constants {
+        static let firstPage: Int = 1
     }
 }

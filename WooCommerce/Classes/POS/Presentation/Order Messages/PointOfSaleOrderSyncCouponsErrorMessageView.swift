@@ -28,7 +28,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                     Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
                     VStack(spacing: POSSpacing.medium) {
-                        Button(Localization.retryActionTitle, action: {
+                        Button(retryActionTitle, action: {
                             posModel.removeAllCouponsFromCart()
                             retryHandler()
                         })
@@ -55,6 +55,14 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
             attributedMessage = message.attributedHTMLString
         }
     }
+
+    private var retryActionTitle: String {
+        if posModel.cart.coupons.count == 1 {
+            Localization.retryActionTitleSingular
+        } else {
+            Localization.retryActionTitlePlural
+        }
+    }
 }
 
 @available(iOS 17.0, *)
@@ -76,10 +84,16 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
             comment: "Title of the error when failing to validate coupons and calculate order totals"
         )
 
-        static let retryActionTitle = NSLocalizedString(
+        static let retryActionTitlePlural = NSLocalizedString(
             "pointOfSale.orderSync.couponsError.removeCoupons",
             value: "Remove coupons",
             comment: "Button title to remove coupons and retry synchronizing order and calculating order totals"
+        )
+
+        static let retryActionTitleSingular = NSLocalizedString(
+            "pointOfSale.orderSync.couponsError.removeCoupon",
+            value: "Remove coupon",
+            comment: "Button title to remove a single coupon and retry synchronizing order and calculating order totals"
         )
 
         static let editOrderTitle =  NSLocalizedString(

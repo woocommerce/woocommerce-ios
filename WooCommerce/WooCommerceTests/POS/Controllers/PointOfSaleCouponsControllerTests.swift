@@ -27,6 +27,10 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         let coupon3 = POSItem.coupon(POSCoupon(id: UUID(uuidString: ("DC55E3B9-9D83-4C07-82A7-4C300A50E84C")) ?? UUID(), code: "VALID3"))
         return [coupon1, coupon2, coupon3]
     }
+
+    func enableCoupons() async throws {
+        // no-op
+    }
 }
 
 struct PointOfSaleCouponsControllerTests {

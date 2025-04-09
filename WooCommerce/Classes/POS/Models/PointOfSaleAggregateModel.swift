@@ -24,7 +24,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemsViewState: ItemsViewState { get }
+    var currentViewState: ItemsViewState { get }
+
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
 
@@ -54,16 +55,18 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
-    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
-
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     private let itemsController: PointOfSaleItemsControllerProtocol
-    private let couponsController: PointOfSaleItemsControllerProtocol
+    private let couponsController: PointOfSaleCouponsControllerProtocol
+    private var currentController: PointOfSaleItemsControllerProtocol {
+        selectedItemType == .products ? itemsController : couponsController
+    }
+    var currentViewState: ItemsViewState { currentController.itemsViewState }
+    var selectedItemType: ItemType = .products
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -76,7 +79,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
-         couponsController: PointOfSaleItemsControllerProtocol,
+         couponsController: PointOfSaleCouponsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
@@ -100,20 +103,17 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        let controller = base.itemType == .products ? itemsController : couponsController
-        await controller.loadItems(base: base)
+        await currentController.loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        let controller = base.itemType == .products ? itemsController : couponsController
-        await controller.refreshItems(base: base)
+        await currentController.refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        let controller = base.itemType == .products ? itemsController : couponsController
-        await controller.loadNextItems(base: base)
+        await currentController.loadNextItems(base: base)
     }
 }
 
@@ -154,6 +154,14 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
+    }
+}
+
+// MARK: - Coupons
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func enableCoupons() async {
+        await couponsController.enableCoupons()
     }
 }
 

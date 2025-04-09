@@ -177,7 +177,7 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations())
+            parentItem: .error(.errorOnLoadingVariations)
         ])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

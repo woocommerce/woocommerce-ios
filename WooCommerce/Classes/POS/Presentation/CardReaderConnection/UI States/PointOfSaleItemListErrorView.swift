@@ -55,5 +55,5 @@ struct PointOfSaleItemListErrorView: View {
 }
 
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts(), onAction: nil)
+    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts, onAction: nil)
 }

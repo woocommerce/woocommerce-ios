@@ -288,7 +288,7 @@ final class PointOfSaleItemsControllerTests {
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage())
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage)
     }
 
     @available(iOS 17.0, *)
@@ -361,7 +361,7 @@ final class PointOfSaleItemsControllerTests {
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage())
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage)
     }
 
     @available(iOS 17.0, *)

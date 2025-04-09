@@ -50,17 +50,7 @@ struct ItemListView: View {
                     .inlineError(let items, _):
                 listView(items)
             case .error(let errorState):
-                switch errorState {
-                default:
-                    PointOfSaleItemListErrorView(error: errorState, onAction: {
-                        Task {
-                            if errorState.errorType == .couponsDisabled {
-                                await posModel.enableCoupons()
-                            }
-                            await posModel.loadItems(base: .root(.products))
-                        }
-                    })
-                }
+                errorView(errorState)
             case .empty:
                 emptyView
             }
@@ -198,6 +188,24 @@ private extension ItemListView {
             PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType)) {
                 showCouponCreationModal = true
             }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ errorState: PointOfSaleErrorState) -> some View {
+        switch errorState {
+        case .errorCouponsDisabled:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.enableCoupons()
+                }
+            })
+        default:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.loadItems(base: .root(.products))
+                }
+            })
         }
     }
 }

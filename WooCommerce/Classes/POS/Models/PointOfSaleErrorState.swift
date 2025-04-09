@@ -16,7 +16,7 @@ struct PointOfSaleErrorState: Equatable {
     let subtitle: String
     let buttonText: String
 
-    static func errorOnLoadingProducts() -> Self {
+    static var errorOnLoadingProducts: Self {
         PointOfSaleErrorState(
             errorType: .productsLoadError,
             title: Constants.failedToLoadProductsTitle,
@@ -24,7 +24,7 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.failedToLoadProductsButtonTitle)
     }
 
-    static func errorOnLoadingVariations() -> Self {
+    static var errorOnLoadingVariations: Self {
         PointOfSaleErrorState(
             errorType: .variationsLoadError,
             title: Constants.failedToLoadVariationsTitle,
@@ -32,7 +32,7 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.failedToLoadVariationsButtonTitle)
     }
 
-    static func errorOnLoadingProductsNextPage() -> Self {
+    static var errorOnLoadingProductsNextPage: Self {
         PointOfSaleErrorState(
             errorType: .productsNextPageError,
             title: Constants.failedToLoadProductsNextPageTitle,
@@ -40,7 +40,7 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.failedToLoadProductsNextPageButtonTitle)
     }
 
-    static func errorOnLoadingVariationsNextPage() -> Self {
+    static var errorOnLoadingVariationsNextPage: Self {
         PointOfSaleErrorState(
             errorType: .variationsNextPageError,
             title: Constants.failedToLoadVariationsNextPageTitle,
@@ -48,7 +48,7 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.failedToLoadVariationsNextPageButtonTitle)
     }
 
-    static func errorOnLoadingCoupons() -> Self {
+    static var errorOnLoadingCoupons: Self {
         PointOfSaleErrorState(
             errorType: .couponsLoadError,
             title: Constants.loadingCouponsErrorTitle,
@@ -56,7 +56,7 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.loadingCouponsErrorRetry)
     }
 
-    static func errorCouponsDisabled() -> Self {
+    static var errorCouponsDisabled: Self {
         PointOfSaleErrorState(
             errorType: .couponsDisabled,
             title: Constants.loadingCouponsDisabledTitle,

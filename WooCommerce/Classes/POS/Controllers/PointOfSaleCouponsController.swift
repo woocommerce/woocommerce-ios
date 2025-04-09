@@ -103,9 +103,9 @@ private extension PointOfSaleCouponsController {
 
         switch couponError {
         case .couponsLoadingError:
-            stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons()), itemStates: [:])
+            stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
         case .couponsDisabled:
-            stackState = ItemsStackState(root: .error(.errorCouponsDisabled()), itemStates: [:])
+            stackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
         }
 
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)

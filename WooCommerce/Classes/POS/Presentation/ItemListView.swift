@@ -78,7 +78,7 @@ struct ItemListView: View {
             case .error(let errorState):
                 if errorState == .errorCouponsNotFound() {
                     PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
-                        // TODO
+                        showCouponCreationModal = true
                     })
                 } else {
                     EmptyView()

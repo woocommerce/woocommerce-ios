@@ -87,7 +87,7 @@ private extension PointOfSaleCouponsController {
 private extension PointOfSaleCouponsController {
     func setCouponsEmptyViewState() {
         let containerState = ItemsContainerState.content
-        let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
+        let stackState = ItemsStackState(root: .empty, itemStates: [:])
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 

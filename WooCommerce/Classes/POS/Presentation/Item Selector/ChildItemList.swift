@@ -34,6 +34,8 @@ struct ChildItemList: View {
                 listView
             case let .error(error):
                 errorView(error: error)
+            case .empty:
+                emptyView
             }
         }
         .background(Color.posSurface)

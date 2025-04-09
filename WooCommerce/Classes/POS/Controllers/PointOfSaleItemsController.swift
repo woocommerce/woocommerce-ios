@@ -236,9 +236,8 @@ private extension PointOfSaleItemsController {
             }
             allItems.append(contentsOf: uniqueNewItems)
             if allItems.isEmpty {
-                itemsViewState.containerState = .empty
-                itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                            itemStates: [:])
+                itemsViewState.containerState = .content
+                itemsViewState.itemsStack = ItemsStackState(root: .empty, itemStates: [:])
             } else {
                 let itemStates = itemsViewState.itemsStack.itemStates
                     .filter { allItems.contains($0.key) }

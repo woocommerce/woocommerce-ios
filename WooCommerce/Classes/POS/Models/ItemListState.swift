@@ -5,6 +5,7 @@ enum ItemListState {
     case loaded(_ items: [POSItem], hasMoreItems: Bool)
     case inlineError(_ items: [POSItem], error: PointOfSaleErrorState)
     case error(PointOfSaleErrorState)
+    case empty
 
     var isLoading: Bool {
         switch self {
@@ -23,7 +24,7 @@ extension ItemListState {
                 .loaded(let items, _),
                 .inlineError(let items, _):
             return items
-        case .error:
+        case .error, .empty:
             return []
         }
     }

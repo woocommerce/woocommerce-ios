@@ -89,7 +89,7 @@ struct ItemList<HeaderView: View>: View {
                     await posModel.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error:
+        case .loaded, .error, .empty:
             EmptyView()
         }
     }

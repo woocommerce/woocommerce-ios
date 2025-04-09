@@ -76,12 +76,20 @@ struct ItemListView: View {
                     .inlineError(let items, _):
                 listView(items)
             case .error(let errorState):
-                if errorState == .errorCouponsNotFound() {
+                switch errorState {
+                case .errorCouponsNotFound():
                     PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
                         showCouponCreationModal = true
                     })
-                } else {
-                    EmptyView()
+                default:
+                    PointOfSaleItemListErrorView(error: errorState, onAction: {
+                        Task {
+                            if errorState.errorType == .couponsDisabled {
+                                await posModel.enableCoupons()
+                            }
+                            await posModel.loadItems(base: .root(.products))
+                        }
+                    })
                 }
             }
         }

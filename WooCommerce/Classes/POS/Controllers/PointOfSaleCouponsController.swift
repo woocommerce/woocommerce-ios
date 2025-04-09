@@ -99,14 +99,17 @@ private extension PointOfSaleCouponsController {
     }
 
     func setCouponsErrorViewState(_ couponError: PointOfSaleCouponServiceError) {
+        let containerState = ItemsContainerState.content
+        let stackState: ItemsStackState
+
         switch couponError {
         case .couponsLoadingError:
-            itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
-                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+            stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons()), itemStates: [:])
         case .couponsDisabled:
-            itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
-                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+            stackState = ItemsStackState(root: .error(.errorCouponsDisabled()), itemStates: [:])
         }
+
+        itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 }
 

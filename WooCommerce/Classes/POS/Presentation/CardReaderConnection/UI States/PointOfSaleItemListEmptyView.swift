@@ -9,6 +9,10 @@ struct PointOfSaleItemListEmptyView: View {
 
     @State private var viewWidth: CGFloat = 0
 
+    private var shouldShowErrorIcon: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
     init(base: ItemListBaseItem, onAction: (() -> Void)? = nil) {
         self.baseItem = base
         self.onAction = onAction
@@ -18,7 +22,16 @@ struct PointOfSaleItemListEmptyView: View {
         VStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                POSErrorExclamationMark(size: .large)
+                if shouldShowErrorIcon {
+                    POSErrorExclamationMark(size: .large)
+                } else {
+                    Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.iconSize, height: Constants.iconSize)
+                        .foregroundColor(.posOnSurfaceVariantHighest)
+                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                }
 
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
@@ -26,7 +39,6 @@ struct PointOfSaleItemListEmptyView: View {
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
-                    .multilineTextAlignment(.center)
 
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
 
@@ -34,7 +46,6 @@ struct PointOfSaleItemListEmptyView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
-                    .multilineTextAlignment(.center)
 
                 if let hint {
                     Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
@@ -59,7 +70,7 @@ struct PointOfSaleItemListEmptyView: View {
             }
             Spacer()
         }
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .multilineTextAlignment(.center)
         .padding(.bottom, floatingControlAreaSize.height)
         .measureWidth { width in
             viewWidth = width
@@ -120,7 +131,6 @@ private extension PointOfSaleItemListEmptyView {
     }
 
     enum Constants {
-        static let iconSystemName: String = "plus.magnifyingglass"
         static let iconSize: CGFloat = 100
     }
     enum Localization {

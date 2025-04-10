@@ -79,6 +79,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
         let readOnlyCoupons = pagedCoupons.items
         
         let shouldClearData = pageNumber == Remote.Default.firstPageNumber
+        // Since the count of remote fetched coupons fits the page size, we assume there could be more.
         let hasNextPage = readOnlyCoupons.count == pageSize
         
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
@@ -88,7 +89,12 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                 continuation.resume()
             }
         }
-        return true
+        //return true // This won-t work, as long as we sync successfully we return true, which bubbles up as "we have more pages" from the service syncCouponsFromRemote
+        if hasNextPage {
+            return true
+        } else {
+            return false
+        }
     }
 
     /// Synchronizes coupons from a Site with what is persisted in the storage layer.

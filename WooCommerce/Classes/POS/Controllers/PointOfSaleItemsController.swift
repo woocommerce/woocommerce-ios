@@ -30,6 +30,8 @@ protocol PointOfSaleItemsControllerProtocol {
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Enables coupons in store settings, if needed
     func enableCoupons() async
+    
+    func debug_deleteCouponsFromStorage()
 }
 
 @available(iOS 17.0, *)

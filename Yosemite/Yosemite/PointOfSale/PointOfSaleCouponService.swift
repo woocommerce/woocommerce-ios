@@ -13,6 +13,7 @@ public enum PointOfSaleCouponServiceError: Error {
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func enableCoupons() async throws
+    func debug_deleteCouponsFromStorage()
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
@@ -95,6 +96,17 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 }
             }
         }
+    }
+
+    public func debug_deleteCouponsFromStorage() {
+        guard let storage = storage else { fatalError() }
+
+        storage.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            storage.deleteCoupons(siteID: siteID)
+        }, completion: {
+            debugPrint("🍍 Delete done")
+        }, on: .global())
     }
 }
 

@@ -52,6 +52,10 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
             debugPrint(error)
         }
     }
+    
+    func debug_deleteCouponsFromStorage() {
+        couponProvider.debug_deleteCouponsFromStorage()
+    }
 }
 
 @available(iOS 17.0, *)

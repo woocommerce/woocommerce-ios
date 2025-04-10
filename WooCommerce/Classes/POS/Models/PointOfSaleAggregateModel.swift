@@ -96,6 +96,10 @@ protocol PointOfSaleAggregateModelProtocol {
         publishPaymentMessages()
         setupReaderReconnectionObservation()
     }
+    
+    func debug_deleteCoupons() {
+        couponsController.debug_deleteCouponsFromStorage()
+    }
 }
 
 // MARK: - ItemList

@@ -113,6 +113,12 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
                 Button(action: {
+                    posModel.debug_deleteCoupons()
+                },
+                       label: {
+                    Text("Delete coupons")
+                })
+                Button(action: {
                     ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                     showSimpleProductsModal = true
                 }, label: {

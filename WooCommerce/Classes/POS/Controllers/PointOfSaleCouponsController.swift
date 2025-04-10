@@ -35,10 +35,12 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        // TODO:
-        // Pagination WOOMOB-129
+        guard paginationTracker.hasNextPage else {
+            return
+        }
+
         do {
-            try await paginationTracker.resync { [weak self] pageNumber in
+            _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchCoupons(pageNumber: pageNumber, appendToExistingCoupons: false)
             }

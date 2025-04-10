@@ -10,6 +10,10 @@ public protocol CouponsRemoteProtocol {
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
 
+    func loadAllCoupons(for siteID: Int64,
+                        pageNumber: Int,
+                        pageSize: Int) async throws -> PagedItems<Coupon>
+
     func loadCoupons(for siteID: Int64,
                      by couponIDs: [Int64],
                      pageNumber: Int,
@@ -90,6 +94,9 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                      availableAsRESTRequest: true)
 
         let mapper = CouponListMapper(siteID: siteID)
+        
+        // Problem 1: No async await version
+        //let (coupons, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -373,6 +380,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 }
 
 extension CouponsRemote {
+    // already have the async version, but we need to fetch headers.
     public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = CouponsRemote.Default.pageNumber,
                                pageSize: Int = CouponsRemote.Default.pageSize) async throws -> [Coupon] {
@@ -386,6 +394,39 @@ extension CouponsRemote {
                 }
             }
         }
+    }
+    
+    // 1. New signature which also contains headers
+    // 2. Rather than retuning just Coupons and Headers, we adapt it to POS paged
+    public func loadAllCoupons(
+        for siteID: Int64,
+        pageNumber: Int = CouponsRemote.Default.pageNumber,
+        pageSize: Int = CouponsRemote.Default.pageSize
+    ) async throws -> PagedItems<Coupon> {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: Path.coupons,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = CouponListMapper(siteID: siteID)
+        let (coupons, headers) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        //return (coupons, headers)
+
+        // Extracts the total number of pages from the response headers.
+        // Response header names are case insensitive.
+        let totalPages = headers?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
+            .flatMap { Int($0.value) }
+        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true // 6
+        return PagedItems(items: coupons, hasMorePages: hasMorePages)
     }
 }
 

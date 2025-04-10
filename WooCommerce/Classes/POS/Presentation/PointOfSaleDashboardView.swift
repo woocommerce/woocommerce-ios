@@ -15,7 +15,7 @@ struct PointOfSaleDashboardView: View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
-                switch posModel.itemsViewState.containerState {
+                switch posModel.currentViewState.containerState {
                 case .loading:
                     PointOfSaleLoadingView()
                         .transition(.opacity)
@@ -24,9 +24,12 @@ struct PointOfSaleDashboardView: View {
                     PointOfSaleItemListFullscreenView {
                         PointOfSaleItemListEmptyView(base: .root(.products))
                     }
-                case .error(let errorContents):
-                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
+                case .error(let error):
+                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
+                            if error.errorType == .couponsDisabled {
+                                await posModel.enableCoupons()
+                            }
                             await posModel.loadItems(base: .root(.products))
                         }
                     })
@@ -47,7 +50,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(posModel.itemsViewState.containerState != .loading)
+            .renderedIf(posModel.currentViewState.containerState != .loading)
 
             POSConnectivityView()
         }
@@ -55,7 +58,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
+        .animation(.easeInOut, value: posModel.currentViewState.containerState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -191,7 +194,7 @@ private extension PointOfSaleDashboardView {
 #Preview("Container loading state") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -207,7 +210,7 @@ private extension PointOfSaleDashboardView {
     let itemsController = PointOfSalePreviewItemsController()
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

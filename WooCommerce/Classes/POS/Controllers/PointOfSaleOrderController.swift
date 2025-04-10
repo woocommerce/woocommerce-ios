@@ -180,25 +180,25 @@ private extension PointOfSaleOrderController {
             couponsTotals: couponsTotals(order))
     }
 
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
+    func formattedPrice(_ price: String?, currency: String?, isNegative: Bool = false) -> String? {
         guard let price, let currency else {
             return nil
         }
-        return currencyFormatter.formatAmount(price, with: currency)
+        return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
     }
 
     func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
         return order.coupons.compactMap { coupon in
             PointOfSaleCouponTotal(
                 code: coupon.code,
-                total: formattedPrice(coupon.discount, currency: order.currency) ?? ""
+                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? ""
             )
         }
     }
 
     func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
         guard !discount.isZero(),
-              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency) else {
+              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency, isNegative: true) else {
             return nil
         }
 
@@ -274,7 +274,7 @@ extension PointOfSaleOrderController {
 private extension POSCart {
     init(cart: Cart) {
         let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
-        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code) }
+        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code, summary: $0.summary) }
         self.init(items: items, coupons: coupons)
     }
 }

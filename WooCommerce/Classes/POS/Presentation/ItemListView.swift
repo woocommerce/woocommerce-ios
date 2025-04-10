@@ -17,12 +17,7 @@ struct ItemListView: View {
     }
 
     private var itemsStack: ItemsStackState {
-        switch selectedItemType {
-        case .products:
-            return posModel.itemsViewState.itemsStack
-        case .coupons:
-            return posModel.couponsViewState.itemsStack
-        }
+        posModel.currentViewState.itemsStack
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -31,8 +26,6 @@ struct ItemListView: View {
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
-
-    @State private var selectedItemType: ItemType = .products
 
     @State private var showCouponCreationModal: Bool = false
 
@@ -75,7 +68,7 @@ struct ItemListView: View {
                 })
                 .font(.posButtonSymbolLarge)
                 .foregroundStyle(Color.posOnSurface)
-                .renderedIf(selectedItemType == .coupons)
+                .renderedIf(posModel.selectedItemType == .coupons)
             }
             .padding(POSPadding.medium)
             .renderedIf(shouldShowCoupons)
@@ -87,7 +80,7 @@ struct ItemListView: View {
                 listView(items)
             case .error(let errorState):
                 if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onRetry: {
+                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
                         // TODO
                     })
                 } else {
@@ -177,14 +170,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
+        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(posModel.selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(selectedItemType))
+            await posModel.refreshItems(base: .root(posModel.selectedItemType))
         }
     }
 
@@ -193,7 +186,7 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            let itemsStack = selectedItemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
+            let itemsStack = posModel.currentViewState.itemsStack
             ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
         default:
             EmptyView()
@@ -208,7 +201,7 @@ private extension ItemListView {
     }
 
     func displayItemType(_ itemType: ItemType) {
-        selectedItemType = itemType
+        posModel.selectedItemType = itemType
         Task { @MainActor in
             await posModel.loadItems(base: .root(itemType))
         }
@@ -297,7 +290,7 @@ private extension ItemListView {
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -309,7 +302,7 @@ private extension ItemListView {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

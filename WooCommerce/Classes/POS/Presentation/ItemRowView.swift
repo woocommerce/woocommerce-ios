@@ -39,14 +39,9 @@ struct ItemRowView: View {
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
-                Button(action: {
+                CartRowRemoveButton {
                     onItemRemoveTapped()
-                }, label: {
-                    Text(Image(systemName: "xmark.circle"))
-                        .font(.posButtonSymbolMedium)
-                })
-                .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
@@ -80,14 +75,6 @@ private extension ItemRowView {
         static let itemTitleFont: POSFontStyle = .posBodySmallBold
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
-    }
-
-    enum Localization {
-        static let removeFromCartAccessibilityLabel = NSLocalizedString(
-            "pointOfSale.item.removeFromCart.button.accessibilityLabel",
-            value: "Remove",
-            comment: "The accessibility label for the `x` button next to each item in the Point of Sale cart." +
-            "The button removes the item. The translation should be short, to make it quick to navigate by voice.")
     }
 }
 

@@ -326,14 +326,13 @@ private extension CartView {
                               couponRowState: viewHelper.couponRowState(orderStage: posModel.orderStage,
                                                                         orderState: posModel.orderState,
                                                                         couponItem: couponItem),
+                              showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
                     posModel.remove(cartCouponItem: couponItem)
                 } : nil)
                 .id(couponItem.id)
                 .transition(.opacity)
             }
-
-            Spacer(minLength: 48)
         }
     }
 }
@@ -351,7 +350,7 @@ private extension CartView {
 #Preview {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
@@ -363,7 +362,7 @@ private extension CartView {
 #Preview("Cart with one item") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewItemsController(),
+        couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())

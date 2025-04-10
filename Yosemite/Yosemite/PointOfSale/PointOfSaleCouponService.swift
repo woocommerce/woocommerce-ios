@@ -12,10 +12,12 @@ public enum PointOfSaleCouponServiceError: Error {
 
 public protocol PointOfSaleCouponServiceProtocol {
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func enableCoupons() async throws
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
+    private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType?
     private let couponStoreMethods: CouponStoreMethodsProtocol
@@ -27,6 +29,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
          settingStoreMethods: SettingStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
+        self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
         self.couponStoreMethods = couponStoreMethods
@@ -55,26 +58,40 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
         let coupons = await providePointOfSaleCoupons()
 
-        if !coupons.isEmpty {
+        if !coupons.items.isEmpty {
             // Fire-and-forget sync
             Task.detached {
                 await self.syncCouponsFromRemote(pageNumber: pageNumber)
             }
-            return .init(items: coupons, hasMorePages: false)
+            return .init(items: coupons.items, hasMorePages: true)
         } else {
             // Wait for the sync to complete
             await syncCouponsFromRemote(pageNumber: pageNumber)
             let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons, hasMorePages: false)
+            return .init(items: refreshedCoupons.items, hasMorePages: true)
+        }
+    }
+
+    @MainActor
+    public func enableCoupons() async throws {
+        _ = await withCheckedContinuation { continuation in
+            settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case .failure:
+                    continuation.resume(returning: false)
+                }
+            }
         }
     }
 }
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func providePointOfSaleCoupons() async -> [POSItem] {
+    func providePointOfSaleCoupons() async -> PagedItems<POSItem> {
         guard let storage = storage else {
-            return []
+            return .init(items: [], hasMorePages: false)
         }
 
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -88,16 +105,21 @@ private extension PointOfSaleCouponService {
         do {
             try resultsController.performFetch()
             let storageCoupons = resultsController.fetchedObjects
-            return mapCouponsToPOSItems(coupons: storageCoupons)
+            let posItems = mapCouponsToPOSItems(coupons: storageCoupons)
+            return .init(items: posItems, hasMorePages: true)
         } catch {
             debugPrint("Failed to load coupons from storage:", error)
-            return []
+            return .init(items: [], hasMorePages: false)
         }
     }
 
     func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(), code: coupon.code))
+                .coupon(POSCoupon(
+                    id: UUID(),
+                    code: coupon.code,
+                    summary: coupon.summary(currencySettings: currencySettings)
+                ))
         }
     }
 
@@ -119,10 +141,8 @@ private extension PointOfSaleCouponService {
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
-                    debugPrint("Coupons enabled? \(isEnabled)")
                     continuation.resume(returning: isEnabled)
-                case let .failure(error):
-                    debugPrint("Coupons settings error: \(error)")
+                case .failure:
                     continuation.resume(returning: false)
                 }
             }

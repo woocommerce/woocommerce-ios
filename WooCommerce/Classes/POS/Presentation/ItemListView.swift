@@ -12,12 +12,14 @@ struct ItemListView: View {
 
     @State private var searchTerm: String = ""
 
+    @Binding var selectedItemType: ItemType
+
     private var itemListState: ItemListState {
         itemsStack.root
     }
 
     private var itemsStack: ItemsStackState {
-        switch posModel.selectedItemType {
+        switch selectedItemType {
         case .products(let searching):
             if searching {
                 return posModel.purchasableItemsSearchViewState.itemsStack
@@ -96,7 +98,7 @@ private extension ItemListView {
             POSPageHeaderView(title: Localization.title, trailingContent: {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-                       case .products = posModel.selectedItemType {
+                       case .products = selectedItemType {
                         TextField(text: $searchTerm) {
                             Text("Search")
                         }
@@ -142,7 +144,7 @@ private extension ItemListView {
 
             Spacer()
 
-            if case .coupons = posModel.selectedItemType {
+            if case .coupons = selectedItemType {
                 Button(action: {
                     showCouponCreationModal = true
                 }, label: {
@@ -182,14 +184,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(posModel.selectedItemType)) {
+        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(posModel.selectedItemType))
+            await posModel.refreshItems(base: .root(selectedItemType))
         }
     }
 
@@ -206,11 +208,11 @@ private extension ItemListView {
 
     @ViewBuilder
     var emptyView: some View {
-        switch posModel.selectedItemType {
+        switch selectedItemType {
         case .products:
-            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType))
+            PointOfSaleItemListEmptyView(base: .root(selectedItemType))
         case .coupons:
-            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType)) {
+            PointOfSaleItemListEmptyView(base: .root(selectedItemType)) {
                 showCouponCreationModal = true
             }
         }
@@ -242,7 +244,7 @@ private extension ItemListView {
     }
 
     func displayItemType(_ itemType: ItemType) {
-        posModel.selectedItemType = itemType
+        selectedItemType = itemType
         Task { @MainActor in
             await posModel.loadItems(base: .root(itemType))
         }
@@ -336,7 +338,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
@@ -349,7 +351,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 

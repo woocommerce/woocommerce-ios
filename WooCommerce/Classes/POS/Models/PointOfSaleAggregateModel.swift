@@ -69,19 +69,6 @@ protocol PointOfSaleAggregateModelProtocol {
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
-    private var currentController: PointOfSaleItemsControllerProtocol {
-        switch selectedItemType {
-        case .products(let searching):
-            if searching {
-                return purchasableItemsSearchController
-            } else {
-                return itemsController
-            }
-        case .coupons:
-            return couponsController
-        }
-    }
-    var selectedItemType: ItemType = .products(search: false)
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -120,17 +107,17 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await currentController.loadItems(base: base)
+        await itemsController(for: base.itemType).loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await currentController.refreshItems(base: base)
+        await itemsController(for: base.itemType).refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await currentController.loadNextItems(base: base)
+        await itemsController(for: base.itemType).loadNextItems(base: base)
     }
 
     @MainActor
@@ -139,6 +126,19 @@ extension PointOfSaleAggregateModel {
             return
         }
         await purchasableItemsSearchController.searchItems(searchTerm: searchTerm, baseItem: base)
+    }
+
+    private func itemsController(for itemType: ItemType) -> PointOfSaleItemsControllerProtocol {
+        switch itemType {
+        case .products(let searching):
+            if searching {
+                return purchasableItemsSearchController
+            } else {
+                return itemsController
+            }
+        case .coupons:
+            return couponsController
+        }
     }
 }
 

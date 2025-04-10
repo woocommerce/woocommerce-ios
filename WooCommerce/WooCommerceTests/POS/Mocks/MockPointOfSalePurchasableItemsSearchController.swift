@@ -16,4 +16,3 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
 
     func loadNextItems(base: ItemListBaseItem) async { }
 }
-

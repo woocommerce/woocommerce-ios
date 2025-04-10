@@ -24,7 +24,9 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var currentViewState: ItemsViewState { get }
+    var itemsViewState: ItemsViewState { get }
+    var purchasableItemsSearchViewState: ItemsViewState { get }
+    var couponsViewState: ItemsViewState { get }
 
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
@@ -69,13 +71,16 @@ protocol PointOfSaleAggregateModelProtocol {
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private var currentController: PointOfSaleItemsControllerProtocol {
         switch selectedItemType {
-        case .products:
-            return itemsController
+        case .products(let searching):
+            if searching {
+                return purchasableItemsSearchController
+            } else {
+                return itemsController
+            }
         case .coupons:
             return couponsController
         }
     }
-    var currentViewState: ItemsViewState { currentController.itemsViewState }
     var selectedItemType: ItemType = .products(search: false)
 
     private let cardPresentPaymentService: CardPresentPaymentFacade

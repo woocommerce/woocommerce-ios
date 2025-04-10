@@ -11,11 +11,24 @@ struct PointOfSaleDashboardView: View {
 
     @State private var floatingSize: CGSize = .zero
 
+    private var itemsViewState: ItemsViewState {
+        switch posModel.selectedItemType {
+        case .products(let searching):
+            if searching {
+                return posModel.purchasableItemsSearchViewState
+            } else {
+                return posModel.itemsViewState
+            }
+        case .coupons:
+            return posModel.couponsViewState
+        }
+    }
+
     var body: some View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
-                switch posModel.currentViewState.containerState {
+                switch itemsViewState.containerState {
                 case .loading:
                     PointOfSaleLoadingView()
                         .transition(.opacity)
@@ -43,7 +56,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(posModel.currentViewState.containerState != .loading)
+            .renderedIf(itemsViewState.containerState != .loading)
 
             POSConnectivityView()
         }
@@ -51,7 +64,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.currentViewState.containerState == .loading)
+        .animation(.easeInOut, value: itemsViewState.containerState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {

@@ -5,9 +5,8 @@ import enum Yosemite.POSItem
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
-    var itemsViewState: ItemsViewState = .init(containerState: .empty,
-                                               itemsStack: .init(root: .loaded([], hasMoreItems: false),
-                                                                 itemStates: [:]))
+    var itemsViewState: ItemsViewState = .init(containerState: .content,
+                                               itemsStack: .init(root: .empty, itemStates: [:]))
 
     func loadItems(base: ItemListBaseItem) async { }
 

@@ -2,8 +2,11 @@ import SwiftUI
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct PointOfSaleItemListErrorView: View {
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let error: PointOfSaleErrorState
     private let onAction: (() -> Void)?
+
+    @State private var viewWidth: CGFloat = 0
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
         self.error = error
@@ -11,7 +14,7 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 POSErrorExclamationMark(size: .large)
@@ -38,14 +41,18 @@ struct PointOfSaleItemListErrorView: View {
                     Text(error.buttonText)
                 })
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
+                .frame(width: viewWidth / 2)
                 .padding([.leading, .trailing])
             }
             Spacer()
+        }
+        .padding(.bottom, floatingControlAreaSize.height)
+        .measureWidth { width in
+            viewWidth = width
         }
     }
 }
 
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts(), onAction: nil)
+    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts, onAction: nil)
 }

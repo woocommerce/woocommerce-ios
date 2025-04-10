@@ -19,7 +19,7 @@ struct PointOfSaleItemListEmptyView: View {
     }
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 if shouldShowErrorIcon {

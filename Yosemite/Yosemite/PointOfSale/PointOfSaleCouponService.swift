@@ -50,7 +50,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    // Provides all available locally-stored coupons
+    // Provides an array of coupons that are stored locally, it does not accept any sort of pagination
     public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
         let couponsEnabled = await checkStoreCouponSettings()
         if !couponsEnabled {

@@ -23,14 +23,14 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         // TODO:
         // Handle unhappy path:
         // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
-        await fetchFirstPage()
+        await loadFirstPage()
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         // TODO:
         // Handle unhappy path
-        await fetchFirstPage()
+        await loadFirstPage()
     }
 
     @MainActor
@@ -64,14 +64,15 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
-    func fetchFirstPage() async {
+    func loadFirstPage() async {
         do {
-            // 1. Load first page from local storage
-            let localCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
-            if !localCoupons.isEmpty {
-                setCouponsLoadedViewState(localCoupons, hasMoreItems: true)
+            // 1. Attempt to load the first page from local storage, and present them
+            let storedCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
+
+            if !storedCoupons.isEmpty {
+                setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             } else {
-                // 2. If there are no local results, fetch from remote, upsert, then fetch from storage again
+                // 2. If there are no local results, retry again after syncing the first page from remote first
                 let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
                 if !coupons.items.isEmpty {
                     setCouponsLoadedViewState(coupons.items, hasMoreItems: true)

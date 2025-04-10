@@ -10,7 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
 enum ItemType {
-    case products
+    case products(search: Bool = false)
     case coupons
 }
 

@@ -23,7 +23,7 @@ struct PointOfSaleDashboardView: View {
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            await posModel.loadItems(base: .root(.products))
+                            await posModel.loadItems(base: .root(.products()))
                         }
                     })
                 case .content:
@@ -79,7 +79,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root(.products))
+            await posModel.loadItems(base: .root(.products()))
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -187,6 +187,7 @@ private extension PointOfSaleDashboardView {
 #Preview("Container loading state") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
@@ -203,6 +204,7 @@ private extension PointOfSaleDashboardView {
     let itemsController = PointOfSalePreviewItemsController()
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),

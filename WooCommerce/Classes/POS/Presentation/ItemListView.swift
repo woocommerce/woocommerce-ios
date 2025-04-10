@@ -17,7 +17,16 @@ struct ItemListView: View {
     }
 
     private var itemsStack: ItemsStackState {
-        posModel.currentViewState.itemsStack
+        switch posModel.selectedItemType {
+        case .products(let searching):
+            if searching {
+                return posModel.purchasableItemsSearchViewState.itemsStack
+            } else {
+                return posModel.itemsViewState.itemsStack
+            }
+        case .coupons:
+            return posModel.couponsViewState.itemsStack
+        }
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -87,9 +96,14 @@ private extension ItemListView {
             POSPageHeaderView(title: Localization.title, trailingContent: {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-                       posModel.selectedItemType == .products {
+                       case .products = posModel.selectedItemType {
                         TextField(text: $searchTerm) {
                             Text("Search")
+                        }
+                        .onChange(of: searchTerm) { oldValue, newValue in
+                            Task {
+                                await posModel.searchItems(searchTerm: newValue, base: .root(.products(search: true)))
+                            }
                         }
                     }
                     temporaryProductsCouponsSwitcher
@@ -116,7 +130,7 @@ private extension ItemListView {
     var temporaryProductsCouponsSwitcher: some View {
         HStack {
             Button(action: {
-                displayItemType(.products)
+                displayItemType(.products(search: false))
             }, label: {
                 Text("Products")
             })
@@ -128,14 +142,15 @@ private extension ItemListView {
 
             Spacer()
 
-            Button(action: {
-                showCouponCreationModal = true
-            }, label: {
-                Text(Image(systemName: "plus.circle.fill"))
-            })
-            .font(.posButtonSymbolLarge)
-            .foregroundStyle(Color.posOnSurface)
-            .renderedIf(posModel.selectedItemType == .coupons)
+            if case .coupons = posModel.selectedItemType {
+                Button(action: {
+                    showCouponCreationModal = true
+                }, label: {
+                    Text(Image(systemName: "plus.circle.fill"))
+                })
+                .font(.posButtonSymbolLarge)
+                .foregroundStyle(Color.posOnSurface)
+            }
         }
         .renderedIf(shouldShowCoupons)
     }
@@ -214,7 +229,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.loadItems(base: .root(.products))
+                    await posModel.loadItems(base: .root(.products(search: false)))
                 }
             })
         }
@@ -313,10 +328,11 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadItems(base: .root(.products))
+        await itemsController.loadItems(base: .root(.products()))
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: itemsController,
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
@@ -329,6 +345,7 @@ private extension ItemListView {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),

@@ -55,18 +55,28 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var purchasableItemsSearchViewState: ItemsViewState { purchasableItemsSearchController.itemsViewState }
+    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
+
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private var currentController: PointOfSaleItemsControllerProtocol {
-        selectedItemType == .products ? itemsController : couponsController
+        switch selectedItemType {
+        case .products:
+            return itemsController
+        case .coupons:
+            return couponsController
+        }
     }
     var currentViewState: ItemsViewState { currentController.itemsViewState }
-    var selectedItemType: ItemType = .products
+    var selectedItemType: ItemType = .products(search: false)
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -79,6 +89,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -86,6 +97,7 @@ protocol PointOfSaleAggregateModelProtocol {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
@@ -114,6 +126,14 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         await currentController.loadNextItems(base: base)
+    }
+
+    @MainActor
+    func searchItems(searchTerm: String, base: ItemListBaseItem) async {
+        guard case .products = base.itemType else {
+            return
+        }
+        await purchasableItemsSearchController.searchItems(searchTerm: searchTerm, baseItem: base)
     }
 }
 

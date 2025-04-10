@@ -14,7 +14,7 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 POSErrorExclamationMark(size: .large)
@@ -46,7 +46,6 @@ struct PointOfSaleItemListErrorView: View {
             }
             Spacer()
         }
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .padding(.bottom, floatingControlAreaSize.height)
         .measureWidth { width in
             viewWidth = width

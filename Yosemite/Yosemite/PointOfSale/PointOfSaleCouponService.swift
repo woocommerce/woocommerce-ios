@@ -66,8 +66,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         // Sync local storage with remote coupons
         await syncCouponsFromRemote(pageNumber: pageNumber)
         // Then provide fresh coupons from local storage
-        let freshCoupons = try await provideLocalPointOfSaleCoupons()
-        return .init(items: freshCoupons, hasMorePages: true)
+        let coupons = try await provideLocalPointOfSaleCoupons()
+        return .init(items: coupons, hasMorePages: true)
     }
 
     @MainActor

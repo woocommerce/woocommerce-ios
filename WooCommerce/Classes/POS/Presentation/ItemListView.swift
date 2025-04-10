@@ -104,6 +104,7 @@ private extension ItemListView {
                         }
                         .onChange(of: searchTerm) { oldValue, newValue in
                             Task {
+                                selectedItemType = .products(search: newValue.isNotEmpty)
                                 await posModel.searchItems(searchTerm: newValue, base: .root(.products(search: true)))
                             }
                         }
@@ -132,7 +133,7 @@ private extension ItemListView {
     var temporaryProductsCouponsSwitcher: some View {
         HStack {
             Button(action: {
-                displayItemType(.products(search: false))
+                displayItemType(.products(search: searchTerm.isNotEmpty))
             }, label: {
                 Text("Products")
             })

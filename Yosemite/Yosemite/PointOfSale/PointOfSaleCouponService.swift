@@ -47,27 +47,40 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
+// Temporarily commented out for debugging
+//    @MainActor
+//    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+//        let couponsEnabled = await checkStoreCouponSettings()
+//        if !couponsEnabled {
+//            throw PointOfSaleCouponServiceError.couponsDisabled
+//        }
+//
+//        let coupons = await fetchCouponsFromStorage()
+//
+//        if !coupons.isEmpty {
+//            // Fire-and-forget sync
+//            Task.detached {
+//                await self.syncCouponsFromRemote(pageNumber: pageNumber)
+//            }
+//            return .init(items: coupons, hasMorePages: false)
+//        } else {
+//            // Wait for the sync to complete
+//            // Some rename for easyness
+//            await syncCouponsFromRemote(pageNumber: pageNumber)
+//            let refreshedCoupons = await fetchCouponsFromStorage()
+//            return .init(items: refreshedCoupons, hasMorePages: false)
+//        }
+//    }
+    
+#warning("Debug")
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let couponsEnabled = await checkStoreCouponSettings()
-        if !couponsEnabled {
-            throw PointOfSaleCouponServiceError.couponsDisabled
-        }
-
-        let coupons = await providePointOfSaleCoupons()
-
-        if !coupons.isEmpty {
-            // Fire-and-forget sync
-            Task.detached {
-                await self.syncCouponsFromRemote(pageNumber: pageNumber)
-            }
-            return .init(items: coupons, hasMorePages: false)
-        } else {
-            // Wait for the sync to complete
-            await syncCouponsFromRemote(pageNumber: pageNumber)
-            let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons, hasMorePages: false)
-        }
+        // Wait for the remote sync to complete, as this will upsert them into storage, then fetch from storage
+        // Which means step 1 just assure that they're fetched correctly
+        // When we sync coupons we assure to also know if there are more pages that will need sync, and upsert to storage page by page, then we retrieve them from there.
+        let hasMorePages = await syncCouponsFromRemote(pageNumber: pageNumber)
+        let refreshedCoupons = await fetchCouponsFromStorage()
+        return .init(items: refreshedCoupons, hasMorePages: hasMorePages)
     }
 
     @MainActor
@@ -87,7 +100,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func providePointOfSaleCoupons() async -> [POSItem] {
+    func fetchCouponsFromStorage() async -> [POSItem] {
         guard let storage = storage else {
             return []
         }
@@ -116,16 +129,18 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    func syncCouponsFromRemote(pageNumber: Int) async {
-        await withCheckedContinuation { continuation in
-            couponStoreMethods.synchronizeCoupons(
-                siteID: siteID,
-                pageNumber: pageNumber,
-                pageSize: 25,
-                onCompletion: { _ in
-                    continuation.resume()
-                }
-            )
+    func syncCouponsFromRemote(pageNumber: Int) async -> Bool {
+        // TODO: pageSize no need to be exposed here, is set from the remote.
+        do {
+            let hasMorePages = try await couponStoreMethods.synchronizeCouponsForPOS(siteID: siteID,
+                                                        pageNumber: pageNumber, pageSize: 5)
+            //Return this result so we know if there are more pages to fetch?
+            return hasMorePages
+            
+        } catch {
+            debugPrint(error)
+            // TODO: catch properly
+            return false
         }
     }
 

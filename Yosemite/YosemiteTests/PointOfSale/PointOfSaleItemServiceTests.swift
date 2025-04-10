@@ -187,7 +187,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
                         )
                     ]
             ),
-            pageNumber: 1,
+            pageNumber: 1, //
             fetchStrategy: defaultFetchStrategy
         )
 

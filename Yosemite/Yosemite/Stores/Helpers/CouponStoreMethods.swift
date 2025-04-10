@@ -10,6 +10,10 @@ internal protocol CouponStoreMethodsProtocol {
                             pageSize: Int,
                             onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void)
 
+    func synchronizeCouponsForPOS(siteID: Int64,
+                                  pageNumber: Int,
+                                  pageSize: Int) async throws -> Bool
+
     func deleteCoupon(siteID: Int64,
                       couponID: Int64,
                       onCompletion: @escaping (Result<Void, Error>) -> Void)
@@ -62,6 +66,29 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ) {
         self.remote = remote
         self.storageManager = storageManager
+    }
+
+    func synchronizeCouponsForPOS(siteID: Int64,
+                                  pageNumber: Int,
+                                  pageSize: Int) async throws -> Bool {
+        let pagedCoupons = try await remote.loadAllCoupons(for: siteID,
+                                                           pageNumber: pageNumber,
+                                                           pageSize: pageSize)
+        // TODO: On success, we need to map them to readonlycoupon and upsert them
+        // since we're not returning them directly but just syncing... is it even needed to return PagedItems here? Yes because of the remote contains the headers.
+        let readOnlyCoupons = pagedCoupons.items
+        
+        let shouldClearData = pageNumber == Remote.Default.firstPageNumber
+        let hasNextPage = readOnlyCoupons.count == pageSize
+        
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            self.upsertStoredCouponsInBackground(readOnlyCoupons: readOnlyCoupons,
+                                                 siteID: siteID,
+                                                 shouldClearExistingCoupons: shouldClearData) {
+                continuation.resume()
+            }
+        }
+        return true
     }
 
     /// Synchronizes coupons from a Site with what is persisted in the storage layer.

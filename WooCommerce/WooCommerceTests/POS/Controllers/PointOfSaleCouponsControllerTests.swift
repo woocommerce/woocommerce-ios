@@ -12,6 +12,10 @@ import struct Yosemite.POSVariableParentProduct
 final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
 
+    func provideLocalPointOfSaleCoupons() async throws -> [Yosemite.POSItem] {
+        []
+    }
+
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         if shouldReturnZeroItems {
             return .init(items: [], hasMorePages: false)

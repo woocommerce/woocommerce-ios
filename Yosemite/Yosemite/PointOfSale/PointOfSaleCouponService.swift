@@ -11,6 +11,7 @@ public enum PointOfSaleCouponServiceError: Error {
 }
 
 public protocol PointOfSaleCouponServiceProtocol {
+    func provideLocalPointOfSaleCoupons() async throws -> [POSItem]
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func enableCoupons() async throws
 }
@@ -49,27 +50,24 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    @MainActor
-    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    // Provides all available locally-stored coupons
+    public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
         let couponsEnabled = await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
 
-        let coupons = await providePointOfSaleCoupons()
+        let localCoupons = await fetchLocalCoupons()
+        return localCoupons.items
+    }
 
-        if !coupons.items.isEmpty {
-            // Fire-and-forget sync
-            Task.detached {
-                await self.syncCouponsFromRemote(pageNumber: pageNumber)
-            }
-            return .init(items: coupons.items, hasMorePages: true)
-        } else {
-            // Wait for the sync to complete
-            await syncCouponsFromRemote(pageNumber: pageNumber)
-            let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons.items, hasMorePages: true)
-        }
+    @MainActor
+    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        // Sync local storage with remote coupons
+        await syncCouponsFromRemote(pageNumber: pageNumber)
+        // Then provide fresh coupons from local storage
+        let freshCoupons = try await provideLocalPointOfSaleCoupons()
+        return .init(items: freshCoupons, hasMorePages: true)
     }
 
     @MainActor
@@ -89,7 +87,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func providePointOfSaleCoupons() async -> PagedItems<POSItem> {
+    func fetchLocalCoupons() async -> PagedItems<POSItem> {
         guard let storage = storage else {
             return .init(items: [], hasMorePages: false)
         }
@@ -128,7 +126,7 @@ private extension PointOfSaleCouponService {
             couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
-                pageSize: 25,
+                pageSize: Constants.defaultPageSize,
                 onCompletion: { _ in
                     continuation.resume()
                 }
@@ -147,5 +145,11 @@ private extension PointOfSaleCouponService {
                 }
             }
         }
+    }
+}
+
+private extension PointOfSaleCouponService {
+    enum Constants {
+        public static let defaultPageSize: Int = 25
     }
 }

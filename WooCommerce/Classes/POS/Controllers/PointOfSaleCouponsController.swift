@@ -23,14 +23,14 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         // TODO:
         // Handle unhappy path:
         // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
-        await fetchCoupons()
+        await fetchFirstPage()
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         // TODO:
         // Handle unhappy path
-        await fetchCoupons()
+        await fetchFirstPage()
     }
 
     @MainActor
@@ -40,10 +40,10 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
-                await fetchCoupons(pageNumber: pageNumber)
-                return true
+                return try await fetchCoupons(pageNumber: pageNumber, appendToExistingCoupons: false)
             }
         } catch {
+            // TODO: Error handling
             debugPrint(error)
         }
     }
@@ -64,20 +64,52 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
+    func fetchFirstPage() async {
+        do {
+            // 1. Load first page from local storage
+            let localCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
+            if !localCoupons.isEmpty {
+                setCouponsLoadedViewState(localCoupons, hasMoreItems: true)
+            } else {
+                // 2. If there are no local results, fetch from remote, upsert, then fetch from storage again
+                let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
+                if !coupons.items.isEmpty {
+                    setCouponsLoadedViewState(coupons.items, hasMoreItems: true)
+                } else {
+                    setCouponsEmptyViewState()
+                }
+            }
+        } catch {
+            if let couponError = error as? PointOfSaleCouponServiceError {
+                setCouponsErrorViewState(couponError)
+            }
+        }
+    }
+
     @MainActor
-    func fetchCoupons(pageNumber: Int = Constants.firstPage) async {
+    func fetchCoupons(pageNumber: Int, appendToExistingCoupons: Bool = true) async throws -> Bool {
         do {
             let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
+
+            let newCoupons = pagedCoupons.items
+            var allCoupons = appendToExistingCoupons ? itemsViewState.itemsStack.root.items : []
+            let uniqueNewCoupons = newCoupons.filter { newCoupon in
+                !allCoupons.contains(newCoupon)
+            }
+            allCoupons.append(contentsOf: uniqueNewCoupons)
+
             let hasMoreItems = pagedCoupons.hasMorePages
             if pagedCoupons.items.isEmpty {
                 setCouponsEmptyViewState()
             } else {
                 setCouponsLoadedViewState(pagedCoupons.items, hasMoreItems: hasMoreItems)
             }
+            return pagedCoupons.hasMorePages
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
                 setCouponsErrorViewState(couponError)
             }
+            return true
         }
     }
 }

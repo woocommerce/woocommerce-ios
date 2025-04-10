@@ -7,17 +7,43 @@ struct PointOfSaleCouponServiceTests {
     private let couponStoreMethods: MockCouponStoreMethods
     private let settingStoreMethods: MockSettingStoreMethods
     private let storage: MockStorageManager
+    
+    private let sampleSiteID: Int64 = 123
 
     init() {
         self.couponStoreMethods = MockCouponStoreMethods()
         self.settingStoreMethods = MockSettingStoreMethods()
         self.storage = MockStorageManager()
-        self.sut = .init(siteID: 123,
+        self.sut = .init(siteID: sampleSiteID,
                          currencySettings: CurrencySettings(),
                          couponStoreMethods: couponStoreMethods,
                          settingStoreMethods: settingStoreMethods,
                          storage: storage
         )
+    }
+    
+    @Test func provideLocalPointOfSaleCoupons_when_zero_coupons_in_local_storage_then_provides_zero_coupons() async throws {
+        // Given, When
+        let coupons = try await sut.provideLocalPointOfSaleCoupons()
+        
+        // Then
+        #expect(coupons.isEmpty)
+    }
+    
+    @Test func provideLocalPointOfSaleCoupons_when_some_coupons_in_local_storage_then_provides_some_coupons() async throws {
+        // Given
+        let coupon1 = Coupon.fake().copy(siteID: sampleSiteID, code: "coupon_123")
+        let coupon2 = Coupon.fake().copy(siteID: sampleSiteID, code: "coupon_456")
+        let expectedCoupons = 2
+        
+        storage.insertSampleCoupon(readOnlyCoupon: coupon1)
+        storage.insertSampleCoupon(readOnlyCoupon: coupon2)
+        
+        // When
+        let coupons = try await sut.provideLocalPointOfSaleCoupons()
+        
+        // Then
+        #expect(coupons.count == expectedCoupons)
     }
 
     @Test func providePointOfSaleCoupons_when_one_coupon_in_store_then_one_coupon_returned() async throws {

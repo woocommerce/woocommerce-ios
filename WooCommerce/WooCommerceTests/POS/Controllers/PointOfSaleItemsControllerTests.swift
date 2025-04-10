@@ -116,7 +116,7 @@ final class PointOfSaleItemsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func loadNextItems_when_initial_items_empty_then_container_state_is_empty() async throws {
+    @Test func loadNextItems_when_initial_items_empty_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
@@ -132,7 +132,8 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadNextItems(base: .root(.products))
 
         // Then
-        #expect(sut.itemsViewState.containerState == .empty)
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
     @available(iOS 17.0, *)
@@ -288,11 +289,11 @@ final class PointOfSaleItemsControllerTests {
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage())
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage)
     }
 
     @available(iOS 17.0, *)
-    @Test func loadItems_when_no_items_then_state_is_loaded_empty() async throws {
+    @Test func loadItems_when_no_items_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
@@ -308,7 +309,8 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadItems(base: .root(.products))
 
         // Then
-        #expect(sut.itemsViewState.containerState == .empty)
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
     @available(iOS 17.0, *)
@@ -361,7 +363,7 @@ final class PointOfSaleItemsControllerTests {
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage())
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage)
     }
 
     @available(iOS 17.0, *)

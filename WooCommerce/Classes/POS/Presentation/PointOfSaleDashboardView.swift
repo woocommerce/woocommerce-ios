@@ -20,16 +20,9 @@ struct PointOfSaleDashboardView: View {
                     PointOfSaleLoadingView()
                         .transition(.opacity)
                         .ignoresSafeArea()
-                case .empty:
-                    PointOfSaleItemListFullscreenView {
-                        PointOfSaleItemListEmptyView(base: .root(.products))
-                    }
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            if error.errorType == .couponsDisabled {
-                                await posModel.enableCoupons()
-                            }
                             await posModel.loadItems(base: .root(.products))
                         }
                     })

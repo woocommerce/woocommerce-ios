@@ -51,7 +51,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let couponsEnabled = await checkStoreCouponSettings()
+        let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
@@ -136,14 +136,14 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    private func checkStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
+    private func checkStoreCouponSettings() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                 }
             }
         }

@@ -6,7 +6,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
-    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
     private let paginationTracker: AsyncPaginationTracker
@@ -50,8 +50,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
     @MainActor
     func enableCoupons() async {
-        // TODO: WOOMOB-255
-        // Handle loading state while coupons are being enabled
+        itemsViewState.itemsStack.root = .loading([])
         do {
             try await couponProvider.enableCoupons()
         } catch {
@@ -88,7 +87,7 @@ private extension PointOfSaleCouponsController {
 private extension PointOfSaleCouponsController {
     func setCouponsEmptyViewState() {
         let containerState = ItemsContainerState.content
-        let stackState = ItemsStackState(root: .error(.errorCouponsNotFound()), itemStates: [:])
+        let stackState = ItemsStackState(root: .empty, itemStates: [:])
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 
@@ -99,14 +98,17 @@ private extension PointOfSaleCouponsController {
     }
 
     func setCouponsErrorViewState(_ couponError: PointOfSaleCouponServiceError) {
+        let containerState = ItemsContainerState.content
+        let stackState: ItemsStackState
+
         switch couponError {
         case .couponsLoadingError:
-            itemsViewState = ItemsViewState(containerState: .error(.errorOnLoadingCoupons()),
-                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+            stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
         case .couponsDisabled:
-            itemsViewState = ItemsViewState(containerState: .error(.errorCouponsDisabled()),
-                                            itemsStack: .init(root: .loaded([], hasMoreItems: false), itemStates: [:]))
+            stackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
         }
+
+        itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 }
 

@@ -28,9 +28,9 @@ PODS:
   - OHHTTPStubs/OHPathHelpers (9.1.0)
   - OHHTTPStubs/Swift (9.1.0):
     - OHHTTPStubs/Default
-  - Sentry (8.43.0):
-    - Sentry/Core (= 8.43.0)
-  - Sentry/Core (8.43.0)
+  - Sentry (8.46.0):
+    - Sentry/Core (= 8.46.0)
+  - Sentry/Core (8.46.0)
   - Sodium (0.9.1)
   - Sourcery (2.2.6):
     - Sourcery/CLI-Only (= 2.2.6)
@@ -74,7 +74,7 @@ DEPENDENCIES:
   - OCMock (~> 3.4)
   - OHHTTPStubs (~> 9.0)
   - OHHTTPStubs/Swift (~> 9.0)
-  - Sentry (~> 8.43.0)
+  - Sentry (~> 8.46.0)
   - Sourcery (~> 2.2.6)
   - Specta (= 1.0.7)
   - StripeTerminal (~> 4.2.0)
@@ -135,7 +135,7 @@ SPEC CHECKSUMS:
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   OCMock: 589f2c84dacb1f5aaf6e4cec1f292551fe748e74
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
-  Sentry: 532b281a53b1b45a523fd592f608956fb36e577c
+  Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 4427fd22f0c12bd1ef75dd9045d50e01c17a43e1
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
@@ -158,6 +158,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: f1435b14e58d62d2787b5a70da8047b4e4b93f56
+PODFILE CHECKSUM: 09ad4048c8d60e433048e15d7af1181269dd4c17
 
 COCOAPODS: 1.16.2

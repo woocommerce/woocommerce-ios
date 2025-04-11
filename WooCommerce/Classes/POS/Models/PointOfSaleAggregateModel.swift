@@ -161,7 +161,9 @@ extension PointOfSaleAggregateModel {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func enableCoupons() async {
-        await couponsController.enableCoupons()
+        if await couponsController.enableCoupons() {
+            await couponsController.loadItems(base: .root(.coupons))
+        }
     }
 }
 

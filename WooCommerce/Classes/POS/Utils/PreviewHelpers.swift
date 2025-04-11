@@ -88,7 +88,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 @available(iOS 17.0, *)
-final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))

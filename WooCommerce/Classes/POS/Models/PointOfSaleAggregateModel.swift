@@ -24,7 +24,9 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var currentViewState: ItemsViewState { get }
+    var itemsViewState: ItemsViewState { get }
+    var purchasableItemsSearchViewState: ItemsViewState { get }
+    var couponsViewState: ItemsViewState { get }
 
     func loadItems(base: ItemListBaseItem) async
     func loadNextItems(base: ItemListBaseItem) async
@@ -55,18 +57,18 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
+    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
+    var purchasableItemsSearchViewState: ItemsViewState { purchasableItemsSearchController.itemsViewState }
+    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
+
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
-    private var currentController: PointOfSaleItemsControllerProtocol {
-        selectedItemType == .products ? itemsController : couponsController
-    }
-    var currentViewState: ItemsViewState { currentController.itemsViewState }
-    var selectedItemType: ItemType = .products
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -79,6 +81,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -86,6 +89,7 @@ protocol PointOfSaleAggregateModelProtocol {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.itemsController = itemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
@@ -103,17 +107,38 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        await currentController.loadItems(base: base)
+        await itemsController(for: base.itemType).loadItems(base: base)
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await currentController.refreshItems(base: base)
+        await itemsController(for: base.itemType).refreshItems(base: base)
     }
 
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
-        await currentController.loadNextItems(base: base)
+        await itemsController(for: base.itemType).loadNextItems(base: base)
+    }
+
+    @MainActor
+    func searchItems(searchTerm: String, base: ItemListBaseItem) async {
+        guard case .products = base.itemType else {
+            return
+        }
+        await purchasableItemsSearchController.searchItems(searchTerm: searchTerm, baseItem: base)
+    }
+
+    private func itemsController(for itemType: ItemType) -> PointOfSaleItemsControllerProtocol {
+        switch itemType {
+        case .products(let searching):
+            if searching {
+                return purchasableItemsSearchController
+            } else {
+                return itemsController
+            }
+        case .coupons:
+            return couponsController
+        }
     }
 }
 

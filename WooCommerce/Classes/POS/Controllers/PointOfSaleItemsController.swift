@@ -10,7 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
 enum ItemType {
-    case products
+    case products(search: Bool = false)
     case coupons
 }
 
@@ -65,6 +65,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        setLoadingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }
 
@@ -207,6 +208,23 @@ private extension PointOfSaleItemsController {
     func setChildLoadingState(for parent: POSItem) {
         let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
         updateState(for: parent, to: .loading(items))
+    }
+
+    func setSearchingState(base: ItemListBaseItem) {
+        switch base {
+        case .root:
+            setRootSearchingState()
+        case .parent(let parent, _):
+            setChildSearchingState(for: parent)
+        }
+    }
+
+    func setRootSearchingState() {
+        itemsViewState.itemsStack.root = .loading([])
+    }
+
+    func setChildSearchingState(for parent: POSItem) {
+        updateState(for: parent, to: .loading([]))
     }
 }
 

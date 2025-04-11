@@ -29,16 +29,7 @@ struct CouponRowView: View {
 
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
-            Rectangle()
-                .foregroundColor(.posSurfaceDim)
-                .overlay {
-                    Text(Image(systemName: "tag"))
-                        .font(.posButtonSymbolMedium)
-                        .foregroundColor(.posOnSurfaceVariantLowest)
-                }
-                .frame(width: dimension)
-                .frame(minHeight: dimension)
-                .accessibilityHidden(true)
+            POSCouponImageView(size: dimension)
                 .renderedIf(showImage)
 
             VStack(alignment: .leading, spacing: dynamicSpacing) {

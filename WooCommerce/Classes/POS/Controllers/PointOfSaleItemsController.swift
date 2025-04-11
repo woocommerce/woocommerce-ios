@@ -268,8 +268,6 @@ private extension PointOfSaleItemsController {
             }
             return pagedItems.hasMorePages
         } catch PointOfSaleItemServiceError.requestCancelled {
-            itemsViewState.containerState = .content
-            itemsViewState.itemsStack.root = .loaded(itemsViewState.itemsStack.root.items, hasMoreItems: true)
             // Assume that we have more pages since we'd made a request, and it was cancelled
             return true
         }
@@ -300,9 +298,6 @@ private extension PointOfSaleItemsController {
             updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
             return pagedItems.hasMorePages
         } catch PointOfSaleItemServiceError.requestCancelled {
-            itemsViewState.containerState = .content
-            updateState(for: parentItem, to: .loaded(itemsViewState.itemsStack.itemStates[parentItem]?.items ?? [],
-                                                     hasMoreItems: true))
             // Assume that we have more pages since we'd made a request, and it was cancelled
             return true
         }

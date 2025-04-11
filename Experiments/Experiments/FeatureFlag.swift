@@ -212,4 +212,8 @@ public enum FeatureFlag: Int {
     /// Allows merchants to use their own API keys for AI-powered features
     ///
     case allowMerchantAIAPIKey
+
+    /// Allows searching products in POS
+    ///
+    case searchProductsInPOS
 }

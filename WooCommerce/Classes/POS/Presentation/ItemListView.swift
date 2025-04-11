@@ -26,11 +26,7 @@ struct ItemListView: View {
     }
 
     private var itemListState: ItemListState {
-        itemsStack.root
-    }
-
-    private var itemsStack: ItemsStackState {
-        itemListController.itemsViewState.itemsStack
+        itemListController.itemsViewState.itemsStack.root
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)

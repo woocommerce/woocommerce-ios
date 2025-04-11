@@ -6,9 +6,6 @@ import Yosemite
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
-    private var itemsStack: ItemsStackState {
-        itemsController.itemsViewState.itemsStack
-    }
     private var itemsController: PointOfSaleItemsControllerProtocol
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
@@ -18,7 +15,7 @@ struct ChildItemList: View {
     }
 
     private var state: ItemListState {
-        itemsStack.itemStates[parentItem] ??
+        itemsController.itemsViewState.itemsStack.itemStates[parentItem] ??
             .loading([])
     }
 
@@ -154,6 +151,7 @@ private extension ChildItemList {
                         )
                     )
                 ], hasMoreItems: false)])
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         purchasableItemsSearchController: PointOfSalePreviewItemsController(),
@@ -180,6 +178,7 @@ private extension ChildItemList {
         itemStates: [
             parentItem: .error(.errorOnLoadingVariations)
         ])
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
         purchasableItemsSearchController: PointOfSalePreviewItemsController(),

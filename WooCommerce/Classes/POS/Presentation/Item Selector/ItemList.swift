@@ -22,10 +22,6 @@ struct ItemList<HeaderView: View>: View {
         }
     }
 
-    var itemsStack: ItemsStackState {
-        itemsController.itemsViewState.itemsStack
-    }
-
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let node: ItemListBaseItem
     private let headerView: HeaderView
@@ -54,7 +50,7 @@ struct ItemList<HeaderView: View>: View {
 
                         if let state {
                             ForEach(state.items) { item in
-                                ItemListRow(item: item, itemsStack: itemsStack, activeNavigationItem: $activeNavigationItem)
+                                ItemListRow(item: item, activeNavigationItem: $activeNavigationItem)
                             }
                         }
 
@@ -117,7 +113,6 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    let itemsStack: ItemsStackState
     @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics

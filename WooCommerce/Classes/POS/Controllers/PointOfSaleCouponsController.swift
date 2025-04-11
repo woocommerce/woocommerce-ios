@@ -42,7 +42,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
-                return try await fetchCoupons(pageNumber: pageNumber, appendToExistingCoupons: false)
+                return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
             // TODO: Error handling
@@ -89,22 +89,17 @@ private extension PointOfSaleCouponsController {
     }
 
     @MainActor
-    func fetchCoupons(pageNumber: Int, appendToExistingCoupons: Bool = true) async throws -> Bool {
+    func fetchCoupons(pageNumber: Int) async throws -> Bool {
         do {
             let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
 
-            let newCoupons = pagedCoupons.items
-            var allCoupons = appendToExistingCoupons ? itemsViewState.itemsStack.root.items : []
-            let uniqueNewCoupons = newCoupons.filter { newCoupon in
-                !allCoupons.contains(newCoupon)
-            }
-            allCoupons.append(contentsOf: uniqueNewCoupons)
-
+            var allCoupons = pagedCoupons.items
             let hasMoreItems = pagedCoupons.hasMorePages
-            if pagedCoupons.items.isEmpty {
+
+            if allCoupons.isEmpty {
                 setCouponsEmptyViewState()
             } else {
-                setCouponsLoadedViewState(pagedCoupons.items, hasMoreItems: hasMoreItems)
+                setCouponsLoadedViewState(allCoupons, hasMoreItems: hasMoreItems)
             }
             return pagedCoupons.hasMorePages
         } catch {

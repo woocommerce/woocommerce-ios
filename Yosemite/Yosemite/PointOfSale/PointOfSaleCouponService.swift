@@ -20,7 +20,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
-    private let storage: StorageManagerType?
+    private let storage: StorageManagerType
     private let couponStoreMethods: CouponStoreMethodsProtocol
     private let settingsStoreMethods: SettingStoreMethodsProtocol
 
@@ -87,10 +87,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 private extension PointOfSaleCouponService {
     @MainActor
     func fetchLocalCoupons() async -> PagedItems<POSItem> {
-        guard let storage = storage else {
-            return .init(items: [], hasMorePages: false)
-        }
-
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)
@@ -136,15 +132,11 @@ private extension PointOfSaleCouponService {
     @MainActor
     private func checkStoreCouponSettings() async throws -> Bool {
         let settingID = Constants.enableCouponsSettingID
-        let storageSetting = storage?.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
+        let storageSetting = storage.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
 
-        switch storageSetting {
-        case let .some(setting):
-            if setting.value == Constants.enableCouponsSettingValue {
-                return true
-            } else {
-                return try await checkRemoteStoreCouponSettings()
-            }
+        switch storageSetting?.value {
+        case Constants.enableCouponsSettingValue:
+            return true
         default:
             return try await checkRemoteStoreCouponSettings()
         }

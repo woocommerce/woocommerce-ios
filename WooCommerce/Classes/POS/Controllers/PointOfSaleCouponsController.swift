@@ -66,21 +66,20 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
+    /// Loads the first page by attempting to load the first page from local storage
+    /// then syncs from the remote regardless the result
     func loadFirstPage() async {
         do {
-            // 1. Attempt to load the first page from local storage, and present them
             let storedCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
 
             if !storedCoupons.isEmpty {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
+            }
+            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
+            if !coupons.items.isEmpty {
+                setCouponsLoadedViewState(coupons.items, hasMoreItems: true)
             } else {
-                // 2. If there are no local results, retry again after syncing the first page from remote first
-                let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
-                if !coupons.items.isEmpty {
-                    setCouponsLoadedViewState(coupons.items, hasMoreItems: true)
-                } else {
-                    setCouponsEmptyViewState()
-                }
+                setCouponsEmptyViewState()
             }
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {

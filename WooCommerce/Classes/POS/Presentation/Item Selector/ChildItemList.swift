@@ -11,7 +11,7 @@ struct ChildItemList: View {
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
-        .parent(parentItem, .products())
+        .parent(parentItem)
     }
 
     private var state: ItemListState {
@@ -78,7 +78,10 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(base: node)
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemType: .products(search: false),
+                    baseItem: node))
         }
     }
 

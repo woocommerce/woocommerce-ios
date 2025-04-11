@@ -15,9 +15,9 @@ struct ItemList<HeaderView: View>: View {
 
     var state: ItemListState? {
         switch node {
-        case .root(let itemType):
+        case .root:
             itemsController.itemsViewState.itemsStack.root
-        case .parent(let posItem, let itemType):
+        case .parent(let posItem):
             itemsController.itemsViewState.itemsStack.itemStates[posItem]
         }
     }
@@ -206,7 +206,7 @@ private extension ItemListRow {
     )
     ItemList(
         itemsController: PointOfSalePreviewItemsController(),
-        node: .root(.products())
+        node: .root
     )
 }
 
@@ -220,7 +220,7 @@ private extension ItemListRow {
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     ItemList(itemsController: PointOfSalePreviewItemsController(),
-             node: .root(.products()))
+             node: .root)
         .environment(posModel)
 }
 

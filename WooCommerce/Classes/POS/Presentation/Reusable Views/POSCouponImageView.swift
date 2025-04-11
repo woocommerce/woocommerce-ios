@@ -11,7 +11,7 @@ struct POSCouponImageView: View {
         Rectangle()
             .foregroundColor(.posSurfaceDim)
             .overlay {
-                Text(Image(systemName: "tag"))
+                Image(systemName: "tag")
                     .font(.posButtonSymbolMedium)
                     .foregroundColor(.posOnSurfaceVariantLowest)
             }

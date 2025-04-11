@@ -9,6 +9,9 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
+
+    @State private var searchTerm: String = ""
+
     private var itemListState: ItemListState {
         itemsStack.root
     }
@@ -82,17 +85,25 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
-                temporaryProductsCouponsSwitcher
-                Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                    showSimpleProductsModal = true
-                }, label: {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(Constants.infoIconInset)
-                })
-                .renderedIf(!shouldShowHeaderBanner)
+                HStack {
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
+                       posModel.selectedItemType == .products {
+                        TextField(text: $searchTerm) {
+                            Text("Search")
+                        }
+                    }
+                    temporaryProductsCouponsSwitcher
+                    Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                        showSimpleProductsModal = true
+                    }, label: {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                            .foregroundStyle(Color.posOnSurface)
+                            .padding(Constants.infoIconInset)
+                    })
+                    .renderedIf(!shouldShowHeaderBanner)
+                }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView

@@ -70,16 +70,10 @@ private extension PointOfSaleCouponsController {
     func loadFirstPage() async {
         do {
             let storedCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
-
             if !storedCoupons.isEmpty {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
-            let coupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: 1)
-            if !coupons.items.isEmpty {
-                setCouponsLoadedViewState(coupons.items, hasMoreItems: true)
-            } else {
-                setCouponsEmptyViewState()
-            }
+            _ = try await fetchCoupons(pageNumber: 1)
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
                 setCouponsErrorViewState(couponError)

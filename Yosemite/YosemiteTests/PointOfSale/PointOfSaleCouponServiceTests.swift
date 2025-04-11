@@ -48,7 +48,7 @@ struct PointOfSaleCouponServiceTests {
 
             do {
                 // Then
-                let coupons = try await sut.provideLocalPointOfSaleCoupons()
+                _ = try await sut.provideLocalPointOfSaleCoupons()
             } catch {
                 let expectedError = error as? PointOfSaleCouponServiceError
                 #expect(expectedError == .couponsDisabled)

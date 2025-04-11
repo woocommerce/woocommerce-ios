@@ -27,18 +27,31 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var currentViewState: ItemsViewState
+    var itemsViewState: WooCommerce.ItemsViewState
+
+    var purchasableItemsSearchViewState: WooCommerce.ItemsViewState
+
+    var couponsViewState: WooCommerce.ItemsViewState
 
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
-         itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
-                                                                                                               itemStates: [:])),
+         itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                         itemsStack: ItemsStackState(root: .loading([]),
+                                                                                     itemStates: [:])),
+         purchasableItemsSearchViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                          itemsStack: ItemsStackState(root: .loading([]),
+                                                                                                      itemStates: [:])),
+         couponsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                           itemsStack: ItemsStackState(root: .loading([]),
+                                                                                       itemStates: [:])),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
-        self.currentViewState = itemsViewState
+        self.itemsViewState = itemsViewState
+        self.purchasableItemsSearchViewState = purchasableItemsSearchViewState
+        self.couponsViewState = couponsViewState
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState

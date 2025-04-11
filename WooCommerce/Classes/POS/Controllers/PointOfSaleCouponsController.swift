@@ -5,6 +5,13 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
+protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
+    /// Enables coupons in store settings
+    /// Returns true if coupons enabled
+    func enableCoupons() async -> Bool
+}
+
+@available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
@@ -49,14 +56,17 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
     }
 
     @MainActor
-    func enableCoupons() async {
+    func enableCoupons() async -> Bool {
         itemsViewState.itemsStack.root = .loading([])
         do {
             try await couponProvider.enableCoupons()
+            return true
         } catch {
-            // TODO: WOOMOB-267
-            // Handle error when failed to enable, and allow retry action
-            debugPrint(error)
+            if let couponError = error as? PointOfSaleCouponServiceError {
+                setCouponsErrorViewState(couponError)
+            }
+
+            return false
         }
     }
 }
@@ -106,6 +116,8 @@ private extension PointOfSaleCouponsController {
             stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
         case .couponsDisabled:
             stackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
+        case .couponsEnablingError:
+            stackState = ItemsStackState(root: .error(.errorOnEnablingCoupons), itemStates: [:])
         }
 
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)

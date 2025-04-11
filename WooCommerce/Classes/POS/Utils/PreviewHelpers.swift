@@ -81,7 +81,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
-    func enableCoupons() async { }
+    func enableCoupons() async -> Bool { true }
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
     func loadNextItems(base: ItemListBaseItem) async { }

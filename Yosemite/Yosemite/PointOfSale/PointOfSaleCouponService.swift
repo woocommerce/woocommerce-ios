@@ -51,8 +51,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     }
 
     // Provides an array of coupons that are stored locally, it does not accept any sort of pagination
+    @MainActor
     public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
-        let couponsEnabled = await checkStoreCouponSettings()
+        let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
@@ -132,14 +133,14 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    private func checkStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
+    private func checkStoreCouponSettings() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                 }
             }
         }

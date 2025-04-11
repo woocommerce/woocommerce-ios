@@ -89,7 +89,7 @@ struct ItemList<HeaderView: View>: View {
                     await posModel.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error:
+        case .loaded, .error, .empty:
             EmptyView()
         }
     }
@@ -153,9 +153,7 @@ private struct ItemListRow: View {
             Button(action: {
                 posModel.addToCart(item)
             }, label: {
-                CouponRowView(couponItem: .init(id: coupon.id,
-                                                code: coupon.code,
-                                                summary: coupon.summary))
+                CouponCardView(coupon: coupon)
             })
         }
     }

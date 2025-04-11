@@ -44,45 +44,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            HStack {
-                Button(action: {
-                    displayItemType(.products)
-                }, label: {
-                    Text("Products")
-                })
-                Button(action: {
-                    displayItemType(.coupons)
-                }, label: {
-                    Text("Coupons")
-                })
-
-                Spacer()
-
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-                .renderedIf(posModel.selectedItemType == .coupons)
-            }
-            .padding(POSPadding.medium)
-            .renderedIf(shouldShowCoupons)
-
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
                     .inlineError(let items, _):
                 listView(items)
             case .error(let errorState):
-                if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
-                        // TODO
-                    })
-                } else {
-                    EmptyView()
-                }
+                errorView(errorState)
+            case .empty:
+                emptyView
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
@@ -112,6 +82,7 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
+                temporaryProductsCouponsSwitcher
                 Button(action: {
                     ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                     showSimpleProductsModal = true
@@ -129,6 +100,34 @@ private extension ItemListView {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
+    }
+
+    var temporaryProductsCouponsSwitcher: some View {
+        HStack {
+            Button(action: {
+                displayItemType(.products)
+            }, label: {
+                Text("Products")
+            })
+            Button(action: {
+                displayItemType(.coupons)
+            }, label: {
+                Text("Coupons")
+            })
+
+            Spacer()
+
+            Button(action: {
+                showCouponCreationModal = true
+            }, label: {
+                Text(Image(systemName: "plus.circle.fill"))
+            })
+            .font(.posButtonSymbolLarge)
+            .foregroundStyle(Color.posOnSurface)
+            .renderedIf(posModel.selectedItemType == .coupons)
+        }
+        .dynamicTypeSize(...DynamicTypeSize.large)
+        .renderedIf(shouldShowCoupons)
     }
 
     var bannerCardView: some View {
@@ -180,6 +179,36 @@ private extension ItemListView {
             EmptyView()
         }
     }
+
+    @ViewBuilder
+    var emptyView: some View {
+        switch posModel.selectedItemType {
+        case .products:
+            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType))
+        case .coupons:
+            PointOfSaleItemListEmptyView(base: .root(posModel.selectedItemType)) {
+                showCouponCreationModal = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ errorState: PointOfSaleErrorState) -> some View {
+        switch errorState {
+        case .errorCouponsDisabled:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.enableCoupons()
+                }
+            })
+        default:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.loadItems(base: .root(.products))
+                }
+            })
+        }
+    }
 }
 
 @available(iOS 17.0, *)
@@ -203,7 +232,7 @@ private extension ItemListState {
                 .loaded,
                 .inlineError:
             return true
-        case .error:
+        case .error, .empty:
             return false
         }
     }

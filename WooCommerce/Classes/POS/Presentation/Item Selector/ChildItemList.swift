@@ -34,6 +34,8 @@ struct ChildItemList: View {
                 listView
             case let .error(error):
                 errorView(error: error)
+            case .empty:
+                emptyView
             }
         }
         .background(Color.posSurface)
@@ -77,9 +79,7 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            ScrollView {
-                PointOfSaleItemListEmptyView(base: node)
-            }
+            PointOfSaleItemListEmptyView(base: node)
         }
     }
 
@@ -175,7 +175,7 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations())
+            parentItem: .error(.errorOnLoadingVariations)
         ])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

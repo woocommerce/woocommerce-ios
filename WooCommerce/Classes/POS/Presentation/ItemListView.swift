@@ -14,7 +14,16 @@ struct ItemListView: View {
 
     @Binding var selectedItemType: ItemType
 
-    var itemListController: PointOfSaleItemsControllerProtocol
+    var itemListController: PointOfSaleItemsControllerProtocol {
+        switch selectedItemType {
+        case .products(search: false):
+            posModel.itemsController
+        case .products(search: true):
+            posModel.purchasableItemsSearchController
+        case .coupons:
+            posModel.couponsController
+        }
+    }
 
     private var itemListState: ItemListState {
         itemsStack.root
@@ -335,7 +344,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)), itemListController: itemsController)
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
@@ -348,7 +357,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)), itemListController: PointOfSalePreviewItemsController())
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 

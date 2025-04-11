@@ -103,20 +103,9 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    switch selectedItemType {
-                    case .products(search: true):
-                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.purchasableItemsSearchController)
-                            .accessibilitySortPriority(2)
-                            .transition(.move(edge: .leading))
-                    case .products(search: false):
-                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.itemsController)
-                            .accessibilitySortPriority(2)
-                            .transition(.move(edge: .leading))
-                    case .coupons:
-                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.couponsController)
-                            .accessibilitySortPriority(2)
-                            .transition(.move(edge: .leading))
-                    }
+                    ItemListView(selectedItemType: $selectedItemType)
+                        .accessibilitySortPriority(2)
+                        .transition(.move(edge: .leading))
                 }
 
                 if !posModel.paymentState.shownFullScreen {

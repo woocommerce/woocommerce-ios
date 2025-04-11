@@ -134,12 +134,12 @@ private extension PointOfSaleCouponService {
 
     @MainActor
     private func checkStoreCouponSettings() async -> Bool {
-        let settingID = "woocommerce_enable_coupons"
+        let settingID = Constants.enableCouponsSettingID
         let storageSetting = storage?.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
 
         switch storageSetting {
         case let .some(setting):
-            if setting.value == "yes" {
+            if setting.value == Constants.enableCouponsSettingValue {
                 return true
             } else {
                 return await checkRemoteStoreCouponSettings()
@@ -165,6 +165,8 @@ private extension PointOfSaleCouponService {
 
 private extension PointOfSaleCouponService {
     enum Constants {
-        public static let defaultPageSize: Int = 25
+        static let defaultPageSize: Int = 25
+        static let enableCouponsSettingID: String = "woocommerce_enable_coupons"
+        static let enableCouponsSettingValue: String = "yes"
     }
 }

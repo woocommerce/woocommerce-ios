@@ -14,6 +14,8 @@ struct ItemListView: View {
 
     @Binding var selectedItemType: ItemType
 
+    @State private var searchTask: Task<Void, Never>?
+
     var itemsController: PointOfSaleItemsControllerProtocol {
         switch selectedItemType {
         case .products(search: false):
@@ -101,9 +103,19 @@ private extension ItemListView {
                             Text("Search")
                         }
                         .onChange(of: searchTerm) { oldValue, newValue in
-                            Task {
-                                selectedItemType = .products(search: newValue.isNotEmpty)
+                            selectedItemType = .products(search: newValue.isNotEmpty)
+                            let shouldDebounceNextSearchRequest = searchTask != nil
+                            searchTask?.cancel()
+
+                            searchTask = Task {
+                                if shouldDebounceNextSearchRequest {
+                                    try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                                }
+
+                                guard !Task.isCancelled else { return }
+
                                 await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
+                                searchTask = nil
                             }
                         }
                     }

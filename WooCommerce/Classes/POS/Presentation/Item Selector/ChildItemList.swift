@@ -6,7 +6,10 @@ import Yosemite
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
-    private let itemsStack: ItemsStackState
+    private var itemsStack: ItemsStackState {
+        itemsController.itemsViewState.itemsStack
+    }
+    private var itemsController: PointOfSaleItemsControllerProtocol
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
 
@@ -19,10 +22,10 @@ struct ChildItemList: View {
             .loading([])
     }
 
-    init(parentItem: POSItem, title: String, itemsStack: ItemsStackState) {
+    init(parentItem: POSItem, title: String, itemsController: PointOfSaleItemsControllerProtocol) {
         self.parentItem = parentItem
         self.title = title
-        self.itemsStack = itemsStack
+        self.itemsController = itemsController
     }
 
     var body: some View {
@@ -44,7 +47,7 @@ struct ChildItemList: View {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadItems(base: node)
+            await itemsController.loadItems(base: node)
         }
     }
 }
@@ -64,13 +67,12 @@ private extension ChildItemList {
         VStack(spacing: 0) {
             headerView
 
-            ItemList(state: state,
-                     itemsStack: itemsStack,
+            ItemList(itemsController: itemsController,
                      node: node)
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
-                    await posModel.refreshItems(base: node)
+                    await itemsController.refreshItems(base: node)
                 }
         }
     }
@@ -93,7 +95,7 @@ private extension ChildItemList {
 
             PointOfSaleItemListErrorView(error: error, onAction: {
                 Task {
-                    await posModel.loadItems(base: node)
+                    await itemsController.loadItems(base: node)
                 }
             })
             .zIndex(1)
@@ -159,7 +161,7 @@ private extension ChildItemList {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
+    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
         .environment(posModel)
 }
 
@@ -185,7 +187,7 @@ private extension ChildItemList {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
+    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
         .environment(posModel)
 }
 

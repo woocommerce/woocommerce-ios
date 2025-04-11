@@ -17,12 +17,12 @@ struct PointOfSaleDashboardView: View {
         switch selectedItemType {
         case .products(let searching):
             if searching {
-                return posModel.purchasableItemsSearchViewState
+                return posModel.purchasableItemsSearchController.itemsViewState
             } else {
-                return posModel.itemsViewState
+                return posModel.itemsController.itemsViewState
             }
         case .coupons:
-            return posModel.couponsViewState
+            return posModel.couponsController.itemsViewState
         }
     }
 
@@ -38,7 +38,7 @@ struct PointOfSaleDashboardView: View {
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            await posModel.loadItems(base: .root(.products()))
+                            await posModel.itemsController.loadItems(base: .root(selectedItemType))
                         }
                     })
                 case .content:
@@ -94,7 +94,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root(.products()))
+            await posModel.itemsController.loadItems(base: .root(.products()))
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -103,9 +103,20 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView(selectedItemType: $selectedItemType)
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .leading))
+                    switch selectedItemType {
+                    case .products(search: true):
+                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.purchasableItemsSearchController)
+                            .accessibilitySortPriority(2)
+                            .transition(.move(edge: .leading))
+                    case .products(search: false):
+                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.itemsController)
+                            .accessibilitySortPriority(2)
+                            .transition(.move(edge: .leading))
+                    case .coupons:
+                        ItemListView(selectedItemType: $selectedItemType, itemListController: posModel.couponsController)
+                            .accessibilitySortPriority(2)
+                            .transition(.move(edge: .leading))
+                    }
                 }
 
                 if !posModel.paymentState.shownFullScreen {

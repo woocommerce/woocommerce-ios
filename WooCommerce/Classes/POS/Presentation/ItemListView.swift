@@ -14,21 +14,14 @@ struct ItemListView: View {
 
     @Binding var selectedItemType: ItemType
 
+    var itemListController: PointOfSaleItemsControllerProtocol
+
     private var itemListState: ItemListState {
         itemsStack.root
     }
 
     private var itemsStack: ItemsStackState {
-        switch selectedItemType {
-        case .products(let searching):
-            if searching {
-                return posModel.purchasableItemsSearchViewState.itemsStack
-            } else {
-                return posModel.itemsViewState.itemsStack
-            }
-        case .coupons:
-            return posModel.couponsViewState.itemsStack
-        }
+        itemListController.itemsViewState.itemsStack
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -82,7 +75,7 @@ struct ItemListView: View {
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
-                await posModel.refreshItems(base: .root(.coupons))
+                await posModel.couponsController.refreshItems(base: .root(.coupons))
             }
         })
     }
@@ -105,7 +98,7 @@ private extension ItemListView {
                         .onChange(of: searchTerm) { oldValue, newValue in
                             Task {
                                 selectedItemType = .products(search: newValue.isNotEmpty)
-                                await posModel.searchItems(searchTerm: newValue, base: .root(.products(search: true)))
+                                await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root(.products(search: true)))
                             }
                         }
                     }
@@ -186,14 +179,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
+        ItemList(itemsController: itemListController, node: .root(selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(selectedItemType))
+            await itemListController.refreshItems(base: .root(selectedItemType))
         }
     }
 
@@ -202,9 +195,9 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            // This always uses the non-search itemsStack, otherwise it will have the search term and not work properly
+            // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: posModel.itemsViewState.itemsStack)
+            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.itemsController)
         default:
             EmptyView()
         }
@@ -234,7 +227,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.loadItems(base: .root(selectedItemType))
+                    await itemListController.loadItems(base: .root(selectedItemType))
                 }
             })
         }
@@ -250,7 +243,7 @@ private extension ItemListView {
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
         Task { @MainActor in
-            await posModel.loadItems(base: .root(itemType))
+            await itemListController.loadItems(base: .root(itemType))
         }
     }
 }
@@ -342,7 +335,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)))
+    return ItemListView(selectedItemType: .constant(.products(search: false)), itemListController: itemsController)
         .environment(posModel)
 }
 
@@ -355,7 +348,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)))
+    return ItemListView(selectedItemType: .constant(.products(search: false)), itemListController: PointOfSalePreviewItemsController())
         .environment(posModel)
 }
 

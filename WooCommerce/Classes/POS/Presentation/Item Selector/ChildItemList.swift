@@ -7,7 +7,6 @@ struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
     private var itemsController: PointOfSaleItemsControllerProtocol
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
@@ -155,15 +154,7 @@ private extension ChildItemList {
                     )
                 ], hasMoreItems: false)])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
-        .environment(posModel)
 }
 
 @available(iOS 17.0, *)
@@ -182,15 +173,7 @@ private extension ChildItemList {
             parentItem: .error(.errorOnLoadingVariations)
         ])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
-        .environment(posModel)
 }
 
 #endif

@@ -11,7 +11,7 @@ struct ChildItemList: View {
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
-        .parent(parentItem, .products)
+        .parent(parentItem, .products())
     }
 
     private var state: ItemListState {
@@ -34,6 +34,8 @@ struct ChildItemList: View {
                 listView
             case let .error(error):
                 errorView(error: error)
+            case .empty:
+                emptyView
             }
         }
         .background(Color.posSurface)
@@ -77,9 +79,7 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            ScrollView {
-                PointOfSaleItemListEmptyView(base: node)
-            }
+            PointOfSaleItemListEmptyView(base: node)
         }
     }
 
@@ -154,6 +154,7 @@ private extension ChildItemList {
                 ], hasMoreItems: false)])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
@@ -175,10 +176,11 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations())
+            parentItem: .error(.errorOnLoadingVariations)
         ])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),

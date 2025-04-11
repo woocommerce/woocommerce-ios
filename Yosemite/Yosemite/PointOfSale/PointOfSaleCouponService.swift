@@ -51,8 +51,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     }
 
     // Provides an array of coupons that are stored locally, it does not accept any sort of pagination
+    @MainActor
     public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
-        let couponsEnabled = await checkStoreCouponSettings()
+        let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
@@ -133,7 +134,7 @@ private extension PointOfSaleCouponService {
     }
 
     @MainActor
-    private func checkStoreCouponSettings() async -> Bool {
+    private func checkStoreCouponSettings() async throws -> Bool {
         let settingID = Constants.enableCouponsSettingID
         let storageSetting = storage?.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
 
@@ -142,21 +143,21 @@ private extension PointOfSaleCouponService {
             if setting.value == Constants.enableCouponsSettingValue {
                 return true
             } else {
-                return await checkRemoteStoreCouponSettings()
+                return try await checkRemoteStoreCouponSettings()
             }
         default:
-            return await checkRemoteStoreCouponSettings()
+            return try await checkRemoteStoreCouponSettings()
         }
     }
 
-    private func checkRemoteStoreCouponSettings() async -> Bool {
-        return await withCheckedContinuation { continuation in
+    private func checkRemoteStoreCouponSettings() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                 }
             }
         }

@@ -59,8 +59,10 @@ struct ItemList<HeaderView: View>: View {
                 EmptyView()
             } else if let activeItem = activeNavigationItem,
                case let .variableParentProduct(parentProduct) = activeItem {
+                // This always uses the non-search itemsStack, otherwise it will have the search term and not work properly
+                // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
                 NavigationLink(
-                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsStack: itemsStack),
+                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsStack: posModel.itemsViewState.itemsStack),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }
@@ -89,7 +91,7 @@ struct ItemList<HeaderView: View>: View {
                     await posModel.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error:
+        case .loaded, .error, .empty:
             EmptyView()
         }
     }
@@ -153,9 +155,7 @@ private struct ItemListRow: View {
             Button(action: {
                 posModel.addToCart(item)
             }, label: {
-                CouponRowView(couponItem: .init(id: coupon.id,
-                                                code: coupon.code,
-                                                summary: coupon.summary))
+                CouponCardView(coupon: coupon)
             })
         }
     }
@@ -200,7 +200,7 @@ private extension ItemListRow {
     ItemList(
         state: itemList,
         itemsStack: .init(root: itemList, itemStates: [:]),
-        node: .root(.products)
+        node: .root(.products())
     )
 }
 
@@ -208,13 +208,14 @@ private extension ItemListRow {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     ItemList(state: .loading([]),
              itemsStack: .init(root: .loading([]), itemStates: [:]),
-             node: .root(.products))
+             node: .root(.products()))
         .environment(posModel)
 }
 

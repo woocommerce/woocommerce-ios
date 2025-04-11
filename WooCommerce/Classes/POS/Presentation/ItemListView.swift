@@ -9,12 +9,26 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
+
+    @State private var searchTerm: String = ""
+
+    @Binding var selectedItemType: ItemType
+
     private var itemListState: ItemListState {
         itemsStack.root
     }
 
     private var itemsStack: ItemsStackState {
-        posModel.currentViewState.itemsStack
+        switch selectedItemType {
+        case .products(let searching):
+            if searching {
+                return posModel.purchasableItemsSearchViewState.itemsStack
+            } else {
+                return posModel.itemsViewState.itemsStack
+            }
+        case .coupons:
+            return posModel.couponsViewState.itemsStack
+        }
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -44,45 +58,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            HStack {
-                Button(action: {
-                    displayItemType(.products)
-                }, label: {
-                    Text("Products")
-                })
-                Button(action: {
-                    displayItemType(.coupons)
-                }, label: {
-                    Text("Coupons")
-                })
-
-                Spacer()
-
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-                .renderedIf(posModel.selectedItemType == .coupons)
-            }
-            .padding(POSPadding.medium)
-            .renderedIf(shouldShowCoupons)
-
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
                     .inlineError(let items, _):
                 listView(items)
             case .error(let errorState):
-                if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
-                        // TODO
-                    })
-                } else {
-                    EmptyView()
-                }
+                errorView(errorState)
+            case .empty:
+                emptyView
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
@@ -112,16 +96,31 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             POSPageHeaderView(title: Localization.title, trailingContent: {
-                Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                    showSimpleProductsModal = true
-                }, label: {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(Constants.infoIconInset)
-                })
-                .renderedIf(!shouldShowHeaderBanner)
+                HStack {
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
+                       case .products = selectedItemType {
+                        TextField(text: $searchTerm) {
+                            Text("Search")
+                        }
+                        .onChange(of: searchTerm) { oldValue, newValue in
+                            Task {
+                                selectedItemType = .products(search: newValue.isNotEmpty)
+                                await posModel.searchItems(searchTerm: newValue, base: .root(.products(search: true)))
+                            }
+                        }
+                    }
+                    temporaryProductsCouponsSwitcher
+                    Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                        showSimpleProductsModal = true
+                    }, label: {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                            .foregroundStyle(Color.posOnSurface)
+                            .padding(Constants.infoIconInset)
+                    })
+                    .renderedIf(!shouldShowHeaderBanner)
+                }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
@@ -129,6 +128,35 @@ private extension ItemListView {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
+    }
+
+    var temporaryProductsCouponsSwitcher: some View {
+        HStack {
+            Button(action: {
+                displayItemType(.products(search: searchTerm.isNotEmpty))
+            }, label: {
+                Text("Products")
+            })
+            Button(action: {
+                displayItemType(.coupons)
+            }, label: {
+                Text("Coupons")
+            })
+
+            Spacer()
+
+            if case .coupons = selectedItemType {
+                Button(action: {
+                    showCouponCreationModal = true
+                }, label: {
+                    Text(Image(systemName: "plus.circle.fill"))
+                })
+                .font(.posButtonSymbolLarge)
+                .foregroundStyle(Color.posOnSurface)
+            }
+        }
+        .dynamicTypeSize(...DynamicTypeSize.large)
+        .renderedIf(shouldShowCoupons)
     }
 
     var bannerCardView: some View {
@@ -158,14 +186,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(posModel.selectedItemType)) {
+        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(posModel.selectedItemType))
+            await posModel.refreshItems(base: .root(selectedItemType))
         }
     }
 
@@ -174,10 +202,41 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            let itemsStack = posModel.currentViewState.itemsStack
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
+            // This always uses the non-search itemsStack, otherwise it will have the search term and not work properly
+            // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
+            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: posModel.itemsViewState.itemsStack)
         default:
             EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        switch selectedItemType {
+        case .products:
+            PointOfSaleItemListEmptyView(base: .root(selectedItemType))
+        case .coupons:
+            PointOfSaleItemListEmptyView(base: .root(selectedItemType)) {
+                showCouponCreationModal = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ errorState: PointOfSaleErrorState) -> some View {
+        switch errorState {
+        case .errorCouponsDisabled:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.enableCoupons()
+                }
+            })
+        default:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.loadItems(base: .root(selectedItemType))
+                }
+            })
         }
     }
 }
@@ -189,7 +248,7 @@ private extension ItemListView {
     }
 
     func displayItemType(_ itemType: ItemType) {
-        posModel.selectedItemType = itemType
+        selectedItemType = itemType
         Task { @MainActor in
             await posModel.loadItems(base: .root(itemType))
         }
@@ -203,7 +262,7 @@ private extension ItemListState {
                 .loaded,
                 .inlineError:
             return true
-        case .error:
+        case .error, .empty:
             return false
         }
     }
@@ -274,15 +333,16 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadItems(base: .root(.products))
+        await itemsController.loadItems(base: .root(.products()))
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: itemsController,
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
@@ -290,11 +350,12 @@ private extension ItemListView {
 #Preview("Loading") {
     let posModel = PointOfSaleAggregateModel(
         itemsController: PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    return ItemListView(selectedItemType: .constant(.products(search: false)))
         .environment(posModel)
 }
 

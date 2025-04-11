@@ -10,7 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
 enum ItemType {
-    case products
+    case products(search: Bool = false)
     case coupons
 }
 
@@ -71,6 +71,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        setLoadingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }
 
@@ -92,7 +93,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
-            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts)
             itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                        itemStates: [:])
         }
@@ -126,7 +127,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         } catch {
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingProductsNextPage()),
+                                                                           error: .errorOnLoadingProductsNextPage),
                                                         itemStates: currentItemStates)
         }
     }
@@ -140,7 +141,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
-            updateState(for: parent, to: .error(.errorOnLoadingVariations()))
+            updateState(for: parent, to: .error(.errorOnLoadingVariations))
         }
     }
 
@@ -161,7 +162,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
             }
         } catch {
             updateState(for: parent, to: .inlineError(currentItems,
-                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage()))
+                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage))
         }
     }
 
@@ -214,6 +215,23 @@ private extension PointOfSaleItemsController {
         let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
         updateState(for: parent, to: .loading(items))
     }
+
+    func setSearchingState(base: ItemListBaseItem) {
+        switch base {
+        case .root:
+            setRootSearchingState()
+        case .parent(let parent, _):
+            setChildSearchingState(for: parent)
+        }
+    }
+
+    func setRootSearchingState() {
+        itemsViewState.itemsStack.root = .loading([])
+    }
+
+    func setChildSearchingState(for parent: POSItem) {
+        updateState(for: parent, to: .loading([]))
+    }
 }
 
 @available(iOS 17.0, *)
@@ -236,9 +254,8 @@ private extension PointOfSaleItemsController {
             }
             allItems.append(contentsOf: uniqueNewItems)
             if allItems.isEmpty {
-                itemsViewState.containerState = .empty
-                itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                            itemStates: [:])
+                itemsViewState.containerState = .content
+                itemsViewState.itemsStack = ItemsStackState(root: .empty, itemStates: [:])
             } else {
                 let itemStates = itemsViewState.itemsStack.itemStates
                     .filter { allItems.contains($0.key) }

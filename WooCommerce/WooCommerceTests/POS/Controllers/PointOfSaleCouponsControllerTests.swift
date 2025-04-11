@@ -69,7 +69,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedCoupons = MockPointOfSaleCouponService.makeInitialCoupons()
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: true), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: false), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
@@ -103,7 +103,7 @@ struct PointOfSaleCouponsControllerTests {
         let expectedCoupons = MockPointOfSaleCouponService.makeInitialCoupons()
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
-        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: true), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: false), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When

@@ -92,7 +92,7 @@ private extension PointOfSaleCouponsController {
         do {
             let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
 
-            var allCoupons = pagedCoupons.items
+            let allCoupons = pagedCoupons.items
             let hasMoreItems = pagedCoupons.hasMorePages
 
             if allCoupons.isEmpty {

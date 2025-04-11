@@ -137,6 +137,7 @@ private extension ItemListView {
             .foregroundStyle(Color.posOnSurface)
             .renderedIf(posModel.selectedItemType == .coupons)
         }
+        .dynamicTypeSize(...DynamicTypeSize.large)
         .renderedIf(shouldShowCoupons)
     }
 

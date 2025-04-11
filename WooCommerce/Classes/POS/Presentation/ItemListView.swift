@@ -14,10 +14,10 @@ struct ItemListView: View {
 
     @Binding var selectedItemType: ItemType
 
-    var itemListController: PointOfSaleItemsControllerProtocol {
+    var itemsController: PointOfSaleItemsControllerProtocol {
         switch selectedItemType {
         case .products(search: false):
-            posModel.itemsController
+            posModel.purchasableItemsController
         case .products(search: true):
             posModel.purchasableItemsSearchController
         case .coupons:
@@ -26,7 +26,7 @@ struct ItemListView: View {
     }
 
     private var itemListState: ItemListState {
-        itemListController.itemsViewState.itemsStack.root
+        itemsController.itemsViewState.itemsStack.root
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -184,14 +184,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(itemsController: itemListController, node: .root) {
+        ItemList(itemsController: itemsController, node: .root) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await itemListController.refreshItems(base: .root)
+            await itemsController.refreshItems(base: .root)
         }
     }
 
@@ -202,7 +202,7 @@ private extension ItemListView {
         case let .variableParentProduct(parentProduct):
             // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.itemsController)
+            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController)
         default:
             EmptyView()
         }
@@ -238,7 +238,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await itemListController.loadItems(base: .root)
+                    await itemsController.loadItems(base: .root)
                 }
             })
         }
@@ -254,7 +254,7 @@ private extension ItemListView {
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
         Task { @MainActor in
-            await itemListController.loadItems(base: .root)
+            await itemsController.loadItems(base: .root)
         }
     }
 }

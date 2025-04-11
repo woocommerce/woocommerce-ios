@@ -19,7 +19,7 @@ struct PointOfSaleDashboardView: View {
             if searching {
                 return posModel.purchasableItemsSearchController.itemsViewState
             } else {
-                return posModel.itemsController.itemsViewState
+                return posModel.purchasableItemsController.itemsViewState
             }
         case .coupons:
             return posModel.couponsController.itemsViewState
@@ -40,7 +40,7 @@ struct PointOfSaleDashboardView: View {
                         Task {
                             switch selectedItemType {
                             case .products(search: false):
-                                await posModel.itemsController.loadItems(base: .root)
+                                await posModel.purchasableItemsController.loadItems(base: .root)
                             case .products(search: true):
                                 await posModel.purchasableItemsSearchController.loadItems(base: .root)
                             case .coupons:
@@ -101,7 +101,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.itemsController.loadItems(base: .root)
+            await posModel.purchasableItemsController.loadItems(base: .root)
         }
         .ignoresSafeArea(.keyboard)
     }

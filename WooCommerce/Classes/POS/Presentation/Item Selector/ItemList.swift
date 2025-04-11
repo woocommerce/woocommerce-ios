@@ -70,7 +70,7 @@ struct ItemList<HeaderView: View>: View {
                 // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
                 // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
                 NavigationLink(
-                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsController: posModel.itemsController),
+                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }

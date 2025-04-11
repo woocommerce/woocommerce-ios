@@ -24,7 +24,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemsController: PointOfSaleItemsControllerProtocol { get }
+    var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
     var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
     var couponsController: PointOfSaleCouponsControllerProtocol { get }
 
@@ -59,7 +59,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
-    let itemsController: PointOfSaleItemsControllerProtocol
+    let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
 
@@ -81,7 +81,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
-        self.itemsController = itemsController
+        self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService

@@ -132,8 +132,25 @@ private extension PointOfSaleCouponService {
         }
     }
 
+    @MainActor
     private func checkStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
+        let settingID = "woocommerce_enable_coupons"
+        let storageSetting = storage?.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
+
+        switch storageSetting {
+        case let .some(setting):
+            if setting.value == "yes" {
+                return true
+            } else {
+                return await checkRemoteStoreCouponSettings()
+            }
+        default:
+            return await checkRemoteStoreCouponSettings()
+        }
+    }
+
+    private func checkRemoteStoreCouponSettings() async -> Bool {
+        return await withCheckedContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):

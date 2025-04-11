@@ -63,9 +63,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        // Sync local storage with remote coupons
         await syncCouponsFromRemote(pageNumber: pageNumber)
-        // Then provide fresh coupons from local storage
         let coupons = try await provideLocalPointOfSaleCoupons()
         return .init(items: coupons, hasMorePages: true)
     }

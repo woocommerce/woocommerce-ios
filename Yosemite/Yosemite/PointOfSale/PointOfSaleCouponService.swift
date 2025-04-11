@@ -64,7 +64,15 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        await syncCouponsFromRemote(pageNumber: pageNumber)
+        do {
+            try await syncCouponsFromRemote(pageNumber: pageNumber)
+        } catch {
+            if try await checkRemoteStoreCouponSettings() {
+                throw error
+            } else {
+                throw PointOfSaleCouponServiceError.couponsDisabled
+            }
+        }
         let coupons = try await provideLocalPointOfSaleCoupons()
         return .init(items: coupons, hasMorePages: true)
     }
@@ -116,14 +124,19 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    func syncCouponsFromRemote(pageNumber: Int) async {
-        await withCheckedContinuation { continuation in
+    func syncCouponsFromRemote(pageNumber: Int) async throws {
+        try await withCheckedThrowingContinuation { continuation in
             couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: Constants.defaultPageSize,
-                onCompletion: { _ in
-                    continuation.resume()
+                onCompletion: { result in
+                    switch result {
+                    case .success:
+                        continuation.resume()
+                    case .failure:
+                        continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
+                    }
                 }
             )
         }

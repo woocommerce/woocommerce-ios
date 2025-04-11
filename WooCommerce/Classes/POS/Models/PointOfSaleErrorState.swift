@@ -181,7 +181,7 @@ struct PointOfSaleErrorState: Equatable {
             comment: "Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store."
         )
         static let enablingCouponsErrorRetry = NSLocalizedString(
-            "pos.itemList.enablongCouponsErrorRetry",
+            "pos.itemList.enablingCouponsErrorRetry",
             value: "Retry",
             comment: "Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.."
         )

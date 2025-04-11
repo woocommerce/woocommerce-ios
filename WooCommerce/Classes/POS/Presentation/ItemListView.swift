@@ -233,7 +233,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.loadItems(base: .root(.products(search: false)))
+                    await posModel.loadItems(base: .root(selectedItemType))
                 }
             })
         }

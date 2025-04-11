@@ -11,7 +11,7 @@ struct ChildItemList: View {
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
-        .parent(parentItem, .products)
+        .parent(parentItem, .products())
     }
 
     private var state: ItemListState {
@@ -154,6 +154,7 @@ private extension ChildItemList {
                 ], hasMoreItems: false)])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
@@ -179,6 +180,7 @@ private extension ChildItemList {
         ])
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,
+        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),

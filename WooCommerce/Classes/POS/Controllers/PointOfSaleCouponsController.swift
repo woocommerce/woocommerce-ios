@@ -140,10 +140,3 @@ private extension PointOfSaleCouponsController {
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 }
-
-@available(iOS 17.0, *)
-private extension PointOfSaleCouponsController {
-    enum Constants {
-        static let firstPage: Int = 1
-    }
-}

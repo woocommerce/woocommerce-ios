@@ -120,11 +120,11 @@ private extension ItemListView {
             Button(action: {
                 showCouponCreationModal = true
             }, label: {
-                Text(Image(systemName: "plus.circle.fill"))
+                Image(systemName: "plus.circle.fill")
             })
             .font(.posButtonSymbolLarge)
             .foregroundStyle(Color.posOnSurface)
-            .renderedIf(posModel.selectedItemType == .coupons)
+            .renderedIf(posModel.selectedItemType == .coupons && (itemListState.isLoaded || itemListState.isEmpty))
         }
         .dynamicTypeSize(...DynamicTypeSize.large)
         .renderedIf(shouldShowCoupons)

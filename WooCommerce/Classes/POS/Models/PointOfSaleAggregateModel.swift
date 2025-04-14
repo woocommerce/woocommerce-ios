@@ -24,12 +24,9 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemsViewState: ItemsViewState { get }
-    var purchasableItemsSearchViewState: ItemsViewState { get }
-    var couponsViewState: ItemsViewState { get }
-
-    func loadItems(base: ItemListBaseItem) async
-    func loadNextItems(base: ItemListBaseItem) async
+    var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
+    var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
+    var couponsController: PointOfSaleCouponsControllerProtocol { get }
 
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
@@ -57,18 +54,14 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
-    var purchasableItemsSearchViewState: ItemsViewState { purchasableItemsSearchController.itemsViewState }
-    var couponsViewState: ItemsViewState { couponsController.itemsViewState }
-
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
-    private let itemsController: PointOfSaleItemsControllerProtocol
-    private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let couponsController: PointOfSaleCouponsControllerProtocol
+    let purchasableItemsController: PointOfSaleItemsControllerProtocol
+    let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let couponsController: PointOfSaleCouponsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -88,7 +81,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
-        self.itemsController = itemsController
+        self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
@@ -102,46 +95,7 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 }
 
-// MARK: - ItemList
-@available(iOS 17.0, *)
-extension PointOfSaleAggregateModel {
-    @MainActor
-    func loadItems(base: ItemListBaseItem) async {
-        await itemsController(for: base.itemType).loadItems(base: base)
-    }
-
-    @MainActor
-    func refreshItems(base: ItemListBaseItem) async {
-        await itemsController(for: base.itemType).refreshItems(base: base)
-    }
-
-    @MainActor
-    func loadNextItems(base: ItemListBaseItem) async {
-        await itemsController(for: base.itemType).loadNextItems(base: base)
-    }
-
-    @MainActor
-    func searchItems(searchTerm: String, base: ItemListBaseItem) async {
-        guard case .products = base.itemType else {
-            return
-        }
-        await purchasableItemsSearchController.searchItems(searchTerm: searchTerm, baseItem: base)
-    }
-
-    private func itemsController(for itemType: ItemType) -> PointOfSaleItemsControllerProtocol {
-        switch itemType {
-        case .products(let searching):
-            if searching {
-                return purchasableItemsSearchController
-            } else {
-                return itemsController
-            }
-        case .coupons:
-            return couponsController
-        }
-    }
-}
-
+// MARK: - Cart
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {

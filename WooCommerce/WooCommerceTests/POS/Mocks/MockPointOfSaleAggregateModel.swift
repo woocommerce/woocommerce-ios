@@ -27,31 +27,25 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var itemsViewState: WooCommerce.ItemsViewState
+    var purchasableItemsController: any WooCommerce.PointOfSaleItemsControllerProtocol
 
-    var purchasableItemsSearchViewState: WooCommerce.ItemsViewState
+    var purchasableItemsSearchController: any WooCommerce.PointOfSaleSearchingItemsControllerProtocol
 
-    var couponsViewState: WooCommerce.ItemsViewState
+    var couponsController: any WooCommerce.PointOfSaleCouponsControllerProtocol
 
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
-         itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                         itemsStack: ItemsStackState(root: .loading([]),
-                                                                                     itemStates: [:])),
-         purchasableItemsSearchViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                          itemsStack: ItemsStackState(root: .loading([]),
-                                                                                                      itemStates: [:])),
-         couponsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                           itemsStack: ItemsStackState(root: .loading([]),
-                                                                                       itemStates: [:])),
+         purchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
+         couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
-        self.itemsViewState = itemsViewState
-        self.purchasableItemsSearchViewState = purchasableItemsSearchViewState
-        self.couponsViewState = couponsViewState
+        self.purchasableItemsController = purchasableItemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
+        self.couponsController = couponsController
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState

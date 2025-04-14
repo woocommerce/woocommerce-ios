@@ -155,7 +155,7 @@ end
 target 'Woo Watch App' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   platform :watchos, app_watchos_deployment_target.version
-  pod 'Sentry', '~> 8.43.0'
+  pod 'Sentry', '~> 8.46.0'
   networking_watch_os_pods
 end
 

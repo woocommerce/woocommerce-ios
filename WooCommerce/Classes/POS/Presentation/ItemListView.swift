@@ -106,6 +106,16 @@ private extension ItemListView {
                         .onChange(of: searchTerm) { oldValue, newValue in
                             selectedItemType = .products(search: newValue.isNotEmpty)
 
+                            // The debouncing logic is a little tricky, because the loading state is held in the controller.
+                            // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
+
+                            // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
+                            // However, we don't want to debounce the first keystroke of a new search, so that the loading
+                            // state shows immediately and the UI feels responsive.
+
+                            // So, if the last search was finished, we don't debounce the first character. If it didn't
+                            // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
+                            // the ongoing search is redundant now there's a new search term, so we cancel it.
                             let shouldDebounceNextSearchRequest = !didFinishSearch
                             searchTask?.cancel()
 

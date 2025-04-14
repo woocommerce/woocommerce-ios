@@ -11,6 +11,7 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
     var retrieveCalled = false
     var loadCouponsCalled = false
     var validateCalled = false
+    var shouldFailSync = false
 
     var onSynchronizeCalled: () -> Void = {}
 
@@ -19,7 +20,11 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
                             pageSize: Int,
                             onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
         synchronizeCalled = true
-        onCompletion(.success(true))
+        if shouldFailSync {
+            onCompletion(.failure(NSError(domain: "test", code: 0)))
+        } else {
+            onCompletion(.success(true))
+        }
         onSynchronizeCalled()
     }
 

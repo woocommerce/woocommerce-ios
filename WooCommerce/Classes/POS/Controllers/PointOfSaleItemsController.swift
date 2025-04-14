@@ -80,7 +80,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         switch base {
         case .root:
             await loadRootItems()
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadChildItems(for: parent)
         }
     }
@@ -104,7 +104,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         switch base {
         case .root:
             await loadNextRootItems()
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadNextChildItems(for: parent)
         }
     }
@@ -197,7 +197,7 @@ private extension PointOfSaleItemsController {
         switch base {
         case .root:
             setRootLoadingState()
-        case .parent(let parent, _):
+        case .parent(let parent):
             setChildLoadingState(for: parent)
         }
     }
@@ -220,7 +220,7 @@ private extension PointOfSaleItemsController {
         switch base {
         case .root:
             setRootSearchingState()
-        case .parent(let parent, _):
+        case .parent(let parent):
             setChildSearchingState(for: parent)
         }
     }

@@ -3,7 +3,7 @@ import SwiftUI
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let baseItem: ItemListBaseItem
+    private let viewModel: PointOfSaleItemListEmptyViewModel
 
     private let onAction: (() -> Void)?
 
@@ -13,8 +13,8 @@ struct PointOfSaleItemListEmptyView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
 
-    init(base: ItemListBaseItem, onAction: (() -> Void)? = nil) {
-        self.baseItem = base
+    init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
+        self.viewModel = viewModel
         self.onAction = onAction
     }
 
@@ -35,19 +35,19 @@ struct PointOfSaleItemListEmptyView: View {
 
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
 
-                Text(title)
+                Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
 
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
 
-                Text(subtitle)
+                Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
 
-                if let hint {
+                if let hint = viewModel.hint {
                     Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
@@ -57,7 +57,7 @@ struct PointOfSaleItemListEmptyView: View {
 
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
-                if let onAction, let buttonTitle {
+                if let onAction, let buttonTitle = viewModel.buttonTitle {
                     Button(action: {
                         onAction()
                     }, label: {
@@ -79,13 +79,22 @@ struct PointOfSaleItemListEmptyView: View {
 }
 
 private extension PointOfSaleItemListEmptyView {
+    enum Constants {
+        static let iconSize: CGFloat = 100
+    }
+}
+
+struct PointOfSaleItemListEmptyViewModel {
+    let itemType: ItemType
+    let baseItem: ItemListBaseItem
+
     var title: String {
-        switch baseItem {
-        case .root(.products):
+        switch (baseItem, itemType) {
+        case (.root, .products):
             return Localization.emptyProductsTitle
-        case .root(.coupons):
+        case (.root, .coupons):
             return Localization.emptyCouponsTitle
-        case .parent(.variableParentProduct, _):
+        case (.parent, .products):
             return Localization.emptyVariableParentProductTitle
         default:
             assertionFailure("No title defined for \(baseItem)")
@@ -94,12 +103,12 @@ private extension PointOfSaleItemListEmptyView {
     }
 
     var subtitle: String {
-        switch baseItem {
-        case .root(.products):
+        switch (baseItem, itemType) {
+        case (.root, .products):
             return Localization.emptyProductsSubtitle
-        case .root(.coupons):
+        case (.root, .coupons):
             return Localization.emptyCouponsSubtitle
-        case .parent(.variableParentProduct, _):
+        case (.parent, .products):
             return Localization.emptyVariableParentProductSubtitle
         default:
             assertionFailure("No subtitle defined for \(baseItem)")
@@ -108,12 +117,12 @@ private extension PointOfSaleItemListEmptyView {
     }
 
     var hint: String? {
-        switch baseItem {
-        case .root(.products):
+        switch (baseItem, itemType) {
+        case (.root, .products):
             return Localization.emptyProductsHint
-        case .root(.coupons):
+        case (.root, .coupons):
             return nil
-        case .parent(.variableParentProduct, _):
+        case (.parent, .products):
             return Localization.emptyVariableParentProductHint
         default:
             assertionFailure("No hint defined for \(baseItem)")
@@ -122,17 +131,14 @@ private extension PointOfSaleItemListEmptyView {
     }
 
     var buttonTitle: String? {
-        switch baseItem {
-        case .root(.coupons):
+        switch itemType {
+        case .coupons:
             return Localization.emptyCouponsButtonTitle
         default:
             return nil
         }
     }
 
-    enum Constants {
-        static let iconSize: CGFloat = 100
-    }
     enum Localization {
         static let emptyProductsTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1",

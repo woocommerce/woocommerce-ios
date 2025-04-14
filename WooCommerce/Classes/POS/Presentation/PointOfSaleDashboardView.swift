@@ -17,12 +17,12 @@ struct PointOfSaleDashboardView: View {
         switch selectedItemType {
         case .products(let searching):
             if searching {
-                return posModel.purchasableItemsSearchViewState
+                return posModel.purchasableItemsSearchController.itemsViewState
             } else {
-                return posModel.itemsViewState
+                return posModel.purchasableItemsController.itemsViewState
             }
         case .coupons:
-            return posModel.couponsViewState
+            return posModel.couponsController.itemsViewState
         }
     }
 
@@ -38,7 +38,14 @@ struct PointOfSaleDashboardView: View {
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            await posModel.loadItems(base: .root(.products()))
+                            switch selectedItemType {
+                            case .products(search: false):
+                                await posModel.purchasableItemsController.loadItems(base: .root)
+                            case .products(search: true):
+                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                            case .coupons:
+                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                            }
                         }
                     })
                 case .content:
@@ -94,7 +101,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root(.products()))
+            await posModel.purchasableItemsController.loadItems(base: .root)
         }
         .ignoresSafeArea(.keyboard)
     }

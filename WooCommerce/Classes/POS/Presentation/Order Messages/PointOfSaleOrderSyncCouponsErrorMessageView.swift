@@ -28,14 +28,14 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                     Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
                     VStack(spacing: POSSpacing.medium) {
-                        Button(retryActionTitle, action: {
-                            posModel.removeAllCouponsFromCart()
-                            retryHandler()
+                        Button(Localization.editOrderTitle, action: {
+                            posModel.addMoreToCart()
                         })
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-                        Button(Localization.editOrderTitle, action: {
-                            posModel.addMoreToCart()
+                        Button(retryActionTitle, action: {
+                            posModel.removeAllCouponsFromCart()
+                            retryHandler()
                         })
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     }

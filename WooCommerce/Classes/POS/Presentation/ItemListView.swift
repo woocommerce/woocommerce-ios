@@ -15,6 +15,7 @@ struct ItemListView: View {
     @Binding var selectedItemType: ItemType
 
     @State private var searchTask: Task<Void, Never>?
+    @State private var didFinishSearch = true
 
     var itemsController: PointOfSaleItemsControllerProtocol {
         switch selectedItemType {
@@ -104,7 +105,8 @@ private extension ItemListView {
                         }
                         .onChange(of: searchTerm) { oldValue, newValue in
                             selectedItemType = .products(search: newValue.isNotEmpty)
-                            let shouldDebounceNextSearchRequest = searchTask != nil
+
+                            let shouldDebounceNextSearchRequest = !didFinishSearch
                             searchTask?.cancel()
 
                             searchTask = Task {
@@ -114,8 +116,13 @@ private extension ItemListView {
 
                                 guard !Task.isCancelled else { return }
 
+                                didFinishSearch = false
+
                                 await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
-                                searchTask = nil
+
+                                if !Task.isCancelled {
+                                    didFinishSearch = true
+                                }
                             }
                         }
                     }

@@ -232,7 +232,7 @@ private extension ItemListView {
         case .errorCouponsDisabled, .errorOnEnablingCoupons:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.enableCoupons()
+                    await posModel.couponsController.enableCoupons()
                 }
             })
         default:

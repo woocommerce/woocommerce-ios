@@ -136,16 +136,6 @@ extension PointOfSaleAggregateModel {
     }
 }
 
-// MARK: - Coupons
-@available(iOS 17.0, *)
-extension PointOfSaleAggregateModel {
-    func enableCoupons() async {
-        if await couponsController.enableCoupons() {
-            await couponsController.loadItems(base: .root)
-        }
-    }
-}
-
 // MARK: - Track events
 @available(iOS 17.0, *)
 private extension PointOfSaleAggregateModel {

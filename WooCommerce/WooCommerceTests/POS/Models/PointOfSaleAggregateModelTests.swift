@@ -841,25 +841,6 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
         }
-
-        @available(iOS 17.0, *)
-        @Test func enableCoupons_loads_items_when_successful() async throws {
-            // Given
-            let couponsController = MockPointOfSaleCouponsController()
-            couponsController.enableCouponsResult = true
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                              couponsController: couponsController,
-                                              cardPresentPaymentService: MockCardPresentPaymentService(),
-                                              orderController: MockPointOfSaleOrderController(),
-                                              analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
-                                              collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-
-            // When
-            await sut.enableCoupons()
-
-            // Then
-            #expect(couponsController.loadItemsCalled)
-        }
     }
 
     struct AnalyticsTests {

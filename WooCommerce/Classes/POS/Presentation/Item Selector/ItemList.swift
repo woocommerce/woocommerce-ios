@@ -13,17 +13,23 @@ struct ItemList<HeaderView: View>: View {
     // Navigation only uses this on iOS 17
     @State private var activeNavigationItem: POSItem? = nil
 
-    let state: ItemListState
-    let itemsStack: ItemsStackState
+    var state: ItemListState? {
+        switch node {
+        case .root:
+            itemsController.itemsViewState.itemsStack.root
+        case .parent(let posItem):
+            itemsController.itemsViewState.itemsStack.itemStates[posItem]
+        }
+    }
+
+    private let itemsController: PointOfSaleItemsControllerProtocol
     private let node: ItemListBaseItem
     private let headerView: HeaderView
 
-    init(state: ItemListState,
-         itemsStack: ItemsStackState,
+    init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
-        self.state = state
-        self.itemsStack = itemsStack
+        self.itemsController = itemsController
         self.node = node
         self.headerView = headerView()
     }
@@ -36,14 +42,16 @@ struct ItemList<HeaderView: View>: View {
                     guard case .loaded(_, let hasMoreItems) = state,
                           hasMoreItems
                     else { return }
-                    await posModel.loadNextItems(base: node)
+                    await itemsController.loadNextItems(base: node)
                 },
                 content: {
                     LazyVStack(spacing: Constants.itemSpacing) {
                         headerView
 
-                        ForEach(state.items) { item in
-                            ItemListRow(item: item, itemsStack: itemsStack, activeNavigationItem: $activeNavigationItem)
+                        if let state {
+                            ForEach(state.items) { item in
+                                ItemListRow(item: item, activeNavigationItem: $activeNavigationItem)
+                            }
                         }
 
                         footerRows
@@ -59,10 +67,10 @@ struct ItemList<HeaderView: View>: View {
                 EmptyView()
             } else if let activeItem = activeNavigationItem,
                case let .variableParentProduct(parentProduct) = activeItem {
-                // This always uses the non-search itemsStack, otherwise it will have the search term and not work properly
+                // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
                 // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
                 NavigationLink(
-                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsStack: posModel.itemsViewState.itemsStack),
+                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }
@@ -88,10 +96,10 @@ struct ItemList<HeaderView: View>: View {
             ItemListErrorCardView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
-                    await posModel.loadNextItems(base: node)
+                    await itemsController.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error, .empty:
+        case .loaded, .error, .empty, .none:
             EmptyView()
         }
     }
@@ -105,7 +113,6 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    let itemsStack: ItemsStackState
     @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
@@ -198,9 +205,8 @@ private extension ItemListRow {
         hasMoreItems: false
     )
     ItemList(
-        state: itemList,
-        itemsStack: .init(root: itemList, itemStates: [:]),
-        node: .root(.products())
+        itemsController: PointOfSalePreviewItemsController(),
+        node: .root
     )
 }
 
@@ -213,9 +219,8 @@ private extension ItemListRow {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    ItemList(state: .loading([]),
-             itemsStack: .init(root: .loading([]), itemStates: [:]),
-             node: .root(.products()))
+    ItemList(itemsController: PointOfSalePreviewItemsController(),
+             node: .root)
         .environment(posModel)
 }
 

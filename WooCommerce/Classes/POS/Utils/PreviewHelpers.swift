@@ -99,7 +99,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadInitialChildItems(for: parent)
         }
     }

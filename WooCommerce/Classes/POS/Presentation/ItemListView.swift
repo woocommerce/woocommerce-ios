@@ -14,21 +14,19 @@ struct ItemListView: View {
 
     @Binding var selectedItemType: ItemType
 
-    private var itemListState: ItemListState {
-        itemsStack.root
+    var itemsController: PointOfSaleItemsControllerProtocol {
+        switch selectedItemType {
+        case .products(search: false):
+            posModel.purchasableItemsController
+        case .products(search: true):
+            posModel.purchasableItemsSearchController
+        case .coupons:
+            posModel.couponsController
+        }
     }
 
-    private var itemsStack: ItemsStackState {
-        switch selectedItemType {
-        case .products(let searching):
-            if searching {
-                return posModel.purchasableItemsSearchViewState.itemsStack
-            } else {
-                return posModel.itemsViewState.itemsStack
-            }
-        case .coupons:
-            return posModel.couponsViewState.itemsStack
-        }
+    private var itemListState: ItemListState {
+        itemsController.itemsViewState.itemsStack.root
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -82,7 +80,7 @@ struct ItemListView: View {
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
-                await posModel.refreshItems(base: .root(.coupons))
+                await posModel.couponsController.refreshItems(base: .root)
             }
         })
     }
@@ -105,7 +103,7 @@ private extension ItemListView {
                         .onChange(of: searchTerm) { oldValue, newValue in
                             Task {
                                 selectedItemType = .products(search: newValue.isNotEmpty)
-                                await posModel.searchItems(searchTerm: newValue, base: .root(.products(search: true)))
+                                await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
                             }
                         }
                     }
@@ -186,14 +184,14 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
+        ItemList(itemsController: itemsController, node: .root) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
             ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(selectedItemType))
+            await itemsController.refreshItems(base: .root)
         }
     }
 
@@ -202,9 +200,9 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            // This always uses the non-search itemsStack, otherwise it will have the search term and not work properly
+            // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: posModel.itemsViewState.itemsStack)
+            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController)
         default:
             EmptyView()
         }
@@ -214,9 +212,15 @@ private extension ItemListView {
     var emptyView: some View {
         switch selectedItemType {
         case .products:
-            PointOfSaleItemListEmptyView(base: .root(selectedItemType))
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemType: .products(search: false),
+                    baseItem: .root))
         case .coupons:
-            PointOfSaleItemListEmptyView(base: .root(selectedItemType)) {
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemType: .coupons,
+                    baseItem: .root)) {
                 showCouponCreationModal = true
             }
         }
@@ -234,7 +238,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.loadItems(base: .root(selectedItemType))
+                    await itemsController.loadItems(base: .root)
                 }
             })
         }
@@ -250,7 +254,7 @@ private extension ItemListView {
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
         Task { @MainActor in
-            await posModel.loadItems(base: .root(itemType))
+            await itemsController.loadItems(base: .root)
         }
     }
 }
@@ -333,7 +337,7 @@ private extension ItemListView {
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadItems(base: .root(.products()))
+        await itemsController.loadItems(base: .root)
     }
     let posModel = PointOfSaleAggregateModel(
         itemsController: itemsController,

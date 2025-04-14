@@ -273,7 +273,7 @@ extension PointOfSaleOrderController {
 
 private extension POSCart {
     init(cart: Cart) {
-        let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
+        let items = cart.purchasableItems.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
         let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code, summary: $0.summary) }
         self.init(items: items, coupons: coupons)
     }

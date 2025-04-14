@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct CouponRowView: View {
-    private let couponItem: CartCouponItem
+    private let couponItem: CartItem.CouponItem
     private let couponRowState: CouponRowState?
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding private var showImage: Bool
 
-    init(couponItem: CartCouponItem,
+    init(couponItem: CartItem.CouponItem,
          couponRowState: CouponRowState? = nil,
          showImage: Binding<Bool> = .constant(true),
          onItemRemoveTapped: (() -> Void)? = nil
@@ -109,6 +109,6 @@ private extension CouponRowView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    CouponRowView(couponItem: CartCouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
+    CouponRowView(couponItem: CartItem.CouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
 }
 #endif

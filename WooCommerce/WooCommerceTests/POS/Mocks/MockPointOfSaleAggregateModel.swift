@@ -62,8 +62,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func remove(cartItem: CartItem) { }
 
-    func remove(cartCouponItem: CartCouponItem) { }
-
     var removeAllItemsFromCartCalled = false
     func removeAllItemsFromCart() {
         removeAllItemsFromCartCalled = true

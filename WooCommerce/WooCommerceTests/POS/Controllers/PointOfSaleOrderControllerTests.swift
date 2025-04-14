@@ -38,12 +38,12 @@ struct PointOfSaleOrderControllerTests {
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
-        await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         mockOrderService.syncOrderWasCalled = false
 
         // When
-        await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == false)
@@ -56,14 +56,14 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService)
         mockOrderService.simulateSyncing = true
         Task {
-            await sut.syncOrder(for: .init(items: [makeItem(quantity: 1)]), retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
         }
         try await Task.sleep(nanoseconds: UInt64(100 * Double(NSEC_PER_MSEC)))
         mockOrderService.syncOrderWasCalled = false
 
         // When
-        await sut.syncOrder(for: .init(items: [makeItem(quantity: 2),
-                                               makeItem(quantity: 5)]),
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem(quantity: 2),
+                                                          makeItem(quantity: 5)]),
                             retryHandler: {})
 
         // Then
@@ -83,7 +83,7 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettings: currencySettings)
 
         // When
-        await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
         #expect(mockOrderService.spySyncOrderCurrency == .AUD)
@@ -102,8 +102,8 @@ struct PointOfSaleOrderControllerTests {
         let futureOrderItem = OrderItem.fake().copy(quantity: 5)
 
         // When
-        await sut.syncOrder(for: .init(items: [cartItem,
-                                               makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem,
+                                                          makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
                             retryHandler: {})
 
         // Then
@@ -134,7 +134,7 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
         }
 
         await orderStateAppendTask?.value
@@ -172,7 +172,7 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
         }
 
         await orderStateAppendTask?.value
@@ -210,7 +210,7 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = order
 
         // We need an existing order before we can update its email, and send a receipt:
-        await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: { })
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
 
         // When
         try await sut.sendReceipt(recipientEmail: recipientEmail)
@@ -250,7 +250,7 @@ struct PointOfSaleOrderControllerTests {
         let orderItem = OrderItem.fake()
         let fakeOrder = Order.fake().copy(items: [orderItem])
         mockOrderService.orderToReturn = fakeOrder
-        await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
         // When
         let completionResult: Bool = await withCheckedContinuation { continuation in
@@ -288,7 +288,7 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // When
-        let result = await sut.syncOrder(for: .init(items: [fakeCartItem]), retryHandler: { })
+        let result = await sut.syncOrder(for: .init(purchasableItems: [fakeCartItem]), retryHandler: { })
 
         // Then
         if case .success(let state) = result {
@@ -308,10 +308,10 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         // 1. Initial order
-        _ = await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+        _ = await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
         // 2. Sync existing order
-        let result = await sut.syncOrder(for: .init(items: [makeItem(), makeItem()]), retryHandler: {})
+        let result = await sut.syncOrder(for: .init(purchasableItems: [makeItem(), makeItem()]), retryHandler: {})
 
         // Then
         if case .success(let state) = result {
@@ -333,10 +333,10 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         // 1. Initial order
-        _ = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        _ = await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         // 2. Syncing existing order with same cart should not update order
-        let result = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        let result = await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         // Then
         if case .success(let state) = result {
@@ -354,7 +354,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         mockOrderService.orderToReturn = nil
-        let result = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        let result = await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         // Then
         if case .failure(let error) = result {
@@ -377,12 +377,12 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync to set up the order
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
 
         mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items and coupons
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == false)
@@ -401,12 +401,12 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: initialCouponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: [.init(id: UUID(), code: initialCouponCode, summary: "")]), retryHandler: {})
 
         mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items but different coupon
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: "DIFFERENT20", summary: "")]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: [.init(id: UUID(), code: "DIFFERENT20", summary: "")]), retryHandler: {})
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == true)
@@ -425,12 +425,12 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync with coupon
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: [.init(id: UUID(), code: couponCode, summary: "")]), retryHandler: {})
 
         mockOrderService.syncOrderWasCalled = false
 
         // When - sync with same items but no coupons
-        await sut.syncOrder(for: .init(items: [cartItem], coupons: []), retryHandler: {})
+        await sut.syncOrder(for: .init(purchasableItems: [cartItem], coupons: []), retryHandler: {})
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == true)
@@ -440,7 +440,7 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_orderService_fails_with_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                           receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService)
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
 
@@ -461,9 +461,9 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: .init(items: [makeItem()],
-                                         coupons: [.init(id: UUID(), code: "INVALID", summary: "")]),
-                              retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()],
+                                           coupons: [.init(id: UUID(), code: "INVALID", summary: "")]),
+                                retryHandler: {})
         }
 
         await orderStateAppendTask?.value
@@ -480,7 +480,7 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                           receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService)
         let errorMessage = "Coupon INVALID does not exist"
         let errorJSON = """
         {
@@ -508,9 +508,9 @@ struct PointOfSaleOrderControllerTests {
             observeOrderState()
 
             // When
-            await sut.syncOrder(for: .init(items: [makeItem()],
-                                         coupons: [.init(id: UUID(), code: "INVALID", summary: "")]),
-                              retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()],
+                                           coupons: [.init(id: UUID(), code: "INVALID", summary: "")]),
+                                retryHandler: {})
         }
 
         await orderStateAppendTask?.value
@@ -536,7 +536,7 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
 
         // Initial sync succeeds
-        let initialResult = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        let initialResult = await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
         switch initialResult {
         case .success(.newOrder):
             break
@@ -546,7 +546,7 @@ struct PointOfSaleOrderControllerTests {
 
         // Then simulate a failure
         mockOrderService.errorToReturn = SyncOrderStateError.syncFailure
-        let failureResult = await sut.syncOrder(for: .init(items: [cartItem, cartItem]), retryHandler: {})
+        let failureResult = await sut.syncOrder(for: .init(purchasableItems: [cartItem, cartItem]), retryHandler: {})
         switch failureResult {
         case .failure(SyncOrderStateError.syncFailure):
             break
@@ -557,7 +557,7 @@ struct PointOfSaleOrderControllerTests {
         // When - try syncing with the same cart again
         mockOrderService.errorToReturn = nil
         mockOrderService.orderToReturn = fakeOrder // Restore mock to return success
-        let subsequentResult = await sut.syncOrder(for: .init(items: [cartItem]), retryHandler: {})
+        let subsequentResult = await sut.syncOrder(for: .init(purchasableItems: [cartItem]), retryHandler: {})
 
         // Then - should be treated as new order since previous order was cleared
         switch subsequentResult {
@@ -590,7 +590,7 @@ struct PointOfSaleOrderControllerTests {
             orderService.orderToReturn = fakeOrder
 
             // When
-            await sut.syncOrder(for: .init(items: [fakeCartItem]), retryHandler: { })
+            await sut.syncOrder(for: .init(purchasableItems: [fakeCartItem]), retryHandler: { })
 
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
@@ -605,7 +605,7 @@ struct PointOfSaleOrderControllerTests {
             orderService.orderToReturn = nil
 
             // When
-            await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
             // Then
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
@@ -633,7 +633,7 @@ struct PointOfSaleOrderControllerTests {
             let orderItem = OrderItem.fake()
             let fakeOrder = Order.fake().copy(items: [orderItem])
             mockOrderService.orderToReturn = fakeOrder
-            await sut.syncOrder(for: .init(items: [makeItem()]), retryHandler: {})
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
             // When
             await withCheckedContinuation { continuation in
@@ -660,12 +660,12 @@ struct PointOfSaleOrderControllerTests {
 private func makeItem(name: String = "",
                       formattedPrice: String = "",
                       quantity: Int = 1,
-                      orderItemsToMatch: [OrderItem] = []) -> CartItem {
-    return CartItem(id: UUID(),
-                    item: MockPOSOrderableItem(name: name,
-                                               formattedPrice: formattedPrice,
-                                               orderItemsToMatch: orderItemsToMatch),
-                    title: name,
-                    subtitle: nil,
-                    quantity: quantity)
+                      orderItemsToMatch: [OrderItem] = []) -> CartItem.PurchasableItem {
+    return .init(id: UUID(),
+                 item: MockPOSOrderableItem(name: name,
+                                            formattedPrice: formattedPrice,
+                                            orderItemsToMatch: orderItemsToMatch),
+                 title: name,
+                 subtitle: nil,
+                 quantity: quantity)
 }

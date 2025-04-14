@@ -133,7 +133,7 @@ struct PointOfSaleAggregateModelTests {
             items.forEach(sut.addToCart(_:))
 
             // Then
-            #expect(sut.cart.items.map(\.item.id) == items.reversed().map(\.id))
+            #expect(sut.cart.purchasableItems.map(\.item.id) == items.reversed().map(\.id))
         }
 
         @available(iOS 17.0, *)
@@ -151,15 +151,15 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
-            try #require(sut.cart.items.count == 2)
+            try #require(sut.cart.purchasableItems.count == 2)
 
             // When
-            let firstItem = try #require(sut.cart.items.first)
-            sut.remove(cartItem: firstItem)
+            let firstItem = try #require(sut.cart.purchasableItems.first)
+            sut.remove(cartItem: .purchasableItem(firstItem))
 
             // Then
-            #expect(sut.cart.items.count == 1)
-            #expect(sut.cart.items.first?.title == "Item 1")
+            #expect(sut.cart.purchasableItems.count == 1)
+            #expect(sut.cart.purchasableItems.first?.title == "Item 1")
         }
 
         @available(iOS 17.0, *)
@@ -177,7 +177,7 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
-            try #require(sut.cart.items.count == 2)
+            try #require(sut.cart.purchasableItems.count == 2)
 
             // When
             sut.removeAllItemsFromCart()
@@ -258,7 +258,7 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(makeItem())
             sut.addToCart(makeItem())
-            let item = try #require(sut.cart.items.first)
+            let item = try #require(sut.cart.purchasableItems.first)
 
             // When
             await sut.checkOut()

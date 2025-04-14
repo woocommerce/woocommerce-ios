@@ -165,22 +165,6 @@ struct PointOfSaleCouponsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func enableCoupons_sets_loading_state_when_starting() async throws {
-        // Given
-        let couponProvider = MockPointOfSaleCouponService()
-        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
-
-        // When
-        _ = await sut.enableCoupons()
-
-        // Then
-        guard case .loading = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loading state")
-            return
-        }
-    }
-
-    @available(iOS 17.0, *)
     @Test func enableCoupons_sets_error_state_when_fails() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -188,10 +172,9 @@ struct PointOfSaleCouponsControllerTests {
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
 
         // When
-        let result = await sut.enableCoupons()
+        await sut.enableCoupons()
 
         // Then
-        #expect(result == false)
         guard case .error = sut.itemsViewState.itemsStack.root else {
             Issue.record("Expected error state")
             return
@@ -199,15 +182,18 @@ struct PointOfSaleCouponsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func enableCoupons_returns_true_when_successful() async throws {
+    @Test func enableCoupons_loads_items_when_successful() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        let expectedCoupons = MockPointOfSaleCouponService.makeInitialCoupons()
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: false), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
-        let result = await sut.enableCoupons()
+        _ = await sut.enableCoupons()
 
         // Then
-        #expect(result == true)
+        #expect(sut.itemsViewState == expectedViewState)
     }
 }

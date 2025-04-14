@@ -8,7 +8,7 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
-    func enableCoupons() async -> Bool
+    func enableCoupons() async
 }
 
 @available(iOS 17.0, *)
@@ -58,17 +58,15 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
     }
 
     @MainActor
-    func enableCoupons() async -> Bool {
+    func enableCoupons() async {
         itemsViewState.itemsStack.root = .loading([])
         do {
             try await couponProvider.enableCoupons()
-            return true
+            await loadItems(base: .root)
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
                 setCouponsErrorViewState(couponError)
             }
-
-            return false
         }
     }
 }

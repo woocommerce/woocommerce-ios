@@ -10,6 +10,8 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var enableAnalyticsSettingCalled = false
     var retrieveTaxBasedOnSettingCalled = false
 
+    var couponsEnabled: Bool = true
+
     func synchronizeGeneralSiteSettings(siteID: Int64,
                                       onCompletion: @escaping (Error?) -> Void) {
         generalSiteSettingsSyncCalled = true
@@ -29,8 +31,13 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
 
     func retrieveCouponSetting(siteID: Int64,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+
         retrieveCouponSettingCalled = true
-        onCompletion(.success(true))
+        if couponsEnabled {
+            onCompletion(.success(true))
+        } else {
+            onCompletion(.success(false))
+        }
     }
 
     func enableCouponSetting(siteID: Int64,

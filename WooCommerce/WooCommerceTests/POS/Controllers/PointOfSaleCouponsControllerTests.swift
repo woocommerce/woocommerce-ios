@@ -14,6 +14,10 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
     var errorToThrow: PointOfSaleCouponServiceError?
 
+    func provideLocalPointOfSaleCoupons() async throws -> [Yosemite.POSItem] {
+        []
+    }
+
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         if let error = errorToThrow {
             throw error

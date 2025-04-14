@@ -8,6 +8,7 @@ import Storage
 public enum PointOfSaleCouponServiceError: Error {
     case couponsLoadingError
     case couponsDisabled
+    case couponsEnablingError
 }
 
 public protocol PointOfSaleCouponServiceProtocol {
@@ -79,13 +80,13 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     @MainActor
     public func enableCoupons() async throws {
-        _ = await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {
                 case .success:
-                    continuation.resume(returning: true)
+                    continuation.resume(returning: ())
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsEnablingError)
                 }
             }
         }

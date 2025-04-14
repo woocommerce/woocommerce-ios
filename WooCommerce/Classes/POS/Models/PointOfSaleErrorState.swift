@@ -56,6 +56,14 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.loadingCouponsErrorRetry)
     }
 
+    static var errorOnEnablingCoupons: Self {
+        PointOfSaleErrorState(
+            errorType: .couponsDisabled,
+            title: Constants.enablingCouponsErrorTitle,
+            subtitle: Constants.enablingCouponsErrorSubtitle,
+            buttonText: Constants.enablingCouponsErrorRetry)
+    }
+
     static var errorCouponsDisabled: Self {
         PointOfSaleErrorState(
             errorType: .couponsDisabled,
@@ -160,6 +168,22 @@ struct PointOfSaleErrorState: Equatable {
             value: "Try again",
             comment: "Text for the button appearing on the item list screen when there's an error loading a page of " +
             "variations after the first. Shown inline with the previously loaded items above."
+        )
+
+        static let enablingCouponsErrorTitle = NSLocalizedString(
+            "pos.itemList.enablingCouponsErrorTitle",
+            value: "Error enabling coupons",
+            comment: "Title appearing on the coupon list screen when there's an error enabling coupons setting in the store."
+        )
+        static let enablingCouponsErrorSubtitle = NSLocalizedString(
+            "pos.itemList.enablingCouponsErrorSubtitle",
+            value: "Give it another go?",
+            comment: "Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store."
+        )
+        static let enablingCouponsErrorRetry = NSLocalizedString(
+            "pos.itemList.enablingCouponsErrorRetry",
+            value: "Retry",
+            comment: "Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.."
         )
     }
 }

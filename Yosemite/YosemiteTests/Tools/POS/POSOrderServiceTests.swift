@@ -48,10 +48,10 @@ struct POSOrderServiceTests {
 
         // Then
         let createdOrderItems = try #require(mockOrdersRemote.spyCreatePOSOrder?.items)
-        #expect(createdOrderItems.contains(where: { item in
+        #expect(createdOrderItems.contains(where: { (item: OrderItem) -> Bool in
             item.productID == 100 && item.quantity == 2
         }))
-        #expect(createdOrderItems.contains(where: { item in
+        #expect(createdOrderItems.contains(where: { (item: OrderItem) -> Bool in
             item.productID == 102 && item.quantity == 1
         }))
     }

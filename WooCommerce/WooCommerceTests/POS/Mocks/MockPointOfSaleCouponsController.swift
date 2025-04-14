@@ -2,14 +2,18 @@
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
-    func enableCoupons() async { }
+    var loadItemsCalled = false
+    var loadItemsBase: ItemListBaseItem?
 
     var itemsViewState: ItemsViewState = .init(containerState: .content,
                                                itemsStack: .init(root: .empty, itemStates: [:]))
 
-    func loadItems(base: ItemListBaseItem) async { }
+    func loadItems(base: ItemListBaseItem) async {
+        loadItemsCalled = true
+        loadItemsBase = base
+    }
 
     func refreshItems(base: ItemListBaseItem) async { }
-
     func loadNextItems(base: ItemListBaseItem) async { }
+    func enableCoupons() async { }
 }

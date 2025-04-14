@@ -172,7 +172,7 @@ private extension ItemListView {
 
             Spacer()
 
-            if case .coupons = selectedItemType {
+            if case .coupons = selectedItemType, itemListState.isLoaded || itemListState.isEmpty {
                 Button(action: {
                     showCouponCreationModal = true
                 }, label: {
@@ -258,10 +258,10 @@ private extension ItemListView {
     @ViewBuilder
     func errorView(_ errorState: PointOfSaleErrorState) -> some View {
         switch errorState {
-        case .errorCouponsDisabled:
+        case .errorCouponsDisabled, .errorOnEnablingCoupons:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await posModel.enableCoupons()
+                    await posModel.couponsController.enableCoupons()
                 }
             })
         default:

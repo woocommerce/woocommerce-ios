@@ -38,7 +38,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func removeAllCouponsFromCart()
     func addMoreToCart()
     func startNewCart()
-    
+
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
     func searchHistory(for itemType: POSItemType) -> [String]
 
@@ -150,7 +150,7 @@ extension PointOfSaleAggregateModel {
     func saveSearchTerm(_ term: String, for itemType: POSItemType) {
         searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
     }
-    
+
     func searchHistory(for itemType: POSItemType) -> [String] {
         return searchHistoryService.searchHistory(for: itemType)
     }

@@ -66,7 +66,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         do {
-            try await syncCouponsFromRemote(pageNumber: pageNumber)
+            let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
+            let coupons = try await provideLocalPointOfSaleCoupons()
+            return .init(items: coupons, hasMorePages: hasMorePages)
         } catch {
             if try await checkRemoteStoreCouponSettings() {
                 throw error
@@ -74,8 +76,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 throw PointOfSaleCouponServiceError.couponsDisabled
             }
         }
-        let coupons = try await provideLocalPointOfSaleCoupons()
-        return .init(items: coupons, hasMorePages: true)
     }
 
     @MainActor
@@ -125,7 +125,10 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    func syncCouponsFromRemote(pageNumber: Int) async throws {
+    /// Suncing local coupons storage with remote
+    /// - Parameter pageNumber: Number of page that should be retrieved.
+    /// - Returns: True if there are more pages to sync
+    func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool  {
         try await withCheckedThrowingContinuation { continuation in
             couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
@@ -133,8 +136,8 @@ private extension PointOfSaleCouponService {
                 pageSize: Constants.defaultPageSize,
                 onCompletion: { result in
                     switch result {
-                    case .success:
-                        continuation.resume()
+                    case .success(let hasMorePages):
+                        continuation.resume(returning: hasMorePages)
                     case .failure:
                         continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                     }

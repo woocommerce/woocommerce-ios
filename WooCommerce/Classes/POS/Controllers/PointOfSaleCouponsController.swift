@@ -27,16 +27,11 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
 
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
-        // TODO:
-        // Handle unhappy path:
-        // Depending on the error type (failed to load vs coupons disabled) we want to show a different CTA choice
         await loadFirstPage()
     }
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        // TODO:
-        // Handle unhappy path
         await loadFirstPage()
     }
 
@@ -81,7 +76,11 @@ private extension PointOfSaleCouponsController {
             if !storedCoupons.isEmpty {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
-            _ = try await fetchCoupons(pageNumber: 1)
+
+            try await paginationTracker.resync { [weak self] pageNumber in
+                guard let self else { return true }
+                return try await fetchCoupons(pageNumber: pageNumber)
+            }
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
                 setCouponsErrorViewState(couponError)

@@ -7,11 +7,11 @@ struct CartRowRemoveButton: View {
         Button(action: {
             action()
         }, label: {
-            Text(Image(systemName: "xmark.circle"))
-                .font(.posButtonSymbolMedium)
+            Text(Image(systemName: "trash"))
+                .font(.posButtonSymbolSmall)
         })
         .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-        .foregroundColor(Color.posOnSurfaceVariantLowest)
+        .foregroundColor(Color.posOnSurfaceVariantHighest)
     }
 
     private enum Localization {

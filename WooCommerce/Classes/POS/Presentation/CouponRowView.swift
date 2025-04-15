@@ -27,9 +27,20 @@ struct CouponRowView: View {
         min(Constants.couponCardSize * scale, Constants.maximumCouponCardSize)
     }
 
+    private var couponImageState: POSCouponImageState {
+        switch couponRowState {
+        case .invalid:
+            .error
+        case .valid:
+            .success
+        default:
+            .normal
+        }
+    }
+
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
-            POSCouponImageView(size: dimension)
+            POSCouponImageView(size: dimension, state: couponImageState)
                 .renderedIf(showImage)
 
             VStack(alignment: .leading, spacing: dynamicSpacing) {

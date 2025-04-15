@@ -52,10 +52,10 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
 final class SearchResultItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let searchTerm: String
-    private let itemType: ItemType
+    private let itemType: ItemListType
     private let analytics: Analytics
 
-    init(posModel: PointOfSaleAggregateModelProtocol, searchTerm: String, itemType: ItemType, analytics: Analytics = ServiceLocator.analytics) {
+    init(posModel: PointOfSaleAggregateModelProtocol, searchTerm: String, itemType: ItemListType, analytics: Analytics = ServiceLocator.analytics) {
         self.posModel = posModel
         self.searchTerm = searchTerm
         self.itemType = itemType

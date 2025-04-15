@@ -9,7 +9,7 @@ import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 
-enum ItemType {
+enum ItemListType {
     case products(search: Bool = false)
     case coupons
 }

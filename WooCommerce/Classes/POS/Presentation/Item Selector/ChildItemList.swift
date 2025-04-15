@@ -85,7 +85,7 @@ private extension ChildItemList {
             headerView
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemType: .products(search: false),
+                    itemListType: .products(search: false),
                     baseItem: node))
         }
     }

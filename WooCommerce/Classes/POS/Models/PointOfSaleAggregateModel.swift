@@ -37,7 +37,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func addMoreToCart()
     func startNewCart()
     
-    func saveSearchTerm(_ term: String, for itemType: ItemType)
+    func saveSearchTerm(_ term: String, for itemListType: ItemListType)
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
@@ -141,8 +141,8 @@ extension PointOfSaleAggregateModel {
 // MARK: - Search
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
-    func saveSearchTerm(_ term: String, for itemType: ItemType) {
-        DDLogInfo("POS: Saving search term '\(term)' for item type: \(itemType)")
+    func saveSearchTerm(_ term: String, for itemListType: ItemListType) {
+        DDLogInfo("POS: Saving search term '\(term)' for item type: \(itemListType)")
     }
 }
 

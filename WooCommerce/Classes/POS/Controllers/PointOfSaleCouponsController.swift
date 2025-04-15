@@ -53,8 +53,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
                 return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
-            // TODO: Error handling
-            debugPrint(error)
+            itemsViewState.containerState = .content
+            itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
+                                                                           error: .errorOnLoadingCouponsNextPage),
+                                                        itemStates: currentItemStates)
         }
     }
 
@@ -96,24 +98,17 @@ private extension PointOfSaleCouponsController {
 
     @MainActor
     func fetchCoupons(pageNumber: Int) async throws -> Bool {
-        do {
-            let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
+        let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
 
-            let allCoupons = pagedCoupons.items
-            let hasMoreItems = pagedCoupons.hasMorePages
+        let allCoupons = pagedCoupons.items
+        let hasMoreItems = pagedCoupons.hasMorePages
 
-            if allCoupons.isEmpty {
-                setCouponsEmptyViewState()
-            } else {
-                setCouponsLoadedViewState(allCoupons, hasMoreItems: hasMoreItems)
-            }
-            return pagedCoupons.hasMorePages
-        } catch {
-            if let couponError = error as? PointOfSaleCouponServiceError {
-                setCouponsErrorViewState(couponError)
-            }
-            return true
+        if allCoupons.isEmpty {
+            setCouponsEmptyViewState()
+        } else {
+            setCouponsLoadedViewState(allCoupons, hasMoreItems: hasMoreItems)
         }
+        return pagedCoupons.hasMorePages
     }
 }
 

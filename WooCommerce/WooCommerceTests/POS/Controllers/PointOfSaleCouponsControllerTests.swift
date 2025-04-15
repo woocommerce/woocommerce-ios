@@ -2,48 +2,6 @@
 import Testing
 import Foundation
 
-import protocol Yosemite.PointOfSaleItemServiceProtocol
-import protocol Yosemite.PointOfSaleCouponServiceProtocol
-import enum Yosemite.POSItem
-import struct Yosemite.POSCoupon
-import struct Yosemite.PagedItems
-import struct Yosemite.POSVariableParentProduct
-import enum Yosemite.PointOfSaleCouponServiceError
-
-final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
-    var shouldReturnZeroItems = false
-    var errorToThrow: PointOfSaleCouponServiceError?
-
-    func provideLocalPointOfSaleCoupons() async throws -> [Yosemite.POSItem] {
-        []
-    }
-
-    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        if let error = errorToThrow {
-            throw error
-        }
-        if shouldReturnZeroItems {
-            return .init(items: [], hasMorePages: false)
-        } else {
-            return .init(items: Self.makeInitialCoupons(),
-                         hasMorePages: false)
-        }
-    }
-
-    static func makeInitialCoupons() -> [POSItem] {
-        let coupon1 = POSItem.coupon(POSCoupon(id: UUID(uuidString: ("DC55E3B9-9D83-4C07-82A7-4C300A50E84A")) ?? UUID(), code: "VALID1"))
-        let coupon2 = POSItem.coupon(POSCoupon(id: UUID(uuidString: ("DC55E3B9-9D83-4C07-82A7-4C300A50E84B")) ?? UUID(), code: "VALID2"))
-        let coupon3 = POSItem.coupon(POSCoupon(id: UUID(uuidString: ("DC55E3B9-9D83-4C07-82A7-4C300A50E84C")) ?? UUID(), code: "VALID3"))
-        return [coupon1, coupon2, coupon3]
-    }
-
-    func enableCoupons() async throws {
-        if let error = errorToThrow {
-            throw error
-        }
-    }
-}
-
 struct PointOfSaleCouponsControllerTests {
     @available(iOS 17.0, *)
     @Test func loadItems_when_empty_coupons_then_results_in_empty_state() async throws {
@@ -194,6 +152,69 @@ struct PointOfSaleCouponsControllerTests {
         _ = await sut.enableCoupons()
 
         // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadNextItems_when_loadNextItems_fails_then_sets_inlineError_state_and_preserves_items() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        couponProvider.shouldSimulateTwoPages = true
+        await sut.loadItems(base: .root)
+        let currentItems = sut.itemsViewState.itemsStack.root.items
+        couponProvider.errorToThrow = .couponsLoadingError
+
+        // When
+        await sut.loadNextItems(base: .root)
+
+        // Then
+        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnLoadingCouponsNextPage), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+        #expect(sut.itemsViewState == expectedViewState)
+
+        guard case .inlineError(let items, let error) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected inlineError state")
+            return
+        }
+        #expect(items == currentItems)
+        #expect(error == .errorOnLoadingCouponsNextPage)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadNextItems_when_loadNextItems_then_loads_second_page() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        couponProvider.shouldSimulateTwoPages = true
+        await sut.loadItems(base: .root)
+
+        // When
+        await sut.loadNextItems(base: .root)
+
+        // Then
+        let expectedItems = MockPointOfSaleCouponService.makeSecondPageCoupons()
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedItems, hasMoreItems: false), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func loadNextItems_when_loadNextItems_with_more_items_then_sets_hasMoreItems() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        couponProvider.shouldSimulateTwoPages = true
+        couponProvider.shouldSimulateMorePages = true
+        await sut.loadItems(base: .root)
+
+        // When
+        await sut.loadNextItems(base: .root)
+
+        // Then
+        let expectedItems = MockPointOfSaleCouponService.makeSecondPageCoupons()
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedItems, hasMoreItems: true), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
         #expect(sut.itemsViewState == expectedViewState)
     }
 }

@@ -51,23 +51,29 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    // Provides an array of coupons that are stored locally, it does not accept any sort of pagination
+    // Provides an array of coupons that are stored locally
+    // It does not accept any sort of pagination
+    // Limited to default page size to match remote results
     @MainActor
     public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
+        return try await provideLocalPointOfSaleCoupons(limit: Constants.defaultPageSize)
+    }
+
+    @MainActor
+    private func provideLocalPointOfSaleCoupons(limit: Int?) async throws -> [POSItem] {
         let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
 
-        let localCoupons = await fetchLocalCoupons()
-        return localCoupons.items
+        return fetchLocalCoupons(limit: limit)
     }
 
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         do {
             let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
-            let coupons = try await provideLocalPointOfSaleCoupons()
+            let coupons = try await provideLocalPointOfSaleCoupons(limit: nil)
             return .init(items: coupons, hasMorePages: hasMorePages)
         } catch {
             if try await checkRemoteStoreCouponSettings() {
@@ -95,23 +101,23 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func fetchLocalCoupons() async -> PagedItems<POSItem> {
+    func fetchLocalCoupons(limit: Int? = nil) -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)
 
         let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
                                                                  matching: predicate,
+                                                                 fetchLimit: limit,
                                                                  sortedBy: [descriptor])
 
         do {
             try resultsController.performFetch()
             let storageCoupons = resultsController.fetchedObjects
-            let posItems = mapCouponsToPOSItems(coupons: storageCoupons)
-            return .init(items: posItems, hasMorePages: true)
+            return mapCouponsToPOSItems(coupons: storageCoupons)
         } catch {
             debugPrint("Failed to load coupons from storage:", error)
-            return .init(items: [], hasMorePages: false)
+            return []
         }
     }
 

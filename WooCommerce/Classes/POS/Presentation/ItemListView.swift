@@ -233,7 +233,7 @@ private extension ItemListView {
         case .products(search: false), .coupons:
             StandardPOSItemActionHandler(posModel: posModel)
         case .products(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: selectedItemListType)
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
         }
     }
 

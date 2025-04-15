@@ -9,6 +9,8 @@ import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
+import class Yosemite.POSSearchHistoryService
+import enum Yosemite.POSItemType
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -37,7 +39,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func addMoreToCart()
     func startNewCart()
     
-    func saveSearchTerm(_ term: String, for itemListType: ItemListType)
+    func saveSearchTerm(_ term: String, for itemType: POSItemType)
+    func searchHistory(for itemType: POSItemType) -> [String]
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
@@ -69,6 +72,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    private let searchHistoryService: POSSearchHistoryService
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -82,6 +86,7 @@ protocol PointOfSaleAggregateModelProtocol {
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
+         searchHistoryService: POSSearchHistoryService = POSSearchHistoryService(),
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -90,6 +95,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.orderController = orderController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -141,8 +147,12 @@ extension PointOfSaleAggregateModel {
 // MARK: - Search
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
-    func saveSearchTerm(_ term: String, for itemListType: ItemListType) {
-        DDLogInfo("POS: Saving search term '\(term)' for item type: \(itemListType)")
+    func saveSearchTerm(_ term: String, for itemType: POSItemType) {
+        searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
+    }
+    
+    func searchHistory(for itemType: POSItemType) -> [String] {
+        return searchHistoryService.searchHistory(for: itemType)
     }
 }
 

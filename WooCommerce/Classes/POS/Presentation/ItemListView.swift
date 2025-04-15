@@ -213,7 +213,7 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(itemsController: itemsController, node: .root) {
+        ItemList(itemsController: itemsController, node: .root, searchTerm: searchTerm) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }

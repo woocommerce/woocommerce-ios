@@ -9,6 +9,7 @@ struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
+    private let searchTerm: String?
 
     // Navigation only uses this on iOS 17
     @State private var activeNavigationItem: POSItem? = nil
@@ -28,9 +29,11 @@ struct ItemList<HeaderView: View>: View {
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
+         searchTerm: String?,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.itemsController = itemsController
         self.node = node
+        self.searchTerm = searchTerm
         self.headerView = headerView()
     }
 
@@ -50,7 +53,7 @@ struct ItemList<HeaderView: View>: View {
 
                         if let state {
                             ForEach(state.items) { item in
-                                ItemListRow(item: item, activeNavigationItem: $activeNavigationItem)
+                                ItemListRow(item: item, searchTerm: searchTerm, activeNavigationItem: $activeNavigationItem)
                             }
                         }
 
@@ -113,6 +116,7 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
+    var searchTerm: String?
     @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
@@ -206,7 +210,8 @@ private extension ItemListRow {
     )
     ItemList(
         itemsController: PointOfSalePreviewItemsController(),
-        node: .root
+        node: .root,
+        searchTerm: nil
     )
 }
 
@@ -220,7 +225,8 @@ private extension ItemListRow {
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     ItemList(itemsController: PointOfSalePreviewItemsController(),
-             node: .root)
+             node: .root,
+             searchTerm: nil)
         .environment(posModel)
 }
 

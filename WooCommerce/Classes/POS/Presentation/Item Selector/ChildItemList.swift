@@ -64,7 +64,8 @@ private extension ChildItemList {
             headerView
 
             ItemList(itemsController: itemsController,
-                     node: node)
+                     node: node,
+                     searchTerm: nil)
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)

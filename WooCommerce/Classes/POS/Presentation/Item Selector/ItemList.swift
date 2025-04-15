@@ -9,7 +9,6 @@ struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
-    private let searchTerm: String?
 
     // Navigation only uses this on iOS 17
     @State private var activeNavigationItem: POSItem? = nil
@@ -26,14 +25,15 @@ struct ItemList<HeaderView: View>: View {
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let node: ItemListBaseItem
     private let headerView: HeaderView
+    private let itemActionHandler: POSItemActionHandler
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
-         searchTerm: String?,
+         itemActionHandler: POSItemActionHandler,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.itemsController = itemsController
         self.node = node
-        self.searchTerm = searchTerm
+        self.itemActionHandler = itemActionHandler
         self.headerView = headerView()
     }
 
@@ -53,7 +53,7 @@ struct ItemList<HeaderView: View>: View {
 
                         if let state {
                             ForEach(state.items) { item in
-                                ItemListRow(item: item, searchTerm: searchTerm, activeNavigationItem: $activeNavigationItem)
+                                ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
                             }
                         }
 
@@ -73,7 +73,10 @@ struct ItemList<HeaderView: View>: View {
                 // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
                 // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
                 NavigationLink(
-                    destination: ChildItemList(parentItem: activeItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController),
+                    destination: ChildItemList(parentItem: activeItem,
+                                               title: parentProduct.name,
+                                               itemsController: posModel.purchasableItemsController,
+                                               itemActionHandler: itemActionHandler),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }
@@ -116,7 +119,7 @@ private enum Constants {
 @available(iOS 17.0, *)
 private struct ItemListRow: View {
     let item: POSItem
-    var searchTerm: String?
+    let itemActionHandler: POSItemActionHandler
     @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
@@ -125,8 +128,7 @@ private struct ItemListRow: View {
         switch item {
         case let .simpleProduct(product):
             Button(action: {
-                posModel.addToCart(item)
-                analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
+                itemActionHandler.handleTap(item)
             }, label: {
                 SimpleProductCardView(product: product)
             })
@@ -157,14 +159,13 @@ private struct ItemListRow: View {
             }
         case let .variation(variation):
             Button(action: {
-                posModel.addToCart(item)
-                analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
+                itemActionHandler.handleTap(item)
             }, label: {
                 VariationCardView(variation: variation)
             })
         case let .coupon(coupon):
             Button(action: {
-                posModel.addToCart(item)
+                itemActionHandler.handleTap(item)
             }, label: {
                 CouponCardView(coupon: coupon)
             })
@@ -211,7 +212,7 @@ private extension ItemListRow {
     ItemList(
         itemsController: PointOfSalePreviewItemsController(),
         node: .root,
-        searchTerm: nil
+        itemActionHandler: PointOfSalePreviewItemActionHandler()
     )
 }
 
@@ -226,7 +227,7 @@ private extension ItemListRow {
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,
-             searchTerm: nil)
+             itemActionHandler: PointOfSalePreviewItemActionHandler())
         .environment(posModel)
 }
 

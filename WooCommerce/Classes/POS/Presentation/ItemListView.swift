@@ -213,7 +213,13 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(itemsController: itemsController, node: .root, searchTerm: searchTerm) {
+        let actionHandler: POSItemActionHandler = StandardPOSItemActionHandler(posModel: posModel)
+
+        ItemList(
+            itemsController: itemsController,
+            node: .root,
+            itemActionHandler: actionHandler
+        ) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
@@ -231,7 +237,13 @@ private extension ItemListView {
         case let .variableParentProduct(parentProduct):
             // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController)
+            let actionHandler = StandardPOSItemActionHandler(posModel: posModel)
+            ChildItemList(
+                parentItem: parentItem,
+                title: parentProduct.name,
+                itemsController: posModel.purchasableItemsController,
+                itemActionHandler: actionHandler
+            )
         default:
             EmptyView()
         }

@@ -27,12 +27,6 @@ protocol PointOfSaleItemsControllerProtocol {
 }
 
 @available(iOS 17.0, *)
-protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
-    /// Enables coupons in store settings, if needed
-    func enableCoupons() async
-}
-
-@available(iOS 17.0, *)
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async

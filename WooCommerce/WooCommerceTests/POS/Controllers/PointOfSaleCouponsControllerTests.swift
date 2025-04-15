@@ -163,4 +163,37 @@ struct PointOfSaleCouponsControllerTests {
         // Then
         #expect(sut.itemsViewState == expectedViewState)
     }
+
+    @available(iOS 17.0, *)
+    @Test func enableCoupons_sets_error_state_when_fails() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        couponProvider.errorToThrow = .couponsEnablingError
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+
+        // When
+        await sut.enableCoupons()
+
+        // Then
+        guard case .error = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected error state")
+            return
+        }
+    }
+
+    @available(iOS 17.0, *)
+    @Test func enableCoupons_loads_items_when_successful() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        let expectedCoupons = MockPointOfSaleCouponService.makeInitialCoupons()
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: false), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        _ = await sut.enableCoupons()
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
 }

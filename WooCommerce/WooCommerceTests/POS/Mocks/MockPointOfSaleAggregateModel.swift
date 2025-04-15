@@ -77,4 +77,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func startNewCart() { }
 
     func pointOfSaleClosed() { }
+
+    func saveSearchTerm(_ term: String, for itemType: ItemType) { }
 }

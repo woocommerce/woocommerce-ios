@@ -213,8 +213,6 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        let actionHandler: POSItemActionHandler = StandardPOSItemActionHandler(posModel: posModel)
-
         ItemList(
             itemsController: itemsController,
             node: .root,
@@ -230,6 +228,15 @@ private extension ItemListView {
         }
     }
 
+    private var actionHandler: POSItemActionHandler {
+        switch selectedItemType {
+        case .products(search: false), .coupons:
+            StandardPOSItemActionHandler(posModel: posModel)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: selectedItemType)
+        }
+    }
+
     @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
@@ -237,7 +244,6 @@ private extension ItemListView {
         case let .variableParentProduct(parentProduct):
             // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            let actionHandler = StandardPOSItemActionHandler(posModel: posModel)
             ChildItemList(
                 parentItem: parentItem,
                 title: parentProduct.name,

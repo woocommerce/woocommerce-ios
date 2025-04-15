@@ -131,7 +131,7 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    /// Suncing local coupons storage with remote
+    /// Syncing local coupons storage with remote
     /// - Parameter pageNumber: Number of page that should be retrieved.
     /// - Returns: True if there are more pages to sync
     func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool {

@@ -41,6 +41,12 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
             return
         }
 
+        let currentItems = itemsViewState.itemsStack.root.items
+        let currentItemStates = itemsViewState.itemsStack.itemStates
+        itemsViewState.containerState = .content
+        itemsViewState.itemsStack = ItemsStackState(root: .loading(currentItems),
+                                                   itemStates: currentItemStates)
+
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }

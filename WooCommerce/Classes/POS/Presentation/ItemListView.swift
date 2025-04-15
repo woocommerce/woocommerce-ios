@@ -283,7 +283,9 @@ private extension ItemListView {
     func displayItemType(_ itemType: ItemType) {
         selectedItemType = itemType
         Task { @MainActor in
-            await itemsController.loadItems(base: .root)
+            if itemListState.items.isEmpty {
+                await itemsController.loadItems(base: .root)
+            }
         }
     }
 }

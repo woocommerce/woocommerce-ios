@@ -10,6 +10,7 @@ struct PointOfSaleErrorState: Equatable {
         case couponsLoadError
         case couponsDisabled
         case couponsNextPageError
+        case couponsRefreshError
     }
 
     let errorType: ErrorType
@@ -79,6 +80,14 @@ struct PointOfSaleErrorState: Equatable {
             title: Constants.failedToLoadCouponsNextPageTitle,
             subtitle: Constants.failedToLoadCouponsNextPageSubtitle,
             buttonText: Constants.failedToLoadCouponsNextPageButtonTitle)
+    }
+
+    static var errorOnRefreshingCoupons: Self {
+        PointOfSaleErrorState(
+            errorType: .couponsRefreshError,
+            title: Constants.failedToRefreshCouponsTitle,
+            subtitle: Constants.failedToRefreshCouponsSubtitle,
+            buttonText: Constants.failedToRefreshCouponsButtonTitle)
     }
 
     enum Constants {
@@ -211,6 +220,21 @@ struct PointOfSaleErrorState: Equatable {
             value: "Try again",
             comment: "Text for the button appearing on the coupon list screen when there's an error loading a page of coupons " +
             "after the first. Shown inline with the previously loaded coupons above."
+        )
+        static let failedToRefreshCouponsTitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsTitle",
+            value: "Error refreshing coupons",
+            comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
+        )
+        static let failedToRefreshCouponsSubtitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsSubtitle",
+            value: "Give it another go?",
+            comment: "Subtitle appearing on the coupon list screen when there's an error refreshing coupons."
+        )
+        static let failedToRefreshCouponsButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsButtonTitle",
+            value: "Retry",
+            comment: "Text for the button appearing on the coupon list screen when there's an error refreshing coupons."
         )
     }
 }

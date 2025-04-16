@@ -284,12 +284,13 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadNextItems(base: baseItem)
 
         // Then
-        guard case .inlineError(let items, let errorState) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+        guard case .inlineError(let items, let errorState, let context) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
             Issue.record("Expected inlineError ItemList state, but got \(sut.itemsViewState)")
             return
         }
         #expect(items.count == 2)
         #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage)
+        #expect(context == .pagination)
     }
 
     @available(iOS 17.0, *)
@@ -358,12 +359,13 @@ final class PointOfSaleItemsControllerTests {
         // Then
         #expect(sut.itemsViewState.containerState == .content)
 
-        guard case .inlineError(let items, let errorState) = sut.itemsViewState.itemsStack.root else {
+        guard case .inlineError(let items, let errorState, let context) = sut.itemsViewState.itemsStack.root else {
             Issue.record("Expected inlineError ItemList state, but got \(sut.itemsViewState)")
             return
         }
         #expect(items.count == 2)
         #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage)
+        #expect(context == .pagination)
     }
 
     @available(iOS 17.0, *)

@@ -55,7 +55,8 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
         } catch {
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingCouponsNextPage),
+                                                                           error: .errorOnLoadingCouponsNextPage,
+                                                                           context: .pagination),
                                                         itemStates: currentItemStates)
         }
     }
@@ -134,7 +135,12 @@ private extension PointOfSaleCouponsController {
 
         switch couponError {
         case .couponsLoadingError:
-            stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+            let items = itemsViewState.itemsStack.root.items
+            if items.isEmpty {
+                stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+            } else {
+                stackState = ItemsStackState(root: .inlineError(items, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
+            }
         case .couponsDisabled:
             stackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
         case .couponsEnablingError:

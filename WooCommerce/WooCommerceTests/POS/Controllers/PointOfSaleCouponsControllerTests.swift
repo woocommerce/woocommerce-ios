@@ -156,6 +156,24 @@ struct PointOfSaleCouponsControllerTests {
     }
 
     @available(iOS 17.0, *)
+    @Test func loadItems_when_fails_then_sets_inlineError_state_and_preserves_items() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider)
+        await sut.loadItems(base: .root)
+        let currentItems = sut.itemsViewState.itemsStack.root.items
+        couponProvider.errorToThrow = .couponsLoadingError
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @available(iOS 17.0, *)
     @Test func loadNextItems_when_loadNextItems_fails_then_sets_inlineError_state_and_preserves_items() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -169,16 +187,9 @@ struct PointOfSaleCouponsControllerTests {
         await sut.loadNextItems(base: .root)
 
         // Then
-        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnLoadingCouponsNextPage), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnLoadingCouponsNextPage, context: .pagination), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
         #expect(sut.itemsViewState == expectedViewState)
-
-        guard case .inlineError(let items, let error) = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected inlineError state")
-            return
-        }
-        #expect(items == currentItems)
-        #expect(error == .errorOnLoadingCouponsNextPage)
     }
 
     @available(iOS 17.0, *)

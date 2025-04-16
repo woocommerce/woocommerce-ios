@@ -96,7 +96,7 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            POSPageHeaderView(title: Localization.title, trailingContent: {
+            POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
                        case .products = selectedItemListType {
@@ -136,7 +136,6 @@ private extension ItemListView {
                             }
                         }
                     }
-                    temporaryProductsCouponsSwitcher
                     Button(action: {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
@@ -155,6 +154,30 @@ private extension ItemListView {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
+    }
+
+    var headerViewItems: [POSPageHeaderItem] {
+        var items = [
+            POSPageHeaderItem(
+                title: Localization.productsTitle,
+                action: {
+                    displayItemListType(.products(search: searchTerm.isNotEmpty))
+                }
+            )
+        ]
+
+        if shouldShowCoupons {
+            items.append(
+                POSPageHeaderItem(
+                    title: Localization.couponsTitle,
+                    action: {
+                        displayItemListType(.coupons)
+                    }
+                )
+            )
+        }
+
+        return items
     }
 
     var temporaryProductsCouponsSwitcher: some View {
@@ -348,10 +371,16 @@ private extension ItemListView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
+        static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
+        static let couponsTitle = NSLocalizedString(
+            "pos.itemlistview.couponsTitle",
+            value: "Coupons",
+            comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
 
         static let headerBannerTitleSimpleAndVariable = NSLocalizedString(

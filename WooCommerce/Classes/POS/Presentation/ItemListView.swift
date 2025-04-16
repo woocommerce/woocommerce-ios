@@ -11,6 +11,7 @@ struct ItemListView: View {
     @State private var showSimpleProductsModal: Bool = false
 
     @State private var searchTerm: String = ""
+    @FocusState private var isSearchFieldFocused: Bool
 
     @Binding var selectedItemListType: ItemListType
 
@@ -59,15 +60,21 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            switch itemListState {
-            case .loading(let items),
-                    .loaded(let items, _),
-                    .inlineError(let items, _, _):
-                listView(items)
-            case .error(let errorState):
-                errorView(errorState)
-            case .empty:
-                emptyView
+            if isSearchFieldFocused && searchTerm.isEmpty {
+                Text("Recent searches go here")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.posSurface)
+            } else {
+                switch itemListState {
+                case .loading(let items),
+                        .loaded(let items, _),
+                        .inlineError(let items, _, _):
+                    listView(items)
+                case .error(let errorState):
+                    errorView(errorState)
+                case .empty:
+                    emptyView
+                }
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
@@ -100,10 +107,7 @@ private extension ItemListView {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
                        case .products = selectedItemListType {
-                        TextField(text: $searchTerm) {
-                            Text("Search")
-                        }
-                        .onChange(of: searchTerm) { oldValue, newValue in
+                        searchField.onChange(of: searchTerm) { oldValue, newValue in
                             selectedItemListType = .products(search: newValue.isNotEmpty)
 
                             // The debouncing logic is a little tricky, because the loading state is held in the controller.
@@ -154,6 +158,25 @@ private extension ItemListView {
                     .padding(.horizontal, Constants.bannerCardPadding)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
+        }
+    }
+
+    var searchField: some View {
+        HStack(spacing: POSSpacing.small) {
+            if isSearchFieldFocused || searchTerm.isNotEmpty {
+                Button(action: {
+                    searchTerm = ""
+                    isSearchFieldFocused = false
+                }) {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(.posOnSurface)
+                }
+            }
+
+            TextField(text: $searchTerm) {
+                Text("Search")
+            }
+            .focused($isSearchFieldFocused)
         }
     }
 

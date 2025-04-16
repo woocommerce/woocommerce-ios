@@ -107,6 +107,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                 trailingContent
             }
         }
+        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
     }

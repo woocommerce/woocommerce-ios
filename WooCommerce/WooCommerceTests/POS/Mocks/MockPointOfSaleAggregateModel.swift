@@ -2,6 +2,7 @@ import Foundation
 @testable import WooCommerce
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import enum Yosemite.POSItemType
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -77,4 +78,10 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func startNewCart() { }
 
     func pointOfSaleClosed() { }
+
+    func saveSearchTerm(_ term: String, for itemType: POSItemType) { }
+
+    func searchHistory(for itemType: Yosemite.POSItemType) -> [String] {
+        return []
+    }
 }

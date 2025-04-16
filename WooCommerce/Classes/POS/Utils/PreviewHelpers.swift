@@ -120,6 +120,11 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     }
 }
 
+@available(iOS 17.0, *)
+final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
+    func handleTap(_ item: Yosemite.POSItem) { }
+}
+
 private var mockItems: [POSItem] {
     return [
         .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00")),

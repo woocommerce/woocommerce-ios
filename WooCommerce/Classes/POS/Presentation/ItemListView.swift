@@ -12,13 +12,13 @@ struct ItemListView: View {
 
     @State private var searchTerm: String = ""
 
-    @Binding var selectedItemType: ItemType
+    @Binding var selectedItemListType: ItemListType
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
     var itemsController: PointOfSaleItemsControllerProtocol {
-        switch selectedItemType {
+        switch selectedItemListType {
         case .products(search: false):
             posModel.purchasableItemsController
         case .products(search: true):
@@ -99,12 +99,12 @@ private extension ItemListView {
             POSPageHeaderView(title: Localization.title, trailingContent: {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-                       case .products = selectedItemType {
+                       case .products = selectedItemListType {
                         TextField(text: $searchTerm) {
                             Text("Search")
                         }
                         .onChange(of: searchTerm) { oldValue, newValue in
-                            selectedItemType = .products(search: newValue.isNotEmpty)
+                            selectedItemListType = .products(search: newValue.isNotEmpty)
 
                             // The debouncing logic is a little tricky, because the loading state is held in the controller.
                             // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
@@ -160,19 +160,19 @@ private extension ItemListView {
     var temporaryProductsCouponsSwitcher: some View {
         HStack {
             Button(action: {
-                displayItemType(.products(search: searchTerm.isNotEmpty))
+                displayItemListType(.products(search: searchTerm.isNotEmpty))
             }, label: {
                 Text("Products")
             })
             Button(action: {
-                displayItemType(.coupons)
+                displayItemListType(.coupons)
             }, label: {
                 Text("Coupons")
             })
 
             Spacer()
 
-            if case .coupons = selectedItemType, itemListState.isLoaded || itemListState.isEmpty {
+            if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
                 Button(action: {
                     showCouponCreationModal = true
                 }, label: {
@@ -213,7 +213,11 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(itemsController: itemsController, node: .root) {
+        ItemList(
+            itemsController: itemsController,
+            node: .root,
+            itemActionHandler: actionHandler
+        ) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
@@ -224,6 +228,15 @@ private extension ItemListView {
         }
     }
 
+    private var actionHandler: POSItemActionHandler {
+        switch selectedItemListType {
+        case .products(search: false), .coupons:
+            StandardPOSItemActionHandler(posModel: posModel)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
+        }
+    }
+
     @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
@@ -231,7 +244,12 @@ private extension ItemListView {
         case let .variableParentProduct(parentProduct):
             // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
             // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: posModel.purchasableItemsController)
+            ChildItemList(
+                parentItem: parentItem,
+                title: parentProduct.name,
+                itemsController: posModel.purchasableItemsController,
+                itemActionHandler: actionHandler
+            )
         default:
             EmptyView()
         }
@@ -239,16 +257,16 @@ private extension ItemListView {
 
     @ViewBuilder
     var emptyView: some View {
-        switch selectedItemType {
+        switch selectedItemListType {
         case .products:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemType: .products(search: false),
+                    itemListType: .products(search: false),
                     baseItem: .root))
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemType: .coupons,
+                    itemListType: .coupons,
                     baseItem: .root)) {
                 showCouponCreationModal = true
             }
@@ -280,8 +298,8 @@ private extension ItemListView {
         itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 
-    func displayItemType(_ itemType: ItemType) {
-        selectedItemType = itemType
+    func displayItemListType(_ itemListType: ItemListType) {
+        selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)
@@ -377,7 +395,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)))
+    return ItemListView(selectedItemListType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
@@ -390,7 +408,7 @@ private extension ItemListView {
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView(selectedItemType: .constant(.products(search: false)))
+    return ItemListView(selectedItemListType: .constant(.products(search: false)))
         .environment(posModel)
 }
 

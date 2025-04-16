@@ -7,6 +7,7 @@ struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
     private var itemsController: PointOfSaleItemsControllerProtocol
+    private let itemActionHandler: POSItemActionHandler
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
@@ -18,10 +19,14 @@ struct ChildItemList: View {
             .loading([])
     }
 
-    init(parentItem: POSItem, title: String, itemsController: PointOfSaleItemsControllerProtocol) {
+    init(parentItem: POSItem,
+         title: String,
+         itemsController: PointOfSaleItemsControllerProtocol,
+         itemActionHandler: POSItemActionHandler) {
         self.parentItem = parentItem
         self.title = title
         self.itemsController = itemsController
+        self.itemActionHandler = itemActionHandler
     }
 
     var body: some View {
@@ -64,7 +69,8 @@ private extension ChildItemList {
             headerView
 
             ItemList(itemsController: itemsController,
-                     node: node)
+                     node: node,
+                     itemActionHandler: itemActionHandler)
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
@@ -79,7 +85,7 @@ private extension ChildItemList {
             headerView
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemType: .products(search: false),
+                    itemListType: .products(search: false),
                     baseItem: node))
         }
     }
@@ -154,7 +160,11 @@ private extension ChildItemList {
                     )
                 ], hasMoreItems: false)])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
+
+    return ChildItemList(parentItem: parentItem,
+                         title: parentProduct.name,
+                         itemsController: itemsController,
+                         itemActionHandler: PointOfSalePreviewItemActionHandler())
 }
 
 @available(iOS 17.0, *)
@@ -173,7 +183,10 @@ private extension ChildItemList {
             parentItem: .error(.errorOnLoadingVariations)
         ])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsController: itemsController)
+    return ChildItemList(parentItem: parentItem,
+                         title: parentProduct.name,
+                         itemsController: itemsController,
+                         itemActionHandler: PointOfSalePreviewItemActionHandler())
 }
 
 #endif

@@ -85,11 +85,11 @@ private extension PointOfSaleItemListEmptyView {
 }
 
 struct PointOfSaleItemListEmptyViewModel {
-    let itemType: ItemType
+    let itemListType: ItemListType
     let baseItem: ItemListBaseItem
 
     var title: String {
-        switch (baseItem, itemType) {
+        switch (baseItem, itemListType) {
         case (.root, .products):
             return Localization.emptyProductsTitle
         case (.root, .coupons):
@@ -103,7 +103,7 @@ struct PointOfSaleItemListEmptyViewModel {
     }
 
     var subtitle: String {
-        switch (baseItem, itemType) {
+        switch (baseItem, itemListType) {
         case (.root, .products):
             return Localization.emptyProductsSubtitle
         case (.root, .coupons):
@@ -117,7 +117,7 @@ struct PointOfSaleItemListEmptyViewModel {
     }
 
     var hint: String? {
-        switch (baseItem, itemType) {
+        switch (baseItem, itemListType) {
         case (.root, .products):
             return Localization.emptyProductsHint
         case (.root, .coupons):
@@ -131,7 +131,7 @@ struct PointOfSaleItemListEmptyViewModel {
     }
 
     var buttonTitle: String? {
-        switch itemType {
+        switch itemListType {
         case .coupons:
             return Localization.emptyCouponsButtonTitle
         default:

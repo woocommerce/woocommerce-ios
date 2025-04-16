@@ -854,6 +854,7 @@
 		205E794F2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */; };
 		205E79512C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */; };
 		20600F8B2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20600F8A2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift */; };
+		206643552DAE9333002D5191 /* POSItemActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206643542DAE9333002D5191 /* POSItemActionHandler.swift */; };
 		20716F342D9DA289008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20716F332D9DA289008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */; };
 		207176922D9DA32C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207176912D9DA32C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */; };
 		20762BA12C18A66400758305 /* CardPresentPaymentTapToPayReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA02C18A66400758305 /* CardPresentPaymentTapToPayReaderConnectionAlertsProvider.swift */; };
@@ -4111,6 +4112,7 @@
 		205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift; sourceTree = "<group>"; };
 		205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift; sourceTree = "<group>"; };
 		20600F8A2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift; sourceTree = "<group>"; };
+		206643542DAE9333002D5191 /* POSItemActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandler.swift; sourceTree = "<group>"; };
 		20716F332D9DA289008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSalePurchasableItemFetchStrategy.swift; sourceTree = "<group>"; };
 		207176912D9DA32C008D9915 /* MockPointOfSalePurchasableItemFetchStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockPointOfSalePurchasableItemFetchStrategy.swift; path = ../Notifications/MockPointOfSalePurchasableItemFetchStrategy.swift; sourceTree = "<group>"; };
 		20762BA02C18A66400758305 /* CardPresentPaymentTapToPayReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentTapToPayReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
@@ -7600,6 +7602,7 @@
 				026826A42BF59DF60036F959 /* SimpleProductCardView.swift */,
 				204C20452D35471400E6D9CF /* PointOfSaleItemListCardConstants.swift */,
 				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
+				206643542DAE9333002D5191 /* POSItemActionHandler.swift */,
 				029149772D26658A00F7B3B3 /* VariationCardView.swift */,
 				0196FF932DA806720063CEF1 /* CouponCardView.swift */,
 				0291497C2D26CB2500F7B3B3 /* ChildItemList.swift */,
@@ -15149,9 +15152,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15330,9 +15337,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15369,9 +15380,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15933,6 +15948,7 @@
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
+				206643552DAE9333002D5191 /* POSItemActionHandler.swift in Sources */,
 				E120F63826C26B550005A029 /* InPersonPaymentsLoadingView.swift in Sources */,
 				027EB57029C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift in Sources */,
 				866016512B47F8F800B4047E /* ProductSelector+Blaze.swift in Sources */,

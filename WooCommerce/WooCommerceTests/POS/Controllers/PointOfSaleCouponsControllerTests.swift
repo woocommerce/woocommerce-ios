@@ -187,7 +187,10 @@ struct PointOfSaleCouponsControllerTests {
         await sut.loadNextItems(base: .root)
 
         // Then
-        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnLoadingCouponsNextPage, context: .pagination), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems,
+                                                                        error: .errorOnLoadingCouponsNextPage,
+                                                                        context: .pagination),
+                                                     itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
         #expect(sut.itemsViewState == expectedViewState)
     }

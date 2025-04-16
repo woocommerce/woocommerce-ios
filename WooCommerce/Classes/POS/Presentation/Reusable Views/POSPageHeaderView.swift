@@ -83,9 +83,11 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .minimumScaleFactor(0.5)
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                                 .foregroundColor(selectedItemIndex == index ? .posOnSurface : .posOnSurfaceVariantLowest)
-                                .accessibilityAddTraits(.isHeader)
                         }
                         .disabled(selectedItemIndex == index)
+                        .accessibilityElement()
+                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                        .accessibilityLabel(items[index].title)
 
                         if let subtitle = items[index].subtitle {
                             Text(subtitle)

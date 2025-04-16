@@ -61,9 +61,13 @@ struct ItemListView: View {
             headerView
 
             if isSearchFieldFocused && searchTerm.isEmpty {
-                Text("Recent searches go here")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.posSurface)
+                POSRecentSearchesView(
+                    savedSearches: posModel.searchHistory(for: .product),
+                    onSearchSelected: { search in
+                        searchTerm = search
+                    }
+                )
+                .background(Color.posSurface)
             } else {
                 switch itemListState {
                 case .loading(let items),

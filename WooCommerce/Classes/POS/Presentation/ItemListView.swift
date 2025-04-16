@@ -296,7 +296,11 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        guard case .products = selectedItemListType else {
+            return false
+        }
+
+        return itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 
     func displayItemListType(_ itemListType: ItemListType) {

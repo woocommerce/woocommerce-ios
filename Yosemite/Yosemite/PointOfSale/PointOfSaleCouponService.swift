@@ -69,10 +69,15 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         return fetchLocalCoupons(limit: limit)
     }
 
+    /// Syncs with the remote and provides all currently loaded coupons.
+    /// - Parameter pageNumber: The page number to fetch from the remote.
+    /// - Returns: All currently loaded coupons.
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         do {
+            // Update local storage with data from the remote
             let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
+            // Return all local coupons, including updated ones from the remote
             let coupons = try await provideLocalPointOfSaleCoupons(limit: nil)
             return .init(items: coupons, hasMorePages: hasMorePages)
         } catch {

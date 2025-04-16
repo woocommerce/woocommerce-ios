@@ -116,7 +116,7 @@ private extension PointOfSaleCouponService {
             let storageCoupons = resultsController.fetchedObjects
             return mapCouponsToPOSItems(coupons: storageCoupons)
         } catch {
-            debugPrint("Failed to load coupons from storage:", error)
+            DDLogError("Failed to load coupons from storage: \(error)")
             return []
         }
     }

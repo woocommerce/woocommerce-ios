@@ -62,7 +62,7 @@ struct ItemListView: View {
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
-                    .inlineError(let items, _):
+                    .inlineError(let items, _, _):
                 listView(items)
             case .error(let errorState):
                 errorView(errorState)

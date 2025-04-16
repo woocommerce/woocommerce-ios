@@ -124,7 +124,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         } catch {
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingProductsNextPage),
+                                                                           error: .errorOnLoadingProductsNextPage,
+                                                                           context: .pagination),
                                                         itemStates: currentItemStates)
         }
     }
@@ -159,7 +160,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
             }
         } catch {
             updateState(for: parent, to: .inlineError(currentItems,
-                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage))
+                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage,
+                                                      context: .pagination))
         }
     }
 

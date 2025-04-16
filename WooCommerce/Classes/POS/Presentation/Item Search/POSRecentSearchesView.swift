@@ -77,7 +77,13 @@ private extension POSRecentSearchesView {
     }
 }
 
-private struct RecentSearchCard: View {
+struct RecentSearchCard: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    private var dimension: CGFloat {
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
     let searchTerm: String
     let onSearchSelected: (String) -> Void
 
@@ -85,20 +91,37 @@ private struct RecentSearchCard: View {
         Button(action: {
             onSearchSelected(searchTerm)
         }) {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .accessibilityHidden(true)
-                    .foregroundColor(.posOnSurfaceVariantLowest)
+            HStack(spacing: Constants.cardSpacing) {
+                searchIcon
+                    .frame(width: dimension, height: dimension)
+
                 Text(searchTerm)
-                    .lineLimit(1)
-                    .font(.posBodyMediumRegular())
+                    .lineLimit(2)
+                    .foregroundStyle(Constants.titleColor)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemTitleFont)
+                    .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+                    .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+
                 Spacer()
             }
-            .padding(POSPadding.medium)
-            .background(Color(.systemBackground))
-            .cornerRadius(POSCornerRadiusStyle.medium.value)
-            .posShadow(.medium)
         }
-        .buttonStyle(PlainButtonStyle())
+        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .background(Constants.backgroundColor)
+        .posItemCardBorderStyles()
     }
+
+    private var searchIcon: some View {
+        Rectangle()
+            .foregroundColor(.posSurfaceDim)
+            .overlay {
+                Text(Image(systemName: "magnifyingglass"))
+                    .font(.posButtonSymbolLarge)
+                    .foregroundColor(.posOnSurfaceVariantLowest)
+            }
+    }
+}
+
+private extension RecentSearchCard {
+    typealias Constants = PointOfSaleItemListCardConstants
 }

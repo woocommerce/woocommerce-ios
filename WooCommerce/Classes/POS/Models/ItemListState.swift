@@ -3,9 +3,14 @@ import enum Yosemite.POSItem
 enum ItemListState {
     case loading(_ currentItems: [POSItem])
     case loaded(_ items: [POSItem], hasMoreItems: Bool)
-    case inlineError(_ items: [POSItem], error: PointOfSaleErrorState)
+    case inlineError(_ items: [POSItem], error: PointOfSaleErrorState, context: InlineErrorContext)
     case error(PointOfSaleErrorState)
     case empty
+
+    enum InlineErrorContext {
+        case refresh
+        case pagination
+    }
 
     var isLoading: Bool {
         switch self {
@@ -58,7 +63,7 @@ extension ItemListState {
         switch self {
         case .loading(let items),
                 .loaded(let items, _),
-                .inlineError(let items, _):
+                .inlineError(let items, _, _):
             return items
         case .error, .empty:
             return []

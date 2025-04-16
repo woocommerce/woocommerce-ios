@@ -62,7 +62,7 @@ struct ItemListView: View {
             switch itemListState {
             case .loading(let items),
                     .loaded(let items, _),
-                    .inlineError(let items, _):
+                    .inlineError(let items, _, _):
                 listView(items)
             case .error(let errorState):
                 errorView(errorState)
@@ -301,7 +301,9 @@ private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
         selectedItemListType = itemListType
         Task { @MainActor in
-            await itemsController.loadItems(base: .root)
+            if itemListState.items.isEmpty {
+                await itemsController.loadItems(base: .root)
+            }
         }
     }
 }

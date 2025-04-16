@@ -51,22 +51,35 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
-    // Provides an array of coupons that are stored locally, it does not accept any sort of pagination
+    // Provides an array of coupons that are stored locally
+    // It does not accept any sort of pagination
+    // Limited to default page size to match remote results
     @MainActor
     public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
+        return try await provideLocalPointOfSaleCoupons(limit: Constants.defaultPageSize)
+    }
+
+    @MainActor
+    private func provideLocalPointOfSaleCoupons(limit: Int?) async throws -> [POSItem] {
         let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
 
-        let localCoupons = await fetchLocalCoupons()
-        return localCoupons.items
+        return fetchLocalCoupons(limit: limit)
     }
 
+    /// Syncs with the remote and provides all currently loaded coupons.
+    /// - Parameter pageNumber: The page number to fetch from the remote.
+    /// - Returns: All currently loaded coupons.
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         do {
-            try await syncCouponsFromRemote(pageNumber: pageNumber)
+            // Update local storage with data from the remote
+            let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
+            // Return all local coupons, including updated ones from the remote
+            let coupons = try await provideLocalPointOfSaleCoupons(limit: nil)
+            return .init(items: coupons, hasMorePages: hasMorePages)
         } catch {
             if try await checkRemoteStoreCouponSettings() {
                 throw error
@@ -74,8 +87,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 throw PointOfSaleCouponServiceError.couponsDisabled
             }
         }
-        let coupons = try await provideLocalPointOfSaleCoupons()
-        return .init(items: coupons, hasMorePages: true)
     }
 
     @MainActor
@@ -95,23 +106,23 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func fetchLocalCoupons() async -> PagedItems<POSItem> {
+    func fetchLocalCoupons(limit: Int? = nil) -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)
 
         let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
                                                                  matching: predicate,
+                                                                 fetchLimit: limit,
                                                                  sortedBy: [descriptor])
 
         do {
             try resultsController.performFetch()
             let storageCoupons = resultsController.fetchedObjects
-            let posItems = mapCouponsToPOSItems(coupons: storageCoupons)
-            return .init(items: posItems, hasMorePages: true)
+            return mapCouponsToPOSItems(coupons: storageCoupons)
         } catch {
-            debugPrint("Failed to load coupons from storage:", error)
-            return .init(items: [], hasMorePages: false)
+            DDLogError("Failed to load coupons from storage: \(error)")
+            return []
         }
     }
 
@@ -125,7 +136,10 @@ private extension PointOfSaleCouponService {
         }
     }
 
-    func syncCouponsFromRemote(pageNumber: Int) async throws {
+    /// Syncing local coupons storage with remote
+    /// - Parameter pageNumber: Number of page that should be retrieved.
+    /// - Returns: True if there are more pages to sync
+    func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
@@ -133,8 +147,8 @@ private extension PointOfSaleCouponService {
                 pageSize: Constants.defaultPageSize,
                 onCompletion: { result in
                     switch result {
-                    case .success:
-                        continuation.resume()
+                    case .success(let hasMorePages):
+                        continuation.resume(returning: hasMorePages)
                     case .failure:
                         continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                     }

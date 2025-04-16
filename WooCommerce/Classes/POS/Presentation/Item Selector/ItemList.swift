@@ -51,6 +51,8 @@ struct ItemList<HeaderView: View>: View {
                     LazyVStack(spacing: Constants.itemSpacing) {
                         headerView
 
+                        headerRows
+
                         if let state {
                             ForEach(state.items) { item in
                                 ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
@@ -98,14 +100,28 @@ struct ItemList<HeaderView: View>: View {
             } else {
                 GhostItemCardView()
             }
-        case .inlineError(_, let errorState):
+        case .inlineError(_, let errorState, .pagination):
             ItemListErrorCardView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadNextItems(base: node)
                 }
             })
-        case .loaded, .error, .empty, .none:
+        case .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder var headerRows: some View {
+        switch state {
+        case .inlineError(_, let errorState, .refresh):
+            ItemListErrorCardView(errorState: errorState,
+                                  buttonAction: {
+                Task { @MainActor in
+                    await itemsController.loadItems(base: .root)
+                }
+            })
+        case .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
             EmptyView()
         }
     }

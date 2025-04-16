@@ -9,6 +9,8 @@ struct PointOfSaleErrorState: Equatable {
         case couponsNotFound
         case couponsLoadError
         case couponsDisabled
+        case couponsNextPageError
+        case couponsRefreshError
     }
 
     let errorType: ErrorType
@@ -70,6 +72,22 @@ struct PointOfSaleErrorState: Equatable {
             title: Constants.loadingCouponsDisabledTitle,
             subtitle: Constants.loadingCouponsDisabledSubtitle,
             buttonText: Constants.loadingCouponsDisabledAction)
+    }
+
+    static var errorOnLoadingCouponsNextPage: Self {
+        PointOfSaleErrorState(
+            errorType: .couponsNextPageError,
+            title: Constants.failedToLoadCouponsNextPageTitle,
+            subtitle: Constants.failedToLoadCouponsNextPageSubtitle,
+            buttonText: Constants.failedToLoadCouponsNextPageButtonTitle)
+    }
+
+    static var errorOnRefreshingCoupons: Self {
+        PointOfSaleErrorState(
+            errorType: .couponsRefreshError,
+            title: Constants.failedToRefreshCouponsTitle,
+            subtitle: Constants.failedToRefreshCouponsSubtitle,
+            buttonText: Constants.failedToRefreshCouponsButtonTitle)
     }
 
     enum Constants {
@@ -184,6 +202,39 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.enablingCouponsErrorRetry",
             value: "Retry",
             comment: "Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.."
+        )
+        static let failedToLoadCouponsNextPageTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadCouponsNextPageTitle",
+            value: "Failed to load more coupons",
+            comment: "Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. " +
+            "Shown inline with the previously loaded coupons above."
+        )
+        static let failedToLoadCouponsNextPageSubtitle = NSLocalizedString(
+            "pos.itemList.failedToLoadCouponsNextPageSubtitle",
+            value: "An error occurred while loading coupons.",
+            comment: "Text appearing on the coupon list screen as subtitle when there's an error loading a page of coupons " +
+            "after the first. Shown inline with the previously loaded coupons above."
+        )
+        static let failedToLoadCouponsNextPageButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToLoadCouponsNextPageButtonTitle",
+            value: "Try again",
+            comment: "Text for the button appearing on the coupon list screen when there's an error loading a page of coupons " +
+            "after the first. Shown inline with the previously loaded coupons above."
+        )
+        static let failedToRefreshCouponsTitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsTitle",
+            value: "Error refreshing coupons",
+            comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
+        )
+        static let failedToRefreshCouponsSubtitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsSubtitle",
+            value: "Give it another go?",
+            comment: "Subtitle appearing on the coupon list screen when there's an error refreshing coupons."
+        )
+        static let failedToRefreshCouponsButtonTitle = NSLocalizedString(
+            "pos.itemList.failedToRefreshCouponsButtonTitle",
+            value: "Retry",
+            comment: "Text for the button appearing on the coupon list screen when there's an error refreshing coupons."
         )
     }
 }

@@ -102,6 +102,9 @@ struct PointOfSaleDashboardView: View {
         }
         .task {
             await posModel.purchasableItemsController.loadItems(base: .root)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) {
+                await posModel.couponsController.loadItems(base: .root)
+            }
         }
         .ignoresSafeArea(.keyboard)
     }

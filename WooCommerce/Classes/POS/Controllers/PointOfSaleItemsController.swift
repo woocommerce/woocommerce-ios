@@ -8,10 +8,20 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
+import enum Yosemite.POSItemType
 
-enum ItemType {
+enum ItemListType {
     case products(search: Bool = false)
     case coupons
+
+    var itemType: POSItemType {
+        switch self {
+        case .coupons:
+            return .coupon
+        case .products(search: let search):
+            return .product
+        }
+    }
 }
 
 @available(iOS 17.0, *)

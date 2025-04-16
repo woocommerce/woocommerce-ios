@@ -136,6 +136,13 @@ private extension ItemListView {
                             }
                         }
                     }
+
+                    if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
+                        POSPageHeaderActionButton(systemName: "plus") {
+                            showCouponCreationModal = true
+                        }
+                    }
+
                     Button(action: {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
@@ -145,7 +152,7 @@ private extension ItemListView {
                             .foregroundStyle(Color.posOnSurface)
                             .padding(Constants.infoIconInset)
                     })
-                    .renderedIf(!shouldShowHeaderBanner)
+                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
                 }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
@@ -178,35 +185,6 @@ private extension ItemListView {
         }
 
         return items
-    }
-
-    var temporaryProductsCouponsSwitcher: some View {
-        HStack {
-            Button(action: {
-                displayItemListType(.products(search: searchTerm.isNotEmpty))
-            }, label: {
-                Text("Products")
-            })
-            Button(action: {
-                displayItemListType(.coupons)
-            }, label: {
-                Text("Coupons")
-            })
-
-            Spacer()
-
-            if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-            }
-        }
-        .dynamicTypeSize(...DynamicTypeSize.large)
-        .renderedIf(shouldShowCoupons)
     }
 
     var bannerCardView: some View {

@@ -62,7 +62,7 @@ struct ItemListView: View {
 
             if isSearchFieldFocused && searchTerm.isEmpty {
                 POSRecentSearchesView(
-                    savedSearches: posModel.searchHistory(for: .product),
+                    savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
                     onSearchSelected: { search in
                         searchTerm = search
                     }

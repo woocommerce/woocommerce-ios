@@ -54,6 +54,7 @@ final class AppSettingsStoreTests: XCTestCase {
         fileStorage = MockInMemoryStorage()
         generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage!)
         mockSiteSpecificAppSettingsStoreMethods = MockSiteSpecificAppSettingsStoreMethods()
+        mockSiteSpecificAppSettingsStoreMethods.currentSiteID = TestConstants.siteID
         subject = AppSettingsStore(dispatcher: dispatcher!,
                                    storageManager: storageManager!,
                                    fileStorage: fileStorage!,
@@ -533,28 +534,26 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_setStoreID_stores_the_store_id_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let storeID = "test-store-id"
 
         // When
-        let action = AppSettingsAction.setStoreID(siteID: siteID, id: storeID)
+        let action = AppSettingsAction.setStoreID(siteID: TestConstants.siteID, id: storeID)
         subject?.onAction(action)
 
         // Then
         XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setStoreIDCalled)
-        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreIDSiteID, siteID)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreIDSiteID, TestConstants.siteID)
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreID, storeID)
     }
 
     func test_getStoreID_retrieves_the_saved_store_id() throws {
         // Given
-        let siteID: Int64 = 1234
         let expectedStoreID = "test-store-id"
         mockSiteSpecificAppSettingsStoreMethods.mockStoreID = expectedStoreID
 
         // When
         let retrievedStoreID: String? = waitFor { promise in
-            let action = AppSettingsAction.getStoreID(siteID: siteID) { id in
+            let action = AppSettingsAction.getStoreID(siteID: TestConstants.siteID) { id in
                 promise(id)
             }
             self.subject?.onAction(action)
@@ -562,104 +561,61 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.getStoreIDCalled)
-        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spyGetStoreIDSiteID, siteID)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spyGetStoreIDSiteID, TestConstants.siteID)
         XCTAssertEqual(retrievedStoreID, expectedStoreID)
     }
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let initialTime = Date(timeIntervalSince1970: 100)
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
-                                                                                                             telemetryLastReportedTime: initialTime)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                     telemetryLastReportedTime: initialTime)
 
         // When
-        let action = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: false)
+        let action = AppSettingsAction.setTelemetryAvailability(siteID: TestConstants.siteID, isAvailable: false)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertEqual(false, settingsForSite?.isTelemetryAvailable)
+        XCTAssertEqual(false, settingsForSite.isTelemetryAvailable)
 
         // The other properties should be kept
-        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
-    }
-
-    func test_saving_isTelemetryAvailable_works_correctly_when_the_settings_file_does_not_exist() throws {
-        // Given
-        let siteID: Int64 = 1234
-
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
-        // When
-        let action = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: true)
-        subject?.onAction(action)
-
-        // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
-
-        XCTAssertEqual(true, settingsForSite?.isTelemetryAvailable)
+        XCTAssertEqual(initialTime, settingsForSite.telemetryLastReportedTime)
     }
 
     func test_saving_telemetryLastReportedTime_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let initialTime = Date(timeIntervalSince1970: 100)
         let newTime = Date(timeIntervalSince1970: 500)
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
-                                                                                                             telemetryLastReportedTime: initialTime)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                     telemetryLastReportedTime: initialTime)
 
         // When
-        let action = AppSettingsAction.setTelemetryLastReportedTime(siteID: siteID, time: newTime)
+        let action = AppSettingsAction.setTelemetryLastReportedTime(siteID: TestConstants.siteID, time: newTime)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertEqual(newTime, settingsForSite?.telemetryLastReportedTime)
+        XCTAssertEqual(newTime, settingsForSite.telemetryLastReportedTime)
 
         // The other properties should be kept
-        XCTAssertEqual(true, settingsForSite?.isTelemetryAvailable)
-    }
-
-    func test_saving_telemetryLastReportedTime_works_correctly_when_the_settings_file_does_not_exist() throws {
-        // Given
-        let siteID: Int64 = 1234
-        let newTime = Date(timeIntervalSince1970: 500)
-
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
-        // When
-        let action = AppSettingsAction.setTelemetryLastReportedTime(siteID: siteID, time: newTime)
-        subject?.onAction(action)
-
-        // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
-
-        XCTAssertEqual(newTime, settingsForSite?.telemetryLastReportedTime)
+        XCTAssertEqual(true, settingsForSite.isTelemetryAvailable)
     }
 
     func test_getTelemetryInfo_returns_correct_saved_data() throws {
         // Given
-        let siteID: Int64 = 1234
         let initialTime = Date(timeIntervalSince1970: 100)
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
-                                                                                                             telemetryLastReportedTime: initialTime)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                     telemetryLastReportedTime: initialTime)
 
         // When
         let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
-            let action = AppSettingsAction.getTelemetryInfo(siteID: siteID) { isAvailable, telemetryLastReportedTime in
+            let action = AppSettingsAction.getTelemetryInfo(siteID: TestConstants.siteID) { isAvailable, telemetryLastReportedTime in
                 promise((isAvailable, telemetryLastReportedTime))
             }
             self.subject?.onAction(action)
@@ -672,12 +628,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_getTelemetryInfo_returns_correct_default_data() throws {
         // Given
-        let siteID: Int64 = 1234
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
         let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
-            let action = AppSettingsAction.getTelemetryInfo(siteID: siteID) { isAvailable, telemetryLastReportedTime in
+            let action = AppSettingsAction.getTelemetryInfo(siteID: TestConstants.siteID) { isAvailable, telemetryLastReportedTime in
                 promise((isAvailable, telemetryLastReportedTime))
             }
             self.subject?.onAction(action)
@@ -690,12 +644,10 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_simplePaymentsToggleTaxes_returns_correct_default_data() throws {
         // Given
-        let siteID: Int64 = 1234
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: TestConstants.siteID) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -707,14 +659,12 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_simplePaymentsToggleTaxes_returns_correct_saved_data() throws {
         // Given
-        let siteID: Int64 = 1234
-
-        let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: true) { _ in }
+        let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: TestConstants.siteID, isOn: true) { _ in }
         self.subject?.onAction(action)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: siteID) { result in
+            let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: TestConstants.siteID) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -726,64 +676,48 @@ final class AppSettingsStoreTests: XCTestCase {
 
     func test_saving_preferredInPersonPaymentGateway_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let initialTime = Date(timeIntervalSince1970: 100)
         let preferredGateway = "woocommerce-payments"
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
-                                                                                                             telemetryLastReportedTime: initialTime)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                     telemetryLastReportedTime: initialTime)
 
         // When
-        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: TestConstants.siteID, gateway: preferredGateway)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
+        XCTAssertEqual(preferredGateway, settingsForSite.preferredInPersonPaymentGateway)
 
         // The other properties should be kept
-        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
+        XCTAssertEqual(initialTime, settingsForSite.telemetryLastReportedTime)
     }
 
     func test_saving_preferredInPersonPaymentGateway_works_correctly_when_the_settings_file_does_not_exist() throws {
         // Given
-        let siteID: Int64 = 1234
         let preferredGateway = "woocommerce-payments"
 
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
         // When
-        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: siteID, gateway: preferredGateway)
+        let action = AppSettingsAction.setPreferredInPersonPaymentGateway(siteID: TestConstants.siteID, gateway: preferredGateway)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertEqual(preferredGateway, settingsForSite?.preferredInPersonPaymentGateway)
-
+        XCTAssertEqual(preferredGateway, settingsForSite.preferredInPersonPaymentGateway)
     }
 
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
         // Given
-        let siteID: Int64 = 1234
-        let initialTime = Date(timeIntervalSince1970: 100)
-
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
-                                                                                                             telemetryLastReportedTime: initialTime)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
 
         // When
         let action = AppSettingsAction.resetGeneralStoreSettings
         subject?.onAction(action)
 
         // Then
-        XCTAssertEqual(true, fileStorage?.deleteIsHit)
-        let savedSettings: GeneralStoreSettingsBySite? = try fileStorage?.data(for: expectedGeneralStoreSettingsFileURL)
-        XCTAssertNil(savedSettings)
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.resetStoreSettingsCalled)
     }
 }
 
@@ -793,7 +727,6 @@ extension AppSettingsStoreTests {
 
     func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_dismissal_is_stored_with_no_reminder_date() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: nil, onCompletion: nil)
         subject?.onAction(action)
@@ -813,8 +746,6 @@ extension AppSettingsStoreTests {
         // Given
         let currentTime = Date()
 
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: 0, onCompletion: nil)
         subject?.onAction(action)
@@ -831,8 +762,6 @@ extension AppSettingsStoreTests {
         // Given
         let remindAfterDays = 14
         let twoWeeksTime = Calendar.current.date(byAdding: .day, value: remindAfterDays, to: Date())!
-
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: remindAfterDays, onCompletion: nil)
@@ -851,8 +780,6 @@ extension AppSettingsStoreTests {
         let remindAfterDays = 7
         let oneWeekTime = Calendar.current.date(byAdding: .day, value: remindAfterDays, to: Date())!
 
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: remindAfterDays, onCompletion: nil)
         subject?.onAction(action)
@@ -867,8 +794,6 @@ extension AppSettingsStoreTests {
 
     func test_setFeatureAnnouncementDismissed_with_another_campaign_previously_dismissed_keeps_values_for_both() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
         let currentTime = Date()
 
         let settings = createAppSettings(featureAnnouncementCampaignSettings: [.test: .init(dismissedDate: currentTime, remindAfter: nil)])
@@ -892,8 +817,6 @@ extension AppSettingsStoreTests {
 
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
@@ -909,7 +832,6 @@ extension AppSettingsStoreTests {
 
     func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_no_remindAfter_calls_completion_with_visibility_false() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let date = Date(timeIntervalSince1970: 100)
 
         let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: .init(dismissedDate: date, remindAfter: nil)])
@@ -930,7 +852,6 @@ extension AppSettingsStoreTests {
 
     func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_future_remindAfter_calls_completion_with_visibility_false() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let dismissedDate = Date()
         let oneMinute = Calendar.current.date(byAdding: .minute, value: 1, to: dismissedDate)
 
@@ -1033,7 +954,7 @@ extension AppSettingsStoreTests {
         // Given
         let siteIDA: Int64 = 1
         let siteIDB: Int64 = 2
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.currentSiteID = siteIDB
         let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteIDA, cardReaderType: .other)
         subject?.onAction(action)
 
@@ -1051,14 +972,12 @@ extension AppSettingsStoreTests {
 
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_via_first_transactions_for_that_site_returns_true() throws {
         // Given
-        let siteID: Int64 = 1
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .other)
+        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .other)
         subject?.onAction(action)
 
         // When
         let result: Bool = waitFor { promise in
-            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID) { result in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: TestConstants.siteID) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -1070,11 +989,10 @@ extension AppSettingsStoreTests {
 
     func test_given_no_data_has_been_stored_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 1, cardReaderType: .tapToPay) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: TestConstants.siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1086,14 +1004,12 @@ extension AppSettingsStoreTests {
 
     func test_given_a_date_was_previously_stored_for_the_site_and_reader_loadFirstInPersonPaymentsTransactionDate_returns_that_date() throws {
         // Given
-        let siteID: Int64 = 1
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .tapToPay)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .tapToPay)
         subject?.onAction(updateAction)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .tapToPay) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: TestConstants.siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1106,13 +1022,12 @@ extension AppSettingsStoreTests {
 
     func test_given_a_date_was_only_previously_stored_for_another_site_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .tapToPay)
         subject?.onAction(updateAction)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 100, cardReaderType: .tapToPay) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: TestConstants.siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1124,14 +1039,12 @@ extension AppSettingsStoreTests {
 
     func test_given_a_date_was_only_previously_stored_for_another_reader_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
-        let siteID: Int64 = 1
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .stripeM2)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .stripeM2)
         subject?.onAction(updateAction)
 
         // When
         let actualValue = waitFor { promise in
-            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .tapToPay) { maybeDate in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: TestConstants.siteID, cardReaderType: .tapToPay) { maybeDate in
                 promise(maybeDate)
             }
             self.subject?.onAction(action)
@@ -1143,52 +1056,43 @@ extension AppSettingsStoreTests {
 
     func test_setSelectedTaxRateID_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let storedTaxRateID: Int64 = 4321
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: 0)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(selectedTaxRateID: 0)
 
         // When
-        let action = AppSettingsAction.setSelectedTaxRateID(id: storedTaxRateID, siteID: siteID)
+        let action = AppSettingsAction.setSelectedTaxRateID(id: storedTaxRateID, siteID: TestConstants.siteID)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertEqual(storedTaxRateID, settingsForSite?.selectedTaxRateID)
+        XCTAssertEqual(storedTaxRateID, settingsForSite.selectedTaxRateID)
     }
 
     func test_setSelectedTaxRateID_when_nil_then_erases_the_value() throws {
         // Given
-        let siteID: Int64 = 1234
-
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: 34)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(selectedTaxRateID: 34)
 
         // When
-        let action = AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID)
+        let action = AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: TestConstants.siteID)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        XCTAssertNil(settingsForSite?.selectedTaxRateID)
+        XCTAssertNil(settingsForSite.selectedTaxRateID)
     }
 
     func test_loadSelectedTaxRateID_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
         let storedTaxRateID: Int64 = 4321
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(selectedTaxRateID: storedTaxRateID)])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(selectedTaxRateID: storedTaxRateID)
 
         // When
         var loadedTaxRateID: Int64?
-        let action = AppSettingsAction.loadSelectedTaxRateID(siteID: siteID) { taxRateID in
+        let action = AppSettingsAction.loadSelectedTaxRateID(siteID: TestConstants.siteID) { taxRateID in
             loadedTaxRateID = taxRateID
         }
         subject?.onAction(action)
@@ -1205,18 +1109,16 @@ extension AppSettingsStoreTests {
             AnalyticsCard(type: .products, enabled: true),
             AnalyticsCard(type: .sessions, enabled: false)
         ]
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setAnalyticsHubCards(siteID: TestConstants.siteID, cards: analyticsCards)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(analyticsCards, settingsForSite?.analyticsHubCards)
+        assertEqual(analyticsCards, settingsForSite.analyticsHubCards)
     }
 
     func test_loadAnalyticsHubCards_works_correctly() throws {
@@ -1227,9 +1129,7 @@ extension AppSettingsStoreTests {
             AnalyticsCard(type: .products, enabled: true),
             AnalyticsCard(type: .sessions, enabled: false)
         ]
-        let storeSettings = GeneralStoreSettings(analyticsHubCards: storedAnalyticsCards)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(analyticsHubCards: storedAnalyticsCards)
 
         // When
         var loadedAnalyticsCards: [AnalyticsCard]?
@@ -1244,8 +1144,7 @@ extension AppSettingsStoreTests {
 
     func test_loadAnalyticsHubCards_returns_nil_when_no_cards_are_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedAnalyticsCards: [AnalyticsCard]?
@@ -1262,41 +1161,33 @@ extension AppSettingsStoreTests {
 
     func test_setCustomStatsTimeRange_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
-
         let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
         let toDate = Date(timeIntervalSince1970: 1709022077) // Feb 27, 2024
         let customTimeRange = StatsTimeRangeV4.custom(from: fromDate, to: toDate)
 
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
-        let action = AppSettingsAction.setCustomStatsTimeRange(siteID: siteID, timeRange: customTimeRange)
+        let action = AppSettingsAction.setCustomStatsTimeRange(siteID: TestConstants.siteID, timeRange: customTimeRange)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(customTimeRange.rawValue, settingsForSite?.customStatsTimeRange)
+        assertEqual(customTimeRange.rawValue, settingsForSite.customStatsTimeRange)
     }
 
     func test_loadCustomStatsTimeRange_works_correctly() throws {
         // Given
-        let siteID: Int64 = 1234
-
         let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
         let toDate = Date(timeIntervalSince1970: 1709022077) // Feb 27, 2024
         let customTimeRange = StatsTimeRangeV4.custom(from: fromDate, to: toDate)
 
-        let storeSettings = GeneralStoreSettings(customStatsTimeRange: customTimeRange.rawValue)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(customStatsTimeRange: customTimeRange.rawValue)
 
         // When
         var loadedCustomTimeRange: StatsTimeRangeV4?
-        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: TestConstants.siteID) { timeRange in
             loadedCustomTimeRange = timeRange
         }
         subject?.onAction(action)
@@ -1307,13 +1198,11 @@ extension AppSettingsStoreTests {
 
     func test_loadCustomStatsTimeRange_returns_nil_when_no_custom_range_is_saved() throws {
         // Given
-        let siteID: Int64 = 1234
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var customTimeRange: StatsTimeRangeV4?
-        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: TestConstants.siteID) { timeRange in
             customTimeRange = timeRange
         }
         subject?.onAction(action)
@@ -1331,18 +1220,16 @@ extension AppSettingsStoreTests {
             DashboardCard(type: .topPerformers, availability: .show, enabled: true),
             DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setDashboardCards(siteID: TestConstants.siteID, cards: dashboardCards)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(dashboardCards, settingsForSite?.dashboardCards)
+        assertEqual(dashboardCards, settingsForSite.dashboardCards)
     }
 
     func test_loadDashboardCards_works_correctly() throws {
@@ -1353,9 +1240,7 @@ extension AppSettingsStoreTests {
             DashboardCard(type: .topPerformers, availability: .show, enabled: true),
             DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
-        let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
 
         // When
         var loadedDashboardCards: [DashboardCard]?
@@ -1370,8 +1255,7 @@ extension AppSettingsStoreTests {
 
     func test_loadDashboardCards_returns_nil_when_no_cards_are_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedDashboardCards: [DashboardCard]?
@@ -1389,26 +1273,22 @@ extension AppSettingsStoreTests {
     func test_setLastSelectedPerformanceTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisYear
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedPerformanceTimeRange)
+        assertEqual(timeRange.rawValue, settingsForSite.lastSelectedPerformanceTimeRange)
     }
 
     func test_loadLastSelectedPerformanceTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisYear
-        let storeSettings = GeneralStoreSettings(lastSelectedPerformanceTimeRange: timeRange.rawValue)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(lastSelectedPerformanceTimeRange: timeRange.rawValue)
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1423,8 +1303,7 @@ extension AppSettingsStoreTests {
 
     func test_loadLastSelectedPerformanceTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1442,26 +1321,22 @@ extension AppSettingsStoreTests {
     func test_setLastSelectedTopPerformersTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisWeek
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedTopPerformersTimeRange)
+        assertEqual(timeRange.rawValue, settingsForSite.lastSelectedTopPerformersTimeRange)
     }
 
     func test_loadLastSelectedTopPerformersTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisWeek
-        let storeSettings = GeneralStoreSettings(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1476,8 +1351,7 @@ extension AppSettingsStoreTests {
 
     func test_loadLastSelectedTopPerformersTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1495,26 +1369,22 @@ extension AppSettingsStoreTests {
     func test_setLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisMonth
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedMostActiveCouponsTimeRange)
+        assertEqual(timeRange.rawValue, settingsForSite.lastSelectedMostActiveCouponsTimeRange)
     }
 
     func test_loadLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisMonth
-        let storeSettings = GeneralStoreSettings(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1529,8 +1399,7 @@ extension AppSettingsStoreTests {
 
     func test_loadLastSelectedMostActiveCouponsTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedTimeRange: StatsTimeRangeV4?
@@ -1548,26 +1417,22 @@ extension AppSettingsStoreTests {
     func test_setLastSelectedStockType_works_correctly() throws {
         // Given
         let stockType = "lowstock"
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setLastSelectedStockType(siteID: TestConstants.siteID, type: stockType)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(stockType, settingsForSite?.lastSelectedStockType)
+        assertEqual(stockType, settingsForSite.lastSelectedStockType)
     }
 
     func test_loadLastSelectedStockType_works_correctly() throws {
         // Given
         let stockType = "lowstock"
-        let storeSettings = GeneralStoreSettings(lastSelectedStockType: stockType)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(lastSelectedStockType: stockType)
 
         // When
         var loadedStockType: String?
@@ -1582,8 +1447,7 @@ extension AppSettingsStoreTests {
 
     func test_loadLastSelectedStockType_returns_nil_when_no_data_was_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedStockType: String?
@@ -1601,26 +1465,22 @@ extension AppSettingsStoreTests {
     func test_setLastSelectedOrderStatus_works_correctly() throws {
         // Given
         let status = "pending"
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         let action = AppSettingsAction.setLastSelectedOrderStatus(siteID: TestConstants.siteID, status: status)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+        let settingsForSite = mockSiteSpecificAppSettingsStoreMethods.storeSettings
 
-        assertEqual(status, settingsForSite?.lastSelectedOrderStatus)
+        assertEqual(status, settingsForSite.lastSelectedOrderStatus)
     }
 
     func test_loadLastSelectedOrderStatus_works_correctly() throws {
         // Given
         let status = "pending"
-        let storeSettings = GeneralStoreSettings(lastSelectedOrderStatus: status)
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(lastSelectedOrderStatus: status)
 
         // When
         var loadedOrderStatus: String?
@@ -1635,8 +1495,7 @@ extension AppSettingsStoreTests {
 
     func test_loadLastSelectedOrderStatus_returns_nil_when_no_data_was_saved() throws {
         // Given
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
 
         // When
         var loadedOrderStatus: String?
@@ -1687,10 +1546,5 @@ private extension AppSettingsStoreTests {
             isCustomFieldsTopBannerDismissed: false
         )
         return settings
-    }
-
-    var expectedGeneralStoreSettingsFileURL: URL {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent("general-store-settings.plist")
     }
 }

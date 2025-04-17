@@ -627,8 +627,6 @@ final class AppSettingsStoreTests: XCTestCase {
     }
 
     func test_getTelemetryInfo_returns_correct_default_data() throws {
-        // Given
-
         // When
         let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
             let action = AppSettingsAction.getTelemetryInfo(siteID: TestConstants.siteID) { isAvailable, telemetryLastReportedTime in
@@ -643,8 +641,6 @@ final class AppSettingsStoreTests: XCTestCase {
     }
 
     func test_simplePaymentsToggleTaxes_returns_correct_default_data() throws {
-        // Given
-
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = AppSettingsAction.getSimplePaymentsTaxesToggleState(siteID: TestConstants.siteID) { result in
@@ -710,8 +706,6 @@ final class AppSettingsStoreTests: XCTestCase {
     }
 
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
-        // Given
-
         // When
         let action = AppSettingsAction.resetGeneralStoreSettings
         subject?.onAction(action)
@@ -726,7 +720,6 @@ final class AppSettingsStoreTests: XCTestCase {
 extension AppSettingsStoreTests {
 
     func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_dismissal_is_stored_with_no_reminder_date() throws {
-        // Given
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: nil, onCompletion: nil)
         subject?.onAction(action)
@@ -816,7 +809,6 @@ extension AppSettingsStoreTests {
     }
 
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
-        // Given
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
@@ -988,8 +980,6 @@ extension AppSettingsStoreTests {
     }
 
     func test_given_no_data_has_been_stored_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
-        // Given
-
         // When
         let actualValue = waitFor { promise in
             let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: TestConstants.siteID, cardReaderType: .tapToPay) { maybeDate in

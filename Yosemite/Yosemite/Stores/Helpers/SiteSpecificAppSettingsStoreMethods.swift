@@ -11,7 +11,7 @@ protocol SiteSpecificAppSettingsStoreMethodsProtocol {
 
 /// Methods for managing site-specific app settings
 ///
-public struct SiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
+struct SiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
     private let fileStorage: FileStorage
     private let generalStoreSettingsFileURL: URL
 
@@ -29,7 +29,7 @@ public struct SiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreM
 }
 
 // MARK: - Store Settings
-public extension SiteSpecificAppSettingsStoreMethods {
+extension SiteSpecificAppSettingsStoreMethods {
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         guard let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL),
               let storeSettings = existingData.storeSettingsBySite[siteID] else {

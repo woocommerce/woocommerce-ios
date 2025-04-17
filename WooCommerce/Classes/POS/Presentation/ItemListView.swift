@@ -251,7 +251,7 @@ private extension ItemListView {
             }
         }
         .refreshable {
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+            trackPullToRefresh()
             await itemsController.refreshItems(base: .root)
         }
     }
@@ -335,12 +335,7 @@ private extension ItemListView {
             }
         }
 
-        switch itemListType {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
+        trackSelectedItemListTypeTapped(itemListType)
     }
 }
 
@@ -413,6 +408,27 @@ private extension ItemListView {
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
         )
+    }
+}
+
+@available(iOS 17.0, *)
+private extension ItemListView {
+    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
+        switch type {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
+        }
+    }
+
+    func trackPullToRefresh() {
+        switch selectedItemListType {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
+        }
     }
 }
 

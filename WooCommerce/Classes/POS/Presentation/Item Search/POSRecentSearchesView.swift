@@ -115,7 +115,7 @@ struct RecentSearchCard: View {
         Rectangle()
             .foregroundColor(.posSurfaceDim)
             .overlay {
-                Text(Image(systemName: "magnifyingglass"))
+                Image(systemName: "magnifyingglass")
                     .font(.posButtonSymbolLarge)
                     .foregroundColor(.posOnSurfaceVariantLowest)
             }

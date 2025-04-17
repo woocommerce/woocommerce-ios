@@ -986,14 +986,11 @@ private extension AppSettingsStore {
     // Store unique identifier
 
     func setStoreID(siteID: Int64, id: String?) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(storeID: id)
-        setStoreSettings(settings: updatedSettings, for: siteID)
+        siteSpecificAppSettingsStoreMethods.setStoreID(siteID: siteID, id: id)
     }
 
     func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.storeID)
+        siteSpecificAppSettingsStoreMethods.getStoreID(siteID: siteID, onCompletion: onCompletion)
     }
 
     // Telemetry data

@@ -81,7 +81,7 @@ extension SiteSpecificAppSettingsStoreMethods {
 }
 
 // MARK: - Search History
-public extension SiteSpecificAppSettingsStoreMethods {
+extension SiteSpecificAppSettingsStoreMethods {
     func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String] {
         let storeSettings = getStoreSettings(for: siteID)
         let key = itemType.storedSearchHistoryKey

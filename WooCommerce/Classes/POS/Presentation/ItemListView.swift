@@ -307,6 +307,7 @@ private extension ItemListView {
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
+                    ServiceLocator.analytics.track(.couponSettingEnabled)
                 }
             })
         default:

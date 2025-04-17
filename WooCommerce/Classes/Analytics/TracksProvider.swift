@@ -196,7 +196,8 @@ private extension TracksProvider {
             WooAnalyticsStat.paymentsFlowCollect,
 
             // Coupons
-            WooAnalyticsStat.couponSettingEnabled
+            WooAnalyticsStat.couponSettingEnabled,
+            WooAnalyticsStat.couponCreationSuccess,
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

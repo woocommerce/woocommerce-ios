@@ -10,17 +10,29 @@ public class AppSettingsStore: Store {
 
     private let generalAppSettings: GeneralAppSettingsStorage
 
-    private let siteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethods
+    private let siteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol
 
     /// Designated initaliser
     ///
-    public init(dispatcher: Dispatcher,
+    public convenience init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 fileStorage: FileStorage,
                 generalAppSettings: GeneralAppSettingsStorage) {
+        self.init(dispatcher: dispatcher,
+             storageManager: storageManager,
+             fileStorage: fileStorage,
+             generalAppSettings: generalAppSettings,
+             siteSpecificAppSettingsStoreMethods: nil)
+    }
+
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         fileStorage: FileStorage,
+         generalAppSettings: GeneralAppSettingsStorage,
+         siteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol?) {
         self.fileStorage = fileStorage
         self.generalAppSettings = generalAppSettings
-        self.siteSpecificAppSettingsStoreMethods = SiteSpecificAppSettingsStoreMethods(fileStorage: fileStorage)
+        self.siteSpecificAppSettingsStoreMethods = siteSpecificAppSettingsStoreMethods ?? SiteSpecificAppSettingsStoreMethods(fileStorage: fileStorage)
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())

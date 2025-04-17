@@ -43,13 +43,22 @@ final class AppSettingsStoreTests: XCTestCase {
     ///
     private var subject: AppSettingsStore?
 
+    /// Mock Site Specific App Settings Store Methods
+
+    private var mockSiteSpecificAppSettingsStoreMethods: MockSiteSpecificAppSettingsStoreMethods!
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
         generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage!)
-        subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!, generalAppSettings: generalAppSettings!)
+        mockSiteSpecificAppSettingsStoreMethods = MockSiteSpecificAppSettingsStoreMethods()
+        subject = AppSettingsStore(dispatcher: dispatcher!,
+                                   storageManager: storageManager!,
+                                   fileStorage: fileStorage!,
+                                   generalAppSettings: generalAppSettings!,
+                                   siteSpecificAppSettingsStoreMethods: mockSiteSpecificAppSettingsStoreMethods)
         subject?.selectedProvidersURL = TestConstants.fileURL!
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
@@ -60,6 +69,7 @@ final class AppSettingsStoreTests: XCTestCase {
         fileStorage = nil
         generalAppSettings = nil
         subject = nil
+        mockSiteSpecificAppSettingsStoreMethods = nil
         super.tearDown()
     }
 
@@ -524,29 +534,26 @@ final class AppSettingsStoreTests: XCTestCase {
     func test_setStoreID_stores_the_store_id_correctly() throws {
         // Given
         let siteID: Int64 = 1234
-
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        let storeID = "test-store-id"
 
         // When
-        let action = AppSettingsAction.setStoreID(siteID: siteID, id: "sample-store-uuid")
+        let action = AppSettingsAction.setStoreID(siteID: siteID, id: storeID)
         subject?.onAction(action)
 
         // Then
-        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
-        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
-
-        XCTAssertEqual(settingsForSite?.storeID, "sample-store-uuid")
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setStoreIDCalled)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreIDSiteID, siteID)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreID, storeID)
     }
 
     func test_getStoreID_retrieves_the_saved_store_id() throws {
         // Given
         let siteID: Int64 = 1234
-        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(storeID: "sample-store-uuid")])
-        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+        let expectedStoreID = "test-store-id"
+        mockSiteSpecificAppSettingsStoreMethods.mockStoreID = expectedStoreID
 
         // When
-        let storeID: String? = waitFor { promise in
+        let retrievedStoreID: String? = waitFor { promise in
             let action = AppSettingsAction.getStoreID(siteID: siteID) { id in
                 promise(id)
             }
@@ -554,7 +561,9 @@ final class AppSettingsStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(storeID, "sample-store-uuid")
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.getStoreIDCalled)
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spyGetStoreIDSiteID, siteID)
+        XCTAssertEqual(retrievedStoreID, expectedStoreID)
     }
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {

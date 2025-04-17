@@ -1,9 +1,17 @@
 import Foundation
 import Storage
 
+protocol SiteSpecificAppSettingsStoreMethodsProtocol {
+    func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings
+    func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)?)
+    func resetStoreSettings()
+    func setStoreID(siteID: Int64, id: String?)
+    func getStoreID(siteID: Int64, onCompletion: (String?) -> Void)
+}
+
 /// Methods for managing site-specific app settings
 ///
-public struct SiteSpecificAppSettingsStoreMethods {
+public struct SiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
     private let fileStorage: FileStorage
     private let generalStoreSettingsFileURL: URL
 
@@ -55,9 +63,20 @@ public extension SiteSpecificAppSettingsStoreMethods {
             DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
         }
     }
+
+    func setStoreID(siteID: Int64, id: String?) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(storeID: id)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.storeID)
+    }
 }
 
 // MARK: - Constants
 private enum Constants {
     static let generalStoreSettingsFileName = "general-store-settings.plist"
-} 
+}

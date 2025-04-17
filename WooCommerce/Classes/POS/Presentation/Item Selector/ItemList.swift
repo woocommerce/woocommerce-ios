@@ -3,7 +3,6 @@ import enum Yosemite.POSItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
-
 /// Displays a list of POS items or placeholder card based on the given state.
 @available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {

@@ -340,8 +340,14 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
-        let itemsInCart = posModel.cart.items.count
-        ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
+        let products = posModel.cart.items.count
+        let coupons = posModel.cart.coupons.count
+        ServiceLocator.analytics.track(
+            event: .PointOfSale.checkoutTapped(
+                productsInCart: products,
+                couponsInCart: coupons
+            )
+        )
     }
 }
 

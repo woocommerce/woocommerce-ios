@@ -328,6 +328,7 @@ private extension CartView {
                                                                         couponItem: couponItem),
                               showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
+                    ServiceLocator.analytics.track(.pointOfSaleCouponRemovedFromCart)
                     posModel.remove(cartCouponItem: couponItem)
                 } : nil)
                 .id(couponItem.id)

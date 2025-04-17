@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ItemRowView: View {
-    private let cartItem: CartItem.PurchasableItem
+    private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -11,7 +11,7 @@ struct ItemRowView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(cartItem: CartItem.PurchasableItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: Cart.PurchasableItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
@@ -81,21 +81,21 @@ private extension ItemRowView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartItem.PurchasableItem(id: UUID(),
-                                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                                   title: "Item Title",
-                                                   subtitle: "Item Subtitle",
-                                                   quantity: 2),
+    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
+                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                               title: "Item Title",
+                                               subtitle: "Item Subtitle",
+                                               quantity: 2),
                 onItemRemoveTapped: { })
 }
 
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartItem.PurchasableItem(id: UUID(),
-                                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                                   title: "Item Title",
-                                                   subtitle: nil,
-                                                   quantity: 2),
+    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
+                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                               title: "Item Title",
+                                               subtitle: nil,
+                                               quantity: 2),
                 onItemRemoveTapped: { })
 }
 #endif

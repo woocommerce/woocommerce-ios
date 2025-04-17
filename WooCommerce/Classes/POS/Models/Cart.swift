@@ -3,35 +3,35 @@ import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
 
 struct Cart {
-    var purchasableItems: [CartItem.PurchasableItem] = []
-    var coupons: [CartItem.CouponItem] = []
+    var purchasableItems: [Cart.PurchasableItem] = []
+    var coupons: [Cart.CouponItem] = []
 }
 
-enum CartItem: Identifiable {
-    case purchasableItem(PurchasableItem)
-    case coupon(CouponItem)
+protocol CartItem {
+    var id: UUID { get }
+    var type: CartItemType { get }
+}
 
-    var id: UUID {
-        switch self {
-        case .purchasableItem(let item):
-            return item.id
-        case .coupon(let coupon):
-            return coupon.id
-        }
-    }
+enum CartItemType: CaseIterable {
+    case purchasableItem
+    case coupon
+}
 
-    struct PurchasableItem {
+extension Cart {
+    struct PurchasableItem: CartItem {
         let id: UUID
         let item: POSOrderableItem
         let title: String
         let subtitle: String?
         let quantity: Int
+        let type: CartItemType = .purchasableItem
     }
 
-    struct CouponItem {
+    struct CouponItem: CartItem {
         let id: UUID
         let code: String
         let summary: String
+        let type: CartItemType = .coupon
     }
 }
 
@@ -41,31 +41,17 @@ extension Cart {
     mutating func add(_ posItem: POSItem) {
         switch posItem {
         case .simpleProduct(let simpleProduct):
-            let productItem = CartItem.PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
+            let productItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
             purchasableItems.insert(productItem, at: purchasableItems.startIndex)
         case .variation(let variation):
-            let productItem = CartItem.PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+            let productItem = Cart.PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
             purchasableItems.insert(productItem, at: purchasableItems.startIndex)
         case .variableParentProduct:
             return
         case .coupon(let coupon):
-            let couponItem = CartItem.CouponItem(id: UUID(), code: coupon.code, summary: coupon.summary)
+            let couponItem = Cart.CouponItem(id: UUID(), code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
         }
-    }
-
-    mutating func remove(_ cartItem: CartItem) {
-        switch cartItem {
-        case .purchasableItem(let item):
-            purchasableItems.removeAll { $0.id == item.id }
-        case .coupon(let coupon):
-            coupons.removeAll { $0.id == coupon.id }
-        }
-    }
-
-    mutating func removeAll() {
-        purchasableItems.removeAll()
-        coupons.removeAll()
     }
 
     var isEmpty: Bool {

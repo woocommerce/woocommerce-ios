@@ -16,7 +16,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var orderStateToReturn: PointOfSaleInternalOrderState?
 
     var syncOrderWasCalled: Bool = false
-    var spyCartProducts: [CartItem.PurchasableItem]?
+    var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?
     var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
 

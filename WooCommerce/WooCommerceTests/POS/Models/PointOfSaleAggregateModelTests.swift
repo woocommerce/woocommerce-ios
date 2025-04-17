@@ -33,7 +33,7 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
             try #require(!sut.cart.isEmpty)
@@ -56,7 +56,7 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
 
             // When
             await sut.checkOut()
@@ -75,7 +75,7 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
 
@@ -108,7 +108,7 @@ struct PointOfSaleAggregateModelTests {
                                                 analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
             try #require(sut.cart.isEmpty)
-            let item = makeItem()
+            let item = makePurchasableItem()
 
             // When
             sut.addToCart(item)
@@ -127,7 +127,7 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            let items = [makeItem(), makeItem(), makeItem()]
+            let items = [makePurchasableItem(), makePurchasableItem(), makePurchasableItem()]
 
             // When
             items.forEach(sut.addToCart(_:))
@@ -146,8 +146,8 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            let item = makeItem(name: "Item 1")
-            let anotherItem = makeItem(name: "Item 2")
+            let item = makePurchasableItem(name: "Item 1")
+            let anotherItem = makePurchasableItem(name: "Item 2")
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
@@ -155,7 +155,7 @@ struct PointOfSaleAggregateModelTests {
 
             // When
             let firstItem = try #require(sut.cart.purchasableItems.first)
-            sut.remove(cartItem: .purchasableItem(firstItem))
+            sut.remove(cartItem: firstItem)
 
             // Then
             #expect(sut.cart.purchasableItems.count == 1)
@@ -172,8 +172,8 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            let item = makeItem(name: "Item 1")
-            let anotherItem = makeItem(name: "Item 2")
+            let item = makePurchasableItem(name: "Item 1")
+            let anotherItem = makePurchasableItem(name: "Item 2")
 
             sut.addToCart(item)
             sut.addToCart(anotherItem)
@@ -184,6 +184,33 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.isEmpty)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
+            // Given
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: analytics,
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
+            let item = makePurchasableItem(name: "Item 1")
+            let anotherItem = makePurchasableItem(name: "Item 2")
+            let couponItem = makeCouponItem(code: "VALID")
+            sut.addToCart(item)
+            sut.addToCart(anotherItem)
+            sut.addToCart(couponItem)
+            try #require(sut.cart.purchasableItems.count == 2)
+            try #require(sut.cart.coupons.count == 1)
+
+            // When
+            sut.removeAllItemsFromCart(types: [.coupon])
+
+            // Then
+            #expect(sut.cart.purchasableItems.count == 2)
+            #expect(sut.cart.coupons.count == 0)
         }
 
         @available(iOS 17.0, *)
@@ -202,7 +229,7 @@ struct PointOfSaleAggregateModelTests {
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
-            let item = makeItem()
+            let item = makePurchasableItem()
 
             // When
             sut.addToCart(item)
@@ -234,7 +261,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
 
             // When
             sut.startNewCart()
@@ -256,8 +283,8 @@ struct PointOfSaleAggregateModelTests {
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
+            sut.addToCart(makePurchasableItem())
             let item = try #require(sut.cart.purchasableItems.first)
 
             // When
@@ -281,7 +308,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
             sut.removeAllItemsFromCart()
 
             // When
@@ -305,7 +332,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
 
@@ -375,7 +402,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
 
             // When
             sut.pointOfSaleClosed()
@@ -867,7 +894,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics,
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
 
             let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
                 fixedState: .noConnectionError,
@@ -898,7 +925,7 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics,
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker())
 
-            sut.addToCart(makeItem())
+            sut.addToCart(makePurchasableItem())
 
             // When
             sut.trackCardPaymentsOnboardingShown()
@@ -1005,13 +1032,17 @@ struct PointOfSaleAggregateModelTests {
     }
 }
 
-private func makeItem(name: String = "") -> POSItem {
+private func makePurchasableItem(name: String = "") -> POSItem {
     return .simpleProduct(POSSimpleProduct(
         id: UUID(),
         name: name,
         formattedPrice: "",
         productID: 1,
         price: ""))
+}
+
+private func makeCouponItem(code: String = "") -> POSItem {
+    return .coupon(.init(id: UUID(), code: code))
 }
 
 private func makeLoadedOrderState(cartTotal: String = "",

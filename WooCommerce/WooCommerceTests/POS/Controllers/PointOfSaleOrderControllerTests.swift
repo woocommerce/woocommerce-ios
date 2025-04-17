@@ -660,7 +660,7 @@ struct PointOfSaleOrderControllerTests {
 private func makeItem(name: String = "",
                       formattedPrice: String = "",
                       quantity: Int = 1,
-                      orderItemsToMatch: [OrderItem] = []) -> CartItem.PurchasableItem {
+                      orderItemsToMatch: [OrderItem] = []) -> Cart.PurchasableItem {
     return .init(id: UUID(),
                  item: MockPOSOrderableItem(name: name,
                                             formattedPrice: formattedPrice,

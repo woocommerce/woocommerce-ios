@@ -34,7 +34,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                         Button(retryActionTitle, action: {
-                            posModel.removeAllCouponsFromCart()
+                            posModel.removeAllItemsFromCart(types: [.coupon])
                             retryHandler()
                         })
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))

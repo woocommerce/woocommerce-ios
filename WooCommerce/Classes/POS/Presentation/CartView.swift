@@ -71,7 +71,7 @@ struct CartView: View {
                                                 showImage: $shouldShowItemImages,
                                                 onItemRemoveTapped: posModel.orderStage == .building ? {
                                         ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
-                                        posModel.remove(cartItem: .purchasableItem(cartItem))
+                                        posModel.remove(cartItem: cartItem)
                                     } : nil)
                                     .id(cartItem.id)
                                     .transition(.opacity)
@@ -328,7 +328,7 @@ private extension CartView {
                                                                         couponItem: couponItem),
                               showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
-                    posModel.remove(cartItem: .coupon(couponItem))
+                    posModel.remove(cartItem: couponItem)
                 } : nil)
                 .id(couponItem.id)
                 .transition(.opacity)

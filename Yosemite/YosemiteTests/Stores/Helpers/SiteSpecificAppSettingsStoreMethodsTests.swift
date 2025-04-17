@@ -134,6 +134,117 @@ final class SiteSpecificAppSettingsStoreMethodsTests: XCTestCase {
         // Then
         XCTAssertEqual(retrievedStoreID, storeID)
     }
+
+    // MARK: - Search Terms Tests
+
+    func test_getSearchTerms_returns_empty_array_when_no_terms_exist() {
+        // When
+        let terms = sut.getSearchTerms(for: .product, siteID: siteID)
+
+        // Then
+        XCTAssertTrue(terms.isEmpty)
+    }
+
+    func test_getSearchTerms_returns_saved_terms() throws {
+        // Given
+        let expectedTerms = ["term1", "term2", "term3"]
+        let storeSettings = GeneralStoreSettings(searchTermsByKey: ["product_search_terms": expectedTerms])
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let terms = sut.getSearchTerms(for: .product, siteID: siteID)
+
+        // Then
+        XCTAssertEqual(terms, expectedTerms)
+    }
+
+    func test_setSearchTerms_saves_terms_successfully() throws {
+        // Given
+        let terms = ["term1", "term2", "term3"]
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setSearchTerms(terms, for: .product, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.searchTermsByKey["product_search_terms"], terms)
+    }
+
+    func test_setSearchTerms_preserves_existing_terms_for_other_item_types() throws {
+        // Given
+        let existingTerms = ["existing1", "existing2"]
+        let storeSettings = GeneralStoreSettings(searchTermsByKey: ["variation_search_terms": existingTerms])
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        let newTerms = ["new1", "new2"]
+        sut.setSearchTerms(newTerms, for: .product, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.searchTermsByKey["product_search_terms"], newTerms)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.searchTermsByKey["variation_search_terms"], existingTerms)
+    }
+
+    func test_setSearchTerms_preserves_existing_terms_for_other_sites() throws {
+        // Given
+        let otherSiteID: Int64 = 456
+        let otherSiteTerms = ["other1", "other2"]
+        let storeSettings = GeneralStoreSettings(searchTermsByKey: ["product_search_terms": otherSiteTerms])
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [otherSiteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        let newTerms = ["new1", "new2"]
+        sut.setSearchTerms(newTerms, for: .product, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.searchTermsByKey["product_search_terms"], newTerms)
+        XCTAssertEqual(savedData.storeSettingsBySite[otherSiteID]?.searchTermsByKey["product_search_terms"], otherSiteTerms)
+    }
+
+    func test_resetStoreSettings_clears_search_terms() throws {
+        // Given
+        let terms = ["term1", "term2"]
+        let storeSettings = GeneralStoreSettings(searchTermsByKey: ["product_search_terms": terms])
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.resetStoreSettings()
+
+        // Then
+        XCTAssertTrue(fileStorage.deleteIsHit)
+        let savedTerms = sut.getSearchTerms(for: .product, siteID: siteID)
+        XCTAssertTrue(savedTerms.isEmpty)
+    }
+
+    func test_search_terms_work_for_all_item_types() throws {
+        // Given
+        let productTerms = ["product1", "product2"]
+        let variationTerms = ["variation1", "variation2"]
+        let couponTerms = ["coupon1", "coupon2"]
+        let storeSettings = GeneralStoreSettings(searchTermsByKey: [
+            "product_search_terms": productTerms,
+            "variation_search_terms": variationTerms,
+            "coupon_search_terms": couponTerms
+        ])
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let retrievedProductTerms = sut.getSearchTerms(for: .product, siteID: siteID)
+        let retrievedVariationTerms = sut.getSearchTerms(for: .variation, siteID: siteID)
+        let retrievedCouponTerms = sut.getSearchTerms(for: .coupon, siteID: siteID)
+
+        // Then
+        XCTAssertEqual(retrievedProductTerms, productTerms)
+        XCTAssertEqual(retrievedVariationTerms, variationTerms)
+        XCTAssertEqual(retrievedCouponTerms, couponTerms)
+    }
 }
 
 // MARK: - Mock FileStorage

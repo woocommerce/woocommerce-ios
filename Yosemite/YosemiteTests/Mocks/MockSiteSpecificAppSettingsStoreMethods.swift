@@ -18,6 +18,15 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
 
     var currentSiteID: Int64 = 1
 
+    // Search terms properties
+    var getSearchTermsCalled = false
+    var setSearchTermsCalled = false
+    var spyGetSearchTermsItemType: POSItemType?
+    var spyGetSearchTermsSiteID: Int64?
+    var spySetSearchTermsItemType: POSItemType?
+    var spySetSearchTermsSiteID: Int64?
+    var mockSearchTerms: [POSItemType: [String]] = [:]
+
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
         return storeSettings
@@ -58,5 +67,20 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         getStoreIDCalled = true
         spyGetStoreIDSiteID = siteID
         onCompletion(mockStoreID)
+    }
+
+    // Search terms methods
+    func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String] {
+        getSearchTermsCalled = true
+        spyGetSearchTermsItemType = itemType
+        spyGetSearchTermsSiteID = siteID
+        return mockSearchTerms[itemType] ?? []
+    }
+
+    func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64) {
+        setSearchTermsCalled = true
+        spySetSearchTermsItemType = itemType
+        spySetSearchTermsSiteID = siteID
+        mockSearchTerms[itemType] = terms
     }
 }

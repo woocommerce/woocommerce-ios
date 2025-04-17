@@ -1,12 +1,16 @@
 import Foundation
 import Storage
 
-protocol SiteSpecificAppSettingsStoreMethodsProtocol {
+public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings
     func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)?)
     func resetStoreSettings()
     func setStoreID(siteID: Int64, id: String?)
     func getStoreID(siteID: Int64, onCompletion: (String?) -> Void)
+
+    // Search history methods
+    func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String]
+    func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64)
 }
 
 /// Methods for managing site-specific app settings
@@ -73,6 +77,24 @@ extension SiteSpecificAppSettingsStoreMethods {
     func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.storeID)
+    }
+}
+
+// MARK: - Search History
+extension SiteSpecificAppSettingsStoreMethods {
+    func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String] {
+        let storeSettings = getStoreSettings(for: siteID)
+        let key = itemType.storedSearchHistoryKey
+        return storeSettings.searchTermsByKey[key] ?? []
+    }
+
+    func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let key = itemType.storedSearchHistoryKey
+        var updatedSearchTermsByKey = storeSettings.searchTermsByKey
+        updatedSearchTermsByKey[key] = terms
+        let updatedSettings = storeSettings.copy(searchTermsByKey: updatedSearchTermsByKey)
+        setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }
 

@@ -202,6 +202,7 @@ private extension ItemListView {
             if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
                 Button(action: {
                     showCouponCreationModal = true
+                    ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
                 }, label: {
                     Text(Image(systemName: "plus.circle.fill"))
                 })

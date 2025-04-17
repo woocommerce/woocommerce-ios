@@ -1,0 +1,63 @@
+import Foundation
+import Storage
+
+/// Methods for managing site-specific app settings
+///
+public struct SiteSpecificAppSettingsStoreMethods {
+    private let fileStorage: FileStorage
+    private let generalStoreSettingsFileURL: URL
+
+    /// Default URL for storing general store settings
+    ///
+    public static var defaultGeneralStoreSettingsFileURL: URL {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.generalStoreSettingsFileName)
+    }
+
+    public init(fileStorage: FileStorage, generalStoreSettingsFileURL: URL = defaultGeneralStoreSettingsFileURL) {
+        self.fileStorage = fileStorage
+        self.generalStoreSettingsFileURL = generalStoreSettingsFileURL
+    }
+}
+
+// MARK: - Store Settings
+public extension SiteSpecificAppSettingsStoreMethods {
+    func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
+        guard let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL),
+              let storeSettings = existingData.storeSettingsBySite[siteID] else {
+            return GeneralStoreSettings()
+        }
+
+        return storeSettings
+    }
+
+    func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        var storeSettingsBySite: [Int64: GeneralStoreSettings] = [:]
+        if let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL) {
+            storeSettingsBySite = existingData.storeSettingsBySite
+        }
+
+        storeSettingsBySite[siteID] = settings
+
+        do {
+            try fileStorage.write(GeneralStoreSettingsBySite(storeSettingsBySite: storeSettingsBySite), to: generalStoreSettingsFileURL)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+            DDLogError("⛔️ Saving store settings to file failed. Error: \(error)")
+        }
+    }
+
+    func resetStoreSettings() {
+        do {
+            try fileStorage.deleteFile(at: generalStoreSettingsFileURL)
+        } catch {
+            DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
+        }
+    }
+}
+
+// MARK: - Constants
+private enum Constants {
+    static let generalStoreSettingsFileName = "general-store-settings.plist"
+} 

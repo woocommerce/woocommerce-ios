@@ -10,6 +10,8 @@ public class AppSettingsStore: Store {
 
     private let generalAppSettings: GeneralAppSettingsStorage
 
+    private let siteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethods
+
     /// Designated initaliser
     ///
     public init(dispatcher: Dispatcher,
@@ -18,6 +20,7 @@ public class AppSettingsStore: Store {
                 generalAppSettings: GeneralAppSettingsStorage) {
         self.fileStorage = fileStorage
         self.generalAppSettings = generalAppSettings
+        self.siteSpecificAppSettingsStoreMethods = SiteSpecificAppSettingsStoreMethods(fileStorage: fileStorage)
         super.init(dispatcher: dispatcher,
                    storageManager: storageManager,
                    network: NullNetwork())
@@ -39,11 +42,6 @@ public class AppSettingsStore: Store {
     lazy var customSelectedProvidersURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.customShipmentProvidersFileName)
-    }()
-
-    private lazy var generalStoreSettingsFileURL: URL! = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.generalStoreSettingsFileName)
     }()
 
     /// URL to the plist file that we use to determine the settings applied in Orders
@@ -966,29 +964,11 @@ private extension AppSettingsStore {
 private extension AppSettingsStore {
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
-        guard let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL),
-              let storeSettings = existingData.storeSettingsBySite[siteID] else {
-            return GeneralStoreSettings()
-        }
-
-        return storeSettings
+        siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
     }
 
     func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        var storeSettingsBySite: [Int64: GeneralStoreSettings] = [:]
-        if let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL) {
-            storeSettingsBySite = existingData.storeSettingsBySite
-        }
-
-        storeSettingsBySite[siteID] = settings
-
-        do {
-            try fileStorage.write(GeneralStoreSettingsBySite(storeSettingsBySite: storeSettingsBySite), to: generalStoreSettingsFileURL)
-            onCompletion?(.success(()))
-        } catch {
-            onCompletion?(.failure(error))
-            DDLogError("⛔️ Saving store settings to file failed. Error: \(error)")
-        }
+        siteSpecificAppSettingsStoreMethods.setStoreSettings(settings: settings, for: siteID, onCompletion: onCompletion)
     }
 
     // Store unique identifier
@@ -1024,11 +1004,7 @@ private extension AppSettingsStore {
     }
 
     func resetGeneralStoreSettings() {
-        do {
-            try fileStorage.deleteFile(at: generalStoreSettingsFileURL)
-        } catch {
-            DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
-        }
+        siteSpecificAppSettingsStoreMethods.resetStoreSettings()
     }
 }
 
@@ -1311,7 +1287,6 @@ private enum Constants {
     // MARK: File Names
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
-    static let generalStoreSettingsFileName = "general-store-settings.plist"
     static let ordersSettings = "orders-settings.plist"
     static let productsSettings = "products-settings.plist"
     static let orderFilterHistory = "order-filter-history.plist"

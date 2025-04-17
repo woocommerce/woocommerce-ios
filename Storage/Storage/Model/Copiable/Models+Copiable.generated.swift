@@ -113,7 +113,8 @@ extension Storage.GeneralStoreSettings {
         lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy,
         lastSelectedStockType: NullableCopiableProp<String> = .copy,
         lastSelectedOrderStatus: NullableCopiableProp<String> = .copy,
-        favoriteProductIDs: CopiableProp<[Int64]> = .copy
+        favoriteProductIDs: CopiableProp<[Int64]> = .copy,
+        searchTermsByKey: CopiableProp<[String: [String]]> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -133,6 +134,7 @@ extension Storage.GeneralStoreSettings {
         let lastSelectedStockType = lastSelectedStockType ?? self.lastSelectedStockType
         let lastSelectedOrderStatus = lastSelectedOrderStatus ?? self.lastSelectedOrderStatus
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
+        let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -152,7 +154,8 @@ extension Storage.GeneralStoreSettings {
             lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange,
             lastSelectedStockType: lastSelectedStockType,
             lastSelectedOrderStatus: lastSelectedOrderStatus,
-            favoriteProductIDs: favoriteProductIDs
+            favoriteProductIDs: favoriteProductIDs,
+            searchTermsByKey: searchTermsByKey
         )
     }
 }

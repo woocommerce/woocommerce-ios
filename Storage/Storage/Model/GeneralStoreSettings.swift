@@ -78,6 +78,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var favoriteProductIDs: [Int64]
 
+    /// Search terms history for different item types in the Point of Sale.
+    ///
+    public var searchTermsByKey: [String: [String]]
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -95,7 +99,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedMostActiveCouponsTimeRange: String = "",
                 lastSelectedStockType: String? = nil,
                 lastSelectedOrderStatus: String? = nil,
-                favoriteProductIDs: [Int64] = []) {
+                favoriteProductIDs: [Int64] = [],
+                searchTermsByKey: [String: [String]] = [:]) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -114,6 +119,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastSelectedStockType = lastSelectedStockType
         self.lastSelectedOrderStatus = lastSelectedOrderStatus
         self.favoriteProductIDs = favoriteProductIDs
+        self.searchTermsByKey = searchTermsByKey
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -133,7 +139,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
                              lastSelectedStockType: lastSelectedStockType,
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
-                             favoriteProductIDs: favoriteProductIDs)
+                             favoriteProductIDs: favoriteProductIDs,
+                             searchTermsByKey: searchTermsByKey)
     }
 }
 
@@ -165,6 +172,7 @@ extension GeneralStoreSettings {
         self.lastSelectedOrderStatus = try container.decodeIfPresent(String.self, forKey: .lastSelectedOrderStatus)
         self.favoriteProductIDs = try container.decodeIfPresent([Int64].self,
                                                                 forKey: .favoriteProductIDs) ?? []
+        self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

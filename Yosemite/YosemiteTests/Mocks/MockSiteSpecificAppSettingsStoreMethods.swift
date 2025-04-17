@@ -1,0 +1,62 @@
+@testable import Yosemite
+import Storage
+
+final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
+    var getStoreSettingsCalled = false
+    var setStoreSettingsCalled = false
+    var resetStoreSettingsCalled = false
+    var setStoreIDCalled = false
+    var getStoreIDCalled = false
+    var spySetStoreID: String? = nil
+    var spySetStoreIDSiteID: Int64? = nil
+
+    var spyGetStoreIDSiteID: Int64? = nil
+
+    var storeSettings = GeneralStoreSettings()
+    var mockStoreID: String?
+    var mockError: Error?
+
+    var currentSiteID: Int64 = 1
+
+    func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
+        getStoreSettingsCalled = true
+        return storeSettings
+    }
+
+    func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)?) {
+        setStoreSettingsCalled = true
+
+        guard siteID == currentSiteID else {
+            onCompletion?(.success(()))
+            return
+        }
+
+        storeSettings = settings
+        if let error = mockError {
+            onCompletion?(.failure(error))
+        } else {
+            onCompletion?(.success(()))
+        }
+    }
+
+    func resetStoreSettings() {
+        resetStoreSettingsCalled = true
+        storeSettings = GeneralStoreSettings()
+    }
+
+    func setStoreID(siteID: Int64, id: String?) {
+        setStoreIDCalled = true
+        spySetStoreID = id
+        spySetStoreIDSiteID = siteID
+        guard siteID == currentSiteID else {
+            return
+        }
+        mockStoreID = id
+    }
+
+    func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
+        getStoreIDCalled = true
+        spyGetStoreIDSiteID = siteID
+        onCompletion(mockStoreID)
+    }
+}

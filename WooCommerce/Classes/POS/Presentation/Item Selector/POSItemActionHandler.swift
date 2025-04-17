@@ -23,6 +23,8 @@ extension POSItemActionHandler {
             analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
         case .variation:
             analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
+        case .coupon:
+            analytics.track(.pointOfSaleCouponAddedToCart)
         default:
             break
         }

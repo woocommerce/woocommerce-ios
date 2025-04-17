@@ -333,6 +333,13 @@ private extension ItemListView {
                 await itemsController.loadItems(base: .root)
             }
         }
+
+        switch itemListType {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
+        }
     }
 }
 

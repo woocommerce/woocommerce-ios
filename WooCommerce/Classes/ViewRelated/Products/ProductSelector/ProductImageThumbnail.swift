@@ -14,7 +14,7 @@ struct ProductImageThumbnail<Placeholder: View>: View {
     ///
     private var imageProcessor: ImageProcessor {
         let screenPixelScale = UIScreen.main.scale
-        let sideSize = productImageSize * screenPixelScale
+        let sideSize = productImageSize * screenPixelScale * scale
         let pixelSize = CGSize(
             width: sideSize,
             height: sideSize

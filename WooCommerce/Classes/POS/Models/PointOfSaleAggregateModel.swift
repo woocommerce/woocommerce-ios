@@ -9,7 +9,7 @@ import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
-import class Yosemite.POSSearchHistoryService
+import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 
 @available(iOS 17.0, *)
@@ -72,7 +72,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
-    private let searchHistoryService: POSSearchHistoryService
+    private let searchHistoryService: POSSearchHistoryProviding
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -86,7 +86,7 @@ protocol PointOfSaleAggregateModelProtocol {
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         searchHistoryService: POSSearchHistoryService? = nil,
+         searchHistoryService: POSSearchHistoryProviding,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -95,9 +95,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.orderController = orderController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        self.searchHistoryService = searchHistoryService ?? POSSearchHistoryService(
-            siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
-        )
+        self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

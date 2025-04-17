@@ -1,8 +1,15 @@
 import Foundation
 import Storage
 
+public protocol POSSearchHistoryProviding {
+    func saveSuccessfulSearch(term: String, for itemType: POSItemType)
+    func searchHistory(for itemType: POSItemType) -> [String]
+    func clearSearchHistory(for itemType: POSItemType)
+    func clearAllSearchHistory()
+}
+
 /// Service for managing search history in the Point of Sale
-public final class POSSearchHistoryService {
+public final class POSSearchHistoryService: POSSearchHistoryProviding {
     private let maxHistorySize: Int
     private let siteID: Int64
     private let siteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol

@@ -3,6 +3,7 @@ import enum Yosemite.POSItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
+
 /// Displays a list of POS items or placeholder card based on the given state.
 @available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
@@ -240,7 +241,8 @@ private extension ItemListRow {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,
              itemActionHandler: PointOfSalePreviewItemActionHandler())

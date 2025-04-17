@@ -1,6 +1,6 @@
 import Foundation
 
-public enum POSItemType {
+public enum POSItemType: CaseIterable {
     case product
     case variation
     case coupon

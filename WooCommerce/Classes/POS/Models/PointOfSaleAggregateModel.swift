@@ -86,7 +86,7 @@ protocol PointOfSaleAggregateModelProtocol {
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         searchHistoryService: POSSearchHistoryService = POSSearchHistoryService(),
+         searchHistoryService: POSSearchHistoryService? = nil,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -95,7 +95,9 @@ protocol PointOfSaleAggregateModelProtocol {
         self.orderController = orderController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        self.searchHistoryService = searchHistoryService
+        self.searchHistoryService = searchHistoryService ?? POSSearchHistoryService(
+            siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+        )
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

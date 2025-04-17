@@ -1,7 +1,7 @@
 import Foundation
 import Storage
 
-protocol SiteSpecificAppSettingsStoreMethodsProtocol {
+public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings
     func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)?)
     func resetStoreSettings()

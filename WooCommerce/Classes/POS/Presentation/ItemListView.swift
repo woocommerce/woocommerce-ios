@@ -82,7 +82,7 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            if isSearchFieldFocused && searchTerm.isEmpty {
+            if shouldShowSearchField && searchTerm.isEmpty {
                 POSRecentSearchesView(
                     savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
                     onSearchSelected: { search in

@@ -1,3 +1,1 @@
-- [internal] Improved login flow during Jetpack Setup for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15491]
-- [internal] Update Sentry to 8.46.0 to allow building with Xcode 16.3 [https://github.com/woocommerce/woocommerce-ios/pull/15503]
-- [*] Product Form: Fixed an issue where a draft variable product cannot be published [https://github.com/woocommerce/woocommerce-ios/pull/15513]
+We’ve tackled some important fixes for a smoother WooCommerce experience! This update resolves an issue where draft variable products couldn't be published. We've also improved the login flow during Jetpack setup for certain accounts, ensuring a more reliable connection. Update now!

@@ -187,15 +187,24 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
 }
 
 @available(iOS 17.0, *)
+final class PointOfSalePreviewPopularItemsController: PointOfSalePopularItemsControllerProtocol {
+    private(set) var itemsByType: [POSItemType: [POSItem]] = [:]
+    private(set) var isLoading = false
+
+    func loadPopularItems(for type: POSItemType) async {}
+}
+
+@available(iOS 17.0, *)
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
-        itemsController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
         couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService()
+        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
+        popularItemsController: PointOfSalePopularItemsControllerProtocol = PointOfSalePreviewPopularItemsController()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             itemsController: itemsController,
@@ -204,7 +213,8 @@ struct POSPreviewHelpers {
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-            searchHistoryService: searchHistoryService
+            searchHistoryService: searchHistoryService,
+            popularItemsController: popularItemsController as! PointOfSalePopularItemsController
         )
     }
 }

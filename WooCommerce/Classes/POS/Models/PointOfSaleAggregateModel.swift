@@ -44,6 +44,8 @@ protocol PointOfSaleAggregateModelProtocol {
     func checkOut() async
 
     func pointOfSaleClosed()
+
+    func loadPopularItems(type: POSItemType) async
 }
 
 @available(iOS 17.0, *)
@@ -65,6 +67,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
+    private let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -85,6 +88,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
+         popularItemsController: PointOfSalePopularItemsControllerProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -95,9 +99,19 @@ protocol PointOfSaleAggregateModelProtocol {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
+        self.popularItemsController = popularItemsController
+
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
+    }
+
+    var popularItemsState: [POSItemType: [POSItem]] {
+        popularItemsController.itemsByType
+    }
+
+    func loadPopularItems(type: POSItemType = .product) async {
+        await popularItemsController.loadPopularItems(for: type)
     }
 }
 

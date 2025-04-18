@@ -4,11 +4,19 @@ import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import class Yosemite.PointOfSaleItemFetchStrategyFactory
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSalePopularItemsController {
+protocol PointOfSalePopularItemsControllerProtocol {
+    var itemsByType: [POSItemType: [POSItem]] { get }
+
+    var isLoading: Bool { get }
+
+    func loadPopularItems(for type: POSItemType) async
+}
+
+@available(iOS 17.0, *)
+@Observable final class PointOfSalePopularItemsController: PointOfSalePopularItemsControllerProtocol {
     private let itemProvider: PointOfSaleItemServiceProtocol
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
@@ -32,6 +40,14 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
                 let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1,
                                                                                 fetchStrategy: fetchStrategy)
                 itemsByType[type] = pagedItems.items
+                let productNames = pagedItems.items.compactMap { item -> String? in
+                    switch item {
+                    case .simpleProduct(let product): return product.name
+                    case .variableParentProduct(let product): return product.name
+                    default: return nil
+                    }
+                }
+                DDLogInfo("📊 Loaded popular items of type \(type): \(productNames.joined(separator: ", "))")
             } catch {
                 itemsByType[type] = []
             }

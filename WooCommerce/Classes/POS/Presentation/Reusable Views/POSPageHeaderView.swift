@@ -101,7 +101,9 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                 }
             }
 
-            Spacer()
+            if items.isNotEmpty {
+                Spacer()
+            }
 
             if let trailingContent {
                 trailingContent

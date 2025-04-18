@@ -58,6 +58,10 @@ struct ItemListView: View {
         }
     }
 
+    private var shouldShowHeaderItems: Bool {
+        !shouldShowSearchField
+    }
+
     @State private var showCouponCreationModal: Bool = false
 
     var body: some View {
@@ -198,6 +202,9 @@ private extension ItemListView {
     }
 
     var headerViewItems: [POSPageHeaderItem] {
+        guard shouldShowHeaderItems else {
+            return []
+        }
         var items = [
             POSPageHeaderItem(
                 title: Localization.productsTitle,

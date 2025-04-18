@@ -141,6 +141,12 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
             WooAnalyticsStat.pointOfSaleCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleProductsTapped,
+            WooAnalyticsStat.pointOfSaleCouponsTapped,
+            WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
+            WooAnalyticsStat.pointOfSaleCouponsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleCouponAddedToCart,
+            WooAnalyticsStat.pointOfSaleCouponRemovedFromCart,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,
@@ -194,6 +200,10 @@ private extension TracksProvider {
             WooAnalyticsStat.paymentsFlowCanceled,
             WooAnalyticsStat.paymentsFlowFailed,
             WooAnalyticsStat.paymentsFlowCollect,
+
+            // Coupons
+            WooAnalyticsStat.couponSettingEnabled,
+            WooAnalyticsStat.couponCreationSuccess,
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

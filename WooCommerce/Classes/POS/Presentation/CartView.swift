@@ -328,6 +328,7 @@ private extension CartView {
                                                                         couponItem: couponItem),
                               showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
+                    ServiceLocator.analytics.track(.pointOfSaleCouponRemovedFromCart)
                     posModel.remove(cartItem: couponItem)
                 } : nil)
                 .id(couponItem.id)
@@ -340,8 +341,14 @@ private extension CartView {
 @available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
-        let itemsInCart = posModel.cart.purchasableItems.count
-        ServiceLocator.analytics.track(event: .PointOfSale.checkoutTapped(itemsInCart))
+        let purchasableItems = posModel.cart.purchasableItems.count
+        let coupons = posModel.cart.coupons.count
+        ServiceLocator.analytics.track(
+            event: .PointOfSale.checkoutTapped(
+                purchasableItemsInCart: purchasableItems,
+                couponsInCart: coupons
+            )
+        )
     }
 }
 

@@ -10,11 +10,13 @@ struct ItemListView: View {
 
     @State private var showSimpleProductsModal: Bool = false
 
-    @State private var shouldShowSearchField: Bool = false
-    @State private var searchTerm: String = ""
-    @FocusState private var isSearchFieldFocused: Bool
-
     @Binding var selectedItemListType: ItemListType
+    @Binding var searchTerm: String
+
+    private var shouldShowSearchField: Bool {
+        selectedItemListType == .products(search: true)
+    }
+    @FocusState private var isSearchFieldFocused: Bool
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
@@ -168,7 +170,7 @@ private extension ItemListView {
                             }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            shouldShowSearchField = true
+                            selectedItemListType = .products(search: true)
                             isSearchFieldFocused = true
                         }
                         .opacity(shouldShowSearchField ? 0 : 1)
@@ -234,7 +236,7 @@ private extension ItemListView {
                 Button(action: {
                     searchTerm = ""
                     isSearchFieldFocused = false
-                    shouldShowSearchField = false
+                    selectedItemListType = .products(search: false)
                 }) {
                     Image(systemName: "chevron.backward")
                         .foregroundColor(.posOnSurface)
@@ -461,13 +463,15 @@ private extension ItemListView {
         await itemsController.loadItems(base: .root)
     }
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
-    return ItemListView(selectedItemListType: .constant(.products(search: false)))
+    return ItemListView(selectedItemListType: .constant(.products(search: false)),
+                        searchTerm: .constant(""))
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    ItemListView(selectedItemListType: .constant(.products(search: false)))
+    ItemListView(selectedItemListType: .constant(.products(search: false)),
+                 searchTerm: .constant(""))
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 

@@ -10,7 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 
-enum ItemListType {
+enum ItemListType: Equatable {
     case products(search: Bool = false)
     case coupons
 
@@ -18,7 +18,7 @@ enum ItemListType {
         switch self {
         case .coupons:
             return .coupon
-        case .products(search: let search):
+        case .products:
             return .product
         }
     }

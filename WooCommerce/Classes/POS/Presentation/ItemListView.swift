@@ -178,6 +178,7 @@ private extension ItemListView {
 
                     if shouldShowCoupons {
                         POSPageHeaderActionButton(systemName: "plus") {
+                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
                             showCouponCreationModal = true
                         }
                         .renderedIf(isAddingCouponAllowed)
@@ -294,7 +295,7 @@ private extension ItemListView {
             }
         }
         .refreshable {
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+            trackPullToRefresh()
             await itemsController.refreshItems(base: .root)
         }
     }
@@ -351,6 +352,7 @@ private extension ItemListView {
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
+                    ServiceLocator.analytics.track(.couponSettingEnabled)
                 }
             })
         default:
@@ -380,6 +382,8 @@ private extension ItemListView {
                 await itemsController.loadItems(base: .root)
             }
         }
+
+        trackSelectedItemListTypeTapped(itemListType)
     }
 }
 
@@ -459,6 +463,27 @@ private extension ItemListView {
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
         )
+    }
+}
+
+@available(iOS 17.0, *)
+private extension ItemListView {
+    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
+        switch type {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
+        }
+    }
+
+    func trackPullToRefresh() {
+        switch selectedItemListType {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
+        }
     }
 }
 

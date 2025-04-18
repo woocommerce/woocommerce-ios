@@ -84,10 +84,7 @@ protocol PointOfSaleOrderControllerProtocol {
             return .success(.newOrder)
         } catch {
             self.order = nil
-            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
-                usesGiftCard: false,
-                errorContext: String(describing: error),
-                errorDescription: error.localizedDescription))
+            trackOrderCreationFailed(error: error)
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }
@@ -269,11 +266,34 @@ extension PointOfSaleOrderController {
     }
 }
 
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    func trackOrderCreationFailed(error: Error) {
+        let errorContext: String
+        let errorDescription: String
+
+        if let couponsError = CouponsError(underlyingError: error) {
+            errorContext = couponsError.code
+            errorDescription = couponsError.message
+        } else {
+            errorContext = String(describing: error)
+            errorDescription = error.localizedDescription
+        }
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+            usesGiftCard: false,
+            errorContext: errorContext,
+            errorDescription: errorDescription)
+        )
+    }
+}
+
 // MARK: - Mapping
 
 private extension POSCart {
     init(cart: Cart) {
-        let items = cart.items.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
+        let items = cart.purchasableItems.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
         let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code, summary: $0.summary) }
         self.init(items: items, coupons: coupons)
     }

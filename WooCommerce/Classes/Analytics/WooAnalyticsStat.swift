@@ -1301,6 +1301,12 @@ enum WooAnalyticsStat: String {
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
     case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
+    case pointOfSaleProductsTapped = "products_tapped"
+    case pointOfSaleCouponsTapped = "coupons_tapped"
+    case pointOfSaleCouponsCreateTapped = "coupons_create_tapped"
+    case pointOfSaleCouponsPullToRefresh = "coupons_pull_to_refresh"
+    case pointOfSaleCouponAddedToCart = "coupon_added_to_cart"
+    case pointOfSaleCouponRemovedFromCart = "coupon_removed_from_cart"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -2,10 +2,6 @@ import ScreenObject
 import XCTest
 
 public final class PaymentsScreen: ScreenObject {
-    private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["collect-payment"]
-    }
-
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["card-reader-manuals"]
     }
@@ -46,7 +42,6 @@ public final class PaymentsScreen: ScreenObject {
         $0.buttons["order-form-collect-payment"]
     }
 
-    private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
     private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
     private var learnMoreButton: XCUIElement { learnMoreButtonGetter(app) }
     private var nextButton: XCUIElement { nextButtonGetter(app) }
@@ -62,7 +57,6 @@ public final class PaymentsScreen: ScreenObject {
         try super.init(
             expectedElementGetters: [
                 paymentsNavigationBarGetter,
-                collectPaymentButtonGetter,
                 cardReaderManualsButtonGetter
             ],
             app: app
@@ -89,39 +83,9 @@ public final class PaymentsScreen: ScreenObject {
         return self
     }
 
-    public func tapCollectPayment() throws -> Self {
-        collectPaymentButton.tap()
-        return self
-    }
-
-    /// Enters a custom amount by tapping a button on the numeric keypad.
-    /// This is done instead of entering text because the text field for custom amount
-    /// is custom with opacity 0, and gets no keyboard focus when tapped.
-    public func enterPaymentAmount(_ amount: String) throws -> Self {
-        addCustomAmountButton.waitAndTap()
-        app.keyboards.keys[amount].firstMatch.tap()
-        confirmCustomAmountButton.waitAndTap()
-        return self
-    }
-
-    public func takeCashPayment() throws -> Self {
-        orderFormCollectPaymentButton.waitAndTap()
-        cashPaymentButton.waitAndTap()
-        markAsPaidButton.waitAndTap()
-        return self
-    }
-
-    @discardableResult
-    public func verifyOrderCompletedToastDisplayed() throws -> Self {
-        let orderCompletedToast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Order completed'")).firstMatch
-        XCTAssertTrue(orderCompletedToast.waitForExistence(timeout: 8))
-
-        return self
-    }
-
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 8))
+        XCTAssertTrue(paymentsNavigationBar.waitForExistence(timeout: 8))
         return self
     }
 

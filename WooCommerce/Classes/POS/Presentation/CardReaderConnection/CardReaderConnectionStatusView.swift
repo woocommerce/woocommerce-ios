@@ -169,20 +169,11 @@ private extension CardReaderConnectionStatusView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService()
-    )
     VStack {
         CardReaderConnectionStatusView()
             .background(Color.posSurfaceContainerLow)
             .frame(height: 80)
-            .environment(posModel)
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
     }
 }
 

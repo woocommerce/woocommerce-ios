@@ -432,30 +432,15 @@ private extension ItemListView {
     Task { @MainActor in
         await itemsController.loadItems(base: .root)
     }
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        purchasableItemsSearchController: itemsController,
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
     return ItemListView(selectedItemListType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
-    return ItemListView(selectedItemListType: .constant(.products(search: false)))
-        .environment(posModel)
+    ItemListView(selectedItemListType: .constant(.products(search: false)))
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

@@ -40,6 +40,11 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
 
+    private var isAddingCouponAllowed: Bool {
+        guard case .coupons = selectedItemListType else { return false }
+        return itemListState.isLoaded || itemListState.isEmpty
+    }
+
     @State private var showCouponCreationModal: Bool = false
 
     var body: some View {
@@ -107,7 +112,7 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            POSPageHeaderView(title: Localization.title, trailingContent: {
+            POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
                        case .products = selectedItemListType {
@@ -144,7 +149,14 @@ private extension ItemListView {
                             }
                         }
                     }
-                    temporaryProductsCouponsSwitcher
+
+                    if shouldShowCoupons {
+                        POSPageHeaderActionButton(systemName: "plus") {
+                            showCouponCreationModal = true
+                        }
+                        .opacity(isAddingCouponAllowed ? 1 : 0)
+                    }
+
                     Button(action: {
                         ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                         showSimpleProductsModal = true
@@ -154,7 +166,7 @@ private extension ItemListView {
                             .foregroundStyle(Color.posOnSurface)
                             .padding(Constants.infoIconInset)
                     })
-                    .renderedIf(!shouldShowHeaderBanner)
+                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
                 }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
@@ -163,6 +175,30 @@ private extension ItemListView {
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
         }
+    }
+
+    var headerViewItems: [POSPageHeaderItem] {
+        var items = [
+            POSPageHeaderItem(
+                title: Localization.productsTitle,
+                action: {
+                    displayItemListType(.products(search: searchTerm.isNotEmpty))
+                }
+            )
+        ]
+
+        if shouldShowCoupons {
+            items.append(
+                POSPageHeaderItem(
+                    title: Localization.couponsTitle,
+                    action: {
+                        displayItemListType(.coupons)
+                    }
+                )
+            )
+        }
+
+        return items
     }
 
     var searchField: some View {
@@ -182,35 +218,6 @@ private extension ItemListView {
             }
             .focused($isSearchFieldFocused)
         }
-    }
-
-    var temporaryProductsCouponsSwitcher: some View {
-        HStack {
-            Button(action: {
-                displayItemListType(.products(search: searchTerm.isNotEmpty))
-            }, label: {
-                Text("Products")
-            })
-            Button(action: {
-                displayItemListType(.coupons)
-            }, label: {
-                Text("Coupons")
-            })
-
-            Spacer()
-
-            if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-            }
-        }
-        .dynamicTypeSize(...DynamicTypeSize.large)
-        .renderedIf(shouldShowCoupons)
     }
 
     var bannerCardView: some View {
@@ -322,7 +329,11 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        guard case .products = selectedItemListType else {
+            return false
+        }
+
+        return itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
@@ -375,10 +386,16 @@ private extension ItemListView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
+        static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
+        static let couponsTitle = NSLocalizedString(
+            "pos.itemlistview.couponsTitle",
+            value: "Coupons",
+            comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
 
         static let headerBannerTitleSimpleAndVariable = NSLocalizedString(

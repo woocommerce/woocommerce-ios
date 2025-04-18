@@ -10,6 +10,7 @@ struct ItemListView: View {
 
     @State private var showSimpleProductsModal: Bool = false
 
+    @State private var shouldShowSearchField: Bool = false
     @State private var searchTerm: String = ""
     @FocusState private var isSearchFieldFocused: Bool
 
@@ -43,6 +44,18 @@ struct ItemListView: View {
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
         return itemListState.isLoaded || itemListState.isEmpty
+    }
+
+    private var isSearchAllowed: Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS) else {
+            return false
+        }
+        switch selectedItemListType {
+        case .products:
+            return true
+        case .coupons:
+            return false
+        }
     }
 
     @State private var showCouponCreationModal: Bool = false
@@ -114,8 +127,7 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
-                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-                       case .products = selectedItemListType {
+                    if isSearchAllowed {
                         searchField.onChange(of: searchTerm) { oldValue, newValue in
                             selectedItemListType = .products(search: newValue.isNotEmpty)
 
@@ -148,6 +160,13 @@ private extension ItemListView {
                                 }
                             }
                         }
+                        .opacity(shouldShowSearchField ? 1 : 0)
+
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            shouldShowSearchField = true
+                            isSearchFieldFocused = true
+                        }
+                        .opacity(shouldShowSearchField ? 0 : 1)
                     }
 
                     if shouldShowCoupons {
@@ -207,6 +226,7 @@ private extension ItemListView {
                 Button(action: {
                     searchTerm = ""
                     isSearchFieldFocused = false
+                    shouldShowSearchField = false
                 }) {
                     Image(systemName: "chevron.backward")
                         .foregroundColor(.posOnSurface)

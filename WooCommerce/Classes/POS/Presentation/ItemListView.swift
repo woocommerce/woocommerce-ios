@@ -40,6 +40,11 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
 
+    private var isAddingCouponAllowed: Bool {
+        guard case .coupons = selectedItemListType else { return false }
+        return itemListState.isLoaded || itemListState.isEmpty
+    }
+
     @State private var showCouponCreationModal: Bool = false
 
     var body: some View {
@@ -145,10 +150,11 @@ private extension ItemListView {
                         }
                     }
 
-                    if case .coupons = selectedItemListType, itemListState.isLoaded || itemListState.isEmpty {
+                    if shouldShowCoupons {
                         POSPageHeaderActionButton(systemName: "plus") {
                             showCouponCreationModal = true
                         }
+                        .opacity(isAddingCouponAllowed ? 1 : 0)
                     }
 
                     Button(action: {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-25 11:54:05+0000 */
+/* Translation-Revision-Date: 2025-04-08 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -10501,9 +10501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Kart okuyucunuzu bağlamak için bu uygulamanın Bluetooth erişimi izni olması gerekir. Sistemin Ayarlar uygulamasında Woo bölümünden izin verebilirsiniz.";
 
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Bağlı Apple Kimliği hesabı devre dışı bırakılamaz.";
-
 /* Error message when Bluetooth is already paired with another device. */
 "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Bluetooth okuyucu zaten başka bir cihazla bağlı. Bu cihazı bağlamak için okuyucunun eşleşmesinin sıfırlanması gerekir.";
 
@@ -10618,6 +10615,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there is an error decoding the Stripe API response. */
 "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Lütfen destek ekibiyle iletişime geçin. Stripe API yanıtının şifresi çözülürken hata oluştu.";
 
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "Bağlı Apple Kimliği hesabı devre dışı bırakılamaz.";
+
 /* Error message when an unexpected error occurs with the reader. */
 "hardware.cardReader.underlyingError.unexpectedReaderError" = "Okuyucuyla ilgili beklenmedik bir hata oluştu.";
 
@@ -10641,6 +10641,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "İncelemeler";
+
+/* Title of the hub menu AI settings button */
+"hubMenuViewModel.aiSettings" = "Yapay Zeka Ayarları";
+
+/* Description of the hub menu AI settings button */
+"hubMenuViewModel.aiSettingsDescription" = "Mağazanızın yapay zeka destekli özelliklerini yönetin";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "WooCommerce için Google";
@@ -10762,6 +10768,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Görsel Karşıya Yükleme Devam Ediyor";
 
+/* Description text for the magic link request form. */
+"login.magicLinkRequest.description" = "Size anında giriş yapacağınız bir bağlantıyı e-posta ile göndereceğiz, hiç bir parolaya gerek yok.";
+
+/* Error message when magic link request fails. */
+"login.magicLinkRequest.error" = "Bir sorun oluştu. Lütfen tekrar deneyin.";
+
+/* Button title to fallback to password login. */
+"login.magicLinkRequest.passwordFallback" = "Bunun yerine şifrenizi kullanın";
+
+/* Button title to send the magic link. */
+"login.magicLinkRequest.sendMagicLink" = "Bağlantıyı e-postayla gönder";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequest.wpcomUsernamePasswordFallback" = "Bunun yerine kullanıcı adı ve şifre kullanın";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequested.wpcomUsernamePasswordFallback" = "Bunun yerine kullanıcı adı ve şifre kullanın";
+
+/* Instructions for logging in to WordPress.com using username and password. */
+"login.sitecredentials.wpcom_instructions" = "Oturum açmak için WordPress.com kullanıcı adı ve şifrenizi girin.";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Mağaza senkronize ediliyor...";
 
@@ -10791,12 +10818,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the media picker action sheet to select a source. */
 "mediaSourceActionSheet.title" = "Ortam Kaynağı Seçin";
-
-/* Navigates to Collect a payment via the Simple Payment screen */
-"menu.payments.actions.collectPayment.row.title" = "Ödeme Alın";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"menu.payments.actions.section.title" = "İşlemler";
 
 /* Navigates to Card Reader management screen */
 "menu.payments.cardReader.manage.row.title" = "Kart Okuyucuyu Yönet";
@@ -11482,6 +11503,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Okuyucunuza bağlanılamadı";
 
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "İptal Et";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Cihaz Ayarlarını Aç";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Dolandırıcılık riskini azaltmak, anlaşmazlıkları önlemek ve güvenli ödemeler sağlamak için konum hizmetleri izni gerekir.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Ödemelere izin vermek için konum hizmetlerini etkinleştirin";
+
 /* Button to dismiss. Presented to users after collecting a payment fails */
 "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Kapat";
 
@@ -11511,6 +11544,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Lütfen mağazanızın posta kodunu düzeltin";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Devam";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Bu seçeneği daha sonra Ayarlar uygulamasından değiştirebilirsiniz.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Dolandırıcılık riskini azaltmak, anlaşmazlıkları önlemek ve güvenli ödemeler sağlamak için konum hizmetleri izni gerekir.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Ödemelere izin vermek için konum hizmetlerini etkinleştirin";
 
 /* Label within the modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Lütfen bekleyin...";
@@ -11671,6 +11716,12 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Kaldır";
 
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.proceed" = "Kuponlar olmadan devam et";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.title" = "Geçersiz kuponlar";
+
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Toplamlar yüklenemedi";
 
@@ -11728,6 +11779,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "İnternet bağlantısı yok";
 
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "İptal Et";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Kupon oluşturun";
+
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Devam eden tüm siparişler kaybolacak.";
 
@@ -11772,6 +11829,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "Varyasyonlar yüklenirken hata oluştu";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "Kupon oluşturun";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.itemList.noCouponsFoundSubtitle" = "Müşterilere özel teklifler ve indirimler göndererek işletmenizi güçlendirin";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundTitle" = "Kupon bulunamadı";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Ürünler";
@@ -11841,6 +11907,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Nakit ödeme";
+
+/* Title for discount amount field */
+"pos.totalsView.discountTotal" = "İndirim";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Lütfen WooCommerce'ü 9.5.0 veya daha yeni bir sürüme güncelleyin";
@@ -12349,18 +12418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Gönderimi düzenle";
-
-/* Action to add a custom amount in the simple payments migration view. */
-"simplePaymentsMigrationSheet.addCustomAmount" = "Özel Tutar Ekle";
-
-/* Detail for the simple payments migration view. */
-"simplePaymentsMigrationSheet.detail" = "Bir ödeme tutarı belirlemek için yeni siparişinize özel tutar ekleyin.";
-
-/* Title for the simple payments migration view. Text in the asterisks is italic. */
-"simplePaymentsMigrationSheet.subtitle" = "Ödeme almayı sipariş almayla birleştirdik, bu sayede bunu daha erişilebilir *ve* daha güçlü hale getirdik.";
-
-/* Title for the simple payments migration view. */
-"simplePaymentsMigrationSheet.title" = "Ödeme Alma taşındı";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "İptal Et";
@@ -13125,6 +13182,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Adres doğrulandı";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.createLabels.hazmatRemoved" = "Tehlikeli maddeler kategorisini kaldırın";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.createLabels.hazmatSet" = "Tehlikeli maddeler kategorisi ayarlandı";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ öğe";
 
@@ -13260,8 +13323,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "İzleme";
 
+/* Instructions to ask customer to select items to split during shipping label creation. The placeholder is title of a button to move items to a new shipment . */
+"wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message" = "Bölmek için öğeleri seçin ve araç çubuğu göründüğünde %1$@ öğesine dokunun.";
+
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.splitShipment.items.count" = "%1$@ öğe";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.splitShipment.items.countSingular" = "%1$@ öğe";
+
+/* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
+"wooShipping.createLabels.splitShipment.movingCompletionFormat" = "%1$@, %2$@ konumuna taşındı";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.splitShipment.shipmentFormat" = "%1$d gönderimi";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Gönderim Etiketleri Oluşturun";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.createLabels.undo" = "Geri Al";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Gönderim Etiketini Görüntüleyin";
@@ -13464,6 +13545,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.cancel" = "İptal Et";
 
+/* Label for the existing category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.category" = "Kategori";
+
 /* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.detailLine1" = "Potansiyel olarak tehlikeli maddeler arasında piller, kuru buz, yanıcı sıvılar, aerosoller, mühimmat, havai fişekler, oje, parfüm, boya, çözücüler ve daha fazlası yer almaktadır. Tehlikeli maddeler ayrı paketlerde gönderilmelidir.";
 
@@ -13472,6 +13556,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
 "wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping, şu anda %1$@ yoluyla Tehlikeli Madde gönderimlerini desteklemiyor.";
+
+/* Button to confirm selection on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.save" = "Kaydet";
 
 /* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
 "wooShippingHazmatDetailView.searchTool" = "USPS Tehlikeli Madde Arama Aracı";
@@ -13485,14 +13572,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
 
+/* Button to move selected items to a shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Taşı:";
+
+/* Button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveToNewShipment" = "Yeni gönderime taşı";
+
+/* Title of the button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.newShipment" = "Yeni gönderim";
+
+/* Label used in the button to select the shipment in split shipments flow. %1$d is the shipment number. Reads like: Shipment 1 */
+"wooShippingSplitShipments.MoveToShipmentNotice.shipment" = "%1$d gönderimi";
+
+/* The number of selected items in split shipments flow. %1$d is the number of selected items. Reads like: 2 selected */
+"wooShippingSplitShipments.MoveToShipmentNotice.title" = "%1$d seçildi";
+
+/* Button to dismiss a sheet in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.cancel" = "İptal Et";
+
 /* Button to save split shipment configurations in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.done" = "Tamam";
+
+/* Button to merge all unfulfilled shipments in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAll" = "Tamamlanmamış olanları birleştir";
+
+/* Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA" = "Tüm gönderimleri birleştir";
+
+/* Message on the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description" = "Bu, tamamlanmamış tüm bölünmüş gönderimleri kaldırır ve tüm öğeleri tek bir gönderime taşır";
+
+/* Title of the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title" = "Tamamlanmamış tüm gönderimleri birleştir";
+
+/* Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle" = "Ürünleri bunun içine veya dışına taşıyamazsınız.";
+
+/* Title label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.title" = "Bu gönderim için bir etiket satın aldınız.";
+
+/* Button to remove a shipment in the shipping label creation flow. The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'. */
+"wooShippingSplitShipmentsDetailView.removeShipmentFormat" = "%1$@ öğesini kaldır";
+
+/* Button to confirm removing a shipment in the shipping label creation flow. Placeholder is the name of the shipment. Reads as: 'Remove Shipment 1.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA" = "%1$@ öğesini kaldır";
+
+/* Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. Placeholder is the number of items in the shipment. Reads as: 'Choose where to move the 3 items in this shipment to.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle" = "Bu gönderideki %1$@ öğesinin nereye taşınacağını seçin.";
+
+/* Title of the sheet to confirm removing a shipment in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.title" = "Gönderimi kaldır";
 
 /* Button to select all items in the shipment detail in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.selectAll" = "Tümünü Seç";
 
 /* Title of the split shipments detail view in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.title" = "Gönderimleri Bölün";
+
+/* Button to revert moving items between shipments in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.undo" = "Geri Al";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mağazam, bugün, bu hafta, bu ay, bu yıl, siparişler, ziyaretçiler, dönüşüm, en çok dönüşüm, satılan ürünler";

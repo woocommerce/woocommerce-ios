@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-25 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-04-09 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10504,9 +10504,6 @@ which should be translated separately and considered part of this sentence. */
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Den här appen behöver ha behörighet att använda Bluetooth för att ansluta till din kortläsare. Du kan ge behörighet i avsnittet Woo i systemets app för Inställningar.";
 
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "Det länkade Apple ID-kontot har inaktiverats.";
-
 /* Error message when Bluetooth is already paired with another device. */
 "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "Bluetooth-läsaren är redan parkopplad med en annan enhet. Du måste återställa läsarens parkoppling för att den ska kunna anslutas till den här enheten.";
 
@@ -10621,6 +10618,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there is an error decoding the Stripe API response. */
 "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Kontakta supporten. Det uppstod ett fel vid avkodningen av svaret från Stripe API.";
 
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "Det länkade Apple ID-kontot har inaktiverats.";
+
 /* Error message when an unexpected error occurs with the reader. */
 "hardware.cardReader.underlyingError.unexpectedReaderError" = "Ett oväntat fel uppstod med läsaren.";
 
@@ -10644,6 +10644,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Recensioner";
+
+/* Title of the hub menu AI settings button */
+"hubMenuViewModel.aiSettings" = "AI-inställningar";
+
+/* Description of the hub menu AI settings button */
+"hubMenuViewModel.aiSettingsDescription" = "Hantera din butiks AI-drivna funktioner";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -10765,6 +10771,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Bilduppladdning pågår";
 
+/* Description text for the magic link request form. */
+"login.magicLinkRequest.description" = "Vi skickar dig en länk via e-post som loggar in dig direkt, inget lösenord behövs.";
+
+/* Error message when magic link request fails. */
+"login.magicLinkRequest.error" = "Något gick fel. Försök igen.";
+
+/* Button title to fallback to password login. */
+"login.magicLinkRequest.passwordFallback" = "Använd ditt lösenord istället";
+
+/* Button title to send the magic link. */
+"login.magicLinkRequest.sendMagicLink" = "Skicka länk via e-post";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequest.wpcomUsernamePasswordFallback" = "Använd användarnamn och lösenord istället";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequested.wpcomUsernamePasswordFallback" = "Använd användarnamn och lösenord istället";
+
+/* Instructions for logging in to WordPress.com using username and password. */
+"login.sitecredentials.wpcom_instructions" = "Ange ditt WordPress.com användarnamn och lösenord för att logga in.";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Synkroniserar butik...";
 
@@ -10794,12 +10821,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the media picker action sheet to select a source. */
 "mediaSourceActionSheet.title" = "Välj mediakälla";
-
-/* Navigates to Collect a payment via the Simple Payment screen */
-"menu.payments.actions.collectPayment.row.title" = "Ta emot betalning";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"menu.payments.actions.section.title" = "Åtgärder";
 
 /* Navigates to Card Reader management screen */
 "menu.payments.cardReader.manage.row.title" = "Hantera kortläsare";
@@ -11485,6 +11506,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Vi kunde inte ansluta din läsare";
 
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Avbryt";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Öppna enhetens inställningar";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Aktivera platstjänster för att tillåta betalningar";
+
 /* Button to dismiss. Presented to users after collecting a payment fails */
 "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Avfärda";
 
@@ -11514,6 +11547,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Korrigera din butiks postnummer";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Fortsätt";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "Du kan ändra det här alternativet senare i appen för Inställningar.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "Det krävs behörighet för platstjänster för att begränsa bedrägerier, förhindra tvister och säkerställa säkra betalningar.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Aktivera platstjänster för att tillåta betalningar.";
 
 /* Label within the modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Vänta …";
@@ -11674,6 +11719,12 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Ta bort";
 
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.proceed" = "Fortsätt utan rabattkoder";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.title" = "Ogiltiga rabattkoder";
+
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
 
@@ -11731,6 +11782,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Ingen internetanslutning";
 
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "Avbryt";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Skapa rabattkod";
+
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Eventuella pågående beställningar kommer att gå förlorade.";
 
@@ -11775,6 +11832,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "Ett fel uppstod vid inläsning av variationer";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "Skapa rabattkod";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.itemList.noCouponsFoundSubtitle" = "Öka din försäljning genom att skicka specialerbjudanden och rabatter till kunder";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundTitle" = "Inga rabattkoder hittades";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
@@ -11844,6 +11910,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Kontant betalning";
+
+/* Title for discount amount field */
+"pos.totalsView.discountTotal" = "Rabatt";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Uppdatera WooCommerce till version 9.5.0";
@@ -12352,18 +12421,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Redigera frakt";
-
-/* Action to add a custom amount in the simple payments migration view. */
-"simplePaymentsMigrationSheet.addCustomAmount" = "Lägg till ett anpassat belopp";
-
-/* Detail for the simple payments migration view. */
-"simplePaymentsMigrationSheet.detail" = "För att ange ett betalningsbelopp, lägg till ett anpassat belopp till din nya beställning.";
-
-/* Title for the simple payments migration view. Text in the asterisks is italic. */
-"simplePaymentsMigrationSheet.subtitle" = "Vi har kombinerat betalningsmottagande med beställningsskapande, vilket gör funktionerna mer lättåtkomliga *och* kraftfullare.";
-
-/* Title for the simple payments migration view. */
-"simplePaymentsMigrationSheet.title" = "Ta emot betalning har flyttat";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "Avbryt";
@@ -13128,6 +13185,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Adress verifierad";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.createLabels.hazmatRemoved" = "Ta bort kategori för farligt material";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.createLabels.hazmatSet" = "Kategori för farligt material inställd";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ artiklar";
 
@@ -13263,8 +13326,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "Spårning";
 
+/* Instructions to ask customer to select items to split during shipping label creation. The placeholder is title of a button to move items to a new shipment . */
+"wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message" = "För att dela väljer du artiklarna och trycker på %1$@ när verktygsfältet visas.";
+
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.splitShipment.items.count" = "%1$@ artiklar";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.splitShipment.items.countSingular" = "%1$@ artikel";
+
+/* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
+"wooShipping.createLabels.splitShipment.movingCompletionFormat" = "Flyttade %1$@ till %2$@";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.splitShipment.shipmentFormat" = "Försändelse %1$d";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Skapa fraktetiketter";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.createLabels.undo" = "Ångra";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Visa köpt fraktsedel";
@@ -13467,6 +13548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.cancel" = "Avbryt";
 
+/* Label for the existing category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.category" = "Kategori";
+
 /* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.detailLine1" = "Potentiellt farligt material inkluderar varor som batterier, torris, brandfarliga vätskor, aerosoler, ammunition, fyrverkerier, nagellack, parfym, färg, lösningsmedel med mera. Farliga artiklar måste skickas i separata paket.";
 
@@ -13475,6 +13559,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
 "wooShippingHazmatDetailView.detailLine3" = "WooCommerce Shipping stöder för närvarande inte transporter av farligt material via %1$@.";
+
+/* Button to confirm selection on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.save" = "Spara";
 
 /* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
 "wooShippingHazmatDetailView.searchTool" = "USPS-sökverktyg för farligt material";
@@ -13488,14 +13575,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Skickar du farligt gods eller farliga material?";
 
+/* Button to move selected items to a shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Flytta till";
+
+/* Button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveToNewShipment" = "Flytta till ny försändelse";
+
+/* Title of the button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.newShipment" = "Ny försändelse";
+
+/* Label used in the button to select the shipment in split shipments flow. %1$d is the shipment number. Reads like: Shipment 1 */
+"wooShippingSplitShipments.MoveToShipmentNotice.shipment" = "Försändelse %1$d";
+
+/* The number of selected items in split shipments flow. %1$d is the number of selected items. Reads like: 2 selected */
+"wooShippingSplitShipments.MoveToShipmentNotice.title" = "%1$d har valts";
+
+/* Button to dismiss a sheet in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.cancel" = "Avbryt";
+
 /* Button to save split shipment configurations in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.done" = "Klar";
+
+/* Button to merge all unfulfilled shipments in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAll" = "Sammanfoga alla ej fullföljda";
+
+/* Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA" = "Sammanfoga alla försändelser";
+
+/* Message on the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description" = "Detta kommer att ta bort alla ej fullföljda delade försändelser och flytta alla artiklar till en försändelse";
+
+/* Title of the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title" = "Sammanfoga alla ej fullföljda försändelser";
+
+/* Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle" = "Du kan inte flytta produkter till eller från den.";
+
+/* Title label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.title" = "Du har köpt en etikett för den här försändelsen.";
+
+/* Button to remove a shipment in the shipping label creation flow. The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'. */
+"wooShippingSplitShipmentsDetailView.removeShipmentFormat" = "Ta bort %1$@";
+
+/* Button to confirm removing a shipment in the shipping label creation flow. Placeholder is the name of the shipment. Reads as: 'Remove Shipment 1.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA" = "Ta bort %1$@";
+
+/* Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. Placeholder is the number of items in the shipment. Reads as: 'Choose where to move the 3 items in this shipment to.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle" = "Välj vart %1$@ i den här försändelsen ska flyttas.";
+
+/* Title of the sheet to confirm removing a shipment in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.title" = "Ta bort försändelse";
 
 /* Button to select all items in the shipment detail in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.selectAll" = "Välj alla";
 
 /* Title of the split shipments detail view in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.title" = "Dela upp försändelser";
+
+/* Button to revert moving items between shipments in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.undo" = "Ångra";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommece, min butik, idag, den här veckan, den här månaden, det här året, beställningar, besökare, konvertering, toppkonvertering, artiklar sålda";

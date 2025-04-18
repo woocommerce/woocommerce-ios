@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-26 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-04-08 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -10504,9 +10504,6 @@ which should be translated separately and considered part of this sentence. */
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Este app precisa de permissão para acessar o Bluetooth e se conectar ao seu leitor de cartão. Para conceder permissão, acesse a seção do Woo no app de configurações do sistema.";
 
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "A conta da Apple vinculada foi desativada.";
-
 /* Error message when Bluetooth is already paired with another device. */
 "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "O leitor de Bluetooth já está pareado com outro dispositivo. Você precisa redefinir o pareamento do leitor para conectá-lo a este dispositivo.";
 
@@ -10621,6 +10618,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there is an error decoding the Stripe API response. */
 "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Entre em contato com o suporte. Ocorreu um erro ao decodificar a resposta da Stripe API.";
 
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "A conta Apple vinculada foi desativada.";
+
 /* Error message when an unexpected error occurs with the reader. */
 "hardware.cardReader.underlyingError.unexpectedReaderError" = "Ocorreu um erro inesperado com o leitor.";
 
@@ -10644,6 +10644,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Avaliações";
+
+/* Title of the hub menu AI settings button */
+"hubMenuViewModel.aiSettings" = "Configurações de IA";
+
+/* Description of the hub menu AI settings button */
+"hubMenuViewModel.aiSettingsDescription" = "Gerencie as funcionalidades com tecnologia de IA da sua loja";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google para WooCommerce";
@@ -10765,6 +10771,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "Upload de imagem em andamento";
 
+/* Description text for the magic link request form. */
+"login.magicLinkRequest.description" = "Enviaremos um e-mail com um link que fará você se conectar instantaneamente, sem precisar de senha.";
+
+/* Error message when magic link request fails. */
+"login.magicLinkRequest.error" = "Ocorreu um erro. Tente novamente.";
+
+/* Button title to fallback to password login. */
+"login.magicLinkRequest.passwordFallback" = "Usar a senha";
+
+/* Button title to send the magic link. */
+"login.magicLinkRequest.sendMagicLink" = "Enviar link por e-mail";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequest.wpcomUsernamePasswordFallback" = "Usar nome de usuário e senha";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequested.wpcomUsernamePasswordFallback" = "Usar nome de usuário e senha";
+
+/* Instructions for logging in to WordPress.com using username and password. */
+"login.sitecredentials.wpcom_instructions" = "Faça login com seu nome de usuário e sua senha do WordPress.com.";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "Sincronizando loja...";
 
@@ -10794,12 +10821,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the media picker action sheet to select a source. */
 "mediaSourceActionSheet.title" = "Selecionar fonte de mídia";
-
-/* Navigates to Collect a payment via the Simple Payment screen */
-"menu.payments.actions.collectPayment.row.title" = "Receber pagamento";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"menu.payments.actions.section.title" = "Ações";
 
 /* Navigates to Card Reader management screen */
 "menu.payments.cardReader.manage.row.title" = "Gerenciar leitor de cartão";
@@ -11485,6 +11506,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Não foi possível conectar o leitor";
 
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "Cancelar";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "Abrir configurações do dispositivo";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "É necessário ter a permissão dos serviços de localização para diminuir as fraudes, evitar disputas e garantir a proteção dos pagamentos.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "Ative os serviços de localização para permitir pagamentos";
+
 /* Button to dismiss. Presented to users after collecting a payment fails */
 "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Ignorar";
 
@@ -11514,6 +11547,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Corrija o código postal (CEP) da sua loja";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "Continuar";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "É possível alterar essa opção depois no app de configurações.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "É necessário ter a permissão dos serviços de localização para diminuir as fraudes, evitar disputas e garantir a proteção dos pagamentos.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "Ative os serviços de localização para permitir pagamentos";
 
 /* Label within the modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Aguarde...";
@@ -11674,6 +11719,12 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remover";
 
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.proceed" = "Continuar sem cupons";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.title" = "Cupons inválidos";
+
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Não foi possível carregar o total";
 
@@ -11731,6 +11782,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Sem conexão com a internet";
 
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "Cancelar";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "Criar cupom";
+
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Pedidos em andamento serão perdidos.";
 
@@ -11775,6 +11832,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "Erro ao carregar variações";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "Criar cupom";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.itemList.noCouponsFoundSubtitle" = "Envie descontos e ofertas especiais aos seus clientes para turbinar seus negócios";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundTitle" = "Nenhum cupom encontrado";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produtos";
@@ -11844,6 +11910,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Pagamento em dinheiro";
+
+/* Title for discount amount field */
+"pos.totalsView.discountTotal" = "Desconto";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Atualize o WooCommerce para a versão 9.5.0";
@@ -12352,18 +12421,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Editar envio";
-
-/* Action to add a custom amount in the simple payments migration view. */
-"simplePaymentsMigrationSheet.addCustomAmount" = "Adicionar um valor personalizado";
-
-/* Detail for the simple payments migration view. */
-"simplePaymentsMigrationSheet.detail" = "Para definir um valor para o pagamento, adicione um valor ao novo pedido.";
-
-/* Title for the simple payments migration view. Text in the asterisks is italic. */
-"simplePaymentsMigrationSheet.subtitle" = "Combinamos o recebimento de pagamentos com a criação de pedidos, tornando o processo mais acessível *e* eficiente.";
-
-/* Title for the simple payments migration view. */
-"simplePaymentsMigrationSheet.title" = "O recebimento de pagamentos mudou de lugar";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "Cancelar";
@@ -13128,6 +13185,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Endereço verificado";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.createLabels.hazmatRemoved" = "Categoria de materiais perigosos removida";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.createLabels.hazmatSet" = "Categoria de materiais perigosos configurada";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ itens";
 
@@ -13263,8 +13326,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "Rastreamento";
 
+/* Instructions to ask customer to select items to split during shipping label creation. The placeholder is title of a button to move items to a new shipment . */
+"wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message" = "Para dividir, selecione os itens e toque em %1$@ quando a barra de ferramentas for exibida.";
+
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.splitShipment.items.count" = "%1$@ itens";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.splitShipment.items.countSingular" = "%1$@ item";
+
+/* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
+"wooShipping.createLabels.splitShipment.movingCompletionFormat" = "%1$@ movido(s) para %2$@";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.splitShipment.shipmentFormat" = "Envio %1$d";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Criar etiquetas de envio";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.createLabels.undo" = "Desfazer";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Visualizar etiqueta de envio";
@@ -13467,6 +13548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.cancel" = "Cancelar";
 
+/* Label for the existing category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.category" = "Categoria";
+
 /* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.detailLine1" = "Os materiais que podem ser perigosos incluem itens como baterias, gelo seco, líquidos inflamáveis, aerossol, munição, fogos de artifício, esmalte de unha, perfume, tinta, solventes, entre outros. Itens perigosos devem ser transportados em pacotes separados.";
 
@@ -13475,6 +13559,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
 "wooShippingHazmatDetailView.detailLine3" = "No momento, o WooCommerce Shipping não permite envios de materiais perigosos (HAZMAT) pela %1$@.";
+
+/* Button to confirm selection on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.save" = "Salvar";
 
 /* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
 "wooShippingHazmatDetailView.searchTool" = "Ferramenta de pesquisa de HAZMAT da USPS";
@@ -13488,14 +13575,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Você está enviando mercadorias ou materiais perigosos?";
 
+/* Button to move selected items to a shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Mover para";
+
+/* Button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveToNewShipment" = "Mover para novo envio";
+
+/* Title of the button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.newShipment" = "Novo envio";
+
+/* Label used in the button to select the shipment in split shipments flow. %1$d is the shipment number. Reads like: Shipment 1 */
+"wooShippingSplitShipments.MoveToShipmentNotice.shipment" = "Envio %1$d";
+
+/* The number of selected items in split shipments flow. %1$d is the number of selected items. Reads like: 2 selected */
+"wooShippingSplitShipments.MoveToShipmentNotice.title" = "%1$d selecionado(s)";
+
+/* Button to dismiss a sheet in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.cancel" = "Cancelar";
+
 /* Button to save split shipment configurations in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.done" = "Concluído";
+
+/* Button to merge all unfulfilled shipments in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAll" = "Mesclar todos os não atendidos";
+
+/* Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA" = "Mesclar todos os envios";
+
+/* Message on the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description" = "Isso removerá todos os envios divididos não atendidos e moverá todos os itens para um único envio";
+
+/* Title of the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title" = "Mesclar todos os envios não atendidos";
+
+/* Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle" = "Não é possível mover produtos para dentro ou fora dele.";
+
+/* Title label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.title" = "Você comprou uma etiqueta para este envio.";
+
+/* Button to remove a shipment in the shipping label creation flow. The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'. */
+"wooShippingSplitShipmentsDetailView.removeShipmentFormat" = "Remover %1$@";
+
+/* Button to confirm removing a shipment in the shipping label creation flow. Placeholder is the name of the shipment. Reads as: 'Remove Shipment 1.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA" = "Remover %1$@";
+
+/* Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. Placeholder is the number of items in the shipment. Reads as: 'Choose where to move the 3 items in this shipment to.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle" = "Escolha para onde mover %1$@ neste envio.";
+
+/* Title of the sheet to confirm removing a shipment in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.title" = "Remover envio";
 
 /* Button to select all items in the shipment detail in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.selectAll" = "Selecionar tudo";
 
 /* Title of the split shipments detail view in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.title" = "Envios fracionados";
+
+/* Button to revert moving items between shipments in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.undo" = "Desfazer";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, minha loja, hoje, essa semana, esse mês, esse ano, pedidos, visitantes, conversão, principais caminhos de conversão, itens vendidos";

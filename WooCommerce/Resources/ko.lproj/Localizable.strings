@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-03-25 09:54:06+0000 */
+/* Translation-Revision-Date: 2025-04-08 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -10504,9 +10504,6 @@ which should be translated separately and considered part of this sentence. */
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "블루투스에 접근하여 카드 리더에 연결하는 권한이 이 앱에 필요합니다. 시스템의 설정 앱의 Woo 섹션에서 권한을 부여할 수 있습니다.";
 
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.appleBuiltInReaderAccountDeactivated" = "연결된 Apple ID 계정이 비활성화되었습니다.";
-
 /* Error message when Bluetooth is already paired with another device. */
 "hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "블루투스 리더가 이미 다른 기기와 페어링되었습니다. 이 기기에 연결하려면 리더의 페어링을 재설정해야 합니다.";
 
@@ -10621,6 +10618,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there is an error decoding the Stripe API response. */
 "hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "지원팀에 문의하세요. Stripe API 응답 디코딩 중 오류가 발생했습니다.";
 
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "연결된 Apple ID 계정이 비활성화되었습니다.";
+
 /* Error message when an unexpected error occurs with the reader. */
 "hardware.cardReader.underlyingError.unexpectedReaderError" = "리더에서 예기치 않은 오류가 발생했습니다.";
 
@@ -10644,6 +10644,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "리뷰";
+
+/* Title of the hub menu AI settings button */
+"hubMenuViewModel.aiSettings" = "AI 설정";
+
+/* Description of the hub menu AI settings button */
+"hubMenuViewModel.aiSettingsDescription" = "스토어의 AI 기반 기능 관리";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "우커머스용 Google";
@@ -10765,6 +10771,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to inform the user that product images are uploading in the background. */
 "localNotification.ProductImageUploader.title" = "이미지 업로드 진행 중";
 
+/* Description text for the magic link request form. */
+"login.magicLinkRequest.description" = "비밀번호가 필요하지 않고 바로 로그인할 수 있는 링크를 이메일로 보내드리겠습니다.";
+
+/* Error message when magic link request fails. */
+"login.magicLinkRequest.error" = "문제가 발생했습니다. 다시 시도하세요.";
+
+/* Button title to fallback to password login. */
+"login.magicLinkRequest.passwordFallback" = "비밀번호를 대신 사용";
+
+/* Button title to send the magic link. */
+"login.magicLinkRequest.sendMagicLink" = "이메일로 링크 보내기";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequest.wpcomUsernamePasswordFallback" = "사용자명과 비밀번호를 대신 사용";
+
+/* Button title to fallback to WordPress.com username and password login. */
+"login.magicLinkRequested.wpcomUsernamePasswordFallback" = "사용자명과 비밀번호를 대신 사용";
+
+/* Instructions for logging in to WordPress.com using username and password. */
+"login.sitecredentials.wpcom_instructions" = "워드프레스닷컴 사용자명과 비밀번호를 입력하여 로그인하세요.";
+
 /* Label indicating that the store is being synced in the Jetpack setup flow */
 "loginJetpackSetupCoordinator.syncingStore" = "스토어 동기화 중...";
 
@@ -10794,12 +10821,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the media picker action sheet to select a source. */
 "mediaSourceActionSheet.title" = "미디어 소스 선택";
-
-/* Navigates to Collect a payment via the Simple Payment screen */
-"menu.payments.actions.collectPayment.row.title" = "결제 수령";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"menu.payments.actions.section.title" = "작업";
 
 /* Navigates to Card Reader management screen */
 "menu.payments.cardReader.manage.row.title" = "카드 리더 관리";
@@ -11485,6 +11506,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "리더를 연결할 수 없음";
 
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to location permissions not being granted. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.cancel.button.title" = "취소";
+
+/* Opens iOS's Device Settings for the app to access location services */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.openSettings.button.title" = "기기 설정 열기";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전한 결제를 확보하려면 위치 서비스 권한이 필요합니다.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingFailedLocationRequired.title" = "결제가 허용되도록 위치 서비스 활성화";
+
 /* Button to dismiss. Presented to users after collecting a payment fails */
 "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "해제";
 
@@ -11514,6 +11547,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "스토어의 우편번호를 수정하세요.";
+
+/* A title for CTA to present native location permission alert */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.continue.button.title" = "계속";
+
+/* A notice at the bottom explaining that location services can be changed in the Settings app later */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.settingsNotice" = "나중에 설정 앱에서 이 옵션을 변경할 수 있습니다.";
+
+/* A subtitle explaining why location services are needed to make a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.subtitle" = "사기를 줄이고, 분쟁을 방지하고, 안전한 결제를 확보하려면 위치 서비스 권한이 필요합니다.";
+
+/* A title explaining the requirement of location services for making a payment */
+"pointOfSale.cardPresentPayment.alert.connectingLocationPreAlert.title" = "결제가 허용되도록 위치 서비스 활성화";
 
 /* Label within the modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "기다려주세요...";
@@ -11674,6 +11719,12 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
 
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.proceed" = "쿠폰 없이 계속하기";
+
+/* Title of the error when failing to validate coupons and calculate order totals */
+"pointOfSale.orderSync.couponsError.title" = "유효하지 않은 쿠폰";
+
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "합계를 로드할 수 없음";
 
@@ -11731,6 +11782,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "인터넷에 연결되지 않음";
 
+/* A button that dismisses coupon creation sheet */
+"pos.couponCreationSheet.selectCoupon.cancel" = "취소";
+
+/* A title for the view that selects the type of coupon to create */
+"pos.couponCreationSheet.selectCoupon.title" = "쿠폰 생성";
+
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "진행 중인 주문이 모두 손실됩니다.";
 
@@ -11775,6 +11832,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "상품 옵션 로드 오류";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "쿠폰 생성";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.itemList.noCouponsFoundSubtitle" = "고객에게 특별한 혜택과 할인을 발송하여 비즈니스를 증진하세요.";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.itemList.noCouponsFoundTitle" = "쿠폰을 찾을 수 없음";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "상품";
@@ -11844,6 +11910,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "현금 결제";
+
+/* Title for discount amount field */
+"pos.totalsView.discountTotal" = "할인";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "우커머스를 버전 9.5.0으로 업데이트하세요";
@@ -12352,18 +12421,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "배송 수정";
-
-/* Action to add a custom amount in the simple payments migration view. */
-"simplePaymentsMigrationSheet.addCustomAmount" = "사용자 정의 금액 추가";
-
-/* Detail for the simple payments migration view. */
-"simplePaymentsMigrationSheet.detail" = "결제 금액을 설정하려면 사용자 정의 금액을 새 주문에 추가하세요.";
-
-/* Title for the simple payments migration view. Text in the asterisks is italic. */
-"simplePaymentsMigrationSheet.subtitle" = "결제 수령과 주문 생성을 결합하여 더 접근하기 쉽고 더 강력하게 만들었습니다.";
-
-/* Title for the simple payments migration view. */
-"simplePaymentsMigrationSheet.title" = "결제 수령 위치 이동";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "취소";
@@ -13128,6 +13185,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "주소 확인됨";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.createLabels.hazmatRemoved" = "유해물질 카테고리 제거";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.createLabels.hazmatSet" = "유해물질 카테고리 설정됨";
+
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@개 아이템";
 
@@ -13263,8 +13326,26 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "추적";
 
+/* Instructions to ask customer to select items to split during shipping label creation. The placeholder is title of a button to move items to a new shipment . */
+"wooShipping.createLabels.splitShipment.SelectionInstructionsNotice.message" = "분할하려면 아이템을 선택하고, 도구 모음이 나타나면 %1$@ 버튼을 누르세요.";
+
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.splitShipment.items.count" = "%1$@개 아이템";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.splitShipment.items.countSingular" = "%1$@개 아이템";
+
+/* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
+"wooShipping.createLabels.splitShipment.movingCompletionFormat" = "%1$@개가 %2$@ 위치로 이동되었음";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.splitShipment.shipmentFormat" = "배송 %1$d";
+
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "배송 레이블 만들기";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.createLabels.undo" = "실행 취소";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "배송 레이블 보기";
@@ -13467,6 +13548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.cancel" = "취소";
 
+/* Label for the existing category on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.category" = "카테고리";
+
 /* First line of the explanation on the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.detailLine1" = "잠재적 유해물질에는 배터리, 드라이아이스, 가연성 액체, 에어로졸, 탄약, 폭죽, 매니큐어, 향수, 페인트, 용제 등과 같은 품목이 포함됩니다. 유해 아이템은 별도의 패키지로 배송되어야 합니다.";
 
@@ -13475,6 +13559,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third line of the explanation on the HAZMAT detail view in the shipping label creation flow. The placeholder is DHL Express. */
 "wooShippingHazmatDetailView.detailLine3" = "WooCommerce 배송에서는 현재 %1$@을(를) 통한 HAZMAT 배송이 지원되지 않습니다.";
+
+/* Button to confirm selection on the HAZMAT detail view in the shipping label creation flow */
+"wooShippingHazmatDetailView.save" = "저장";
 
 /* Name of the search tool linked on the HAZMAT detail view in the shipping label creation flow. */
 "wooShippingHazmatDetailView.searchTool" = "USPS HAZMAT 검색 도구";
@@ -13488,14 +13575,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "위험물 또는 유해물질을 배송하시나요?";
 
+/* Button to move selected items to a shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "다음으로 이동:";
+
+/* Button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.moveToNewShipment" = "새 배송으로 이동";
+
+/* Title of the button to move selected items to a new shipment in split shipments flow */
+"wooShippingSplitShipments.MoveToShipmentNotice.newShipment" = "새 배송";
+
+/* Label used in the button to select the shipment in split shipments flow. %1$d is the shipment number. Reads like: Shipment 1 */
+"wooShippingSplitShipments.MoveToShipmentNotice.shipment" = "배송 %1$d";
+
+/* The number of selected items in split shipments flow. %1$d is the number of selected items. Reads like: 2 selected */
+"wooShippingSplitShipments.MoveToShipmentNotice.title" = "%1$d개 선택됨";
+
+/* Button to dismiss a sheet in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.cancel" = "취소";
+
 /* Button to save split shipment configurations in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.done" = "완료";
+
+/* Button to merge all unfulfilled shipments in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAll" = "처리되지 않은 모두 병합";
+
+/* Button to confirm merging all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.confirmCTA" = "모든 배송 병합";
+
+/* Message on the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.description" = "그러면 처리되지 않은 모든 분할 배송이 제거되고 모든 아이템이 하나의 배송으로 이동합니다.";
+
+/* Title of the merge all unfulfilled shipments sheet in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.mergeAllUnfulfilledSheet.title" = "처리되지 않은 모든 배송 병합";
+
+/* Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle" = "상품을 가져오거나 내보내실 수 없습니다.";
+
+/* Title label displayed on a shipment whose label is purchased in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.purchasedShipment.title" = "이 배송을 위한 레이블을 구매하셨습니다.";
+
+/* Button to remove a shipment in the shipping label creation flow. The placeholder is the name of a shipment. Reads as: 'Remove shipment 1'. */
+"wooShippingSplitShipmentsDetailView.removeShipmentFormat" = "%1$@ 제거";
+
+/* Button to confirm removing a shipment in the shipping label creation flow. Placeholder is the name of the shipment. Reads as: 'Remove Shipment 1.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.confirmCTA" = "%1$@ 제거";
+
+/* Subtitle of the sheet to confirm removing a shipment in the shipping label creation flow. Placeholder is the number of items in the shipment. Reads as: 'Choose where to move the 3 items in this shipment to.' */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.subtitle" = "이 배송 중 %1$@개를 이동할 위치를 선택하세요.";
+
+/* Title of the sheet to confirm removing a shipment in the shipping label creation flow. */
+"wooShippingSplitShipmentsDetailView.removeShipmentSheet.title" = "배송 제거";
 
 /* Button to select all items in the shipment detail in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.selectAll" = "모두 선택";
 
 /* Title of the split shipments detail view in the shipping label creation flow */
 "wooShippingSplitShipmentsDetailView.title" = "분할 배송";
+
+/* Button to revert moving items between shipments in the shipping label creation flow */
+"wooShippingSplitShipmentsDetailView.undo" = "실행 취소";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "우커머스, 내 스토어, 오늘, 이번 주, 이번 달, 이번 해, 주문수, 방문자, 전환, 상위 전환, 판매된 제품";

@@ -15,6 +15,8 @@ import struct Yosemite.OrderItem
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import struct Yosemite.POSProduct
 import struct Yosemite.ProductVariation
+import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItemType
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -123,6 +125,18 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 @available(iOS 17.0, *)
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem) { }
+}
+
+final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
+    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
+
+    func searchHistory(for itemType: POSItemType) -> [String] {
+        return []
+    }
+
+    func clearSearchHistory(for itemType: POSItemType) {}
+
+    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {

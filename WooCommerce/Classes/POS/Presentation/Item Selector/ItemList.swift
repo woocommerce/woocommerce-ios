@@ -240,7 +240,8 @@ private extension ItemListRow {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,
              itemActionHandler: PointOfSalePreviewItemActionHandler())

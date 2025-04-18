@@ -137,10 +137,9 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 @available(iOS 17.0, *)
@@ -157,10 +156,9 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

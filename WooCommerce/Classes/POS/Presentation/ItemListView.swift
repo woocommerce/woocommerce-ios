@@ -422,9 +422,8 @@ private extension ItemListView {
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
-    return ItemListView(selectedItemListType: .constant(.products(search: false)))
-        .environment(posModel)
+    ItemListView(selectedItemListType: .constant(.products(search: false)))
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

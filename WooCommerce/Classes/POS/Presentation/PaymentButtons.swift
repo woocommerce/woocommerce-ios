@@ -88,8 +88,7 @@ private extension PaymentsActionButtons {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

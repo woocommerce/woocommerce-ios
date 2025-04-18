@@ -158,8 +158,7 @@ private extension POSSendReceiptView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

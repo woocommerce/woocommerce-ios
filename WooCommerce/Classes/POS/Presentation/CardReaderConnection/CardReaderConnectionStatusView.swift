@@ -169,12 +169,11 @@ private extension CardReaderConnectionStatusView {
 
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     VStack {
         CardReaderConnectionStatusView()
             .background(Color.posSurfaceContainerLow)
             .frame(height: 80)
-            .environment(posModel)
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
     }
 }
 

@@ -455,8 +455,7 @@ private extension TotalsView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     TotalsView()
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

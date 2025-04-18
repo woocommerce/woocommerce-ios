@@ -234,11 +234,10 @@ private extension ItemListRow {
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,
              itemActionHandler: PointOfSalePreviewItemActionHandler())
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

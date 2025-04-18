@@ -217,16 +217,44 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             parameters: parameters)
     }
 
+    /// Loads popular products for Point of Sale
+    ///
+    /// - Parameters:
+    ///   - siteID: The target site ID.
+    ///   - productTypes: The product types to filter by.
+    ///   - pageNumber: Number of page that should be retrieved.
+    ///
+    public func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                                  productTypes: [ProductType] = [.simple],
+                                                  pageNumber: Int = 1,
+                                                  perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
+        let parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productsPerPage: String(perPage),
+            productTypes: productTypes,
+            orderBy: .popularity,
+            order: .descending
+        )
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
+    }
+
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
-                                                   productTypes: [ProductType]) -> [String: String] {
+                                                   productsPerPage: String = POSConstants.productsPerPage,
+                                                   productTypes: [ProductType],
+                                                   orderBy: OrderKey = .name,
+                                                   order: Order = .ascending) -> [String: String] {
         [
             ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: POSConstants.productsPerPage,
+            ParameterKey.perPage: productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
             ParameterKey.productType: POSConstants.productType,
             ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
-            ParameterKey.orderBy: OrderKey.name.value,
-            ParameterKey.order: Order.ascending.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.order: order.value,
             ParameterKey.productStatus: POSConstants.productStatus,
             ParameterKey.downloadable: String(false),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
@@ -623,6 +651,7 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
+        case popularity
         // available for use in `GET wc-analytics/reports/products/stats` only.
         case itemsSold
     }
@@ -711,6 +740,8 @@ private extension ProductsRemote.OrderKey {
             return "title"
         case .itemsSold:
             return "items_sold"
+        case .popularity:
+            return "popularity"
         }
     }
 }

@@ -26,7 +26,7 @@ struct CartView: View {
     @State private var shouldShowItemImages: Bool = false
 
     private var shouldShowCoupons: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) && !posModel.cart.coupons.isEmpty
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) && posModel.cart.coupons.isNotEmpty
     }
 
     var body: some View {

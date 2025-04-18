@@ -136,9 +136,8 @@ private extension ItemListView {
                     if isSearchAllowed {
                         searchField
                             .renderedIf(shouldShowSearchField)
+                            .transition(.opacity.combined(with: .move(edge: .trailing)))
                             .onChange(of: searchTerm) { oldValue, newValue in
-                                selectedItemListType = .products(search: newValue.isNotEmpty)
-
                                 // The debouncing logic is a little tricky, because the loading state is held in the controller.
                                 // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
 
@@ -174,6 +173,7 @@ private extension ItemListView {
                             isSearchFieldFocused = true
                         }
                         .renderedIf(!shouldShowSearchField)
+                        .transition(.opacity.combined(with: .scale))
                     }
 
                     if shouldShowCoupons {
@@ -181,6 +181,7 @@ private extension ItemListView {
                             showCouponCreationModal = true
                         }
                         .renderedIf(isAddingCouponAllowed)
+                        .transition(.opacity.combined(with: .scale))
                     }
 
                     Button(action: {
@@ -193,14 +194,20 @@ private extension ItemListView {
                             .padding(Constants.infoIconInset)
                     })
                     .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
+                    .transition(.opacity.combined(with: .scale))
                 }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
+        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
     }
 
     var headerViewItems: [POSPageHeaderItem] {
@@ -397,6 +404,7 @@ private extension ItemListView {
         static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let bannerCardPadding: CGFloat = POSPadding.medium
         static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
+        static let animationDuration: CGFloat = 0.2
     }
 
     enum BannerState {

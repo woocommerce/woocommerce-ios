@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -183,6 +184,29 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     func startObserving() {}
 
     func stopObserving() {}
+}
+
+@available(iOS 17.0, *)
+struct POSPreviewHelpers {
+    static func makePreviewAggregateModel(
+        itemsController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
+        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService()
+    ) -> PointOfSaleAggregateModel {
+        return PointOfSaleAggregateModel(
+            itemsController: itemsController,
+            purchasableItemsSearchController: purchasableItemsSearchController,
+            couponsController: couponsController,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderController: orderController,
+            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            searchHistoryService: searchHistoryService
+        )
+    }
 }
 
 #endif

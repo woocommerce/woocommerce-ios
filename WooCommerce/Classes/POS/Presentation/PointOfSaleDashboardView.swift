@@ -210,17 +210,9 @@ private extension PointOfSaleDashboardView {
 
 @available(iOS 17.0, *)
 #Preview("Container loading state") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
     return NavigationStack {
         PointOfSaleDashboardView()
-            .environment(posModel)
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
             .environmentObject(POSModalManager())
     }
 }
@@ -228,15 +220,8 @@ private extension PointOfSaleDashboardView {
 @available(iOS 17.0, *)
 #Preview("Content loading state") {
     let itemsController = PointOfSalePreviewItemsController()
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
     return NavigationStack {
         PointOfSaleDashboardView()
             .environment(posModel)

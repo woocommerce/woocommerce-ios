@@ -173,14 +173,14 @@ private extension ItemListView {
                             selectedItemListType = .products(search: true)
                             isSearchFieldFocused = true
                         }
-                        .opacity(shouldShowSearchField ? 0 : 1)
+                        .renderedIf(!shouldShowSearchField)
                     }
 
                     if shouldShowCoupons {
                         POSPageHeaderActionButton(systemName: "plus") {
                             showCouponCreationModal = true
                         }
-                        .opacity(isAddingCouponAllowed ? 1 : 0)
+                        .renderedIf(isAddingCouponAllowed)
                     }
 
                     Button(action: {
@@ -232,15 +232,15 @@ private extension ItemListView {
 
     var searchField: some View {
         HStack(spacing: POSSpacing.small) {
-            if isSearchFieldFocused || searchTerm.isNotEmpty {
-                Button(action: {
-                    searchTerm = ""
-                    isSearchFieldFocused = false
-                    selectedItemListType = .products(search: false)
-                }) {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(.posOnSurface)
-                }
+            Button(action: {
+                searchTerm = ""
+                isSearchFieldFocused = false
+                selectedItemListType = .products(search: false)
+            }) {
+                Image(systemName: "chevron.backward")
+                    .foregroundColor(.posOnSurface)
+                    .font(.posButtonSymbolLarge)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             }
 
             TextField(text: $searchTerm) {

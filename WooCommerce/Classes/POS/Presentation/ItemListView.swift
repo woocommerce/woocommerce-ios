@@ -247,7 +247,7 @@ private extension ItemListView {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             }
 
             TextField(text: $searchTerm) {

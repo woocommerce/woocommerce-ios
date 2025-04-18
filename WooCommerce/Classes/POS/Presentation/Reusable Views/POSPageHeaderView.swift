@@ -81,7 +81,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .font(.posHeadingBold)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(selectedItemIndex == index ? .posOnSurface : .posOnSurfaceVariantLowest)
                         }
                         .disabled(selectedItemIndex == index)
@@ -94,7 +94,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .font(.posBodyLargeRegular())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(.posOnSurface)
                         }
                     }
@@ -120,7 +120,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             Button(action: configuration.action) {
                 Text(Image(systemName: Constants.backButtonIcon))
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }

@@ -82,4 +82,6 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func searchHistory(for itemType: Yosemite.POSItemType) -> [String] {
         return []
     }
+
+    func loadPopularItems(type: Yosemite.POSItemType) async { }
 }

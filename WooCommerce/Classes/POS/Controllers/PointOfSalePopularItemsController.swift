@@ -10,7 +10,6 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 @available(iOS 17.0, *)
 @Observable final class PointOfSalePopularItemsController {
     private let itemProvider: PointOfSaleItemServiceProtocol
-    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
     // Maps item types to their items
@@ -18,10 +17,9 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
     private(set) var isLoading = false
 
     init(itemProvider: PointOfSaleItemServiceProtocol,
-         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory) {
+         fetchStrategy: PointOfSalePurchasableItemFetchStrategy) {
         self.itemProvider = itemProvider
-        self.itemFetchStrategyFactory = itemFetchStrategyFactory
-        self.fetchStrategy = itemFetchStrategyFactory.popularStrategy()
+        self.fetchStrategy = fetchStrategy
     }
 
     @MainActor
@@ -38,6 +36,7 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
                 itemsByType[type] = []
             }
         case .coupon, .variation:
+            // When we support more types here, we'll probably need a fetch strategy factory
             itemsByType[type] = []
         }
 

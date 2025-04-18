@@ -56,7 +56,7 @@ extension CartViewHelper {
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,
-        couponItem: CartCouponItem
+        couponItem: Cart.CouponItem
     ) -> CouponRowState {
         guard orderStage == .finalizing else {
             return .idle

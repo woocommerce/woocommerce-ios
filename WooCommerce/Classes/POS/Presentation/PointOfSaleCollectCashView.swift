@@ -203,7 +203,8 @@ private extension PointOfSaleCollectCashView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environment(posModel)
 }

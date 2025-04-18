@@ -34,9 +34,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [Key.itemType: type.analyticsValue])
         }
 
-        static func checkoutTapped(productsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
+        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCheckoutTapped,
-                              properties: [Key.itemsInCart: productsInCart,
+                              properties: [Key.itemsInCart: purchasableItemsInCart,
                                            Key.couponsInCart: couponsInCart])
         }
 

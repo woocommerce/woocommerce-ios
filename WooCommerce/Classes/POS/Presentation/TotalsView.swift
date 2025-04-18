@@ -461,7 +461,8 @@ private extension TotalsView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     TotalsView()
         .environment(posModel)
 }

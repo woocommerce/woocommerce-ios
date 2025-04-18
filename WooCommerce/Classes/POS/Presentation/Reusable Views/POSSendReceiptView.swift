@@ -164,7 +164,8 @@ private extension POSSendReceiptView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
         .environment(posModel)
 }

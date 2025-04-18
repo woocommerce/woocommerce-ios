@@ -35,7 +35,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
 
                         Button(retryActionTitle, action: {
                             ServiceLocator.analytics.track(.pointOfSaleCouponRemovedFromCart)
-                            posModel.removeAllCouponsFromCart()
+                            posModel.removeAllItemsFromCart(types: [.coupon])
                             retryHandler()
                         })
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))

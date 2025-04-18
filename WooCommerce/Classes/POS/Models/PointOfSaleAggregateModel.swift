@@ -9,7 +9,7 @@ import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
-import class Yosemite.POSSearchHistoryService
+import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 
 @available(iOS 17.0, *)
@@ -33,9 +33,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
-    func remove(cartCouponItem: CartCouponItem)
-    func removeAllItemsFromCart()
-    func removeAllCouponsFromCart()
+    func removeAllItemsFromCart(types: [CartItemType])
     func addMoreToCart()
     func startNewCart()
 
@@ -72,7 +70,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
-    private let searchHistoryService: POSSearchHistoryService
+    private let searchHistoryService: POSSearchHistoryProviding
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -86,7 +84,7 @@ protocol PointOfSaleAggregateModelProtocol {
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         searchHistoryService: POSSearchHistoryService = POSSearchHistoryService(),
+         searchHistoryService: POSSearchHistoryProviding,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -112,19 +110,23 @@ extension PointOfSaleAggregateModel {
     }
 
     func remove(cartItem: CartItem) {
-        cart.remove(cartItem)
+        switch cartItem.type {
+        case .purchasableItem:
+            cart.purchasableItems.removeAll { $0.id == cartItem.id }
+        case .coupon:
+            cart.coupons.removeAll { $0.id == cartItem.id }
+        }
     }
 
-    func remove(cartCouponItem: CartCouponItem) {
-        cart.remove(cartCouponItem)
-    }
-
-    func removeAllItemsFromCart() {
-        cart.removeAll()
-    }
-
-    func removeAllCouponsFromCart() {
-        cart.coupons.removeAll()
+    func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
+        for type in types {
+            switch type {
+            case .purchasableItem:
+                cart.purchasableItems.removeAll()
+            case .coupon:
+                cart.coupons.removeAll()
+            }
+        }
     }
 
     func addMoreToCart() {

@@ -33,9 +33,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
-    func remove(cartCouponItem: CartCouponItem)
-    func removeAllItemsFromCart()
-    func removeAllCouponsFromCart()
+    func removeAllItemsFromCart(types: [CartItemType])
     func addMoreToCart()
     func startNewCart()
 
@@ -112,19 +110,23 @@ extension PointOfSaleAggregateModel {
     }
 
     func remove(cartItem: CartItem) {
-        cart.remove(cartItem)
+        switch cartItem.type {
+        case .purchasableItem:
+            cart.purchasableItems.removeAll { $0.id == cartItem.id }
+        case .coupon:
+            cart.coupons.removeAll { $0.id == cartItem.id }
+        }
     }
 
-    func remove(cartCouponItem: CartCouponItem) {
-        cart.remove(cartCouponItem)
-    }
-
-    func removeAllItemsFromCart() {
-        cart.removeAll()
-    }
-
-    func removeAllCouponsFromCart() {
-        cart.coupons.removeAll()
+    func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
+        for type in types {
+            switch type {
+            case .purchasableItem:
+                cart.purchasableItems.removeAll()
+            case .coupon:
+                cart.coupons.removeAll()
+            }
+        }
     }
 
     func addMoreToCart() {

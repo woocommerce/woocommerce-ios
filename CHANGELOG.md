@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.2
+We’ve tackled some important fixes for a smoother WooCommerce experience! This update resolves an issue where draft variable products couldn't be published. We've also improved the login flow during Jetpack setup for certain accounts, ensuring a more reliable connection. Update now!
+
 ## 22.1
 We’ve squashed bugs and polished your WooCommerce experience! Enjoy smoother order creation with fixes for unsaved changes, recalculations, and multi-word names. Plus, sharper icons for scanning and payments. Behind the scenes, we’ve improved login flows, POS functionality, and app performance. Update now!
 

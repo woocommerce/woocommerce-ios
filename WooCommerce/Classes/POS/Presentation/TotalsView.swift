@@ -455,14 +455,7 @@ private extension TotalsView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     TotalsView()
         .environment(posModel)
 }

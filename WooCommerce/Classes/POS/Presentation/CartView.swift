@@ -348,28 +348,14 @@ private extension CartView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     return CartView()
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Cart with one item") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     posModel.addToCart(.simpleProduct(.init(id: UUID(),
                                             name: "Sample Product",
                                             formattedPrice: "$10.00",

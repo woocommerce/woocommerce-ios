@@ -88,14 +88,7 @@ private extension PaymentsActionButtons {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: PointOfSalePreviewHistoryService())
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
         .environment(posModel)
 }

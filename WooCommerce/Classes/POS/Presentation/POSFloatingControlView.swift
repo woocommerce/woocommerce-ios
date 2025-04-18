@@ -143,7 +143,8 @@ private extension POSFloatingControlView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -158,7 +159,8 @@ private extension POSFloatingControlView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
     return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
@@ -173,7 +175,8 @@ private extension POSFloatingControlView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(posModel)

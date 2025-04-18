@@ -216,7 +216,8 @@ private extension PointOfSaleDashboardView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     return NavigationStack {
         PointOfSaleDashboardView()
             .environment(posModel)
@@ -233,7 +234,8 @@ private extension PointOfSaleDashboardView {
         couponsController: PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService())
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
     return NavigationStack {
         PointOfSaleDashboardView()

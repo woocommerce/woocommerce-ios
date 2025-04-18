@@ -1,4 +1,5 @@
 import SwiftUI
+import protocol Yosemite.POSSearchHistoryProviding
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
@@ -13,6 +14,7 @@ struct PointOfSaleEntryPointView: View {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    private let searchHistoryService: POSSearchHistoryProviding
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -20,7 +22,8 @@ struct PointOfSaleEntryPointView: View {
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
+         searchHistoryService: POSSearchHistoryProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -29,6 +32,7 @@ struct PointOfSaleEntryPointView: View {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.searchHistoryService = searchHistoryService
     }
 
     var body: some View {
@@ -50,7 +54,8 @@ struct PointOfSaleEntryPointView: View {
                 couponsController: couponsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+                searchHistoryService: searchHistoryService)
         }
         .environmentObject(posModalManager)
         .onAppear {
@@ -73,6 +78,7 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              searchHistoryService: PointOfSalePreviewHistoryService())
 }
 #endif

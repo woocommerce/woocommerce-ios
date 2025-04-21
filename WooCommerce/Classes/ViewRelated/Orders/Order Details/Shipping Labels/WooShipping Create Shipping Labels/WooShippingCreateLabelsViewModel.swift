@@ -170,6 +170,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
+        self.shippingLabels = order.shippingLabels
         let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.itemsDataSource = itemsDataSource
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
@@ -206,7 +207,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.shippingSettingsService = shippingSettingsService
-        self.shippingLabels = [shippingLabel]
+        self.shippingLabels = order.shippingLabels
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })

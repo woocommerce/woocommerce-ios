@@ -201,7 +201,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Initialize the view model from an existing shipping label.
     init(order: Order,
-         shippingLabel: ShippingLabel,
+         selectedShippingLabel: ShippingLabel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores) {
@@ -211,8 +211,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddress = shippingLabel.destinationAddress.toWooShippingAddress()
+        self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
+        self.destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
@@ -226,8 +226,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         updateShipmentDetailsViewModels()
 
-        Task {
+        Task { @MainActor in
             await loadRequiredData()
+
+            // After shipment configs are updated, shipments are updated with purchased label details
+            // Update the selected tab now by comparing the purchased labels with the initial selected label.
+            if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
+                selectedShipmentIndex = matchingIndex
+            }
         }
     }
 

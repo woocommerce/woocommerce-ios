@@ -40,6 +40,7 @@ struct WooShippingCreateLabelsView: View {
     @State private var isReadyToShowErrorNotice = false
 
     @State private var showingCustomsForm = false
+    @State private var showingSplitShipments = false
 
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
@@ -54,7 +55,13 @@ struct WooShippingCreateLabelsView: View {
                     ProgressView()
                         .progressViewStyle(.circular)
                 case .ready:
-                    mainForm
+                    VStack(spacing: 0) {
+                        if viewModel.shipments.count > 1 {
+                            topTabView
+                            Divider()
+                        }
+                        mainView
+                    }
                 case .missingRequiredData:
                     missingDataState
                 }
@@ -89,49 +96,75 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .sheet(isPresented: $showingCustomsForm) {
-                WooShippingCustomsForm(viewModel: viewModel.customsFormViewModel)
+                WooShippingCustomsForm(viewModel: viewModel.currentShipmentDetailsViewModel.customsFormViewModel)
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
+            .fullScreenCover(isPresented: $showingSplitShipments) {
+                WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
+                    viewModel.updateShipments(updatedShipments)
+                    isShipmentDetailsExpanded = false
+                }
+            }
         }
     }
 }
 
 private extension WooShippingCreateLabelsView {
-    var mainForm: some View {
+    var tabs: [TopTabItem<EmptyView>] {
+        viewModel.shipments.enumerated().map { (index, shipment) in
+            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                       icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
+                       content: {
+                EmptyView()
+            })
+        }
+    }
+
+    var topTabView: some View {
+        HStack(spacing: 0) {
+            TopTabView(tabs: tabs,
+                       showContent: false,
+                       showDividerBelowTabs: false,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       tabsContainerHorizontalPadding: nil,
+                       selectedStateColor: .accentColor,
+                       unselectedStateColor: .secondary,
+                       selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                       tabPadding: Layout.tabPadding,
+                       tabsNameFont: Font.subheadline.bold(),
+                       tabsIconSize: Layout.purchasedIconWidth,
+                       tabsIconAlignment: .trailing,
+                       tabsIconForegroundColor: Layout.green,
+                       tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            .overlay(alignment: .trailing) {
+                LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
+                    .frame(width: Layout.gradientViewWidth)
+                    .renderedIf(viewModel.selectedShipmentIndex < viewModel.shipmentDetailViewModels.count - 1)
+            }
+
+            Button {
+                showingSplitShipments = true
+            } label: {
+                Image(systemName: "pencil")
+                    .padding(.horizontal)
+            }
+        }
+        .disabled(viewModel.isPurchasingLabel)
+    }
+
+    @ViewBuilder
+    var mainView: some View {
         ScrollView {
             VStack(spacing: Layout.verticalSpacing) {
-                if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                    WooShippingPostPurchaseView(viewModel: postPurchase)
+                if viewModel.splitShipmentsAvailable {
+                    WooShippingSplitShipmentsRow(onShowingSplitShipments: {
+                        showingSplitShipments = true
+                    })
                 }
-
-                if !viewModel.canViewLabel, let splitShipmentsViewModel = viewModel.splitShipmentsViewModel {
-                    WooShippingSplitShipmentsRow(viewModel: splitShipmentsViewModel)
-                }
-
-                WooShippingItems(viewModel: viewModel.items)
-
-                WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
-                                     enabled: !viewModel.canViewLabel)
-
-                WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
-                                      customsFormViewModel: viewModel.customsFormViewModel)
-                    .padding(.bottom, Layout.contentSpacing)
-                    .renderedIf(viewModel.customsFormRequired)
-
-                if viewModel.canViewLabel {
-                    EmptyView()
-                } else if let package = viewModel.selectedPackage,
-                          let shippingService = viewModel.shippingService {
-                    WooShippingSelectedPackageView(package: package,
-                                                   totalWeight: $viewModel.shipmentWeight,
-                                                   updateSelectedPackage: viewModel.selectPackage)
-                    WooShippingServiceView(viewModel: shippingService)
-                } else {
-                    WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
-                }
+                WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
             }
-            .disabled(viewModel.isPurchasingLabel)
             .padding(Layout.contentSpacing)
         }
     }
@@ -239,12 +272,12 @@ private extension WooShippingCreateLabelsView {
                 }
 
                 // Verification notice for missing ITN in customs form
-                if let itnMissingNoticeLabel = viewModel.itnMissingNoticeLabel {
+                if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
                     verificationNotice(with: itnMissingNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.itnMissingNoticeLabel = nil
+                            viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel = nil
                         }
                     },
                                        onTap: {
@@ -272,14 +305,14 @@ private extension WooShippingCreateLabelsView {
                             .font(.subheadline)
                             .tint(Color(.primary))
                     }
-                    if isShipmentDetailsExpanded || viewModel.selectedPackage != nil {
+                    if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
                     }
                 }
             }
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
-                    if viewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                    if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
                         Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                             .font(.subheadline)
                             .tint(Color(.primary))
@@ -366,10 +399,10 @@ private extension WooShippingCreateLabelsView {
             AdaptiveStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
-                Text(viewModel.items.itemsCountLabel)
+                Text(viewModel.orderItems.itemsCountLabel)
                     .bold()
                 Spacer()
-                Text(viewModel.items.itemsPriceLabel)
+                Text(viewModel.orderItems.itemsPriceLabel)
             }
             .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in
@@ -421,7 +454,9 @@ private extension WooShippingCreateLabelsView {
     /// View showing the shipping label purchase button.
     var purchaseButton: some View {
         Button {
-            viewModel.purchaseLabel()
+            Task {
+                await viewModel.purchaseLabel()
+            }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
         }
@@ -514,6 +549,13 @@ private extension WooShippingCreateLabelsView {
                                          dark: .withColorStudio(.green, shade: .shade40)))
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
+        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let tabPadding: CGFloat = 9.0
+        static let tabItemContentHorizontalPadding: CGFloat = 16.0
+        static let tabItemContentVerticalPadding: CGFloat = 9.0
+        static let gradientViewWidth: CGFloat = 32
+        static let purchasedIconWidth: CGFloat = 16
+        static let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
     }
 
     enum Localization {
@@ -610,6 +652,11 @@ private extension WooShippingCreateLabelsView {
             "wooShipping.createLabels.retryCTA",
             value: "Retry",
             comment: "Button to retry loading data on the shipping label creation screen"
+        )
+        static let shipmentFormat = NSLocalizedString(
+            "wooShipping.createLabels.shipmentFormat",
+            value: "Shipment %1$d",
+            comment: "Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1'"
         )
     }
 }

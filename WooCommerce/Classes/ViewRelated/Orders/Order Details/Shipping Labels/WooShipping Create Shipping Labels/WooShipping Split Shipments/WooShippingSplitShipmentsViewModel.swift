@@ -2,11 +2,12 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
+typealias Shipment = WooShippingSplitShipmentsViewModel.Shipment
+
 /// ViewModel for `WooShippingSplitShipmentsDetailView`
 final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let order: Order
     private let stores: StoresManager
-    private let config: WooShippingConfig
     private let currencySettings: CurrencySettings
     private let shippingSettingsService: ShippingSettingsService
 
@@ -101,13 +102,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @Published private(set) var isSavingShipmentInfo = false
 
     init(order: Order,
-         config: WooShippingConfig,
+         config: WooShippingConfig?,
          items: [ShippingLabelPackageItem],
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.order = order
-        self.config = config
         self.stores = stores
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
@@ -405,12 +405,12 @@ private extension WooShippingSplitShipmentsViewModel {
 
 extension WooShippingSplitShipmentsViewModel {
 
-    private static func createShipments(with config: WooShippingConfig,
+    private static func createShipments(with config: WooShippingConfig?,
                                 packageItems: [ShippingLabelPackageItem],
                                 currency: String,
                                 currencySettings: CurrencySettings,
                                 shippingSettingsService: ShippingSettingsService) -> [Shipment] {
-        guard config.shipments.isEmpty == false else {
+        guard let config, config.shipments.isEmpty == false else {
             let contents = packageItems.map { item in
                 CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
@@ -429,7 +429,11 @@ extension WooShippingSplitShipmentsViewModel {
                 continue
             }
 
-            let isPurchased = (currentOrderLabels.filter { $0.shipmentID == key}).isNotEmpty
+            let purchasedLabelID = currentOrderLabels
+                .first(where: { $0.shipmentID == key && $0.status == .purchased })
+                .map(\.shippingLabelID)
+
+            let isPurchased = purchasedLabelID != nil
 
             var shipmentContents = ShipmentContents()
             for shipmentItem in shipmentItems {
@@ -447,7 +451,7 @@ extension WooShippingSplitShipmentsViewModel {
             }
 
             let shipment = Shipment(contents: shipmentContents,
-                                    isPurchased: isPurchased,
+                                    purchasedLabelID: purchasedLabelID,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
@@ -467,7 +471,7 @@ extension WooShippingSplitShipmentsViewModel {
 
         let id = UUID().uuidString
         let contents: [CollapsibleShipmentItemCardViewModel]
-        let isPurchased: Bool
+        let purchasedLabelID: Int64?
 
         let quantity: String
         let weight: String
@@ -479,13 +483,21 @@ extension WooShippingSplitShipmentsViewModel {
             "\(weight) • \(price)"
         }
 
+        var items: [ShippingLabelPackageItem] {
+            contents.map(\.packageItem)
+        }
+
+        var isPurchased: Bool {
+            purchasedLabelID != nil
+        }
+
         init(contents: [CollapsibleShipmentItemCardViewModel],
-             isPurchased: Bool = false,
+             purchasedLabelID: Int64? = nil,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.contents = contents
-            self.isPurchased = isPurchased
+            self.purchasedLabelID = purchasedLabelID
 
             let items = contents.map(\.packageItem)
             let itemsCount = items.map(\.quantity).reduce(0, +)

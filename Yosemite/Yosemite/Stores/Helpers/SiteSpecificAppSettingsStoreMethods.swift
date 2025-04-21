@@ -11,6 +11,11 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     // Search history methods
     func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String]
     func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64)
+
+    // Favorite products methods
+    func setProductIDAsFavorite(productID: Int64, siteID: Int64)
+    func removeProductIDAsFavorite(productID: Int64, siteID: Int64)
+    func loadFavoriteProductIDs(siteID: Int64) -> [Int64]
 }
 
 /// Methods for managing site-specific app settings
@@ -95,6 +100,32 @@ extension SiteSpecificAppSettingsStoreMethods {
         updatedSearchTermsByKey[key] = terms
         let updatedSettings = storeSettings.copy(searchTermsByKey: updatedSearchTermsByKey)
         setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+}
+
+// MARK: - Favorite Products
+extension SiteSpecificAppSettingsStoreMethods {
+    func setProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(favoriteProductIDs: Array(Set(storeSettings.favoriteProductIDs + [productID])))
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func removeProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        var savedFavProductIDs = storeSettings.favoriteProductIDs
+
+        guard let indexOfFavProductToBeRemoved = savedFavProductIDs.firstIndex(of: productID) else {
+            return
+        }
+        savedFavProductIDs.remove(at: indexOfFavProductToBeRemoved)
+
+        let updatedSettings = storeSettings.copy(favoriteProductIDs: savedFavProductIDs)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadFavoriteProductIDs(siteID: Int64) -> [Int64] {
+        return getStoreSettings(for: siteID).favoriteProductIDs
     }
 }
 

@@ -1220,30 +1220,15 @@ private extension AppSettingsStore {
 //
 private extension AppSettingsStore {
     func setProductIDAsFavorite(productID: Int64, siteID: Int64) {
-        let storeSettings = getStoreSettings(for: siteID)
-
-        let updatedSettings: GeneralStoreSettings
-        updatedSettings = storeSettings.copy(favoriteProductIDs: Array(Set(storeSettings.favoriteProductIDs + [productID])))
-
-        setStoreSettings(settings: updatedSettings, for: siteID)
+        siteSpecificAppSettingsStoreMethods.setProductIDAsFavorite(productID: productID, siteID: siteID)
     }
 
     func removeProductIDAsFavorite(productID: Int64, siteID: Int64) {
-        let storeSettings = getStoreSettings(for: siteID)
-        var savedFavProductIDs = storeSettings.favoriteProductIDs
-
-        guard let indexOfFavProductToBeRemoved = savedFavProductIDs.firstIndex(of: productID) else {
-            return
-        }
-        savedFavProductIDs.remove(at: indexOfFavProductToBeRemoved)
-
-        let updatedSettings: GeneralStoreSettings
-        updatedSettings = storeSettings.copy(favoriteProductIDs: savedFavProductIDs)
-        setStoreSettings(settings: updatedSettings, for: siteID)
+        siteSpecificAppSettingsStoreMethods.removeProductIDAsFavorite(productID: productID, siteID: siteID)
     }
 
     func loadFavoriteProductIDs(for siteID: Int64, onCompletion: ([Int64]) -> Void) {
-        onCompletion(getStoreSettings(for: siteID).favoriteProductIDs)
+        onCompletion(siteSpecificAppSettingsStoreMethods.loadFavoriteProductIDs(siteID: siteID))
     }
 }
 

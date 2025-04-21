@@ -11,6 +11,7 @@ import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
+import protocol Yosemite.POSFavouriteProductsServiceProtocol
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {

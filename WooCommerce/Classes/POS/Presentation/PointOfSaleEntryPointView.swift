@@ -1,5 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
+import protocol Yosemite.POSFavouriteProductsServiceProtocol
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {

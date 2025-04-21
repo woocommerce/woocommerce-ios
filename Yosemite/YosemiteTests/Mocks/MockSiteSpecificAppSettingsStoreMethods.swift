@@ -27,6 +27,17 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var spySetSearchTermsSiteID: Int64?
     var mockSearchTerms: [POSItemType: [String]] = [:]
 
+    // Favorite products properties
+    var setProductIDAsFavoriteCalled = false
+    var removeProductIDAsFavoriteCalled = false
+    var loadFavoriteProductIDsCalled = false
+    var spySetProductIDAsFavoriteID: Int64?
+    var spySetProductIDAsFavoriteSiteID: Int64?
+    var spyRemoveProductIDAsFavoriteID: Int64?
+    var spyRemoveProductIDAsFavoriteSiteID: Int64?
+    var spyLoadFavoriteProductIDsSiteID: Int64?
+    var mockFavoriteProductIDs: [Int64] = []
+
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
         return storeSettings
@@ -82,5 +93,31 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         spySetSearchTermsItemType = itemType
         spySetSearchTermsSiteID = siteID
         mockSearchTerms[itemType] = terms
+    }
+
+    // MARK: - Favorite Products Methods
+
+    func setProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        setProductIDAsFavoriteCalled = true
+        spySetProductIDAsFavoriteID = productID
+        spySetProductIDAsFavoriteSiteID = siteID
+        if siteID == currentSiteID {
+            mockFavoriteProductIDs.append(productID)
+        }
+    }
+
+    func removeProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        removeProductIDAsFavoriteCalled = true
+        spyRemoveProductIDAsFavoriteID = productID
+        spyRemoveProductIDAsFavoriteSiteID = siteID
+        if siteID == currentSiteID {
+            mockFavoriteProductIDs.removeAll { $0 == productID }
+        }
+    }
+
+    func loadFavoriteProductIDs(siteID: Int64) -> [Int64] {
+        loadFavoriteProductIDsCalled = true
+        spyLoadFavoriteProductIDsSiteID = siteID
+        return mockFavoriteProductIDs
     }
 }

@@ -19,6 +19,7 @@ import struct Yosemite.ProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import Combine
+import protocol Yosemite.POSFavouriteProductsServiceProtocol
 
 // MARK: - PreviewProvider helpers
 //

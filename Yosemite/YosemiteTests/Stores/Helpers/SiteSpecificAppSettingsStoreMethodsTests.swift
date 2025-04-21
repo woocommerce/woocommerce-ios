@@ -245,6 +245,71 @@ final class SiteSpecificAppSettingsStoreMethodsTests: XCTestCase {
         XCTAssertEqual(retrievedVariationTerms, variationTerms)
         XCTAssertEqual(retrievedCouponTerms, couponTerms)
     }
+
+    // MARK: - Favorite Products Tests
+
+    func test_setProductIDAsFavorite_adds_product_to_favorites() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setProductIDAsFavorite(productID: 123, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.favoriteProductIDs, [123])
+    }
+
+    func test_setProductIDAsFavorite_preserves_existing_favorites() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(favoriteProductIDs: [123])])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setProductIDAsFavorite(productID: 456, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(Set(savedData.storeSettingsBySite[siteID]?.favoriteProductIDs ?? []), Set([123, 456]))
+    }
+
+    func test_removeProductIDAsFavorite_removes_product_from_favorites() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(favoriteProductIDs: [123, 456])])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.removeProductIDAsFavorite(productID: 123, siteID: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        XCTAssertEqual(savedData.storeSettingsBySite[siteID]?.favoriteProductIDs, [456])
+    }
+
+    func test_loadFavoriteProductIDs_returns_empty_array_when_no_favorites() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let favorites = sut.loadFavoriteProductIDs(siteID: siteID)
+
+        // Then
+        XCTAssertEqual(favorites, [])
+    }
+
+    func test_loadFavoriteProductIDs_returns_saved_favorites() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(favoriteProductIDs: [123, 456])])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let favorites = sut.loadFavoriteProductIDs(siteID: siteID)
+
+        // Then
+        XCTAssertEqual(favorites, [123, 456])
+    }
 }
 
 // MARK: - Mock FileStorage

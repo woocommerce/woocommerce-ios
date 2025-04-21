@@ -29,6 +29,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
     var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
     var couponsController: PointOfSaleCouponsControllerProtocol { get }
+    var favoriteProductsService: POSFavouriteProductsServiceProtocol { get }
 
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
@@ -65,6 +66,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
+    let favoriteProductsService: POSFavouriteProductsServiceProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -85,6 +87,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
+         favoriteProductsService: POSFavouriteProductsServiceProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -94,6 +97,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
+        self.favoriteProductsService = favoriteProductsService
         self.paymentState = paymentState
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

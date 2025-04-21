@@ -886,6 +886,7 @@
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
 		209B7A682CEB6742003BDEF0 /* PointOfSalePaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B7A672CEB6742003BDEF0 /* PointOfSalePaymentState.swift */; };
 		209CA0EE2B50070D0073D1AC /* WooTabContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209CA0ED2B50070D0073D1AC /* WooTabContainerController.swift */; };
+		209E9A732DB6ACF90089F3D2 /* POSFavouriteProductsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209E9A712DB6A7A50089F3D2 /* POSFavouriteProductsService.swift */; };
 		209EEF902C762ED5007969A4 /* POSModalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EEF8F2C762ED5007969A4 /* POSModalManager.swift */; };
 		20A130EB2C5A27190058022F /* PointOfSaleAssetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */; };
 		20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
@@ -4147,6 +4148,7 @@
 		209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Localization.swift"; sourceTree = "<group>"; };
 		209B7A672CEB6742003BDEF0 /* PointOfSalePaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentState.swift; sourceTree = "<group>"; };
 		209CA0ED2B50070D0073D1AC /* WooTabContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabContainerController.swift; sourceTree = "<group>"; };
+		209E9A712DB6A7A50089F3D2 /* POSFavouriteProductsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFavouriteProductsService.swift; sourceTree = "<group>"; };
 		209EEF8F2C762ED5007969A4 /* POSModalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSModalManager.swift; sourceTree = "<group>"; };
 		209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssetsTests.swift; sourceTree = "<group>"; };
@@ -7626,6 +7628,7 @@
 				200BA1572CF092150006DC5B /* Controllers */,
 				026826A12BF59DED0036F959 /* Presentation */,
 				026826912BF59D7A0036F959 /* ViewHelpers */,
+				209E9A722DB6A7A50089F3D2 /* Services */,
 				02D1D2D82CD3CD710069A93F /* Analytics */,
 				2004E2C02C076CCA00D62521 /* Card Present Payments */,
 				026826972BF59D9E0036F959 /* Utils */,
@@ -8409,6 +8412,14 @@
 				02B191532CCF377E00CF38C9 /* PointOfSaleCardPresentPaymentOnboardingViewModelTests.swift */,
 			);
 			path = "Payments Onboarding";
+			sourceTree = "<group>";
+		};
+		209E9A722DB6A7A50089F3D2 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				209E9A712DB6A7A50089F3D2 /* POSFavouriteProductsService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		20A130E92C5A26F70058022F /* Tools */ = {
@@ -17098,6 +17109,7 @@
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */,
 				200BA1592CF092280006DC5B /* PointOfSaleItemsController.swift in Sources */,
+				209E9A732DB6ACF90089F3D2 /* POSFavouriteProductsService.swift in Sources */,
 				DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */,
 				EE35AFA32B0491960074E7AC /* SubscriptionTrialViewModel.swift in Sources */,
 				26BCA0402C35E9A9000BE96C /* BackgroundTaskRefreshDispatcher.swift in Sources */,

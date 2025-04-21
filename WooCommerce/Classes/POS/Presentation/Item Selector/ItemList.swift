@@ -140,39 +140,74 @@ private struct ItemListRow: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
 
+    @State private var isFavorite: Bool = false
+
     var body: some View {
         switch item {
         case let .simpleProduct(product):
-            Button(action: {
-                itemActionHandler.handleTap(item)
-            }, label: {
-                SimpleProductCardView(product: product)
-            })
-        case let .variableParentProduct(parentProduct):
-            if #available(iOS 18.0, *) {
-                NavigationLink(value: item) {
-                    ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
-                }
-            } else {
-                // Use a button to trigger navigation programmatically on iOS 17.
-
-                // We should drop this when we leave iOS 17.0 behind, but due to memory leaks caused by NavigationStack.
-                // we still have to use the NavigationView approach here.
-                // When we remove it, itemsStack will no longer be a dependency of ItemList
-
-                // Note that we don't use Navigation Link as this row can be redrawn if the dynamic type size
-                // is changed enough to push it offscreen. When that happens while viewing a child list,
-                // the navigation gets cancelled and the user is sent back to the root.
+            HStack {
                 Button(action: {
-                    activeNavigationItem = item
+                    itemActionHandler.handleTap(item)
                 }, label: {
-                    ParentProductCardView(name: parentProduct.name,
-                                          imageSource: parentProduct.productImageSource,
-                                          detailText: Localization.variationsAvailable)
+                    SimpleProductCardView(product: product)
                 })
+
+                Button(action: {
+                    if isFavorite {
+                        posModel.favoriteProductsService.removeFromFavorite(productID: product.productID)
+                    } else {
+                        posModel.favoriteProductsService.markAsFavorite(productID: product.productID)
+                    }
+                    isFavorite.toggle()
+                }) {
+                    Image(systemName: isFavorite ? "star.fill" : "star")
+                        .foregroundColor(.posOnSurface)
+                        .font(.posButtonSymbolLarge)
+                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                }
+                .padding(.trailing, POSPadding.small)
             }
+            .task {
+                isFavorite = await posModel.favoriteProductsService.isFavorite(productID: product.productID)
+            }
+
+        case let .variableParentProduct(parentProduct):
+            HStack {
+                if #available(iOS 18.0, *) {
+                    NavigationLink(value: item) {
+                        ParentProductCardView(name: parentProduct.name,
+                                              imageSource: parentProduct.productImageSource,
+                                              detailText: Localization.variationsAvailable)
+                    }
+                } else {
+                    Button(action: {
+                        activeNavigationItem = item
+                    }, label: {
+                        ParentProductCardView(name: parentProduct.name,
+                                              imageSource: parentProduct.productImageSource,
+                                              detailText: Localization.variationsAvailable)
+                    })
+                }
+
+                Button(action: {
+                    if isFavorite {
+                        posModel.favoriteProductsService.removeFromFavorite(productID: parentProduct.productID)
+                    } else {
+                        posModel.favoriteProductsService.markAsFavorite(productID: parentProduct.productID)
+                    }
+                    isFavorite.toggle()
+                }) {
+                    Image(systemName: isFavorite ? "star.fill" : "star")
+                        .foregroundColor(.posOnSurface)
+                        .font(.posButtonSymbolLarge)
+                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                }
+                .padding(.trailing, POSPadding.small)
+            }
+            .task {
+                isFavorite = await posModel.favoriteProductsService.isFavorite(productID: parentProduct.productID)
+            }
+
         case let .variation(variation):
             Button(action: {
                 itemActionHandler.handleTap(item)

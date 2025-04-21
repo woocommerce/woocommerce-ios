@@ -34,6 +34,9 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
+
+    func setFavoritesFilter(productIDs: [Int64], baseItem: ItemListBaseItem) async
+    func clearFavoritesFilter(baseItem: ItemListBaseItem) async
 }
 
 @available(iOS 17.0, *)
@@ -78,6 +81,20 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        setSearchingState(base: baseItem)
+        await loadFirstPage(base: baseItem)
+    }
+
+    @MainActor
+    func setFavoritesFilter(productIDs: [Int64], baseItem: ItemListBaseItem) async {
+        fetchStrategy = itemFetchStrategyFactory.favoritesStrategy(productIDs: productIDs)
+        setSearchingState(base: baseItem)
+        await loadFirstPage(base: baseItem)
+    }
+
+    @MainActor
+    func clearFavoritesFilter(baseItem: ItemListBaseItem) async {
+        fetchStrategy = itemFetchStrategyFactory.defaultStrategy
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }

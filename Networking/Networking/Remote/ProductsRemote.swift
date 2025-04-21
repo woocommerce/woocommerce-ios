@@ -217,6 +217,23 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             parameters: parameters)
     }
 
+    public func loadFavoriteProductsForPointOfSale(for siteID: Int64,
+                                                  productIDs: [Int64],
+                                                  productTypes: [ProductType] = [.simple],
+                                                  pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+        var parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productTypes: productTypes)
+
+        // Add the include parameter for favorite product IDs
+        parameters[ParameterKey.include] = productIDs.map { String($0) }.joined(separator: ",")
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
+    }
+
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productTypes: [ProductType]) -> [String: String] {
         [

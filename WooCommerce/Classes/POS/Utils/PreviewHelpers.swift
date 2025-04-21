@@ -88,6 +88,8 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
     func loadNextItems(base: ItemListBaseItem) async { }
+    func setFavoritesFilter(productIDs: [Int64], baseItem: ItemListBaseItem) async { }
+    func clearFavoritesFilter(baseItem: ItemListBaseItem) async { }
 }
 
 @available(iOS 17.0, *)
@@ -121,6 +123,9 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
     }
+
+    func setFavoritesFilter(productIDs: [Int64], baseItem: ItemListBaseItem) async { }
+    func clearFavoritesFilter(baseItem: ItemListBaseItem) async { }
 }
 
 @available(iOS 17.0, *)
@@ -138,6 +143,20 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
     func clearSearchHistory(for itemType: POSItemType) {}
 
     func clearAllSearchHistory() {}
+}
+
+final class PointOfSalePreviewFavoriteProductService: POSFavouriteProductsServiceProtocol {
+    func isFavorite(productID: Int64) async -> Bool {
+        return false
+    }
+
+    func favoriteProductIDs() async -> [Int64] {
+        return []
+    }
+
+    func markAsFavorite(productID: Int64) {}
+
+    func removeFromFavorite(productID: Int64) {}
 }
 
 private var mockItems: [POSItem] {
@@ -195,7 +214,8 @@ struct POSPreviewHelpers {
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
-        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService()
+        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
+        favoriteProductsService: POSFavouriteProductsServiceProtocol = PointOfSalePreviewFavoriteProductService()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             itemsController: itemsController,
@@ -204,7 +224,8 @@ struct POSPreviewHelpers {
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-            searchHistoryService: searchHistoryService
+            searchHistoryService: searchHistoryService,
+            favoriteProductsService: favoriteProductsService
         )
     }
 }

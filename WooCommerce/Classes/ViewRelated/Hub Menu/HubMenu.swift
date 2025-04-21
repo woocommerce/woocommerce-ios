@@ -57,7 +57,8 @@ struct HubMenu: View {
                             orderController: PointOfSaleOrderController(orderService: orderService,
                                                                         receiptService: receiptService),
                             collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker,
-                            searchHistoryService: POSSearchHistoryService(siteID: viewModel.siteID))
+                            searchHistoryService: POSSearchHistoryService(siteID: viewModel.siteID),
+                            favoriteProductsService: POSFavouriteProductsService(siteID: viewModel.siteID))
                     } else {
                         // TODO: When we have a singleton for the card payment service, this should not be required.
                         Text("Error creating card payment service")

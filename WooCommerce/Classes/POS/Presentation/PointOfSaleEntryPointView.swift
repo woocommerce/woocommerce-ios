@@ -15,6 +15,7 @@ struct PointOfSaleEntryPointView: View {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
+    private let favoriteProductsService: POSFavouriteProductsServiceProtocol
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -23,7 +24,8 @@ struct PointOfSaleEntryPointView: View {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         searchHistoryService: POSSearchHistoryProviding) {
+         searchHistoryService: POSSearchHistoryProviding,
+         favoriteProductsService: POSFavouriteProductsServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -33,6 +35,7 @@ struct PointOfSaleEntryPointView: View {
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
+        self.favoriteProductsService = favoriteProductsService
     }
 
     var body: some View {
@@ -55,7 +58,8 @@ struct PointOfSaleEntryPointView: View {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-                searchHistoryService: searchHistoryService)
+                searchHistoryService: searchHistoryService,
+                favoriteProductsService: favoriteProductsService)
         }
         .environmentObject(posModalManager)
         .onAppear {
@@ -79,6 +83,7 @@ struct PointOfSaleEntryPointView: View {
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-                              searchHistoryService: PointOfSalePreviewHistoryService())
+                              searchHistoryService: PointOfSalePreviewHistoryService(),
+                              favoriteProductsService: PointOfSalePreviewFavoriteProductService())
 }
 #endif

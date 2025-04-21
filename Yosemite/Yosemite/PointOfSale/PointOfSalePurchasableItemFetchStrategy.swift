@@ -65,3 +65,32 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
                                           pageNumber: pageNumber)
     }
 }
+
+public struct PointOfSaleFavoritesPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+    private let siteID: Int64
+    private let productIDs: [Int64]
+    private let productsRemote: ProductsRemote
+    private let variationsRemote: ProductVariationsRemote
+
+    init(siteID: Int64, productIDs: [Int64], productsRemote: ProductsRemote, variationsRemote: ProductVariationsRemote) {
+        self.siteID = siteID
+        self.productIDs = productIDs
+        self.productsRemote = productsRemote
+        self.variationsRemote = variationsRemote
+    }
+
+    public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        let productTypes: [ProductType] = [.simple, .variable]
+        return try await productsRemote.loadFavoriteProductsForPointOfSale(for: siteID,
+                                                                         productIDs: productIDs,
+                                                                         productTypes: productTypes,
+                                                                         pageNumber: pageNumber)
+    }
+
+    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        try await variationsRemote
+            .loadVariationsForPointOfSale(for: siteID,
+                                        parentProductID: parentProductID,
+                                        pageNumber: pageNumber)
+    }
+}

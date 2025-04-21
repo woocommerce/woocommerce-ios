@@ -27,4 +27,11 @@ public final class PointOfSaleItemFetchStrategyFactory {
                                                       productsRemote: productsRemote,
                                                       variationsRemote: variationsRemote)
     }
+
+    public func favoritesStrategy(productIDs: [Int64]) -> PointOfSaleFavoritesPurchasableItemFetchStrategy {
+        PointOfSaleFavoritesPurchasableItemFetchStrategy(siteID: siteID,
+                                                        productIDs: productIDs,
+                                                        productsRemote: productsRemote,
+                                                        variationsRemote: variationsRemote)
+    }
 }

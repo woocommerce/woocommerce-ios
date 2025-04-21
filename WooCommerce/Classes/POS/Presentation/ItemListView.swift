@@ -9,6 +9,7 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
+    @State private var showFavoritesOnly: Bool = false
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -168,34 +169,53 @@ private extension ItemListView {
                                 }
                             }
 
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            selectedItemListType = .products(search: true)
-                            isSearchFieldFocused = true
+                        if case .products = selectedItemListType, !shouldShowSearchField {
+                            POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                                selectedItemListType = .products(search: true)
+                                isSearchFieldFocused = true
+                            }
+                            .renderedIf(!shouldShowSearchField)
+                            .transition(.opacity.combined(with: .scale))
+
+                            Button {
+                                showFavoritesOnly.toggle()
+                                Task { @MainActor in
+                                    if showFavoritesOnly {
+                                        let favoriteProductIDs = await posModel.favoriteProductsService.favoriteProductIDs()
+                                        await posModel.purchasableItemsController.setFavoritesFilter(productIDs: favoriteProductIDs, baseItem: .root)
+                                    } else {
+                                        await posModel.purchasableItemsController.clearFavoritesFilter(baseItem: .root)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: showFavoritesOnly ? "star.fill" : "star")
+                                    .foregroundColor(.posOnSurface)
+                                    .font(.posButtonSymbolLarge)
+                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                            }
                         }
-                        .renderedIf(!shouldShowSearchField)
+
+                        if shouldShowCoupons {
+                            POSPageHeaderActionButton(systemName: "plus") {
+                                ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+                                showCouponCreationModal = true
+                            }
+                            .renderedIf(isAddingCouponAllowed)
+                            .transition(.opacity.combined(with: .scale))
+                        }
+
+                        Button(action: {
+                            ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                            showSimpleProductsModal = true
+                        }, label: {
+                            Text(Image(systemName: "info.circle"))
+                                .font(.posButtonSymbolLarge)
+                                .foregroundStyle(Color.posOnSurface)
+                                .padding(Constants.infoIconInset)
+                        })
+                        .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
                         .transition(.opacity.combined(with: .scale))
                     }
-
-                    if shouldShowCoupons {
-                        POSPageHeaderActionButton(systemName: "plus") {
-                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                            showCouponCreationModal = true
-                        }
-                        .renderedIf(isAddingCouponAllowed)
-                        .transition(.opacity.combined(with: .scale))
-                    }
-
-                    Button(action: {
-                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                        showSimpleProductsModal = true
-                    }, label: {
-                        Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolLarge)
-                            .foregroundStyle(Color.posOnSurface)
-                            .padding(Constants.infoIconInset)
-                    })
-                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
-                    .transition(.opacity.combined(with: .scale))
                 }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {

@@ -13,6 +13,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
+    func setFavoritesFilter(productIDs: [Int64], baseItem: ItemListBaseItem) async {}
+    
+    func clearFavoritesFilter(baseItem: ItemListBaseItem) async {}
+    
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

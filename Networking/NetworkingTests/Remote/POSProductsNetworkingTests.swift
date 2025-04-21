@@ -131,6 +131,51 @@ struct POSProductsNetworkingTests {
         #expect(queryParametersDictionary["search"] == "search terms")
     }
 
+    @Test func searchProductsForPointOfSale_sets_both_search_parameters() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let searchQuery = "search terms"
+
+        // When
+        _ = try? await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: searchQuery,
+            productTypes: [.simple],
+            pageNumber: 1)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
+        #expect(queryParametersDictionary["search"] == searchQuery)
+        #expect(queryParametersDictionary["search_name_or_sku"] == searchQuery)
+    }
+
+    @Test func searchProductsForPointOfSale_returns_parsed_products() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedProductsFromResponse = 2
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        let pagedProducts = try await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "photo")
+
+        // Then
+        let products = pagedProducts.items
+        #expect(products.count == expectedProductsFromResponse)
+    }
+
+    @Test func searchProductsForPointOfSale_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When/Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.searchProductsForPointOfSale(for: sampleSiteID, query: "search")
+        }
+    }
+
     @Test func posProduct_provides_field_names_for_request() {
         let fieldNames = POSProduct.requestFields
         #expect(fieldNames.contains("id"))

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -8,6 +9,8 @@ struct PointOfSaleItemListEmptyView: View {
     private let onAction: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
+
+    @Environment(\.keyboardObserver) private var keyboard
 
     private var shouldShowErrorIcon: Bool {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) else {
@@ -79,13 +82,14 @@ struct PointOfSaleItemListEmptyView: View {
             Spacer()
         }
         .multilineTextAlignment(.center)
-        .padding(.bottom, floatingControlAreaSize.height)
+        .padding(.bottom, keyboard.keyboardHeight <= 0 ? floatingControlAreaSize.height : 0)
         .measureWidth { width in
             viewWidth = width
         }
     }
 }
 
+@available(iOS 17.0, *)
 private extension PointOfSaleItemListEmptyView {
     enum Constants {
         static let iconSize: CGFloat = 100

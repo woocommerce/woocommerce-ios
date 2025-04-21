@@ -90,7 +90,9 @@ struct PointOfSaleItemListEmptyViewModel {
 
     var title: String {
         switch (baseItem, itemListType) {
-        case (.root, .products):
+        case (.root, .products(search: true)):
+            return Localization.emptyProductsSearchTitle
+        case (.root, .products(search: false)):
             return Localization.emptyProductsTitle
         case (.root, .coupons):
             return Localization.emptyCouponsTitle
@@ -104,7 +106,9 @@ struct PointOfSaleItemListEmptyViewModel {
 
     var subtitle: String {
         switch (baseItem, itemListType) {
-        case (.root, .products):
+        case (.root, .products(search: true)):
+            return Localization.emptyProductsSearchSubtitle
+        case (.root, .products(search: false)):
             return Localization.emptyProductsSubtitle
         case (.root, .coupons):
             return Localization.emptyCouponsSubtitle
@@ -118,7 +122,9 @@ struct PointOfSaleItemListEmptyViewModel {
 
     var hint: String? {
         switch (baseItem, itemListType) {
-        case (.root, .products):
+        case (.root, .products(search: true)):
+            return Localization.emptyProductsSearchHint
+        case (.root, .products(search: false)):
             return Localization.emptyProductsHint
         case (.root, .coupons):
             return nil
@@ -154,6 +160,22 @@ struct PointOfSaleItemListEmptyViewModel {
             "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1",
             value: "To add one, exit POS and go to Products.",
             comment: "Text hinting the merchant to create a product."
+        )
+
+        static let emptyProductsSearchTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle",
+            value: "No products found.",
+            comment: "Text appearing on screen when a POS product search returns no results."
+        )
+        static let emptyProductsSearchSubtitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle",
+            value: "Try adjusting your search term – searching part of a product name may help.",
+            comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
+        )
+        static let emptyProductsSearchHint = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint",
+            value: "Variation names can't be searched, so use the parent product name.",
+            comment: "Text providing additional search tips when no products are found in the POS product search."
         )
 
         static let emptyVariableParentProductTitle = NSLocalizedString(

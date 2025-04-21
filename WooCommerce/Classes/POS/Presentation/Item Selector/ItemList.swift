@@ -140,36 +140,14 @@ private struct ItemListRow: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     let analytics: Analytics = ServiceLocator.analytics
 
-    @State private var isFavorite: Bool = false
-
     var body: some View {
         switch item {
         case let .simpleProduct(product):
-            HStack {
-                Button(action: {
-                    itemActionHandler.handleTap(item)
-                }, label: {
-                    SimpleProductCardView(product: product)
-                })
-
-                Button(action: {
-                    if isFavorite {
-                        posModel.favoriteProductsService.removeFromFavorite(productID: product.productID)
-                    } else {
-                        posModel.favoriteProductsService.markAsFavorite(productID: product.productID)
-                    }
-                    isFavorite.toggle()
-                }) {
-                    Image(systemName: isFavorite ? "star.fill" : "star")
-                        .foregroundColor(.posOnSurface)
-                        .font(.posButtonSymbolLarge)
-                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                }
-                .padding(.trailing, POSPadding.small)
-            }
-            .task {
-                isFavorite = await posModel.favoriteProductsService.isFavorite(productID: product.productID)
-            }
+            Button(action: {
+                itemActionHandler.handleTap(item)
+            }, label: {
+                SimpleProductCardView(product: product)
+            })
 
         case let .variableParentProduct(parentProduct):
             HStack {
@@ -177,7 +155,8 @@ private struct ItemListRow: View {
                     NavigationLink(value: item) {
                         ParentProductCardView(name: parentProduct.name,
                                               imageSource: parentProduct.productImageSource,
-                                              detailText: Localization.variationsAvailable)
+                                              detailText: Localization.variationsAvailable,
+                                              productID: parentProduct.productID)
                     }
                 } else {
                     Button(action: {
@@ -185,27 +164,10 @@ private struct ItemListRow: View {
                     }, label: {
                         ParentProductCardView(name: parentProduct.name,
                                               imageSource: parentProduct.productImageSource,
-                                              detailText: Localization.variationsAvailable)
+                                              detailText: Localization.variationsAvailable,
+                                              productID: parentProduct.productID)
                     })
                 }
-
-                Button(action: {
-                    if isFavorite {
-                        posModel.favoriteProductsService.removeFromFavorite(productID: parentProduct.productID)
-                    } else {
-                        posModel.favoriteProductsService.markAsFavorite(productID: parentProduct.productID)
-                    }
-                    isFavorite.toggle()
-                }) {
-                    Image(systemName: isFavorite ? "star.fill" : "star")
-                        .foregroundColor(.posOnSurface)
-                        .font(.posButtonSymbolLarge)
-                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                }
-                .padding(.trailing, POSPadding.small)
-            }
-            .task {
-                isFavorite = await posModel.favoriteProductsService.isFavorite(productID: parentProduct.productID)
             }
 
         case let .variation(variation):

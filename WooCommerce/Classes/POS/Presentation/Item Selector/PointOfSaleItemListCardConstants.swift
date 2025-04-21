@@ -14,4 +14,5 @@ enum PointOfSaleItemListCardConstants {
     static let backgroundColor: Color = .posSurfaceContainerLowest
     static let titleColor: Color = .posOnSurface
     static let detailColor: Color = .posOnSurfaceVariantHighest
+    static let favoriteButtonSize: CGFloat = 32
 }

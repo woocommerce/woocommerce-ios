@@ -18,6 +18,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationEmail: String?
     private let stores: StoresManager
+    private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
 
     private(set) var orderItems: WooShippingItemsViewModel
@@ -175,6 +176,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.itemsDataSource = itemsDataSource
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
+        self.currencySettings = currencySettings
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
         self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
@@ -210,6 +212,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLabels = order.shippingLabels
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
+        self.currencySettings = currencySettings
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
         self.destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
@@ -462,8 +465,14 @@ private extension WooShippingCreateLabelsViewModel {
                                                        shippingLabel: matchingShippingLabel,
                                                        originAddress: $selectedOriginAddress.eraseToAnyPublisher(),
                                                        destinationAddress: $destinationAddress.eraseToAnyPublisher(),
-                                                       stores: stores) { [weak self] in
-                guard let self else { return }
+                                                       stores: stores) { [weak self] newLabel in
+                guard let self, let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
+                shippingLabels.append(newLabel)
+                shipments[index] = Shipment(contents: shipment.contents,
+                                            purchasedLabelID: newLabel.shippingLabelID,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
                 onLabelPurchase?(markOrderComplete)
             }
         }

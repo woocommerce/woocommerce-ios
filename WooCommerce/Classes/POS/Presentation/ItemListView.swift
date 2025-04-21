@@ -177,7 +177,7 @@ private extension ItemListView {
                             .renderedIf(!shouldShowSearchField)
                             .transition(.opacity.combined(with: .scale))
 
-                            Button {
+                            POSPageHeaderActionButton {
                                 showFavoritesOnly.toggle()
                                 Task { @MainActor in
                                     if showFavoritesOnly {

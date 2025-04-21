@@ -38,7 +38,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor.ignoresSafeArea(.all))
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                                 .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
                                 .geometryGroup()
                         }
@@ -49,7 +49,7 @@ struct TotalsView: View {
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(1)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
@@ -66,7 +66,7 @@ struct TotalsView: View {
                             .font(POSFontStyle.posBodyLargeBold)
                     })
                     .layoutPriority(1)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
@@ -132,7 +132,7 @@ private extension TotalsView {
             Spacer().frame(height: Constants.subtotalsVerticalSpacing)
 
             if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
-                subtotalFieldView(title: Localization.discount,
+                subtotalFieldView(title: Localization.discountTotal,
                                   formattedPrice: orderTotals?.discountTotal,
                                   shimmeringActive: totalsLoading,
                                   matchedGeometryId: Constants.matchedGeometryDiscountId)
@@ -441,10 +441,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let discount = NSLocalizedString(
-            "pos.totalsView.discountTotal",
-            value: "Discount",
-            comment: "Title for discount amount field")
+        static let discountTotal = NSLocalizedString(
+            "pos.totalsView.discountTotal2",
+            value: "Discount total",
+            comment: "Title for discount total amount field")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -455,13 +455,7 @@ private extension TotalsView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     TotalsView()
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -15,6 +16,8 @@ import struct Yosemite.OrderItem
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import struct Yosemite.POSProduct
 import struct Yosemite.ProductVariation
+import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItemType
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -88,7 +91,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 @available(iOS 17.0, *)
-final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
@@ -99,7 +102,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         case .root:
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: ItemsStackState(root: .loaded(mockItems, hasMoreItems: true),
                                                                                                   itemStates: [:]))
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadInitialChildItems(for: parent)
         }
     }
@@ -118,6 +121,23 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
     }
+}
+
+@available(iOS 17.0, *)
+final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
+    func handleTap(_ item: Yosemite.POSItem) { }
+}
+
+final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
+    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
+
+    func searchHistory(for itemType: POSItemType) -> [String] {
+        return []
+    }
+
+    func clearSearchHistory(for itemType: POSItemType) {}
+
+    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {
@@ -164,6 +184,29 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     func startObserving() {}
 
     func stopObserving() {}
+}
+
+@available(iOS 17.0, *)
+struct POSPreviewHelpers {
+    static func makePreviewAggregateModel(
+        itemsController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
+        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService()
+    ) -> PointOfSaleAggregateModel {
+        return PointOfSaleAggregateModel(
+            itemsController: itemsController,
+            purchasableItemsSearchController: purchasableItemsSearchController,
+            couponsController: couponsController,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderController: orderController,
+            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            searchHistoryService: searchHistoryService
+        )
+    }
 }
 
 #endif

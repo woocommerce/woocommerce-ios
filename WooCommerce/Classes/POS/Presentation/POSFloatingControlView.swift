@@ -137,27 +137,18 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 @available(iOS 17.0, *)
 #Preview("Reader Connected") {
     let paymentService = CardPresentPaymentPreviewService()
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: paymentService
+    )
     return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -165,15 +156,9 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

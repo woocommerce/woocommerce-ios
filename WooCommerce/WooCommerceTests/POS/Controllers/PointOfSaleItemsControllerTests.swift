@@ -20,13 +20,13 @@ final class PointOfSaleItemsControllerTests {
 
         try #require(sut.itemsViewState.containerState == .loading)
         itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 1)
@@ -46,7 +46,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState == ItemsViewState(containerState: .content,
@@ -68,7 +68,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.shouldSimulateTwoPages = true
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState == ItemsViewState(containerState: .content,
@@ -90,9 +90,9 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.itemPages = [expectedItems]
 
         // When
-        await sut.loadItems(base: .root(.products))
-        await sut.loadItems(base: .root(.products))
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .root)
 
         // Then
         guard case .loaded(let items, _) = sut.itemsViewState.itemsStack.root else {
@@ -116,7 +116,7 @@ final class PointOfSaleItemsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func loadNextItems_when_initial_items_empty_then_container_state_is_empty() async throws {
+    @Test func loadNextItems_when_initial_items_empty_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
@@ -129,10 +129,11 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
-        #expect(sut.itemsViewState.containerState == .empty)
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
     @available(iOS 17.0, *)
@@ -150,7 +151,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState == ItemsViewState(containerState: .content,
@@ -168,10 +169,10 @@ final class PointOfSaleItemsControllerTests {
         )
 
         itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         guard case .loaded(let items, _) = sut.itemsViewState.itemsStack.root else {
@@ -192,10 +193,10 @@ final class PointOfSaleItemsControllerTests {
 
         try #require(sut.itemsViewState.containerState == .loading)
         itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -212,10 +213,10 @@ final class PointOfSaleItemsControllerTests {
 
         itemProvider.shouldSimulateTwoPages = true
         itemProvider.shouldSimulateMorePages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
@@ -239,11 +240,11 @@ final class PointOfSaleItemsControllerTests {
                                                                                 name: "Fake Parent",
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
-        let baseItem = ItemListBaseItem.parent(parentItem, .products)
+        let baseItem = ItemListBaseItem.parent(parentItem)
         itemProvider.shouldSimulateTwoPagesOfVariations = true
         itemProvider.shouldSimulateMorePagesOfVariations = true
 
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         await sut.loadItems(base: baseItem)
 
         // When
@@ -271,10 +272,10 @@ final class PointOfSaleItemsControllerTests {
                                                                                 name: "Fake Parent",
                                                                                 productImageSource: nil,
                                                                                 productID: 12345))
-        let baseItem = ItemListBaseItem.parent(parentItem, .products)
+        let baseItem = ItemListBaseItem.parent(parentItem)
         itemProvider.shouldSimulateTwoPagesOfVariations = true
 
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         await sut.loadItems(base: baseItem)
 
         itemProvider.errorToThrow = MockError.requestFailed
@@ -283,16 +284,17 @@ final class PointOfSaleItemsControllerTests {
         await sut.loadNextItems(base: baseItem)
 
         // Then
-        guard case .inlineError(let items, let errorState) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
+        guard case .inlineError(let items, let errorState, let context) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
             Issue.record("Expected inlineError ItemList state, but got \(sut.itemsViewState)")
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage())
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingVariationsNextPage)
+        #expect(context == .pagination)
     }
 
     @available(iOS 17.0, *)
-    @Test func loadItems_when_no_items_then_state_is_loaded_empty() async throws {
+    @Test func loadItems_when_no_items_then_container_state_is_content_and_root_state_is_empty() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
@@ -305,10 +307,11 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
-        #expect(sut.itemsViewState.containerState == .empty)
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .empty)
     }
 
     @available(iOS 17.0, *)
@@ -328,7 +331,7 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState.containerState == .error(expectedError))
@@ -346,79 +349,23 @@ final class PointOfSaleItemsControllerTests {
         try #require(sut.itemsViewState.containerState == .loading)
 
         itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         itemProvider.errorToThrow = MockError.requestFailed
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState.containerState == .content)
 
-        guard case .inlineError(let items, let errorState) = sut.itemsViewState.itemsStack.root else {
+        guard case .inlineError(let items, let errorState, let context) = sut.itemsViewState.itemsStack.root else {
             Issue.record("Expected inlineError ItemList state, but got \(sut.itemsViewState)")
             return
         }
         #expect(items.count == 2)
-        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage())
-    }
-
-    @available(iOS 17.0, *)
-    @Test func loadItems_when_request_is_cancelled_then_state_is_loaded() async throws {
-        // Given
-        let itemProvider = MockPointOfSaleItemService()
-        let sut = PointOfSaleItemsController(
-            itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
-        )
-
-        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
-        try #require(sut.itemsViewState.containerState == .loading)
-
-        // When
-        await sut.loadItems(base: .root(.products))
-
-        // Then
-        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
-            return
-        }
-        #expect(items.count == 0)
-        #expect(hasMoreItems)
-    }
-
-    @available(iOS 17.0, *)
-    @Test func loadNextItems_when_request_is_cancelled_then_state_is_loaded() async throws {
-        // Given
-        let itemProvider = MockPointOfSaleItemService()
-        let sut = PointOfSaleItemsController(
-            itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
-        )
-
-        itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
-
-        guard case .loaded = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
-            return
-        }
-
-        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
-
-        // When
-        await sut.loadNextItems(base: .root(.products))
-
-        // Then
-        #expect(sut.itemsViewState.containerState == .content)
-
-        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
-            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState.itemsStack.root)")
-            return
-        }
-        #expect(items.count == 2)
-        #expect(hasMoreItems)
+        #expect(errorState == PointOfSaleErrorState.errorOnLoadingProductsNextPage)
+        #expect(context == .pagination)
     }
 
     @available(iOS 17.0, *)
@@ -431,15 +378,15 @@ final class PointOfSaleItemsControllerTests {
         )
 
         itemProvider.shouldSimulateTwoPages = true
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         itemProvider.errorToThrow = MockError.requestFailed
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 2)
         itemProvider.spyLastRequestedPageNumber = 0
 
         // When
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(itemProvider.spyLastRequestedPageNumber == 2)
@@ -459,7 +406,7 @@ final class PointOfSaleItemsControllerTests {
         itemProvider.itemPages = [expectedItems]
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState == ItemsViewState(containerState: .content,
@@ -478,12 +425,12 @@ final class PointOfSaleItemsControllerTests {
 
         let expectedItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [expectedItems]
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         #expect(sut.itemsViewState == ItemsViewState(containerState: .content,
@@ -501,12 +448,12 @@ final class PointOfSaleItemsControllerTests {
             itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
         )
 
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
 
         // When
         itemProvider.shouldReturnZeroItems = true
-        await sut.loadNextItems(base: .root(.products))
+        await sut.loadNextItems(base: .root)
 
         // Then
         try #require(itemProvider.spyLastRequestedPageNumber == 1)
@@ -523,7 +470,7 @@ final class PointOfSaleItemsControllerTests {
 
         let initialItems = MockPointOfSaleItemService.makeInitialItems()
         itemProvider.itemPages = [initialItems]
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         try #require(sut.itemsViewState.itemsStack.root.items == initialItems)
 
         await confirmation() { confirmation in
@@ -539,7 +486,7 @@ final class PointOfSaleItemsControllerTests {
             }
 
             // When
-            await sut.loadItems(base: .root(.products))
+            await sut.loadItems(base: .root)
         }
     }
 
@@ -567,7 +514,7 @@ final class PointOfSaleItemsControllerTests {
             }
 
             // When
-            await sut.loadItems(base: .root(.products))
+            await sut.loadItems(base: .root)
         }
     }
 
@@ -585,13 +532,13 @@ final class PointOfSaleItemsControllerTests {
                                                                               productImageSource: nil,
                                                                               productID: 125))
         itemProvider.itemPages = [[parentItem]]
-        await sut.loadItems(base: .root(.products))
-        await sut.loadItems(base: .parent(parentItem, .products))
+        await sut.loadItems(base: .root)
+        await sut.loadItems(base: .parent(parentItem))
         let itemStates = sut.itemsViewState.itemsStack.itemStates
         try #require(itemStates != [:])
 
         // When
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
 
         // Then
         try #require(sut.itemsViewState.itemsStack.itemStates == itemStates)
@@ -610,11 +557,11 @@ final class PointOfSaleItemsControllerTests {
                                                                               name: "Parent product",
                                                                               productImageSource: nil,
                                                                               productID: 125))
-        let baseItem = ItemListBaseItem.parent(parentItem, .products)
+        let baseItem = ItemListBaseItem.parent(parentItem)
         itemProvider.itemPages = [[parentItem]]
 
         // Loads initial items.
-        await sut.loadItems(base: .root(.products))
+        await sut.loadItems(base: .root)
         await sut.loadItems(base: baseItem)
 
         let initialChildItems = sut.itemsViewState.itemsStack.itemStates[parentItem]?.items ?? []
@@ -637,70 +584,6 @@ final class PointOfSaleItemsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func loadChildItems_when_request_is_cancelled_then_state_is_loaded() async throws {
-        // Given
-        let itemProvider = MockPointOfSaleItemService()
-        let sut = PointOfSaleItemsController(
-            itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
-        )
-
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
-        let baseItem = ItemListBaseItem.parent(parentItem, .products)
-
-        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
-        try #require(sut.itemsViewState.containerState == .loading)
-
-        // When
-        await sut.loadItems(base: baseItem)
-
-        // Then
-        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
-            Issue.record("Expected loaded ItemList state, but got \(String(describing: sut.itemsViewState.itemsStack.itemStates[parentItem]))")
-            return
-        }
-        #expect(items.count == 0)
-        #expect(hasMoreItems)
-    }
-
-    @available(iOS 17.0, *)
-    @Test func loadNextChildItems_when_request_is_cancelled_then_state_is_loaded() async throws {
-        // Given
-        let itemProvider = MockPointOfSaleItemService()
-        let sut = PointOfSaleItemsController(
-            itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
-        )
-
-        let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
-        let baseItem = ItemListBaseItem.parent(parentItem, .products)
-
-        itemProvider.shouldSimulateTwoPagesOfVariations = true
-        await sut.loadItems(base: baseItem)
-
-        itemProvider.errorToThrow = PointOfSaleItemServiceError.requestCancelled
-
-        // When
-        await sut.loadNextItems(base: baseItem)
-
-        // Then
-        #expect(sut.itemsViewState.containerState == .content)
-
-        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.itemStates[parentItem] else {
-            Issue.record("Expected loaded ItemList state, but got \(String(describing: sut.itemsViewState.itemsStack.itemStates[parentItem]))")
-            return
-        }
-        #expect(items.count == 2)
-        #expect(hasMoreItems)
-    }
-
-    @available(iOS 17.0, *)
     @Test func search_sets_a_fetch_strategy_with_search_term_on_the_service() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
@@ -710,7 +593,7 @@ final class PointOfSaleItemsControllerTests {
         )
 
         // When
-        await sut.searchItems(searchTerm: "green mug", baseItem: .root(.products))
+        await sut.searchItems(searchTerm: "green mug", baseItem: .root)
 
         // Then
         let fetchStrategy = try #require(itemProvider.spyItemsFetchStrategy as? PointOfSaleSearchPurchasableItemFetchStrategy)

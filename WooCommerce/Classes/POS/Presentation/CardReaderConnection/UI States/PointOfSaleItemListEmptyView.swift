@@ -3,45 +3,98 @@ import SwiftUI
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let baseItem: ItemListBaseItem
+    private let viewModel: PointOfSaleItemListEmptyViewModel
 
-    init(base: ItemListBaseItem) {
-        self.baseItem = base
+    private let onAction: (() -> Void)?
+
+    @State private var viewWidth: CGFloat = 0
+
+    private var shouldShowErrorIcon: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
+    init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
+        self.viewModel = viewModel
+        self.onAction = onAction
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+        ScrollableVStack {
             Spacer()
-            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-            Text(title)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posHeadingBold)
-            Text(subtitle)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
-            Text(hint)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(.posBodyLargeRegular())
-                .padding([.leading, .trailing])
+            VStack(alignment: .center, spacing: POSSpacing.none) {
+                if shouldShowErrorIcon {
+                    POSErrorExclamationMark(size: .large)
+                } else {
+                    Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.iconSize, height: Constants.iconSize)
+                        .foregroundColor(.posOnSurfaceVariantHighest)
+                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                }
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+
+                Text(viewModel.title)
+                    .accessibilityAddTraits(.isHeader)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posHeadingBold)
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+
+                Text(viewModel.subtitle)
+                    .foregroundStyle(Color.posOnSurface)
+                    .font(.posBodyLargeRegular())
+                    .padding([.leading, .trailing])
+
+                if let hint = viewModel.hint {
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                    Text(hint)
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .font(.posBodyLargeRegular())
+                        .padding([.leading, .trailing])
+                }
+
+                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+
+                if let onAction, let buttonTitle = viewModel.buttonTitle {
+                    Button(action: {
+                        onAction()
+                    }, label: {
+                        Text(buttonTitle)
+                    })
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    .frame(width: viewWidth / 2)
+                    .padding([.leading, .trailing])
+                }
+            }
             Spacer()
         }
         .multilineTextAlignment(.center)
         .padding(.bottom, floatingControlAreaSize.height)
+        .measureWidth { width in
+            viewWidth = width
+        }
     }
 }
 
 private extension PointOfSaleItemListEmptyView {
+    enum Constants {
+        static let iconSize: CGFloat = 100
+    }
+}
+
+struct PointOfSaleItemListEmptyViewModel {
+    let itemListType: ItemListType
+    let baseItem: ItemListBaseItem
+
     var title: String {
-        switch baseItem {
-        case .root:
+        switch (baseItem, itemListType) {
+        case (.root, .products):
             return Localization.emptyProductsTitle
-        case .parent(.variableParentProduct, _):
+        case (.root, .coupons):
+            return Localization.emptyCouponsTitle
+        case (.parent, .products):
             return Localization.emptyVariableParentProductTitle
         default:
             assertionFailure("No title defined for \(baseItem)")
@@ -50,10 +103,12 @@ private extension PointOfSaleItemListEmptyView {
     }
 
     var subtitle: String {
-        switch baseItem {
-        case .root:
+        switch (baseItem, itemListType) {
+        case (.root, .products):
             return Localization.emptyProductsSubtitle
-        case .parent(.variableParentProduct, _):
+        case (.root, .coupons):
+            return Localization.emptyCouponsSubtitle
+        case (.parent, .products):
             return Localization.emptyVariableParentProductSubtitle
         default:
             assertionFailure("No subtitle defined for \(baseItem)")
@@ -61,11 +116,13 @@ private extension PointOfSaleItemListEmptyView {
         }
     }
 
-    var hint: String {
-        switch baseItem {
-        case .root:
+    var hint: String? {
+        switch (baseItem, itemListType) {
+        case (.root, .products):
             return Localization.emptyProductsHint
-        case .parent(.variableParentProduct, _):
+        case (.root, .coupons):
+            return nil
+        case (.parent, .products):
             return Localization.emptyVariableParentProductHint
         default:
             assertionFailure("No hint defined for \(baseItem)")
@@ -73,10 +130,15 @@ private extension PointOfSaleItemListEmptyView {
         }
     }
 
-    enum Constants {
-        static let iconSystemName: String = "plus.magnifyingglass"
-        static let iconSize: CGFloat = 100
+    var buttonTitle: String? {
+        switch itemListType {
+        case .coupons:
+            return Localization.emptyCouponsButtonTitle
+        default:
+            return nil
+        }
     }
+
     enum Localization {
         static let emptyProductsTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1",
@@ -108,6 +170,22 @@ private extension PointOfSaleItemListEmptyView {
             "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint",
             value: "To add one, exit POS and edit this product in the Products tab.",
             comment: "Text hinting the merchant to create a product."
+        )
+
+        static let emptyCouponsTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle",
+            value: "No coupons found.",
+            comment: "Text appearing on the coupon list screen when there's no coupons found."
+        )
+        static let emptyCouponsSubtitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle",
+            value: "Boost your business by sending customers special offers and discounts.",
+            comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
+        )
+        static let emptyCouponsButtonTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle",
+            value: "Create coupon",
+            comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
         )
     }
 }

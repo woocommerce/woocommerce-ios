@@ -1,4 +1,5 @@
 import SwiftUI
+import protocol Yosemite.POSSearchHistoryProviding
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
@@ -8,24 +9,30 @@ struct PointOfSaleEntryPointView: View {
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
+    private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    private let searchHistoryService: POSSearchHistoryProviding
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking) {
+         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
+         searchHistoryService: POSSearchHistoryProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.searchHistoryService = searchHistoryService
     }
 
     var body: some View {
@@ -43,10 +50,12 @@ struct PointOfSaleEntryPointView: View {
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             posModel = PointOfSaleAggregateModel(
                 itemsController: itemsController,
+                purchasableItemsSearchController: purchasableItemsSearchController,
                 couponsController: couponsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
-                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+                searchHistoryService: searchHistoryService)
         }
         .environmentObject(posModalManager)
         .onAppear {
@@ -64,10 +73,12 @@ struct PointOfSaleEntryPointView: View {
 @available(iOS 17.0, *)
 #Preview {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
+                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              searchHistoryService: PointOfSalePreviewHistoryService())
 }
 #endif

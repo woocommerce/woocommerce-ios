@@ -9,17 +9,28 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var showSimpleProductsModal: Bool = false
-    private var itemListState: ItemListState {
-        itemsStack.root
+
+    @State private var searchTerm: String = ""
+    @FocusState private var isSearchFieldFocused: Bool
+
+    @Binding var selectedItemListType: ItemListType
+
+    @State private var searchTask: Task<Void, Never>?
+    @State private var didFinishSearch = true
+
+    var itemsController: PointOfSaleItemsControllerProtocol {
+        switch selectedItemListType {
+        case .products(search: false):
+            posModel.purchasableItemsController
+        case .products(search: true):
+            posModel.purchasableItemsSearchController
+        case .coupons:
+            posModel.couponsController
+        }
     }
 
-    private var itemsStack: ItemsStackState {
-        switch selectedItemType {
-        case .products:
-            return posModel.itemsViewState.itemsStack
-        case .coupons:
-            return posModel.couponsViewState.itemsStack
-        }
+    private var itemListState: ItemListState {
+        itemsController.itemsViewState.itemsStack.root
     }
 
     @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
@@ -29,7 +40,10 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
 
-    @State private var selectedItemType: ItemType = .products
+    private var isAddingCouponAllowed: Bool {
+        guard case .coupons = selectedItemListType else { return false }
+        return itemListState.isLoaded || itemListState.isEmpty
+    }
 
     @State private var showCouponCreationModal: Bool = false
 
@@ -51,44 +65,24 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            HStack {
-                Button(action: {
-                    displayItemType(.products)
-                }, label: {
-                    Text("Products")
-                })
-                Button(action: {
-                    displayItemType(.coupons)
-                }, label: {
-                    Text("Coupons")
-                })
-
-                Spacer()
-
-                Button(action: {
-                    showCouponCreationModal = true
-                }, label: {
-                    Text(Image(systemName: "plus.circle.fill"))
-                })
-                .font(.posButtonSymbolLarge)
-                .foregroundStyle(Color.posOnSurface)
-                .renderedIf(selectedItemType == .coupons)
-            }
-            .padding(POSPadding.medium)
-            .renderedIf(shouldShowCoupons)
-
-            switch itemListState {
-            case .loading(let items),
-                    .loaded(let items, _),
-                    .inlineError(let items, _):
-                listView(items)
-            case .error(let errorState):
-                if errorState == .errorCouponsNotFound() {
-                    PointOfSaleItemListErrorView(error: .errorCouponsNotFound(), onAction: {
-                        // TODO
-                    })
-                } else {
-                    EmptyView()
+            if isSearchFieldFocused && searchTerm.isEmpty {
+                POSRecentSearchesView(
+                    savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
+                    onSearchSelected: { search in
+                        searchTerm = search
+                    }
+                )
+                .background(Color.posSurface)
+            } else {
+                switch itemListState {
+                case .loading(let items),
+                        .loaded(let items, _),
+                        .inlineError(let items, _, _):
+                    listView(items)
+                case .error(let errorState):
+                    errorView(errorState)
+                case .empty:
+                    emptyView
                 }
             }
         }
@@ -105,7 +99,7 @@ struct ItemListView: View {
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
-                await posModel.refreshItems(base: .root(.coupons))
+                await posModel.couponsController.refreshItems(base: .root)
             }
         })
     }
@@ -118,23 +112,112 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            POSPageHeaderView(title: Localization.title, trailingContent: {
-                Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                    showSimpleProductsModal = true
-                }, label: {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(Constants.infoIconInset)
-                })
-                .renderedIf(!shouldShowHeaderBanner)
+            POSPageHeaderView(items: headerViewItems, trailingContent: {
+                HStack {
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
+                       case .products = selectedItemListType {
+                        searchField.onChange(of: searchTerm) { oldValue, newValue in
+                            selectedItemListType = .products(search: newValue.isNotEmpty)
+
+                            // The debouncing logic is a little tricky, because the loading state is held in the controller.
+                            // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
+
+                            // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
+                            // However, we don't want to debounce the first keystroke of a new search, so that the loading
+                            // state shows immediately and the UI feels responsive.
+
+                            // So, if the last search was finished, we don't debounce the first character. If it didn't
+                            // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
+                            // the ongoing search is redundant now there's a new search term, so we cancel it.
+                            let shouldDebounceNextSearchRequest = !didFinishSearch
+                            searchTask?.cancel()
+
+                            searchTask = Task {
+                                if shouldDebounceNextSearchRequest {
+                                    try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                                }
+
+                                guard !Task.isCancelled else { return }
+
+                                didFinishSearch = false
+
+                                await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
+
+                                if !Task.isCancelled {
+                                    didFinishSearch = true
+                                }
+                            }
+                        }
+                    }
+
+                    if shouldShowCoupons {
+                        POSPageHeaderActionButton(systemName: "plus") {
+                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+                            showCouponCreationModal = true
+                        }
+                        .opacity(isAddingCouponAllowed ? 1 : 0)
+                    }
+
+                    Button(action: {
+                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                        showSimpleProductsModal = true
+                    }, label: {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                            .foregroundStyle(Color.posOnSurface)
+                            .padding(Constants.infoIconInset)
+                    })
+                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
+                }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
+        }
+    }
+
+    var headerViewItems: [POSPageHeaderItem] {
+        var items = [
+            POSPageHeaderItem(
+                title: Localization.productsTitle,
+                action: {
+                    displayItemListType(.products(search: searchTerm.isNotEmpty))
+                }
+            )
+        ]
+
+        if shouldShowCoupons {
+            items.append(
+                POSPageHeaderItem(
+                    title: Localization.couponsTitle,
+                    action: {
+                        displayItemListType(.coupons)
+                    }
+                )
+            )
+        }
+
+        return items
+    }
+
+    var searchField: some View {
+        HStack(spacing: POSSpacing.small) {
+            if isSearchFieldFocused || searchTerm.isNotEmpty {
+                Button(action: {
+                    searchTerm = ""
+                    isSearchFieldFocused = false
+                }) {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(.posOnSurface)
+                }
+            }
+
+            TextField(text: $searchTerm) {
+                Text("Search")
+            }
+            .focused($isSearchFieldFocused)
         }
     }
 
@@ -165,14 +248,27 @@ private extension ItemListView {
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState, itemsStack: itemsStack, node: .root(selectedItemType)) {
+        ItemList(
+            itemsController: itemsController,
+            node: .root,
+            itemActionHandler: actionHandler
+        ) {
             if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
             }
         }
         .refreshable {
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root(selectedItemType))
+            trackPullToRefresh()
+            await itemsController.refreshItems(base: .root)
+        }
+    }
+
+    private var actionHandler: POSItemActionHandler {
+        switch selectedItemListType {
+        case .products(search: false), .coupons:
+            StandardPOSItemActionHandler(posModel: posModel)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
         }
     }
 
@@ -181,10 +277,53 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            let itemsStack = selectedItemType == .products ? posModel.itemsViewState.itemsStack : posModel.couponsViewState.itemsStack
-            ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
+            // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
+            // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
+            ChildItemList(
+                parentItem: parentItem,
+                title: parentProduct.name,
+                itemsController: posModel.purchasableItemsController,
+                itemActionHandler: actionHandler
+            )
         default:
             EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        switch selectedItemListType {
+        case .products:
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemListType: .products(search: false),
+                    baseItem: .root))
+        case .coupons:
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemListType: .coupons,
+                    baseItem: .root)) {
+                showCouponCreationModal = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ errorState: PointOfSaleErrorState) -> some View {
+        switch errorState {
+        case .errorCouponsDisabled, .errorOnEnablingCoupons:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.couponsController.enableCoupons()
+                    ServiceLocator.analytics.track(.couponSettingEnabled)
+                }
+            })
+        default:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await itemsController.loadItems(base: .root)
+                }
+            })
         }
     }
 }
@@ -192,14 +331,22 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     var shouldShowHeaderBanner: Bool {
-        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+        guard case .products = selectedItemListType else {
+            return false
+        }
+
+        return itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
     }
 
-    func displayItemType(_ itemType: ItemType) {
-        selectedItemType = itemType
+    func displayItemListType(_ itemListType: ItemListType) {
+        selectedItemListType = itemListType
         Task { @MainActor in
-            await posModel.loadItems(base: .root(itemType))
+            if itemListState.items.isEmpty {
+                await itemsController.loadItems(base: .root)
+            }
         }
+
+        trackSelectedItemListTypeTapped(itemListType)
     }
 }
 
@@ -210,7 +357,7 @@ private extension ItemListState {
                 .loaded,
                 .inlineError:
             return true
-        case .error:
+        case .error, .empty:
             return false
         }
     }
@@ -243,10 +390,16 @@ private extension ItemListView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
+        static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
+        )
+
+        static let couponsTitle = NSLocalizedString(
+            "pos.itemlistview.couponsTitle",
+            value: "Coupons",
+            comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
 
         static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
@@ -275,34 +428,44 @@ private extension ItemListView {
     }
 }
 
+@available(iOS 17.0, *)
+private extension ItemListView {
+    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
+        switch type {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
+        }
+    }
+
+    func trackPullToRefresh() {
+        switch selectedItemListType {
+        case .products:
+            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
+        case .coupons:
+            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
+        }
+    }
+}
+
 #if DEBUG
 
 @available(iOS 17.0, *)
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
-        await itemsController.loadItems(base: .root(.products))
+        await itemsController.loadItems(base: .root)
     }
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
+    return ItemListView(selectedItemListType: .constant(.products(search: false)))
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
-        .environment(posModel)
+    ItemListView(selectedItemListType: .constant(.products(search: false)))
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

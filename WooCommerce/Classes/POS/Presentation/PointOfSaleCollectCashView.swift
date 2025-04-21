@@ -197,13 +197,7 @@ private extension PointOfSaleCollectCashView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

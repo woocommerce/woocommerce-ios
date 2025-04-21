@@ -8,10 +8,20 @@ import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
+import enum Yosemite.POSItemType
 
-enum ItemType {
-    case products
+enum ItemListType {
+    case products(search: Bool = false)
     case coupons
+
+    var itemType: POSItemType {
+        switch self {
+        case .coupons:
+            return .coupon
+        case .products(search: let search):
+            return .product
+        }
+    }
 }
 
 @available(iOS 17.0, *)
@@ -27,12 +37,6 @@ protocol PointOfSaleItemsControllerProtocol {
 }
 
 @available(iOS 17.0, *)
-protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
-    /// Enables coupons in store settings, if needed
-    func enableCoupons() async
-}
-
-@available(iOS 17.0, *)
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
@@ -41,18 +45,21 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                        itemsStack: ItemsStackState(root: .loading([]),
-                                                                                    itemStates: [:]))
+    var itemsViewState: ItemsViewState
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private var itemProvider: PointOfSaleItemServiceProtocol
     private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
-    init(itemProvider: PointOfSaleItemServiceProtocol, itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory) {
+    init(itemProvider: PointOfSaleItemServiceProtocol,
+         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory,
+         initialState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                       itemsStack: ItemsStackState(root: .loading([]),
+                                                                                   itemStates: [:]))) {
         self.itemProvider = itemProvider
         self.itemFetchStrategyFactory = itemFetchStrategyFactory
+        self.itemsViewState = initialState
         self.paginationTracker = .init()
         self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
     }
@@ -71,6 +78,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }
 
@@ -79,7 +87,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         switch base {
         case .root:
             await loadRootItems()
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadChildItems(for: parent)
         }
     }
@@ -92,7 +100,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
-            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts())
+            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts)
             itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
                                                        itemStates: [:])
         }
@@ -103,7 +111,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         switch base {
         case .root:
             await loadNextRootItems()
-        case .parent(let parent, _):
+        case .parent(let parent):
             await loadNextChildItems(for: parent)
         }
     }
@@ -126,7 +134,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         } catch {
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingProductsNextPage()),
+                                                                           error: .errorOnLoadingProductsNextPage,
+                                                                           context: .pagination),
                                                         itemStates: currentItemStates)
         }
     }
@@ -140,7 +149,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
-            updateState(for: parent, to: .error(.errorOnLoadingVariations()))
+            updateState(for: parent, to: .error(.errorOnLoadingVariations))
         }
     }
 
@@ -161,7 +170,8 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
             }
         } catch {
             updateState(for: parent, to: .inlineError(currentItems,
-                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage()))
+                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage,
+                                                      context: .pagination))
         }
     }
 
@@ -196,7 +206,7 @@ private extension PointOfSaleItemsController {
         switch base {
         case .root:
             setRootLoadingState()
-        case .parent(let parent, _):
+        case .parent(let parent):
             setChildLoadingState(for: parent)
         }
     }
@@ -213,6 +223,23 @@ private extension PointOfSaleItemsController {
     func setChildLoadingState(for parent: POSItem) {
         let items = itemsViewState.itemsStack.itemStates[parent]?.items ?? []
         updateState(for: parent, to: .loading(items))
+    }
+
+    func setSearchingState(base: ItemListBaseItem) {
+        switch base {
+        case .root:
+            setRootSearchingState()
+        case .parent(let parent):
+            setChildSearchingState(for: parent)
+        }
+    }
+
+    func setRootSearchingState() {
+        itemsViewState.itemsStack.root = .loading([])
+    }
+
+    func setChildSearchingState(for parent: POSItem) {
+        updateState(for: parent, to: .loading([]))
     }
 }
 
@@ -236,9 +263,8 @@ private extension PointOfSaleItemsController {
             }
             allItems.append(contentsOf: uniqueNewItems)
             if allItems.isEmpty {
-                itemsViewState.containerState = .empty
-                itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                            itemStates: [:])
+                itemsViewState.containerState = .content
+                itemsViewState.itemsStack = ItemsStackState(root: .empty, itemStates: [:])
             } else {
                 let itemStates = itemsViewState.itemsStack.itemStates
                     .filter { allItems.contains($0.key) }
@@ -248,8 +274,6 @@ private extension PointOfSaleItemsController {
             }
             return pagedItems.hasMorePages
         } catch PointOfSaleItemServiceError.requestCancelled {
-            itemsViewState.containerState = .content
-            itemsViewState.itemsStack.root = .loaded(itemsViewState.itemsStack.root.items, hasMoreItems: true)
             // Assume that we have more pages since we'd made a request, and it was cancelled
             return true
         }
@@ -280,9 +304,6 @@ private extension PointOfSaleItemsController {
             updateState(for: parentItem, to: .loaded(allItems, hasMoreItems: pagedItems.hasMorePages))
             return pagedItems.hasMorePages
         } catch PointOfSaleItemServiceError.requestCancelled {
-            itemsViewState.containerState = .content
-            updateState(for: parentItem, to: .loaded(itemsViewState.itemsStack.itemStates[parentItem]?.items ?? [],
-                                                     hasMoreItems: true))
             // Assume that we have more pages since we'd made a request, and it was cancelled
             return true
         }

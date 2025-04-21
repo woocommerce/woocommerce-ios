@@ -8,17 +8,20 @@ import Storage
 public enum PointOfSaleCouponServiceError: Error {
     case couponsLoadingError
     case couponsDisabled
+    case couponsEnablingError
 }
 
 public protocol PointOfSaleCouponServiceProtocol {
+    func provideLocalPointOfSaleCoupons() async throws -> [POSItem]
     func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func enableCoupons() async throws
 }
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
+    private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
-    private let storage: StorageManagerType?
+    private let storage: StorageManagerType
     private let couponStoreMethods: CouponStoreMethodsProtocol
     private let settingsStoreMethods: SettingStoreMethodsProtocol
 
@@ -28,6 +31,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
          settingStoreMethods: SettingStoreMethodsProtocol,
          storage: StorageManagerType) {
         self.siteID = siteID
+        self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
         self.couponStoreMethods = couponStoreMethods
@@ -47,38 +51,53 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                   storage: storage)
     }
 
+    // Provides an array of coupons that are stored locally
+    // It does not accept any sort of pagination
+    // Limited to default page size to match remote results
     @MainActor
-    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let couponsEnabled = await checkStoreCouponSettings()
+    public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
+        return try await provideLocalPointOfSaleCoupons(limit: Constants.defaultPageSize)
+    }
+
+    @MainActor
+    private func provideLocalPointOfSaleCoupons(limit: Int?) async throws -> [POSItem] {
+        let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
 
-        let coupons = await providePointOfSaleCoupons()
+        return fetchLocalCoupons(limit: limit)
+    }
 
-        if !coupons.isEmpty {
-            // Fire-and-forget sync
-            Task.detached {
-                await self.syncCouponsFromRemote(pageNumber: pageNumber)
+    /// Syncs with the remote and provides all currently loaded coupons.
+    /// - Parameter pageNumber: The page number to fetch from the remote.
+    /// - Returns: All currently loaded coupons.
+    @MainActor
+    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        do {
+            // Update local storage with data from the remote
+            let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
+            // Return all local coupons, including updated ones from the remote
+            let coupons = try await provideLocalPointOfSaleCoupons(limit: nil)
+            return .init(items: coupons, hasMorePages: hasMorePages)
+        } catch {
+            if try await checkRemoteStoreCouponSettings() {
+                throw error
+            } else {
+                throw PointOfSaleCouponServiceError.couponsDisabled
             }
-            return .init(items: coupons, hasMorePages: false)
-        } else {
-            // Wait for the sync to complete
-            await syncCouponsFromRemote(pageNumber: pageNumber)
-            let refreshedCoupons = await providePointOfSaleCoupons()
-            return .init(items: refreshedCoupons, hasMorePages: false)
         }
     }
 
     @MainActor
     public func enableCoupons() async throws {
-        _ = await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.enableCouponSetting(siteID: siteID) { result in
                 switch result {
                 case .success:
-                    continuation.resume(returning: true)
+                    continuation.resume(returning: ())
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsEnablingError)
                 }
             }
         }
@@ -87,17 +106,14 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
 private extension PointOfSaleCouponService {
     @MainActor
-    func providePointOfSaleCoupons() async -> [POSItem] {
-        guard let storage = storage else {
-            return []
-        }
-
+    func fetchLocalCoupons(limit: Int? = nil) -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
                                           ascending: false)
 
         let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
                                                                  matching: predicate,
+                                                                 fetchLimit: limit,
                                                                  sortedBy: [descriptor])
 
         do {
@@ -105,40 +121,73 @@ private extension PointOfSaleCouponService {
             let storageCoupons = resultsController.fetchedObjects
             return mapCouponsToPOSItems(coupons: storageCoupons)
         } catch {
-            debugPrint("Failed to load coupons from storage:", error)
+            DDLogError("Failed to load coupons from storage: \(error)")
             return []
         }
     }
 
     func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(), code: coupon.code))
+                .coupon(POSCoupon(
+                    id: UUID(),
+                    code: coupon.code,
+                    summary: coupon.summary(currencySettings: currencySettings)
+                ))
         }
     }
 
-    func syncCouponsFromRemote(pageNumber: Int) async {
-        await withCheckedContinuation { continuation in
+    /// Syncing local coupons storage with remote
+    /// - Parameter pageNumber: Number of page that should be retrieved.
+    /// - Returns: True if there are more pages to sync
+    func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             couponStoreMethods.synchronizeCoupons(
                 siteID: siteID,
                 pageNumber: pageNumber,
-                pageSize: 25,
-                onCompletion: { _ in
-                    continuation.resume()
+                pageSize: Constants.defaultPageSize,
+                onCompletion: { result in
+                    switch result {
+                    case .success(let hasMorePages):
+                        continuation.resume(returning: hasMorePages)
+                    case .failure:
+                        continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
+                    }
                 }
             )
         }
     }
 
-    private func checkStoreCouponSettings() async -> Bool {
-        await withCheckedContinuation { continuation in
+    @MainActor
+    private func checkStoreCouponSettings() async throws -> Bool {
+        let settingID = Constants.enableCouponsSettingID
+        let storageSetting = storage.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
+
+        switch storageSetting?.value {
+        case Constants.enableCouponsSettingValue:
+            return true
+        default:
+            return try await checkRemoteStoreCouponSettings()
+        }
+    }
+
+    private func checkRemoteStoreCouponSettings() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
                 case .failure:
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                 }
             }
         }
+    }
+}
+
+private extension PointOfSaleCouponService {
+    enum Constants {
+        static let defaultPageSize: Int = 25
+        static let enableCouponsSettingID: String = "woocommerce_enable_coupons"
+        static let enableCouponsSettingValue: String = "yes"
     }
 }

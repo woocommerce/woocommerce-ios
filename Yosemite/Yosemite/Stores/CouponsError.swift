@@ -2,6 +2,7 @@ import Foundation
 import Networking
 
 public struct CouponsError: Error, LocalizedError {
+    public let code: String = Constants.invalidCouponCode
     public let message: String
     public let underlyingError: Error
 

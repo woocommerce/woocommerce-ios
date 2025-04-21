@@ -158,13 +158,7 @@ private extension POSSendReceiptView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

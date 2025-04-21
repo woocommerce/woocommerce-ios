@@ -6,23 +6,27 @@ import Yosemite
 struct ChildItemList: View {
     private let parentItem: POSItem
     private let title: String
-    private let itemsStack: ItemsStackState
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    private var itemsController: PointOfSaleItemsControllerProtocol
+    private let itemActionHandler: POSItemActionHandler
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
-        .parent(parentItem, .products)
+        .parent(parentItem)
     }
 
     private var state: ItemListState {
-        itemsStack.itemStates[parentItem] ??
+        itemsController.itemsViewState.itemsStack.itemStates[parentItem] ??
             .loading([])
     }
 
-    init(parentItem: POSItem, title: String, itemsStack: ItemsStackState) {
+    init(parentItem: POSItem,
+         title: String,
+         itemsController: PointOfSaleItemsControllerProtocol,
+         itemActionHandler: POSItemActionHandler) {
         self.parentItem = parentItem
         self.title = title
-        self.itemsStack = itemsStack
+        self.itemsController = itemsController
+        self.itemActionHandler = itemActionHandler
     }
 
     var body: some View {
@@ -34,6 +38,8 @@ struct ChildItemList: View {
                 listView
             case let .error(error):
                 errorView(error: error)
+            case .empty:
+                emptyView
             }
         }
         .background(Color.posSurface)
@@ -42,7 +48,7 @@ struct ChildItemList: View {
             guard state.items.isEmpty else {
                 return
             }
-            await posModel.loadItems(base: node)
+            await itemsController.loadItems(base: node)
         }
     }
 }
@@ -62,13 +68,13 @@ private extension ChildItemList {
         VStack(spacing: 0) {
             headerView
 
-            ItemList(state: state,
-                     itemsStack: itemsStack,
-                     node: node)
+            ItemList(itemsController: itemsController,
+                     node: node,
+                     itemActionHandler: itemActionHandler)
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)
-                    await posModel.refreshItems(base: node)
+                    await itemsController.refreshItems(base: node)
                 }
         }
     }
@@ -77,9 +83,10 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            ScrollView {
-                PointOfSaleItemListEmptyView(base: node)
-            }
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemListType: .products(search: false),
+                    baseItem: node))
         }
     }
 
@@ -93,7 +100,7 @@ private extension ChildItemList {
 
             PointOfSaleItemListErrorView(error: error, onAction: {
                 Task {
-                    await posModel.loadItems(base: node)
+                    await itemsController.loadItems(base: node)
                 }
             })
             .zIndex(1)
@@ -152,14 +159,12 @@ private extension ChildItemList {
                         )
                     )
                 ], hasMoreItems: false)])
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
-        .environment(posModel)
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
+
+    return ChildItemList(parentItem: parentItem,
+                         title: parentProduct.name,
+                         itemsController: itemsController,
+                         itemActionHandler: PointOfSalePreviewItemActionHandler())
 }
 
 @available(iOS 17.0, *)
@@ -175,16 +180,13 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations())
+            parentItem: .error(.errorOnLoadingVariations)
         ])
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        couponsController: PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ChildItemList(parentItem: parentItem, title: parentProduct.name, itemsStack: itemsStack)
-        .environment(posModel)
+    itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
+    return ChildItemList(parentItem: parentItem,
+                         title: parentProduct.name,
+                         itemsController: itemsController,
+                         itemActionHandler: PointOfSalePreviewItemActionHandler())
 }
 
 #endif

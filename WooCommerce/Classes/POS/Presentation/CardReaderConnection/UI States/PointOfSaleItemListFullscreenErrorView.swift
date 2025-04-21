@@ -18,5 +18,5 @@ struct PointOfSaleItemListFullscreenErrorView: View {
 }
 
 #Preview {
-    PointOfSaleItemListFullscreenErrorView(error: .errorOnLoadingProducts(), onAction: nil)
+    PointOfSaleItemListFullscreenErrorView(error: .errorOnLoadingProducts, onAction: nil)
 }

@@ -10,7 +10,15 @@ struct PointOfSaleItemListEmptyView: View {
     @State private var viewWidth: CGFloat = 0
 
     private var shouldShowErrorIcon: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) else {
+            return false
+        }
+        switch viewModel.itemListType {
+        case .coupons, .products(search: false):
+            return true
+        case .products(search: true):
+            return false
+        }
     }
 
     init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {

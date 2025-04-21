@@ -33,18 +33,13 @@ struct PointOfSaleItemListEmptyView: View {
         ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                if shouldShowErrorIcon {
-                    POSErrorExclamationMark(size: .large)
-                } else {
-                    Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: Constants.iconSize, height: Constants.iconSize)
-                        .foregroundColor(.posOnSurfaceVariantHighest)
-                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                }
+                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && keyboard.keyboardHeight <= 0
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                if shouldShowIcon {
+                    icon
+
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                }
 
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
@@ -83,8 +78,23 @@ struct PointOfSaleItemListEmptyView: View {
         }
         .multilineTextAlignment(.center)
         .padding(.bottom, keyboard.keyboardHeight <= 0 ? floatingControlAreaSize.height : 0)
+        .animation(.default, value: keyboard.keyboardHeight)
         .measureWidth { width in
             viewWidth = width
+        }
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        if shouldShowErrorIcon {
+            POSErrorExclamationMark(size: .large)
+                .accessibilityHidden(true)
+        } else {
+            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                .foregroundColor(.posOnSurfaceVariantHighest)
         }
     }
 }

@@ -216,4 +216,8 @@ public enum FeatureFlag: Int {
     /// Allows searching products in POS
     ///
     case searchProductsInPOS
+
+    /// Shows popular products in the pre-search UI in POS, along with using final designs.
+    ///
+    case searchProductsInPOSPt2PopularProducts
 }

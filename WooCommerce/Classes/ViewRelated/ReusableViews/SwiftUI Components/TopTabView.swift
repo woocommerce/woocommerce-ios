@@ -155,6 +155,14 @@ struct TopTabView<Content: View>: View {
                                                     /// Append a new width when the number of tabs increases.
                                                     tabWidths.append(geometry.size.width)
                                                 }
+
+                                                if index == selectedTab {
+                                                    /// The `ForEach` loop might iterate in reverse.
+                                                    /// As a result, `tabWidths` could be incomplete by the time the selected index is reached.
+                                                    /// It's safer to rely on the geometry of a specific tab instead.
+                                                    underlineTabWith(tabGeometry: geometry)
+                                                    scrollFocusTab(in: scrollViewProxy, at: index)
+                                                }
                                             }
                                         })
                                 }
@@ -170,10 +178,10 @@ struct TopTabView<Content: View>: View {
                             )
                             .onChange(of: selectedTab, perform: { newSelectedTab in
                                 withAnimation {
-                                    scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
-                                    underlineOffset = calculateOffset(index: newSelectedTab)
+                                    selectTab(in: scrollViewProxy, at: newSelectedTab)
                                 }
                             })
+                            .coordinateSpace(name: Constants.tabsHorizontalStackNameSpace)
                         }
                         .padding(.horizontal, tabsContainerHorizontalPadding)
                     }
@@ -273,6 +281,27 @@ struct TopTabView<Content: View>: View {
         }
     }
 
+    private func selectTab(in scrollView: ScrollViewProxy, at index: Int) {
+        let offset = calculateOffset(index: index)
+
+        scrollFocusTab(in: scrollView, at: index)
+        underlineTabAt(offset: offset)
+    }
+
+    private func underlineTabAt(offset: CGFloat) {
+        underlineOffset = offset
+    }
+
+    private func underlineTabWith(tabGeometry: GeometryProxy) {
+        let frame = tabGeometry.frame(in: .named(Constants.tabsHorizontalStackNameSpace))
+        let offset = frame.minX - tabPadding
+        underlineTabAt(offset: offset)
+    }
+
+    private func scrollFocusTab(in scrollView: ScrollViewProxy, at index: Int) {
+        scrollView.scrollTo(index, anchor: .center)
+    }
+
     enum DragState {
         case inactive
         case dragging(translation: CGSize)
@@ -303,6 +332,10 @@ struct TopTabView<Content: View>: View {
 
     private enum Colors {
         static var selected: Color { .withColorStudio(name: .wooCommercePurple, shade: .shade50) }
+    }
+
+    private enum Constants {
+        static var tabsHorizontalStackNameSpace: String { "TabsHorizontalStack" }
     }
 }
 

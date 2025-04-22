@@ -20,6 +20,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
+            static let source = "source"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -31,8 +32,11 @@ extension WooAnalyticsEvent {
                               properties: [Key.paymentsOnboardingState: onboardingState.reasonForAnalytics])
         }
 
-        static func addItemToCart(type: CartItemType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [Key.itemType: type.analyticsValue])
+        static func addItemToCart(type: CartItemType, itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [
+                Key.itemType: type.analyticsValue,
+                Key.source: itemListType.addItemSourceAnalyticsValue
+            ])
         }
 
         static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
@@ -95,6 +99,16 @@ private extension ItemListType {
             return "products"
         case .coupons:
             return "coupons"
+        }
+    }
+
+    var addItemSourceAnalyticsValue: String {
+        switch self {
+        case .products(search: true):
+            return "search_result"
+        case .products(search: false),
+                .coupons:
+            return "list"
         }
     }
 }

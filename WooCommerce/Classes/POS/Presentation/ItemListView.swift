@@ -274,7 +274,7 @@ private extension ItemListView {
     private var actionHandler: POSItemActionHandler {
         switch selectedItemListType {
         case .products(search: false), .coupons:
-            StandardPOSItemActionHandler(posModel: posModel)
+            StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
         case .products(search: true):
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
         }

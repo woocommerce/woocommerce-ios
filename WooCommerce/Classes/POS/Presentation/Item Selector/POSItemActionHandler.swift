@@ -11,18 +11,18 @@ protocol POSItemActionHandler {
     /// Tracks analytics for a tap on an item
     /// - Parameter for: The item that was tapped
     /// - Parameter using: The analytics service to track to
-    func trackTapAnalytics(for item: POSItem, using analytics: Analytics)
+    func trackTapAnalytics(for item: POSItem, itemListType: ItemListType, using analytics: Analytics)
 }
 
 @available(iOS 17.0, *)
 extension POSItemActionHandler {
     /// Default implementation for analytics tracking – it still needs to be called
-    func trackTapAnalytics(for item: POSItem, using analytics: Analytics) {
+    func trackTapAnalytics(for item: POSItem, itemListType: ItemListType, using analytics: Analytics) {
         switch item {
         case .simpleProduct:
-            analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct))
+            analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct, itemListType: itemListType))
         case .variation:
-            analytics.track(event: .PointOfSale.addItemToCart(type: .variation))
+            analytics.track(event: .PointOfSale.addItemToCart(type: .variation, itemListType: itemListType))
         case .coupon:
             analytics.track(.pointOfSaleCouponAddedToCart)
         default:
@@ -36,16 +36,18 @@ extension POSItemActionHandler {
 final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let analytics: Analytics
+    private let itemListType: ItemListType
 
-    init(posModel: PointOfSaleAggregateModelProtocol, analytics: Analytics = ServiceLocator.analytics) {
+    init(posModel: PointOfSaleAggregateModelProtocol, itemListType: ItemListType, analytics: Analytics = ServiceLocator.analytics) {
         self.posModel = posModel
+        self.itemListType = itemListType
         self.analytics = analytics
     }
 
     func handleTap(_ item: POSItem) {
         posModel.addToCart(item)
 
-        trackTapAnalytics(for: item, using: analytics)
+        trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
     }
 }
 
@@ -71,6 +73,6 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
 
         posModel.addToCart(item)
-        trackTapAnalytics(for: item, using: analytics)
+        trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
     }
 }

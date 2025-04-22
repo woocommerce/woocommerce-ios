@@ -181,6 +181,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
+        XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 1)
         XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 1)
         XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)
@@ -204,6 +205,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
+        XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 3)
         XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 2)
         XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)
@@ -227,6 +229,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
+        XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, true)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 5)
         XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 2)
         XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)

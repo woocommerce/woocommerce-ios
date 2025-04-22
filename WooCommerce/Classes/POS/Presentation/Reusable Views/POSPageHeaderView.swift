@@ -139,6 +139,8 @@ private enum Constants {
 
 @available(iOS 17.0, *)
 #Preview {
+    @Previewable @State var isProductsSelected: Bool = true
+
     VStack(spacing: 20) {
         // Header without back button.
         POSPageHeaderView(
@@ -210,12 +212,11 @@ private enum Constants {
             .foregroundColor(.posOnSurface)
         }
 
-        @State var isProductsSelected: Bool = true
         // Header with two items and trailing content.
         POSPageHeaderView(
             items: [
-                .init(title: "Products", isSelected: isProductsSelected),
-                .init(title: "Coupons", isSelected: !isProductsSelected)
+                .init(title: "Products", isSelected: isProductsSelected) { isProductsSelected.toggle() },
+                .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ]
         ) {
             HStack(spacing: 16) {

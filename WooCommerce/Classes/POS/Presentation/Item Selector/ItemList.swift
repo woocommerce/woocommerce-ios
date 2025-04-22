@@ -101,10 +101,8 @@ struct ItemList<HeaderView: View>: View {
 
                                 // Restore scroll position
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    withAnimation {
                                         print("🍍 Scrolling to item at index: \(safeIndex)")
                                         scrollViewProxy.scrollTo("\(newKey)-\(safeIndex)", anchor: .top)
-                                    }
                                 }
                             } else {
                                 print("🍍 No saved position for \(newKey), resetting to 0")

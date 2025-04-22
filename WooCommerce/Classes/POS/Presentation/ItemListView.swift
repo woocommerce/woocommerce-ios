@@ -298,12 +298,12 @@ private extension ItemListView {
         case .products:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .products(search: false),
+                    itemListType: selectedItemListType,
                     baseItem: .root))
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .coupons,
+                    itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
             }

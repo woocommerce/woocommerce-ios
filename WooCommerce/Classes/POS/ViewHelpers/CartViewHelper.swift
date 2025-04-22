@@ -21,6 +21,12 @@ struct CartViewHelper {
     func shouldShowClearCartButton(cart: Cart, orderStage: PointOfSaleOrderStage) -> Bool {
         cart.isNotEmpty && orderStage == .building
     }
+
+    func shouldShowCheckout(orderStage: PointOfSaleOrderStage, cart: Cart) -> Bool {
+        guard case .building = orderStage else { return false }
+
+        return cart.purchasableItems.isNotEmpty
+    }
 }
 
 private extension PointOfSalePaymentState {

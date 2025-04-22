@@ -17,6 +17,7 @@ struct ItemList<HeaderView: View>: View {
 
     // Navigation only uses this on iOS 17
     @State private var activeNavigationItem: POSItem? = nil
+    @State private var scrollPositions: [ScrollPositionKey: CGFloat] = [:]
     @State private var currentPosition: CGFloat = 0
 
     var state: ItemListState? {
@@ -54,37 +55,50 @@ struct ItemList<HeaderView: View>: View {
 
     var body: some View {
         ZStack {
-            InfiniteScrollView(
-                triggerDeterminer: infiniteScrollTriggerDeterminer,
-                currentPosition: $currentPosition,
-                loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = state,
-                          hasMoreItems
-                    else { return }
-                    await itemsController.loadNextItems(base: node)
-                },
-                content: {
-                    LazyVStack(spacing: Constants.itemSpacing) {
-                        headerView
+            ScrollViewReader { scrollViewProxy in
+                InfiniteScrollView(
+                    triggerDeterminer: infiniteScrollTriggerDeterminer,
+                    currentPosition: $currentPosition,
+                    loadMore: {
+                        guard case .loaded(_, let hasMoreItems) = state,
+                              hasMoreItems
+                        else { return }
+                        await itemsController.loadNextItems(base: node)
+                    },
+                    content: {
+                        LazyVStack(spacing: Constants.itemSpacing) {
+                            headerView
 
-                        headerRows
+                            headerRows
 
-                        if let state {
-                            ForEach(state.items) { item in
-                                ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
+                            if let state {
+                                ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
+                                    ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
+                                        .id("\(scrollPositionKey)-\(index)")
+                                }
+                            }
+
+                            footerRows
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, Constants.itemListPadding)
+                        .padding(.bottom, floatingControlAreaSize.height)
+                        .onChange(of: scrollPositionKey) { previousScrollPositionKey, newScrollPositionKey in
+                            // Saves old key's position, and restore position for new key, if any:
+                            scrollPositions[previousScrollPositionKey] = currentPosition
+                            if let savedPosition = scrollPositions[newScrollPositionKey], let state = state {
+                                currentPosition = savedPosition
+
+                                // Restore position
+                                let itemHeight: CGFloat = 112
+                                let targetIndex = Int(savedPosition / itemHeight)
+                                let safeIndex = min(targetIndex, (state.items.count) - 1)
+                                scrollViewProxy.scrollTo("\(newScrollPositionKey)-\(safeIndex)", anchor: .top)
                             }
                         }
-
-                        footerRows
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, Constants.itemListPadding)
-                    .padding(.bottom, floatingControlAreaSize.height)
-                    .onChange(of: scrollPositionKey) { _, newKey in
-                        debugPrint("🍍 scrollposkey: \(newKey) - currentPos: \(currentPosition)" )
-                    }
-                }
-            )
+                )
+            }
 
             // Programmatic navigation overlay for iOS 17
             if #available(iOS 18.0, *) {

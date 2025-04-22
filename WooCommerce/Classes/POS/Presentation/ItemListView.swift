@@ -254,12 +254,12 @@ private extension ItemListView {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             }
 
             TextField(text: $searchTerm) {
                 Text(Localization.searchFieldLabel)
             }
+            .font(POSFontStyle.posBodyLargeRegular())
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)

@@ -184,6 +184,9 @@ struct TopTabView<Content: View>: View {
                             .coordinateSpace(name: Constants.tabsHorizontalStackNameSpace)
                         }
                         .padding(.horizontal, tabsContainerHorizontalPadding)
+                        .onAppear {
+                            selectTab(in: scrollViewProxy, at: selectedTab)
+                        }
                     }
                 }
                 Divider()

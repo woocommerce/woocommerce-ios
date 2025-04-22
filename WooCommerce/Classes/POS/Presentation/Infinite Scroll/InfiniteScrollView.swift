@@ -4,19 +4,23 @@ import SwiftUI
 struct InfiniteScrollView<Content: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
 
+    private let scrollPositionKey: ScrollPositionKey
     private let triggerDeterminer: InfiniteScrollTriggerDeterminable
     private let loadMore: () async -> Void
     private let content: Content
 
     /// - Parameters:
+    ///   - ...
     ///   - triggerDeterminer: Determines when to trigger the infinite scroll load more action.
     ///   - loadMore: Async closure that loads more content when triggered.
     ///   - content: The main content view to display in the scroll view.
     init(
+        scrollPositionKey: ScrollPositionKey,
         triggerDeterminer: InfiniteScrollTriggerDeterminable,
         loadMore: @escaping () async -> Void,
         @ViewBuilder content: () -> Content
     ) {
+        self.scrollPositionKey = scrollPositionKey
         self.triggerDeterminer = triggerDeterminer
         self.loadMore = loadMore
         self.content = content()
@@ -73,6 +77,7 @@ private struct PreviewWrapper: View {
 
     var body: some View {
         InfiniteScrollView(
+            scrollPositionKey: .products,
             triggerDeterminer: ThresholdInfiniteScrollTriggerDeterminer(),
             loadMore: {
                 isLoading = true

@@ -3,6 +3,11 @@ import enum Yosemite.POSItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
+enum ScrollPositionKey {
+    case products
+    case coupons
+}
+
 /// Displays a list of POS items or placeholder card based on the given state.
 @available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
@@ -27,6 +32,18 @@ struct ItemList<HeaderView: View>: View {
     private let headerView: HeaderView
     private let itemActionHandler: POSItemActionHandler
 
+    @State private var scrollPositions: [ScrollPositionKey: CGFloat] = [:]
+    @State private var currentPosition: CGFloat = 0
+
+    private var scrollPositionKey: ScrollPositionKey {
+        switch itemsController {
+        case is PointOfSaleItemsController:
+            return .products
+        default:
+            return .coupons
+        }
+    }
+
     init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
          itemActionHandler: POSItemActionHandler,
@@ -39,33 +56,58 @@ struct ItemList<HeaderView: View>: View {
 
     var body: some View {
         ZStack {
-            InfiniteScrollView(
-                triggerDeterminer: infiniteScrollTriggerDeterminer,
-                loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = state,
-                          hasMoreItems
-                    else { return }
-                    await itemsController.loadNextItems(base: node)
-                },
-                content: {
-                    LazyVStack(spacing: Constants.itemSpacing) {
-                        headerView
+            ScrollViewReader { scrollViewProxy in
+                InfiniteScrollView(
+                    scrollPositionKey: scrollPositionKey,
+                    triggerDeterminer: infiniteScrollTriggerDeterminer,
+                    loadMore: {
+                        guard case .loaded(_, let hasMoreItems) = state,
+                              hasMoreItems
+                        else { return }
+                        await itemsController.loadNextItems(base: node)
+                    },
+                    content: {
+                        LazyVStack(spacing: Constants.itemSpacing) {
+                            headerView
+                            headerRows
 
-                        headerRows
+                            if let state {
+                                ForEach(state.items) { item in
+                                    ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
+                                        .id("content")
+                                }
+                            }
 
-                        if let state {
-                            ForEach(state.items) { item in
-                                ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
+                            footerRows
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, Constants.itemListPadding)
+                        .padding(.bottom, floatingControlAreaSize.height)
+                        .onChange(of: scrollPositionKey) { oldKey, newKey in
+                            print("🍍 Key changed from \(String(describing: oldKey)) to \(newKey)")
+
+                            // Save current position for old key
+                            scrollPositions[oldKey] = currentPosition
+
+                            // Restore position for new key
+                            if let savedPosition = scrollPositions[newKey] {
+                                currentPosition = savedPosition
+
+                                //
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    withAnimation {
+                                        scrollViewProxy.scrollTo("content", anchor: .top)
+                                        let offset = UnitPoint(x: 0, y: savedPosition)
+                                        scrollViewProxy.scrollTo("content", anchor: offset)
+                                    }
+                                }
+                            } else {
+                                currentPosition = 0
                             }
                         }
-
-                        footerRows
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, Constants.itemListPadding)
-                    .padding(.bottom, floatingControlAreaSize.height)
-                }
-            )
+                )
+            }
 
             // Programmatic navigation overlay for iOS 17
             if #available(iOS 18.0, *) {

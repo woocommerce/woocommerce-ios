@@ -86,14 +86,19 @@ struct ItemList<HeaderView: View>: View {
                         .onChange(of: scrollPositionKey) { previousScrollPositionKey, newScrollPositionKey in
                             // Saves old key's position, and restore position for new key, if any:
                             scrollPositions[previousScrollPositionKey] = currentPosition
+
                             if let savedPosition = scrollPositions[newScrollPositionKey], let state = state {
-                                // Update position, then scroll to saved one
+                                // Updates position for this key, then scrolls to saved position
                                 currentPosition = savedPosition
 
                                 let itemHeight: CGFloat = PointOfSaleItemListCardConstants.productCardSize
                                 let targetIndex = Int(savedPosition / itemHeight)
                                 let safeIndex = min(targetIndex, (state.items.count) - 1)
                                 scrollViewProxy.scrollTo("\(newScrollPositionKey)-\(safeIndex)", anchor: .top)
+                            } else {
+                                // First time seeing this key, set to top position
+                                currentPosition = 0
+                                scrollViewProxy.scrollTo("\(newScrollPositionKey)-0", anchor: .top)
                             }
                         }
                     }

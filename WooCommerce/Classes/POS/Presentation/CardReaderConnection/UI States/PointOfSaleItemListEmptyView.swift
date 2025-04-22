@@ -173,8 +173,8 @@ struct PointOfSaleItemListEmptyViewModel {
         )
 
         static let emptyCouponsTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle",
-            value: "No coupons found.",
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2",
+            value: "No coupons found",
             comment: "Text appearing on the coupon list screen when there's no coupons found."
         )
         static let emptyCouponsSubtitle = NSLocalizedString(

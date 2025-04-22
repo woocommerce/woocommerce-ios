@@ -135,6 +135,29 @@ struct PointOfSaleCouponServiceTests {
         #expect(coupons.items.count == 2)
     }
 
+    @Test func providePointOfSaleCoupons_when_coupons_expired_then_only_provides_non_expired_coupons() async throws {
+        // Given
+        let now = Date()
+        let noExpiration: Date? = nil
+        let expiresTomorrow: Date = Calendar.current.date(byAdding: .day, value: 1, to: now) ?? Date()
+        let expiredYesterday: Date = Calendar.current.date(byAdding: .day, value: -1, to: now) ?? Date()
+
+        let validCouponWithNoExpiration = Coupon.fake().copy(siteID: 123, code: "ok_coupon_forever", dateExpires: noExpiration)
+        storage.insertSampleCoupon(readOnlyCoupon: validCouponWithNoExpiration)
+
+        let validCouponExpiresTomorrow = Coupon.fake().copy(siteID: 123, code: "ok_coupon_for_some_time", dateExpires: expiresTomorrow)
+        storage.insertSampleCoupon(readOnlyCoupon: validCouponExpiresTomorrow)
+
+        let expiredCoupon = Coupon.fake().copy(siteID: 123, code: "expired_coupon", dateExpires: expiredYesterday)
+        storage.insertSampleCoupon(readOnlyCoupon: expiredCoupon)
+
+        // When
+        let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+
+        // Then
+        #expect(coupons.items.count == 2)
+    }
+
     @Test func providePointOfSaleCoupons_when_no_coupons_then_synchronize_called() async throws {
         try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
 

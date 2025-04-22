@@ -164,6 +164,30 @@ struct CartViewHelperTests {
                                    orderState: .error(.other("Some other error"), {}),
                                    couponItem: coupon) == .idle)
     }
+
+    @Test func shouldShowCheckout_when_not_building_stage_returns_false() async throws {
+        // Given
+        let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.shouldShowCheckout(orderStage: .finalizing, cart: cart) == false)
+    }
+
+    @Test func shouldShowCheckout_when_building_stage_and_empty_cart_returns_false() async throws {
+        // Given
+        let cart = Cart()
+
+        // When, Then
+        #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == false)
+    }
+
+    @Test func shouldShowCheckout_when_building_stage_and_cart_has_purchasable_items_returns_true() async throws {
+        // Given
+        let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)
+    }
 }
 
 private func makeItem() -> Cart.PurchasableItem {

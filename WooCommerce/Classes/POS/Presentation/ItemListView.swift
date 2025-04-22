@@ -174,8 +174,11 @@ private extension ItemListView {
                             }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            selectedItemListType = .products(search: true)
-                            isSearchFieldFocused = true
+                            withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                selectedItemListType = .products(search: true)
+                            } completion: {
+                                isSearchFieldFocused = true
+                            }
                         }
                         .renderedIf(!shouldShowSearchField)
                         .transition(.opacity.combined(with: .scale))
@@ -210,7 +213,6 @@ private extension ItemListView {
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
@@ -224,6 +226,7 @@ private extension ItemListView {
         var items = [
             POSPageHeaderItem(
                 title: Localization.productsTitle,
+                isSelected: selectedItemListType.isProducts,
                 action: {
                     displayItemListType(.products(search: searchTerm.isNotEmpty))
                 }
@@ -234,6 +237,7 @@ private extension ItemListView {
             items.append(
                 POSPageHeaderItem(
                     title: Localization.couponsTitle,
+                    isSelected: selectedItemListType.isCoupons,
                     action: {
                         displayItemListType(.coupons)
                     }
@@ -249,7 +253,9 @@ private extension ItemListView {
             Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
-                selectedItemListType = .products(search: false)
+                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                    selectedItemListType = .products(search: false)
+                }
             } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
@@ -352,12 +358,12 @@ private extension ItemListView {
         case .products:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .products(search: false),
+                    itemListType: selectedItemListType,
                     baseItem: .root))
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .coupons,
+                    itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
             }
@@ -395,7 +401,9 @@ private extension ItemListView {
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
-        selectedItemListType = itemListType
+        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+            selectedItemListType = itemListType
+        }
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)

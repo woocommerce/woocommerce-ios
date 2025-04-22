@@ -28,7 +28,7 @@ struct ItemList<HeaderView: View>: View {
             itemsController.itemsViewState.itemsStack.itemStates[posItem]
         }
     }
-    
+
     private var scrollPositionKey: ScrollPositionKey {
         switch itemsController {
         case is PointOfSaleItemsController:
@@ -87,10 +87,10 @@ struct ItemList<HeaderView: View>: View {
                             // Saves old key's position, and restore position for new key, if any:
                             scrollPositions[previousScrollPositionKey] = currentPosition
                             if let savedPosition = scrollPositions[newScrollPositionKey], let state = state {
+                                // Update position, then scroll to saved one
                                 currentPosition = savedPosition
 
-                                // Restore position
-                                let itemHeight: CGFloat = 112
+                                let itemHeight: CGFloat = PointOfSaleItemListCardConstants.productCardSize
                                 let targetIndex = Int(savedPosition / itemHeight)
                                 let safeIndex = min(targetIndex, (state.items.count) - 1)
                                 scrollViewProxy.scrollTo("\(newScrollPositionKey)-\(safeIndex)", anchor: .top)

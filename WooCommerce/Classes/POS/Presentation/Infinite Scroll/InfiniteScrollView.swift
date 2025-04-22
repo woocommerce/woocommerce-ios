@@ -4,7 +4,7 @@ import SwiftUI
 struct InfiniteScrollView<Content: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
     @Binding var currentPosition: CGFloat
-    
+
     private let triggerDeterminer: InfiniteScrollTriggerDeterminable
     private let loadMore: () async -> Void
     private let content: Content
@@ -34,8 +34,7 @@ struct InfiniteScrollView<Content: View>: View {
                             .onChange(of: proxy.frame(in: .named(Constants.scrollViewNamespace)).maxY) { maxY in
                                 let contentHeight = proxy.size.height
                                 let scrollPosition = contentHeight - maxY
-                                
-                                //
+
                                 currentPosition = scrollPosition
 
                                 if triggerDeterminer

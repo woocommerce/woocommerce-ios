@@ -3,7 +3,8 @@ import SwiftUI
 /// A scroll view that supports infinite scrolling by triggering a load more action when the user scrolls near the bottom.
 struct InfiniteScrollView<Content: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
-
+    @Binding var currentPosition: CGFloat
+    
     private let triggerDeterminer: InfiniteScrollTriggerDeterminable
     private let loadMore: () async -> Void
     private let content: Content
@@ -14,10 +15,12 @@ struct InfiniteScrollView<Content: View>: View {
     ///   - content: The main content view to display in the scroll view.
     init(
         triggerDeterminer: InfiniteScrollTriggerDeterminable,
+        currentPosition: Binding<CGFloat>,
         loadMore: @escaping () async -> Void,
         @ViewBuilder content: () -> Content
     ) {
         self.triggerDeterminer = triggerDeterminer
+        self._currentPosition = currentPosition
         self.loadMore = loadMore
         self.content = content()
     }
@@ -31,6 +34,9 @@ struct InfiniteScrollView<Content: View>: View {
                             .onChange(of: proxy.frame(in: .named(Constants.scrollViewNamespace)).maxY) { maxY in
                                 let contentHeight = proxy.size.height
                                 let scrollPosition = contentHeight - maxY
+                                
+                                //
+                                currentPosition = scrollPosition
 
                                 if triggerDeterminer
                                     .shouldTriggerInfiniteScroll(
@@ -74,6 +80,7 @@ private struct PreviewWrapper: View {
     var body: some View {
         InfiniteScrollView(
             triggerDeterminer: ThresholdInfiniteScrollTriggerDeterminer(),
+            currentPosition: .constant(0),
             loadMore: {
                 isLoading = true
                 try? await Task.sleep(nanoseconds: 1_000_000_000)

@@ -3,6 +3,11 @@ import enum Yosemite.POSItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
+enum ScrollPositionKey {
+    case products
+    case coupons
+}
+
 /// Displays a list of POS items or placeholder card based on the given state.
 @available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
@@ -12,6 +17,7 @@ struct ItemList<HeaderView: View>: View {
 
     // Navigation only uses this on iOS 17
     @State private var activeNavigationItem: POSItem? = nil
+    @State private var currentPosition: CGFloat = 0
 
     var state: ItemListState? {
         switch node {
@@ -19,6 +25,15 @@ struct ItemList<HeaderView: View>: View {
             itemsController.itemsViewState.itemsStack.root
         case .parent(let posItem):
             itemsController.itemsViewState.itemsStack.itemStates[posItem]
+        }
+    }
+    
+    private var scrollPositionKey: ScrollPositionKey {
+        switch itemsController {
+        case is PointOfSaleItemsController:
+            return .products
+        default:
+            return .coupons
         }
     }
 
@@ -41,6 +56,7 @@ struct ItemList<HeaderView: View>: View {
         ZStack {
             InfiniteScrollView(
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
+                currentPosition: $currentPosition,
                 loadMore: {
                     guard case .loaded(_, let hasMoreItems) = state,
                           hasMoreItems
@@ -64,6 +80,9 @@ struct ItemList<HeaderView: View>: View {
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, Constants.itemListPadding)
                     .padding(.bottom, floatingControlAreaSize.height)
+                    .onChange(of: scrollPositionKey) { _, newKey in
+                        debugPrint("🍍 scrollposkey: \(newKey) - currentPos: \(currentPosition)" )
+                    }
                 }
             )
 

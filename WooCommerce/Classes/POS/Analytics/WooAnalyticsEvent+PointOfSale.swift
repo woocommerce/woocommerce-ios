@@ -21,6 +21,7 @@ extension WooAnalyticsEvent {
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
             static let source = "source"
+            static let search = "search"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -84,6 +85,14 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Key.itemListType: itemListType.analyticsValue
                               ])
+        }
+
+        static func pointOfSaleItemsNextPageLoaded(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleItemsNextPageLoaded,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue,
+                                Key.search: itemListType.isSearching
+            ])
         }
     }
 }

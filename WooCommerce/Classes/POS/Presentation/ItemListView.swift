@@ -273,7 +273,11 @@ private extension ItemListView {
         ItemList(
             itemsController: itemsController,
             node: .root,
-            itemActionHandler: actionHandler
+            itemActionHandler: actionHandler,
+            willLoadMore: {
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: selectedItemListType))
+            }
         )
         .refreshable {
             trackPullToRefresh()

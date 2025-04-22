@@ -58,6 +58,7 @@ struct PointOfSaleEntryPointView: View {
                 searchHistoryService: searchHistoryService)
         }
         .environmentObject(posModalManager)
+        .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }

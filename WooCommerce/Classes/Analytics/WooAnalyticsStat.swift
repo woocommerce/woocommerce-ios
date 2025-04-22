@@ -1307,6 +1307,7 @@ enum WooAnalyticsStat: String {
     case pointOfSaleCouponsPullToRefresh = "coupons_pull_to_refresh"
     case pointOfSaleCouponAddedToCart = "coupon_added_to_cart"
     case pointOfSaleCouponRemovedFromCart = "coupon_removed_from_cart"
+    case pointOfSaleSearchButtonTapped = "search_button_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

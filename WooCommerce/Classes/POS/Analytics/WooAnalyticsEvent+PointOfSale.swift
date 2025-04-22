@@ -10,6 +10,7 @@ extension WooAnalyticsEvent {
         /// Event property Key.
         private enum Key {
             static let paymentsOnboardingState = "onboarding_state"
+            static let itemListType = "item_list_type"
             static let itemType = "product_type"
             static let itemsInCart = "items_in_cart"
             static let couponsInCart = "coupons_in_cart"
@@ -66,6 +67,13 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
             ])
         }
+
+        static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSearchButtonTapped,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue
+                              ])
+        }
     }
 }
 
@@ -76,6 +84,17 @@ private extension WooAnalyticsEvent.PointOfSale.CartItemType {
             return "simple"
         case .variation:
             return "variation"
+        }
+    }
+}
+
+private extension ItemListType {
+    var analyticsValue: String {
+        switch self {
+        case .products:
+            return "products"
+        case .coupons:
+            return "coupons"
         }
     }
 }

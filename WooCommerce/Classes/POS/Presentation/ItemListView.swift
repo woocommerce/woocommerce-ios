@@ -167,6 +167,8 @@ private extension ItemListView {
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
+                                    itemListType: selectedItemListType))
                                 selectedItemListType = .products(search: true)
                             } completion: {
                                 isSearchFieldFocused = true

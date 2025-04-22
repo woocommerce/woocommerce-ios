@@ -401,9 +401,7 @@ private extension ItemListView {
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
-        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-            selectedItemListType = itemListType
-        }
+        selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)

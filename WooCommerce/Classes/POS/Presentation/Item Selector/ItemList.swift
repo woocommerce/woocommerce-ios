@@ -59,6 +59,7 @@ struct ItemList<HeaderView: View>: View {
             ScrollViewReader { scrollViewProxy in
                 InfiniteScrollView(
                     scrollPositionKey: scrollPositionKey,
+                    currentPosition: $currentPosition,
                     triggerDeterminer: infiniteScrollTriggerDeterminer,
                     loadMore: {
                         guard case .loaded(_, let hasMoreItems) = state,
@@ -72,9 +73,9 @@ struct ItemList<HeaderView: View>: View {
                             headerRows
 
                             if let state {
-                                ForEach(state.items) { item in
+                                ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
                                     ItemListRow(item: item, itemActionHandler: itemActionHandler, activeNavigationItem: $activeNavigationItem)
-                                        .id("content")
+                                        .id("\(scrollPositionKey)-\(index)") // Unique ID per view type
                                 }
                             }
 
@@ -90,18 +91,23 @@ struct ItemList<HeaderView: View>: View {
                             scrollPositions[oldKey] = currentPosition
 
                             // Restore position for new key
-                            if let savedPosition = scrollPositions[newKey] {
+                            if let savedPosition = scrollPositions[newKey], let state = state {
                                 currentPosition = savedPosition
 
-                                //
+                                // Calculate which item to scroll to based on saved position
+                                let itemHeight: CGFloat = 112 // Ideal height of each item, we may need to account for dimensions here.
+                                let targetIndex = Int(savedPosition / itemHeight)
+                                let safeIndex = min(targetIndex, state.items.count - 1)
+
+                                // Restore scroll position
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                     withAnimation {
-                                        scrollViewProxy.scrollTo("content", anchor: .top)
-                                        let offset = UnitPoint(x: 0, y: savedPosition)
-                                        scrollViewProxy.scrollTo("content", anchor: offset)
+                                        print("🍍 Scrolling to item at index: \(safeIndex)")
+                                        scrollViewProxy.scrollTo("\(newKey)-\(safeIndex)", anchor: .top)
                                     }
                                 }
                             } else {
+                                print("🍍 No saved position for \(newKey), resetting to 0")
                                 currentPosition = 0
                             }
                         }

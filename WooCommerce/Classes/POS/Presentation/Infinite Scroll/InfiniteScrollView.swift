@@ -3,6 +3,7 @@ import SwiftUI
 /// A scroll view that supports infinite scrolling by triggering a load more action when the user scrolls near the bottom.
 struct InfiniteScrollView<Content: View>: View {
     @State private var scrollViewHeight: CGFloat = 0
+    @Binding var currentPosition: CGFloat  // Report position back
 
     private let scrollPositionKey: ScrollPositionKey
     private let triggerDeterminer: InfiniteScrollTriggerDeterminable
@@ -16,11 +17,13 @@ struct InfiniteScrollView<Content: View>: View {
     ///   - content: The main content view to display in the scroll view.
     init(
         scrollPositionKey: ScrollPositionKey,
+        currentPosition: Binding<CGFloat>, // Pass bind through
         triggerDeterminer: InfiniteScrollTriggerDeterminable,
         loadMore: @escaping () async -> Void,
         @ViewBuilder content: () -> Content
     ) {
         self.scrollPositionKey = scrollPositionKey
+        self._currentPosition = currentPosition
         self.triggerDeterminer = triggerDeterminer
         self.loadMore = loadMore
         self.content = content()
@@ -34,11 +37,14 @@ struct InfiniteScrollView<Content: View>: View {
                         Color.clear
                             .onChange(of: proxy.frame(in: .named(Constants.scrollViewNamespace)).maxY) { maxY in
                                 let contentHeight = proxy.size.height
-                                let scrollPosition = contentHeight - maxY
+                                let newScrollPosition = contentHeight - maxY
+
+                                // Update the binding
+                                currentPosition = newScrollPosition
 
                                 if triggerDeterminer
                                     .shouldTriggerInfiniteScroll(
-                                        scrollPosition: scrollPosition,
+                                        scrollPosition: newScrollPosition,
                                         scrollViewHeight: scrollViewHeight,
                                         contentHeight: contentHeight
                                     ) {
@@ -78,6 +84,7 @@ private struct PreviewWrapper: View {
     var body: some View {
         InfiniteScrollView(
             scrollPositionKey: .products,
+            currentPosition: .constant(0),
             triggerDeterminer: ThresholdInfiniteScrollTriggerDeterminer(),
             loadMore: {
                 isLoading = true

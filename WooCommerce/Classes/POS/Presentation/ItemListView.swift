@@ -169,8 +169,11 @@ private extension ItemListView {
                             }
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            selectedItemListType = .products(search: true)
-                            isSearchFieldFocused = true
+                            withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                selectedItemListType = .products(search: true)
+                            } completion: {
+                                isSearchFieldFocused = true
+                            }
                         }
                         .renderedIf(!shouldShowSearchField)
                         .transition(.opacity.combined(with: .scale))
@@ -205,7 +208,6 @@ private extension ItemListView {
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
@@ -243,7 +245,9 @@ private extension ItemListView {
             Button(action: {
                 searchTerm = ""
                 isSearchFieldFocused = false
-                selectedItemListType = .products(search: false)
+                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                    selectedItemListType = .products(search: false)
+                }
             }) {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
@@ -376,7 +380,9 @@ private extension ItemListView {
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
-        selectedItemListType = itemListType
+        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+            selectedItemListType = itemListType
+        }
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)

@@ -90,7 +90,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
     var originAddressLines: [String]? {
-        originAddress.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.originAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            originAddress.components(separatedBy: ", ")
+        }
     }
 
     /// This property can be set to display a notice with the provided label about the origin address status.
@@ -98,7 +102,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
-        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            (destinationAddress.value?.formattedPostalAddress)?.components(separatedBy: ", ")
+        }
     }
 
     /// Possible statuses for a Woo Shipping destination address.

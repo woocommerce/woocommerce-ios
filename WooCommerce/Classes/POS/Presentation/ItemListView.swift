@@ -245,11 +245,11 @@ private extension ItemListView {
 
     var searchField: some View {
         HStack(spacing: POSSpacing.small) {
-            Button(action: {
+            Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
                 selectedItemListType = .products(search: false)
-            }) {
+            } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)

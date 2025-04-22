@@ -127,20 +127,20 @@ private extension POSFloatingControlView {
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
-            comment: "The title of the floating button to exit Point of Sale, shown in a popover menu." +
+            comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
         )
 
         static let getSupport = NSLocalizedString(
             "pointOfSale.floatingButtons.getSupport.button.title",
             value: "Get Support",
-            comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
+            comment: "The title of the menu button to get support for Point of Sale, shown in a popover menu."
         )
 
         static let viewDocumentation = NSLocalizedString(
             "pointOfSale.floatingButtons.viewDocumentation.button.title",
             value: "Documentation",
-            comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
+            comment: "The title of the menu button to read Point of Sale documentation, shown in a popover menu."
         )
 
         static let productRestrictionsInfo = NSLocalizedString(

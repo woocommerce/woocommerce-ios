@@ -80,7 +80,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .font(.posHeadingBold)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
                         }
                         .disabled(items[index].isSelected)
@@ -93,14 +93,16 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .font(.posBodyLargeRegular())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(.posOnSurface)
                         }
                     }
                 }
             }
 
-            Spacer()
+            if items.isNotEmpty {
+                Spacer()
+            }
 
             if let trailingContent {
                 trailingContent
@@ -117,7 +119,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             Button(action: configuration.action) {
                 Text(Image(systemName: Constants.backButtonIcon))
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }

@@ -13,6 +13,8 @@ struct PointOfSaleDashboardView: View {
 
     @State var selectedItemListType: ItemListType = .products(search: false)
 
+    @State var searchTerm: String = ""
+
     private var itemsViewState: ItemsViewState {
         switch selectedItemListType {
         case .products(let searching):
@@ -113,7 +115,8 @@ struct PointOfSaleDashboardView: View {
         GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView(selectedItemListType: $selectedItemListType)
+                    ItemListView(selectedItemListType: $selectedItemListType,
+                                 searchTerm: $searchTerm)
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

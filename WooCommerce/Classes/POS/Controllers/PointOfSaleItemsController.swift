@@ -10,6 +10,7 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 
+
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
     ///

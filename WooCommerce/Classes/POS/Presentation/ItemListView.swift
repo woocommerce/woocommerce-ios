@@ -10,10 +10,13 @@ struct ItemListView: View {
 
     @State private var showSimpleProductsModal: Bool = false
 
-    @State private var searchTerm: String = ""
-    @FocusState private var isSearchFieldFocused: Bool
-
     @Binding var selectedItemListType: ItemListType
+    @Binding var searchTerm: String
+
+    private var shouldShowSearchField: Bool {
+        selectedItemListType == .products(search: true)
+    }
+    @FocusState private var isSearchFieldFocused: Bool
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
@@ -45,6 +48,22 @@ struct ItemListView: View {
         return itemListState.isLoaded || itemListState.isEmpty
     }
 
+    private var isSearchAllowed: Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS) else {
+            return false
+        }
+        switch selectedItemListType {
+        case .products:
+            return true
+        case .coupons:
+            return false
+        }
+    }
+
+    private var shouldShowHeaderItems: Bool {
+        !shouldShowSearchField
+    }
+
     @State private var showCouponCreationModal: Bool = false
 
     var body: some View {
@@ -65,7 +84,7 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            if isSearchFieldFocused && searchTerm.isEmpty {
+            if shouldShowSearchField && searchTerm.isEmpty {
                 POSRecentSearchesView(
                     savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
                     onSearchSelected: { search in
@@ -114,40 +133,50 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
-                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-                       case .products = selectedItemListType {
-                        searchField.onChange(of: searchTerm) { oldValue, newValue in
-                            selectedItemListType = .products(search: newValue.isNotEmpty)
+                    if isSearchAllowed {
+                        searchField
+                            .renderedIf(shouldShowSearchField)
+                            .transition(.opacity.combined(with: .move(edge: .trailing)))
+                            .onChange(of: searchTerm) { oldValue, newValue in
+                                // The debouncing logic is a little tricky, because the loading state is held in the controller.
+                                // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
 
-                            // The debouncing logic is a little tricky, because the loading state is held in the controller.
-                            // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
+                                // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
+                                // However, we don't want to debounce the first keystroke of a new search, so that the loading
+                                // state shows immediately and the UI feels responsive.
 
-                            // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
-                            // However, we don't want to debounce the first keystroke of a new search, so that the loading
-                            // state shows immediately and the UI feels responsive.
+                                // So, if the last search was finished, we don't debounce the first character. If it didn't
+                                // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
+                                // the ongoing search is redundant now there's a new search term, so we cancel it.
+                                let shouldDebounceNextSearchRequest = !didFinishSearch
+                                searchTask?.cancel()
 
-                            // So, if the last search was finished, we don't debounce the first character. If it didn't
-                            // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
-                            // the ongoing search is redundant now there's a new search term, so we cancel it.
-                            let shouldDebounceNextSearchRequest = !didFinishSearch
-                            searchTask?.cancel()
+                                searchTask = Task {
+                                    if shouldDebounceNextSearchRequest {
+                                        try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                                    }
 
-                            searchTask = Task {
-                                if shouldDebounceNextSearchRequest {
-                                    try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
-                                }
+                                    guard !Task.isCancelled else { return }
 
-                                guard !Task.isCancelled else { return }
+                                    didFinishSearch = false
 
-                                didFinishSearch = false
+                                    await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
 
-                                await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
-
-                                if !Task.isCancelled {
-                                    didFinishSearch = true
+                                    if !Task.isCancelled {
+                                        didFinishSearch = true
+                                    }
                                 }
                             }
+
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                selectedItemListType = .products(search: true)
+                            } completion: {
+                                isSearchFieldFocused = true
+                            }
                         }
+                        .renderedIf(!shouldShowSearchField)
+                        .transition(.opacity.combined(with: .scale))
                     }
 
                     if shouldShowCoupons {
@@ -155,7 +184,8 @@ private extension ItemListView {
                             ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
                             showCouponCreationModal = true
                         }
-                        .opacity(isAddingCouponAllowed ? 1 : 0)
+                        .renderedIf(isAddingCouponAllowed)
+                        .transition(.opacity.combined(with: .scale))
                     }
 
                     Button(action: {
@@ -168,20 +198,29 @@ private extension ItemListView {
                             .padding(Constants.infoIconInset)
                     })
                     .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
+                    .transition(.opacity.combined(with: .scale))
                 }
             })
             if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.horizontal, Constants.bannerCardPadding)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
+        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
     }
 
     var headerViewItems: [POSPageHeaderItem] {
+        guard shouldShowHeaderItems else {
+            return []
+        }
         var items = [
             POSPageHeaderItem(
                 title: Localization.productsTitle,
+                isSelected: selectedItemListType.isProducts,
                 action: {
                     displayItemListType(.products(search: searchTerm.isNotEmpty))
                 }
@@ -192,6 +231,7 @@ private extension ItemListView {
             items.append(
                 POSPageHeaderItem(
                     title: Localization.couponsTitle,
+                    isSelected: selectedItemListType.isCoupons,
                     action: {
                         displayItemListType(.coupons)
                     }
@@ -204,14 +244,17 @@ private extension ItemListView {
 
     var searchField: some View {
         HStack(spacing: POSSpacing.small) {
-            if isSearchFieldFocused || searchTerm.isNotEmpty {
-                Button(action: {
-                    searchTerm = ""
-                    isSearchFieldFocused = false
-                }) {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(.posOnSurface)
+            Button(action: {
+                searchTerm = ""
+                isSearchFieldFocused = false
+                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                    selectedItemListType = .products(search: false)
                 }
+            }) {
+                Image(systemName: "chevron.backward")
+                    .foregroundColor(.posOnSurface)
+                    .font(.posButtonSymbolLarge)
+                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             }
 
             TextField(text: $searchTerm) {
@@ -296,12 +339,12 @@ private extension ItemListView {
         case .products:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .products(search: false),
+                    itemListType: selectedItemListType,
                     baseItem: .root))
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .coupons,
+                    itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
             }
@@ -339,7 +382,9 @@ private extension ItemListView {
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
-        selectedItemListType = itemListType
+        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+            selectedItemListType = itemListType
+        }
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)
@@ -371,6 +416,7 @@ private extension ItemListView {
         static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let bannerCardPadding: CGFloat = POSPadding.medium
         static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
+        static let animationDuration: CGFloat = 0.2
     }
 
     enum BannerState {
@@ -458,13 +504,15 @@ private extension ItemListView {
         await itemsController.loadItems(base: .root)
     }
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
-    return ItemListView(selectedItemListType: .constant(.products(search: false)))
+    return ItemListView(selectedItemListType: .constant(.products(search: false)),
+                        searchTerm: .constant(""))
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    ItemListView(selectedItemListType: .constant(.products(search: false)))
+    ItemListView(selectedItemListType: .constant(.products(search: false)),
+                 searchTerm: .constant(""))
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 

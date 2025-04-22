@@ -101,6 +101,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .searchProductsInPOS:
             return false
+        case .searchProductsInPOSPt2PopularProducts:
+            return false
         default:
             return true
         }

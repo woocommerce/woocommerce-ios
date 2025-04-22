@@ -15,6 +15,7 @@ struct PointOfSaleEntryPointView: View {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
+    private let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -23,7 +24,8 @@ struct PointOfSaleEntryPointView: View {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         searchHistoryService: POSSearchHistoryProviding) {
+         searchHistoryService: POSSearchHistoryProviding,
+         popularItemsController: PointOfSalePopularItemsControllerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -33,6 +35,7 @@ struct PointOfSaleEntryPointView: View {
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
+        self.popularItemsController = popularItemsController
     }
 
     var body: some View {
@@ -55,9 +58,11 @@ struct PointOfSaleEntryPointView: View {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-                searchHistoryService: searchHistoryService)
+                searchHistoryService: searchHistoryService,
+                popularItemsController: popularItemsController)
         }
         .environmentObject(posModalManager)
+        .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }
@@ -79,6 +84,8 @@ struct PointOfSaleEntryPointView: View {
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-                              searchHistoryService: PointOfSalePreviewHistoryService())
+                              searchHistoryService: PointOfSalePreviewHistoryService(),
+                              popularItemsController: PointOfSalePreviewPopularItemsController())
 }
+
 #endif

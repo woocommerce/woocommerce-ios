@@ -16,11 +16,13 @@ struct POSPageHeaderItem: Identifiable {
     let id = UUID()
     let title: String
     let subtitle: String?
+    let isSelected: Bool
     let action: (() -> Void)?
 
-    init(title: String, subtitle: String? = nil, action: (() -> Void)? = nil) {
+    init(title: String, subtitle: String? = nil, isSelected: Bool, action: (() -> Void)? = nil) {
         self.title = title
         self.subtitle = subtitle
+        self.isSelected = isSelected
         self.action = action
     }
 }
@@ -41,15 +43,13 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         backButtonConfiguration != nil
     }
 
-    @State private var selectedItemIndex: Int = 0
-
     init(
         title: String,
         subtitle: String? = nil,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
     ) {
-        self.items = [.init(title: title, subtitle: subtitle)]
+        self.items = [.init(title: title, subtitle: subtitle, isSelected: true)]
         self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
     }
@@ -74,17 +74,16 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
                         Button(action: {
-                            selectedItemIndex = index
                             items[index].action?()
                         }) {
                             Text(items[index].title)
                                 .font(.posHeadingBold)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                                .foregroundColor(selectedItemIndex == index ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
                         }
-                        .disabled(selectedItemIndex == index)
+                        .disabled(items[index].isSelected)
                         .accessibilityElement()
                         .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
                         .accessibilityLabel(items[index].title)
@@ -94,14 +93,16 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .font(.posBodyLargeRegular())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(.posOnSurface)
                         }
                     }
                 }
             }
 
-            Spacer()
+            if items.isNotEmpty {
+                Spacer()
+            }
 
             if let trailingContent {
                 trailingContent
@@ -118,7 +119,7 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             Button(action: configuration.action) {
                 Text(Image(systemName: Constants.backButtonIcon))
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                     .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
                     .padding(.horizontal, Constants.backButtonHorizontalPadding)
             }
@@ -140,6 +141,8 @@ private enum Constants {
 
 @available(iOS 17.0, *)
 #Preview {
+    @Previewable @State var isProductsSelected: Bool = true
+
     VStack(spacing: 20) {
         // Header without back button.
         POSPageHeaderView(
@@ -214,8 +217,8 @@ private enum Constants {
         // Header with two items and trailing content.
         POSPageHeaderView(
             items: [
-                .init(title: "Products"),
-                .init(title: "Coupons")
+                .init(title: "Products", isSelected: isProductsSelected) { isProductsSelected.toggle() },
+                .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
             ]
         ) {
             HStack(spacing: 16) {

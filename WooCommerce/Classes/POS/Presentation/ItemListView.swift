@@ -158,6 +158,11 @@ private extension ItemListView {
 
                                     guard !Task.isCancelled else { return }
 
+                                    guard searchTerm.isNotEmpty else {
+                                        didFinishSearch = true
+                                        return
+                                    }
+
                                     didFinishSearch = false
 
                                     await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)

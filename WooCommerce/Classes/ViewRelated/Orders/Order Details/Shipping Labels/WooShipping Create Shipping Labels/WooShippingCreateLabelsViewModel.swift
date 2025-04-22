@@ -250,7 +250,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            if originAddress.isEmpty {
+            if shipments.contains(where: { $0.purchasedLabelID == nil }) {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }

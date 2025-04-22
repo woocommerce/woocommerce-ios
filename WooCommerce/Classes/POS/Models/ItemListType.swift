@@ -1,6 +1,6 @@
 import enum Yosemite.POSItemType
 
-enum ItemListType: Equatable {
+enum ItemListType: Equatable, Hashable {
     case products(search: Bool = false)
     case coupons
 

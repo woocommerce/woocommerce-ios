@@ -84,26 +84,20 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            if shouldShowSearchField && searchTerm.isEmpty {
-                POSRecentSearchesView(
-                    savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
-                    onSearchSelected: { search in
-                        searchTerm = search
-                    }
-                )
-                .background(Color.posSurface)
-            } else {
-                switch itemListState {
-                case .loading(let items),
-                        .loaded(let items, _),
-                        .inlineError(let items, _, _):
-                    listView(items)
-                case .error(let errorState):
-                    errorView(errorState)
-                case .empty:
-                    emptyView
-                }
-            }
+            TabView(selection: $selectedItemListType) {
+                itemListContent
+                    .tag(ItemListType.products(search: false))
+                    .gesture(DragGesture())
+                itemListContent
+                    .tag(ItemListType.products(search: true))
+                    .gesture(DragGesture())
+                itemListContent
+                    .tag(ItemListType.coupons)
+                    .gesture(DragGesture())
+              }
+              .tabViewStyle(.page(indexDisplayMode: .never))
+              .simultaneousGesture(DragGesture())
+              .animation(.none, value: selectedItemListType)
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -121,6 +115,30 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+    }
+
+    @ViewBuilder
+    var itemListContent: some View {
+        if shouldShowSearchField && searchTerm.isEmpty {
+            POSRecentSearchesView(
+                savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
+                onSearchSelected: { search in
+                    searchTerm = search
+                }
+            )
+            .background(Color.posSurface)
+        } else {
+            switch itemListState {
+            case .loading(let items),
+                    .loaded(let items, _),
+                    .inlineError(let items, _, _):
+                listView(items)
+            case .error(let errorState):
+                errorView(errorState)
+            case .empty:
+                emptyView
+            }
+        }
     }
 }
 

@@ -149,6 +149,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCouponRemovedFromCart,
             WooAnalyticsStat.pointOfSaleSearchButtonTapped,
             WooAnalyticsStat.pointOfSalePreSearchRecentTermTapped,
+            WooAnalyticsStat.pointOfSaleKeyboardDismissedInSearch,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,

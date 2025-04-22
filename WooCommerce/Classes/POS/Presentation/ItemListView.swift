@@ -8,6 +8,8 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
+    @Environment(\.keyboardObserver) private var keyboardObserver
+
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
@@ -257,6 +259,12 @@ private extension ItemListView {
             }
             .transition(.opacity)
             .renderedIf(searchTerm.isNotEmpty)
+        }
+        .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
+            guard isVisible == false else {
+                return
+            }
+            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
         }
     }
 

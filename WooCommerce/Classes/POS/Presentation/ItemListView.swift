@@ -36,9 +36,6 @@ struct ItemListView: View {
         itemsController.itemsViewState.itemsStack.root
     }
 
-    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    private var isHeaderBannerDismissed: Bool = false
-
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
     }
@@ -202,19 +199,12 @@ private extension ItemListView {
                             .foregroundStyle(Color.posOnSurface)
                             .padding(Constants.infoIconInset)
                     })
-                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
+                    .renderedIf(!shouldShowCoupons)
                     .transition(.opacity.combined(with: .scale))
                 }
             })
-            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-                    .padding(.horizontal, Constants.bannerCardPadding)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-            }
         }
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
-        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
     }
 
@@ -269,42 +259,13 @@ private extension ItemListView {
         }
     }
 
-    var bannerCardView: some View {
-        POSNoticeView(
-            title: headerBannerTitle,
-            icon: Image(systemName: "info.circle"),
-            onDismiss: {
-                isHeaderBannerDismissed = true
-            },
-            onTap: {
-                showSimpleProductsModal = true
-            }
-        ) {
-            VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                Text(headerBannerSubtitle)
-                bannerHintAndLearnMoreText
-            }
-        }
-        .padding(.bottom, Constants.bannerCardPadding)
-    }
-
-    private var bannerHintAndLearnMoreText: some View {
-        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
-            .font(.posBodySmallBold)
-            .foregroundColor(Color(.posPrimary))
-    }
-
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ItemList(
             itemsController: itemsController,
             node: .root,
             itemActionHandler: actionHandler
-        ) {
-            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-            }
-        }
+        )
         .refreshable {
             trackPullToRefresh()
             await itemsController.refreshItems(base: .root)
@@ -378,14 +339,6 @@ private extension ItemListView {
 
 @available(iOS 17.0, *)
 private extension ItemListView {
-    var shouldShowHeaderBanner: Bool {
-        guard case .products = selectedItemListType else {
-            return false
-        }
-
-        return itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
-    }
-
     func displayItemListType(_ itemListType: ItemListType) {
         withAnimation(.easeInOut(duration: Constants.animationDuration)) {
             selectedItemListType = itemListType
@@ -400,44 +353,17 @@ private extension ItemListView {
     }
 }
 
-private extension ItemListState {
-    var eligibleToShowSimpleProductsBanner: Bool {
-        switch self {
-        case .loading,
-                .loaded,
-                .inlineError:
-            return true
-        case .error, .empty:
-            return false
-        }
-    }
-}
-
 /// Constants
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
         static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
-        static let bannerCardPadding: CGFloat = POSPadding.medium
-        static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
         static let animationDuration: CGFloat = 0.2
     }
 
     enum BannerState {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
-    }
-
-    var headerBannerTitle: String {
-        Localization.headerBannerTitleSimpleAndVariable
-    }
-
-    var headerBannerSubtitle: String {
-        Localization.headerBannerSubtitleSimpleAndVariable
-    }
-
-    var headerBannerHint: String {
-        Localization.headerBannerHintSimpleAndVariable
     }
 
     enum Localization {
@@ -451,30 +377,6 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
-        )
-
-        static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.title.simpleAndVariable",
-            value: "Showing simple and variable products only",
-            comment: "Title of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerSubtitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.subtitle.simpleAndVariable",
-            value: "Only simple and variable non-downloadable products can be used with POS right now.",
-            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerHintSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.hint.simpleAndVariable",
-            value: "Other product types will become available in future updates.",
-            comment: "Additional text within the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerLearnMoreHint = NSLocalizedString(
-            "pos.itemlistview.headerBanner.learnMoreHint",
-            value: "Learn More",
-            comment: "Link to more information within the product selector header banner, which explains current POS limitations"
         )
     }
 }

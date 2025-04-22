@@ -158,6 +158,11 @@ private extension ItemListView {
 
                                     guard !Task.isCancelled else { return }
 
+                                    guard searchTerm.isNotEmpty else {
+                                        didFinishSearch = true
+                                        return
+                                    }
+
                                     didFinishSearch = false
 
                                     await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
@@ -252,7 +257,7 @@ private extension ItemListView {
             }
 
             TextField(text: $searchTerm) {
-                Text("Search")
+                Text(Localization.searchFieldLabel)
             }
             .focused($isSearchFieldFocused)
         }
@@ -462,6 +467,12 @@ private extension ItemListView {
             "pos.itemlistview.headerBanner.learnMoreHint",
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let searchFieldLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.label",
+            value: "Search products",
+            comment: "Label/placeholder text for the product search field in Point of Sale."
         )
     }
 }

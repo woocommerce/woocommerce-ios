@@ -216,6 +216,7 @@ private extension ItemListView {
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
     }
 
     var headerViewItems: [POSPageHeaderItem] {
@@ -249,23 +250,36 @@ private extension ItemListView {
 
     var searchField: some View {
         HStack(spacing: POSSpacing.small) {
-            Button(action: {
+            Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                     selectedItemListType = .products(search: false)
                 }
-            }) {
+            } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             }
 
             TextField(text: $searchTerm) {
-                Text("Search")
+                Text(Localization.searchFieldLabel)
             }
+            .font(POSFontStyle.posBodyLargeRegular())
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
+
+            Button {
+                searchTerm = ""
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .font(.posButtonSymbolSmall)
+            }
+            .transition(.opacity)
+            .renderedIf(searchTerm.isNotEmpty)
         }
     }
 
@@ -387,9 +401,7 @@ private extension ItemListView {
     }
 
     func displayItemListType(_ itemListType: ItemListType) {
-        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-            selectedItemListType = itemListType
-        }
+        selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)
@@ -475,6 +487,18 @@ private extension ItemListView {
             "pos.itemlistview.headerBanner.learnMoreHint",
             value: "Learn More",
             comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let searchFieldLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.label",
+            value: "Search products",
+            comment: "Label/placeholder text for the product search field in Point of Sale."
+        )
+
+        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.clearButton.accessibilityLabel",
+            value: "Clear Search",
+            comment: "Accessibility label for the clear button in the Point of Sale product search screen."
         )
     }
 }

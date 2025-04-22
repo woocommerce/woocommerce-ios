@@ -259,6 +259,8 @@ private extension ItemListView {
             TextField(text: $searchTerm) {
                 Text(Localization.searchFieldLabel)
             }
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
         }
     }

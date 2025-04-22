@@ -220,6 +220,7 @@ private extension ItemListView {
         var items = [
             POSPageHeaderItem(
                 title: Localization.productsTitle,
+                isSelected: selectedItemListType.isProducts,
                 action: {
                     displayItemListType(.products(search: searchTerm.isNotEmpty))
                 }
@@ -230,6 +231,7 @@ private extension ItemListView {
             items.append(
                 POSPageHeaderItem(
                     title: Localization.couponsTitle,
+                    isSelected: selectedItemListType.isCoupons,
                     action: {
                         displayItemListType(.coupons)
                     }
@@ -337,12 +339,12 @@ private extension ItemListView {
         case .products:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .products(search: false),
+                    itemListType: selectedItemListType,
                     baseItem: .root))
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: .coupons,
+                    itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
             }

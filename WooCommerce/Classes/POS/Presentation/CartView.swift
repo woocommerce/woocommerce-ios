@@ -126,20 +126,13 @@ struct CartView: View {
                     Spacer()
                 }
 
-                switch posModel.orderStage {
-                case .building:
-                    if posModel.cart.isEmpty {
-                        EmptyView()
-                    } else {
-                        checkoutButton
-                            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                            .padding(.vertical, Constants.checkoutButtonVerticalPadding)
-                            .accessibilityAddTraits(.isHeader)
-                            .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
-                            .zIndex(1)
-                    }
-                case .finalizing:
-                    EmptyView()
+                if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
+                    checkoutButton
+                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                        .padding(.vertical, Constants.checkoutButtonVerticalPadding)
+                        .accessibilityAddTraits(.isHeader)
+                        .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
+                        .zIndex(1)
                 }
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)

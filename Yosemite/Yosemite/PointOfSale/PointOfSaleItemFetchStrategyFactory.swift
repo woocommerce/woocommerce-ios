@@ -27,4 +27,11 @@ public final class PointOfSaleItemFetchStrategyFactory {
                                                       productsRemote: productsRemote,
                                                       variationsRemote: variationsRemote)
     }
+
+    public func popularStrategy(pageSize: Int = 10) -> PointOfSalePopularPurchasableItemFetchStrategy {
+    PointOfSalePopularPurchasableItemFetchStrategy(siteID: siteID,
+                                                  pageSize: pageSize,
+                                                  productsRemote: productsRemote,
+                                                  variationsRemote: variationsRemote)
+    }
 }

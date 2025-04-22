@@ -8,8 +8,6 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
-    @State private var showSimpleProductsModal: Bool = false
-
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
@@ -109,9 +107,6 @@ struct ItemListView: View {
         })
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
-        .posModal(isPresented: $showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
-        }
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
@@ -189,18 +184,6 @@ private extension ItemListView {
                         .renderedIf(isAddingCouponAllowed)
                         .transition(.opacity.combined(with: .scale))
                     }
-
-                    Button(action: {
-                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                        showSimpleProductsModal = true
-                    }, label: {
-                        Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolLarge)
-                            .foregroundStyle(Color.posOnSurface)
-                            .padding(Constants.infoIconInset)
-                    })
-                    .renderedIf(!shouldShowCoupons)
-                    .transition(.opacity.combined(with: .scale))
                 }
             })
         }
@@ -358,7 +341,6 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
         static let animationDuration: CGFloat = 0.2
     }
 

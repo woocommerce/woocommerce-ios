@@ -3,7 +3,7 @@
 
 22.3
 -----
-
+- [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
 
 22.2
 -----

@@ -214,6 +214,7 @@ private extension ItemListView {
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
     }
 
     var headerViewItems: [POSPageHeaderItem] {
@@ -262,6 +263,17 @@ private extension ItemListView {
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
+
+            Button {
+                searchTerm = ""
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .font(.posButtonSymbolSmall)
+            }
+            .transition(.opacity)
+            .renderedIf(searchTerm.isNotEmpty)
         }
     }
 
@@ -475,6 +487,12 @@ private extension ItemListView {
             "pos.itemlistview.searchField.label",
             value: "Search products",
             comment: "Label/placeholder text for the product search field in Point of Sale."
+        )
+
+        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.clearButton.accessibilityLabel",
+            value: "Clear Search",
+            comment: "Accessibility label for the clear button in the Point of Sale product search screen."
         )
     }
 }

@@ -1,11 +1,16 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.3
+-----
+
+
 22.2
 -----
 - [internal] Improved login flow during Jetpack Setup for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15491]
 - [internal] Update Sentry to 8.46.0 to allow building with Xcode 16.3 [https://github.com/woocommerce/woocommerce-ios/pull/15503]
 - [*] Product Form: Fixed an issue where a draft variable product cannot be published [https://github.com/woocommerce/woocommerce-ios/pull/15513]
+- [internal] Fixed the issue where some product thumbnails appeared blurry [https://github.com/woocommerce/woocommerce-ios/pull/15517]
 
 22.1
 -----

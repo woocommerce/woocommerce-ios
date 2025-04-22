@@ -2,13 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct WooShippingSplitShipmentsRow: View {
-    @State private var isShowingDetailView = false
-
-    let viewModel: WooShippingSplitShipmentsViewModel
-
-    init(viewModel: WooShippingSplitShipmentsViewModel) {
-        self.viewModel = viewModel
-    }
+    var onShowingSplitShipments: () -> Void
 
     var body: some View {
         AdaptiveStack {
@@ -16,14 +10,11 @@ struct WooShippingSplitShipmentsRow: View {
                 .tertiaryTitleStyle()
             Spacer()
             Button(Localization.splitShipments) {
-                isShowingDetailView = true
+                onShowingSplitShipments()
             }
             .buttonStyle(TextButtonStyle())
         }
         .padding(.vertical, Layout.verticalPadding)
-        .fullScreenCover(isPresented: $isShowingDetailView) {
-            WooShippingSplitShipmentsDetailView(viewModel: viewModel)
-        }
     }
 }
 
@@ -45,19 +36,7 @@ private extension WooShippingSplitShipmentsRow {
 
 #if DEBUG
 #Preview {
-    WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(order: ShippingLabelSampleData.sampleOrder(),
-                                                                               config: ShippingLabelSampleData.sampleWooShippingConfig(),
-                                                                               items: [ShippingLabelPackageItem(productOrVariationID: 1,
-                                                                                                                orderItemID: 12,
-                                                                                                                name: "Shirt",
-                                                                                                                weight: 0.5,
-                                                                                                                quantity: 2,
-                                                                                                                value: 9.99,
-                                                                                                                dimensions: ProductDimensions(length: "",
-                                                                                                                                              width: "",
-                                                                                                                                              height: ""),
-                                                                                                                attributes: [],
-                                                                                                                imageURL: nil)]))
-    .padding()
+    WooShippingSplitShipmentsRow(onShowingSplitShipments: {})
+        .padding()
 }
 #endif

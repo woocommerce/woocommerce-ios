@@ -10,19 +10,6 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 
-enum ItemListType: Equatable {
-    case products(search: Bool = false)
-    case coupons
-
-    var itemType: POSItemType {
-        switch self {
-        case .coupons:
-            return .coupon
-        case .products:
-            return .product
-        }
-    }
-}
 
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {

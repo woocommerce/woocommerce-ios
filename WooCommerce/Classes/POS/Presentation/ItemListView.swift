@@ -84,6 +84,8 @@ struct ItemListView: View {
                     savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
                     onSearchSelected: { search in
                         searchTerm = search
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.PointOfSale.preSearchRecentTermTapped(itemListType: selectedItemListType))
                     }
                 )
                 .background(Color.posSurface)

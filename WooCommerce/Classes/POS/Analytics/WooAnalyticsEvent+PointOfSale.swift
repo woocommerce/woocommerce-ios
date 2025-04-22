@@ -78,6 +78,13 @@ extension WooAnalyticsEvent {
                                 Key.itemListType: itemListType.analyticsValue
                               ])
         }
+
+        static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSalePreSearchRecentTermTapped,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue
+                              ])
+        }
     }
 }
 

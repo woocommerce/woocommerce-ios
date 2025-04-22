@@ -97,8 +97,8 @@ struct PointOfSaleErrorState: Equatable {
             comment: "Title appearing on the coupon list screen when there's an error loading coupons."
         )
         static let loadingCouponsErrorSubtitle = NSLocalizedString(
-            "pos.itemList.loadingCouponsErrorSubtitle",
-            value: "Error loading coupons",
+            "pos.itemList.loadingCouponsErrorSubtitle2",
+            value: "Give it another go?",
             comment: "Subtitle appearing on the coupon list screen when there's an error loading coupons."
         )
         static let loadingCouponsErrorRetry = NSLocalizedString(

@@ -62,6 +62,7 @@ struct PointOfSaleEntryPointView: View {
                 popularItemsController: popularItemsController)
         }
         .environmentObject(posModalManager)
+        .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }

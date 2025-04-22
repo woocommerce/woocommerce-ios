@@ -283,6 +283,15 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         return .init(items: products, hasMorePages: hasMorePages)
     }
 
+    /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
+    /// `search` is used, which searches in `name`, `description`, `short_description` fields.
+    /// We also send `search_name_or_sku`, which will be used in preference to `search` when implemented on a site (in future.)
+    ///
+    /// - Parameter siteID: Site for which we'll fetch remote products.
+    /// - Parameter query: search term passed in `search` and `search_name_or_sku` request field
+    /// - Parameter productTypes: A list of product types to be included in the results.
+    /// - Parameter pageNumber: Index of page that should be retrieved.
+    ///
     public func searchProductsForPointOfSale(for siteID: Int64,
                                              query: String,
                                              productTypes: [ProductType] = [.simple],
@@ -292,6 +301,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             productTypes: productTypes)
 
         parameters.updateValue(query, forKey: ParameterKey.search)
+        parameters.updateValue(query, forKey: ParameterKey.searchNameOrSKU)
 
         return try await makePagedPointOfSaleProductsRequest(
             for: siteID,
@@ -682,6 +692,7 @@ public extension ProductsRemote {
         static let exclude: String    = "exclude"
         static let include: String    = "include"
         static let search: String     = "search"
+        static let searchNameOrSKU: String = "search_name_or_sku"
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"

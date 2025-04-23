@@ -8,8 +8,7 @@ struct MoveToShipmentNoticeViewModel {
 
     let allItemsSelected: Bool
     let selectedItemsCount: Int
-    let existingShipmentsCount: Int
-    let currentShipmentIndex: Int?
+    let existingShipmentsIndexesToMove: [Int]
 }
 
 struct MoveToShipmentNotice: View {
@@ -26,7 +25,7 @@ struct MoveToShipmentNotice: View {
 
             Spacer()
 
-            if viewModel.existingShipmentsCount == 1 {
+            if viewModel.existingShipmentsIndexesToMove.isEmpty {
                 moveToNewShipment
             } else {
                 menuWithExistingShipments
@@ -59,12 +58,10 @@ private extension MoveToShipmentNotice {
 
     var menuWithExistingShipments: some View {
         Menu {
-            ForEach(0..<viewModel.existingShipmentsCount, id: \.self) { index in
-                if viewModel.currentShipmentIndex != index {
-                    Button(String.localizedStringWithFormat(Localization.shipment, index + 1), action: {
-                        onMoving(.existingShipment(index: index))
-                    })
-                }
+            ForEach(viewModel.existingShipmentsIndexesToMove, id: \.self) { index in
+                Button(String.localizedStringWithFormat(Localization.shipment, index + 1), action: {
+                    onMoving(.existingShipment(index: index))
+                })
             }
             if !viewModel.allItemsSelected {
                 Button(Localization.newShipment, action: {
@@ -127,7 +124,6 @@ extension MoveToShipmentNotice {
 #Preview {
     MoveToShipmentNotice(viewModel: MoveToShipmentNoticeViewModel(allItemsSelected: false,
                                                                   selectedItemsCount: 4,
-                                                                  existingShipmentsCount: 3,
-                                                                  currentShipmentIndex: 1),
+                                                                  existingShipmentsIndexesToMove: [0, 2, 3]),
                          onMoving: { _ in })
 }

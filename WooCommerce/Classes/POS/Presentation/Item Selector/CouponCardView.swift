@@ -3,7 +3,6 @@ import SwiftUI
 
 struct CouponCardView: View {
     private let coupon: POSCoupon
-    private let isExpired: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -12,9 +11,8 @@ struct CouponCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(coupon: POSCoupon, isExpired: Bool = false) {
+    init(coupon: POSCoupon) {
         self.coupon = coupon
-        self.isExpired = isExpired
     }
 
     var body: some View {
@@ -23,19 +21,19 @@ struct CouponCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)
-                    .foregroundStyle(isExpired ? Constants.disabledTitleColor : Constants.titleColor)
+                    .foregroundStyle(coupon.isExpired ? Constants.disabledTitleColor : Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(coupon.summary)
-                    .foregroundStyle(isExpired ? Constants.disabledTitleColor : Constants.detailColor)
+                    .foregroundStyle(coupon.isExpired ? Constants.disabledTitleColor : Constants.detailColor)
                     .font(Constants.itemDetailFont)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
 
-                if isExpired, let expirationDate = coupon.dateExpires {
-                    // TODO: Date needs formatting
-                    Text("Expired . \(expirationDate)")
+                if coupon.isExpired, let expirationDate = coupon.dateExpires {
+                    Text(String(format: Localization.expirationText,
+                              DateFormatter.localizedString(from: expirationDate, dateStyle: .medium, timeStyle: .none)))
                         .foregroundStyle(Constants.disabledTitleColor)
                         .font(Constants.itemDetailFont)
                         .lineLimit(1)
@@ -46,13 +44,23 @@ struct CouponCardView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dimension)
-        .background(isExpired ? Constants.disabledBackgroundColor : Constants.backgroundColor)
+        .background(coupon.isExpired ? Constants.disabledBackgroundColor : Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
 }
 
 private extension CouponCardView {
     typealias Constants = PointOfSaleItemListCardConstants
+}
+
+private extension CouponCardView {
+    enum Localization {
+        static let expirationText = NSLocalizedString(
+            "couponCardView.expirationText",
+            value: "Expired · %@",
+            comment: "Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired  · 18 April 2025'."
+        )
+    }
 }
 
 #if DEBUG

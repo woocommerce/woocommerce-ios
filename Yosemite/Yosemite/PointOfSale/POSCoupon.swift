@@ -10,4 +10,11 @@ public struct POSCoupon: Equatable, Hashable {
         self.summary = summary
         self.dateExpires = dateExpires
     }
+
+    public var isExpired: Bool {
+        guard let dateExpires = dateExpires else {
+            return false
+        }
+        return dateExpires < Date()
+    }
 }

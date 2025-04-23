@@ -257,7 +257,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 1)
         XCTAssertEqual(moveToNoticeViewModel.existingShipmentsIndexesToMove, [])
-        
+
         // When
         viewModel.selectAll()
 

@@ -31,12 +31,12 @@ enum ItemListType: Equatable, Hashable {
         }
     }
 
-    var isSearch: Bool {
+    var isSearching: Bool {
         switch self {
-        case .coupons:
+        case .products(search: true):
+            return true
+        case .products(search: false), .coupons:
             return false
-        case .products(let search):
-            return search
         }
     }
 }

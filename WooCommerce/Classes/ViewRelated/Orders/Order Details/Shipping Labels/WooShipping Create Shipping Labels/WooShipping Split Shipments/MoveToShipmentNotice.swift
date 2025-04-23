@@ -6,6 +6,7 @@ struct MoveToShipmentNoticeViewModel {
         case newShipment
     }
 
+    let allItemsSelected: Bool
     let selectedItemsCount: Int
     let existingShipmentsCount: Int
     let currentShipmentIndex: Int?
@@ -65,10 +66,11 @@ private extension MoveToShipmentNotice {
                     })
                 }
             }
-
-            Button(Localization.newShipment, action: {
-                onMoving(.newShipment)
-            })
+            if !viewModel.allItemsSelected {
+                Button(Localization.newShipment, action: {
+                    onMoving(.newShipment)
+                })
+            }
         } label: {
             HStack(spacing: Layout.horizontalSpacing) {
                 Text(Localization.moveTo)
@@ -123,7 +125,8 @@ extension MoveToShipmentNotice {
 }
 
 #Preview {
-    MoveToShipmentNotice(viewModel: MoveToShipmentNoticeViewModel(selectedItemsCount: 4,
+    MoveToShipmentNotice(viewModel: MoveToShipmentNoticeViewModel(allItemsSelected: false,
+                                                                  selectedItemsCount: 4,
                                                                   existingShipmentsCount: 3,
                                                                   currentShipmentIndex: 1),
                          onMoving: { _ in })

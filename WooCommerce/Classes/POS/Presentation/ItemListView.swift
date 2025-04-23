@@ -391,7 +391,7 @@ private extension ItemListView {
 
         static let searchFieldLabel = NSLocalizedString(
             "pos.itemlistview.searchField.label",
-            value: "Search products",
+            value: "Search Products",
             comment: "Label/placeholder text for the product search field in Point of Sale."
         )
 

@@ -17,7 +17,8 @@ struct CouponCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSCouponImageView(size: dimension)
+            POSCouponImageView(size: dimension,
+                               state: coupon.isExpired ? .expired : .normal)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)

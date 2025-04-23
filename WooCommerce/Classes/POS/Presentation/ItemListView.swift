@@ -8,8 +8,6 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
-    @State private var showSimpleProductsModal: Bool = false
-
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
@@ -35,9 +33,6 @@ struct ItemListView: View {
     private var itemListState: ItemListState {
         itemsController.itemsViewState.itemsStack.root
     }
-
-    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    private var isHeaderBannerDismissed: Bool = false
 
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
@@ -106,9 +101,6 @@ struct ItemListView: View {
         })
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
-        .posModal(isPresented: $showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
-        }
         .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
@@ -210,30 +202,12 @@ private extension ItemListView {
                         .renderedIf(isAddingCouponAllowed)
                         .transition(.opacity.combined(with: .scale))
                     }
-
-                    Button(action: {
-                        ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                        showSimpleProductsModal = true
-                    }, label: {
-                        Text(Image(systemName: "info.circle"))
-                            .font(.posButtonSymbolLarge)
-                            .foregroundStyle(Color.posOnSurface)
-                            .padding(Constants.infoIconInset)
-                    })
-                    .renderedIf(!shouldShowHeaderBanner && !shouldShowCoupons)
-                    .transition(.opacity.combined(with: .scale))
                 }
             })
-            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-                    .padding(.horizontal, Constants.bannerCardPadding)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-            }
         }
         .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
-        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowHeaderBanner)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
     }
 
     var headerViewItems: [POSPageHeaderItem] {
@@ -267,49 +241,37 @@ private extension ItemListView {
 
     var searchField: some View {
         HStack(spacing: POSSpacing.small) {
-            Button(action: {
+            Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                     selectedItemListType = .products(search: false)
                 }
-            }) {
+            } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             }
 
             TextField(text: $searchTerm) {
-                Text("Search")
+                Text(Localization.searchFieldLabel)
             }
+            .font(POSFontStyle.posBodyLargeRegular())
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
-        }
-    }
 
-    var bannerCardView: some View {
-        POSNoticeView(
-            title: headerBannerTitle,
-            icon: Image(systemName: "info.circle"),
-            onDismiss: {
-                isHeaderBannerDismissed = true
-            },
-            onTap: {
-                showSimpleProductsModal = true
+            Button {
+                searchTerm = ""
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .font(.posButtonSymbolSmall)
             }
-        ) {
-            VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                Text(headerBannerSubtitle)
-                bannerHintAndLearnMoreText
-            }
+            .transition(.opacity)
+            .renderedIf(searchTerm.isNotEmpty)
         }
-        .padding(.bottom, Constants.bannerCardPadding)
-    }
-
-    private var bannerHintAndLearnMoreText: some View {
-        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
-            .font(.posBodySmallBold)
-            .foregroundColor(Color(.posPrimary))
     }
 
     @ViewBuilder
@@ -318,11 +280,7 @@ private extension ItemListView {
             itemsController: itemsController,
             node: .root,
             itemActionHandler: actionHandler
-        ) {
-            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-            }
-        }
+        )
         .refreshable {
             trackPullToRefresh()
             await itemsController.refreshItems(base: .root)
@@ -396,18 +354,8 @@ private extension ItemListView {
 
 @available(iOS 17.0, *)
 private extension ItemListView {
-    var shouldShowHeaderBanner: Bool {
-        guard case .products = selectedItemListType else {
-            return false
-        }
-
-        return itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
-    }
-
     func displayItemListType(_ itemListType: ItemListType) {
-        withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-            selectedItemListType = itemListType
-        }
+        selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState.items.isEmpty {
                 await itemsController.loadItems(base: .root)
@@ -418,44 +366,16 @@ private extension ItemListView {
     }
 }
 
-private extension ItemListState {
-    var eligibleToShowSimpleProductsBanner: Bool {
-        switch self {
-        case .loading,
-                .loaded,
-                .inlineError:
-            return true
-        case .error, .empty:
-            return false
-        }
-    }
-}
-
 /// Constants
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
-        static let bannerCardPadding: CGFloat = POSPadding.medium
-        static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
         static let animationDuration: CGFloat = 0.2
     }
 
     enum BannerState {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
-    }
-
-    var headerBannerTitle: String {
-        Localization.headerBannerTitleSimpleAndVariable
-    }
-
-    var headerBannerSubtitle: String {
-        Localization.headerBannerSubtitleSimpleAndVariable
-    }
-
-    var headerBannerHint: String {
-        Localization.headerBannerHintSimpleAndVariable
     }
 
     enum Localization {
@@ -471,28 +391,16 @@ private extension ItemListView {
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
 
-        static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.title.simpleAndVariable",
-            value: "Showing simple and variable products only",
-            comment: "Title of the product selector header banner, which explains current POS limitations"
+        static let searchFieldLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.label",
+            value: "Search products",
+            comment: "Label/placeholder text for the product search field in Point of Sale."
         )
 
-        static let headerBannerSubtitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.subtitle.simpleAndVariable",
-            value: "Only simple and variable non-downloadable products can be used with POS right now.",
-            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerHintSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.hint.simpleAndVariable",
-            value: "Other product types will become available in future updates.",
-            comment: "Additional text within the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerLearnMoreHint = NSLocalizedString(
-            "pos.itemlistview.headerBanner.learnMoreHint",
-            value: "Learn More",
-            comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
+            "pos.itemlistview.searchField.clearButton.accessibilityLabel",
+            value: "Clear Search",
+            comment: "Accessibility label for the clear button in the Point of Sale product search screen."
         )
     }
 }

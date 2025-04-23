@@ -80,6 +80,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    let viewStateCoordinator = PointOfSaleViewStateCoordinator()
+
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
@@ -151,6 +153,7 @@ extension PointOfSaleAggregateModel {
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
+        viewStateCoordinator.reset()
     }
 
     private func setStateForEditing() {

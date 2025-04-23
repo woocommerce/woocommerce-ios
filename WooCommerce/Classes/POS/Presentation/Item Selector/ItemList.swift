@@ -26,14 +26,17 @@ struct ItemList<HeaderView: View>: View {
     private let node: ItemListBaseItem
     private let headerView: HeaderView
     private let itemActionHandler: POSItemActionHandler
+    private let willLoadMore: (() -> Void)?
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          node: ItemListBaseItem,
          itemActionHandler: POSItemActionHandler,
+         willLoadMore: (() -> Void)? = nil,
          @ViewBuilder headerView: () -> HeaderView = { EmptyView() }) {
         self.itemsController = itemsController
         self.node = node
         self.itemActionHandler = itemActionHandler
+        self.willLoadMore = willLoadMore
         self.headerView = headerView()
     }
 
@@ -45,6 +48,7 @@ struct ItemList<HeaderView: View>: View {
                     guard case .loaded(_, let hasMoreItems) = state,
                           hasMoreItems
                     else { return }
+                    willLoadMore?()
                     await itemsController.loadNextItems(base: node)
                 },
                 content: {

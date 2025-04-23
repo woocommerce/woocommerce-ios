@@ -75,10 +75,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var originAddresses = WooShippingOriginAddressListViewModel(addresses: [])
 
     /// Address to ship from (store address).
-    private var selectedOriginAddress = CurrentValueSubject<WooShippingOriginAddress?, Never>(nil)
+    private let selectedOriginAddress = CurrentValueSubject<WooShippingOriginAddress?, Never>(nil)
 
     /// Address to ship to (customer address),
-    private var destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+    private let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(nil)
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {

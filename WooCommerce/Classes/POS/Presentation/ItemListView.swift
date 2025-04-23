@@ -16,8 +16,12 @@ struct ItemListView: View {
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
-    private var shouldShowCoupons: Bool {
+    private var isCouponsFeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
+    }
+
+    private var isSearchProductsFeatureEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
     }
 
     private var isAddingCouponAllowed: Bool {
@@ -27,7 +31,7 @@ struct ItemListView: View {
     }
 
     private var isSearchAllowed: Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS) else {
+        guard isSearchProductsFeatureEnabled else {
             return false
         }
         switch selectedItemListType {
@@ -64,11 +68,16 @@ struct ItemListView: View {
 
             TabView(selection: $selectedItemListType) {
                 itemListContent(.products(search: false))
-                itemListContent(.products(search: true))
-                itemListContent(.coupons)
+                if isSearchProductsFeatureEnabled {
+                    itemListContent(.products(search: true))
+                }
+                if isCouponsFeatureEnabled {
+                    itemListContent(.coupons)
+                }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
+            .ignoresSafeArea()
         }
 
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
@@ -176,7 +185,7 @@ private extension ItemListView {
                         .transition(.opacity.combined(with: .scale))
                     }
 
-                    if shouldShowCoupons {
+                    if isCouponsFeatureEnabled {
                         POSPageHeaderActionButton(systemName: "plus") {
                             ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
                             showCouponCreationModal = true
@@ -206,7 +215,7 @@ private extension ItemListView {
             )
         ]
 
-        if shouldShowCoupons {
+        if isCouponsFeatureEnabled {
             items.append(
                 POSPageHeaderItem(
                     title: Localization.couponsTitle,

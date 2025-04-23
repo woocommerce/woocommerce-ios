@@ -381,15 +381,19 @@ private extension WooShippingSplitShipmentsViewModel {
             .map { $0.packageItem.quantity }
             .reduce(0, +).intValue
 
-        if shipments.count == 1 &&
-            selectedItemsCount == totalItemCount {
+        let allItemsSelected = selectedItemsCount == totalItemCount
+
+        if shipments.count == 1 && allItemsSelected {
             // do not allow moving all items if there is only one shipment at the moment
             return moveToNoticeViewModel = nil
         }
 
-        moveToNoticeViewModel = MoveToShipmentNoticeViewModel(selectedItemsCount: selectedItemsCount,
-                                                              existingShipmentsCount: shipments.count,
-                                                              currentShipmentIndex: currentIndex)
+        moveToNoticeViewModel = MoveToShipmentNoticeViewModel(
+            allItemsSelected: allItemsSelected,
+            selectedItemsCount: selectedItemsCount,
+            existingShipmentsCount: shipments.count,
+            currentShipmentIndex: currentIndex
+        )
     }
 
     /// Configures the labels in the section header.

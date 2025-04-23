@@ -8,6 +8,8 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
+    @Environment(\.keyboardObserver) private var keyboardObserver
+
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
@@ -84,6 +86,8 @@ struct ItemListView: View {
                     savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
                     onSearchSelected: { search in
                         searchTerm = search
+                        ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.PointOfSale.preSearchRecentTermTapped(itemListType: selectedItemListType))
                     }
                 )
                 .background(Color.posSurface)
@@ -167,6 +171,8 @@ private extension ItemListView {
 
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
+                                    itemListType: selectedItemListType))
                                 selectedItemListType = .products(search: true)
                             } completion: {
                                 isSearchFieldFocused = true
@@ -254,6 +260,12 @@ private extension ItemListView {
             .transition(.opacity)
             .renderedIf(searchTerm.isNotEmpty)
         }
+        .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
+            guard isVisible == false else {
+                return
+            }
+            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
+        }
     }
 
     @ViewBuilder
@@ -261,7 +273,11 @@ private extension ItemListView {
         ItemList(
             itemsController: itemsController,
             node: .root,
-            itemActionHandler: actionHandler
+            itemActionHandler: actionHandler,
+            willLoadMore: {
+                ServiceLocator.analytics.track(
+                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: selectedItemListType))
+            }
         )
         .refreshable {
             trackPullToRefresh()
@@ -272,7 +288,7 @@ private extension ItemListView {
     private var actionHandler: POSItemActionHandler {
         switch selectedItemListType {
         case .products(search: false), .coupons:
-            StandardPOSItemActionHandler(posModel: posModel)
+            StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
         case .products(search: true):
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
         }

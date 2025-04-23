@@ -8,7 +8,7 @@ enum ItemListType: Equatable {
         switch self {
         case .coupons:
             return .coupon
-        case .products(search: let search):
+        case .products:
             return .product
         }
     }
@@ -28,6 +28,15 @@ enum ItemListType: Equatable {
             return false
         case .coupons:
             return true
+        }
+    }
+
+    var isSearching: Bool {
+        switch self {
+        case .products(search: true):
+            return true
+        case .products(search: false), .coupons:
+            return false
         }
     }
 }

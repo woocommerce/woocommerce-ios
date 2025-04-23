@@ -70,7 +70,11 @@ private extension ChildItemList {
 
             ItemList(itemsController: itemsController,
                      node: node,
-                     itemActionHandler: itemActionHandler)
+                     itemActionHandler: itemActionHandler,
+                     willLoadMore: {
+                         ServiceLocator.analytics.track(
+                            event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: .products(search: false)))
+                     })
                 .transition(.opacity)
                 .refreshable {
                     ServiceLocator.analytics.track(.pointOfSaleVariationsPullToRefresh)

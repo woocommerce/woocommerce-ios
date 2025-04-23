@@ -10,6 +10,7 @@ extension WooAnalyticsEvent {
         /// Event property Key.
         private enum Key {
             static let paymentsOnboardingState = "onboarding_state"
+            static let itemListType = "item_list_type"
             static let itemType = "product_type"
             static let itemsInCart = "items_in_cart"
             static let couponsInCart = "coupons_in_cart"
@@ -19,6 +20,8 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
+            static let source = "source"
+            static let search = "search"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -30,8 +33,11 @@ extension WooAnalyticsEvent {
                               properties: [Key.paymentsOnboardingState: onboardingState.reasonForAnalytics])
         }
 
-        static func addItemToCart(type: CartItemType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [Key.itemType: type.analyticsValue])
+        static func addItemToCart(type: CartItemType, itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [
+                Key.itemType: type.analyticsValue,
+                Key.source: itemListType.addItemSourceAnalyticsValue
+            ])
         }
 
         static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
@@ -66,6 +72,28 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
             ])
         }
+
+        static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSearchButtonTapped,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue
+                              ])
+        }
+
+        static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSalePreSearchRecentTermTapped,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue
+                              ])
+        }
+
+        static func pointOfSaleItemsNextPageLoaded(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleItemsNextPageLoaded,
+                              properties: [
+                                Key.itemListType: itemListType.analyticsValue,
+                                Key.search: itemListType.isSearching
+            ])
+        }
     }
 }
 
@@ -76,6 +104,27 @@ private extension WooAnalyticsEvent.PointOfSale.CartItemType {
             return "simple"
         case .variation:
             return "variation"
+        }
+    }
+}
+
+private extension ItemListType {
+    var analyticsValue: String {
+        switch self {
+        case .products:
+            return "products"
+        case .coupons:
+            return "coupons"
+        }
+    }
+
+    var addItemSourceAnalyticsValue: String {
+        switch self {
+        case .products(search: true):
+            return "search_result"
+        case .products(search: false),
+                .coupons:
+            return "list"
         }
     }
 }

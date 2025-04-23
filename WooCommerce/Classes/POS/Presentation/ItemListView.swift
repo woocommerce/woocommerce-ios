@@ -232,9 +232,7 @@ private extension ItemListView {
             Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
-                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                    selectedItemListType = .products(search: false)
-                }
+                selectedItemListType = .products(search: false)
             } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)

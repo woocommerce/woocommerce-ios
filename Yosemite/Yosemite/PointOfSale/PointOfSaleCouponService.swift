@@ -131,7 +131,8 @@ private extension PointOfSaleCouponService {
                 .coupon(POSCoupon(
                     id: UUID(),
                     code: coupon.code,
-                    summary: coupon.summary(currencySettings: currencySettings)
+                    summary: coupon.summary(currencySettings: currencySettings),
+                    dateExpires: coupon.dateExpires
                 ))
         }
     }

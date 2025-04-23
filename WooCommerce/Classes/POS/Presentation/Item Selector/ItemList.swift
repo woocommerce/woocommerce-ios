@@ -180,10 +180,19 @@ private struct ItemListRow: View {
                 VariationCardView(variation: variation)
             })
         case let .coupon(coupon):
+            let isExpired: Bool = {
+                if let expiryDate = coupon.dateExpires {
+                    return expiryDate < Date()
+                }
+                return false
+            }()
+
             Button(action: {
-                itemActionHandler.handleTap(item)
+                if !isExpired {
+                    itemActionHandler.handleTap(item)
+                }
             }, label: {
-                CouponCardView(coupon: coupon)
+                CouponCardView(coupon: coupon, isExpired: isExpired)
             })
         }
     }

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct CouponCardView: View {
     private let coupon: POSCoupon
+    private let isExpired: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -11,8 +12,9 @@ struct CouponCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(coupon: POSCoupon) {
+    init(coupon: POSCoupon, isExpired: Bool = false) {
         self.coupon = coupon
+        self.isExpired = isExpired
     }
 
     var body: some View {
@@ -21,22 +23,30 @@ struct CouponCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)
-                    .foregroundStyle(Constants.titleColor)
+                    .foregroundStyle(isExpired ? Constants.disabledTitleColor : Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(coupon.summary)
-                    .foregroundStyle(Constants.detailColor)
+                    .foregroundStyle(isExpired ? Constants.disabledTitleColor : Constants.detailColor)
                     .font(Constants.itemDetailFont)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
+
+                if isExpired, let expirationDate = coupon.dateExpires {
+                    // TODO: Date needs formatting
+                    Text("Expired . \(expirationDate)")
+                        .foregroundStyle(Constants.disabledTitleColor)
+                        .font(Constants.itemDetailFont)
+                        .lineLimit(1)
+                }
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dimension)
-        .background(Constants.backgroundColor)
+        .background(isExpired ? Constants.disabledBackgroundColor : Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
 }

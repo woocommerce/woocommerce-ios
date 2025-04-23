@@ -51,6 +51,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shipments[selectedShipmentIndex]
     }
 
+    var hasUnfulfilledShipments: Bool {
+        shipments.contains(where: { $0.purchasedLabelID == nil })
+    }
+
     @Published var labelPurchaseErrorNotice: Notice?
 
     @Published private(set) var state = ContentState.loading

@@ -150,6 +150,7 @@ private extension WooShippingCreateLabelsView {
                 Image(systemName: "pencil")
                     .padding(.horizontal)
             }
+            .renderedIf(viewModel.hasUnfulfilledShipments)
         }
         .disabled(viewModel.isPurchasingLabel)
     }

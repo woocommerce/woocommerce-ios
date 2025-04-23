@@ -12,7 +12,7 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingSize: CGSize = .zero
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
-        posModel.viewStateCoordinator
+        posModel.viewStateCoordinatorForView
     }
 
     private var itemsViewState: ItemsViewState {

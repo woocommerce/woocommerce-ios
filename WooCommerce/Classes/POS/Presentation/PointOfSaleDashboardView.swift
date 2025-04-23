@@ -11,12 +11,12 @@ struct PointOfSaleDashboardView: View {
 
     @State private var floatingSize: CGSize = .zero
 
-    @State var selectedItemListType: ItemListType = .products(search: false)
-
-    @State var searchTerm: String = ""
+    private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
+        posModel.viewStateCoordinatorForView
+    }
 
     private var itemsViewState: ItemsViewState {
-        switch selectedItemListType {
+        switch viewStateCoordinator.selectedItemListType {
         case .products(let searching):
             if searching {
                 return posModel.purchasableItemsSearchController.itemsViewState
@@ -40,7 +40,7 @@ struct PointOfSaleDashboardView: View {
                 case .error(let error):
                     PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            switch selectedItemListType {
+                            switch viewStateCoordinator.selectedItemListType {
                             case .products(search: false):
                                 await posModel.purchasableItemsController.loadItems(base: .root)
                             case .products(search: true):
@@ -116,11 +116,12 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var contentView: some View {
-        GeometryReader { geometry in
+        @Bindable var viewStateCoordinator = viewStateCoordinator
+        return GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView(selectedItemListType: $selectedItemListType,
-                                 searchTerm: $searchTerm)
+                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                                 searchTerm: $viewStateCoordinator.searchTerm)
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }

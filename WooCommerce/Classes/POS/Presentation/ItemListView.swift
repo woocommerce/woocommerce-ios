@@ -11,28 +11,10 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
-    private var shouldShowSearchField: Bool {
-        selectedItemListType == .products(search: true)
-    }
     @FocusState private var isSearchFieldFocused: Bool
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
-
-    var itemsController: PointOfSaleItemsControllerProtocol {
-        switch selectedItemListType {
-        case .products(search: false):
-            posModel.purchasableItemsController
-        case .products(search: true):
-            posModel.purchasableItemsSearchController
-        case .coupons:
-            posModel.couponsController
-        }
-    }
-
-    private var itemListState: ItemListState {
-        itemsController.itemsViewState.itemsStack.root
-    }
 
     private var shouldShowCoupons: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
@@ -40,6 +22,7 @@ struct ItemListView: View {
 
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
+        let itemListState = itemListState(selectedItemListType)
         return itemListState.isLoaded || itemListState.isEmpty
     }
 
@@ -56,7 +39,7 @@ struct ItemListView: View {
     }
 
     private var shouldShowHeaderItems: Bool {
-        !shouldShowSearchField
+        !selectedItemListType.isSearch
     }
 
     @State private var showCouponCreationModal: Bool = false
@@ -80,20 +63,14 @@ struct ItemListView: View {
             headerView
 
             TabView(selection: $selectedItemListType) {
-                itemListContent
-                    .tag(ItemListType.products(search: false))
-                    .gesture(DragGesture())
-                itemListContent
-                    .tag(ItemListType.products(search: true))
-                    .gesture(DragGesture())
-                itemListContent
-                    .tag(ItemListType.coupons)
-                    .gesture(DragGesture())
-              }
-              .tabViewStyle(.page(indexDisplayMode: .never))
-              .simultaneousGesture(DragGesture())
-              .animation(.none, value: selectedItemListType)
+                itemListContent(.products(search: false))
+                itemListContent(.products(search: true))
+                itemListContent(.coupons)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.none, value: selectedItemListType)
         }
+
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
         .navigationDestination(for: POSItem.self, destination: { item in
@@ -110,27 +87,32 @@ struct ItemListView: View {
     }
 
     @ViewBuilder
-    var itemListContent: some View {
-        if shouldShowSearchField && searchTerm.isEmpty {
-            POSRecentSearchesView(
-                savedSearches: posModel.searchHistory(for: selectedItemListType.itemType),
-                onSearchSelected: { search in
-                    searchTerm = search
+    private func itemListContent(_ itemListType: ItemListType) -> some View {
+        Group {
+            if itemListType.isSearch && searchTerm.isEmpty {
+                POSRecentSearchesView(
+                    savedSearches: posModel.searchHistory(for: itemListType.itemType),
+                    onSearchSelected: { search in
+                        searchTerm = search
+                    }
+                )
+                .background(Color.posSurface)
+            } else {
+                switch itemListState(itemListType) {
+                case .loading(let items),
+                        .loaded(let items, _),
+                        .inlineError(let items, _, _):
+                    listView(items, itemListType: itemListType)
+                case .error(let errorState):
+                    errorView(errorState)
+                    EmptyView()
+                case .empty:
+                    emptyView
                 }
-            )
-            .background(Color.posSurface)
-        } else {
-            switch itemListState {
-            case .loading(let items),
-                    .loaded(let items, _),
-                    .inlineError(let items, _, _):
-                listView(items)
-            case .error(let errorState):
-                errorView(errorState)
-            case .empty:
-                emptyView
             }
         }
+        .tag(itemListType)
+        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
     }
 }
 
@@ -145,7 +127,7 @@ private extension ItemListView {
                 HStack {
                     if isSearchAllowed {
                         searchField
-                            .renderedIf(shouldShowSearchField)
+                            .renderedIf(selectedItemListType.isSearch)
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                             .onChange(of: searchTerm) { oldValue, newValue in
                                 // The debouncing logic is a little tricky, because the loading state is held in the controller.
@@ -190,7 +172,7 @@ private extension ItemListView {
                                 isSearchFieldFocused = true
                             }
                         }
-                        .renderedIf(!shouldShowSearchField)
+                        .renderedIf(!selectedItemListType.isSearch)
                         .transition(.opacity.combined(with: .scale))
                     }
 
@@ -205,7 +187,7 @@ private extension ItemListView {
                 }
             })
         }
-        .animation(.easeInOut(duration: Constants.animationDuration), value: shouldShowSearchField)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType.isSearch)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
         .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
     }
@@ -275,24 +257,24 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
+    func listView(_ items: [POSItem], itemListType: ItemListType) -> some View {
         ItemList(
-            itemsController: itemsController,
+            itemsController: itemsController(itemListType),
             node: .root,
-            itemActionHandler: actionHandler
+            itemActionHandler: actionHandler(itemListType)
         )
         .refreshable {
             trackPullToRefresh()
-            await itemsController.refreshItems(base: .root)
+            await itemsController(itemListType).refreshItems(base: .root)
         }
     }
 
-    private var actionHandler: POSItemActionHandler {
-        switch selectedItemListType {
+    private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
+        switch itemListType {
         case .products(search: false), .coupons:
             StandardPOSItemActionHandler(posModel: posModel)
         case .products(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: selectedItemListType)
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
         }
     }
 
@@ -307,7 +289,7 @@ private extension ItemListView {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: posModel.purchasableItemsController,
-                itemActionHandler: actionHandler
+                itemActionHandler: actionHandler(selectedItemListType)
             )
         default:
             EmptyView()
@@ -345,7 +327,7 @@ private extension ItemListView {
         default:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
-                    await itemsController.loadItems(base: .root)
+                    await itemsController(selectedItemListType).loadItems(base: .root)
                 }
             })
         }
@@ -357,12 +339,30 @@ private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
         selectedItemListType = itemListType
         Task { @MainActor in
-            if itemListState.items.isEmpty {
-                await itemsController.loadItems(base: .root)
+            if itemListState(itemListType).items.isEmpty {
+                await itemsController(itemListType).loadItems(base: .root)
             }
         }
 
         trackSelectedItemListTypeTapped(itemListType)
+    }
+}
+
+@available(iOS 17.0, *)
+private extension ItemListView {
+    func itemsController(_ itemType: ItemListType) -> PointOfSaleItemsControllerProtocol {
+        switch itemType {
+        case .products(search: false):
+            posModel.purchasableItemsController
+        case .products(search: true):
+            posModel.purchasableItemsSearchController
+        case .coupons:
+            posModel.couponsController
+        }
+    }
+
+    private func itemListState(_ itemType: ItemListType) -> ItemListState {
+        itemsController(itemType).itemsViewState.itemsStack.root
     }
 }
 

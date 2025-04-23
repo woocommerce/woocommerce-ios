@@ -8,7 +8,7 @@ enum ItemListType: Equatable, Hashable {
         switch self {
         case .coupons:
             return .coupon
-        case .products(search: let search):
+        case .products:
             return .product
         }
     }
@@ -28,6 +28,15 @@ enum ItemListType: Equatable, Hashable {
             return false
         case .coupons:
             return true
+        }
+    }
+
+    var isSearch: Bool {
+        switch self {
+        case .coupons:
+            return false
+        case .products(let search):
+            return search
         }
     }
 }

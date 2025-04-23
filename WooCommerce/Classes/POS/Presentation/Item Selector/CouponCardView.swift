@@ -82,9 +82,31 @@ private extension CouponCardView {
 }
 
 #if DEBUG
-#Preview {
-    CouponCardView(coupon: .init(id: .init(),
-                                 code: "Coupon-123",
-                                 summary: "10% off - All Products"))
+#Preview("Coupon states") {
+    VStack(spacing: 16) {
+        VStack(alignment: .leading) {
+            Text("Active Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(),
+                code: "Coupon-123",
+                summary: "10% off - All Products"
+            ))
+        }
+
+        VStack(alignment: .leading) {
+            Text("Expired Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(),
+                code: "Old-Coupon-123",
+                summary: "10% off - All Products",
+                dateExpires: Calendar.current.date(byAdding: .month, value: -1, to: Date())
+            ))
+        }
+    }
+    .padding()
 }
 #endif

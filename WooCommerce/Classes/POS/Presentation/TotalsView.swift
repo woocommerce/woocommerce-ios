@@ -232,8 +232,10 @@ private extension TotalsView {
     @ViewBuilder private var paymentView: some View {
         switch posModel.paymentState {
         case .card(let cardPaymentState):
-            if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                                paymentState: cardPaymentState) {
+            if shouldShowCouponValidation {
+                paymentInLineMessage(.validatingCoupon(viewModel: .init()))
+            } else if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                                       paymentState: cardPaymentState) {
                 PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
                     posModel.connectCardReader()
                 }
@@ -242,11 +244,7 @@ private extension TotalsView {
                 case .paymentSuccess:
                     PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
                 default:
-                    HStack(alignment: .center) {
-                        Spacer()
-                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                        Spacer()
-                    }
+                    paymentInLineMessage(inlinePaymentMessage)
                 }
             }
         case .cash(let cashPaymentState):
@@ -264,6 +262,14 @@ private extension TotalsView {
                                              paymentMethod: .cash)))
                 }
             }
+        }
+    }
+
+    @ViewBuilder private func paymentInLineMessage(_ messageType: PointOfSaleCardPresentPaymentMessageType) -> some View {
+        HStack(alignment: .center) {
+            Spacer()
+            PointOfSaleCardPresentPaymentInLineMessage(messageType: messageType)
+            Spacer()
         }
     }
 }
@@ -297,6 +303,10 @@ private extension TotalsView {
     }
 
     private var isShowingPaymentView: Bool {
+        if shouldShowCouponValidation {
+            return true
+        }
+
         guard posModel.orderState.isLoaded else {
             // When the order's being created or synced, we only show the shimmering totals.
             // Before the order exists, we don’t want to show the card payment status, as it will
@@ -306,13 +316,17 @@ private extension TotalsView {
 
         switch posModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            switch posModel.paymentState {
-            case .card:
-                return posModel.cardPresentPaymentInlineMessage != nil
-            case .cash:
-                return true
-            }
+            return shouldShowPaymentViewForConnectedReader
         case .disconnected:
+            return true
+        }
+    }
+
+    private var shouldShowPaymentViewForConnectedReader: Bool {
+        switch posModel.paymentState {
+        case .card:
+            return posModel.cardPresentPaymentInlineMessage != nil
+        case .cash:
             // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
             return true
         }
@@ -343,8 +357,10 @@ private extension TotalsView {
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
-                if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                                    paymentState: cardPaymentState) {
+                if shouldShowCouponValidation {
+                    return .primary
+                } else if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                                           paymentState: cardPaymentState) {
                     return .outlined
                 } else {
                     return .primary
@@ -364,6 +380,16 @@ private extension TotalsView {
                                          sidePadding: POSPadding.none)
             }
         }
+    }
+}
+
+@available(iOS 17.0, *)
+extension TotalsView {
+    private var shouldShowCouponValidation: Bool {
+        return viewHelper.shouldShowCouponValidation(orderState: posModel.orderState,
+                                                     paymentState: posModel.paymentState,
+                                                     readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                     cart: posModel.cart)
     }
 }
 

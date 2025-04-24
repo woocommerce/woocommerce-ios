@@ -185,8 +185,11 @@ final class SessionManager: SessionManagerProtocol {
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
-        // Listens when the core data stack is rest.
-        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidInvalidateData), name: .StorageManagerDidInvalidateCachedData, object: nil)
+        // Listens when the cached data is invalidated.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleStorageDidInvalidateData),
+                                               name: .StorageManagerDidInvalidateCachedData,
+                                               object: nil)
     }
 
     /// Nukes all of the known Session's properties.

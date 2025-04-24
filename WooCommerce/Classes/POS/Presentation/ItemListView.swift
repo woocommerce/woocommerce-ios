@@ -68,20 +68,23 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            TabView(selection: $selectedItemListType) {
-                itemListContent(.products(search: false))
-                if isSearchProductsFeatureEnabled {
-                    itemListContent(.products(search: true))
+            ZStack {
+                TabView(selection: $selectedItemListType) {
+                    itemListContent(.products(search: false))
+                    if isCouponsFeatureEnabled {
+                        itemListContent(.coupons)
+                    }
                 }
-                if isCouponsFeatureEnabled {
-                    itemListContent(.coupons)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.none, value: selectedItemListType)
+                .ignoresSafeArea()
+
+                if selectedItemListType.isSearching {
+                    searchOverlay(itemListType: selectedItemListType)
+                        .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            .ignoresSafeArea()
         }
-
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
         .navigationDestination(for: POSItem.self, destination: { item in
@@ -100,7 +103,26 @@ struct ItemListView: View {
     @ViewBuilder
     private func itemListContent(_ itemListType: ItemListType) -> some View {
         Group {
-            if itemListType.isSearching && searchTerm.isEmpty {
+            switch itemListState(itemListType) {
+            case .loading(let items),
+                    .loaded(let items, _),
+                    .inlineError(let items, _, _):
+                listView(items, itemListType: itemListType)
+            case .error(let errorState):
+                errorView(errorState)
+                EmptyView()
+            case .empty:
+                emptyView
+            }
+        }
+        .tag(itemListType)
+        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+    }
+
+    @ViewBuilder
+    private func searchOverlay(itemListType: ItemListType) -> some View {
+        VStack(spacing: 0) {
+            if searchTerm.isEmpty {
                 POSRecentSearchesView(
                     savedSearches: posModel.searchHistory(for: itemListType.itemType),
                     onSearchSelected: { search in
@@ -124,8 +146,7 @@ struct ItemListView: View {
                 }
             }
         }
-        .tag(itemListType)
-        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        .background(Color.posSurface)
     }
 }
 

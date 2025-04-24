@@ -893,6 +893,7 @@
 		209E96BD2DB681B50089F3D2 /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209E96BC2DB681B50089F3D2 /* KeyboardObserver.swift */; };
 		209ECA812DB8FC280089F3D2 /* PointOfSaleViewStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209ECA802DB8FC280089F3D2 /* PointOfSaleViewStateCoordinator.swift */; };
 		209EE8132DBA95BA0089F3D2 /* POSSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EE8122DBA95BA0089F3D2 /* POSSearchView.swift */; };
+		209EE8152DBA96D00089F3D2 /* POSProductSearchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EE8142DBA96D00089F3D2 /* POSProductSearchable.swift */; };
 		209EEF902C762ED5007969A4 /* POSModalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EEF8F2C762ED5007969A4 /* POSModalManager.swift */; };
 		20A130EB2C5A27190058022F /* PointOfSaleAssetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */; };
 		20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
@@ -4164,6 +4165,7 @@
 		209E96BC2DB681B50089F3D2 /* KeyboardObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardObserver.swift; sourceTree = "<group>"; };
 		209ECA802DB8FC280089F3D2 /* PointOfSaleViewStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleViewStateCoordinator.swift; sourceTree = "<group>"; };
 		209EE8122DBA95BA0089F3D2 /* POSSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSearchView.swift; sourceTree = "<group>"; };
+		209EE8142DBA96D00089F3D2 /* POSProductSearchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductSearchable.swift; sourceTree = "<group>"; };
 		209EEF8F2C762ED5007969A4 /* POSModalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSModalManager.swift; sourceTree = "<group>"; };
 		209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssetsTests.swift; sourceTree = "<group>"; };
@@ -8466,6 +8468,7 @@
 		20B9EC682DAFFB3800512EF5 /* Item Search */ = {
 			isa = PBXGroup;
 			children = (
+				209EE8142DBA96D00089F3D2 /* POSProductSearchable.swift */,
 				209EE8122DBA95BA0089F3D2 /* POSSearchView.swift */,
 				20B9EC692DAFFB7A00512EF5 /* POSRecentSearchesView.swift */,
 			);
@@ -17394,6 +17397,7 @@
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
 				45C8B26123155CBC0002FA77 /* BillingInformationViewController.swift in Sources */,
 				E12FB786266E0CAE0039E9C2 /* ApllicationLogDetailView.swift in Sources */,
+				209EE8152DBA96D00089F3D2 /* POSProductSearchable.swift in Sources */,
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */,
 				869C2AA42C91791B00DDEE13 /* AztecEditorView.swift in Sources */,

@@ -18,6 +18,8 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
 
+    @State private var couponsValidationModel: TotalsViewCouponValidationStateModel?
+
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     var body: some View {
@@ -88,6 +90,7 @@ struct TotalsView: View {
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
+            couponsValidationModel = .init(posModel: posModel)
         }
         .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
         .geometryGroup()
@@ -400,10 +403,7 @@ private extension TotalsView {
 @available(iOS 17.0, *)
 extension TotalsView {
     private var shouldShowCouponValidation: Bool {
-        return viewHelper.shouldShowCouponValidation(orderState: posModel.orderState,
-                                                     paymentState: posModel.paymentState,
-                                                     readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                     cart: posModel.cart)
+        return couponsValidationModel?.showsCouponValidation ?? false
     }
 }
 

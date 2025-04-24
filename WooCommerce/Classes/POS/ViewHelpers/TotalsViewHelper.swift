@@ -85,25 +85,4 @@ struct TotalsViewHelper {
 
         return orderIsLoading || hasDiscounts
     }
-
-    func shouldShowCouponValidation(orderState: PointOfSaleOrderState,
-                                    paymentState: PointOfSalePaymentState,
-                                    readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                    cart: Cart) -> Bool {
-        guard cart.coupons.isNotEmpty else { return false }
-
-
-        if case .syncing = orderState {
-            return true
-        }
-
-        // There's a small gap between order.syncing and the first card payment events
-        // Continue displaying coupon validation to have continuation between coupon validation and checking order states
-        if case .card(let cardPaymentState) = paymentState, case .idle = cardPaymentState {
-            return !shouldShowDisconnectedMessage(readerConnectionStatus: readerConnectionStatus,
-                                                  paymentState: cardPaymentState)
-        }
-
-        return false
-    }
 }

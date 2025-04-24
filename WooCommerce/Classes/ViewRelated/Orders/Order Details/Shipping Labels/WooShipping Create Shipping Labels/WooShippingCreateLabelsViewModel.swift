@@ -75,14 +75,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var originAddresses = WooShippingOriginAddressListViewModel(addresses: [])
 
     /// Address to ship from (store address).
-    private let selectedOriginAddress = CurrentValueSubject<WooShippingOriginAddress?, Never>(nil)
+    @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
     /// Address to ship to (customer address),
-    private let destinationAddress = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+    @Published private var destinationAddress: WooShippingAddress?
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {
-        selectedOriginAddress.value?.isVerified == false
+        selectedOriginAddress?.isVerified == false
     }
 
     /// Address to ship from (store address), formatted for display.
@@ -105,7 +105,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
             shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
         } else {
-            (destinationAddress.value?.formattedPostalAddress)?.components(separatedBy: ", ")
+            (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
         }
     }
 
@@ -197,8 +197,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
 
-        destinationAddress.send(getDestinationAddress(order: order, address: order.shippingAddress))
-        self.selectedOriginAddress.send(selectedOriginAddress)
+        destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
+        self.selectedOriginAddress = selectedOriginAddress
 
         updateShipmentDetailsViewModels()
         loadDestinationAddress()
@@ -235,7 +235,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
 
-        destinationAddress.send(selectedShippingLabel.destinationAddress.toWooShippingAddress())
+        destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
 
@@ -309,7 +309,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     func editSelectedOriginAddress() {
-        guard let selectedOriginAddress = selectedOriginAddress.value else {
+        guard let selectedOriginAddress else {
             return
         }
         addressToEdit = WooShippingEditAddressViewModel(address: selectedOriginAddress, onAddressEdited: { [weak self] editedAddress in
@@ -319,11 +319,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             var addresses = originAddresses.addresses
             addresses.remove(at: index)
             addresses.insert(editedAddress, at: index)
-            self.selectedOriginAddress.send(editedAddress)
+            self.selectedOriginAddress = editedAddress
             originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
                                                                     selectedAddressID: editedAddress.id)
             originAddresses.onSelect = { [weak self] selectedAddress in
-                self?.selectedOriginAddress.send(selectedAddress)
+                self?.selectedOriginAddress = selectedAddress
             }
             addressToEdit = nil // Dismisses address edit screen
         })
@@ -332,17 +332,17 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Sets the `addressToEdit` property for editing the destination address.
     /// After the address is edited, the destination address is replaced with the updated address.
     func editDestinationAddress() {
-        addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress.value,
+        addressToEdit = WooShippingEditAddressViewModel(address: destinationAddress,
                                                         orderID: order.orderID,
                                                         email: destinationEmail,
                                                         isVerified: destinationAddressStatus == .verified,
-                                                        originCountryCode: selectedOriginAddress.value?.country,
-                                                        originStateCode: selectedOriginAddress.value?.state,
+                                                        originCountryCode: selectedOriginAddress?.country,
+                                                        originStateCode: selectedOriginAddress?.state,
                                                         onAddressEdited: { [weak self] editedAddress, editedEmail in
             guard let self else {
                 return
             }
-            destinationAddress.send(editedAddress)
+            destinationAddress = editedAddress
             destinationEmail = editedEmail
             destinationAddressStatus = .verified
             addressToEdit = nil // Dismisses address edit screen
@@ -388,11 +388,11 @@ private extension WooShippingCreateLabelsViewModel {
             }
             stores.dispatch(action)
         }
-        selectedOriginAddress.send(addresses.first(where: \.defaultAddress))
+        selectedOriginAddress = addresses.first(where: \.defaultAddress)
         originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
-                                                                selectedAddressID: selectedOriginAddress.value?.id)
+                                                                selectedAddressID: selectedOriginAddress?.id)
         originAddresses.onSelect = { [weak self] selectedAddress in
-            self?.selectedOriginAddress.send(selectedAddress)
+            self?.selectedOriginAddress = selectedAddress
         }
     }
 
@@ -432,13 +432,13 @@ private extension WooShippingCreateLabelsViewModel {
             guard let self else { return }
             switch result {
             case .success(let address):
-                destinationAddress.send(address.normalizedAddress.toWooShippingAddress())
+                destinationAddress = address.normalizedAddress.toWooShippingAddress()
                 destinationAddressStatus = address.isVerified ? .verified : .unverified
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
 
                 if let orderShippingAddress = getDestinationAddress(order: order, address: order.shippingAddress) {
-                    destinationAddress.send(orderShippingAddress)
+                    destinationAddress = orderShippingAddress
                     destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
                 } else {
                     destinationAddressStatus = .missing
@@ -470,14 +470,14 @@ private extension WooShippingCreateLabelsViewModel {
     func updateShipmentDetailsViewModels() {
         shipmentDetailViewModels = shipments.map { shipment in
             let matchingShippingLabel = shippingLabels.first(where: { $0.shippingLabelID == shipment.purchasedLabelID })
-            let originAddressPublisher = selectedOriginAddress
+            let originAddressPublisher = $selectedOriginAddress
                 .map { $0?.toWooShippingAddress() }
                 .eraseToAnyPublisher()
             return WooShippingShipmentDetailsViewModel(order: order,
                                                        shipment: shipment,
                                                        shippingLabel: matchingShippingLabel,
                                                        originAddress: originAddressPublisher,
-                                                       destinationAddress: destinationAddress.eraseToAnyPublisher(),
+                                                       destinationAddress: $destinationAddress.eraseToAnyPublisher(),
                                                        stores: stores) { [weak self] newLabel in
                 guard let self, let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
                 shippingLabels.append(newLabel)
@@ -496,7 +496,7 @@ private extension WooShippingCreateLabelsViewModel {
 
     /// Observes the selected origin address and updates the displayed origin address and shipping service.
     func observeSelectedOriginAddress() {
-        selectedOriginAddress
+        $selectedOriginAddress
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""

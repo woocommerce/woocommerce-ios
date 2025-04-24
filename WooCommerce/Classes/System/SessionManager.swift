@@ -186,7 +186,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
         // Listens when the core data stack is rest.
-        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidReset), name: .StorageManagerDidResetStorage, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidInvalidateData), name: .StorageManagerDidInvalidateCachedData, object: nil)
     }
 
     /// Nukes all of the known Session's properties.
@@ -288,7 +288,7 @@ private extension SessionManager {
 
     /// Updates the timestamps that control when background data is fetched.
     ///
-    @objc func handleStorageDidReset() {
+    @objc func handleStorageDidInvalidateData() {
         resetTimestampsValues()
     }
 

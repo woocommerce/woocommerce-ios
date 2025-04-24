@@ -321,7 +321,7 @@ private extension CoreDataManager {
         var persistentStoreRemovalError: Error?
         do {
             try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, type: .sqlite, options: nil)
-            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+            NotificationCenter.default.post(name: .StorageManagerDidInvalidateCachedData, object: self)
         } catch {
             persistentStoreRemovalError = error
         }

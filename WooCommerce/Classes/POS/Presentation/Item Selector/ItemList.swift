@@ -185,7 +185,9 @@ private struct ItemListRow: View {
             })
         case let .coupon(coupon):
             Button(action: {
-                itemActionHandler.handleTap(item)
+                if !coupon.isExpired {
+                    itemActionHandler.handleTap(item)
+                }
             }, label: {
                 CouponCardView(coupon: coupon)
             })

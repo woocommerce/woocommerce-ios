@@ -162,21 +162,21 @@ private extension TotalsView {
                            formattedPrice: String?,
                            shimmeringActive: Bool,
                            matchedGeometryId: String) -> some View {
-        if shimmeringActive {
+        HStack(alignment: .top, spacing: .zero) {
+            Text(title)
+                .font(Constants.subtotalTitleFont)
+                .opacity(shimmeringActive ? 0 : 1)
+            Spacer()
+            Text(formattedPrice ?? "")
+                .font(Constants.subtotalAmountFont)
+                .opacity(shimmeringActive ? 0 : 1)
+        }
+        .accessibilityElement(children: .combine)
+        .foregroundColor(Color.posOnSurface)
+        .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        .overlay {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
-                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        } else {
-            HStack(alignment: .top, spacing: .zero) {
-                Text(title)
-                    .font(Constants.subtotalTitleFont)
-                Spacer()
-                Text(formattedPrice ?? "")
-                    .font(Constants.subtotalAmountFont)
-                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
-            }
-            .accessibilityElement(children: .combine)
-            .foregroundColor(Color.posOnSurface)
-            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+                .opacity(shimmeringActive ? 1 : 0)
         }
     }
 
@@ -184,23 +184,23 @@ private extension TotalsView {
     func totalFieldView(formattedPrice: String?,
                         shimmeringActive: Bool,
                         matchedGeometryId: String) -> some View {
-        if shimmeringActive {
+        HStack(alignment: .top, spacing: .zero) {
+            Text(Localization.total)
+                .font(Constants.totalTitleFont)
+                .fontWeight(.semibold)
+                .opacity(shimmeringActive ? 0 : 1)
+            Spacer(minLength: Constants.totalsHorizontalSpacing)
+            Text(formattedPrice ?? "")
+                .font(Constants.totalAmountFont)
+                .opacity(shimmeringActive ? 0 : 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
+        .foregroundColor(Color.posOnSurface)
+        .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        .overlay {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
-                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        } else {
-            HStack(alignment: .top, spacing: .zero) {
-                Text(Localization.total)
-                    .font(Constants.totalTitleFont)
-                    .fontWeight(.semibold)
-                Spacer(minLength: Constants.totalsHorizontalSpacing)
-                Text(formattedPrice ?? "")
-                    .font(Constants.totalAmountFont)
-                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.posOnSurface)
-            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+                .opacity(shimmeringActive ? 1 : 0)
         }
     }
 

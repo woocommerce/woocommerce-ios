@@ -185,7 +185,11 @@ struct TopTabView<Content: View>: View {
                         }
                         .padding(.horizontal, tabsContainerHorizontalPadding)
                         .onAppear {
-                            selectTab(in: scrollViewProxy, at: selectedTab)
+                            /// Handle state change asynchronously to ensure
+                            /// the view is safely updated in the next runloop
+                            DispatchQueue.main.async {
+                                selectTab(in: scrollViewProxy, at: selectedTab)
+                            }
                         }
                     }
                 }

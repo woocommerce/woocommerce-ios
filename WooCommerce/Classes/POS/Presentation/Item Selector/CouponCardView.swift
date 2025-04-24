@@ -55,7 +55,7 @@ private extension CouponCardView {
     enum Localization {
         static let expirationText = NSLocalizedString(
             "couponCardView.expirationText",
-            value: "Expired · %@",
+            value: "Expired on %@",
             comment: "Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'."
         )
     }

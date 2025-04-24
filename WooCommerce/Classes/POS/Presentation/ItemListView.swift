@@ -237,7 +237,7 @@ private extension ItemListView {
                 title: Localization.productsTitle,
                 isSelected: selectedItemListType.isProducts,
                 action: {
-                    displayItemListType(.products(search: searchTerm.isNotEmpty))
+                    displayItemListType(.products(search: false))
                 }
             )
         ]

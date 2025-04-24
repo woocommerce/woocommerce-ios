@@ -232,35 +232,49 @@ private extension TotalsView {
     @ViewBuilder private var paymentView: some View {
         switch posModel.paymentState {
         case .card(let cardPaymentState):
-            if shouldShowCouponValidation {
-                paymentInLineMessage(.validatingCoupon(viewModel: .init()))
-            } else if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                                       paymentState: cardPaymentState) {
-                PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
-                    posModel.connectCardReader()
-                }
-            } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                switch inlinePaymentMessage {
-                case .paymentSuccess:
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                default:
-                    paymentInLineMessage(inlinePaymentMessage)
-                }
-            }
+            cardPaymentView(cardPaymentState: cardPaymentState)
         case .cash(let cashPaymentState):
-            switch cashPaymentState {
-            case .collectingCash:
-                if case .loaded(let total) = posModel.orderState {
-                    PointOfSaleCollectCashView(orderTotal: total.orderTotal)
-                        .transition(.move(edge: .trailing))
-                }
+            cashPaymentView(cashPaymentState: cashPaymentState)
+        }
+    }
+
+    @ViewBuilder private func cardPaymentView(cardPaymentState: PointOfSaleCardPaymentState) -> some View {
+        if shouldShowCouponValidation {
+            paymentInLineMessage(.validatingCoupon(viewModel: .init()))
+        } else if TotalsViewHelper().shouldShowDisconnectedMessage(
+            readerConnectionStatus: posModel.cardReaderConnectionStatus,
+            paymentState: cardPaymentState
+        ) {
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                posModel.connectCardReader()
+            }
+        } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
+            switch inlinePaymentMessage {
             case .paymentSuccess:
-                if case .loaded(let total) = posModel.orderState {
-                    PointOfSaleCardPresentPaymentInLineMessage(
-                        messageType: .paymentSuccess(
-                            viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                             paymentMethod: .cash)))
-                }
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+            default:
+                paymentInLineMessage(inlinePaymentMessage)
+            }
+        }
+    }
+
+    @ViewBuilder private func cashPaymentView(cashPaymentState: PointOfSaleCashPaymentState) -> some View {
+        switch cashPaymentState {
+        case .collectingCash:
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                    .transition(.move(edge: .trailing))
+            }
+        case .paymentSuccess:
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCardPresentPaymentInLineMessage(
+                    messageType: .paymentSuccess(
+                        viewModel: .init(
+                            formattedOrderTotal: total.orderTotal,
+                            paymentMethod: .cash
+                        )
+                    )
+                )
             }
         }
     }

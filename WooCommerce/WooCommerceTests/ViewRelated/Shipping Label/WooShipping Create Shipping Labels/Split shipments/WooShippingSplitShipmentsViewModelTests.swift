@@ -183,8 +183,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
         XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 1)
-        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 1)
-        XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)
+        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsIndexesToMove, [])
     }
 
     func test_moveToNoticeViewModel_is_correct_when_there_exists_more_than_one_shipment_and_not_all_items_are_selected() throws {
@@ -207,8 +206,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
         XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 3)
-        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 2)
-        XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)
+        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsIndexesToMove, [1])
     }
 
     func test_moveToNoticeViewModel_is_correct_when_there_exists_more_than_one_shipment_and_all_items_are_selected() throws {
@@ -231,8 +229,40 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
         XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, true)
         XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 5)
-        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsCount, 2)
-        XCTAssertEqual(moveToNoticeViewModel.currentShipmentIndex, 0)
+        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsIndexesToMove, [1])
+    }
+
+    func test_moveToNoticeViewModel_is_nil_when_there_exist_no_other_unfulfilled_shipments_and_all_items_are_selected() throws {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "2")])
+        let config = WooShippingConfig(siteID: 123, shipments: [
+            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+        ], shippingLabelData: shippingLabelData)
+
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: config,
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
+
+        // Then
+        let moveToNoticeViewModel = try XCTUnwrap(viewModel.moveToNoticeViewModel)
+        XCTAssertEqual(moveToNoticeViewModel.allItemsSelected, false)
+        XCTAssertEqual(moveToNoticeViewModel.selectedItemsCount, 1)
+        XCTAssertEqual(moveToNoticeViewModel.existingShipmentsIndexesToMove, [])
+
+        // When
+        viewModel.selectAll()
+
+        // Then
+        XCTAssertNil(viewModel.moveToNoticeViewModel)
     }
 
     // MARK: - `moveSelectedItems`

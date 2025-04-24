@@ -4,6 +4,7 @@ enum POSCouponImageState {
     case success
     case error
     case normal
+    case expired
 }
 
 struct POSCouponImageView: View {
@@ -21,7 +22,7 @@ struct POSCouponImageView: View {
             return .posSuccess
         case .error:
             return .posError
-        case .normal:
+        case .normal, .expired:
             return .posSurfaceDim
         }
     }
@@ -34,6 +35,8 @@ struct POSCouponImageView: View {
             return .posOnError
         case .normal:
             return .posOnSurfaceVariantLowest
+        case .expired:
+            return Constants.disabledTitleColor
         }
     }
 
@@ -51,6 +54,39 @@ struct POSCouponImageView: View {
     }
 }
 
-#Preview {
-    POSCouponImageView(size: 100)
+private extension POSCouponImageView {
+    typealias Constants = PointOfSaleItemListCardConstants
+}
+
+#Preview("ImageView states") {
+    VStack(spacing: 16) {
+        VStack(alignment: .leading) {
+            Text("Normal")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            POSCouponImageView(size: 100)
+        }
+
+        VStack(alignment: .leading) {
+            Text("Success")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            POSCouponImageView(size: 100, state: .success)
+        }
+
+        VStack(alignment: .leading) {
+            Text("Error")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            POSCouponImageView(size: 100, state: .error)
+        }
+
+        VStack(alignment: .leading) {
+            Text("Expired")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            POSCouponImageView(size: 100, state: .expired)
+        }
+    }
+    .padding()
 }

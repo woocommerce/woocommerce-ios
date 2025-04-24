@@ -12,6 +12,8 @@ enum PointOfSaleItemListCardConstants {
     static let itemDetailFont: POSFontStyle = .posBodyLargeRegular()
     static let accessoryButtonPadding: CGFloat = POSPadding.medium
     static let backgroundColor: Color = .posSurfaceContainerLowest
+    static let disabledBackgroundColor: Color = .posDisabledContainer
     static let titleColor: Color = .posOnSurface
+    static let disabledTitleColor: Color = .posOnDisabledContainer
     static let detailColor: Color = .posOnSurfaceVariantHighest
 }

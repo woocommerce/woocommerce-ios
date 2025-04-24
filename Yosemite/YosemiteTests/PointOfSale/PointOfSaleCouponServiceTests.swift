@@ -135,7 +135,7 @@ struct PointOfSaleCouponServiceTests {
         #expect(coupons.items.count == 2)
     }
 
-    @Test func providePointOfSaleCoupons_when_coupons_expired_then_only_provides_non_expired_coupons() async throws {
+    @Test func providePointOfSaleCoupons_when_have_expired_coupons_then_provides_all_coupons() async throws {
         // Given
         let now = Date()
         let noExpiration: Date? = nil
@@ -155,7 +155,7 @@ struct PointOfSaleCouponServiceTests {
         let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
 
         // Then
-        #expect(coupons.items.count == 2)
+        #expect(coupons.items.count == 3)
     }
 
     @Test func providePointOfSaleCoupons_when_no_coupons_then_synchronize_called() async throws {

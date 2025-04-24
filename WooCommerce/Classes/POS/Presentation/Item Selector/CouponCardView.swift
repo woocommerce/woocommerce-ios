@@ -17,38 +17,97 @@ struct CouponCardView: View {
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
-            POSCouponImageView(size: dimension)
+            POSCouponImageView(size: dimension,
+                               state: coupon.isExpired ? .expired : .normal)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)
-                    .foregroundStyle(Constants.titleColor)
+                    .foregroundStyle(titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(coupon.summary)
-                    .foregroundStyle(Constants.detailColor)
+                    .foregroundStyle(summaryColor)
                     .font(Constants.itemDetailFont)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
+
+                if coupon.isExpired, let expirationDate = coupon.dateExpires {
+                    Text(formattedExpirationText(date: expirationDate))
+                        .foregroundStyle(expirationTextColor)
+                        .font(Constants.itemDetailFont)
+                        .lineLimit(1)
+                }
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dimension)
-        .background(Constants.backgroundColor)
+        .background(cardBackgroundColor)
         .posItemCardBorderStyles()
     }
 }
 
 private extension CouponCardView {
     typealias Constants = PointOfSaleItemListCardConstants
+
+    enum Localization {
+        static let expirationText = NSLocalizedString(
+            "couponCardView.expirationText",
+            value: "Expired on %@",
+            comment: "Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'."
+        )
+    }
+
+    func formattedExpirationText(date: Date) -> String {
+        String(format: Localization.expirationText,
+               DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none))
+    }
+
+    var titleColor: Color {
+        coupon.isExpired ? Constants.disabledTitleColor : Constants.titleColor
+    }
+
+    var summaryColor: Color {
+        coupon.isExpired ? Constants.disabledTitleColor : Constants.detailColor
+    }
+
+    var expirationTextColor: Color {
+        Constants.disabledTitleColor
+    }
+
+    var cardBackgroundColor: Color {
+        coupon.isExpired ? Constants.disabledBackgroundColor : Constants.backgroundColor
+    }
 }
 
 #if DEBUG
-#Preview {
-    CouponCardView(coupon: .init(id: .init(),
-                                 code: "Coupon-123",
-                                 summary: "10% off - All Products"))
+#Preview("Coupon states") {
+    VStack(spacing: 16) {
+        VStack(alignment: .leading) {
+            Text("Active Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(),
+                code: "Coupon-123",
+                summary: "10% off - All Products"
+            ))
+        }
+
+        VStack(alignment: .leading) {
+            Text("Expired Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(),
+                code: "Old-Coupon-123",
+                summary: "10% off - All Products",
+                dateExpires: Calendar.current.date(byAdding: .month, value: -1, to: Date())
+            ))
+        }
+    }
+    .padding()
 }
 #endif

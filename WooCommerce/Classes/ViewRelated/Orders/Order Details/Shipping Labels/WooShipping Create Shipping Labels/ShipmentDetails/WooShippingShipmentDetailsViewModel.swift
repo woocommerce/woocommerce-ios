@@ -8,7 +8,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private let order: Order
     private let stores: StoresManager
     private let currencyFormatter: CurrencyFormatter
-    private let onLabelPurchase: (() -> Void)?
+    private let onLabelPurchase: ((ShippingLabel) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
@@ -135,7 +135,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
-         onLabelPurchase: (() -> Void)? = nil) {
+         onLabelPurchase: ((ShippingLabel) -> Void)? = nil) {
         self.order = order
         self.stores = stores
         self.shipment = shipment
@@ -191,6 +191,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
         shippingLabel = purchasedLabel
         postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: purchasedLabel)
+        onLabelPurchase?(purchasedLabel)
     }
 }
 

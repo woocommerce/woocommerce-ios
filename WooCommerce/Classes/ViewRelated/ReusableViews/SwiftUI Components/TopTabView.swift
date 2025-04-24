@@ -184,6 +184,13 @@ struct TopTabView<Content: View>: View {
                             .coordinateSpace(name: Constants.tabsHorizontalStackNameSpace)
                         }
                         .padding(.horizontal, tabsContainerHorizontalPadding)
+                        .onAppear {
+                            /// Handle state change asynchronously to ensure
+                            /// the view is safely updated in the next runloop
+                            DispatchQueue.main.async {
+                                selectTab(in: scrollViewProxy, at: selectedTab)
+                            }
+                        }
                     }
                 }
                 Divider()

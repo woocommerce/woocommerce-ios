@@ -18,6 +18,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationEmail: String?
     private let stores: StoresManager
+    private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
 
     private(set) var orderItems: WooShippingItemsViewModel
@@ -174,10 +175,12 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
+        self.shippingLabels = order.shippingLabels
         let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.itemsDataSource = itemsDataSource
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
+        self.currencySettings = currencySettings
         self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
         self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
@@ -204,18 +207,19 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Initialize the view model from an existing shipping label.
     init(order: Order,
-         shippingLabel: ShippingLabel,
+         selectedShippingLabel: ShippingLabel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.shippingSettingsService = shippingSettingsService
-        self.shippingLabels = [shippingLabel]
+        self.shippingLabels = order.shippingLabels
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
+        self.currencySettings = currencySettings
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddress = shippingLabel.destinationAddress.toWooShippingAddress()
+        self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
+        self.destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
@@ -229,8 +233,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         updateShipmentDetailsViewModels()
 
-        Task {
+        Task { @MainActor in
             await loadRequiredData()
+
+            // After shipment configs are updated, shipments are updated with purchased label details
+            // Update the selected tab now by comparing the purchased labels with the initial selected label.
+            if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
+                selectedShipmentIndex = matchingIndex
+            }
         }
     }
 
@@ -250,12 +260,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            let totalOrderItems = order.items.map(\.quantity).reduce(0, +)
-            if totalOrderItems > 1 {
-                // Only fetch shipments info if there are more than one order items.
-                group.addTask {
-                    await self.loadShipmentsInfo()
-                }
+            group.addTask {
+                await self.loadShipmentsInfo()
             }
         }
 
@@ -463,8 +469,14 @@ private extension WooShippingCreateLabelsViewModel {
                                                        shippingLabel: matchingShippingLabel,
                                                        originAddress: $selectedOriginAddress.eraseToAnyPublisher(),
                                                        destinationAddress: $destinationAddress.eraseToAnyPublisher(),
-                                                       stores: stores) { [weak self] in
-                guard let self else { return }
+                                                       stores: stores) { [weak self] newLabel in
+                guard let self, let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
+                shippingLabels.append(newLabel)
+                shipments[index] = Shipment(contents: shipment.contents,
+                                            purchasedLabelID: newLabel.shippingLabelID,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
                 onLabelPurchase?(markOrderComplete)
             }
         }

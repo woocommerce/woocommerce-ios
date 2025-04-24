@@ -127,16 +127,13 @@ private extension PointOfSaleCouponService {
     }
 
     func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
-        let now = Date()
-        let nonExpiredCoupons = coupons.filter { coupon in
-            guard let expirationDate = coupon.dateExpires else { return true }
-            return expirationDate >= now
-        }
-
-        return nonExpiredCoupons.compactMap { coupon in
-                .coupon(POSCoupon(id: UUID(),
-                                  code: coupon.code,
-                                  summary: coupon.summary(currencySettings: currencySettings)))
+        coupons.compactMap { coupon in
+                .coupon(POSCoupon(
+                    id: UUID(),
+                    code: coupon.code,
+                    summary: coupon.summary(currencySettings: currencySettings),
+                    dateExpires: coupon.dateExpires
+                ))
         }
     }
 

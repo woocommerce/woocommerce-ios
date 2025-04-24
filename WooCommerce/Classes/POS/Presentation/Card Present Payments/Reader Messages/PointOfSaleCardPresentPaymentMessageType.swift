@@ -1,6 +1,7 @@
 import Foundation
 
 enum PointOfSaleCardPresentPaymentMessageType: Equatable {
+    case validatingCoupon(viewModel: PointOfSaleCardPresentPaymentValidatingCouponMessageViewModel)
     case validatingOrder(viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel)
     case validatingOrderError(viewModel: PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel)
     case preparingForPayment(viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel)

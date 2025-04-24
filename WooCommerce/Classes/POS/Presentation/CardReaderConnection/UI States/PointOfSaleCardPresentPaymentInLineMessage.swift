@@ -10,6 +10,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
 
     var body: some View {
         switch messageType {
+        case .validatingCoupon(let viewModel):
+            PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message, animation: animation)
         case .validatingOrder(let viewModel):
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message, animation: animation)
         case .validatingOrderError(let viewModel):

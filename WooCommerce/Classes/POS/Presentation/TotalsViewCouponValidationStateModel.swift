@@ -8,12 +8,17 @@ import Observation
     private let posModel: PointOfSaleAggregateModelProtocol
 
     var showsCouponValidation: Bool {
-        guard posModel.cart.coupons.isNotEmpty,
-              case .syncing = delayedOrderState else {
+        guard posModel.cart.coupons.isNotEmpty else {
             return false
         }
 
-        return true
+        if case .disconnected = posModel.cardReaderConnectionStatus {
+            // Don't extend the syncing state if the card payment is not starting
+            return posModel.orderState.isSyncing
+        } else {
+            // Extend the syncing state if the card payment is starting
+            return delayedOrderState.isSyncing
+        }
     }
 
     init?(posModel: PointOfSaleAggregateModelProtocol) {
@@ -39,7 +44,7 @@ import Observation
                 if case .syncing = delayedOrderState,
                    case .loaded = posModel.orderState {
                     debounceTask = Task {
-                        try? await Task.sleep(nanoseconds: 200 * NSEC_PER_MSEC)
+                        try? await Task.sleep(nanoseconds: 50 * NSEC_PER_MSEC)
                         guard !Task.isCancelled else { return }
                         self.delayedOrderState = self.posModel.orderState
                     }

@@ -311,7 +311,7 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
+            self?.refetchAllResultsControllers()
         }
 
         productResultsController.onDidChangeContent = { [weak self] in
@@ -319,10 +319,16 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
+            self?.refetchAllResultsControllers()
             self?.updateAvailability()
-            self?.updateResults()
         }
 
+        refetchAllResultsControllers()
+    }
+
+    /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent`
+    /// callback and before reloading UI that involves more than one results controller.
+    func refetchAllResultsControllers() {
         do {
             try blazeCampaignResultsController.performFetch()
             try productResultsController.performFetch()

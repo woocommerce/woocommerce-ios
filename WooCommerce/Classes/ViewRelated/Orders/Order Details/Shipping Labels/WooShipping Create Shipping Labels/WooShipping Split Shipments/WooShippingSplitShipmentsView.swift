@@ -69,6 +69,11 @@ struct WooShippingSplitShipmentsView: View {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.done) {
+                            guard viewModel.containsUnsavedChanges else {
+                                dismiss()
+                                return
+                            }
+
                             Task {
                                 do {
                                     try await viewModel.saveShipmentInfo()

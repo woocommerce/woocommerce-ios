@@ -137,7 +137,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddresses.addresses, [originAddress])
     }
 
-    func test_shipping_config_is_not_loaded_if_order_contains_one_item() {
+    func test_shipping_config_is_loaded_if_order_contains_one_item() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let error = NetworkError.notFound(response: nil)
@@ -171,7 +171,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         waitUntil {
             viewModel.state != .loading
         }
-        XCTAssertFalse(loadedConfig)
+        XCTAssertTrue(loadedConfig)
     }
 
     func test_shipping_config_is_loaded_if_order_contains_more_than_one_item() {

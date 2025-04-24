@@ -506,7 +506,7 @@ extension OrderDetailsViewModel {
                 return
             }
             if dataSource.isEligibleForWooShipping {
-                let viewModel = WooShippingCreateLabelsViewModel(order: order, shippingLabel: shippingLabel)
+                let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedShippingLabel: shippingLabel)
                 let shippingLabelDetailsViewController = WooShippingCreateLabelsViewHostingController(viewModel: viewModel)
                 viewController.present(shippingLabelDetailsViewController, animated: true)
             } else {

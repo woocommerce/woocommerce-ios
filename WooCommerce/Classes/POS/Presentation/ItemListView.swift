@@ -89,9 +89,9 @@ struct ItemListView: View {
 
             ZStack {
                 TabView(selection: $selectedItemListType) {
-                    itemListContent(.products(search: false))
+                    itemListTabContent(.products(search: false))
                     if isCouponsFeatureEnabled {
-                        itemListContent(.coupons)
+                        itemListTabContent(.coupons)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))

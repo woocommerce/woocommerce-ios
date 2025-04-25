@@ -51,6 +51,28 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
     }
 }
 
+@available(iOS 17.0, *)
+final class CouponsItemActionHandler: POSItemActionHandler {
+    private let posModel: PointOfSaleAggregateModelProtocol
+    private let analytics: Analytics
+    private let itemListType: ItemListType
+
+    init(posModel: PointOfSaleAggregateModelProtocol, itemListType: ItemListType, analytics: Analytics = ServiceLocator.analytics) {
+        self.posModel = posModel
+        self.itemListType = itemListType
+        self.analytics = analytics
+    }
+
+    func handleTap(_ item: POSItem) {
+        let alreadyExists = posModel.cart.coupons.contains(where: { $0.id == item.id })
+        if alreadyExists {
+            return
+        }
+        posModel.addToCart(item)
+        trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
+    }
+}
+
 /// Handler for handling taps on search result items, saving the search term
 @available(iOS 17.0, *)
 final class SearchResultItemActionHandler: POSItemActionHandler {

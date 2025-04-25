@@ -294,10 +294,13 @@ private extension ItemListView {
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
         switch itemListType {
-        case .products(search: false), .coupons:
+        case .products(search: false):
             StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
         case .products(search: true):
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
+        case .coupons:
+            CouponsItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
+            
         }
     }
 

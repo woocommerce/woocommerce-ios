@@ -300,7 +300,6 @@ private extension ItemListView {
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
         case .coupons:
             CouponsItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
-            
         }
     }
 

@@ -181,12 +181,10 @@ struct ItemListView: View {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
-            // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
             ChildItemList(
                 parentItem: parentItem,
                 title: parentProduct.name,
-                itemsController: posModel.purchasableItemsController,
+                itemsController: itemsController(selectedItemListType),
                 itemActionHandler: actionHandler(selectedItemListType)
             )
         default:

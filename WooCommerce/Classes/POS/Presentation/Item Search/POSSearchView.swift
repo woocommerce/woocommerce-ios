@@ -4,8 +4,8 @@ import enum Yosemite.POSItemType
 /// Protocol defining search capabilities for POS items
 @available(iOS 17.0, *)
 protocol POSSearchable {
-    /// The type of items being searched
-    var itemType: POSItemType { get }
+    /// The type of item lists being searched
+    var itemListType: ItemListType { get }
 
     /// Recent search history for the current item type
     var searchHistory: [String] { get }
@@ -134,6 +134,8 @@ struct POSSearchContentView<Content: View>: View {
                 savedSearches: searchable.searchHistory,
                 onSearchSelected: { selectedSearchTerm in
                     searchTerm = selectedSearchTerm
+                    ServiceLocator.analytics.track(
+                        event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
                 }
             )
             .background(Color.posSurface)

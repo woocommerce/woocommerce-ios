@@ -13,12 +13,10 @@ final class POSProductSearchable: POSSearchable {
         self.searchHistoryProvider = searchHistoryProvider
     }
 
-    var itemType: POSItemType {
-        .product
-    }
+    let itemListType: ItemListType = .products(search: false)
 
     var searchHistory: [String] {
-        searchHistoryProvider.searchHistory(for: itemType)
+        searchHistoryProvider.searchHistory(for: itemListType.itemType)
     }
 
     func performSearch(term: String) async {

@@ -1143,6 +1143,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0149547A2DBBA50A00C8870D /* Items */ = {
+			isa = PBXGroup;
+			children = (
+				2095A6482D9D81C900CA1849 /* PointOfSaleItemFetchStrategyFactory.swift */,
+				68EA25372C0876DF00C49AE2 /* PointOfSaleItemService.swift */,
+				6898F3732C0842150039F10A /* PointOfSaleItemServiceProtocol.swift */,
+				2095A64A2D9D82D400CA1849 /* PointOfSalePurchasableItemFetchStrategy.swift */,
+				68EA25332C08734800C49AE2 /* POSSimpleProduct.swift */,
+				027ADB6B2D1BF3AD009608DB /* POSVariableParentProduct.swift */,
+				029149752D2663AB00F7B3B3 /* POSVariation.swift */,
+			);
+			path = Items;
+			sourceTree = "<group>";
+		};
+		0149547B2DBBA51500C8870D /* Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				68B681172D925B170098D5CD /* PointOfSaleCouponService.swift */,
+				6823533E2D82A90A00F24470 /* POSCoupon.swift */,
+			);
+			path = Coupons;
+			sourceTree = "<group>";
+		};
 		016A89D42D9D6D980004FCD6 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1601,16 +1624,9 @@
 		6898F3722C0840FE0039F10A /* PointOfSale */ = {
 			isa = PBXGroup;
 			children = (
-				68B681172D925B170098D5CD /* PointOfSaleCouponService.swift */,
-				2095A6482D9D81C900CA1849 /* PointOfSaleItemFetchStrategyFactory.swift */,
-				68EA25372C0876DF00C49AE2 /* PointOfSaleItemService.swift */,
-				6898F3732C0842150039F10A /* PointOfSaleItemServiceProtocol.swift */,
-				2095A64A2D9D82D400CA1849 /* PointOfSalePurchasableItemFetchStrategy.swift */,
-				6823533E2D82A90A00F24470 /* POSCoupon.swift */,
+				0149547B2DBBA51500C8870D /* Coupons */,
+				0149547A2DBBA50A00C8870D /* Items */,
 				206643562DAEABF7002D5191 /* POSSearchHistoryService.swift */,
-				68EA25332C08734800C49AE2 /* POSSimpleProduct.swift */,
-				027ADB6B2D1BF3AD009608DB /* POSVariableParentProduct.swift */,
-				029149752D2663AB00F7B3B3 /* POSVariation.swift */,
 				2066435A2DAEAC76002D5191 /* POSItemType.swift */,
 			);
 			path = PointOfSale;

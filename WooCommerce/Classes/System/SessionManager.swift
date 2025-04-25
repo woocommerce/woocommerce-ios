@@ -188,7 +188,7 @@ final class SessionManager: SessionManagerProtocol {
         // Listens when the cached data is invalidated.
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleStorageDidInvalidateData),
-                                               name: .StorageManagerDidInvalidateCachedData,
+                                               name: .StorageManagerDidDropDatabase,
                                                object: nil)
     }
 

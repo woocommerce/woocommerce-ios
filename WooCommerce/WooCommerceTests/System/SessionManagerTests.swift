@@ -483,7 +483,7 @@ final class SessionManagerTests: XCTestCase {
 
         // When
         let sut = SessionManager(defaults: defaults, keychainServiceName: uuid)
-        NotificationCenter.default.post(name: .StorageManagerDidInvalidateCachedData, object: nil)
+        NotificationCenter.default.post(name: .StorageManagerDidDropDatabase, object: nil)
 
         // Then
         XCTAssertNil(defaults[UserDefaults.Key.latestBackgroundOrderSyncDate])

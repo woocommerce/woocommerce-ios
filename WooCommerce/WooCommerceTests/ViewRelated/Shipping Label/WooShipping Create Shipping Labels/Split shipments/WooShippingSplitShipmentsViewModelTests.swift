@@ -850,9 +850,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                 ShippingLabelPurchase.fake().copy(shipmentID: "1")
             ]
         )
-        
+
         let config = WooShippingConfig(
-            siteID: 123, 
+            siteID: 123,
             shipments: [
                 "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
                 "2": [WooShippingShipmentItem(id: 2, subItems: [])]
@@ -911,13 +911,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                 ShippingLabelPurchase.fake().copy(shipmentID: "2")
             ]
         )
-        
+
         let config = WooShippingConfig(
-            siteID: 123, 
+            siteID: 123,
             shipments: [
                 "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
                 "2": [WooShippingShipmentItem(id: 2, subItems: [])]
-            ], 
+            ],
             shippingLabelData: shippingLabelData
         )
 

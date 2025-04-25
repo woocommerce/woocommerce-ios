@@ -5,6 +5,7 @@
 -----
 - [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
 - [internal] Attempt fixing (incorrect) crash upon database dropping [https://github.com/woocommerce/woocommerce-ios/pull/15546]
+- [**] POS: Product search added [https://github.com/woocommerce/woocommerce-ios/pull/15545]
 
 22.2
 -----

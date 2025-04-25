@@ -241,9 +241,7 @@ private extension ItemListView {
             Button {
                 searchTerm = ""
                 isSearchFieldFocused = false
-                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                    selectedItemListType = .products(search: false)
-                }
+                selectedItemListType = .products(search: false)
             } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
@@ -418,7 +416,7 @@ private extension ItemListView {
 
         static let searchFieldLabel = NSLocalizedString(
             "pos.itemlistview.searchField.label",
-            value: "Search products",
+            value: "Search Products",
             comment: "Label/placeholder text for the product search field in Point of Sale."
         )
 

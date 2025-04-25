@@ -117,17 +117,14 @@ struct POSSearchContentView<Content: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private let searchable: any POSSearchable
-    private let searchTerm: String
-    private let onSearchTermChange: (String) -> Void
+    @Binding private var searchTerm: String
     private let content: (Bool) -> Content
 
     init(searchable: any POSSearchable,
-         searchTerm: String,
-         onSearchTermChange: @escaping (String) -> Void,
+         searchTerm: Binding<String>,
          @ViewBuilder content: @escaping (Bool) -> Content) {
         self.searchable = searchable
-        self.searchTerm = searchTerm
-        self.onSearchTermChange = onSearchTermChange
+        self._searchTerm = searchTerm
         self.content = content
     }
 
@@ -135,11 +132,8 @@ struct POSSearchContentView<Content: View>: View {
         if searchTerm.isEmpty {
             POSRecentSearchesView(
                 savedSearches: searchable.searchHistory,
-                onSearchSelected: { search in
-                    onSearchTermChange(search)
-                    Task { @MainActor in
-                        await searchable.performSearch(term: search)
-                    }
+                onSearchSelected: { selectedSearchTerm in
+                    searchTerm = selectedSearchTerm
                 }
             )
             .background(Color.posSurface)

@@ -102,10 +102,7 @@ struct ItemListView: View {
                     POSSearchContentView(
                         searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
                                                          searchHistoryProvider: posModel.searchHistoryService),
-                        searchTerm: searchTerm,
-                        onSearchTermChange: { newTerm in
-                            searchTerm = newTerm
-                        }
+                        searchTerm: $searchTerm
                     ) { _ in
                         itemListContent(selectedItemListType)
                     }

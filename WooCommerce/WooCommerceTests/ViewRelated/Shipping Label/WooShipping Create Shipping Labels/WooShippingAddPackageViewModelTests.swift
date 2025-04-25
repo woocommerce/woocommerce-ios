@@ -152,7 +152,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
         mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .deletePackage(receivedSiteID, packageID, completion):
+            case let .deletePackage(receivedSiteID, packageID, _, completion):
                 XCTAssertEqual(receivedSiteID, siteID)
                 XCTAssert(packageID == customPackage.id || packageID == predefinedSavedPackage.id)
                 completion(.success(.fake()))

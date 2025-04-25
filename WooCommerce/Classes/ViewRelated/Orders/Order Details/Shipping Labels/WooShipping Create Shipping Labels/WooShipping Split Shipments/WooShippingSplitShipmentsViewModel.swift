@@ -56,9 +56,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         return shipment
     }
 
-    /// Enables "Done" button only if shipments are edited
-    ///
-    var enableDoneButton: Bool {
+    var containsUnsavedChanges: Bool {
         shipmentsSavedInRemote != editedShipmentsInfo
     }
 
@@ -382,17 +380,22 @@ private extension WooShippingSplitShipmentsViewModel {
             .reduce(0, +).intValue
 
         let allItemsSelected = selectedItemsCount == totalItemCount
+        let existingShipmentsIndexesToMove = shipments.enumerated()
+            .filter { $0.element.isPurchased == false && $0.offset != currentIndex }
+            .map { $0.offset }
 
         if shipments.count == 1 && allItemsSelected {
             // do not allow moving all items if there is only one shipment at the moment
+            return moveToNoticeViewModel = nil
+        } else if existingShipmentsIndexesToMove.isEmpty && allItemsSelected {
+            // prevent moving all items if all other shipments are fulfilled
             return moveToNoticeViewModel = nil
         }
 
         moveToNoticeViewModel = MoveToShipmentNoticeViewModel(
             allItemsSelected: allItemsSelected,
             selectedItemsCount: selectedItemsCount,
-            existingShipmentsCount: shipments.count,
-            currentShipmentIndex: currentIndex
+            existingShipmentsIndexesToMove: existingShipmentsIndexesToMove
         )
     }
 

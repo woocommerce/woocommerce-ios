@@ -52,6 +52,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         shipments[selectedShipmentIndex]
     }
 
+    var hasUnfulfilledShipments: Bool {
+        shipments.contains(where: { $0.purchasedLabelID == nil })
+    }
+
     @Published var labelPurchaseErrorNotice: Notice?
 
     @Published private(set) var state = ContentState.loading
@@ -90,7 +94,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
     var originAddressLines: [String]? {
-        originAddress.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.originAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            originAddress.components(separatedBy: ", ")
+        }
     }
 
     /// This property can be set to display a notice with the provided label about the origin address status.
@@ -98,7 +106,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
-        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
+        }
     }
 
     /// Possible statuses for a Woo Shipping destination address.
@@ -177,10 +189,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
         self.currencySettings = currencySettings
-        self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
         self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.selectedOriginAddress = selectedOriginAddress
         self.stores = stores
         self.shippingSettingsService = shippingSettingsService
 
@@ -190,6 +200,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                                          stores: stores)
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
+
+        destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
+        self.selectedOriginAddress = selectedOriginAddress
 
         updateShipmentDetailsViewModels()
         loadDestinationAddress()
@@ -215,7 +228,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
@@ -226,6 +238,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                                          stores: stores)
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
+
+        destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
 
@@ -250,7 +264,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            if originAddress.isEmpty {
+            if shipments.contains(where: { $0.purchasedLabelID == nil }) {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }
@@ -427,7 +441,7 @@ private extension WooShippingCreateLabelsViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
 
-                if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
+                if let orderShippingAddress = getDestinationAddress(order: order, address: order.shippingAddress) {
                     destinationAddress = orderShippingAddress
                     destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
                 } else {
@@ -460,10 +474,13 @@ private extension WooShippingCreateLabelsViewModel {
     func updateShipmentDetailsViewModels() {
         shipmentDetailViewModels = shipments.map { shipment in
             let matchingShippingLabel = shippingLabels.first(where: { $0.shippingLabelID == shipment.purchasedLabelID })
+            let originAddressPublisher = $selectedOriginAddress
+                .map { $0?.toWooShippingAddress() }
+                .eraseToAnyPublisher()
             return WooShippingShipmentDetailsViewModel(order: order,
                                                        shipment: shipment,
                                                        shippingLabel: matchingShippingLabel,
-                                                       originAddress: $selectedOriginAddress.eraseToAnyPublisher(),
+                                                       originAddress: originAddressPublisher,
                                                        destinationAddress: $destinationAddress.eraseToAnyPublisher(),
                                                        stores: stores) { [weak self] newLabel in
                 guard let self, let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
@@ -525,7 +542,7 @@ private extension WooShippingCreateLabelsViewModel {
     /// Gets the destination address as a `ShippingLabelAddress`.
     /// The order's billing phone is used as a fallback if there is no shipping phone.
     ///
-    static func getDestinationAddress(order: Order, address: Address?) -> WooShippingAddress? {
+    func getDestinationAddress(order: Order, address: Address?) -> WooShippingAddress? {
         guard let phone = address?.phone, phone.isNotEmpty else {
             let destinationAddress = address?.copy(phone: order.billingAddress?.phone)
             return destinationAddress?.toWooShippingAddress()

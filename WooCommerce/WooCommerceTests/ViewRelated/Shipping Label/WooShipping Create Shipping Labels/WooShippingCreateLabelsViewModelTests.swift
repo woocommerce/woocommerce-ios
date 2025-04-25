@@ -532,6 +532,108 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.hazmatNotice != nil
         }
     }
+
+    func test_originAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
+        // Given
+        let labelOriginAddress = ShippingLabelAddress.fake().copy(address1: "1 E 35th ST")
+        let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134,
+                                                      originAddress: labelOriginAddress)
+        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+
+        let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street",
+                                                                 defaultAddress: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                // There exist 2 shipments, one of which has been fulfilled.
+                let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
+                                 "shipment_1": [WooShippingShipmentItem.fake()]]
+                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
+                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                                      shipmentID: "shipment_0")
+                ])
+                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
+                                                                  shippingLabelData: shippingLabelData)))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.originAddressLines?.first, labelOriginAddress.address1)
+
+        // When
+        viewModel.selectedShipmentIndex = 1
+
+        // Then
+        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertEqual(viewModel.originAddressLines?.first, originAddress.address1)
+    }
+
+    func test_destinationAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
+        // Given
+        let labelDestinationAddress = ShippingLabelAddress.fake().copy(address1: "1 E 35th ST")
+        let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134,
+                                                      destinationAddress: labelDestinationAddress)
+        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(address1: "123 Main Street")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([WooShippingOriginAddress.fake().copy(address1: "Test address",
+                                                                          defaultAddress: true)]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                // There exist 2 shipments, one of which has been fulfilled.
+                let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
+                                 "shipment_1": [WooShippingShipmentItem.fake()]]
+                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
+                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                                      shipmentID: "shipment_0")
+                ])
+                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
+                                                                  shippingLabelData: shippingLabelData)))
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.destinationAddressLines?.first, labelDestinationAddress.address1)
+
+        // When
+        viewModel.selectedShipmentIndex = 1
+
+        // Then
+        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

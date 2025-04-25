@@ -726,7 +726,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
     // MARK: - `enableDoneButton`
 
     @MainActor
-    func test_enableDoneButton_is_false_initially() async throws {
+    func test_containsUnsavedChanges_is_false_initially() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
@@ -739,47 +739,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                                                            shippingSettingsService: shippingSettingsService)
 
         // Then
-        XCTAssertFalse(viewModel.enableDoneButton)
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
     }
 
     @MainActor
-    func test_enableDoneButton_turns_true_when_changes_made_to_shipments() async throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
-                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
-        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
-                                                           items: items,
-                                                           stores: stores,
-                                                           currencySettings: currencySettings,
-                                                           shippingSettingsService: shippingSettingsService)
-
-        // When
-        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
-        viewModel.moveSelectedItems(to: .newShipment)
-
-        // Then
-        XCTAssertTrue(viewModel.enableDoneButton)
-
-        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
-            switch action {
-            case let .updateShipment(_, _, _, completion):
-                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
-            default:
-                XCTFail("Received unexpected action: \(action)")
-            }
-        }
-
-        // When
-        try await viewModel.saveShipmentInfo()
-
-        // Then
-        XCTAssertFalse(viewModel.enableDoneButton)
-    }
-
-    @MainActor
-    func test_enableDoneButton_turns_false_when_shipment_changes_are_saved_to_remote() async throws {
+    func test_containsUnsavedChanges_turns_true_when_changes_made_to_shipments() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
@@ -796,7 +760,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Then
-        XCTAssertTrue(viewModel.enableDoneButton)
+        XCTAssertTrue(viewModel.containsUnsavedChanges)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -811,11 +775,47 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         try await viewModel.saveShipmentInfo()
 
         // Then
-        XCTAssertFalse(viewModel.enableDoneButton)
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
     }
 
     @MainActor
-    func test_enableDoneButton_turns_false_when_shipment_changes_are_undone() async throws {
+    func test_containsUnsavedChanges_turns_false_when_shipment_changes_are_saved_to_remote() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: WooShippingConfig.fake(),
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertTrue(viewModel.containsUnsavedChanges)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, _, completion):
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        try await viewModel.saveShipmentInfo()
+
+        // Then
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
+    }
+
+    @MainActor
+    func test_containsUnsavedChanges_turns_false_when_shipment_changes_are_undone() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
@@ -833,7 +833,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.undoMovingItems()
 
         // Then
-        XCTAssertFalse(viewModel.enableDoneButton)
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
     }
 }
 

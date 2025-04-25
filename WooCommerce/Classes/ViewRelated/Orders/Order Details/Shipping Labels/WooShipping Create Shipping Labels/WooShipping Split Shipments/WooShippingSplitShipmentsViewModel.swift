@@ -56,9 +56,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         return shipment
     }
 
-    /// Enables "Done" button only if shipments are edited
-    ///
-    var enableDoneButton: Bool {
+    var containsUnsavedChanges: Bool {
         shipmentsSavedInRemote != editedShipmentsInfo
     }
 

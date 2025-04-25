@@ -21,14 +21,7 @@ final class POSProductSearchable: POSSearchable {
         searchHistoryProvider.searchHistory(for: itemType)
     }
 
-    func performSearch(term: String) {
-        Task { @MainActor in
-            await itemsController.searchItems(searchTerm: term, baseItem: .root)
-        }
-    }
-
-    func selectRecentSearch(term: String) {
-        searchHistoryProvider.saveSuccessfulSearch(term: term, for: itemType)
-        performSearch(term: term)
+    func performSearch(term: String) async {
+        await itemsController.searchItems(searchTerm: term, baseItem: .root)
     }
 }

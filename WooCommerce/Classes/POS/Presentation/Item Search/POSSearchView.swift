@@ -12,107 +12,36 @@ protocol POSSearchable {
 
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
-    func performSearch(term: String)
-
-    /// Called when a recent search is selected
-    /// - Parameter term: The search term that was selected
-    func selectRecentSearch(term: String)
+    func performSearch(term: String) async
 }
 
-/// A reusable search view component for POS items
+/// A reusable search field view for POS items
 @available(iOS 17.0, *)
-struct POSSearchView<Content: View>: View {
+struct POSSearchFieldView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
 
     @Binding var searchTerm: String
-    @Binding var isSearching: Bool
+    @FocusState private var isSearchFieldFocused: Bool
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
-    @FocusState private var isSearchFieldFocused: Bool
-
     private let searchable: any POSSearchable
-    private let content: () -> Content
+    let onBack: () -> Void
 
-    private typealias Localization = POSSearchViewLocalization
-
-    init(isSearching: Binding<Bool>,
-         searchTerm: Binding<String>,
+    init(searchTerm: Binding<String>,
          searchable: any POSSearchable,
-         @ViewBuilder content: @escaping () -> Content) {
-        self._isSearching = isSearching
+         onBack: @escaping () -> Void) {
         self._searchTerm = searchTerm
         self.searchable = searchable
-        self.content = content
+        self.onBack = onBack
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            searchField
-                .transition(.opacity.combined(with: .move(edge: .trailing)))
-
-            if searchTerm.isEmpty {
-                POSRecentSearchesView(
-                    savedSearches: searchable.searchHistory,
-                    onSearchSelected: { search in
-                        searchTerm = search
-                        searchable.selectRecentSearch(term: search)
-                    }
-                )
-                .background(Color.posSurface)
-            } else {
-                content()
-            }
-        }
-        .background(Color.posSurface)
-        .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
-            guard isVisible == false else { return }
-            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
-        }
-        .onChange(of: searchTerm) { oldValue, newValue in
-            // The debouncing logic is a little tricky, because the loading state is held in the controller.
-            // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
-
-            // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
-            // However, we don't want to debounce the first keystroke of a new search, so that the loading
-            // state shows immediately and the UI feels responsive.
-
-            // So, if the last search was finished, we don't debounce the first character. If it didn't
-            // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
-            // the ongoing search is redundant now there's a new search term, so we cancel it.
-            let shouldDebounceNextSearchRequest = !didFinishSearch
-            searchTask?.cancel()
-
-            searchTask = Task {
-                if shouldDebounceNextSearchRequest {
-                    try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
-                }
-
-                guard !Task.isCancelled else { return }
-
-                guard newValue.isNotEmpty else {
-                    didFinishSearch = true
-                    return
-                }
-
-                didFinishSearch = false
-                searchable.performSearch(term: newValue)
-
-                if !Task.isCancelled {
-                    didFinishSearch = true
-                }
-            }
-        }
-    }
-
-    private var searchField: some View {
         HStack(spacing: POSSpacing.small) {
             Button {
-                withAnimation {
-                    clearSearch()
-                    isSearchFieldFocused = false
-                    isSearching = false
-                }
+                searchTerm = ""
+                onBack()
+                isSearchFieldFocused = false
             } label: {
                 Image(systemName: "chevron.backward")
                     .foregroundColor(.posOnSurface)
@@ -120,15 +49,49 @@ struct POSSearchView<Content: View>: View {
             }
 
             TextField(text: $searchTerm) {
-                Text(searchable.itemType.searchFieldLabel)
+                Text(Localization.searchFieldLabel)
             }
             .font(POSFontStyle.posBodyLargeRegular())
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
+            .onChange(of: searchTerm) { oldValue, newValue in
+                // The debouncing logic is a little tricky, because the loading state is held in the controller.
+                // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
+
+                // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
+                // However, we don't want to debounce the first keystroke of a new search, so that the loading
+                // state shows immediately and the UI feels responsive.
+
+                // So, if the last search was finished, we don't debounce the first character. If it didn't
+                // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
+                // the ongoing search is redundant now there's a new search term, so we cancel it.
+                let shouldDebounceNextSearchRequest = !didFinishSearch
+                searchTask?.cancel()
+
+                searchTask = Task {
+                    if shouldDebounceNextSearchRequest {
+                        try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                    }
+
+                    guard !Task.isCancelled else { return }
+
+                    guard newValue.isNotEmpty else {
+                        didFinishSearch = true
+                        return
+                    }
+
+                    didFinishSearch = false
+                    await searchable.performSearch(term: newValue)
+
+                    if !Task.isCancelled {
+                        didFinishSearch = true
+                    }
+                }
+            }
 
             Button {
-                clearSearch()
+                searchTerm = ""
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
@@ -138,21 +101,71 @@ struct POSSearchView<Content: View>: View {
             .transition(.opacity)
             .renderedIf(searchTerm.isNotEmpty)
         }
+        .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
+            guard isVisible == false else { return }
+            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
+        }
+        .onAppear {
+            isSearchFieldFocused = true
+        }
+    }
+}
+
+/// A reusable search content view for POS items
+@available(iOS 17.0, *)
+struct POSSearchContentView<Content: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private let searchable: any POSSearchable
+    private let searchTerm: String
+    private let onSearchTermChange: (String) -> Void
+    private let content: (Bool) -> Content
+
+    init(searchable: any POSSearchable,
+         searchTerm: String,
+         onSearchTermChange: @escaping (String) -> Void,
+         @ViewBuilder content: @escaping (Bool) -> Content) {
+        self.searchable = searchable
+        self.searchTerm = searchTerm
+        self.onSearchTermChange = onSearchTermChange
+        self.content = content
     }
 
-    private func clearSearch() {
-        searchTerm = ""
+    var body: some View {
+        if searchTerm.isEmpty {
+            POSRecentSearchesView(
+                savedSearches: searchable.searchHistory,
+                onSearchSelected: { search in
+                    onSearchTermChange(search)
+                    Task { @MainActor in
+                        await searchable.performSearch(term: search)
+                    }
+                }
+            )
+            .background(Color.posSurface)
+        } else {
+            content(true)
+                .background(Color.posSurface)
+        }
     }
 }
 
 // MARK: - Localization
 @available(iOS 17.0, *)
-private enum POSSearchViewLocalization {
-    static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
-        "pos.searchview.searchField.clearButton.accessibilityLabel",
-        value: "Clear Search",
-        comment: "Accessibility label for the clear button in the Point of Sale search screen."
-    )
+private extension POSSearchFieldView {
+    enum Localization {
+        static let searchFieldLabel = NSLocalizedString(
+            "pos.searchview.searchField.label",
+            value: "Search",
+            comment: "Label/placeholder text for the search field in Point of Sale."
+        )
+
+        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
+            "pos.searchview.searchField.clearButton.accessibilityLabel",
+            value: "Clear Search",
+            comment: "Accessibility label for the clear button in the Point of Sale search screen."
+        )
+    }
 }
 
 private extension POSItemType {

@@ -99,12 +99,14 @@ struct ItemListView: View {
                 .ignoresSafeArea()
 
                 if selectedItemListType.isSearching {
-                    POSSearchView(
-                        isSearching: isSearching,
-                        searchTerm: $searchTerm,
+                    POSSearchContentView(
                         searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
-                                                         searchHistoryProvider: posModel.searchHistoryService)
-                    ) {
+                                                         searchHistoryProvider: posModel.searchHistoryService),
+                        searchTerm: searchTerm,
+                        onSearchTermChange: { newTerm in
+                            searchTerm = newTerm
+                        }
+                    ) { _ in
                         itemListContent(selectedItemListType)
                     }
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
@@ -206,15 +208,28 @@ private extension ItemListView {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
                     if isSearchAllowed {
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
-                                    itemListType: selectedItemListType))
-                                selectedItemListType = .products(search: true)
+                        if selectedItemListType.isSearching {
+                            POSSearchFieldView(
+                                searchTerm: $searchTerm,
+                                searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                                                               searchHistoryProvider: posModel.searchHistoryService),
+                                onBack: {
+                                    withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                        selectedItemListType = .products(search: false)
+                                    }
+                                }
+                            )
+                            .transition(.opacity.combined(with: .move(edge: .trailing)))
+                        } else {
+                            POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
+                                        itemListType: selectedItemListType))
+                                    selectedItemListType = .products(search: true)
+                                }
                             }
+                            .transition(.opacity.combined(with: .scale))
                         }
-                        .renderedIf(!selectedItemListType.isSearching)
-                        .transition(.opacity.combined(with: .scale))
                     }
 
                     if isCouponsFeatureEnabled {
@@ -308,6 +323,8 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
+        // Clear search term when switching tabs
+        searchTerm = ""
         selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState(itemListType).items.isEmpty {

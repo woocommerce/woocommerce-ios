@@ -29,11 +29,9 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published private(set) var destinationCountryCode: String?
 
     private var cancellables = Set<AnyCancellable>()
-    private let shipment: Shipment
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
     init(order: Order, shipment: Shipment, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
-        self.shipment = shipment
         self.onCompletion = onCompletion
 
         itemsViewModels = shipment.items.map {
@@ -51,8 +49,9 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
-        let form = ShippingLabelCustomsForm(packageID: shipment.id,
-                                            packageName: shipment.id,
+        /// Ignoring `packageID` and `packageName` as these are not needed in WooShipping plugin, only in WCS&T
+        let form = ShippingLabelCustomsForm(packageID: "",
+                                            packageName: "",
                                             contentsType: contentType.toFormContentsType(),
                                             contentExplanation: contentType == .other ? contentExplanation : "",
                                             restrictionType: restrictionType.toFormRestrictionType(),

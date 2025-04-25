@@ -368,7 +368,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_shouldShowCustomsForm_when_shipping_label_is_purchased_then_returns_false() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
 
         // When

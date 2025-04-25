@@ -87,29 +87,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            ZStack {
-                TabView(selection: $selectedItemListType) {
-                    itemListTabContent(.products(search: false))
-                    if isCouponsFeatureEnabled {
-                        itemListTabContent(.coupons)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.none, value: selectedItemListType)
-                .ignoresSafeArea()
-
-                if selectedItemListType.isSearching {
-                    POSSearchContentView(
-                        searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
-                                                         searchHistoryProvider: posModel.searchHistoryService),
-                        searchTerm: $searchTerm
-                    ) { _ in
-                        itemListContent(selectedItemListType)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
-                    .zIndex(1)
+            TabView(selection: $selectedItemListType) {
+                itemListTabContent(.products(search: false))
+                if isCouponsFeatureEnabled {
+                    itemListTabContent(.coupons)
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.none, value: selectedItemListType)
+            .ignoresSafeArea()
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -128,9 +114,23 @@ struct ItemListView: View {
 
     @ViewBuilder
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
-        itemListContent(itemListType)
-            .tag(itemListType)
-            .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        ZStack {
+            itemListContent(itemListType)
+
+            if selectedItemListType.isSearching && itemListType.isProducts {
+                POSSearchContentView(
+                    searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                                                     searchHistoryProvider: posModel.searchHistoryService),
+                    searchTerm: $searchTerm
+                ) { _ in
+                    itemListContent(selectedItemListType)
+                }
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
+                .zIndex(1)
+            }
+        }
+        .tag(itemListType)
+        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
     }
 
     @ViewBuilder

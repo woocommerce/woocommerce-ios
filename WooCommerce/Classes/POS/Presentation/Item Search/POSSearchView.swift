@@ -17,7 +17,7 @@ protocol POSSearchable {
 
 /// A reusable search field view for POS items
 @available(iOS 17.0, *)
-struct POSSearchFieldView: View {
+struct POSSearchField: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
 
     @Binding var searchTerm: String
@@ -152,7 +152,7 @@ struct POSSearchContentView<Content: View>: View {
 
 // MARK: - Localization
 @available(iOS 17.0, *)
-private extension POSSearchFieldView {
+private extension POSSearchField {
     enum Localization {
         static let searchFieldLabel = NSLocalizedString(
             "pos.searchview.searchField.label",

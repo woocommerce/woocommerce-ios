@@ -209,7 +209,7 @@ private extension ItemListView {
                 HStack {
                     if isSearchAllowed {
                         if selectedItemListType.isSearching {
-                            POSSearchFieldView(
+                            POSSearchField(
                                 searchTerm: $searchTerm,
                                 searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
                                                                searchHistoryProvider: posModel.searchHistoryService),

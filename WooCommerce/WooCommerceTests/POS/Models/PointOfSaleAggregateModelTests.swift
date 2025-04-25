@@ -108,17 +108,22 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
+        private func makeSUT() -> PointOfSaleAggregateModel {
+            PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                      purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                      couponsController: MockPointOfSaleCouponsController(),
+                                      cardPresentPaymentService: MockCardPresentPaymentService(),
+                                      orderController: MockPointOfSaleOrderController(),
+                                      analytics: analytics,
+                                      collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                      searchHistoryService: MockPOSSearchHistoryService(),
+                                      popularItemsController: MockPointOfSalePopularItemsController())
+        }
+
+        @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             try #require(sut.cart.isEmpty)
             let item = makePurchasableItem()
 
@@ -132,15 +137,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             let items = [makePurchasableItem(), makePurchasableItem(), makePurchasableItem()]
 
             // When
@@ -153,15 +150,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -181,15 +170,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCart_removes_everything() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -207,15 +188,7 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
             let couponItem = makeCouponItem(code: "VALID")
@@ -242,15 +215,7 @@ struct PointOfSaleAggregateModelTests {
             """))
         func addToCart_tracks_analytics_event() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
+            let sut = makeSUT()
             let item = makePurchasableItem()
 
             // When
@@ -259,6 +224,19 @@ struct PointOfSaleAggregateModelTests {
             // Then
             let event = try #require(analyticsProvider.receivedEvents.first)
             #expect(event == "item_added_to_cart")
+        }
+
+        @available(iOS 17.0, *)
+        @Test func addToCart_when_attempt_to_add_duplicated_coupon_then_does_not_add_it_to_cart() {
+            let sut = makeSUT()
+            let coupon = makeCouponItem(code: "DISCOUNT!")
+
+            // When
+            sut.addToCart(coupon)
+            sut.addToCart(coupon)
+
+            // Then
+            #expect(sut.cart.coupons.count == 1)
         }
     }
 

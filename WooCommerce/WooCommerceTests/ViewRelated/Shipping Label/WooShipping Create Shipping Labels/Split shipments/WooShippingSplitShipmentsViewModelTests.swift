@@ -835,6 +835,106 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.containsUnsavedChanges)
     }
+
+    // MARK: - `isShipmentDeleteOptionDisabled`
+
+    func test_isShipmentDeleteOptionDisabled_returns_true_for_purchased_shipment() throws {
+        // Given
+        let items = [
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+            sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
+        ]
+
+        let shippingLabelData = WooShippingLabelData(
+            currentOrderLabels: [
+                ShippingLabelPurchase.fake().copy(shipmentID: "1")
+            ]
+        )
+        
+        let config = WooShippingConfig(
+            siteID: 123, 
+            shipments: [
+                "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+                "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            ], shippingLabelData: shippingLabelData
+        )
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        let purchasedShipment = viewModel.shipments[0]  // First shipment is purchased
+
+        // Then
+        XCTAssertTrue(viewModel.isShipmentDeleteOptionDisabled(for: purchasedShipment))
+    }
+
+    func test_isShipmentDeleteOptionDisabled_returns_false_for_unfulfilled_shipment_when_there_are_multiple() throws {
+        // Given
+        let items = [
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+            sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
+        ]
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertFalse(viewModel.isShipmentDeleteOptionDisabled(for: viewModel.shipments[0]))
+        XCTAssertFalse(viewModel.isShipmentDeleteOptionDisabled(for: viewModel.shipments[1]))
+    }
+
+    func test_isShipmentDeleteOptionDisabled_returns_true_for_last_unfulfilled_shipment() throws {
+        // Given
+        let items = [
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+            sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
+        ]
+
+        let shippingLabelData = WooShippingLabelData(
+            currentOrderLabels: [
+                ShippingLabelPurchase.fake().copy(shipmentID: "2")
+            ]
+        )
+        
+        let config = WooShippingConfig(
+            siteID: 123, 
+            shipments: [
+                "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+                "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            ], 
+            shippingLabelData: shippingLabelData
+        )
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        let unfulfilledShipment = viewModel.shipments[0]  // First shipment is unfulfilled
+
+        // Then
+        XCTAssertTrue(viewModel.isShipmentDeleteOptionDisabled(for: unfulfilledShipment))
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

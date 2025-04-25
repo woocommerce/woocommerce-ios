@@ -51,6 +51,7 @@ struct POSSearchField: View {
             TextField(text: $searchTerm) {
                 Text(Localization.searchFieldLabel)
             }
+            .textFieldStyle(.roundedBorder)
             .font(POSFontStyle.posBodyLargeRegular())
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)

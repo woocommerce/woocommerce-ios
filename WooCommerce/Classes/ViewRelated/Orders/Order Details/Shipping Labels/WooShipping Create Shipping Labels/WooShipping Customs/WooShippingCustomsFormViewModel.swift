@@ -48,7 +48,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         listenForInternationalTransactionNumberIsRequired()
     }
 
-    @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+    @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
         let form = ShippingLabelCustomsForm(packageID: shipment.id,

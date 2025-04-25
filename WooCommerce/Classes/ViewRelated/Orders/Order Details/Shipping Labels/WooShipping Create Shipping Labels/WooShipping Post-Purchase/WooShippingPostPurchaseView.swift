@@ -4,7 +4,10 @@ struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
     @State private var isPrintingLabel = false
-    @State private var showingPrintingError = false
+    @State private var showingLabelPrintingError = false
+
+    @State private var isPrintingCustomsForm = false
+    @State private var showingCustomsFormPrintingError = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -83,6 +86,24 @@ struct WooShippingPostPurchaseView: View {
                             }
                         }
                     }
+                    if let commercialInvoiceURL = viewModel.commercialInvoiceURL {
+                        Button {
+                            Task {
+                                await printCustomsForm(with: commercialInvoiceURL)
+                            }
+                        } label: {
+                            HStack {
+                                Text(Localization.printCustomsFormButton)
+                                    .multilineTextAlignment(.leading)
+                                if isPrintingCustomsForm {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                } else {
+                                    Image(systemName: "arrow.up.right.square")
+                                }
+                            }
+                        }
+                    }
                     Button {
                         // TODO: Request label refund
                     } label: {
@@ -104,19 +125,33 @@ struct WooShippingPostPurchaseView: View {
                 .footnoteStyle()
         }
         .padding(.vertical)
-        .alert(Localization.PrintingLabelError.title, isPresented: $showingPrintingError, actions: {
+        .alert(Localization.PrintingError.shippingLabel, isPresented: $showingLabelPrintingError, actions: {
             Button(role: .cancel) {} label: {
-                Text(Localization.PrintingLabelError.cancel)
+                Text(Localization.PrintingError.cancel)
             }
             Button {
                 Task { @MainActor in
                     await printLabel()
                 }
             } label: {
-                Text(Localization.PrintingLabelError.retry)
+                Text(Localization.PrintingError.retry)
             }
         }, message: {
-            Text(Localization.PrintingLabelError.message)
+            Text(Localization.PrintingError.message)
+        })
+        .alert(Localization.PrintingError.customsForm, isPresented: $showingCustomsFormPrintingError, actions: {
+            Button(role: .cancel) {} label: {
+                Text(Localization.PrintingError.cancel)
+            }
+            Button {
+                Task { @MainActor in
+                    await printCustomsForm(with: viewModel.commercialInvoiceURL!)
+                }
+            } label: {
+                Text(Localization.PrintingError.retry)
+            }
+        }, message: {
+            Text(Localization.PrintingError.message)
         })
     }
 }
@@ -127,10 +162,21 @@ private extension WooShippingPostPurchaseView {
         do {
             try await viewModel.printLabel()
         } catch {
-            showingPrintingError = true
+            showingLabelPrintingError = true
             DDLogError("Error generating shipping label document for printing: \(error)")
         }
         isPrintingLabel = false
+    }
+
+    func printCustomsForm(with url: URL) async {
+        isPrintingCustomsForm = true
+        do {
+            try await viewModel.printCustomsForm(with: url)
+        } catch {
+            showingCustomsFormPrintingError = true
+            DDLogError("Error downloading customs form for printing: \(error)")
+        }
+        isPrintingCustomsForm = false
     }
 }
 
@@ -172,27 +218,37 @@ private extension WooShippingPostPurchaseView {
         static let note = NSLocalizedString("wooShipping.createLabels.postPurchase.note",
                                             value: "Note: Reusing a printed label is a violation of our terms of service and may result in criminal charges.",
                                             comment: "Note about reusing a purchased shipping label on the shipping label screen")
-        enum PrintingLabelError {
-            static let title = NSLocalizedString(
-                "wooShipping.createLabels.postPurchase.printingLabelError.title",
+        static let printCustomsFormButton = NSLocalizedString(
+            "wooShipping.createLabels.postPurchase.printCustomsFormButton",
+            value: "Print customs form",
+            comment: "Title for button to print a customs form on the shipping label screen"
+        )
+        enum PrintingError {
+            static let shippingLabel = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingError.shippingLabel",
                 value: "Error previewing shipping label",
                 comment: "Title of the error alert when printing a shipping label fails in the post purchase flow."
             )
+            static let customsForm = NSLocalizedString(
+                "wooShipping.createLabels.postPurchase.printingError.customsForm",
+                value: "Error downloading customs form",
+                comment: "Title of the error alert when printing a customs form fails in the post purchase flow."
+            )
             static let message = NSLocalizedString(
-                "wooShipping.createLabels.postPurchase.printingLabelError.message",
+                "wooShipping.createLabels.postPurchase.printingError.message",
                 value: "Do you want to try again?",
-                comment: "Message of the error alert when printing a shipping label fails in the post purchase flow."
+                comment: "Message of the error alert when printing a document fails in the post purchase flow."
             )
             static let cancel = NSLocalizedString(
-                "wooShipping.createLabels.postPurchase.printingLabelError.cancel",
+                "wooShipping.createLabels.postPurchase.printingError.cancel",
                 value: "Cancel",
-                comment: "Button on the error alert when printing a shipping label fails in the post purchase flow." +
+                comment: "Button on the error alert when printing a document fails in the post purchase flow." +
                 "Tapping on this button would cancel the printing."
             )
             static let retry = NSLocalizedString(
-                "wooShipping.createLabels.postPurchase.printingLabelError.retry",
+                "wooShipping.createLabels.postPurchase.printingError.retry",
                 value: "Retry",
-                comment: "Button on the error alert when printing a shipping label fails in the post purchase flow." +
+                comment: "Button on the error alert when printing a document fails in the post purchase flow." +
                 "Tapping on this button would retry printing the shipping label."
             )
         }
@@ -204,7 +260,8 @@ private extension WooShippingPostPurchaseView {
                                                                             labelID: 1,
                                                                             labelSizes: [.label, .legal, .a4],
                                                                             trackingURL: URL(string: "https://woocommerce.com"),
-                                                                            pickupURL: WooShippingCarrier.usps.pickupURL))
+                                                                            pickupURL: WooShippingCarrier.usps.pickupURL,
+                                                                            commercialInvoiceURL: URL(string: "https://example.com")))
         .padding()
 }
 
@@ -213,6 +270,7 @@ private extension WooShippingPostPurchaseView {
                                                                             labelID: 1,
                                                                             labelSizes: [.label, .legal, .a4],
                                                                             trackingURL: nil,
-                                                                            pickupURL: nil))
+                                                                            pickupURL: nil,
+                                                                            commercialInvoiceURL: nil))
         .padding()
 }

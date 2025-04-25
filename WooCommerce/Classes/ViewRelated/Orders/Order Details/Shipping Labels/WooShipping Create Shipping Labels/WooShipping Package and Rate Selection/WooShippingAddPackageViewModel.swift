@@ -264,7 +264,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         // delete on backend
         let deleteAction = WooShippingAction.deletePackage(siteID: siteID,
                                                            packageID: packageToRemove.id,
-                                                           packageType: .custom) { result in
+                                                           packageType: packageToRemove.source.isCustomPackage ? .custom : .predefined) { result in
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
 

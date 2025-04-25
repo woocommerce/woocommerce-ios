@@ -72,7 +72,11 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Check for the need of customs form
     ///
-    @Published private(set) var customsFormRequired: Bool = false
+    @Published private var customsFormRequired = false
+
+    var shouldShowCustomsForm: Bool {
+        customsFormRequired && shippingLabel == nil
+    }
 
     @Published var itnMissingNoticeLabel: String?
 

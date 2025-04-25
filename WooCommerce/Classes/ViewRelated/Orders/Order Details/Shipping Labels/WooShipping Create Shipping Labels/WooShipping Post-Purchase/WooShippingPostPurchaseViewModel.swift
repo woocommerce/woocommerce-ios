@@ -75,11 +75,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
 
     @MainActor
     func printCustomsForm(with url: URL) async throws {
-        let (data, response) = try await URLSession.shared.data(from: url)
-        if let httpResponse = response as? HTTPURLResponse,
-           httpResponse.statusCode != 200 {
-            throw URLError(.badServerResponse)
-        }
+        let (data, _) = try await URLSession.shared.data(from: url)
         presentPrintDialog(with: data)
     }
 }

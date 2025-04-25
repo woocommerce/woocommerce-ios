@@ -5,6 +5,7 @@
 -----
 - [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
 - [**] POS: Product search added [https://github.com/woocommerce/woocommerce-ios/pull/15545]
+- [*] Payments: Prevent sleep during Tap to Pay on iPhone configuration step [https://github.com/woocommerce/woocommerce-ios/pull/15555]
 
 22.2
 -----

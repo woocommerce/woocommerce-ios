@@ -15,7 +15,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     @Published private(set) var hazmatNotice: Notice?
 
     /// The purchased shipping label.
-    @Published private var shippingLabel: ShippingLabel?
+    @Published private(set) var shippingLabel: ShippingLabel?
 
     /// View model for the section displayed after a shipping label is purchased.
     @Published private(set) var postPurchase: WooShippingPostPurchaseViewModel?
@@ -42,7 +42,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     }
 
     /// Address to ship from (store address).
-    @Published private var originAddress: WooShippingOriginAddress?
+    @Published private var originAddress: WooShippingAddress?
 
     /// Address to ship to (customer address),
     @Published private var destinationAddress: WooShippingAddress?
@@ -132,7 +132,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     init(order: Order,
          shipment: Shipment,
          shippingLabel: ShippingLabel?,
-         originAddress: AnyPublisher<WooShippingOriginAddress?, Never>,
+         originAddress: AnyPublisher<WooShippingAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -180,7 +180,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
                                                                  orderID: order.orderID,
-                                                                 originAddress: originAddress.toWooShippingAddress(),
+                                                                 originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
                                                                  package: packagePurchase) { result in
                 continuation.resume(with: result)
@@ -194,7 +194,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 }
 
 private extension WooShippingShipmentDetailsViewModel {
-    func observeAddresses(originAddressPublisher: AnyPublisher<WooShippingOriginAddress?, Never>,
+    func observeAddresses(originAddressPublisher: AnyPublisher<WooShippingAddress?, Never>,
                           destinationAddressPublisher: AnyPublisher<WooShippingAddress?, Never>) {
         originAddressPublisher
             .assign(to: &$originAddress)
@@ -216,7 +216,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .map { [weak self] originAddress, destinationAddress in
                 guard let self else { return nil }
                 return WooShippingServiceViewModel(order: order,
-                                                   originAddress: originAddress?.toWooShippingAddress(),
+                                                   originAddress: originAddress,
                                                    destinationAddress: destinationAddress,
                                                    stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate

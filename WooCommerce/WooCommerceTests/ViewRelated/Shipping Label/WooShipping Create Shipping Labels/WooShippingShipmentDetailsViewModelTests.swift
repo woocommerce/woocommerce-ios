@@ -9,7 +9,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_inits_with_expected_values_for_shipping_label_creation() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -26,7 +26,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_inits_with_expected_values_for_viewing_purchased_label() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -45,7 +45,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_isPurchaseButtonEnabled_true_when_required_fields_are_set() throws {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -66,7 +66,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_selecting_standard_shipping_rate_sets_expected_shippingRates() throws {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -87,7 +87,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_selecting_signature_shipping_rate_sets_expected_shippingRates() throws {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -110,7 +110,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_selecting_adult_signature_shipping_rate_sets_expected_shippingRates() throws {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -136,7 +136,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Given
         let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -174,7 +174,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Given
         var encodedHazmat: [String: Any]?
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
@@ -212,7 +212,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_selectPackage_sets_selectedPackage_with_package_data() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
                                                             shipment: sampleShipment,
@@ -230,7 +230,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_selectPackage_sets_shipmentWeight_with_items_and_package_weight() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
                                                             shipment: sampleShipment,
@@ -249,7 +249,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Given
         let expectedWeight = 2.5
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
                                                             shipment: sampleShipment,
@@ -285,7 +285,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_totalCost_has_expected_value_when_shipping_rate_is_set() throws {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -304,7 +304,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_shouldShowCustomsForm_when_origin_and_destination_in_US_then_returns_false() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -320,7 +320,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_shouldShowCustomsForm_when_origin_address_is_US_military_then_returns_true() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "AA"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "AA"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -336,7 +336,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_shouldShowCustomsForm_when_destination_address_is_US_military_then_returns_true() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "AA"))
 
         // When
@@ -352,7 +352,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_shouldShowCustomsForm_when_destination_address_is_not_in_US_then_returns_true() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
 
         // When
@@ -384,7 +384,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_itnMissingNoticeLabel_when_customs_form_is_not_required() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
         // When
@@ -400,7 +400,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_itnMissingNoticeLabel_when_customs_form_is_required() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
 
         // When
@@ -422,7 +422,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_customsInformationIsCompleted_when_custom_form_is_filled() {
         // Given
-        let originAddressSubject = CurrentValueSubject<WooShippingOriginAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
 
         // When
@@ -474,21 +474,17 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                packageType: "box")
     }
 
-    func sampleOriginAddress(country: String, state: String) -> WooShippingOriginAddress {
-        WooShippingOriginAddress(id: "default_address",
-                                 company: "HEADQUARTERS",
-                                 address1: "15 ALGONKIN ST",
-                                 address2: "STE 100",
-                                 city: "TICONDEROGA",
-                                 state: state,
-                                 postcode: "12883-1487",
-                                 country: country,
-                                 phone: "223-456-7890",
-                                 firstName: "JANE",
-                                 lastName: "DOE",
-                                 email: "TEST@EXAMPLE.COM",
-                                 defaultAddress: true,
-                                 isVerified: false)
+    func sampleOriginAddress(country: String, state: String) -> WooShippingAddress {
+        WooShippingAddress(company: "HEADQUARTERS",
+                           name: "John Doe",
+                           phone: "",
+                           country: country,
+                           state: state,
+                           address1: "15 ALGONKIN ST",
+                           address2: "STE 100",
+                           city: "TICONDEROGA",
+                           postcode: "12883-1487"
+        )
     }
 
     func sampleDestinationAddress(country: String, state: String) -> WooShippingAddress {

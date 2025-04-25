@@ -33,8 +33,7 @@ struct POSRecentSearchesView: View {
                     // Grid of saved searches
                     LazyVGrid(
                         columns: gridColumns,
-                        alignment: .leading,
-                        spacing: POSSpacing.medium
+                        alignment: .leading
                     ) {
                         ForEach(savedSearches, id: \.self) { searchTerm in
                             RecentSearchCard(searchTerm: searchTerm, onSearchSelected: onSearchSelected)
@@ -50,12 +49,12 @@ struct POSRecentSearchesView: View {
     private var gridColumns: [GridItem] {
         if dynamicTypeSize.isAccessibilitySize {
             // Single column for accessibility sizes
-            return [GridItem(.flexible(), spacing: POSSpacing.medium)]
+            return [GridItem(.flexible(), spacing: Constants.cardSpacing)]
         } else {
             // Two equal columns for normal sizes
             return [
-                GridItem(.flexible(), spacing: POSSpacing.medium),
-                GridItem(.flexible(), spacing: POSSpacing.medium)
+                GridItem(.flexible(), spacing: Constants.cardSpacing),
+                GridItem(.flexible(), spacing: Constants.cardSpacing)
             ]
         }
     }
@@ -74,6 +73,10 @@ private extension POSRecentSearchesView {
             value: "No recent searches",
             comment: "Text shown when there's nothing to show before a search term is typed in POS")
 
+    }
+
+    enum Constants {
+        static let cardSpacing: CGFloat = POSSpacing.small
     }
 }
 

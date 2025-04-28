@@ -138,7 +138,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
-    func didPurchaseShipment(shipmentID: String, purchasedLabelID: Int64) {
+    func didPurchaseLabel(for shipmentID: String, purchasedLabelID: Int64) {
         guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
             return
         }

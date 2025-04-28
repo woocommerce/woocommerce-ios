@@ -143,12 +143,14 @@ struct WooShippingPostPurchaseView: View {
             Button(role: .cancel) {} label: {
                 Text(Localization.PrintingError.cancel)
             }
-            Button {
-                Task { @MainActor in
-                    await printCustomsForm(with: viewModel.commercialInvoiceURL!)
+            if let url = viewModel.commercialInvoiceURL {
+                Button {
+                    Task { @MainActor in
+                        await printCustomsForm(with: url)
+                    }
+                } label: {
+                    Text(Localization.PrintingError.retry)
                 }
-            } label: {
-                Text(Localization.PrintingError.retry)
             }
         }, message: {
             Text(Localization.PrintingError.message)

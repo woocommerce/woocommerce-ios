@@ -20,13 +20,13 @@ protocol POSSearchable {
 struct POSSearchField: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
 
-    @Binding var searchTerm: String
+    @Binding private var searchTerm: String
     @FocusState private var isSearchFieldFocused: Bool
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
     private let searchable: any POSSearchable
-    let onBack: () -> Void
+    private let onBack: () -> Void
 
     init(searchTerm: Binding<String>,
          searchable: any POSSearchable,

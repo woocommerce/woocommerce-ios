@@ -97,7 +97,7 @@ struct ItemListView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
-            .ignoresSafeArea()
+            .ignoresSafeArea(.container) // Respect the keyboard safe area
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.

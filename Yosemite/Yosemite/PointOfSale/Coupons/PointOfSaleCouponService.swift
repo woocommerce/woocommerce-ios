@@ -19,10 +19,7 @@ public protocol PointOfSaleCouponServiceProtocol {
 
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
-    private let currencySettings: CurrencySettings
-    private let currencyFormatter: CurrencyFormatter
     private let storage: StorageManagerType
-    private let couponStoreMethods: CouponStoreMethodsProtocol
     private let settingsStoreMethods: SettingStoreMethodsProtocol
 
     private let strategy: PointOfSaleCouponFetchStrategy
@@ -34,10 +31,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
          storage: StorageManagerType,
          strategy: PointOfSaleCouponFetchStrategy? = nil) {
         self.siteID = siteID
-        self.currencySettings = currencySettings
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.storage = storage
-        self.couponStoreMethods = couponStoreMethods
         self.settingsStoreMethods = settingStoreMethods
         self.strategy = strategy ?? PointOfSaleDefaultCouponFetchStrategy(
             siteID: siteID,

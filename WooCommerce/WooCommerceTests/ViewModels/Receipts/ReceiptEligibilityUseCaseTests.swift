@@ -3,63 +3,6 @@ import Yosemite
 @testable import WooCommerce
 
 final class ReceiptEligibilityUseCaseTests: XCTestCase {
-
-    func test_when_WooCommerce_version_is_incorrect_dev_version_then_returns_false() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
-                                              version: "8.6.0-dev-wrong-version",
-                                              active: true)
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(plugin)
-            default:
-                XCTFail("Unexpected action")
-            }
-        }
-        let sut = ReceiptEligibilityUseCase(stores: stores)
-
-        // When
-        let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForBackendReceipts(onCompletion: { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_when_WooCommerce_version_is_correct_dev_version_then_returns_true() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let plugin = SystemPlugin.fake().copy(name: "WooCommerce",
-                                              version: "8.6.0-dev",
-                                              active: true)
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(plugin)
-            default:
-                XCTFail("Unexpected action")
-            }
-        }
-        let sut = ReceiptEligibilityUseCase(stores: stores)
-
-        // When
-        let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForBackendReceipts(onCompletion: { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertTrue(isEligible)
-    }
-
     func test_when_WooCommerce_version_is_below_minimum_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

@@ -1520,15 +1520,40 @@ extension OrderDetailsDataSource {
         guard isOrderStatusEligibleForReceipt else {
             return completion(false)
         }
-        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
-            completion(isEligibleForReceipt)
+
+        switch order.status {
+        case .completed, .processing, .refunded:
+            ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in // returns true, but not rendering the row
+                completion(isEligibleForReceipt)
+        }
+        case .failed:
+            Task { @MainActor in
+                guard let paymentGatewayID = await selectedPaymentGateway() else {
+                    return completion(false)
+                }
+                ReceiptEligibilityUseCase().isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID.gatewayID) { isEligibleForReceipt in
+                    completion(isEligibleForReceipt)
+                }
+            }
+        default:
+            completion(false)
         }
     }
 
     private var isOrderStatusEligibleForReceipt: Bool {
         order.status == .completed ||
         order.status == .processing ||
-        order.status == .refunded
+        order.status == .refunded ||
+        order.status == .failed
+    }
+
+    @MainActor func selectedPaymentGateway() async -> PaymentGatewayAccount? {
+        await withCheckedContinuation { continuation in
+            let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+                continuation.resume(returning: paymentGatewayAccount)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

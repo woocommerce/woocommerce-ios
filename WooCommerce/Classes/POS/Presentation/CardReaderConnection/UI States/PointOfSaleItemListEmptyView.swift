@@ -33,7 +33,7 @@ struct PointOfSaleItemListEmptyView: View {
         ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && keyboard.keyboardHeight <= 0
+                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
                 if shouldShowIcon {
                     icon
@@ -77,7 +77,7 @@ struct PointOfSaleItemListEmptyView: View {
             Spacer()
         }
         .multilineTextAlignment(.center)
-        .padding(.bottom, keyboard.keyboardHeight <= 0 ? floatingControlAreaSize.height : 0)
+        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
         .measureWidth { width in
             viewWidth = width

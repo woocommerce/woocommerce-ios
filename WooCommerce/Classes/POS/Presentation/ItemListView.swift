@@ -8,8 +8,6 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
-    @Environment(\.keyboardObserver) private var keyboardObserver
-
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 

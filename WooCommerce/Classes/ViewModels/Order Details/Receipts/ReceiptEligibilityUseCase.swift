@@ -64,7 +64,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 
     /// Returns true if In Person Payments allows sending failed payment email receipts via the API.
     /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
-    /// WooCommerc 9.5 automatically sends failure receipt after the order fails if the customer email is attached to the order.
+    /// WooCommerce 9.5 automatically sends failure receipt after the order fails if the customer email is attached to the order.
     /// WooPayments 8.6 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
     /// WooCommerce Stripe Gateway 9.1.0 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
     ///

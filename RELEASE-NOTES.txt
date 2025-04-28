@@ -8,6 +8,7 @@
 - [**] POS: Product search added [https://github.com/woocommerce/woocommerce-ios/pull/15545]
 - [*] Payments: Prevent sleep during Tap to Pay on iPhone configuration step [https://github.com/woocommerce/woocommerce-ios/pull/15555]
 - [*] Payments: Use correct documentation link for pending requirements onboarding step [https://github.com/woocommerce/woocommerce-ios/pull/15556]
+- [**] POS: Added functionality for selecting and applying coupons. [https://github.com/woocommerce/woocommerce-ios/pull/15549]
 
 22.2
 -----

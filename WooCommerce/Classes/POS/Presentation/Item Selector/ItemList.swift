@@ -8,6 +8,7 @@ import struct Yosemite.POSVariableParentProduct
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     // Navigation only uses this on iOS 17
@@ -67,7 +68,7 @@ struct ItemList<HeaderView: View>: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, Constants.itemListPadding)
-                    .padding(.bottom, floatingControlAreaSize.height)
+                    .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? Constants.itemListPadding : floatingControlAreaSize.height)
                 }
             )
 

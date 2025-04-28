@@ -5,6 +5,7 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var spyUpdatePOSOrder: Order?
     func updatePOSOrder(siteID: Int64,
                         order: Order,
+                        cashPaymentChangeDueAmount: String?,
                         fields: [OrdersRemote.UpdateOrderField]) async throws -> Order {
         updatePOSOrderCalled = true
         spyUpdatePOSOrder = order

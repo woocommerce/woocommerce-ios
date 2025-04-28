@@ -4,7 +4,6 @@ import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
-import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
@@ -32,7 +31,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
-    func collectCashPayment() async throws
+    func collectCashPayment(changeDueAmount: String?) async throws
 }
 
 @available(iOS 17.0, *)
@@ -125,38 +124,17 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     @MainActor
-    func collectCashPayment() async throws {
-        guard let siteID = stores.sessionManager.defaultStoreID else {
-            throw PointOfSaleOrderControllerError.noSiteID
-        }
+    func collectCashPayment(changeDueAmount: String?) async throws {
         guard let order = order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        let fieldsToUpdate: [OrderUpdateField] = [
-            .status,
-            .paymentMethodID,
-            .paymentMethodTitle]
-        let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
-                                      paymentMethodTitle: Localization.cashPaymentMethodTitle)
-
-        let _ = try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.updateOrder(siteID: siteID,
-                                                 order: updatedOrder,
-                                                 giftCard: nil,
-                                                 fields: fieldsToUpdate,
-                                                 onCompletion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success:
-                    self.celebrate()
-                case .failure:
-                    analytics.track(.pointOfSaleCashPaymentFailed)
-                }
-                continuation.resume(with: result)
-            })
-            stores.dispatch(action)
+        do {
+            try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
+            celebrate()
+        } catch {
+            analytics.track(.pointOfSaleCashPaymentFailed)
+            throw error
         }
     }
 }
@@ -254,12 +232,6 @@ extension PointOfSaleInternalOrderState: Equatable {
 
 @available(iOS 17.0, *)
 extension PointOfSaleOrderController {
-    enum Localization {
-        static let cashPaymentMethodTitle = NSLocalizedString(
-            "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
-            value: "Pay in Person",
-            comment: "Title for the payment method used when collecting cash payment in Point of Sale.")
-    }
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder

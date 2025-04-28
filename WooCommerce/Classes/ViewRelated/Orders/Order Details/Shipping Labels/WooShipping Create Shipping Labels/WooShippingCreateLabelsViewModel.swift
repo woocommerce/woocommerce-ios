@@ -490,6 +490,8 @@ private extension WooShippingCreateLabelsViewModel {
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
+                splitShipmentsViewModel.didPurchaseShipment(shipmentID: shipment.id,
+                                                            purchasedLabelID: newLabel.shippingLabelID)
                 onLabelPurchase?(markOrderComplete)
             }
         }

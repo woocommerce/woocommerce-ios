@@ -1517,12 +1517,18 @@ extension OrderDetailsDataSource {
     }
 
     private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
-        guard !isEligibleForPayment else {
+        guard isOrderStatusEligibleForReceipt else {
             return completion(false)
         }
         ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
             completion(isEligibleForReceipt)
         }
+    }
+
+    private var isOrderStatusEligibleForReceipt: Bool {
+        order.status == .completed ||
+        order.status == .processing ||
+        order.status == .refunded
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

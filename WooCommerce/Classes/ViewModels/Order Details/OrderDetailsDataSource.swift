@@ -1520,10 +1520,11 @@ extension OrderDetailsDataSource {
         guard isOrderStatusEligibleForReceipt else {
             return completion(false)
         }
+        let receiptEligibility = ReceiptEligibilityUseCase()
 
         switch order.status {
         case .completed, .processing, .refunded:
-            ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in // returns true, but not rendering the row
+            receiptEligibility.isEligibleForBackendReceipts { isEligibleForReceipt in // returns true, but not rendering the row
                 completion(isEligibleForReceipt)
         }
         case .failed:
@@ -1531,28 +1532,12 @@ extension OrderDetailsDataSource {
                 guard let paymentGatewayID = await selectedPaymentGateway() else {
                     return completion(false)
                 }
-                ReceiptEligibilityUseCase().isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID.gatewayID) { isEligibleForReceipt in
+                receiptEligibility.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID.gatewayID) { isEligibleForReceipt in
                     completion(isEligibleForReceipt)
                 }
             }
         default:
             completion(false)
-        }
-    }
-
-    private var isOrderStatusEligibleForReceipt: Bool {
-        order.status == .completed ||
-        order.status == .processing ||
-        order.status == .refunded ||
-        order.status == .failed
-    }
-
-    @MainActor func selectedPaymentGateway() async -> PaymentGatewayAccount? {
-        await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
-                continuation.resume(returning: paymentGatewayAccount)
-            }
-            ServiceLocator.stores.dispatch(action)
         }
     }
 
@@ -2062,5 +2047,25 @@ extension OrderDetailsDataSource {
         static let paymentCell = 1
         static let paidByCustomerCell = 1
         static let cellDefaultMargin: CGFloat = 16
+    }
+}
+
+// MARK: - Receipts helpers
+private extension OrderDetailsDataSource {
+    var isOrderStatusEligibleForReceipt: Bool {
+        order.status == .completed ||
+        order.status == .processing ||
+        order.status == .refunded ||
+        order.status == .failed
+    }
+
+    @MainActor
+    func selectedPaymentGateway() async -> PaymentGatewayAccount? {
+        await withCheckedContinuation { continuation in
+            let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+                continuation.resume(returning: paymentGatewayAccount)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 }

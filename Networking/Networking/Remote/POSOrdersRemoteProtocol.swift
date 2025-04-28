@@ -7,6 +7,7 @@ public protocol POSReceiptsRemoteProtocol {
 public protocol POSOrdersRemoteProtocol {
     func updatePOSOrder(siteID: Int64,
                         order: Order,
+                        cashPaymentChangeDueAmount: String?,
                         fields: [OrdersRemote.UpdateOrderField]) async throws -> Order
 
     func createPOSOrder(siteID: Int64,

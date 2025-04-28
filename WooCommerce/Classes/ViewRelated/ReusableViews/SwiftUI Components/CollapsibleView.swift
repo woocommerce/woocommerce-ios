@@ -13,9 +13,6 @@ struct CollapsibleView<Label: View, Content: View>: View {
     private let backgroundColor: UIColor
     private let hasSubtleChevron: Bool
 
-    private let horizontalPadding: CGFloat = 16
-    private let verticalPadding: CGFloat = 8
-
     init(isCollapsible: Bool = true,
          isCollapsed: Binding<Bool> = .constant(false),
          safeAreaInsets: EdgeInsets = .zero,
@@ -54,9 +51,9 @@ struct CollapsibleView<Label: View, Content: View>: View {
                 }
             })
             .buttonStyle(PlainButtonStyle())
-            .padding(.horizontal, horizontalPadding)
+            .padding(.horizontal, CollapsibleViewConstants.horizontalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
-            .padding(.vertical, verticalPadding)
+            .padding(.vertical, CollapsibleViewConstants.verticalPadding)
             .background(Color(backgroundColor))
 
             Divider()
@@ -67,6 +64,13 @@ struct CollapsibleView<Label: View, Content: View>: View {
             }
         }
     }
+}
+
+enum CollapsibleViewConstants {
+    /// Internal horizontal padding of the view
+    fileprivate static let horizontalPadding: CGFloat = 16
+    /// Internal vertical padding of the view
+    static let verticalPadding: CGFloat = 8
 }
 
 struct CollapsibleView_Previews: PreviewProvider {

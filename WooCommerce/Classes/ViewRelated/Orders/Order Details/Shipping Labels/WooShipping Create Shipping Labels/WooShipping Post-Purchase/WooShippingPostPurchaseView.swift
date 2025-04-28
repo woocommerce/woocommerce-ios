@@ -88,7 +88,7 @@ struct WooShippingPostPurchaseView: View {
                     }
                     if let commercialInvoiceURL = viewModel.commercialInvoiceURL {
                         Button {
-                            Task {
+                            Task { @MainActor in
                                 await printCustomsForm(with: commercialInvoiceURL)
                             }
                         } label: {

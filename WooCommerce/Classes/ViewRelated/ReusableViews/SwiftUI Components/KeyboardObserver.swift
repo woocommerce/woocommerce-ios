@@ -7,6 +7,15 @@ final class KeyboardObserver {
     private(set) var isKeyboardVisible: Bool = false
     private(set) var keyboardHeight: CGFloat = 0
 
+    /// When an external keyboard is in use, iPadOS shows a quicktype bar at the bottom of the screen.
+    /// This is reported as a keyboard with height, so `isKeyboardVisible` will be true and
+    /// keyboard height will be > 0.
+    /// However, it's much less of an impingement on the view, so there may be no modification to the view required.
+    /// `isFullSizeKeyboardVisible` is true when the full software keyboard is shown.
+    var isFullSizeKeyboardVisible: Bool {
+        return keyboardHeight > Constants.hardwareKeyboardHelperBarHeightThreshold
+    }
+
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -36,6 +45,13 @@ final class KeyboardObserver {
         let keyboardFrame = frameValue.cgRectValue
         self.keyboardHeight = keyboardFrame.height
         self.isKeyboardVisible = true
+    }
+}
+
+@available(iOS 17.0, *)
+private extension KeyboardObserver {
+    enum Constants {
+        static let hardwareKeyboardHelperBarHeightThreshold: CGFloat = 90
     }
 }
 

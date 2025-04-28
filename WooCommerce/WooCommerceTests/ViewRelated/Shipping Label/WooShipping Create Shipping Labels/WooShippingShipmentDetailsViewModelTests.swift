@@ -302,7 +302,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalCost, "$40.06")
     }
 
-    func test_customsFormRequired_when_origin_and_destination_in_US_then_returns_false() {
+    func test_shouldShowCustomsForm_when_origin_and_destination_in_US_then_returns_false() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
@@ -315,10 +315,10 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
 
         // Then
-        XCTAssertFalse(viewModel.customsFormRequired)
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
     }
 
-    func test_customsFormRequired_when_origin_address_is_US_military_then_returns_true() {
+    func test_shouldShowCustomsForm_when_origin_address_is_US_military_then_returns_true() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "AA"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
@@ -331,10 +331,10 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
 
         // Then
-        XCTAssertTrue(viewModel.customsFormRequired)
+        XCTAssertTrue(viewModel.shouldShowCustomsForm)
     }
 
-    func test_customsFormRequired_when_destination_address_is_US_military_then_returns_true() {
+    func test_shouldShowCustomsForm_when_destination_address_is_US_military_then_returns_true() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "AA"))
@@ -347,10 +347,10 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
 
         // Then
-        XCTAssertTrue(viewModel.customsFormRequired)
+        XCTAssertTrue(viewModel.shouldShowCustomsForm)
     }
 
-    func test_customsFormRequired_when_destination_address_is_not_in_US_then_returns_true() {
+    func test_shouldShowCustomsForm_when_destination_address_is_not_in_US_then_returns_true() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
@@ -363,7 +363,23 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
 
         // Then
-        XCTAssertTrue(viewModel.customsFormRequired)
+        XCTAssertTrue(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_shipping_label_is_purchased_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: ShippingLabel.fake(),
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
     }
 
     func test_itnMissingNoticeLabel_when_customs_form_is_not_required() {
@@ -406,16 +422,6 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_customsInformationIsCompleted_when_custom_form_is_filled() {
         // Given
-        let form = ShippingLabelCustomsForm(packageID: "",
-                                            packageName: "",
-                                            contentsType: .documents,
-                                            contentExplanation: "",
-                                            restrictionType: .quarantine,
-                                            restrictionComments: "",
-                                            nonDeliveryOption: .abandon,
-                                            itn: "",
-                                            items: [])
-
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "GB", state: "LD"))
 
@@ -425,7 +431,9 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             shippingLabel: nil,
                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
-        viewModel.onCustomsFormFilled(form: form)
+        viewModel.customsFormViewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.customsFormViewModel.contentType = .documents
+        viewModel.customsFormViewModel.restrictionType = .quarantine
 
         // Then
         XCTAssertTrue(viewModel.customsInformationIsCompleted)

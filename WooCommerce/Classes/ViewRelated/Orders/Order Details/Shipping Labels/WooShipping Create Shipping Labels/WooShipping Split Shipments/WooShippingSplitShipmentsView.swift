@@ -69,6 +69,11 @@ struct WooShippingSplitShipmentsView: View {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.done) {
+                            guard viewModel.containsUnsavedChanges else {
+                                dismiss()
+                                return
+                            }
+
                             Task {
                                 do {
                                     try await viewModel.saveShipmentInfo()
@@ -79,7 +84,6 @@ struct WooShippingSplitShipmentsView: View {
                                 }
                             }
                         }
-                        .disabled(!viewModel.enableDoneButton)
                     }
                 }
             }
@@ -127,10 +131,14 @@ private extension WooShippingSplitShipmentsView {
     var removeShipmentMenu: some View {
         Menu {
             ForEach(viewModel.shipments) { shipment in
-                Button(String.localizedStringWithFormat(Localization.removeShipmentFormat,
-                                                        viewModel.retrieveName(for: shipment).lowercased())) {
+                Button(
+                    String.localizedStringWithFormat(
+                        Localization.removeShipmentFormat,
+                        viewModel.retrieveName(for: shipment).lowercased()
+                    )
+                ) {
                     shipmentToRemove = shipment
-                }.disabled(shipment.isPurchased)
+                }.disabled(viewModel.isShipmentDeleteOptionDisabled(for: shipment))
             }
             Divider()
             Button(Localization.mergeAll) {
@@ -264,7 +272,7 @@ private extension WooShippingSplitShipmentsView {
                                        lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
                                        lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
-                    .disabled(otherShipment.isPurchased)
+                    .disabled(viewModel.isShipmentDeleteOptionDisabled(for: otherShipment))
                 }
             }
 

@@ -13,7 +13,7 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
-    private var isSearching: Binding<Bool> {
+    private var _isSearching: Binding<Bool> {
         Binding(
             get: {
                 switch selectedItemListType {
@@ -32,6 +32,10 @@ struct ItemListView: View {
                 }
             }
         )
+    }
+
+    private var isSearching: Bool {
+        _isSearching.wrappedValue
     }
 
     @State private var searchTask: Task<Void, Never>?
@@ -64,7 +68,7 @@ struct ItemListView: View {
     }
 
     private var shouldShowHeaderItems: Bool {
-        !selectedItemListType.isSearching
+        !isSearching
     }
 
     @State private var showCouponCreationModal: Bool = false
@@ -117,7 +121,7 @@ struct ItemListView: View {
         ZStack {
             itemListContent(itemListType)
 
-            if selectedItemListType.isSearching && itemListType.isProducts {
+            if isSearching {
                 POSSearchContentView(
                     searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
@@ -203,7 +207,7 @@ private extension ItemListView {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
                     if isSearchAllowed {
-                        if selectedItemListType.isSearching {
+                        if isSearching {
                             POSSearchField(
                                 searchTerm: $searchTerm,
                                 searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
@@ -238,7 +242,7 @@ private extension ItemListView {
                 }
             })
         }
-        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType.isSearching)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
         .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
     }

@@ -210,6 +210,46 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
 
+    @MainActor
+    func test_purchaseLabel_triggers_onLabelPurchase_with_correct_purchased_shipping_label() async throws {
+        // Given
+        let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+
+        // When
+        var purchasedLabel: ShippingLabel?
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            onLabelPurchase: { purchasedLabel = $0 })
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                completion(.success(expectedShippingLabel))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        try await viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertNotNil(purchasedLabel)
+        XCTAssertEqual(purchasedLabel?.originAddress, originAddressSubject.value?.toShippingLabelAddress())
+        XCTAssertEqual(purchasedLabel?.destinationAddress, destinationAddressSubject.value?.toShippingLabelAddress())
+    }
+
     func test_selectPackage_sets_selectedPackage_with_package_data() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))

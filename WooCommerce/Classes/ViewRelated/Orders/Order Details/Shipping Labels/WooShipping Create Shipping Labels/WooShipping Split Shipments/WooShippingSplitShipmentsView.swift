@@ -144,6 +144,7 @@ private extension WooShippingSplitShipmentsView {
             Button(Localization.mergeAll) {
                 showingMergeAllSheet = true
             }
+            .disabled(viewModel.isMergeAllUnfulfilledDisabled())
         } label: {
             Image(systemName: "ellipsis")
                 .padding()

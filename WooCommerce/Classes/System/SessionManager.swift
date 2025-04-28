@@ -186,12 +186,12 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
         // Listens when the core data stack is reset.
-        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidInvalidateData), name: .StorageManagerDidResetStorage, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(resetTimestampsValues), name: .StorageManagerDidResetStorage, object: nil)
 
 
         // Listens when the cached data is invalidated.
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleStorageDidInvalidateData),
+                                               selector: #selector(resetTimestampsValues),
                                                name: .StorageManagerDidDropDatabase,
                                                object: nil)
     }
@@ -293,15 +293,9 @@ private extension SessionManager {
         defaults[.defaultCredentialsType] = nil
     }
 
-    /// Updates the timestamps that control when background data is fetched.
-    ///
-    @objc func handleStorageDidInvalidateData() {
-        resetTimestampsValues()
-    }
-
     /// Removes timestamp values.
     ///
-    func resetTimestampsValues() {
+    @objc func resetTimestampsValues() {
         defaults[.latestBackgroundOrderSyncDate] = nil
         DashboardTimestampStore.resetStore(store: defaults)
     }

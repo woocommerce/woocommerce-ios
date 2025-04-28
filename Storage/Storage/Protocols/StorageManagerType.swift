@@ -5,6 +5,7 @@ import Foundation
 //
 public extension NSNotification.Name {
     static let StorageManagerDidResetStorage = NSNotification.Name(rawValue: "StorageManagerDidResetStorage")
+    static let StorageManagerDidDropDatabase = NSNotification.Name(rawValue: "StorageManagerDidDropDatabase")
 }
 
 

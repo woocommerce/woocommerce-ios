@@ -1524,7 +1524,7 @@ extension OrderDetailsDataSource {
 
         switch order.status {
         case .completed, .processing, .refunded:
-            receiptEligibility.isEligibleForBackendReceipts { isEligibleForReceipt in // returns true, but not rendering the row
+            receiptEligibility.isEligibleForBackendReceipts { isEligibleForReceipt in
                 completion(isEligibleForReceipt)
         }
         case .failed:

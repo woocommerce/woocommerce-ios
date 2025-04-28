@@ -304,9 +304,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     /// 2. The view model is currently saving shipment info
     /// 3. The shipment is the last unfulfilled shipment
     func isShipmentDeleteOptionDisabled(for shipment: Shipment) -> Bool {
+        if shipment.isPurchased || isSavingShipmentInfo {
+            return true
+        }
+
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
-        let isLastUnfulfilled = unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
-        return shipment.isPurchased || isSavingShipmentInfo || isLastUnfulfilled
+        return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
     }
 
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {

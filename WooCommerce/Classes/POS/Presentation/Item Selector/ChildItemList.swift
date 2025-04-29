@@ -8,6 +8,7 @@ struct ChildItemList: View {
     private let title: String
     private var itemsController: PointOfSaleItemsControllerProtocol
     private let itemActionHandler: POSItemActionHandler
+    private let parentListIsSearching: Bool
     @Environment(\.dismiss) private var dismiss
 
     private var node: ItemListBaseItem {
@@ -22,11 +23,13 @@ struct ChildItemList: View {
     init(parentItem: POSItem,
          title: String,
          itemsController: PointOfSaleItemsControllerProtocol,
-         itemActionHandler: POSItemActionHandler) {
+         itemActionHandler: POSItemActionHandler,
+         parentListIsSearching: Bool) {
         self.parentItem = parentItem
         self.title = title
         self.itemsController = itemsController
         self.itemActionHandler = itemActionHandler
+        self.parentListIsSearching = parentListIsSearching
     }
 
     var body: some View {
@@ -73,7 +76,8 @@ private extension ChildItemList {
                      itemActionHandler: itemActionHandler,
                      willLoadMore: {
                          ServiceLocator.analytics.track(
-                            event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: .products(search: false)))
+                            event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemType: .variation,
+                                                                                                searching: parentListIsSearching))
                      })
                 .transition(.opacity)
                 .refreshable {
@@ -168,7 +172,8 @@ private extension ChildItemList {
     return ChildItemList(parentItem: parentItem,
                          title: parentProduct.name,
                          itemsController: itemsController,
-                         itemActionHandler: PointOfSalePreviewItemActionHandler())
+                         itemActionHandler: PointOfSalePreviewItemActionHandler(),
+                         parentListIsSearching: false)
 }
 
 @available(iOS 17.0, *)
@@ -190,7 +195,8 @@ private extension ChildItemList {
     return ChildItemList(parentItem: parentItem,
                          title: parentProduct.name,
                          itemsController: itemsController,
-                         itemActionHandler: PointOfSalePreviewItemActionHandler())
+                         itemActionHandler: PointOfSalePreviewItemActionHandler(),
+                         parentListIsSearching: false)
 }
 
 #endif

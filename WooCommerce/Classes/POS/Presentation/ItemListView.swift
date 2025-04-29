@@ -160,7 +160,8 @@ struct ItemListView: View {
             itemActionHandler: actionHandler(itemListType),
             willLoadMore: {
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: selectedItemListType))
+                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemType: itemListType.itemType,
+                                                                                        searching: itemListType.isSearching))
             }
         )
         .refreshable {
@@ -187,7 +188,8 @@ struct ItemListView: View {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
-                itemActionHandler: actionHandler(selectedItemListType)
+                itemActionHandler: actionHandler(selectedItemListType),
+                parentListIsSearching: selectedItemListType.isSearching
             )
         default:
             EmptyView()

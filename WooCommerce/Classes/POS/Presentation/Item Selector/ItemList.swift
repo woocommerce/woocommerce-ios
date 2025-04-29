@@ -83,7 +83,8 @@ struct ItemList<HeaderView: View>: View {
                     destination: ChildItemList(parentItem: activeItem,
                                                title: parentProduct.name,
                                                itemsController: posModel.purchasableItemsController,
-                                               itemActionHandler: itemActionHandler),
+                                               itemActionHandler: itemActionHandler,
+                                               parentListIsSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }

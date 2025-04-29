@@ -12,6 +12,7 @@ struct POSRecentSearchesView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 if savedSearches.isEmpty {
                     Text(Localization.recentSearchesEmptyListText)
+                        .font(.posBodyLargeRegular())
                         .foregroundColor(.posOnSurface)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                         .padding(.top, POSPadding.medium)
@@ -70,7 +71,7 @@ private extension POSRecentSearchesView {
 
         static let recentSearchesEmptyListText = NSLocalizedString(
             "pos.itemsearch.before.search.recentSearches.emptyListText.1",
-            value: "Search your store.",
+            value: "Search your store",
             comment: "Text shown when there's nothing to show before a search term is typed in POS")
 
     }

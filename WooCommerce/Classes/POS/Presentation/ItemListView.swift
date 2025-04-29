@@ -225,8 +225,7 @@ private extension ItemListView {
                         } else {
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
-                                        itemListType: selectedItemListType))
+                                    analyticsTracker.trackSearchTapped()
                                     selectedItemListType = .products(search: true)
                                 }
                             }
@@ -334,7 +333,7 @@ private extension ItemListView {
             }
         }
 
-        trackSelectedItemListTypeTapped(itemListType)
+        analyticsTracker.trackItemListSelected()
     }
 }
 
@@ -380,18 +379,6 @@ private extension ItemListView {
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
-    }
-}
-
-@available(iOS 17.0, *)
-private extension ItemListView {
-    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
-        switch type {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
     }
 }
 

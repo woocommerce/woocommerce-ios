@@ -1,3 +1,10 @@
+/// Enum for package types supported by WooShipping
+///
+public enum WooShippingPackageType: String {
+    case custom
+    case predefined
+}
+
 /// Protocol for `WooShippingRemote` mainly used for mocking.
 ///
 public protocol WooShippingRemoteProtocol {
@@ -7,6 +14,7 @@ public protocol WooShippingRemoteProtocol {
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func deletePackage(siteID: Int64,
                        packageID: String,
+                       packageType: WooShippingPackageType,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
@@ -107,8 +115,9 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
     public func deletePackage(siteID: Int64,
                               packageID: String,
+                              packageType: WooShippingPackageType,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
-        let path = "\(Path.packages)/\(packageID)"
+        let path = [Path.packages, packageType.rawValue, packageID].joined(separator: "/")
 
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .delete,

@@ -15,11 +15,8 @@ struct PointOfSaleCouponServiceTests {
         self.mockStrategy = MockPointOfSaleCouponFetchStrategy()
         self.sut = .init(siteID: sampleSiteID,
                          currencySettings: CurrencySettings(),
-                         couponStoreMethods: MockCouponStoreMethods(),
                          settingStoreMethods: settingStoreMethods,
-                         storage: storage,
-                         strategy: mockStrategy
-        )
+                         storage: storage)
     }
 
     @Test func provideLocalPointOfSaleCoupons_when_disabled_then_expects_couponsDisabled_error() async throws {
@@ -40,7 +37,7 @@ struct PointOfSaleCouponServiceTests {
 
             do {
                 // Then
-                _ = try await sut.provideLocalPointOfSaleCoupons()
+                _ = try await sut.provideLocalPointOfSaleCoupons(fetchStrategy: mockStrategy)
             } catch {
                 let expectedError = error as? PointOfSaleCouponServiceError
                 #expect(expectedError == .couponsDisabled)
@@ -55,7 +52,7 @@ struct PointOfSaleCouponServiceTests {
         mockStrategy.fetchLocalCouponsResult = expectedCoupons
 
         // When
-        let coupons = try await sut.provideLocalPointOfSaleCoupons()
+        let coupons = try await sut.provideLocalPointOfSaleCoupons(fetchStrategy: mockStrategy)
 
         // Then
         #expect(mockStrategy.fetchLocalCouponsCalled)
@@ -69,12 +66,12 @@ struct PointOfSaleCouponServiceTests {
         mockStrategy.fetchCouponsResult = expectedCoupons
 
         // When
-        let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+        let pagedCoupons = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
 
         // Then
         #expect(mockStrategy.fetchCouponsCalled)
-        #expect(mockStrategy.fetchCouponsPageNumber == 0)
-        #expect(coupons.items.count == expectedCoupons.items.count)
+        #expect(mockStrategy.fetchCouponsPageNumber == 1)
+        #expect(pagedCoupons.items == expectedCoupons.items)
     }
 
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_enabled_then_throws_couponsLoadingError() async throws {
@@ -84,7 +81,7 @@ struct PointOfSaleCouponServiceTests {
 
         // When
         do {
-            _ = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+            _ = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError
@@ -99,7 +96,7 @@ struct PointOfSaleCouponServiceTests {
 
         // When
         do {
-            _ = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+            _ = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError

@@ -122,7 +122,8 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
-                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                                                         packageID: WooShippingCustomPackage.fake().id,
+                                                         packageType: .custom) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -144,7 +145,8 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
-                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                                                         packageID: WooShippingCustomPackage.fake().id,
+                                                         packageType: .custom) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -185,7 +187,8 @@ final class WooShippingStoreTests: XCTestCase {
         // When
         let onSuccess: Bool = waitFor { promise in
             let action = WooShippingAction.deletePackage(siteID: self.sampleSiteID,
-                                                         packageID: WooShippingCustomPackage.fake().id) { result in
+                                                         packageID: WooShippingCustomPackage.fake().id,
+                                                         packageType: .custom) { result in
                 promise(result.isSuccess)
             }
             store.onAction(action)

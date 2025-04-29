@@ -12,8 +12,9 @@ public enum PointOfSaleCouponServiceError: Error {
 }
 
 public protocol PointOfSaleCouponServiceProtocol {
-    func provideLocalPointOfSaleCoupons() async throws -> [POSItem]
-    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
+    func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem]
+    func providePointOfSaleCoupons(pageNumber: Int,
+                                   fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem>
     func enableCoupons() async throws
 }
 
@@ -22,23 +23,13 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private let storage: StorageManagerType
     private let settingsStoreMethods: SettingStoreMethodsProtocol
 
-    private let strategy: PointOfSaleCouponFetchStrategy
-
     init(siteID: Int64,
          currencySettings: CurrencySettings,
-         couponStoreMethods: CouponStoreMethodsProtocol,
          settingStoreMethods: SettingStoreMethodsProtocol,
-         storage: StorageManagerType,
-         strategy: PointOfSaleCouponFetchStrategy? = nil) {
+         storage: StorageManagerType) {
         self.siteID = siteID
         self.storage = storage
         self.settingsStoreMethods = settingStoreMethods
-        self.strategy = strategy ?? PointOfSaleDefaultCouponFetchStrategy(
-            siteID: siteID,
-            currencySettings: currencySettings,
-            storage: storage,
-            couponStoreMethods: couponStoreMethods
-        )
     }
 
     public convenience init(siteID: Int64,
@@ -49,28 +40,28 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
         let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
-                  couponStoreMethods: CouponStoreMethods(storageManager: storage, remote: remote),
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
                   storage: storage)
     }
 
     @MainActor
-    public func provideLocalPointOfSaleCoupons() async throws -> [POSItem] {
+    public func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem] {
         let couponsEnabled = try await checkStoreCouponSettings()
         if !couponsEnabled {
             throw PointOfSaleCouponServiceError.couponsDisabled
         }
 
-        return try await strategy.fetchLocalCoupons()
+        return try await fetchStrategy.fetchLocalCoupons()
     }
 
     /// Syncs with the remote and provides all currently loaded coupons.
     /// - Parameter pageNumber: The page number to fetch from the remote.
     /// - Returns: All currently loaded coupons.
     @MainActor
-    public func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    public func providePointOfSaleCoupons(pageNumber: Int,
+                                          fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
-            return try await strategy.fetchCoupons(pageNumber: pageNumber)
+            return try await fetchStrategy.fetchCoupons(pageNumber: pageNumber)
         } catch {
             if try await checkRemoteStoreCouponSettings() {
                 throw error

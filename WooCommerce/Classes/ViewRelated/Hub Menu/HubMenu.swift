@@ -49,13 +49,10 @@ struct HubMenu: View {
                                 itemFetchStrategyFactory: viewModel.posItemFetchStrategyFactory,
                             initialState: .init(containerState: .content,
                                                 itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
-                            couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider),
-                            couponsSearchController: PointOfSaleItemsController(
-                                itemProvider: PointOfSaleItemService(
-                                    currencySettings: ServiceLocator.currencySettings),
-                                itemFetchStrategyFactory: viewModel.posItemFetchStrategyFactory,
-                            initialState: .init(containerState: .content,
-                                                itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
+                            couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
+                                                                            fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
+                            couponsSearchController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
+                                                                                  fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
                                 viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                             },

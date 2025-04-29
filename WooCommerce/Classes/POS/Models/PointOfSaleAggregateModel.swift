@@ -29,6 +29,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
     var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
     var couponsController: PointOfSaleCouponsControllerProtocol { get }
+    var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
     var cart: Cart { get }
     func addToCart(_ item: POSItem)

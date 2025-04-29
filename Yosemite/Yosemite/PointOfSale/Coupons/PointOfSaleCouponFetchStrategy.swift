@@ -65,9 +65,85 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
     @MainActor
     func fetchLocalCoupons(limit: Int? = nil) -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
-                                          ascending: false)
+        let resultsController = CouponResultsControllerAdapter(storage: storage, currencySettings: currencySettings)
+        return resultsController.fetchCoupons(predicate: predicate, limit: limit)
+    }
+}
 
+extension PointOfSaleDefaultCouponFetchStrategy {
+    enum Constants {
+        static let defaultPageSize: Int = 25
+    }
+}
+
+// MARK: - Search Coupon Strategy
+
+public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
+    private let siteID: Int64
+    private let couponStoreMethods: CouponStoreMethodsProtocol
+    private let storage: StorageManagerType
+    private let currencySettings: CurrencySettings
+    private let searchTerm: String
+
+    init(siteID: Int64,
+         currencySettings: CurrencySettings,
+         storage: StorageManagerType,
+         couponStoreMethods: CouponStoreMethodsProtocol,
+         searchTerm: String
+    ) {
+        self.siteID = siteID
+        self.couponStoreMethods = couponStoreMethods
+        self.storage = storage
+        self.currencySettings = currencySettings
+        self.searchTerm = searchTerm
+    }
+
+    public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        return try await withCheckedThrowingContinuation { continuation in
+            couponStoreMethods.searchCoupons(
+                siteID: siteID,
+                keyword: searchTerm,
+                pageNumber: pageNumber,
+                pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize) { result in
+                    switch result {
+                    case .success:
+                        let results = getSearchResults()
+                        let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
+                        continuation.resume(returning: .init(items: results, hasMorePages: hasMorePages))
+                    case .failure:
+                        continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
+                    }
+                }
+        }
+    }
+
+    private func getSearchResults() -> [POSItem] {
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        let searchPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate] + [searchPredicate])
+        let resultsController = CouponResultsControllerAdapter(storage: storage, currencySettings: currencySettings)
+        return resultsController.fetchCoupons(predicate: predicate)
+    }
+
+    public func fetchLocalCoupons() async throws -> [POSItem] {
+        // No support for returning local search results
+        return []
+    }
+}
+
+// MARK: - Results Controller
+
+private struct CouponResultsControllerAdapter {
+    private let storage: StorageManagerType
+    private let currencySettings: CurrencySettings
+
+    init(storage: StorageManagerType, currencySettings: CurrencySettings) {
+        self.storage = storage
+        self.currencySettings = currencySettings
+    }
+
+    func fetchCoupons(predicate: NSPredicate, limit: Int? = nil) -> [POSItem] {
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated, ascending: false)
         let resultsController = ResultsController<StorageCoupon>(storageManager: storage,
                                                                  matching: predicate,
                                                                  fetchLimit: limit,
@@ -83,7 +159,7 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
         }
     }
 
-    func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
+    private func mapCouponsToPOSItems(coupons: [Coupon]) -> [POSItem] {
         coupons.compactMap { coupon in
                 .coupon(POSCoupon(
                     id: UUID(),
@@ -92,11 +168,5 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
                     dateExpires: coupon.dateExpires
                 ))
         }
-    }
-}
-
-private extension PointOfSaleDefaultCouponFetchStrategy {
-    enum Constants {
-        static let defaultPageSize: Int = 25
     }
 }

@@ -8,10 +8,11 @@ public enum WooShippingAction: Action {
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
 
-    /// Deletes a custom package or deactivates a carrier package with provided package ID.
+    /// Deletes a package or deactivates a carrier package with provided package ID and type.
     ///
     case deletePackage(siteID: Int64,
                        packageID: String,
+                       packageType: WooShippingPackageType,
                        completion: (Result<WooShippingCreatePackageResponse, Error>) -> Void)
 
     /// Fetch list of shipping label rates for the order.

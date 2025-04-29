@@ -88,6 +88,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
     func loadNextItems(base: ItemListBaseItem) async { }
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async { }
 }
 
 @available(iOS 17.0, *)
@@ -200,6 +201,7 @@ struct POSPreviewHelpers {
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
         couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
@@ -210,6 +212,7 @@ struct POSPreviewHelpers {
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
+            couponsSearchController: couponsSearchController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,

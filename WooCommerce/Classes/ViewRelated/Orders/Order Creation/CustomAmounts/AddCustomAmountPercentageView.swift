@@ -80,6 +80,9 @@ private extension AddCustomAmountPercentageView {
                     .if(focusPercentageInput, transform: { field in
                         field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
                     })
+                    .onTapGesture {
+                        focusPercentageInput = true
+                    }
             }
             .fixedSize(horizontal: false, vertical: true)
         }

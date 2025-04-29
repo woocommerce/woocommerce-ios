@@ -29,6 +29,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
     var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
     var couponsController: PointOfSaleCouponsControllerProtocol { get }
+    var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
@@ -67,6 +68,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
+    let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
@@ -96,6 +98,7 @@ protocol PointOfSaleAggregateModelProtocol {
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
+         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
@@ -106,6 +109,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
+        self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics

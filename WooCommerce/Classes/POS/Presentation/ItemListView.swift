@@ -13,6 +13,10 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
+    private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
+        PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType)
+    }
+
     private var _isSearching: Binding<Bool> {
         Binding(
             get: {
@@ -159,13 +163,11 @@ struct ItemListView: View {
             node: .root,
             itemActionHandler: actionHandler(itemListType),
             willLoadMore: {
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemType: itemListType.itemType,
-                                                                                        searching: itemListType.isSearching))
+                analyticsTracker.trackNextPageWillLoad()
             }
         )
         .refreshable {
-            trackPullToRefresh()
+            analyticsTracker.trackRefresh()
             await itemsController(itemListType).refreshItems(base: .root)
         }
     }
@@ -189,7 +191,8 @@ struct ItemListView: View {
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
                 itemActionHandler: actionHandler(selectedItemListType),
-                parentListIsSearching: selectedItemListType.isSearching
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation,
+                                                                      isSearching: selectedItemListType.isSearching)
             )
         default:
             EmptyView()
@@ -388,15 +391,6 @@ private extension ItemListView {
             ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
         case .coupons:
             ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
-    }
-
-    func trackPullToRefresh() {
-        switch selectedItemListType {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
         }
     }
 }

@@ -87,9 +87,14 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchItems(pageNumber: pageNumber, appendToExistingItems: false)
             }
         } catch {
-            itemsViewState.containerState = .error(PointOfSaleErrorState.errorOnLoadingProducts)
-            itemsViewState.itemsStack = ItemsStackState(root: .loaded([], hasMoreItems: false),
-                                                       itemStates: [:])
+            let items = itemsViewState.itemsStack.root.items
+            let stackState: ItemsStackState
+            if items.isEmpty {
+                stackState = ItemsStackState(root: .error(.errorOnLoadingProducts), itemStates: [:])
+            } else {
+                stackState = ItemsStackState(root: .inlineError(items, error: .errorOnLoadingProducts, context: .refresh), itemStates: [:])
+            }
+            itemsViewState = ItemsViewState(containerState: .content, itemsStack: stackState)
         }
     }
 
@@ -200,9 +205,9 @@ private extension PointOfSaleItemsController {
 
     func setRootLoadingState() {
         let items = itemsViewState.itemsStack.root.items
-        if items.isEmpty {
-            itemsViewState.containerState = .loading
-        } else {
+
+        let isInitialState = itemsViewState.containerState == .loading
+        if !isInitialState {
             itemsViewState.itemsStack.root = .loading(items)
         }
     }

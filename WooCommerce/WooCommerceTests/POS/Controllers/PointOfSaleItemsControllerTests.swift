@@ -324,17 +324,14 @@ final class PointOfSaleItemsControllerTests {
         )
 
         itemProvider.errorToThrow = MockError.requestFailed
-        let expectedError = PointOfSaleErrorState(errorType: .productsLoadError,
-                                                  title: "Error loading products",
-                                                  subtitle: "Give it another go?",
-                                                  buttonText: "Retry")
         try #require(sut.itemsViewState.containerState == .loading)
 
         // When
         await sut.loadItems(base: .root)
 
         // Then
-        #expect(sut.itemsViewState.containerState == .error(expectedError))
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .error(.errorOnLoadingProducts))
     }
 
     @available(iOS 17.0, *)
@@ -491,34 +488,6 @@ final class PointOfSaleItemsControllerTests {
     }
 
     @available(iOS 17.0, *)
-    @Test func loadItems_sets_container_state_to_loading_and_root_state_to_loading_state_when_no_existing_items() async throws {
-        // Given
-        let itemProvider = MockPointOfSaleItemService()
-        let sut = PointOfSaleItemsController(
-            itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
-        )
-
-        itemProvider.shouldReturnZeroItems = true
-
-        await confirmation() { confirmation in
-            withObservationTracking {
-                _ = sut.itemsViewState.containerState
-            } onChange: {
-                // Then
-                Task { @MainActor in
-                    #expect(sut.itemsViewState.containerState == .loading)
-                    #expect(sut.itemsViewState.itemsStack.root == .loading([]))
-                    confirmation()
-                }
-            }
-
-            // When
-            await sut.loadItems(base: .root)
-        }
-    }
-
-    @available(iOS 17.0, *)
     @Test func loadItems_preserves_itemStates() async throws {
         // Given
         let itemProvider = MockPointOfSaleItemService()
@@ -598,6 +567,38 @@ final class PointOfSaleItemsControllerTests {
         // Then
         let fetchStrategy = try #require(itemProvider.spyItemsFetchStrategy as? PointOfSaleSearchPurchasableItemFetchStrategy)
         #expect(fetchStrategy.searchTerm == "green mug")
+    }
+
+    @available(iOS 17.0, *)
+    @Test func setRootLoadingState_when_not_initial_state_then_sets_loading_state() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(
+            itemProvider: itemProvider,
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+        )
+
+        let initialItems = MockPointOfSaleItemService.makeInitialItems()
+        itemProvider.itemPages = [initialItems]
+        await sut.loadItems(base: .root)
+        try #require(sut.itemsViewState.containerState == .content)
+
+        // When
+
+        await confirmation() { confirmation in
+            withObservationTracking {
+                _ = sut.itemsViewState.itemsStack.root
+            } onChange: {
+                // Then
+                Task { @MainActor in
+                    #expect(sut.itemsViewState.itemsStack.root == .loading(initialItems))
+                    confirmation()
+                }
+            }
+
+            // When
+            await sut.loadItems(base: .root)
+        }
     }
 
     enum MockError: Error {

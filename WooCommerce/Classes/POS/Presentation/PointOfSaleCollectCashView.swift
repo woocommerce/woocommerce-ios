@@ -115,7 +115,8 @@ struct PointOfSaleCollectCashView: View {
 
     private func markComplete() async throws {
         let changeDueAmount = viewHelper.changeDueAmount(orderTotal: orderTotal,
-                                                         textFieldAmountInput: textFieldAmountInput)
+                                                         textFieldAmountInput: textFieldAmountInput,
+                                                         includesZeroChange: true)
         try await posModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 }

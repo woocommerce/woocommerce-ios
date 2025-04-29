@@ -21,14 +21,15 @@ final class CollectCashViewHelper {
 
     func updatechangeDueMessage(orderTotal: String,
                                 textFieldAmountInput: String) -> String? {
-        guard let amount = changeDueAmount(orderTotal: orderTotal, textFieldAmountInput: textFieldAmountInput) else {
+        guard let amount = changeDueAmount(orderTotal: orderTotal, textFieldAmountInput: textFieldAmountInput, includesZeroChange: false) else {
             return nil
         }
         return String.localizedStringWithFormat(Localization.changeDueMessage, amount)
     }
 
     func changeDueAmount(orderTotal: String,
-                         textFieldAmountInput: String) -> String? {
+                         textFieldAmountInput: String,
+                         includesZeroChange: Bool) -> String? {
         guard let orderDecimal = parseCurrency(orderTotal),
               let inputDecimal = parseCurrency(textFieldAmountInput) else {
             return nil
@@ -36,6 +37,8 @@ final class CollectCashViewHelper {
         if inputDecimal > orderDecimal {
             let changeDue = inputDecimal - orderDecimal
             return formatAsCurrency(changeDue)
+        } else if includesZeroChange && inputDecimal == orderDecimal {
+            return formatAsCurrency(Decimal(0))
         } else {
             return nil
         }

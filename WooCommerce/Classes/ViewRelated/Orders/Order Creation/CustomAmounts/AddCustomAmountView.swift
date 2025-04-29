@@ -68,16 +68,7 @@ struct AddCustomAmountView: View {
                 }
             }
         }
-        .onTapGesture {
-            dismissKeyboard()
-        }
         .wooNavigationBarStyle()
-    }
-}
-
-private extension AddCustomAmountView {
-    func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 

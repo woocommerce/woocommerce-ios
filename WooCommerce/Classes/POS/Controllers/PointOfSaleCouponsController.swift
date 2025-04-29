@@ -7,7 +7,7 @@ import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
 @available(iOS 17.0, *)
-protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
+protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
     func enableCoupons() async
@@ -39,6 +39,13 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
+        await loadFirstPage()
+    }
+
+    @MainActor
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
+        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        setSearchingState()
         await loadFirstPage()
     }
 
@@ -124,6 +131,10 @@ private extension PointOfSaleCouponsController {
 //
 @available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
+    func setSearchingState() {
+        itemsViewState.itemsStack.root = .loading([])
+    }
+
     func setCouponsEmptyViewState() {
         let containerState = ItemsContainerState.content
         let stackState = ItemsStackState(root: .empty, itemStates: [:])

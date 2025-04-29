@@ -243,4 +243,55 @@ struct PointOfSaleCouponsControllerTests {
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
         #expect(sut.itemsViewState == expectedViewState)
     }
+
+    @available(iOS 17.0, *)
+    @Test func searchItems_when_empty_coupons_then_results_in_empty_state() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        couponProvider.shouldReturnZeroItems = true
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
+
+        let expectedItemStackState = ItemsStackState(root: .empty, itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        await sut.searchItems(searchTerm: "test", baseItem: .root)
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func searchItems_when_some_coupons_then_results_in_coupons_loaded_state() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let expectedCoupons = MockPointOfSaleCouponService.makeInitialCoupons()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
+
+        let expectedItemStackState = ItemsStackState(root: .loaded(expectedCoupons, hasMoreItems: false), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        await sut.searchItems(searchTerm: "test", baseItem: .root)
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func searchItems_when_fails_then_sets_error_state() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        couponProvider.errorToThrow = .couponsLoadingError
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
+
+        let expectedItemStackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        await sut.searchItems(searchTerm: "test", baseItem: .root)
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
 }

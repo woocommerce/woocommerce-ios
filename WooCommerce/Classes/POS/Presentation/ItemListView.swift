@@ -213,15 +213,6 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
-                    if isCouponsFeatureEnabled {
-                        POSPageHeaderActionButton(systemName: "plus") {
-                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                            showCouponCreationModal = true
-                        }
-                        .renderedIf(isAddingCouponAllowed)
-                        .transition(.opacity.combined(with: .scale))
-                    }
-
                     if isSearchAllowed {
                         if isSearching {
                             POSSearchField(
@@ -237,6 +228,14 @@ private extension ItemListView {
                             )
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
+                            if isCouponsFeatureEnabled {
+                                POSPageHeaderActionButton(systemName: "plus") {
+                                    ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+                                    showCouponCreationModal = true
+                                }
+                                .renderedIf(isAddingCouponAllowed)
+                                .transition(.opacity.combined(with: .scale))
+                            }
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(

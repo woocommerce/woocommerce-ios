@@ -34,7 +34,6 @@ struct AddCustomAmountPercentageView: View {
 
 private extension AddCustomAmountPercentageView {
     enum Layout {
-        static let textFieldMaxWidth: CGFloat = 200
         static func percentageFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
@@ -56,27 +55,33 @@ private extension AddCustomAmountPercentageView {
 private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
+        @FocusState private var focusPercentageInput: Bool
         @Binding var text: String
         var onChangeText: (String) -> (Void)
 
         var body: some View {
-            HStack(spacing: 0) {
+            ZStack {
                 TextField("",
                           text: $text,
                           prompt: Text("0").foregroundColor(Color(.textSubtle))
                 )
                 .onChange(of: text, perform: onChangeText)
                 .focused()
-                .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
+                .focused($focusPercentageInput)
                 .keyboardType(.decimalPad)
-                .frame(maxWidth: Layout.textFieldMaxWidth)
-                .fixedSize()
+                .opacity(0)
 
-                Text("%")
+                Text(text + "%")
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
-                    .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
+                    .if(focusPercentageInput, transform: { field in
+                        field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+                    })
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

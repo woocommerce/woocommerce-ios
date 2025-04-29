@@ -286,7 +286,14 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         viewModel.loadLabelRates(for: samplePackage)
 
         // Then
-        XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable))
+        XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: false)))
+
+        // When
+        let updatedPackage = samplePackage.copy(hazmatCategory: "Test")
+        viewModel.loadLabelRates(for: updatedPackage)
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
     }
 }
 

@@ -19,6 +19,7 @@
 		016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */; };
 		016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */; };
 		01AAD8122D92DE110081D60B /* CouponsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8112D92DE0F0081D60B /* CouponsError.swift */; };
+		01C4432E2DC0B3800068AF86 /* PointOfSaleCouponFetchStrategyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C4432D2DC0B37B0068AF86 /* PointOfSaleCouponFetchStrategyFactory.swift */; };
 		01C9C59D2DA3B09200CD81D8 /* Coupon+Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59C2DA3B08800CD81D8 /* Coupon+Summary.swift */; };
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
@@ -585,6 +586,7 @@
 		016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePrice.swift"; sourceTree = "<group>"; };
 		016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePriceTests.swift"; sourceTree = "<group>"; };
 		01AAD8112D92DE0F0081D60B /* CouponsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponsError.swift; sourceTree = "<group>"; };
+		01C4432D2DC0B37B0068AF86 /* PointOfSaleCouponFetchStrategyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCouponFetchStrategyFactory.swift; sourceTree = "<group>"; };
 		01C9C59C2DA3B08800CD81D8 /* Coupon+Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Summary.swift"; sourceTree = "<group>"; };
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
@@ -1166,6 +1168,7 @@
 		0149547B2DBBA51500C8870D /* Coupons */ = {
 			isa = PBXGroup;
 			children = (
+				01C4432D2DC0B37B0068AF86 /* PointOfSaleCouponFetchStrategyFactory.swift */,
 				0149547C2DBBA59E00C8870D /* PointOfSaleCouponFetchStrategy.swift */,
 				68B681172D925B170098D5CD /* PointOfSaleCouponService.swift */,
 				6823533E2D82A90A00F24470 /* POSCoupon.swift */,
@@ -2648,6 +2651,7 @@
 				45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */,
 				02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */,
 				CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */,
+				01C4432E2DC0B3800068AF86 /* PointOfSaleCouponFetchStrategyFactory.swift in Sources */,
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
 				0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */,

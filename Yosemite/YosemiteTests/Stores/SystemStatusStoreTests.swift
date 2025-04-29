@@ -126,6 +126,74 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(systemPluginResult?.name, "Plugin 3") // number of systemPlugins in storage
     }
 
+    func test_fetchSystemPlugin_prefers_active_plugin_when_multiple_plugins_exist() throws {
+        // Given
+        let pluginName = "Plugin 1"
+        let inactivePlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.name = pluginName
+        inactivePlugin.active = false
+        inactivePlugin.siteID = sampleSiteID
+
+        let activePlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.name = pluginName
+        activePlugin.active = true
+        activePlugin.siteID = sampleSiteID
+
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let fetchedPlugin = waitFor { promise in
+            store.onAction(SystemStatusAction.fetchSystemPlugin(siteID: self.sampleSiteID,
+                                                                systemPluginName: pluginName) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let plugin = try XCTUnwrap(fetchedPlugin)
+        XCTAssertTrue(plugin.active)
+        XCTAssertEqual(plugin.name, pluginName)
+    }
+
+    func test_fetchSystemPlugin_returns_inactive_plugin_when_no_active_plugin_exists() throws {
+        // Given
+        let inactivePlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.name = "Plugin 1"
+        inactivePlugin.active = false
+        inactivePlugin.siteID = sampleSiteID
+
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let fetchedPlugin = waitFor { promise in
+            store.onAction(SystemStatusAction.fetchSystemPlugin(siteID: self.sampleSiteID,
+                                                                systemPluginName: "Plugin 1") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let plugin = try XCTUnwrap(fetchedPlugin)
+        XCTAssertFalse(plugin.active)
+        XCTAssertEqual(plugin.name, "Plugin 1")
+    }
+
+    func test_fetchSystemPlugin_returns_nil_when_no_plugin_exists() {
+        // Given
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let fetchedPlugin = waitFor { promise in
+            store.onAction(SystemStatusAction.fetchSystemPlugin(siteID: self.sampleSiteID,
+                                                                systemPluginName: "NonExistentPlugin") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertNil(fetchedPlugin)
+    }
+
     func test_fetchSystemPluginsList_return_systemPlugins_correctly() {
         // Given
         let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)

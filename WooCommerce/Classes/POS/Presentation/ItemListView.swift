@@ -134,7 +134,8 @@ struct ItemListView: View {
                 POSSearchContentView(
                     // TODO:
                     // - searchHistoryProvider needs to be updated to switch between Products and Coupons history when needed
-                    searchable: POSProductSearchable(itemsController: searchItemsController,
+                    searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                     itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
                     searchTerm: $searchTerm
                 ) { _ in
@@ -218,11 +219,17 @@ private extension ItemListView {
                         if isSearching {
                             POSSearchField(
                                 searchTerm: $searchTerm,
-                                searchable: POSProductSearchable(itemsController: searchItemsController,
+                                searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                                 itemsController: searchItemsController,
                                                                  searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
                                     withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                        selectedItemListType = .products(search: false)
+                                        switch selectedItemListType {
+                                        case .products:
+                                            selectedItemListType = .products(search: false)
+                                        case .coupons:
+                                            selectedItemListType = .coupons(search: false)
+                                        }
                                     }
                                 }
                             )
@@ -232,7 +239,12 @@ private extension ItemListView {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
                                         itemListType: selectedItemListType))
-                                    selectedItemListType = .products(search: true)
+                                    switch selectedItemListType {
+                                    case .products:
+                                        selectedItemListType = .products(search: true)
+                                    case .coupons:
+                                        selectedItemListType = .coupons(search: true)
+                                    }
                                 }
                             }
                             .transition(.opacity.combined(with: .scale))

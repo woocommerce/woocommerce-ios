@@ -5,8 +5,8 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
-protocol PointOfSaleSearchingCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
-    /// Searches for items
+protocol PointOfSaleSearchingCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
+    /// Searches for coupons
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
 }
 

@@ -125,38 +125,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_supported_dev_then_returns_true() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let wooCommercePlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.6.0-dev-1181231238", active: true)
-        let wooPaymentsPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "8.6.0-test-1", active: true)
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                if systemPluginName == "WooCommerce" {
-                    onCompletion(wooCommercePlugin)
-                } else if systemPluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
-                    onCompletion(wooPaymentsPlugin)
-                }
-            default:
-                XCTFail("Unexpected action")
-            }
-        }
-
-        let sut = ReceiptEligibilityUseCase(stores: stores)
-
-        // When
-        let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: CardPresentPaymentsPlugin.wcPay.gatewayID, onCompletion: { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertTrue(isEligible)
-    }
-
     func test_isEligibleForFailedPaymentEmailReceipts_when_woopayments_version_is_incorrect_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

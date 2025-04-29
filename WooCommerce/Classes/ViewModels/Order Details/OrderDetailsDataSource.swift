@@ -1528,11 +1528,11 @@ extension OrderDetailsDataSource {
                 completion(isEligibleForReceipt)
         }
         case .failed:
-            Task { @MainActor in
-                guard let paymentGatewayID = await selectedPaymentGateway() else {
+            receiptEligibility.selectedPaymentGatewayID { gatewayID in
+                guard let gatewayID = gatewayID else {
                     return completion(false)
                 }
-                receiptEligibility.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: paymentGatewayID.gatewayID) { isEligibleForReceipt in
+                receiptEligibility.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: gatewayID) { isEligibleForReceipt in
                     completion(isEligibleForReceipt)
                 }
             }
@@ -2057,15 +2057,5 @@ private extension OrderDetailsDataSource {
         order.status == .processing ||
         order.status == .refunded ||
         order.status == .failed
-    }
-
-    @MainActor
-    func selectedPaymentGateway() async -> PaymentGatewayAccount? {
-        await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
-                continuation.resume(returning: paymentGatewayAccount)
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
     }
 }

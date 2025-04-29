@@ -86,6 +86,15 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             onCompletion(isWooCommerceSupported && isGatewaySupported)
         }
     }
+
+    // Returns the current payment gateway ID, needed when checking if a transaction is eligible for receipts
+    // based on which plugin and versions are active
+    func selectedPaymentGatewayID(onCompletion: @escaping (String?) -> Void) {
+        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+            onCompletion(paymentGatewayAccount?.gatewayID)
+        }
+        stores.dispatch(action)
+    }
 }
 
 private extension ReceiptEligibilityUseCase {

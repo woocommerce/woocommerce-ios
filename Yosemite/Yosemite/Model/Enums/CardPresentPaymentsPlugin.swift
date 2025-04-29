@@ -7,7 +7,7 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
     public var pluginName: String {
         switch self {
         case .wcPay:
-            return "WooCommerce Payments"
+            return "WooPayments"
         case .stripe:
             return "WooCommerce Stripe Gateway"
         }

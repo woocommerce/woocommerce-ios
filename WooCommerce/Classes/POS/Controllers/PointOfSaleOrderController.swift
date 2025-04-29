@@ -14,6 +14,7 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
+import enum Alamofire.AFError
 
 enum SyncOrderState {
     case newOrder
@@ -91,19 +92,11 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private func setOrderStateToError(_ error: Error,
                                       retryHandler: @escaping () async -> Void) {
-        if let couponsError = CouponsError(underlyingError: error) {
-            orderState = .error(.invalidCoupon(couponsError.message), {
-                Task {
-                    await retryHandler()
-                }
-            })
-        } else {
-            orderState = .error(.other(error.localizedDescription), {
-                Task {
-                    await retryHandler()
-                }
-            })
-        }
+        orderState = .error(orderStateError(from: error), {
+            Task {
+                await retryHandler()
+            }
+        })
     }
 
     func sendReceipt(recipientEmail: String) async throws {
@@ -178,6 +171,22 @@ private extension PointOfSaleOrderController {
         }
 
         return formattedDiscount
+    }
+}
+
+
+// MARK: - Error Handling
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
+        if let couponsError = CouponsError(underlyingError: error) {
+            return .invalidCoupon(couponsError.message)
+        } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
+            return .other(afErrorDescription)
+        } else {
+            return .other(error.localizedDescription)
+        }
     }
 }
 

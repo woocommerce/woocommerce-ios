@@ -73,7 +73,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
-    private let searchHistoryService: POSSearchHistoryProviding
+    let searchHistoryService: POSSearchHistoryProviding
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?

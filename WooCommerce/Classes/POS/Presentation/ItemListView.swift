@@ -13,7 +13,30 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
-    @FocusState private var isSearchFieldFocused: Bool
+    private var _isSearching: Binding<Bool> {
+        Binding(
+            get: {
+                switch selectedItemListType {
+                case .products(search: let searching):
+                    return searching
+                case .coupons:
+                    return false
+                }
+            },
+            set: { newValue in
+                switch selectedItemListType {
+                case .products:
+                    selectedItemListType = .products(search: newValue)
+                case .coupons:
+                    break // No-op since coupons don't support search
+                }
+            }
+        )
+    }
+
+    private var isSearching: Bool {
+        _isSearching.wrappedValue
+    }
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
@@ -45,7 +68,7 @@ struct ItemListView: View {
     }
 
     private var shouldShowHeaderItems: Bool {
-        !selectedItemListType.isSearching
+        !isSearching
     }
 
     @State private var showCouponCreationModal: Bool = false
@@ -69,19 +92,16 @@ struct ItemListView: View {
             headerView
 
             TabView(selection: $selectedItemListType) {
-                itemListContent(.products(search: false))
-                if isSearchProductsFeatureEnabled {
-                    itemListContent(.products(search: true))
-                }
+                itemListTabContent(.products(search: false))
                 if isCouponsFeatureEnabled {
-                    itemListContent(.coupons)
+                    itemListTabContent(.coupons)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
-            .ignoresSafeArea()
+            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
+            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
         }
-
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
         .navigationDestination(for: POSItem.self, destination: { item in
@@ -98,185 +118,42 @@ struct ItemListView: View {
     }
 
     @ViewBuilder
-    private func itemListContent(_ itemListType: ItemListType) -> some View {
-        Group {
-            if itemListType.isSearching && searchTerm.isEmpty {
-                POSRecentSearchesView(
-                    savedSearches: posModel.searchHistory(for: itemListType.itemType),
-                    onSearchSelected: { search in
-                        searchTerm = search
-                        ServiceLocator.analytics.track(
-                            event: WooAnalyticsEvent.PointOfSale.preSearchRecentTermTapped(itemListType: itemListType))
-                    }
-                )
-                .background(Color.posSurface)
-            } else {
-                switch itemListState(itemListType) {
-                case .loading(let items),
-                        .loaded(let items, _),
-                        .inlineError(let items, _, _):
-                    listView(items, itemListType: itemListType)
-                case .error(let errorState):
-                    errorView(errorState)
-                    EmptyView()
-                case .empty:
-                    emptyView
+    private func itemListTabContent(_ itemListType: ItemListType) -> some View {
+        ZStack {
+            itemListContent(itemListType)
+
+            if isSearching {
+                POSSearchContentView(
+                    searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                                                     searchHistoryProvider: posModel.searchHistoryService),
+                    searchTerm: $searchTerm
+                ) { _ in
+                    itemListContent(selectedItemListType)
                 }
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
+                .zIndex(1)
             }
         }
         .tag(itemListType)
         .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
     }
-}
 
-/// View Helpers
-///
-@available(iOS 17.0, *)
-private extension ItemListView {
     @ViewBuilder
-    var headerView: some View {
-        VStack {
-            POSPageHeaderView(items: headerViewItems, trailingContent: {
-                HStack {
-                    if isSearchAllowed {
-                        searchField
-                            .renderedIf(selectedItemListType.isSearching)
-                            .transition(.opacity.combined(with: .move(edge: .trailing)))
-                            .onChange(of: searchTerm) { oldValue, newValue in
-                                // The debouncing logic is a little tricky, because the loading state is held in the controller.
-                                // Arguably, we should use view state `isSearching` for this, so the UI is independent of the request timing.
-
-                                // As the user types, we don't want to send every keystroke to the remote, so we debounce the requests.
-                                // However, we don't want to debounce the first keystroke of a new search, so that the loading
-                                // state shows immediately and the UI feels responsive.
-
-                                // So, if the last search was finished, we don't debounce the first character. If it didn't
-                                // finish i.e. it is still ongoing, we debounce the next keystrokes by 300ms. In either case,
-                                // the ongoing search is redundant now there's a new search term, so we cancel it.
-                                let shouldDebounceNextSearchRequest = !didFinishSearch
-                                searchTask?.cancel()
-
-                                searchTask = Task {
-                                    if shouldDebounceNextSearchRequest {
-                                        try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
-                                    }
-
-                                    guard !Task.isCancelled else { return }
-
-                                    guard searchTerm.isNotEmpty else {
-                                        didFinishSearch = true
-                                        return
-                                    }
-
-                                    didFinishSearch = false
-
-                                    await posModel.purchasableItemsSearchController.searchItems(searchTerm: newValue, baseItem: .root)
-
-                                    if !Task.isCancelled {
-                                        didFinishSearch = true
-                                    }
-                                }
-                            }
-
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
-                                    itemListType: selectedItemListType))
-                                selectedItemListType = .products(search: true)
-                            } completion: {
-                                isSearchFieldFocused = true
-                            }
-                        }
-                        .renderedIf(!selectedItemListType.isSearching)
-                        .transition(.opacity.combined(with: .scale))
-                    }
-
-                    if isCouponsFeatureEnabled {
-                        POSPageHeaderActionButton(systemName: "plus") {
-                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                            showCouponCreationModal = true
-                        }
-                        .renderedIf(isAddingCouponAllowed)
-                        .transition(.opacity.combined(with: .scale))
-                    }
-                }
-            })
-        }
-        .animation(.easeInOut(duration: Constants.animationDuration), value: selectedItemListType.isSearching)
-        .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
-        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
-    }
-
-    var headerViewItems: [POSPageHeaderItem] {
-        guard shouldShowHeaderItems else {
-            return []
-        }
-        var items = [
-            POSPageHeaderItem(
-                title: Localization.productsTitle,
-                isSelected: selectedItemListType.isProducts,
-                action: {
-                    displayItemListType(.products(search: searchTerm.isNotEmpty))
-                }
-            )
-        ]
-
-        if isCouponsFeatureEnabled {
-            items.append(
-                POSPageHeaderItem(
-                    title: Localization.couponsTitle,
-                    isSelected: selectedItemListType.isCoupons,
-                    action: {
-                        displayItemListType(.coupons)
-                    }
-                )
-            )
-        }
-
-        return items
-    }
-
-    var searchField: some View {
-        HStack(spacing: POSSpacing.small) {
-            Button {
-                searchTerm = ""
-                isSearchFieldFocused = false
-                selectedItemListType = .products(search: false)
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .foregroundColor(.posOnSurface)
-                    .font(.posButtonSymbolLarge)
-            }
-
-            TextField(text: $searchTerm) {
-                Text(Localization.searchFieldLabel)
-            }
-            .font(POSFontStyle.posBodyLargeRegular())
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.never)
-            .focused($isSearchFieldFocused)
-
-            Button {
-                searchTerm = ""
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
-                    .foregroundColor(.posOnSurfaceVariantHighest)
-                    .font(.posButtonSymbolSmall)
-            }
-            .transition(.opacity)
-            .renderedIf(searchTerm.isNotEmpty)
-        }
-        .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
-            guard isVisible == false else {
-                return
-            }
-            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
+    private func itemListContent(_ itemListType: ItemListType) -> some View {
+        switch itemListState(itemListType) {
+        case .loading(let items),
+                .loaded(let items, _),
+                .inlineError(let items, _, _):
+            listView(items, itemListType: itemListType)
+        case .error(let errorState):
+            errorView(errorState)
+        case .empty:
+            emptyView
         }
     }
 
     @ViewBuilder
-    func listView(_ items: [POSItem], itemListType: ItemListType) -> some View {
+    private func listView(_ items: [POSItem], itemListType: ItemListType) -> some View {
         ItemList(
             itemsController: itemsController(itemListType),
             node: .root,
@@ -306,19 +183,102 @@ private extension ItemListView {
         // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
-            // This always uses the non-search itemsController, otherwise it will have the search term and not work properly
-            // This is a temporary fix until we tidy up the stack selection, as it means non-products child lists won't work.
             ChildItemList(
                 parentItem: parentItem,
                 title: parentProduct.name,
-                itemsController: posModel.purchasableItemsController,
+                itemsController: itemsController(selectedItemListType),
                 itemActionHandler: actionHandler(selectedItemListType)
             )
         default:
             EmptyView()
         }
     }
+}
 
+/// Header view
+///
+@available(iOS 17.0, *)
+private extension ItemListView {
+    @ViewBuilder
+    var headerView: some View {
+        VStack {
+            POSPageHeaderView(items: headerViewItems, trailingContent: {
+                HStack {
+                    if isSearchAllowed {
+                        if isSearching {
+                            POSSearchField(
+                                searchTerm: $searchTerm,
+                                searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                                                               searchHistoryProvider: posModel.searchHistoryService),
+                                onBack: {
+                                    withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                        selectedItemListType = .products(search: false)
+                                    }
+                                }
+                            )
+                            .transition(.opacity.combined(with: .move(edge: .trailing)))
+                        } else {
+                            POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
+                                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
+                                        itemListType: selectedItemListType))
+                                    selectedItemListType = .products(search: true)
+                                }
+                            }
+                            .transition(.opacity.combined(with: .scale))
+                        }
+                    }
+
+                    if isCouponsFeatureEnabled {
+                        POSPageHeaderActionButton(systemName: "plus") {
+                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+                            showCouponCreationModal = true
+                        }
+                        .renderedIf(isAddingCouponAllowed)
+                        .transition(.opacity.combined(with: .scale))
+                    }
+                }
+            })
+        }
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
+    }
+
+    var headerViewItems: [POSPageHeaderItem] {
+        guard shouldShowHeaderItems else {
+            return []
+        }
+        var items = [
+            POSPageHeaderItem(
+                title: Localization.productsTitle,
+                isSelected: selectedItemListType.isProducts,
+                action: {
+                    displayItemListType(.products(search: false))
+                }
+            )
+        ]
+
+        if isCouponsFeatureEnabled {
+            items.append(
+                POSPageHeaderItem(
+                    title: Localization.couponsTitle,
+                    isSelected: selectedItemListType.isCoupons,
+                    action: {
+                        displayItemListType(.coupons)
+                    }
+                )
+            )
+        }
+
+        return items
+    }
+}
+
+/// View Helpers
+///
+@available(iOS 17.0, *)
+private extension ItemListView {
     @ViewBuilder
     var emptyView: some View {
         switch selectedItemListType {
@@ -360,6 +320,8 @@ private extension ItemListView {
 @available(iOS 17.0, *)
 private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
+        // Clear search term when switching tabs
+        searchTerm = ""
         selectedItemListType = itemListType
         Task { @MainActor in
             if itemListState(itemListType).items.isEmpty {
@@ -412,18 +374,6 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
-        )
-
-        static let searchFieldLabel = NSLocalizedString(
-            "pos.itemlistview.searchField.label",
-            value: "Search Products",
-            comment: "Label/placeholder text for the product search field in Point of Sale."
-        )
-
-        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
-            "pos.itemlistview.searchField.clearButton.accessibilityLabel",
-            value: "Clear Search",
-            comment: "Accessibility label for the clear button in the Point of Sale product search screen."
         )
     }
 }

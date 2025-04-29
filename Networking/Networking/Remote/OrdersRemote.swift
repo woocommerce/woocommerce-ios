@@ -3,6 +3,11 @@ import Foundation
 /// Order: Remote Endpoints
 ///
 public class OrdersRemote: Remote {
+    /// The source of the order creation.
+    public enum OrderCreationSource {
+        case storeManagement
+        case pointOfSale
+    }
 
     /// Retrieves all of the `Orders` available.
     ///
@@ -161,9 +166,15 @@ public class OrdersRemote: Remote {
     ///     - order: Order to be created.
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - fields: Fields of the order to be created.
+    ///     - source: Source of the order creation.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createOrder(siteID: Int64, order: Order, giftCard: String?, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+    public func createOrder(siteID: Int64,
+                            order: Order,
+                            giftCard: String?,
+                            fields: [CreateOrderField],
+                            source: OrderCreationSource = .storeManagement,
+                            completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = Constants.ordersPath
             let mapper = OrderMapper(siteID: siteID)
@@ -206,6 +217,10 @@ public class OrdersRemote: Remote {
                 params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
                                                                                 key: OrderAttributionInfo.Keys.sourceType.rawValue,
                                                                                 value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
+
+                if let createdViaValue = source.createdViaValue {
+                    params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
+                }
 
                 return params
             }()
@@ -398,7 +413,7 @@ public class OrdersRemote: Remote {
 extension OrdersRemote: POSOrdersRemoteProtocol {
     public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .pointOfSale) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)
@@ -502,5 +517,16 @@ public extension OrdersRemote {
         case customerNote
         case customerID
         case currency
+    }
+}
+
+private extension OrdersRemote.OrderCreationSource {
+    var createdViaValue: String? {
+        switch self {
+        case .storeManagement:
+            return nil
+        case .pointOfSale:
+            return "pos-rest-api"
+        }
     }
 }

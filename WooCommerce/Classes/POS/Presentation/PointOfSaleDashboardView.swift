@@ -23,8 +23,12 @@ struct PointOfSaleDashboardView: View {
             } else {
                 return posModel.purchasableItemsController.itemsViewState
             }
-        case .coupons:
-            return posModel.couponsController.itemsViewState
+        case .coupons(let searching):
+            if searching {
+                return posModel.couponsSearchController.itemsViewState
+            } else {
+                return posModel.couponsController.itemsViewState
+            }
         }
     }
 
@@ -45,8 +49,10 @@ struct PointOfSaleDashboardView: View {
                                 await posModel.purchasableItemsController.loadItems(base: .root)
                             case .products(search: true):
                                 await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                            case .coupons:
-                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                            case .coupons(search: false):
+                                await posModel.couponsSearchController.loadItems(base: .root)
+                            case .coupons(search: true):
+                                await posModel.couponsSearchController.loadItems(base: .root)
                             }
                         }
                     })

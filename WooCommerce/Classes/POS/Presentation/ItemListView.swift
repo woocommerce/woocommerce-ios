@@ -116,6 +116,15 @@ struct ItemListView: View {
         })
     }
 
+    private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
+        switch selectedItemListType {
+        case .products:
+            return posModel.purchasableItemsSearchController
+        case .coupons:
+            return posModel.couponsSearchController
+        }
+    }
+
     @ViewBuilder
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
@@ -124,9 +133,8 @@ struct ItemListView: View {
             if isSearching {
                 POSSearchContentView(
                     // TODO:
-                    // - itemsController needs to be updated to switch between item types
                     // - searchHistoryProvider needs to be updated to switch between Products and Coupons history when needed
-                    searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                    searchable: POSProductSearchable(itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
                     searchTerm: $searchTerm
                 ) { _ in
@@ -210,7 +218,7 @@ private extension ItemListView {
                         if isSearching {
                             POSSearchField(
                                 searchTerm: $searchTerm,
-                                searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                                searchable: POSProductSearchable(itemsController: searchItemsController,
                                                                  searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
                                     withAnimation(.easeInOut(duration: Constants.animationDuration)) {
@@ -346,8 +354,7 @@ private extension ItemListView {
         case .coupons(search: false):
             posModel.couponsController
         case .coupons(search: true):
-            // TODO: Handle returning posModel.couponsSearchController instead
-            posModel.couponsController
+            posModel.couponsSearchController
         }
     }
 

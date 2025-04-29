@@ -5,7 +5,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
-protocol PointOfSaleSearchingCouponsControllerProtocol: PointOfSaleCouponsControllerProtocol {
+protocol PointOfSaleSearchingCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
 }
@@ -18,7 +18,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
 }
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleCouponsController: PointOfSaleSearchingCouponsControllerProtocol {
+@Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
@@ -79,7 +79,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
             }
         }
     }
-    
+
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         // TODO: Pass fetching strategy
         await loadFirstPage()

@@ -88,6 +88,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func loadItems(base: ItemListBaseItem) async { }
     func refreshItems(base: ItemListBaseItem) async { }
     func loadNextItems(base: ItemListBaseItem) async { }
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async { }
 }
 
 @available(iOS 17.0, *)

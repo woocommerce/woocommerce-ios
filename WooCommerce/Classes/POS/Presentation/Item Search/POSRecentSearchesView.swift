@@ -69,8 +69,8 @@ private extension POSRecentSearchesView {
             comment: "Title for the list of recent searches shown before a search term is typed in POS")
 
         static let recentSearchesEmptyListText = NSLocalizedString(
-            "pos.itemsearch.before.search.recentSearches.emptyListText",
-            value: "No recent searches",
+            "pos.itemsearch.before.search.recentSearches.emptyListText.1",
+            value: "Search your store.",
             comment: "Text shown when there's nothing to show before a search term is typed in POS")
 
     }

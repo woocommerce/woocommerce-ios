@@ -34,12 +34,15 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var couponsController: any WooCommerce.PointOfSaleCouponsControllerProtocol
 
+    var couponsSearchController: any WooCommerce.PointOfSaleSearchingItemsControllerProtocol
+
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
          purchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
          couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
+         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
@@ -47,6 +50,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
         self.purchasableItemsController = purchasableItemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
+        self.couponsSearchController = couponsSearchController
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState

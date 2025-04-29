@@ -51,6 +51,8 @@ struct HubMenu: View {
                                                 itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
                             couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
                                                                             fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
+                            couponsSearchController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
+                                                                                  fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
                                 viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                             },

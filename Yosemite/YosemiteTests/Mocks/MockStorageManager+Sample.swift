@@ -159,6 +159,19 @@ extension MockStorageManager {
         return newCoupon
     }
 
+    /// Inserts a sample coupon search result with associated coupons
+    ///
+    func insertSampleCouponSearchResult(keyword: String, coupons: [Coupon]) {
+        let searchResult = viewStorage.insertNewObject(ofType: StorageCouponSearchResult.self)
+        searchResult.keyword = keyword
+
+        for coupon in coupons {
+            let storageCoupon = viewStorage.insertNewObject(ofType: StorageCoupon.self)
+            storageCoupon.update(with: coupon)
+            storageCoupon.addToSearchResults(searchResult)
+        }
+    }
+
     /// Inserts a new (Sample) Customer into the specified context.
     ///
     @discardableResult

@@ -36,7 +36,7 @@ struct WooShippingItems: View {
                 }
             }
         })
-        .padding(.vertical, Layout.totalVerticalPadding - CollapsibleViewConstants.verticalPadding)
+        .padding(.vertical, Layout.verticalPadding)
         .frame(maxWidth: .infinity, alignment: .center)
         .if(isCollapsed) { view in
             view
@@ -51,7 +51,7 @@ private extension WooShippingItems {
         static let borderWidth: CGFloat = 0.5
 
         /// Total vertical padding between content and outer border
-        static let totalVerticalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 6
     }
 }
 

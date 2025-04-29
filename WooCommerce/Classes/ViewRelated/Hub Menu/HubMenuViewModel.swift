@@ -98,6 +98,12 @@ final class HubMenuViewModel: ObservableObject {
     private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
     }()
+    private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
+        PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
+                                              currencySettings: ServiceLocator.currencySettings,
+                                              credentials: credentials,
+                                              storage: ServiceLocator.storageManager)
+    }()
 
     private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
         let storage = ServiceLocator.storageManager

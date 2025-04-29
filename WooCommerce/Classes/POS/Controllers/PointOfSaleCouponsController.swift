@@ -3,6 +3,8 @@ import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
+import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
+import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
 @available(iOS 17.0, *)
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
@@ -19,9 +21,14 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let couponProvider: PointOfSaleCouponServiceProtocol
+    private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory
+    private var fetchStrategy: PointOfSaleCouponFetchStrategy
 
-    init(itemProvider: PointOfSaleCouponServiceProtocol) {
+    init(itemProvider: PointOfSaleCouponServiceProtocol,
+         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory) {
         self.couponProvider = itemProvider
+        self.fetchStrategyFactory = fetchStrategyFactory
+        self.fetchStrategy = fetchStrategyFactory.defaultStrategy
         self.paginationTracker = .init()
     }
 
@@ -81,7 +88,7 @@ private extension PointOfSaleCouponsController {
     /// then syncs from the remote regardless the result
     func loadFirstPage() async {
         do {
-            let storedCoupons = try await couponProvider.provideLocalPointOfSaleCoupons()
+            let storedCoupons = try await couponProvider.provideLocalPointOfSaleCoupons(fetchStrategy: fetchStrategy)
             if !storedCoupons.isEmpty {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
@@ -99,7 +106,7 @@ private extension PointOfSaleCouponsController {
 
     @MainActor
     func fetchCoupons(pageNumber: Int) async throws -> Bool {
-        let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber)
+        let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber, fetchStrategy: fetchStrategy)
 
         let allCoupons = pagedCoupons.items
         let hasMoreItems = pagedCoupons.hasMorePages

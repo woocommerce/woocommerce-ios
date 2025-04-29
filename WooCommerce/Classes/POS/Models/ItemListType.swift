@@ -2,7 +2,7 @@ import enum Yosemite.POSItemType
 
 enum ItemListType: Equatable, Hashable {
     case products(search: Bool = false)
-    case coupons
+    case coupons(search: Bool = false)
 
     var itemType: POSItemType {
         switch self {
@@ -33,9 +33,9 @@ enum ItemListType: Equatable, Hashable {
 
     var isSearching: Bool {
         switch self {
-        case .products(search: true):
+        case .products(search: true), .coupons(search: true):
             return true
-        case .products(search: false), .coupons:
+        case .products(search: false), .coupons(search: false):
             return false
         }
     }

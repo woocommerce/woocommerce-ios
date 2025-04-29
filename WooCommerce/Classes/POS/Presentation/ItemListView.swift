@@ -19,8 +19,8 @@ struct ItemListView: View {
                 switch selectedItemListType {
                 case .products(search: let searching):
                     return searching
-                case .coupons:
-                    return false
+                case .coupons(search: let searching):
+                    return searching
                 }
             },
             set: { newValue in
@@ -28,7 +28,7 @@ struct ItemListView: View {
                 case .products:
                     selectedItemListType = .products(search: newValue)
                 case .coupons:
-                    break // No-op since coupons don't support search
+                    selectedItemListType = .coupons(search: newValue)
                 }
             }
         )
@@ -56,14 +56,13 @@ struct ItemListView: View {
     }
 
     private var isSearchAllowed: Bool {
-        guard isSearchProductsFeatureEnabled else {
-            return false
-        }
+        // Temporary:
+        // Handle feature flag for coupon search when trunk merged
         switch selectedItemListType {
         case .products:
-            return true
+            return isSearchProductsFeatureEnabled
         case .coupons:
-            return false
+            return true
         }
     }
 
@@ -94,7 +93,7 @@ struct ItemListView: View {
             TabView(selection: $selectedItemListType) {
                 itemListTabContent(.products(search: false))
                 if isCouponsFeatureEnabled {
-                    itemListTabContent(.coupons)
+                    itemListTabContent(.coupons(search: false))
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -171,9 +170,9 @@ struct ItemListView: View {
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
         switch itemListType {
-        case .products(search: false), .coupons:
+        case .products(search: false), .coupons(search: false):
             StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
-        case .products(search: true):
+        case .products(search: true), .coupons(search: true):
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
         }
     }
@@ -209,7 +208,7 @@ private extension ItemListView {
                             POSSearchField(
                                 searchTerm: $searchTerm,
                                 searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
-                                                               searchHistoryProvider: posModel.searchHistoryService),
+                                                                 searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
                                     withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                                         selectedItemListType = .products(search: false)
@@ -265,7 +264,7 @@ private extension ItemListView {
                     title: Localization.couponsTitle,
                     isSelected: selectedItemListType.isCoupons,
                     action: {
-                        displayItemListType(.coupons)
+                        displayItemListType(.coupons(search: false))
                     }
                 )
             )
@@ -341,8 +340,10 @@ private extension ItemListView {
             posModel.purchasableItemsController
         case .products(search: true):
             posModel.purchasableItemsSearchController
-        case .coupons:
+        case .coupons(search: false):
             posModel.couponsController
+        case .coupons(search: true):
+            posModel.couponsController // TODO: searchableCouponsController
         }
     }
 

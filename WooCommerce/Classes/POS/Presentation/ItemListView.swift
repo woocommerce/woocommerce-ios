@@ -123,6 +123,9 @@ struct ItemListView: View {
 
             if isSearching {
                 POSSearchContentView(
+                    // TODO:
+                    // - itemsController needs to be updated to switch between item types
+                    // - searchHistoryProvider needs to be updated to switch between Products and Coupons history when needed
                     searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
                     searchTerm: $searchTerm
@@ -343,7 +346,8 @@ private extension ItemListView {
         case .coupons(search: false):
             posModel.couponsController
         case .coupons(search: true):
-            posModel.couponsController // TODO: searchableCouponsController
+            // TODO: Handle returning posModel.couponsSearchController instead
+            posModel.couponsController
         }
     }
 

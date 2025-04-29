@@ -5,6 +5,12 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 
 @available(iOS 17.0, *)
+protocol PointOfSaleSearchingCouponsControllerProtocol: PointOfSaleCouponsControllerProtocol {
+    /// Searches for items
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
+}
+
+@available(iOS 17.0, *)
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
@@ -12,7 +18,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
 }
 
 @available(iOS 17.0, *)
-@Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
+@Observable final class PointOfSaleCouponsController: PointOfSaleSearchingCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))
@@ -72,6 +78,11 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleItemsControllerProtoco
                 setCouponsErrorViewState(couponError)
             }
         }
+    }
+    
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
+        // TODO: Pass fetching strategy
+        await loadFirstPage()
     }
 }
 

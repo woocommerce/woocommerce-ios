@@ -67,6 +67,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
+    let couponsSearchController: PointOfSaleSearchingCouponsControllerProtocol? = nil
     private let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
@@ -96,6 +97,7 @@ protocol PointOfSaleAggregateModelProtocol {
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
+         couponsSearchController: PointOfSaleSearchingCouponsControllerProtocol? = nil,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,

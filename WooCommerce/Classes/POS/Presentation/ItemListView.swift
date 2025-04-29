@@ -213,6 +213,15 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
+                    if isCouponsFeatureEnabled {
+                        POSPageHeaderActionButton(systemName: "plus") {
+                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+                            showCouponCreationModal = true
+                        }
+                        .renderedIf(isAddingCouponAllowed)
+                        .transition(.opacity.combined(with: .scale))
+                    }
+
                     if isSearchAllowed {
                         if isSearching {
                             POSSearchField(
@@ -237,15 +246,6 @@ private extension ItemListView {
                             }
                             .transition(.opacity.combined(with: .scale))
                         }
-                    }
-
-                    if isCouponsFeatureEnabled {
-                        POSPageHeaderActionButton(systemName: "plus") {
-                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                            showCouponCreationModal = true
-                        }
-                        .renderedIf(isAddingCouponAllowed)
-                        .transition(.opacity.combined(with: .scale))
                     }
                 }
             })

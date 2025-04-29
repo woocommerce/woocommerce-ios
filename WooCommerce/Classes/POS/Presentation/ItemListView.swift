@@ -222,12 +222,7 @@ private extension ItemListView {
                                                                  searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
                                     withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                        switch selectedItemListType {
-                                        case .products:
-                                            selectedItemListType = .products(search: false)
-                                        case .coupons:
-                                            selectedItemListType = .coupons(search: false)
-                                        }
+                                        setSearch(false)
                                     }
                                 }
                             )
@@ -237,12 +232,7 @@ private extension ItemListView {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
                                         itemListType: selectedItemListType))
-                                    switch selectedItemListType {
-                                    case .products:
-                                        selectedItemListType = .products(search: true)
-                                    case .coupons:
-                                        selectedItemListType = .coupons(search: true)
-                                    }
+                                    setSearch(true)
                                 }
                             }
                             .transition(.opacity.combined(with: .scale))
@@ -370,6 +360,15 @@ private extension ItemListView {
 
     private func itemListState(_ itemType: ItemListType) -> ItemListState {
         itemsController(itemType).itemsViewState.itemsStack.root
+    }
+
+    private func setSearch(_ isSearching: Bool) {
+        switch selectedItemListType {
+        case .products:
+            selectedItemListType = .products(search: isSearching)
+        case .coupons:
+            selectedItemListType = .coupons(search: isSearching)
+        }
     }
 }
 

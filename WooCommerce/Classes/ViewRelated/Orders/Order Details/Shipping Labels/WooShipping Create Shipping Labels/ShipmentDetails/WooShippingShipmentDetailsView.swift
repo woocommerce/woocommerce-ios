@@ -23,7 +23,7 @@ struct WooShippingShipmentDetailsView: View {
             WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
                                   customsFormViewModel: viewModel.customsFormViewModel)
                 .padding(.bottom, Layout.contentSpacing)
-                .renderedIf(viewModel.customsFormRequired)
+                .renderedIf(viewModel.shouldShowCustomsForm)
 
             if viewModel.canViewLabel {
                 EmptyView()

@@ -988,6 +988,7 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
     // TODO: use a specific `deviceSetup` in these three functions instead of reusing the softwareUpdateSubject
     // https://github.com/woocommerce/woocommerce-ios/issues/8088
     public func tapToPayReader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+        UIApplication.shared.isIdleTimerDisabled = true
         softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
@@ -996,6 +997,7 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
     }
 
     public func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        UIApplication.shared.isIdleTimerDisabled = false
         if let error = error {
             let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(

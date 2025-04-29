@@ -87,11 +87,6 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
             }
         }
     }
-
-    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
-        // TODO: Pass fetching strategy
-        await loadFirstPage()
-    }
 }
 
 @available(iOS 17.0, *)

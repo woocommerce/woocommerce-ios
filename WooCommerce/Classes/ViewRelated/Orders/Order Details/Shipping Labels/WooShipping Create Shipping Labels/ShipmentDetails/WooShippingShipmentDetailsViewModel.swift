@@ -187,9 +187,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             }
             stores.dispatch(action)
         }
-        shippingLabel = purchasedLabel
-        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: purchasedLabel)
-        onLabelPurchase?(purchasedLabel)
+        /// Addresses are not included in purchased shipping label details
+        /// so we have to manually populate the details.
+        let updatedLabel = purchasedLabel.copy(originAddress: originAddress.toShippingLabelAddress(),
+                                               destinationAddress: destinationAddress.toShippingLabelAddress())
+        shippingLabel = updatedLabel
+        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
+        onLabelPurchase?(updatedLabel)
     }
 }
 

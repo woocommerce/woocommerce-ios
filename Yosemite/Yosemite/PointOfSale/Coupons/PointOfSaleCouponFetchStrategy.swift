@@ -109,7 +109,7 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
                     case .success:
                         let results = getSearchResults()
                         let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
-                        continuation.resume(returning: .init(items: getSearchResults(), hasMorePages: hasMorePages))
+                        continuation.resume(returning: .init(items: results, hasMorePages: hasMorePages))
                     case .failure:
                         continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
                     }

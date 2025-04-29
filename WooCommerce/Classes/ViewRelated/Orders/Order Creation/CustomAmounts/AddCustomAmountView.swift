@@ -73,7 +73,6 @@ struct AddCustomAmountView: View {
                     })
                 }
                 .frame(width: geometry.size.width)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
                 .onTapGesture {
                     dismissKeyboard()
                 }

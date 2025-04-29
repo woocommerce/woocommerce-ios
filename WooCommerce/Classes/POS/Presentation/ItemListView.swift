@@ -17,10 +17,8 @@ struct ItemListView: View {
         Binding(
             get: {
                 switch selectedItemListType {
-                case .products(search: let searching):
-                    return searching
-                case .coupons(search: let searching):
-                    return searching
+                case let .products(search), let .coupons(search):
+                    return search
                 }
             },
             set: { newValue in
@@ -49,6 +47,10 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
     }
 
+    private var isSearchCouponsFeatureEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchCouponsInPOS)
+    }
+
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
         let itemListState = itemListState(selectedItemListType)
@@ -56,13 +58,11 @@ struct ItemListView: View {
     }
 
     private var isSearchAllowed: Bool {
-        // Temporary:
-        // Handle feature flag for coupon search when trunk merged
         switch selectedItemListType {
         case .products:
             return isSearchProductsFeatureEnabled
         case .coupons:
-            return true
+            return isSearchCouponsFeatureEnabled
         }
     }
 
@@ -132,8 +132,6 @@ struct ItemListView: View {
 
             if isSearching {
                 POSSearchContentView(
-                    // TODO:
-                    // - searchHistoryProvider needs to be updated to switch between Products and Coupons history when needed
                     searchable: POSProductSearchable(itemListType: selectedItemListType,
                                                      itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),

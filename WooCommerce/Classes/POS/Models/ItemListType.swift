@@ -33,10 +33,8 @@ enum ItemListType: Equatable, Hashable {
 
     var isSearching: Bool {
         switch self {
-        case .products(search: true), .coupons(search: true):
-            return true
-        case .products(search: false), .coupons(search: false):
-            return false
+        case let .products(search), let .coupons(search):
+            return search
         }
     }
 }

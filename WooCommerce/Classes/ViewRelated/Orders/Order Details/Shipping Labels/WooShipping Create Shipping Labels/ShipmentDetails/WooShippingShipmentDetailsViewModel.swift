@@ -62,19 +62,21 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
-        WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
+        WooShippingCustomsFormViewModel(order: order, shipment: shipment, onCompletion: { [weak self] form in
             self?.customsForm = form
         })
     }()
 
     /// Whether the custom information is completed or not.
-    var customsInformationIsCompleted: Bool {
-        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
-    }
+    @Published private(set) var customsInformationIsCompleted = false
 
     /// Check for the need of customs form
     ///
-    @Published private(set) var customsFormRequired: Bool = false
+    @Published private var customsFormRequired = false
+
+    var shouldShowCustomsForm: Bool {
+        customsFormRequired && shippingLabel == nil
+    }
 
     @Published var itnMissingNoticeLabel: String?
 
@@ -162,10 +164,6 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         selectedPackage = packageData
     }
 
-    func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
-        customsForm = form
-    }
-
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async throws {
@@ -189,9 +187,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             }
             stores.dispatch(action)
         }
-        shippingLabel = purchasedLabel
-        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: purchasedLabel)
-        onLabelPurchase?(purchasedLabel)
+        /// Addresses are not included in purchased shipping label details
+        /// so we have to manually populate the details.
+        let updatedLabel = purchasedLabel.copy(originAddress: originAddress.toShippingLabelAddress(),
+                                               destinationAddress: destinationAddress.toShippingLabelAddress())
+        shippingLabel = updatedLabel
+        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
+        onLabelPurchase?(updatedLabel)
     }
 }
 
@@ -294,6 +296,12 @@ private extension WooShippingShipmentDetailsViewModel {
                 return nil
             }
             .assign(to: &$itnMissingNoticeLabel)
+
+        customsFormViewModel.$requiredInformationIsEntered.combineLatest($customsFormRequired)
+            .map { (requiredInfoIsEntered, customsFormRequired) -> Bool in
+                requiredInfoIsEntered && customsFormRequired
+            }
+            .assign(to: &$customsInformationIsCompleted)
     }
 
     /// Converts the package data to a `ShippingLabelPackageSelected` object.

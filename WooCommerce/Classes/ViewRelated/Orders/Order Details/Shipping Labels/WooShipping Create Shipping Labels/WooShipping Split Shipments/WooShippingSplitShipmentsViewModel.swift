@@ -138,6 +138,21 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
+    func didPurchaseLabel(for shipmentID: String, purchasedLabelID: Int64) {
+        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+            return
+        }
+        let currentShipment = shipments[index]
+        let updatedContents = currentShipment.contents.map {
+            CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
+        }
+        shipments[index] = Shipment(contents: updatedContents,
+                                    purchasedLabelID: purchasedLabelID,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+    }
+
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
         moveToNoticeViewModel = nil
         instructions = nil
@@ -296,6 +311,20 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         return String.localizedStringWithFormat(Localization.shipmentFormat, index + 1)
+    }
+
+    /// Determines if a shipment's delete option should be disabled.
+    /// A shipment's delete option should be disabled if:
+    /// 1. The shipment is already purchased
+    /// 2. The view model is currently saving shipment info
+    /// 3. The shipment is the last unfulfilled shipment
+    func isShipmentDeleteOptionDisabled(for shipment: Shipment) -> Bool {
+        if shipment.isPurchased || isSavingShipmentInfo {
+            return true
+        }
+
+        let unfulfilledShipments = shipments.filter { !$0.isPurchased }
+        return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
     }
 
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {

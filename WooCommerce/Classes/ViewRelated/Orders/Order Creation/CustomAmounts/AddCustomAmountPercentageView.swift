@@ -59,6 +59,15 @@ private extension AddCustomAmountPercentageView {
         @Binding var text: String
         var onChangeText: (String) -> (Void)
 
+        private let percentFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .percent
+            formatter.maximumFractionDigits = 3
+            formatter.minimumFractionDigits = 0
+            formatter.multiplier = 1
+            return formatter
+        }()
+
         var body: some View {
             ZStack {
                 TextField("",
@@ -71,7 +80,7 @@ private extension AddCustomAmountPercentageView {
                 .keyboardType(.decimalPad)
                 .opacity(0)
 
-                Text(text + "%")
+                Text(formatPercentage(text))
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
@@ -85,6 +94,14 @@ private extension AddCustomAmountPercentageView {
                     }
             }
             .fixedSize(horizontal: false, vertical: true)
+        }
+
+        private func formatPercentage(_ text: String) -> String {
+            guard !text.isEmpty,
+                  let number = NumberFormatter.double(from: text) else {
+                return "0%"
+            }
+            return percentFormatter.string(from: NSNumber(value: number)) ?? "\(text)%"
         }
     }
 }

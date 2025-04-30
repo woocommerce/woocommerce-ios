@@ -65,23 +65,25 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     /// WooCommerce Stripe Gateway 9.1.0 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
     ///
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
-        isPluginSupported(Constants.wcPluginName, minimumVersion: Constants.FailedReceiptAfterPayment.wcPluginMinimumVersion) { isWooCommerceSupported in
-            guard isWooCommerceSupported else {
-                return onCompletion(false)
-            }
+        Task { @MainActor in
+            async let wooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+                                                               minimumVersion: Constants.FailedReceiptAfterPayment.wcPluginMinimumVersion)
 
-            switch paymentGatewayID {
-            case CardPresentPaymentsPlugin.wcPay.gatewayID:
-                self.isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
-                                       minimumVersion: Constants.FailedReceiptAfterPayment.wcPayPluginMinimumVersion,
-                                       onCompletion: onCompletion)
-            case CardPresentPaymentsPlugin.stripe.gatewayID:
-                self.isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
-                                       minimumVersion: Constants.FailedReceiptAfterPayment.stripePluginMinimumVersion,
-                                       onCompletion: onCompletion)
-            default:
-                onCompletion(false)
-            }
+            async let gatewaySupported: Bool = {
+                switch paymentGatewayID {
+                case CardPresentPaymentsPlugin.wcPay.gatewayID:
+                    return await isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
+                                                   minimumVersion: Constants.FailedReceiptAfterPayment.wcPayPluginMinimumVersion)
+                case CardPresentPaymentsPlugin.stripe.gatewayID:
+                    return await isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
+                                                   minimumVersion: Constants.FailedReceiptAfterPayment.stripePluginMinimumVersion)
+                default:
+                    return false
+                }
+            }()
+
+            let (isWooCommerceSupported, isGatewaySupported) = await (wooCommerceSupported, gatewaySupported)
+            onCompletion(isWooCommerceSupported && isGatewaySupported)
         }
     }
 

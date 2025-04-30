@@ -52,7 +52,7 @@ struct POSSearchField: View {
             TextField(text: $searchTerm) {
                 Text(searchable.itemListType.itemType.searchFieldLabel)
             }
-            .textFieldStyle(RoundedBorderTextFieldStyle(
+            .textFieldStyle(WooRoundedBorderTextFieldStyle(
                 focused: isSearchFieldFocused,
                 focusedBorderColor: .posPrimary,
                 unfocusedBorderColor: .posSurfaceBright,

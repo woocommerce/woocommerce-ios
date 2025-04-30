@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Text field has a rounded border that has a thicker border and brighter border color when the field is focused.
-struct RoundedBorderTextFieldStyle: TextFieldStyle {
+struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     private let focused: Bool
     private let focusedBorderColor: Color
     private let unfocusedBorderColor: Color
@@ -43,7 +43,7 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
     }
 }
 
-extension RoundedBorderTextFieldStyle {
+extension WooRoundedBorderTextFieldStyle {
     enum Defaults {
         static let focusedBorderColor: Color = .init(uiColor: .brand)
         static let unfocusedBorderColor: Color = .gray
@@ -55,29 +55,29 @@ struct TextFieldStyles_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             TextField("placeholder", text: .constant("focused"))
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
             TextField("placeholder", text: .constant("unfocused"))
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: false))
+                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: false))
             TextField("placeholder", text: .constant("focused with a different color"))
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true, focusedBorderColor: .orange))
+                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true, focusedBorderColor: .orange))
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
             TextField("placeholder", text: .constant("unfocused with a different color"))
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: false, unfocusedBorderColor: .cyan))
+                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: false, unfocusedBorderColor: .cyan))
             TextField("placeholder", text: .constant("custom insets"))
-                .textFieldStyle(RoundedBorderTextFieldStyle(focused: false, insets: .init(top: 20, leading: 0, bottom: 10, trailing: 50)))
+                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: false, insets: .init(top: 20, leading: 0, bottom: 10, trailing: 50)))
                 .frame(width: 150)
             HStack {
                 TextField("placeholder", text: .constant("text field"))
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
                 SecureField("placeholder", text: .constant("secure"))
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
             }
             .environment(\.sizeCategory, .extraExtraExtraLarge)
             HStack {
                 TextField("placeholder", text: .constant("text field"))
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true, height: 100))
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true, height: 100))
                 SecureField("placeholder", text: .constant("secure"))
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
             }
             .environment(\.sizeCategory, .extraExtraExtraLarge)
         }

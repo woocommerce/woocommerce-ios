@@ -7,7 +7,7 @@ struct AddCustomAmountPercentageView: View {
         Group {
             VStack(alignment: .leading) {
                 LabeledContent {
-                    Text("(\(viewModel.baseAmountForPercentageString))")
+                    Text(viewModel.baseAmountForPercentageString)
                         .font(.subheadline)
                         .foregroundColor(Color(.textSubtle))
                 } label: {

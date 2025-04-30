@@ -6,6 +6,7 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     private let focusedBorderColor: Color
     private let unfocusedBorderColor: Color
     private let backgroundColor: Color
+    private let cornerRadius: CGFloat
     private let insets: EdgeInsets
     private let height: CGFloat?
     private let content: ((TextField<Self._Label>) -> AnyView)?
@@ -22,12 +23,14 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
          focusedBorderColor: Color = Defaults.focusedBorderColor,
          unfocusedBorderColor: Color = Defaults.unfocusedBorderColor,
          backgroundColor: Color = .clear,
+         cornerRadius: CGFloat = 8,
          insets: EdgeInsets = Defaults.insets,
          height: CGFloat? = nil,
          content: ((TextField<Self._Label>) -> AnyView)? = nil) {
         self.focused = focused
         self.focusedBorderColor = focusedBorderColor
         self.unfocusedBorderColor = unfocusedBorderColor
+        self.cornerRadius = cornerRadius
         self.backgroundColor = backgroundColor
         self.insets = insets
         self.height = height
@@ -41,7 +44,7 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
             .padding(insets)
             .background(
                 backgroundColor
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .roundedBorder(cornerRadius: 8, lineColor: focused ? focusedBorderColor: unfocusedBorderColor,
                                    lineWidth: focused ? 2: 1)
                     .frame(height: height)

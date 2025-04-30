@@ -18,6 +18,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
             focusedBorderColor: .posPrimary,
             unfocusedBorderColor: .posSurfaceBright,
             backgroundColor: .posSurfaceBright,
+            cornerRadius: POSCornerRadiusStyle.medium.value,
             height: searchFieldHeight,
             content: { configuration in
                 AnyView(

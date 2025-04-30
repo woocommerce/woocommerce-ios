@@ -49,7 +49,7 @@ struct POSSearchField: View {
             }
 
             TextField(text: $searchTerm) {
-                Text(Localization.searchFieldLabel)
+                Text(searchable.itemListType.itemType.searchFieldLabel)
             }
             .textFieldStyle(RoundedBorderTextFieldStyle(
                 focused: isSearchFieldFocused,
@@ -164,12 +164,6 @@ struct POSSearchContentView<Content: View>: View {
 @available(iOS 17.0, *)
 private extension POSSearchField {
     enum Localization {
-        static let searchFieldLabel = NSLocalizedString(
-            "pos.searchview.searchField.label",
-            value: "Search",
-            comment: "Label/placeholder text for the search field in Point of Sale."
-        )
-
         static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
             "pos.searchview.searchField.clearButton.accessibilityLabel",
             value: "Clear Search",
@@ -183,6 +177,8 @@ private extension POSItemType {
         switch self {
         case .product:
             return Localization.productsSearchFieldLabel
+        case .coupon:
+            return Localization.couponsSearchFieldLabel
         default:
             return Localization.defaultSearchFieldLabel
         }
@@ -190,9 +186,15 @@ private extension POSItemType {
 
     enum Localization {
         static let productsSearchFieldLabel = NSLocalizedString(
-            "pos.itemListView.products.searchField.label",
-            value: "Search Products",
+            "pos.itemListView.products.searchField.label.1",
+            value: "Search products",
             comment: "Label/placeholder text for the search field for Products in Point of Sale."
+        )
+
+        static let couponsSearchFieldLabel = NSLocalizedString(
+            "pos.itemListView.coupons.searchField.label",
+            value: "Search coupons",
+            comment: "Label/placeholder text for the search field for Coupons in Point of Sale."
         )
 
         static let defaultSearchFieldLabel = NSLocalizedString(

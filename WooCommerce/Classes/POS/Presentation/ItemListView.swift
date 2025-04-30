@@ -228,14 +228,9 @@ private extension ItemListView {
                             )
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
-                            if isCouponsFeatureEnabled {
-                                POSPageHeaderActionButton(systemName: "plus") {
-                                    ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                                    showCouponCreationModal = true
-                                }
-                                .renderedIf(isAddingCouponAllowed)
-                                .transition(.opacity.combined(with: .scale))
-                            }
+                            createCouponButton
+                                .renderedIf(isCouponsFeatureEnabled)
+
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
                                     ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
@@ -245,6 +240,9 @@ private extension ItemListView {
                             }
                             .transition(.opacity.combined(with: .scale))
                         }
+                    } else {
+                        createCouponButton
+                            .renderedIf(isCouponsFeatureEnabled)
                     }
                 }
             })
@@ -288,6 +286,16 @@ private extension ItemListView {
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
+    @ViewBuilder
+    private var createCouponButton: some View {
+        POSPageHeaderActionButton(systemName: "plus") {
+            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+            showCouponCreationModal = true
+        }
+        .renderedIf(isAddingCouponAllowed)
+        .transition(.opacity.combined(with: .scale))
+    }
+
     @ViewBuilder
     var emptyView: some View {
         switch selectedItemListType {

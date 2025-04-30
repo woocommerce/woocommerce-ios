@@ -137,7 +137,8 @@ private extension PointOfSaleCouponsController {
 
     func setCouponsEmptyViewState() {
         let containerState = ItemsContainerState.content
-        let stackState = ItemsStackState(root: .empty, itemStates: [:])
+        let context: ItemListState.EmptyContext = fetchStrategy.isSearch ? .noItemsFromSearch : .noItemsFromProvider
+        let stackState = ItemsStackState(root: .empty(context), itemStates: [:])
         itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 

@@ -4,6 +4,7 @@ import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
 
 public protocol PointOfSaleCouponFetchStrategy {
+    var isSearch: Bool { get }
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func fetchLocalCoupons() async throws -> [POSItem]
 }
@@ -13,6 +14,8 @@ public struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrat
     private let currencySettings: CurrencySettings
     private let storage: StorageManagerType
     private let couponStoreMethods: CouponStoreMethodsProtocol
+    
+    public var isSearch: Bool { false }
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
@@ -84,6 +87,8 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
     private let storage: StorageManagerType
     private let currencySettings: CurrencySettings
     private let searchTerm: String
+    
+    public var isSearch: Bool { true }
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,

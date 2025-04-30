@@ -37,7 +37,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                             credentials: Credentials?,
                             storage: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials)
-        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
@@ -60,6 +59,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     @MainActor
     public func providePointOfSaleCoupons(pageNumber: Int,
                                           fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
+        // Test for empty coupons from store vs from search
+        // return .init(items: [], hasMorePages: false)
         do {
             return try await fetchStrategy.fetchCoupons(pageNumber: pageNumber)
         } catch {

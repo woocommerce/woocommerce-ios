@@ -156,8 +156,8 @@ struct ItemListView: View {
             listView(items, itemListType: itemListType)
         case .error(let errorState):
             errorView(errorState)
-        case .empty:
-            emptyView
+        case .empty(let context):
+            emptyView(context)
         }
     }
 
@@ -297,7 +297,7 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    var emptyView: some View {
+    func emptyView(_ context: ItemListState.EmptyContext) -> some View {
         switch selectedItemListType {
         case .products:
             PointOfSaleItemListEmptyView(
@@ -305,11 +305,20 @@ private extension ItemListView {
                     itemListType: selectedItemListType,
                     baseItem: .root))
         case .coupons:
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
-                    itemListType: selectedItemListType,
-                    baseItem: .root)) {
-                showCouponCreationModal = true
+            switch context {
+            case .noItemsFromProvider:
+                PointOfSaleItemListEmptyView(
+                    viewModel: PointOfSaleItemListEmptyViewModel(
+                        itemListType: selectedItemListType,
+                        baseItem: .root)) {
+                    showCouponCreationModal = true
+                }
+            case .noItemsFromSearch:
+                // TODO: Update the View, or the VM contents
+                PointOfSaleItemListEmptyView(
+                    viewModel: PointOfSaleItemListEmptyViewModel(
+                        itemListType: selectedItemListType,
+                        baseItem: .root))
             }
         }
     }

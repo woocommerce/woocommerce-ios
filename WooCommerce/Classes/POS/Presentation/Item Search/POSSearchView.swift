@@ -52,13 +52,8 @@ struct POSSearchField: View {
             TextField(text: $searchTerm) {
                 Text(searchable.itemListType.itemType.searchFieldLabel)
             }
-            .textFieldStyle(WooRoundedBorderTextFieldStyle(
-                focused: isSearchFieldFocused,
-                focusedBorderColor: .posPrimary,
-                unfocusedBorderColor: .posSurfaceBright,
-                backgroundColor: .posSurfaceBright,
-                height: searchFieldHeight
-            ))
+            .textFieldStyle(POSSearchTextFieldStyle(focused: isSearchFieldFocused,
+                                                    searchTerm: $searchTerm))
             .font(.posBodyLargeBold)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
@@ -97,17 +92,6 @@ struct POSSearchField: View {
                     }
                 }
             }
-
-            Button {
-                searchTerm = ""
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
-                    .foregroundColor(.posOnSurfaceVariantHighest)
-                    .font(.posButtonSymbolSmall)
-            }
-            .transition(.opacity)
-            .renderedIf(searchTerm.isNotEmpty)
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
@@ -155,17 +139,6 @@ struct POSSearchContentView<Content: View>: View {
 }
 
 // MARK: - Localization
-@available(iOS 17.0, *)
-private extension POSSearchField {
-    enum Localization {
-        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
-            "pos.searchview.searchField.clearButton.accessibilityLabel",
-            value: "Clear Search",
-            comment: "Accessibility label for the clear button in the Point of Sale search screen."
-        )
-    }
-}
-
 private extension POSItemType {
     var searchFieldLabel: String {
         switch self {

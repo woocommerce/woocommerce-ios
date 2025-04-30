@@ -8,29 +8,36 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     private let backgroundColor: Color
     private let insets: EdgeInsets
     private let height: CGFloat?
+    private let content: ((TextField<Self._Label>) -> AnyView)?
 
     /// - Parameters:
     ///   - focused: Whether the field is focused or not.
     ///   - focusedBorderColor: The border color when the field is focused.
     ///   - unfocusedBorderColor: The border color when the field is not focused.
+    ///   - backgroundColor: The background color of the textfield
     ///   - insets: The insets between the background border and the text input.
     ///   - height: An optional fixed height for the field.
+    ///   - content: Optional closure to wrap the text field content.
     init(focused: Bool,
          focusedBorderColor: Color = Defaults.focusedBorderColor,
          unfocusedBorderColor: Color = Defaults.unfocusedBorderColor,
          backgroundColor: Color = .clear,
          insets: EdgeInsets = Defaults.insets,
-         height: CGFloat? = nil) {
+         height: CGFloat? = nil,
+         content: ((TextField<Self._Label>) -> AnyView)? = nil) {
         self.focused = focused
         self.focusedBorderColor = focusedBorderColor
         self.unfocusedBorderColor = unfocusedBorderColor
         self.backgroundColor = backgroundColor
         self.insets = insets
         self.height = height
+        self.content = content
     }
 
     func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
+        let styledContent = content?(configuration) ?? AnyView(configuration)
+
+        styledContent
             .padding(insets)
             .background(
                 backgroundColor

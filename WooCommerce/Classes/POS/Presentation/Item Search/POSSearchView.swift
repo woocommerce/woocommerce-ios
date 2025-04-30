@@ -51,7 +51,13 @@ struct POSSearchField: View {
             TextField(text: $searchTerm) {
                 Text(Localization.searchFieldLabel)
             }
-            .textFieldStyle(.roundedBorder)
+            .textFieldStyle(RoundedBorderTextFieldStyle(
+                focused: isSearchFieldFocused,
+                focusedBorderColor: .posPrimary,
+                unfocusedBorderColor: .posSurfaceBright,
+                backgroundColor: .posSurfaceBright,
+                height: Constants.textFieldHeight
+            ))
             .font(POSFontStyle.posBodyLargeRegular())
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
@@ -109,6 +115,13 @@ struct POSSearchField: View {
         .onAppear {
             isSearchFieldFocused = true
         }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension POSSearchField {
+    enum Constants {
+        static let textFieldHeight: CGFloat = 56.0
     }
 }
 

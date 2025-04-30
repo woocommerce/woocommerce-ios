@@ -97,7 +97,8 @@ final class WooShippingServiceViewModel: ObservableObject {
                 guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }),
                       rates.defaultRates.isNotEmpty else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
-                    updateLoadingState(to: .error(Error.noRatesAvailable))
+                    let isHAZMAT = selectedPackage.hazmatCategory != nil
+                    updateLoadingState(to: .error(Error.noRatesAvailable(isHAZMAT: isHAZMAT)))
                     return
                 }
 
@@ -144,11 +145,11 @@ extension WooShippingServiceViewModel {
         case error(_ error: Error)
     }
 
-    enum Error: Swift.Error {
+    enum Error: Swift.Error, Equatable {
         case missingDestinationAddress
         case missingShipmentWeight
         case failedLoadingLabelRates
-        case noRatesAvailable
+        case noRatesAvailable(isHAZMAT: Bool)
     }
 }
 

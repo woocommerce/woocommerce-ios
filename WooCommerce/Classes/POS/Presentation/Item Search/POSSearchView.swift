@@ -72,7 +72,7 @@ struct POSSearchField: View {
 
                 searchTask = Task {
                     if shouldDebounceNextSearchRequest {
-                        try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                        try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
                     }
 
                     guard !Task.isCancelled else { return }

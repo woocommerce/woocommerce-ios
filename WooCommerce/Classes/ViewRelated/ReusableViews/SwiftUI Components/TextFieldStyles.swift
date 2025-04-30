@@ -5,6 +5,7 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
     private let focused: Bool
     private let focusedBorderColor: Color
     private let unfocusedBorderColor: Color
+    private let backgroundColor: Color
     private let insets: EdgeInsets
     private let height: CGFloat?
 
@@ -17,11 +18,13 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
     init(focused: Bool,
          focusedBorderColor: Color = Defaults.focusedBorderColor,
          unfocusedBorderColor: Color = Defaults.unfocusedBorderColor,
+         backgroundColor: Color = .clear,
          insets: EdgeInsets = Defaults.insets,
          height: CGFloat? = nil) {
         self.focused = focused
         self.focusedBorderColor = focusedBorderColor
         self.unfocusedBorderColor = unfocusedBorderColor
+        self.backgroundColor = backgroundColor
         self.insets = insets
         self.height = height
     }
@@ -30,9 +33,10 @@ struct RoundedBorderTextFieldStyle: TextFieldStyle {
         configuration
             .padding(insets)
             .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .strokeBorder(focused ? focusedBorderColor: unfocusedBorderColor,
-                            lineWidth: focused ? 2: 1)
+                backgroundColor
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .roundedBorder(cornerRadius: 8, lineColor: focused ? focusedBorderColor: unfocusedBorderColor,
+                                   lineWidth: focused ? 2: 1)
                     .frame(height: height)
             )
             .frame(height: height)

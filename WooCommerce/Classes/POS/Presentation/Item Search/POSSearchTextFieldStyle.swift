@@ -33,7 +33,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
                             Button {
                                 searchTerm = ""
                             } label: {
-                                Image(systemName: "xmark.circle.fill")
+                                Image(systemName: "xmark.circle")
                                     .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
                                     .foregroundColor(.posOnSurfaceVariantHighest)
                                     .font(.posButtonSymbolMedium)

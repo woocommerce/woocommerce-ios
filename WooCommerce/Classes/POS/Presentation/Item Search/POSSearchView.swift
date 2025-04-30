@@ -24,6 +24,7 @@ struct POSSearchField: View {
     @FocusState private var isSearchFieldFocused: Bool
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
+    @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
 
     private let searchable: any POSSearchable
     private let onBack: () -> Void
@@ -56,7 +57,7 @@ struct POSSearchField: View {
                 focusedBorderColor: .posPrimary,
                 unfocusedBorderColor: .posSurfaceBright,
                 backgroundColor: .posSurfaceBright,
-                height: Constants.textFieldHeight
+                height: searchFieldHeight
             ))
             .font(.posBodyLargeBold)
             .autocorrectionDisabled()
@@ -115,13 +116,6 @@ struct POSSearchField: View {
         .onAppear {
             isSearchFieldFocused = true
         }
-    }
-}
-
-@available(iOS 17.0, *)
-private extension POSSearchField {
-    enum Constants {
-        static let textFieldHeight: CGFloat = 56.0
     }
 }
 

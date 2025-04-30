@@ -1,4 +1,5 @@
 import enum Yosemite.CardPresentPaymentOnboardingState
+import enum Yosemite.POSItemType
 
 extension WooAnalyticsEvent {
     enum PointOfSale {
@@ -87,11 +88,11 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func pointOfSaleItemsNextPageLoaded(itemListType: ItemListType) -> WooAnalyticsEvent {
+        static func pointOfSaleItemsNextPageLoaded(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleItemsNextPageLoaded,
                               properties: [
-                                Key.itemListType: itemListType.analyticsValue,
-                                Key.search: itemListType.isSearching
+                                Key.itemListType: itemType.analyticsValue,
+                                Key.search: searching
             ])
         }
     }
@@ -125,6 +126,19 @@ private extension ItemListType {
         case .products(search: false),
                 .coupons:
             return "list"
+        }
+    }
+}
+
+private extension POSItemType {
+    var analyticsValue: String {
+        switch self {
+        case .product:
+            return "product"
+        case .variation:
+            return "variation"
+        case .coupon:
+            return "coupon"
         }
     }
 }

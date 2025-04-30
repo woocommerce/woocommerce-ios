@@ -58,7 +58,7 @@ struct POSSearchField: View {
                 backgroundColor: .posSurfaceBright,
                 height: Constants.textFieldHeight
             ))
-            .font(POSFontStyle.posBodyLargeRegular())
+            .font(.posBodyLargeBold)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)

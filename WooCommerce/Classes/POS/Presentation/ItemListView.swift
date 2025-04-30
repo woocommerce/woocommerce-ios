@@ -13,6 +13,10 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
+    private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
+        PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType)
+    }
+
     private var _isSearching: Binding<Bool> {
         Binding(
             get: {
@@ -169,12 +173,11 @@ struct ItemListView: View {
             node: .root,
             itemActionHandler: actionHandler(itemListType),
             willLoadMore: {
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: selectedItemListType))
+                analyticsTracker.trackNextPageWillLoad()
             }
         )
         .refreshable {
-            trackPullToRefresh()
+            analyticsTracker.trackRefresh()
             await itemsController(itemListType).refreshItems(base: .root)
         }
     }
@@ -197,7 +200,9 @@ struct ItemListView: View {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
-                itemActionHandler: actionHandler(selectedItemListType)
+                itemActionHandler: actionHandler(selectedItemListType),
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation,
+                                                                      isSearching: selectedItemListType.isSearching)
             )
         default:
             EmptyView()
@@ -234,8 +239,7 @@ private extension ItemListView {
 
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
-                                        itemListType: selectedItemListType))
+                                    analyticsTracker.trackSearchTapped()
                                     setSearch(true)
                                 }
                             }
@@ -347,7 +351,7 @@ private extension ItemListView {
             }
         }
 
-        trackSelectedItemListTypeTapped(itemListType)
+        analyticsTracker.trackItemListSelected()
     }
 }
 
@@ -404,27 +408,6 @@ private extension ItemListView {
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
-    }
-}
-
-@available(iOS 17.0, *)
-private extension ItemListView {
-    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
-        switch type {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
-    }
-
-    func trackPullToRefresh() {
-        switch selectedItemListType {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
-        }
     }
 }
 

@@ -26,7 +26,6 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
                             .accessibilityHidden(true)
                             .foregroundColor(.posOnSurface)
                             .font(.posButtonSymbolMedium)
-                            .padding(.leading, Defaults.horizontalPadding)
 
                         configuration
 
@@ -39,7 +38,6 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
                                     .foregroundColor(.posOnSurfaceVariantHighest)
                                     .font(.posButtonSymbolMedium)
                             }
-                            .padding(.trailing, Defaults.horizontalPadding)
                         }
                     }
                 )
@@ -49,10 +47,6 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
 }
 
 private extension POSSearchTextFieldStyle {
-    enum Defaults {
-        static let horizontalPadding: CGFloat = POSSpacing.medium
-    }
-
     enum Localization {
         static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
             "pos.searchview.searchField.clearButton.accessibilityLabel",

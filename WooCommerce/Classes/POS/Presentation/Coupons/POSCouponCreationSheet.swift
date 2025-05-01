@@ -18,7 +18,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
 
     @State private var selectedType: POSCouponDiscountType?
     @State private var showCouponSelectionSheet: Bool = false
-    @State var addedCouponItem: POSItem?
+    @State private var addedCouponItem: POSItem?
 
     func body(content: Content) -> some View {
         content

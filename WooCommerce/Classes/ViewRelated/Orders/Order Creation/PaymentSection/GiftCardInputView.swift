@@ -23,7 +23,7 @@ struct GiftCardInputView: View {
                         HStack {
                             TextField(Localization.placeholder, text: $viewModel.code)
                                 .focused()
-                                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
                             Spacer()
                             Button {
                                 showsScanner = true

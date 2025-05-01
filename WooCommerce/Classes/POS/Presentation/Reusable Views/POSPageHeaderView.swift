@@ -109,8 +109,13 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             }
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+        .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
+        .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+    }
+
+    private var shouldHaveLeadingPaddingForItems: Bool {
+        items.isNotEmpty  || showsBackButton
     }
 
     @ViewBuilder

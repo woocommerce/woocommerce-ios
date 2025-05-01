@@ -801,6 +801,7 @@
 		2004E2ED2C0F5DD800D62521 /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2EC2C0F5DD800D62521 /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift */; };
 		2005D3F32DC13D6900E12021 /* PointOfSaleItemListAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2005D3F22DC13D6900E12021 /* PointOfSaleItemListAnalyticsTracker.swift */; };
 		2005D7A72DC240CB00E12021 /* POSSearchTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2005D7A62DC240CB00E12021 /* POSSearchTextFieldStyle.swift */; };
+		2005FC9D2DC37E4D00E12021 /* POSPageHeaderBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2005FC9C2DC37E4D00E12021 /* POSPageHeaderBackButton.swift */; };
 		200798F02DA804200037C505 /* MockPointOfSalePurchasableItemsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200798EF2DA804200037C505 /* MockPointOfSalePurchasableItemsSearchController.swift */; };
 		200BA1592CF092280006DC5B /* PointOfSaleItemsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */; };
 		200BA15B2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200BA15A2CF0A2130006DC5B /* MockPointOfSaleItemsService.swift */; };
@@ -4074,6 +4075,7 @@
 		2004E2EC2C0F5DD800D62521 /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift; sourceTree = "<group>"; };
 		2005D3F22DC13D6900E12021 /* PointOfSaleItemListAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListAnalyticsTracker.swift; sourceTree = "<group>"; };
 		2005D7A62DC240CB00E12021 /* POSSearchTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSearchTextFieldStyle.swift; sourceTree = "<group>"; };
+		2005FC9C2DC37E4D00E12021 /* POSPageHeaderBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPageHeaderBackButton.swift; sourceTree = "<group>"; };
 		200798EF2DA804200037C505 /* MockPointOfSalePurchasableItemsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSalePurchasableItemsSearchController.swift; sourceTree = "<group>"; };
 		200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemsController.swift; sourceTree = "<group>"; };
@@ -6619,6 +6621,7 @@
 				027ADB742D218A8D009608DB /* POSItemCardBorderStylesModifier.swift */,
 				0295736A2D62B93300865E27 /* POSPageHeaderView.swift */,
 				015456CD2DB033FF0071C3C4 /* POSPageHeaderActionButton.swift */,
+				2005FC9C2DC37E4D00E12021 /* POSPageHeaderBackButton.swift */,
 				0295CDBF2D6477C400865E27 /* POSNoticeView.swift */,
 				021A17202D7036AF006DF7C0 /* DynamicFrameScaler.swift */,
 			);
@@ -16781,6 +16784,7 @@
 				DE7E5E812B4BCC06002E28D2 /* BlazeTargetLanguagePickerViewModel.swift in Sources */,
 				0230B4D22C333E0800F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel.swift in Sources */,
 				0211252825773F220075AD2A /* Models+Copiable.generated.swift in Sources */,
+				2005FC9D2DC37E4D00E12021 /* POSPageHeaderBackButton.swift in Sources */,
 				4596853F2540669900D17B90 /* DownloadableFileSource.swift in Sources */,
 				021DD44D286A3A8D004F0468 /* UIViewController+Navigation.swift in Sources */,
 				B958A7CB28B3D4A100823EEF /* RouteMatcher.swift in Sources */,

@@ -116,28 +116,17 @@ struct POSPageHeaderView<TrailingContent: View>: View {
     @ViewBuilder
     private var backButton: some View {
         if let configuration = backButtonConfiguration {
-            Button(action: configuration.action) {
-                Text(Image(systemName: Constants.backButtonIcon))
-                    .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                    .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
-                    .padding(.horizontal, Constants.backButtonHorizontalPadding)
-            }
-            .disabled(configuration.state == .disabled || configuration.state == .shimmering)
-            .if(configuration.state == .shimmering) { view in
-                view.shimmering()
-            }
+            POSPageHeaderBackButton(configuration: configuration)
         }
     }
 }
 
 private enum Constants {
-    static let backButtonIcon = "chevron.backward"
-    /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-    static let backButtonHorizontalPadding: CGFloat = 12
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
+
+
 
 @available(iOS 17.0, *)
 #Preview {

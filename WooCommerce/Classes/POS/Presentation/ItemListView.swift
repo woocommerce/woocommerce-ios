@@ -133,6 +133,7 @@ struct ItemListView: View {
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
                 POSSearchContentView(

@@ -19,6 +19,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
             unfocusedBorderColor: .posSurfaceBright,
             backgroundColor: .posSurfaceBright,
             cornerRadius: POSCornerRadiusStyle.medium.value,
+            insets: EdgeInsets(top: POSPadding.small, leading: POSPadding.medium, bottom: POSPadding.small, trailing: POSPadding.medium),
             height: searchFieldHeight,
             content: { configuration in
                 AnyView(
@@ -26,7 +27,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
                         Image(systemName: "magnifyingglass")
                             .accessibilityHidden(true)
                             .foregroundColor(.posOnSurface)
-                            .font(.posButtonSymbolMedium)
+                            .font(.posBodyMediumBold)
 
                         configuration
 
@@ -37,7 +38,7 @@ struct POSSearchTextFieldStyle: TextFieldStyle {
                                 Image(systemName: "xmark.circle")
                                     .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
                                     .foregroundColor(.posOnSurfaceVariantHighest)
-                                    .font(.posButtonSymbolMedium)
+                                    .font(.posBodyMediumBold)
                             }
                         }
                     }

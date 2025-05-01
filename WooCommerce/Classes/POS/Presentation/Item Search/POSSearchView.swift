@@ -25,6 +25,7 @@ struct POSSearchField: View {
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
     @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
+    @ScaledMetric private var backButtonWidth: CGFloat = 48.0
 
     private let searchable: any POSSearchable
     private let onBack: () -> Void
@@ -48,6 +49,7 @@ struct POSSearchField: View {
                     .foregroundColor(.posOnSurface)
                     .font(.posButtonSymbolLarge)
             }
+            .frame(minWidth: backButtonWidth)
 
             TextField(text: $searchTerm) {
                 Text(searchable.itemListType.itemType.searchFieldLabel)

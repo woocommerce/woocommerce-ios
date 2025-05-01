@@ -143,6 +143,9 @@ struct ItemListView: View {
                     searchTerm: $searchTerm
                 ) { _ in
                     itemListContent(selectedItemListType)
+                        .onDisappear() {
+                            searchItemsController.clearSearchItems(baseItem: .root)
+                        }
                 }
                 .transition(.opacity.combined(with: .move(edge: .trailing)))
                 .zIndex(1)

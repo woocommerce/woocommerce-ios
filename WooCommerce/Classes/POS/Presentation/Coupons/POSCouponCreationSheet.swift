@@ -18,41 +18,68 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
 
     @State private var selectedType: POSCouponDiscountType?
     @State private var showCouponSelectionSheet: Bool = false
+    @State var addedCouponItem: POSItem?
 
     func body(content: Content) -> some View {
         content
             .sheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
-                var addedCouponItem: POSItem?
-                let viewModel = AddEditCouponViewModel(discountType: posDiscountType.discountType, onSuccess: { coupon in
-                    addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code, summary: coupon.summary()))
-                })
-                var view = AddEditCoupon(viewModel)
-
-                view.dismissHandler = {
-                    selectedType = nil
-                }
-
-                view.onDisappear = {
-                    if let couponItem = addedCouponItem {
+                POSCouponCreationView(
+                    discountType: posDiscountType.discountType,
+                    showTypeSelection: $showCouponSelectionSheet,
+                    onSuccess: { coupon in
+                        addedCouponItem = .coupon(.init(id: UUID(), code: coupon.code, summary: coupon.summary()))
+                    },
+                    dismissHandler: {
                         selectedType = nil
-                        onSuccess(couponItem)
-                        addedCouponItem = nil
+                    },
+                    onDisappear: {
+                        if let couponItem = addedCouponItem {
+                            selectedType = nil
+                            onSuccess(couponItem)
+                            addedCouponItem = nil
+                        }
                     }
-                }
-
-                view.discountTypeHandler = { _ in
-                    showCouponSelectionSheet = true
-                }
-
-                return view
-                    .interactiveDismissDisabled()
-                    .discountTypeSelectionSheet(isPresented: $showCouponSelectionSheet) { type in
-                        showCouponSelectionSheet = false
-                        viewModel.discountType = type.discountType
-                    }
+                )
             }
             .discountTypeSelectionSheet(isPresented: $isPresented) { type in
                 selectedType = type
+            }
+    }
+}
+
+private struct POSCouponCreationView: View {
+    @StateObject private var viewModel: AddEditCouponViewModel
+    @Binding var showTypeSelection: Bool
+    let dismissHandler: () -> Void
+    let onDisappear: () -> Void
+
+    init(discountType: Coupon.DiscountType,
+         showTypeSelection: Binding<Bool>,
+         onSuccess: @escaping (Coupon) -> Void,
+         dismissHandler: @escaping () -> Void,
+         onDisappear: @escaping () -> Void) {
+        _showTypeSelection = showTypeSelection
+        self.dismissHandler = dismissHandler
+        self.onDisappear = onDisappear
+        _viewModel = StateObject(wrappedValue: AddEditCouponViewModel(
+            discountType: discountType,
+            onSuccess: onSuccess
+        ))
+    }
+
+    var body: some View {
+        var view = AddEditCoupon(viewModel)
+        view.dismissHandler = dismissHandler
+        view.onDisappear = onDisappear
+        view.discountTypeHandler = { _ in
+            showTypeSelection = true
+        }
+
+        return view
+            .interactiveDismissDisabled()
+            .discountTypeSelectionSheet(isPresented: $showTypeSelection) { type in
+                showTypeSelection = false
+                viewModel.discountType = type.discountType
             }
     }
 }

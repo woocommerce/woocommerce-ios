@@ -82,6 +82,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
                                                    onWaitingForInput: onWaitingForInput,
+                                                   onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
                                                    onProcessingCompletion: onProcessingCompletion)
@@ -153,7 +154,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     handlers.onProcessingMessage()
-                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                case .cardInserted:
+                    handlers.onCardInserted()
+                case .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
                     DDLogInfo("💳 Unhandled card reader event received during retry: \(event)")
                 }
             },
@@ -384,6 +387,7 @@ private extension PaymentCaptureOrchestrator {
     struct PaymentHandlers {
         let onPreparingReader: () -> Void
         let onWaitingForInput: (CardReaderInput) -> Void
+        let onCardInserted: () -> Void
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void

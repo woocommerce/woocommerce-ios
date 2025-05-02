@@ -1345,11 +1345,11 @@ extension UIImage {
     }
 
     static var shippingIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-shipping")
+        UIImage(imageLiteralResourceName: "icon-shipping").withRenderingMode(.alwaysTemplate)
     }
 
     static var productIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-product")
+        UIImage(imageLiteralResourceName: "icon-product").withRenderingMode(.alwaysTemplate)
     }
 
     static var appPasswordTutorialImage: UIImage {

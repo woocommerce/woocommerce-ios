@@ -24,6 +24,7 @@ struct SimpleProductCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(product.name)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
@@ -37,7 +38,7 @@ struct SimpleProductCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }

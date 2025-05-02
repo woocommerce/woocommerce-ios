@@ -5,16 +5,11 @@ enum ItemListState {
     case loaded(_ items: [POSItem], hasMoreItems: Bool)
     case inlineError(_ items: [POSItem], error: PointOfSaleErrorState, context: InlineErrorContext)
     case error(PointOfSaleErrorState)
-    case empty(_ context: EmptyContext)
+    case empty
 
     enum InlineErrorContext {
         case refresh
         case pagination
-    }
-
-    enum EmptyContext {
-        case noItemsFromProvider
-        case noItemsFromSearch
     }
 
     var isLoading: Bool {

@@ -335,11 +335,13 @@ private extension CollectOrderPaymentUseCase {
                                         onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                                     }
                                 })
-                            
                         )
                     }, onCardInserted: { [weak self] in
                         guard let self = self else { return }
                         self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
+                            title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
+                                username: self.order.billingAddress?.firstName),
+                            amount: self.formattedAmount,
                             onCancel: { [weak self] in
                                 self?.cancelPayment(from: .paymentWaitingForInput) {
                                     onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))

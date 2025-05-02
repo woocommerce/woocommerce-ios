@@ -3,40 +3,42 @@ import UIKit
 /// Modal presented when the card is inserted in the reader
 ///
 final class CardPresentModalCardInserted: CardPresentPaymentsModalViewModel {
-    let onCancel: (() -> Void)
+    private let onCancel: (() -> Void)
 
-    let textMode: PaymentsModalTextMode = .reducedTopInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
+
     let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
 
-    let topTitle: String = ""
+    let topTitle: String
 
-    var topSubtitle: String? = nil
+    let topSubtitle: String?
 
     let image: UIImage = .cardPresentImage
 
-    let showLoadingIndicator = true
+    let showLoadingIndicator = false
 
     var primaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String? = nil
+    let secondaryButtonTitle: String? = Localization.cancel
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String?
+    let bottomTitle: String? = Localization.title
 
     let bottomSubtitle: String? = nil
 
-    var accessibilityLabel: String? {
-        return topTitle
-    }
+    let accessibilityLabel: String?
 
-    init(onCancel: @escaping () -> Void) {
+    init(name: String,
+         amount: String,
+         onCancel: @escaping () -> Void) {
+        self.topTitle = name
+        self.topSubtitle = amount
         self.onCancel = onCancel
+        self.accessibilityLabel = Localization.title
     }
 
-    func didTapPrimaryButton(in viewController: UIViewController?) {
-
-    }
+    func didTapPrimaryButton(in viewController: UIViewController?) { }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true, completion: { [weak self] in
@@ -45,4 +47,20 @@ final class CardPresentModalCardInserted: CardPresentPaymentsModalViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
+}
+
+private extension CardPresentModalCardInserted {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "inPersonPayments.cardPresent.cardInserted.title",
+            value: "Card inserted",
+            comment: "Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader"
+        )
+
+        static let cancel = NSLocalizedString(
+            "inPersonPayments.cardPresent.cardInserted.cancel",
+            value: "Cancel",
+            comment: "Button to cancel a payment"
+        )
+    }
 }

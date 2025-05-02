@@ -24,10 +24,10 @@ struct SimpleProductCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(product.name)
-                    .lineLimit(2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
@@ -37,7 +37,7 @@ struct SimpleProductCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .frame(maxWidth: .infinity)
         .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }

@@ -112,20 +112,6 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
-        private func makeSUT() -> PointOfSaleAggregateModel {
-            PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                      purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                      couponsController: MockPointOfSaleCouponsController(),
-                                      couponsSearchController: MockPointOfSaleCouponsController(),
-                                      cardPresentPaymentService: MockCardPresentPaymentService(),
-                                      orderController: MockPointOfSaleOrderController(),
-                                      analytics: analytics,
-                                      collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                      searchHistoryService: MockPOSSearchHistoryService(),
-                                      popularItemsController: MockPointOfSalePopularItemsController())
-        }
-
-        @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),

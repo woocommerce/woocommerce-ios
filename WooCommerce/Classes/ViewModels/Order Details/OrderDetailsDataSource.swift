@@ -1209,11 +1209,15 @@ extension OrderDetailsDataSource {
         let summary = Section(category: .summary, row: .summary)
 
         let products: Section? = {
-            if items.isEmpty { return nil }
+            if items.isEmpty {
+                return nil
+            }
+
             let aggregateOrderItemCount = aggregateOrderItems.count
             guard aggregateOrderItemCount > 0 else {
                 return nil
             }
+
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
@@ -1263,7 +1267,7 @@ extension OrderDetailsDataSource {
         }()
 
         let customFields: Section? = {
-            Section(category: .customFields, row: .customFields)
+            return Section(category: .customFields, row: .customFields)
         }()
 
         let refundedProducts: Section? = {
@@ -1281,6 +1285,7 @@ extension OrderDetailsDataSource {
             guard shouldAllowWCShipInstallation else {
                 return nil
             }
+
             let rows: [Row] = [.installWCShip]
             return Section(category: .installWCShip, title: nil, rows: rows)
         }()
@@ -1289,6 +1294,7 @@ extension OrderDetailsDataSource {
             guard shippingLabels.isNotEmpty else {
                 return []
             }
+
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
@@ -1313,6 +1319,7 @@ extension OrderDetailsDataSource {
             guard shippingLines.count > 0 else {
                 return nil
             }
+
             return Section(category: .shippingLines, title: Title.shippingLines, rows: Array(repeating: .shippingLine, count: shippingLines.count))
         }()
 
@@ -1321,6 +1328,7 @@ extension OrderDetailsDataSource {
             guard orderSubscriptions.isNotEmpty else {
                 return nil
             }
+
             let rows: [Row] = Array(repeating: .subscriptions, count: orderSubscriptions.count)
             return Section(category: .subscriptions, title: Title.subscriptions, rows: rows)
         }()
@@ -1329,6 +1337,7 @@ extension OrderDetailsDataSource {
             guard shouldShowGiftCards else {
                 return nil
             }
+
             let rows: [Row] = Array(repeating: .giftCards, count: appliedGiftCards.count)
             return Section(category: .giftCards, title: Title.giftCards, rows: rows)
         }()
@@ -1342,6 +1351,7 @@ extension OrderDetailsDataSource {
             guard orderTracking.count > 0 else {
                 return nil
             }
+
             let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
             return Section(category: .tracking, title: Title.tracking, rows: rows)
         }()
@@ -1369,11 +1379,12 @@ extension OrderDetailsDataSource {
                 title = nil
             }
             let row = Row.trackingAdd
+
             return Section(category: .addTracking, title: title, rightTitle: nil, rows: [row])
         }()
 
         let notes: Section = {
-            let rows = [.addOrderNote] + orderNotesSections.map { $0.row }
+            let rows = [.addOrderNote] + orderNotesSections.map {$0.row}
             return Section(category: .notes, title: Title.notes, rows: rows)
         }()
 
@@ -1420,14 +1431,32 @@ extension OrderDetailsDataSource {
         }()
 
         let customerInformation: Section? = {
-            var rows: [Row] = [.customerNote, .billingDetail]
-            let orderContainsOnlyVirtualProducts = self.products.filter { product in
-                items.first(where: { $0.productID == product.productID }) != nil
-            }.allSatisfy { $0.virtual }
-            if order.shippingAddress != nil && !orderContainsOnlyVirtualProducts {
+            var rows: [Row] = []
+
+            /// Customer Note
+            /// Always visible to allow adding & editing.
+            rows.append(.customerNote)
+
+            /// Shipping Address
+            /// Almost always visible to allow editing.
+            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
+                return items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
+
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
             }
-            guard rows.isNotEmpty else { return nil }
+
+            /// Billing Address
+            /// Always visible to allow editing.
+            rows.append(.billingDetail)
+
+            /// Return `nil` if there is no rows to display.
+            guard rows.isNotEmpty else {
+                return nil
+            }
+
             return Section(category: .customerInformation, title: Title.information, rows: rows)
         }()
 

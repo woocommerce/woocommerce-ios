@@ -22,13 +22,13 @@ struct WooShippingCustomsRow: View {
                 .captionStyle()
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)
+                .frame(height: Layout.statusBadgeHeight * scale)
                 .background(
                     RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
                         .fill(informationIsCompleted ?
                               Color.withColorStudio(name: .green, shade: .shade5) :
                                 Color.withColorStudio(name: .red, shade: .shade10))
                 )
-                .padding(.horizontal, 10)
 
             PencilEditButton {
                 showCustomsForm.toggle()
@@ -47,12 +47,12 @@ private extension WooShippingCustomsRow {
     enum Layout {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5
-        static let pencilButtonSizeDimensions: CGFloat = 22
         static let customsTitleFontSize: CGFloat = 17
         static let statusBadgeFontSize: CGFloat = 14
         static let statusBadgeCornerRadius: CGFloat = 6
         static let statusBadgeHorizontalPadding: CGFloat = 12
-        static let statusBadgeVerticalPadding: CGFloat = 6
+        static let statusBadgeVerticalPadding: CGFloat = 4
+        static let statusBadgeHeight: CGFloat = 24
         static let borderPadding: CGFloat = 16
     }
 }

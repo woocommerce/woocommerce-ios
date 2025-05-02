@@ -65,9 +65,9 @@ protocol PointOfSaleAggregateModelProtocol {
 
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -102,7 +102,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
-         popularItemsController: PointOfSalePopularItemsControllerProtocol,
+         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -114,7 +114,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
-        self.popularItemsController = popularItemsController
+        self.popularPurchasableItemsController = popularPurchasableItemsController
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

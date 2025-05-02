@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItemType
+import enum Yosemite.POSItem
 
 /// Protocol defining search capabilities for POS items
 @available(iOS 17.0, *)
@@ -118,6 +119,26 @@ struct POSSearchContentView<Content: View>: View {
 
     var body: some View {
         if searchTerm.isEmpty {
+            preSearchView
+                .background(Color.posSurface)
+        } else {
+            content(true)
+                .background(Color.posSurface)
+        }
+    }
+
+    @ViewBuilder
+    private var preSearchView: some View {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
+            POSPreSearchView(savedSearches: searchable.searchHistory,
+                             onSearchSelected: { selectedSearchTerm in
+                searchTerm = selectedSearchTerm
+                ServiceLocator.analytics.track(
+                    event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
+            },
+                             itemListType: searchable.itemListType
+            )
+        } else {
             POSRecentSearchesView(
                 savedSearches: searchable.searchHistory,
                 onSearchSelected: { selectedSearchTerm in
@@ -126,10 +147,6 @@ struct POSSearchContentView<Content: View>: View {
                         event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
                 }
             )
-            .background(Color.posSurface)
-        } else {
-            content(true)
-                .background(Color.posSurface)
         }
     }
 }

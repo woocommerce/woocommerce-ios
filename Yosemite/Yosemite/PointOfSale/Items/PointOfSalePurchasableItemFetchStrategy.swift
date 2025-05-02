@@ -85,10 +85,13 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return try await productsRemote.loadPopularProductsForPointOfSale(for: siteID,
-                                                                         productTypes: productTypes,
-                                                                         pageNumber: pageNumber,
-                                                                         perPage: pageSize)
+        let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(for: siteID,
+                                                                                       productTypes: productTypes,
+                                                                                       pageNumber: pageNumber,
+                                                                                       perPage: pageSize)
+        let modifiedItems = PagedItems<POSProduct>(items: receivedItems.items,
+                                                   hasMorePages: false)
+        return modifiedItems
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {

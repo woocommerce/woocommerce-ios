@@ -51,6 +51,17 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
     }
 
+    convenience init(itemProvider: PointOfSaleItemServiceProtocol,
+                     fetchStrategy: PointOfSalePurchasableItemFetchStrategy,
+                     initialState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                 itemsStack: ItemsStackState(root: .loading([]),
+                                                                                           itemStates: [:]))) {
+        self.init(itemProvider: itemProvider,
+                  itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 0, credentials: nil),
+                  initialState: initialState)
+        self.fetchStrategy = fetchStrategy
+    }
+
     @MainActor
     func loadItems(base: ItemListBaseItem) async {
         setLoadingState(base: base)

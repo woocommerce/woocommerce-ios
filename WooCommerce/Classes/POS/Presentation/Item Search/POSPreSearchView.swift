@@ -18,7 +18,7 @@ struct POSPreSearchView: View {
             node: .root,
             itemActionHandler: StandardPOSItemActionHandler(posModel: posModel, itemListType: itemListType),
             headerView: {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSSpacing.none) {
                     if savedSearches.isNotEmpty {
                         // Search history
                         sectionHeader(Localization.recentSearchesTitle)
@@ -47,6 +47,7 @@ struct POSPreSearchView: View {
                                     }
                                 }
                             }
+                            .padding(.vertical, POSPadding.medium)
                         }
                     }
 

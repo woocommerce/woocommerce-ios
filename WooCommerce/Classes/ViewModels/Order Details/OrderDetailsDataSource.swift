@@ -1203,9 +1203,17 @@ extension OrderDetailsDataSource {
             productVariations: resultsControllers.productVariations
         )
 
-        let staticSections = buildStaticSections()
+        var sections = buildStaticSections().compactMap { $0 }
         let paymentSection = await createPaymentSection()
-        self.sections = (staticSections + [paymentSection]).compactMap { $0 }
+
+        // Finds the position between shippingLines and customerInformation to inject the payment section,
+        // otherwise will always appear last because of being async
+        let insertIndex = sections.firstIndex { $0.category == .customerInformation }
+            ?? sections.count
+
+        sections.insert(paymentSection, at: insertIndex)
+        self.sections = sections
+
         self.updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
         self.onUIReloadRequired?()
     }

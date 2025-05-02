@@ -126,7 +126,9 @@ final class OrderDetailsViewModel {
     var orderNotes: [OrderNote] = [] {
         didSet {
             dataSource.orderNotes = orderNotes
-            dataSource.reloadSections()
+            Task { @MainActor in
+                await dataSource.reloadSections()
+            }
             onUIReloadRequired?()
         }
     }
@@ -461,8 +463,8 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
-    func reloadSections() {
-        dataSource.reloadSections()
+    func reloadSections() async {
+        await dataSource.reloadSections()
     }
 }
 

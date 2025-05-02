@@ -243,7 +243,9 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
 
         case .cancelledOnReader:
             self = .message(.cancelledOnReader(
-                viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(
+                    tryPaymentAgainButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction))
+            )
 
             /// Not-yet supported types
         case .selectSearchType:

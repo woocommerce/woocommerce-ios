@@ -1,6 +1,5 @@
 import SwiftUI
 import enum Yosemite.POSItem
-import protocol WooFoundation.Analytics
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
@@ -8,6 +7,7 @@ import struct Yosemite.POSVariableParentProduct
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     // Navigation only uses this on iOS 17
@@ -67,7 +67,7 @@ struct ItemList<HeaderView: View>: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, Constants.itemListPadding)
-                    .padding(.bottom, floatingControlAreaSize.height)
+                    .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? Constants.itemListPadding : floatingControlAreaSize.height)
                 }
             )
 
@@ -82,7 +82,10 @@ struct ItemList<HeaderView: View>: View {
                     destination: ChildItemList(parentItem: activeItem,
                                                title: parentProduct.name,
                                                itemsController: posModel.purchasableItemsController,
-                                               itemActionHandler: itemActionHandler),
+                                               itemActionHandler: itemActionHandler,
+                                               analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                                                itemType: .variation,
+                                                isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching)),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }
@@ -142,7 +145,6 @@ private struct ItemListRow: View {
     let itemActionHandler: POSItemActionHandler
     @Binding var activeNavigationItem: POSItem?
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    let analytics: Analytics = ServiceLocator.analytics
 
     var body: some View {
         switch item {

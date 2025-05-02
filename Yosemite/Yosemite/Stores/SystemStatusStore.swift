@@ -134,7 +134,8 @@ private extension SystemStatusStore {
     func fetchSystemPlugin(siteID: Int64, systemPluginNameList: [String], completionHandler: @escaping (SystemPlugin?) -> Void) {
         let matchingPlugins = storageManager.viewStorage.loadSystemPlugins(siteID: siteID, matching: systemPluginNameList)
             .map { $0.toReadOnly() }
-        completionHandler(matchingPlugins.first)
+        let matchingPlugin = matchingPlugins.first { $0.active } ?? matchingPlugins.first
+        completionHandler(matchingPlugin)
     }
 
     func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {

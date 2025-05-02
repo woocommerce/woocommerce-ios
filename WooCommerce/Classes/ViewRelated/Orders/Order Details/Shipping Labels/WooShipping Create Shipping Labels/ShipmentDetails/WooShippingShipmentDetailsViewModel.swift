@@ -59,22 +59,24 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selected shipping rate when creating a shipping label.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
-    private var customsForm: ShippingLabelCustomsForm?
+    @Published private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
-        WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
+        WooShippingCustomsFormViewModel(order: order, shipment: shipment, onCompletion: { [weak self] form in
             self?.customsForm = form
         })
     }()
 
     /// Whether the custom information is completed or not.
-    var customsInformationIsCompleted: Bool {
-        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
-    }
+    @Published private(set) var customsInformationIsCompleted = false
 
     /// Check for the need of customs form
     ///
-    @Published private(set) var customsFormRequired: Bool = false
+    @Published private var customsFormRequired = false
+
+    var shouldShowCustomsForm: Bool {
+        customsFormRequired && shippingLabel == nil
+    }
 
     @Published var itnMissingNoticeLabel: String?
 
@@ -122,7 +124,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
         return buildSelectedPackage(selectedPackage,
                                     weight: Double(shipmentWeight) ?? 0,
-                                    shipmentID: shipment.id)
+                                    shipmentID: shipment.id,
+                                    hazmatCategory: hazmatCategory,
+                                    customsForm: customsForm)
     }
 
     private var debounceDuration: Double
@@ -162,10 +166,6 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         selectedPackage = packageData
     }
 
-    func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
-        customsForm = form
-    }
-
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async throws {
@@ -189,9 +189,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             }
             stores.dispatch(action)
         }
-        shippingLabel = purchasedLabel
-        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: purchasedLabel)
-        onLabelPurchase?(purchasedLabel)
+        /// Addresses are not included in purchased shipping label details
+        /// so we have to manually populate the details.
+        let updatedLabel = purchasedLabel.copy(originAddress: originAddress.toShippingLabelAddress(),
+                                               destinationAddress: destinationAddress.toShippingLabelAddress())
+        shippingLabel = updatedLabel
+        postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
+        onLabelPurchase?(updatedLabel)
     }
 }
 
@@ -258,11 +262,15 @@ private extension WooShippingShipmentDetailsViewModel {
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .combineLatest($selectedPackage, $shippingService)
-            .sink { [weak self] weight, selectedPackage, shippingService in
+            .combineLatest($customsForm, $hazmatCategory)
+            .sink { [weak self] input in
+                let ((weight, selectedPackage, shippingService), customsForm, hazmatCategory) = input
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
-                                                   shipmentID: shipment.id)
+                                                   shipmentID: shipment.id,
+                                                   hazmatCategory: hazmatCategory,
+                                                   customsForm: customsForm)
                 shippingService.loadLabelRates(for: package)
             }
             .store(in: &subscriptions)
@@ -294,10 +302,20 @@ private extension WooShippingShipmentDetailsViewModel {
                 return nil
             }
             .assign(to: &$itnMissingNoticeLabel)
+
+        customsFormViewModel.$requiredInformationIsEntered.combineLatest($customsFormRequired)
+            .map { (requiredInfoIsEntered, customsFormRequired) -> Bool in
+                requiredInfoIsEntered && customsFormRequired
+            }
+            .assign(to: &$customsInformationIsCompleted)
     }
 
     /// Converts the package data to a `ShippingLabelPackageSelected` object.
-    func buildSelectedPackage(_ packageData: WooShippingPackageDataRepresentable, weight: Double, shipmentID: String) -> ShippingLabelPackageSelected {
+    func buildSelectedPackage(_ packageData: WooShippingPackageDataRepresentable,
+                              weight: Double,
+                              shipmentID: String,
+                              hazmatCategory: ShippingLabelHazmatCategory?,
+                              customsForm: ShippingLabelCustomsForm?) -> ShippingLabelPackageSelected {
         ShippingLabelPackageSelected(id: shipmentID,
                                      boxID: packageData.id,
                                      length: Double(packageData.length) ?? 0,

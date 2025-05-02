@@ -739,6 +739,33 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_createPOSOrder_sets_created_via_for_point_of_sale() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        _ = try? await remote.createPOSOrder(siteID: 123, order: order, fields: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["created_via"] as? String)
+        assertEqual(received, "pos-rest-api")
+    }
+
+    func test_createOrder_without_source_parameter_does_not_set_created_via() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertNil(request.parameters["created_via"])
+    }
+
     // MARK: - Delete order tests
 
     func test_delete_order_properly_returns_parsed_order() throws {

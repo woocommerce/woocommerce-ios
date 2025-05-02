@@ -119,3 +119,17 @@ extension WooShippingAddress {
         self.init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
     }
 }
+
+public extension WooShippingAddress {
+    func toShippingLabelAddress() -> ShippingLabelAddress {
+        ShippingLabelAddress(company: company,
+                             name: name,
+                             phone: phone,
+                             country: country,
+                             state: state,
+                             address1: address1,
+                             address2: address2,
+                             city: city,
+                             postcode: postcode)
+    }
+}

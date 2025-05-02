@@ -90,12 +90,13 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         let package = WooShippingCustomPackage.fake()
-        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "wooshipping-delete-package-success")
+        network.simulateResponse(requestUrlSuffix: "packages/custom/\(package.id)", filename: "wooshipping-delete-package-success")
 
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.deletePackage(siteID: self.sampleSiteID,
-                                 packageID: package.id) { result in
+                                 packageID: package.id,
+                                 packageType: .custom) { result in
                 promise(result)
             }
         }
@@ -110,12 +111,13 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         let package = WooShippingCustomPackage.fake()
-        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "packages/custom/\(package.id)", filename: "generic_error")
 
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.deletePackage(siteID: self.sampleSiteID,
-                                 packageID: package.id) { result in
+                                 packageID: package.id,
+                                 packageType: .custom) { result in
                 promise(result)
             }
         }

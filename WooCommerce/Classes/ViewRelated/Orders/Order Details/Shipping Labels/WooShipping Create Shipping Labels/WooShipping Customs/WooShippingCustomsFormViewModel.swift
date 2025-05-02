@@ -31,11 +31,14 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
-    init(order: Order, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
+    init(order: Order, shipment: Shipment, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
 
-        itemsViewModels = order.items.map {
-            WooShippingCustomsItemViewModel(orderItem: $0, currencySymbol: currencySymbol(from: order))
+        itemsViewModels = shipment.items.map {
+            WooShippingCustomsItemViewModel(itemName: $0.name,
+                                            itemProductID: $0.productOrVariationID,
+                                            itemQuantity: $0.quantity,
+                                            currencySymbol: currencySymbol(from: order))
         }
 
         listenToItemsRequiredInformationValues()
@@ -43,10 +46,10 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
         listenForInternationalTransactionNumberIsRequired()
     }
 
-    @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+    @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
 
     func onDismiss() {
-        // TODO: Add package Id and name to support multiple shipments, (where each shipment may have its own customs form)
+        /// Ignoring `packageID` and `packageName` as these are not needed in WooShipping plugin, only in WCS&T
         let form = ShippingLabelCustomsForm(packageID: "",
                                             packageName: "",
                                             contentsType: contentType.toFormContentsType(),
@@ -57,12 +60,12 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
                                             items: itemsViewModels.map {
             ShippingLabelCustomsForm.Item(description: $0.description,
-                                          quantity: $0.orderItem.quantity,
+                                          quantity: $0.itemQuantity,
                                           value: Double($0.valuePerUnit) ?? 0,
                                           weight: Double($0.weightPerUnit) ?? 0,
                                           hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
                                           originCountry: $0.selectedCountry?.code ?? "",
-                                          productID: $0.orderItem.productID)
+                                          productID: $0.itemProductID)
             }
         )
         onCompletion(form)

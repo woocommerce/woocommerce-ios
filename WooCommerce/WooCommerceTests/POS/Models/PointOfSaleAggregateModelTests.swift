@@ -17,6 +17,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -33,6 +34,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -58,6 +60,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -79,6 +82,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -112,6 +116,7 @@ struct PointOfSaleAggregateModelTests {
             PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                       purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                       couponsController: MockPointOfSaleCouponsController(),
+                                      couponsSearchController: MockPointOfSaleCouponsController(),
                                       cardPresentPaymentService: MockCardPresentPaymentService(),
                                       orderController: MockPointOfSaleOrderController(),
                                       analytics: analytics,
@@ -123,7 +128,16 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             try #require(sut.cart.isEmpty)
             let item = makePurchasableItem()
 
@@ -137,7 +151,16 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             let items = [makePurchasableItem(), makePurchasableItem(), makePurchasableItem()]
 
             // When
@@ -150,7 +173,16 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
             // Given
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -170,7 +202,16 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCart_removes_everything() async throws {
             // Given
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -188,7 +229,16 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
             // Given
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
             let couponItem = makeCouponItem(code: "VALID")
@@ -207,28 +257,17 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
-        @Test(.disabled(
-            """
-            This test doesn't currently work; analytics extensions are not thread-safe,
-            and using the MainActor means the assert happens too early. I don't think
-            we want the addToCart to be async, but that would be one way to fix it.
-            """))
-        func addToCart_tracks_analytics_event() async throws {
-            // Given
-            let sut = makeSUT()
-            let item = makePurchasableItem()
-
-            // When
-            sut.addToCart(item)
-
-            // Then
-            let event = try #require(analyticsProvider.receivedEvents.first)
-            #expect(event == "item_added_to_cart")
-        }
-
-        @available(iOS 17.0, *)
         @Test func addToCart_when_attempt_to_add_duplicated_coupon_then_does_not_add_it_to_cart() {
-            let sut = makeSUT()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularItemsController: MockPointOfSalePopularItemsController())
             let coupon = makeCouponItem(code: "DISCOUNT!")
 
             // When
@@ -256,6 +295,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -280,6 +320,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -307,6 +348,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -333,6 +375,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -359,6 +402,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: orderController,
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -383,6 +427,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: orderController,
                                                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -409,6 +454,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -440,6 +486,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -459,6 +506,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
@@ -481,6 +529,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -506,6 +555,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
@@ -528,6 +578,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -557,6 +608,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -580,6 +632,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -602,6 +655,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -626,6 +680,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -660,6 +715,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -686,6 +742,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -718,6 +775,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -753,6 +811,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -787,6 +846,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -811,6 +871,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -835,6 +896,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -870,6 +932,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -900,6 +963,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
@@ -940,6 +1004,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
@@ -973,6 +1038,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
@@ -997,6 +1063,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
@@ -1019,6 +1086,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 analytics: analytics,
@@ -1040,6 +1108,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: cardPresentPaymentService,
                                                 orderController: orderController,
                                                 collectOrderPaymentAnalyticsTracker: analyticsTracker,
@@ -1060,6 +1129,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: analytics,
@@ -1081,6 +1151,7 @@ struct PointOfSaleAggregateModelTests {
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
                                                 analytics: mockAnalytics,

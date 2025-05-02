@@ -19,6 +19,13 @@ enum WooShippingPackageSource {
         }
         return sourceID
     }
+
+    var isCustomPackage: Bool {
+        switch self {
+        case .custom: true
+        case .predefined: false
+        }
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {

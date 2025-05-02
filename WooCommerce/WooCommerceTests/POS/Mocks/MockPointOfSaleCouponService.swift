@@ -6,6 +6,7 @@ import struct Yosemite.POSCoupon
 import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 import enum Yosemite.PointOfSaleCouponServiceError
+import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
 final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
@@ -13,11 +14,11 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldSimulateTwoPages = false
     var shouldSimulateMorePages = false
 
-    func provideLocalPointOfSaleCoupons() async throws -> [Yosemite.POSItem] {
+    func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [Yosemite.POSItem] {
         []
     }
 
-    func providePointOfSaleCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func providePointOfSaleCoupons(pageNumber: Int, fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
         if let error = errorToThrow {
             throw error
         }

@@ -12,18 +12,6 @@ struct PointOfSaleItemListEmptyView: View {
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    private var shouldShowErrorIcon: Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) else {
-            return false
-        }
-        switch viewModel.itemListType {
-        case .coupons, .products(search: false):
-            return true
-        case .products(search: true):
-            return false
-        }
-    }
-
     init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onAction = onAction
@@ -33,7 +21,7 @@ struct PointOfSaleItemListEmptyView: View {
         ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && keyboard.keyboardHeight <= 0
+                let shouldShowIcon: Bool = !dynamicTypeSize.isAccessibilitySize && !keyboard.isFullSizeKeyboardVisible
 
                 if shouldShowIcon {
                     icon
@@ -77,7 +65,7 @@ struct PointOfSaleItemListEmptyView: View {
             Spacer()
         }
         .multilineTextAlignment(.center)
-        .padding(.bottom, keyboard.keyboardHeight <= 0 ? floatingControlAreaSize.height : 0)
+        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
         .animation(.default, value: keyboard.keyboardHeight)
         .measureWidth { width in
             viewWidth = width
@@ -86,16 +74,11 @@ struct PointOfSaleItemListEmptyView: View {
 
     @ViewBuilder
     private var icon: some View {
-        if shouldShowErrorIcon {
-            POSErrorExclamationMark(size: .large)
-                .accessibilityHidden(true)
-        } else {
-            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-        }
+        Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .foregroundColor(.posOnSurfaceVariantHighest)
     }
 }
 

@@ -11,6 +11,7 @@ struct PointOfSaleEntryPointView: View {
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
+    private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
@@ -20,6 +21,7 @@ struct PointOfSaleEntryPointView: View {
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
+         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -31,6 +33,7 @@ struct PointOfSaleEntryPointView: View {
         self.itemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
+        self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
@@ -55,6 +58,7 @@ struct PointOfSaleEntryPointView: View {
                 itemsController: itemsController,
                 purchasableItemsSearchController: purchasableItemsSearchController,
                 couponsController: couponsController,
+                couponsSearchController: couponsSearchController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
@@ -80,6 +84,7 @@ struct PointOfSaleEntryPointView: View {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
+                              couponsSearchController: PointOfSalePreviewCouponsController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

@@ -379,6 +379,7 @@ internal extension Order {
         case metadata           = "meta_data"
         case giftCards          = "gift_cards"
         case shippingLabels     = "shipping_labels"
+        case createdVia         = "created_via"
     }
 }
 

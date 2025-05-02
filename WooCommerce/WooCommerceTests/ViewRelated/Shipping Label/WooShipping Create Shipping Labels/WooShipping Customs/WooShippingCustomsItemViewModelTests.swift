@@ -1,12 +1,15 @@
 import XCTest
 @testable import WooCommerce
 
-class WooShippingCustomsItemViewModelTests: XCTestCase {
+final class WooShippingCustomsItemViewModelTests: XCTestCase {
     private var viewModel: WooShippingCustomsItemViewModel!
 
     override func setUp() {
         super.setUp()
-        viewModel = WooShippingCustomsItemViewModel(orderItem: MockOrderItem.sampleItem(), currencySymbol: "$")
+        viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
+                                                    itemProductID: 22,
+                                                    itemQuantity: 1,
+                                                    currencySymbol: "$")
     }
 
     func test_when_tariff_number_is_empty_then_it_is_valid() {
@@ -45,9 +48,11 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_not_$_returns_nil() {
-        // When
-        let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
+        // Given
+        viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
+                                                    itemProductID: 22,
+                                                    itemQuantity: 1,
+                                                    currencySymbol: "$")
 
         // Then
         XCTAssertNil(viewModel.hsTariffNumberTotalValue)
@@ -55,9 +60,13 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_hsTariffNumber_is_empty_returns_nil() {
+        //Given
+        viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
+                                                    itemProductID: 22,
+                                                    itemQuantity: 1,
+                                                    currencySymbol: "$")
+
         // When
-        let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
         viewModel.valuePerUnit = "1000"
         viewModel.hsTariffNumber = ""
 
@@ -67,9 +76,11 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_invalid_hs_tariff_number_returns_nil() {
-        // When
-        let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
+        // Given
+        viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
+                                                    itemProductID: 22,
+                                                    itemQuantity: 1,
+                                                    currencySymbol: "$")
         viewModel.hsTariffNumber = "123"
         viewModel.valuePerUnit = "1000"
 
@@ -79,14 +90,16 @@ class WooShippingCustomsItemViewModelTests: XCTestCase {
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_and_value_is_more_than_2500_and_valid_hs_tariff_number_returns_values() {
-        // When
-        let orderItem = MockOrderItem.sampleItem(quantity: 2)
-        viewModel = WooShippingCustomsItemViewModel(orderItem: orderItem, currencySymbol: "$")
+        // Given
+        viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
+                                                    itemProductID: 22,
+                                                    itemQuantity: 2,
+                                                    currencySymbol: "$")
         viewModel.valuePerUnit = "3000"
         viewModel.hsTariffNumber = "123456"
 
         // Then
         XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.0, viewModel.hsTariffNumber)
-        XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.1, Decimal(string: viewModel.valuePerUnit)! * orderItem.quantity)
+        XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.1, Decimal(string: viewModel.valuePerUnit)! * 2)
     }
 }

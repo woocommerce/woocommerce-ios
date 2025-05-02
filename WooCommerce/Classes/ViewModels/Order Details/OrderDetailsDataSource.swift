@@ -74,8 +74,9 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
-        return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
-            !isEligibleForPayment
+        isEligibleForShippingLabelCreation &&
+        shippingLabels.isNotEmpty &&
+        !isEligibleForPayment
     }
 
     /// Whether the option to install the WCShip extension should be visible.
@@ -404,10 +405,10 @@ extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard section >= 0 && section < sections.count else {
             ServiceLocator.crashLogging.logMessage(
-                            "Invalid section in viewForHeaderInSection in OrderDetailsDataSource",
-                            properties: ["section": section],
-                            level: .error
-                        )
+                "Invalid section in viewForHeaderInSection in OrderDetailsDataSource",
+                properties: ["section": section],
+                level: .error
+            )
             return nil
         }
         let section = sections[section]
@@ -548,8 +549,8 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-                "View Custom Fields",
-                comment: "Accessibility label for the 'View Custom Fields' button"
+            "View Custom Fields",
+            comment: "Accessibility label for the 'View Custom Fields' button"
         )
         cell.accessibilityHint = NSLocalizedString(
             "Show the custom fields for this order.",

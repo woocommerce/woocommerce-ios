@@ -3,6 +3,8 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct POSRecentSearchesView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @Environment(\.keyboardObserver) private var keyboardObserver
 
     let savedSearches: [String]
     let onSearchSelected: (String) -> Void
@@ -43,7 +45,7 @@ struct POSRecentSearchesView: View {
                     .padding(.horizontal, POSPadding.medium)
                 }
             }
-            .padding(.bottom, POSPadding.medium)
+            .padding(.bottom, keyboardObserver.isFullSizeKeyboardVisible ? POSPadding.medium : floatingControlAreaSize.height + POSPadding.medium)
         }
     }
 

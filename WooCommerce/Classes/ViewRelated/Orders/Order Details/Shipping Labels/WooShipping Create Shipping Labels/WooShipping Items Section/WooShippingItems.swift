@@ -26,6 +26,7 @@ struct WooShippingItems: View {
                 Text(itemsDetailLabel)
                     .foregroundStyle(Color(.textSubtle))
             }
+            .padding(.vertical, Layout.textContainerAdditionalVerticalPadding)
         },
                         content: {
             VStack {
@@ -36,7 +37,7 @@ struct WooShippingItems: View {
                 }
             }
         })
-        .padding()
+        .padding(.vertical, Layout.verticalPadding)
         .frame(maxWidth: .infinity, alignment: .center)
         .if(isCollapsed) { view in
             view
@@ -49,6 +50,11 @@ private extension WooShippingItems {
     enum Layout {
         static let borderCornerRadius: CGFloat = 8
         static let borderWidth: CGFloat = 0.5
+
+        /// Total vertical padding between content and outer border
+        static let verticalPadding: CGFloat = 8
+
+        static let textContainerAdditionalVerticalPadding: CGFloat = 2
     }
 }
 

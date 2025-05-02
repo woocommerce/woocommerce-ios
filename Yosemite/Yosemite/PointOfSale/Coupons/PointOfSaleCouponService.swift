@@ -4,11 +4,13 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import Storage
+import enum Alamofire.AFError
 
 public enum PointOfSaleCouponServiceError: Error {
     case couponsLoadingError
     case couponsDisabled
     case couponsEnablingError
+    case requestCancelled
 }
 
 public protocol PointOfSaleCouponServiceProtocol {
@@ -37,7 +39,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                             credentials: Credentials?,
                             storage: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials)
-        let remote = CouponsRemote(network: network)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
@@ -62,9 +63,11 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                                           fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
             return try await fetchStrategy.fetchCoupons(pageNumber: pageNumber)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleCouponServiceError.requestCancelled
         } catch {
             if try await checkRemoteStoreCouponSettings() {
-                throw error
+                throw PointOfSaleCouponServiceError.couponsLoadingError
             } else {
                 throw PointOfSaleCouponServiceError.couponsDisabled
             }

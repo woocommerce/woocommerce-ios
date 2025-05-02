@@ -4,6 +4,7 @@ import enum Yosemite.POSItem
 @available(iOS 17.0, *)
 struct POSPreSearchView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @ScaledMetric private var chipHeight: CGFloat = 56.0
 
     let savedSearches: [String]
     let onSearchSelected: (String) -> Void
@@ -17,27 +18,61 @@ struct POSPreSearchView: View {
             node: .root,
             itemActionHandler: StandardPOSItemActionHandler(posModel: posModel, itemListType: itemListType),
             headerView: {
-                if savedSearches.isEmpty {
-                    Text(Localization.preSearchEmptyListText)
-                        .font(.posBodyLargeRegular())
-                        .foregroundColor(.posOnSurface)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                        .padding(.top, POSPadding.medium)
+                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    if savedSearches.isNotEmpty {
+                        // Search history
+                        sectionHeader(Localization.recentSearchesTitle)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: POSSpacing.small) {
+                                ForEach(savedSearches, id: \.self) { searchTerm in
+                                    Button(action: {
+                                        onSearchSelected(searchTerm)
+                                    }) {
+                                        Label {
+                                            Text(searchTerm)
+                                                .font(.posBodyLargeRegular())
+                                                .foregroundColor(.posOnSurface)
+                                        } icon: {
+                                            Image(systemName: "magnifyingglass")
+                                                .font(.posBodyMediumRegular())
+                                                .foregroundColor(.posOnSurfaceVariantHighest)
+                                        }
+                                        .padding(.horizontal, POSPadding.medium)
+                                        .padding(.vertical, POSPadding.small)
+                                        .frame(height: chipHeight)
+                                        .background(Color.posSurfaceBright)
+                                        .cornerRadius(POSCornerRadiusStyle.medium.value)
+                                        .posShadow(.medium)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    sectionHeader(Localization.popularProductsTitle)
+                        .padding(.bottom, POSPadding.medium)
                 }
-                
-                // Column header
-                Text(Localization.popularProductsTitle)
-                    .font(POSFontStyle.posBodyMediumBold)
-                    .foregroundColor(.posOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             })
+    }
+
+    @ViewBuilder private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(POSFontStyle.posBodyMediumBold)
+            .foregroundColor(.posOnSurface)
+            .accessibilityAddTraits(.isHeader)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 @available(iOS 17.0, *)
 private extension POSPreSearchView {
     enum Localization {
+        static let recentSearchesTitle = NSLocalizedString(
+            "pos.itemsearch.before.search.recentSearches.title",
+            value: "Recent searches",
+            comment: "Title for the list of recent searches shown before a search term is typed in POS")
+
         static let popularProductsTitle = NSLocalizedString(
             "pos.itemsearch.before.search.popularProducts.title",
             value: "Popular products",

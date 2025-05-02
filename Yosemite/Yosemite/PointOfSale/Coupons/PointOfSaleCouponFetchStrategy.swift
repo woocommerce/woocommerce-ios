@@ -150,18 +150,3 @@ private struct CouponResultsControllerAdapter {
         }
     }
 }
-
-/// CancellationState
-/// Used as Swift Concurrency compatible cancellation flag in withTaskCancellationHandler
-///
-private actor CancellationState {
-    private var isCancelled = false
-
-    func cancel() {
-        isCancelled = true
-    }
-
-    func checkCancelled() -> Bool {
-        isCancelled
-    }
-}

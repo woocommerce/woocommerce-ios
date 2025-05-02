@@ -410,7 +410,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         order = order.copy(shippingLabels: [shippingLabel])
         insert(shippingLabel: shippingLabel, order: order)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration, receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 

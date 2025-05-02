@@ -294,4 +294,20 @@ struct PointOfSaleCouponsControllerTests {
         // Then
         #expect(sut.itemsViewState == expectedViewState)
     }
+
+    @available(iOS 17.0, *)
+    @Test func searchItems_when_requestCancelled_then_state_unchanged() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
+        await sut.loadItems(base: .root)
+        let initialState = sut.itemsViewState
+        couponProvider.errorToThrow = .requestCancelled
+
+        // When
+        await sut.searchItems(searchTerm: "test", baseItem: .root)
+
+        // Then
+        #expect(sut.itemsViewState == initialState)
+    }
 }

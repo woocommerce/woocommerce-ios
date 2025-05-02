@@ -1475,46 +1475,6 @@ extension OrderDetailsDataSource {
         }
     }
 
-    private func createPaymentSection(completion: @escaping (Section) -> Void) {
-        var rows: [Row] = [.payment]
-        rows.append(.customerPaid)
-
-        if condensedRefunds.isNotEmpty {
-            let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
-            rows.append(contentsOf: refunds)
-            rows.append(.netAmount)
-        }
-
-        if isEligibleForPayment {
-            rows.append(.collectCardPaymentButton)
-        }
-
-        switch orderHasLocalReceipt {
-        case true:
-            rows.append(.seeLegacyReceipt)
-            finishSection()
-        case false:
-            isEligibleForBackendReceipt { [weak self] isEligible in
-                guard let self = self else { return }
-                if isEligible {
-                    rows.append(.seeReceipt)
-                }
-                finishSection()
-            }
-        }
-
-        func finishSection() {
-            if isEligibleForRefund {
-                rows.append(.issueRefundButton)
-            }
-
-            let section = Section(category: .payment,
-                                  title: Title.payment,
-                                  rows: rows)
-            completion(section)
-        }
-    }
-
     func refund(at indexPath: IndexPath) -> Refund? {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
@@ -2042,5 +2002,49 @@ extension OrderDetailsDataSource {
         static let paymentCell = 1
         static let paidByCustomerCell = 1
         static let cellDefaultMargin: CGFloat = 16
+    }
+}
+
+private extension OrderDetailsDataSource {
+    private func createPaymentSection(completion: @escaping (Section) -> Void) {
+        var rows: [Row] = [.payment, .customerPaid]
+
+        if condensedRefunds.isNotEmpty {
+            let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
+            rows.append(contentsOf: refunds)
+            rows.append(.netAmount)
+        }
+
+        if isEligibleForPayment {
+            rows.append(.collectCardPaymentButton)
+        }
+
+        switch orderHasLocalReceipt {
+        case true:
+            rows.append(.seeLegacyReceipt)
+            let section = buildPaymentSection(from: rows)
+            completion(section)
+        case false:
+            isEligibleForBackendReceipt { [weak self] isEligible in
+                guard let self else { return }
+                var updatedRows = rows
+                if isEligible {
+                    updatedRows.append(.seeReceipt)
+                }
+                let section = self.buildPaymentSection(from: updatedRows)
+                completion(section)
+            }
+        }
+    }
+
+    private func buildPaymentSection(from rows: [Row]) -> Section {
+        var updatedRows = rows
+        if isEligibleForRefund {
+            updatedRows.append(.issueRefundButton)
+        }
+
+        return Section(category: .payment,
+                       title: Title.payment,
+                       rows: updatedRows)
     }
 }

@@ -343,7 +343,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     }
 
     func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() async throws {
-        throw XCTSkip("Skipping temporarily.")
         // Given
         var order = makeOrder()
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
@@ -353,7 +352,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 

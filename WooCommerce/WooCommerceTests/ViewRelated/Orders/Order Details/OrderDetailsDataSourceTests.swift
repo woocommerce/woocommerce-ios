@@ -33,7 +33,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() async throws {
         // Given
-        let order = makeOrder().copy(datePaid: Date())
+        let order = makeOrder()
 
         insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
         insertFee(with: order)
@@ -63,7 +63,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             Title.notes
         ]
 
-        // TODO: Order is wrong, the payment comes last as is async.
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 

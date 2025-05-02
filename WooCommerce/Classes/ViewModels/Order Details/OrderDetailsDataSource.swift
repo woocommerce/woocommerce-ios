@@ -1186,104 +1186,79 @@ extension OrderDetailsDataSource {
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
-        // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
-        shippingLabels = resultsControllers.shippingLabels
-        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
-                                                                                   orderItems: items,
-                                                                                   products: products,
-                                                                                   productVariations: resultsControllers.productVariations)
+        Task { @MainActor in
+            // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+            shippingLabels = resultsControllers.shippingLabels
+            shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
+                shippingLabels: shippingLabels,
+                orderItems: items,
+                products: products,
+                productVariations: resultsControllers.productVariations
+            )
 
+            let staticSections = buildStaticSections()
+            let paymentSection = await createPaymentSection()
+            self.sections = (staticSections + [paymentSection]).compactMap { $0 }
+            self.updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
+            self.onUIReloadRequired?()
+        }
+    }
+
+    private func buildStaticSections() -> [Section?] {
         let summary = Section(category: .summary, row: .summary)
 
         let products: Section? = {
-            if items.isEmpty {
-                return nil
-            }
-
+            if items.isEmpty { return nil }
             let aggregateOrderItemCount = aggregateOrderItems.count
-            guard aggregateOrderItemCount > 0 else {
-                return nil
-            }
-
+            guard aggregateOrderItemCount > 0 else { return nil }
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
             case (true, false, false, false):
-                // Order completed and eligible for shipping label creation:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
             case (true, true, false, false):
-                // Order processing shippable:
                 rows.append(.shippingLabelCreateButton)
                 rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                 rows.append(.shippingLabelCreationInfo(showsSeparator: false))
             case (false, true, false, false):
-                // Order processing digital:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:
-                // Other cases
                 break
             }
 
-            if rows.count == 0 {
-                return nil
-            }
+            guard rows.isNotEmpty else { return nil }
 
-            let headerStyle: Section.HeaderStyle
-            if shouldAllowRecreatingShippingLabels {
-                let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+            let headerStyle: Section.HeaderStyle = shouldAllowRecreatingShippingLabels
+                ? .actionablePrimary(actionConfig: PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
                     self?.onProductsMoreMenuTapped?(sourceView)
-                }
-                headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
-            } else {
-                headerStyle = .twoColumn
-            }
+                  })
+                : .twoColumn
 
-            return Section(category: .products,
-                           title: Title.products,
-                           rows: rows,
-                           headerStyle: headerStyle)
+            return Section(category: .products, title: Title.products, rows: rows, headerStyle: headerStyle)
         }()
 
         let customAmountsSection: Section? = {
-            guard customAmounts.isNotEmpty else {
-                return nil
-            }
-
-            return Section(category: .customAmounts,
-                          title: Title.customAmounts,
-                          rows: Array(repeating: .customAmount, count: customAmounts.count))
+            guard customAmounts.isNotEmpty else { return nil }
+            return Section(category: .customAmounts, title: Title.customAmounts, rows: Array(repeating: .customAmount, count: customAmounts.count))
         }()
 
         let customFields: Section? = {
-            return Section(category: .customFields, row: .customFields)
+            Section(category: .customFields, row: .customFields)
         }()
 
-        let refundedProducts: Section? = {
-            // Refunds on
-            guard refundedProductsCount > 0 else {
-                return nil
-            }
-
-            let row: Row = .refundedProducts
-
-            return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
-        }()
+        let refundedProducts: Section? = refundedProductsCount > 0
+            ? Section(category: .refundedProducts, title: Title.refundedProducts, row: .refundedProducts)
+            : nil
 
         let installWCShipSection: Section? = {
-            guard shouldAllowWCShipInstallation else {
-                return nil
-            }
-
+            guard shouldAllowWCShipInstallation else { return nil }
             let rows: [Row] = [.installWCShip]
             return Section(category: .installWCShip, title: nil, rows: rows)
         }()
 
         let shippingLabelSections: [Section] = {
-            guard shippingLabels.isNotEmpty else {
-                return []
-            }
-
+            guard shippingLabels.isNotEmpty else { return [] }
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
@@ -1305,173 +1280,124 @@ extension OrderDetailsDataSource {
         }()
 
         let shippingLinesSection: Section? = {
-            guard shippingLines.count > 0 else {
-                return nil
-            }
-
+            guard shippingLines.count > 0 else { return nil }
             return Section(category: .shippingLines, title: Title.shippingLines, rows: Array(repeating: .shippingLine, count: shippingLines.count))
         }()
 
+        let subscriptions: Section? = {
+            guard orderSubscriptions.isNotEmpty else { return nil }
+            let rows: [Row] = Array(repeating: .subscriptions, count: orderSubscriptions.count)
+            return Section(category: .subscriptions, title: Title.subscriptions, rows: rows)
+        }()
+
+        let giftCards: Section? = {
+            guard shouldShowGiftCards else { return nil }
+            let rows: [Row] = Array(repeating: .giftCards, count: appliedGiftCards.count)
+            return Section(category: .giftCards, title: Title.giftCards, rows: rows)
+        }()
+
+        let tracking: Section? = {
+            guard shippingLabels.nonRefunded.isEmpty else { return nil }
+            guard orderTracking.count > 0 else { return nil }
+            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            return Section(category: .tracking, title: Title.tracking, rows: rows)
+        }()
+
+        let addTracking: Section? = {
+            guard shippingLabels.nonRefunded.isEmpty else { return nil }
+            guard trackingIsReachable else { return nil }
+            let title: String? = orderTracking.count == 0
+                ? NSLocalizedString(
+                    "orderDetails.addTrackingRow.title",
+                    value: "Optional Tracking Information",
+                    comment: "Title for the row to add tracking information."
+                )
+                : nil
+            let row = Row.trackingAdd
+            return Section(category: .addTracking, title: title, rightTitle: nil, rows: [row])
+        }()
+
+        let notes: Section = {
+            let rows = [.addOrderNote] + orderNotesSections.map { $0.row }
+            return Section(category: .notes, title: Title.notes, rows: rows)
+        }()
+
+        let attribution: Section? = {
+            let rows: [Row] = {
+                var rows: [Row] = [.attributionOrigin]
+                guard let orderAttributionInfo = order.attributionInfo else { return rows }
+                if let _ = orderAttributionInfo.sourceType { rows.append(.attributionSourceType) }
+                if let _ = orderAttributionInfo.campaign { rows.append(.attributionCampaign) }
+                if let _ = orderAttributionInfo.source { rows.append(.attributionSource) }
+                if let _ = orderAttributionInfo.medium { rows.append(.attributionMedium) }
+                if let _ = orderAttributionInfo.deviceType { rows.append(.attributionDeviceType) }
+                if let _ = orderAttributionInfo.sessionPageViews { rows.append(.attributionSessionPageViews) }
+                return rows
+            }()
+            return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
+        }()
+
+        let trashOrderSection: Section? = {
+            Section(category: .trashOrder, rows: [.trashOrder])
+        }()
+
         let customerInformation: Section? = {
-            var rows: [Row] = []
-
-            /// Customer Note
-            /// Always visible to allow adding & editing.
-            rows.append(.customerNote)
-
-            /// Shipping Address
-            /// Almost always visible to allow editing.
-            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
-            }.allSatisfy { $0.virtual == true }
-
-
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+            var rows: [Row] = [.customerNote, .billingDetail]
+            let orderContainsOnlyVirtualProducts = self.products.filter { product in
+                items.first(where: { $0.productID == product.productID }) != nil
+            }.allSatisfy { $0.virtual }
+            if order.shippingAddress != nil && !orderContainsOnlyVirtualProducts {
                 rows.append(.shippingAddress)
             }
-
-            /// Billing Address
-            /// Always visible to allow editing.
-            rows.append(.billingDetail)
-
-            /// Return `nil` if there is no rows to display.
-            guard rows.isNotEmpty else {
-                return nil
-            }
-
+            guard rows.isNotEmpty else { return nil }
             return Section(category: .customerInformation, title: Title.information, rows: rows)
         }()
 
-        createPaymentSection { [weak self] paymentSection in
-            guard let self else { return }
+        return [
+            summary,
+            products,
+            customAmountsSection,
+            customFields,
+            installWCShipSection,
+            refundedProducts
+        ] + shippingLabelSections + [
+            subscriptions,
+            shippingLinesSection,
+            customerInformation,
+            attribution,
+            giftCards,
+            tracking,
+            addTracking,
+            notes,
+            trashOrderSection
+        ]
+    }
 
-            let subscriptions: Section? = {
-                // Subscriptions section is hidden if there are no subscriptions for the order.
-                guard self.orderSubscriptions.isNotEmpty else {
-                    return nil
-                }
+    @MainActor
+    private func createPaymentSection() async -> Section {
+        var rows: [Row] = [.payment, .customerPaid]
+        if condensedRefunds.isNotEmpty {
+            rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
+            rows.append(.netAmount)
+        }
+        if isEligibleForPayment {
+            rows.append(.collectCardPaymentButton)
+        }
+        if orderHasLocalReceipt {
+            rows.append(.seeLegacyReceipt)
+        } else if await isEligibleForBackendReceipt() {
+            rows.append(.seeReceipt)
+        }
+        return buildPaymentSection(from: rows)
+    }
 
-                let rows: [Row] = Array(repeating: .subscriptions, count: self.orderSubscriptions.count)
-                return Section(category: .subscriptions, title: Title.subscriptions, rows: rows)
-            }()
-
-            let giftCards: Section? = {
-                guard self.shouldShowGiftCards else {
-                    return nil
-                }
-
-                let rows: [Row] = Array(repeating: .giftCards, count: self.appliedGiftCards.count)
-                return Section(category: .giftCards, title: Title.giftCards, rows: rows)
-            }()
-
-            let tracking: Section? = {
-                // Tracking section is hidden if there are non-empty non-refunded shipping labels.
-                guard self.shippingLabels.nonRefunded.isEmpty else {
-                    return nil
-                }
-
-                guard self.orderTracking.count > 0 else {
-                    return nil
-                }
-
-                let rows: [Row] = Array(repeating: .tracking, count: self.orderTracking.count)
-                return Section(category: .tracking, title: Title.tracking, rows: rows)
-            }()
-
-            let addTracking: Section? = {
-                // Add tracking section is hidden if there are non-empty non-refunded shipping labels.
-                guard self.shippingLabels.nonRefunded.isEmpty else {
-                    return nil
-                }
-
-                // Hide the section if the shipment
-                // tracking plugin is not installed
-                guard self.trackingIsReachable else {
-                    return nil
-                }
-
-                let title: String?
-                if self.orderTracking.count == 0 {
-                    title = NSLocalizedString(
-                        "orderDetails.addTrackingRow.title",
-                        value: "Optional Tracking Information",
-                        comment: "Title for the row to add tracking information."
-                    )
-                } else {
-                    title = nil
-                }
-                let row = Row.trackingAdd
-
-                return Section(category: .addTracking, title: title, rightTitle: nil, rows: [row])
-            }()
-
-            let notes: Section = {
-                let rows = [.addOrderNote] + self.orderNotesSections.map {$0.row}
-                return Section(category: .notes, title: Title.notes, rows: rows)
-            }()
-
-            let attribution: Section? = {
-                let rows: [Row] = {
-                    var rows: [Row] = [.attributionOrigin]
-
-                    guard let orderAttributionInfo = self.order.attributionInfo else {
-                        return rows
-                    }
-
-                    if let _ = orderAttributionInfo.sourceType {
-                        rows.append(.attributionSourceType)
-                    }
-
-                    if let _ = orderAttributionInfo.campaign {
-                        rows.append(.attributionCampaign)
-                    }
-
-                    if let _ = orderAttributionInfo.source {
-                        rows.append(.attributionSource)
-                    }
-
-                    if let _ = orderAttributionInfo.medium {
-                        rows.append(.attributionMedium)
-                    }
-
-                    if let _ = orderAttributionInfo.deviceType {
-                        rows.append(.attributionDeviceType)
-                    }
-
-                    if let _ = orderAttributionInfo.sessionPageViews {
-                        rows.append(.attributionSessionPageViews)
-                    }
-
-                    return rows
-                }()
-
-                return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
-            }()
-
-            let trashOrderSection: Section? = {
-                return Section(category: .trashOrder, rows: [.trashOrder])
-            }()
-
-            self.sections = ([summary,
-                              products,
-                              customAmountsSection,
-                              customFields,
-                              installWCShipSection,
-                              refundedProducts] +
-                             shippingLabelSections +
-                             [subscriptions,
-                              shippingLinesSection,
-                              paymentSection,
-                              customerInformation,
-                              attribution,
-                              giftCards,
-                              tracking,
-                              addTracking,
-                              notes,
-                              trashOrderSection]).compactMap { $0 }
-
-            self.updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
-            self.onUIReloadRequired?()
+    @MainActor
+    private func isEligibleForBackendReceipt() async -> Bool {
+        guard !isEligibleForPayment else { return false }
+        return await withCheckedContinuation { continuation in
+            ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligible in
+                continuation.resume(returning: isEligible)
+            }
         }
     }
 
@@ -2006,43 +1932,11 @@ extension OrderDetailsDataSource {
 }
 
 private extension OrderDetailsDataSource {
-    private func createPaymentSection(completion: @escaping (Section) -> Void) {
-        var rows: [Row] = [.payment, .customerPaid]
-
-        if condensedRefunds.isNotEmpty {
-            let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
-            rows.append(contentsOf: refunds)
-            rows.append(.netAmount)
-        }
-
-        if isEligibleForPayment {
-            rows.append(.collectCardPaymentButton)
-        }
-
-        switch orderHasLocalReceipt {
-        case true:
-            rows.append(.seeLegacyReceipt)
-            let section = buildPaymentSection(from: rows)
-            completion(section)
-        case false:
-            isEligibleForBackendReceipt { [weak self] isEligible in
-                guard let self else { return }
-                var updatedRows = rows
-                if isEligible {
-                    updatedRows.append(.seeReceipt)
-                }
-                let section = self.buildPaymentSection(from: updatedRows)
-                completion(section)
-            }
-        }
-    }
-
     private func buildPaymentSection(from rows: [Row]) -> Section {
         var updatedRows = rows
         if isEligibleForRefund {
             updatedRows.append(.issueRefundButton)
         }
-
         return Section(category: .payment,
                        title: Title.payment,
                        rows: updatedRows)

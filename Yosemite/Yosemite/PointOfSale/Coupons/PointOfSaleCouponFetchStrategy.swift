@@ -45,35 +45,9 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
     /// - Parameter pageNumber: Number of page that should be retrieved.
     /// - Returns: True if there are more pages to sync
     func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool {
-        let cancellationState = CancellationState()
-        return try await withTaskCancellationHandler(operation: {
-            try await withCheckedThrowingContinuation { continuation in
-                couponStoreMethods.synchronizeCoupons(
-                    siteID: siteID,
-                    pageNumber: pageNumber,
-                    pageSize: Constants.defaultPageSize,
-                    onCompletion: { result in
-                        Task { @MainActor in
-                            guard await !cancellationState.checkCancelled() else {
-                                continuation.resume(throwing: CancellationError())
-                                return
-                            }
-
-                            switch result {
-                            case .success(let hasMorePages):
-                                continuation.resume(returning: hasMorePages)
-                            case .failure:
-                                continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
-                            }
-                        }
-                    }
-                )
-            }
-        }, onCancel: {
-            Task {
-                await cancellationState.cancel()
-            }
-        })
+        return try await couponStoreMethods.synchronizeCoupons(siteID: siteID,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: Constants.defaultPageSize)
     }
 
     @MainActor
@@ -113,40 +87,16 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
     }
 
     public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        let cancellationState = CancellationState()
-        return try await withTaskCancellationHandler(operation: {
-            return try await withCheckedThrowingContinuation { continuation in
-                couponStoreMethods.searchCoupons(
-                    siteID: siteID,
-                    keyword: searchTerm,
-                    pageNumber: pageNumber,
-                    pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize) { result in
-                        Task { @MainActor in
-                            guard await !cancellationState.checkCancelled() else {
-                                continuation.resume(throwing: CancellationError())
-                                return
-                            }
-
-                            switch result {
-                            case .success:
-                                let results = getSearchResults()
-                                let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
-                                continuation.resume(returning: .init(items: results, hasMorePages: hasMorePages))
-                            case .failure:
-                                continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
-                            }
-                        }
-
-
-                    }
-            }
-        }, onCancel: {
-            Task {
-                await cancellationState.cancel()
-            }
-        })
+        try await couponStoreMethods.searchCoupons(siteID: siteID,
+                                                   keyword: searchTerm,
+                                                   pageNumber: pageNumber,
+                                                   pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize)
+        let results = await getSearchResults()
+        let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
+        return PagedItems(items: results, hasMorePages: hasMorePages)
     }
 
+    @MainActor
     private func getSearchResults() -> [POSItem] {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let searchPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)

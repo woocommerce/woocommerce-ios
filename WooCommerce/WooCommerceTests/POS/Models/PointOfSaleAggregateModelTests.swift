@@ -120,7 +120,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())
@@ -143,7 +143,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())
@@ -165,7 +165,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())
@@ -194,7 +194,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())
@@ -221,7 +221,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())
@@ -250,7 +250,7 @@ struct PointOfSaleAggregateModelTests {
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
                                                 cardPresentPaymentService: MockCardPresentPaymentService(),
                                                 orderController: MockPointOfSaleOrderController(),
-                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                analytics: analytics,
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularItemsController: MockPointOfSalePopularItemsController())

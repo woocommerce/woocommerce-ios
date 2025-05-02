@@ -187,6 +187,8 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             self = .message(.tapSwipeOrInsertCard(
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
+        case .cardInserted:
+            self = .message(.cardInserted(viewModel: PointOfSaleCardPresentPaymentCardInsertedMessageViewModel()))
         case .paymentSuccess:
             self = .message(.paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel(
                 formattedOrderTotal: dependencies.formattedOrderTotalPrice,

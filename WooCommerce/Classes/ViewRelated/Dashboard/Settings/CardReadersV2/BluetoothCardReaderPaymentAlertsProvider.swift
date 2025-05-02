@@ -35,6 +35,10 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
                                        onCancel: onCancel)
     }
 
+    func cardInserted(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return CardPresentModalCardInserted(onCancel: onCancel)
+    }
+
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {
         CardPresentModalDisplayMessage(name: name,
                                        amount: amount,

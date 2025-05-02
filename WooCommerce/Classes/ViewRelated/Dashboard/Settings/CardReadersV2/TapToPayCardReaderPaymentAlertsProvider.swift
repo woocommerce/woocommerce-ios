@@ -30,6 +30,10 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
                                                                 inputMethods: inputMethods)
     }
 
+    func cardInserted(onCancel: @escaping () -> Void) -> any CardPresentPaymentsModalViewModel {
+        return CardPresentModalCardInserted(onCancel: onCancel)
+    }
+
     func displayReaderMessage(message: String) -> CardPresentPaymentsModalViewModel {
         CardPresentModalDisplayMessage(name: name,
                                        amount: amount,

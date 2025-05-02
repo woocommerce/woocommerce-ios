@@ -20,6 +20,7 @@ protocol PaymentCaptureOrchestrating {
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                        onCardInserted: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
@@ -74,6 +75,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                        onCardInserted: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
@@ -110,7 +112,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
-                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                case .cardInserted:
+                    onCardInserted()
+                case .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
                     DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             },

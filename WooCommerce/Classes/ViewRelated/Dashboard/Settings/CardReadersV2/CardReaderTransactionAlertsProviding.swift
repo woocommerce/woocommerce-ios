@@ -22,6 +22,10 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
                          inputMethods: CardReaderInput,
                          onCancel: @escaping () -> Void) -> AlertDetails
 
+    /// A cancellable alert indicating the reader card was inserted
+    ///
+    func cardInserted(onCancel: @escaping () -> Void) -> AlertDetails
+
     /// An alert to display a message from a reader
     ///
     func displayReaderMessage(message: String) -> AlertDetails

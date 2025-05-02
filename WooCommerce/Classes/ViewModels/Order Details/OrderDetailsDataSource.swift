@@ -273,6 +273,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
+    private let receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol
+
     private let currencySettings: CurrencySettings
 
     private let userIsAdmin: Bool
@@ -285,6 +287,7 @@ final class OrderDetailsDataSource: NSObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
@@ -294,6 +297,7 @@ final class OrderDetailsDataSource: NSObject {
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
@@ -1501,12 +1505,9 @@ extension OrderDetailsDataSource {
 
     @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
-        // Temporary: By returning earlier we stop leaking continuation and go down from 44 to 3 failed tests
-        return true
-
         guard !isEligibleForPayment else { return false }
         return await withCheckedContinuation { continuation in
-            ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligible in
+            receiptEligibilityUseCase.isEligibleForBackendReceipts { isEligible in
                 continuation.resume(returning: isEligible)
             }
         }
@@ -1528,7 +1529,7 @@ extension OrderDetailsDataSource {
         guard !isEligibleForPayment else {
             return completion(false)
         }
-        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
+        receiptEligibilityUseCase.isEligibleForBackendReceipts { isEligibleForReceipt in
             completion(isEligibleForReceipt)
         }
     }

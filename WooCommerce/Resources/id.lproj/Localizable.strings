@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-08 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-04-22 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -67,9 +67,6 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ memberikan ulasan tentang %2$@";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
-"%1$@ off · %2$@" = "Diskon %1$@ · %2$@";
-
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ diminta pengembalian dananya (%2$@)";
 
@@ -81,9 +78,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ melalui %2$@";
-
-/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
-"%1$@ · Excl. %2$@" = "%1$@ · Tidak termasuk %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -98,26 +92,11 @@ which should be translated separately and considered part of this sentence. */
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% Daya Baterai";
 
-/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
-"%1$@, %2$@" = "%1$@, %2$@";
-
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
-
-/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
-"%1$d Categories" = "%1$d Kategori";
-
-/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
-"%1$d Category" = "%1$d Kategori";
-
-/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
-"%1$d Product" = "%1$d Produk";
-
-/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
-"%1$d Products" = "%1$d Produk";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
 "%1$d Products Selected" = "%1$d Produk dipilih";
@@ -612,12 +591,8 @@ which should be translated separately and considered part of this sentence. */
 "All Orders" = "Semua Pesanan";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
-   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
    Title of the product search filter to search for all products. */
 "All Products" = "Semua Produk";
-
-/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
-"All Products · Excl. %1$@" = "Semua Produk · Tidak termasuk %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "Semua Produk yang Memenuhi Syarat";
@@ -7790,9 +7765,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
 "Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Tidak dapat memproses pembayaran. Pesanan ini sudah dibayar. Pembayaran lebih lanjut akan menyebabkan pelanggan ditagih dua kali untuk pesanannya.";
 
-/* Error message when retrying an In-Person Payment and an unknown error is received. */
-"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Tidak dapat memproses pembayaran. Kami tidak dapat menyelesaikan pembayaran ini ketika mencoba lagi. Error dasar: %1$@";
-
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Tidak dapat memproses pembayaran. Kami tidak dapat terhubung dengan sistem pembayaran. Harap hubungi dukungan jika error ini berlanjut.";
 
@@ -11689,6 +11661,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Terjadi error saat memproses pembayaran. Coba lagi.";
 
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "Kupon tidak digunakan";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Harap tunggu";
 
@@ -11716,11 +11691,17 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Hapus";
 
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.proceed" = "Lanjutkan tanpa kupon";
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "Sunting pesanan";
 
 /* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.title" = "Kupon tidak valid";
+"pointOfSale.orderSync.couponsError.errorTitle" = "Tidak dapat menggunakan kupon";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "Hapus kupon";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "Hapus kupon";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Tidak bisa memuat total";
@@ -11794,6 +11775,24 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
+/* Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.. */
+"pos.itemList.enablingCouponsErrorRetry" = "Coba lagi";
+
+/* Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorSubtitle" = "Coba lagi?";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle" = "Error saat mengaktifkan kupon";
+
+/* Text for the button appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageButtonTitle" = "Coba lagi";
+
+/* Text appearing on the coupon list screen as subtitle when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageSubtitle" = "Terjadi error saat memuat kupon.";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle" = "Gagal memuat kupon lainnya";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadProductsButtonTitle" = "Coba lagi";
 
@@ -11830,17 +11829,38 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "Error saat memuat variasi";
 
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "Buat kupon";
+/* Text for the button appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsButtonTitle" = "Coba lagi";
 
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.itemList.noCouponsFoundSubtitle" = "Tingkatkan penjualan dengan mengirimi pelanggan promosi dan diskon spesial";
+/* Subtitle appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsSubtitle" = "Coba lagi?";
 
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.itemList.noCouponsFoundTitle" = "Kupon tidak ditemukan";
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle" = "Error saat memuat ulang kupon";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction" = "Aktifkan";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle" = "Aktifkan penggunaan kode kupon di toko Anda.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle" = "Error saat memuat kupon";
+
+/* Text of the button appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorRetry" = "Coba lagi";
+
+/* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorSubtitle" = "Error saat memuat kupon";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle" = "Error saat memuat kupon";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produk";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "Kupon";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
@@ -11857,11 +11877,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produk";
 
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.emptyListText" = "Tidak ada pencarian terbaru";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "Pencarian terbaru";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Abaikan";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Tingkatkan penjualan dengan mengirimi pelanggan promosi dan diskon spesial.";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "Kupon tidak ditemukan.";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
@@ -11880,6 +11912,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on screen when there are no variations to load. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Tidak ada variasi yang didukung.";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Buat kupon";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
@@ -11908,8 +11943,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Pembayaran tunai";
 
-/* Title for discount amount field */
-"pos.totalsView.discountTotal" = "Diskon";
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "Total diskon";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Perbarui WooCommerce ke versi 9.5.0";
@@ -13683,6 +13718,12 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Jika Anda belum mempunyai akun, kami akan menggunakan email ini untuk membuat akun.";
 
+/* Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.enterUsername" = "Masukkan nama pengguna";
+
+/* Label for the username field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.usernameLabel" = "Nama pengguna";
+
 /* Error message when the username is not found */
 "wpComEmailLoginViewModel.unknownUsername" = "Kami tidak dapat menemukan akun WordPress.com yang terhubung dengan nama pengguna ini. Anda dapat memasukkan email untuk membuat akun baru.";
 
@@ -13694,6 +13735,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Pastikan email Anda sudah benar dan periksa kembali folder spam Anda.";
+
+/* A message that informs the user that a magic link will be sent to their email address. */
+"wpcomMagicLinkRequestView.label" = "Kami akan mengirimkan email berisi tautan yang bisa Anda gunakan untuk login dalam sekejap, tanpa perlu kata sandi.";
+
+/* Button title for the action of sending a magic link email to log in to WordPress.com. */
+"wpcomMagicLinkRequestView.primaryAction" = "Kirim tautan lewat email";
+
+/* Button title for the action of signing in using WordPress.com username and password. */
+"wpcomMagicLinkRequestView.useUsernamePassword" = "Gunakan nama pengguna dan kata sandi";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

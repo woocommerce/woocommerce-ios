@@ -1,4 +1,6 @@
+import Foundation
 @testable import Yosemite
+import Networking
 
 final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
     var synchronizeCalled = false
@@ -17,15 +19,13 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
 
     func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
-                            pageSize: Int,
-                            onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
+                            pageSize: Int) async throws -> Bool {
         synchronizeCalled = true
-        if shouldFailSync {
-            onCompletion(.failure(NSError(domain: "test", code: 0)))
-        } else {
-            onCompletion(.success(true))
-        }
         onSynchronizeCalled()
+        if shouldFailSync {
+            throw NSError(domain: "test", code: 0)
+        }
+        return true
     }
 
     func deleteCoupon(siteID: Int64,
@@ -67,10 +67,8 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
     func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
-                       pageSize: Int,
-                       onCompletion: @escaping (Result<Void, any Error>) -> Void) {
+                       pageSize: Int) async throws {
         searchCalled = true
-        onCompletion(.success(()))
     }
 
     func retrieveCoupon(siteID: Int64,

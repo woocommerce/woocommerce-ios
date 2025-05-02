@@ -7,8 +7,7 @@ import Storage
 internal protocol CouponStoreMethodsProtocol {
     func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
-                            pageSize: Int,
-                            onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void)
+                            pageSize: Int) async throws -> Bool
 
     func deleteCoupon(siteID: Int64,
                       couponID: Int64,
@@ -36,8 +35,7 @@ internal protocol CouponStoreMethodsProtocol {
     func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
-                       pageSize: Int,
-                       onCompletion: @escaping (_ result: Result<Void, Error>) -> Void)
+                       pageSize: Int) async throws
 
     func retrieveCoupon(siteID: Int64,
                         couponID: Int64,
@@ -72,29 +70,21 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - siteId: The site to synchronizes coupons for.
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
-    ///   - onCompletion: Closure to call after sychronizing is complete. Called on the main thread.
-    ///   - result: `.success(hasNextPage: Bool)` or `.failure(error: Error)`
+    ///   - result: `hasNextPage: Bool` or `error: Error`
     ///
     func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
-                            pageSize: Int,
-                            onCompletion: @escaping (_ result: Result<Bool, Error>) -> Void) {
-        remote.loadAllCoupons(for: siteID,
-                              pageNumber: pageNumber,
-                              pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-
-            case .success(let coupons):
-                let shouldClearData = pageNumber == Remote.Default.firstPageNumber
-                let hasNextPage = coupons.count == pageSize
-                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
-                                                     siteID: siteID,
-                                                     shouldClearExistingCoupons: shouldClearData) {
-                    onCompletion(.success(hasNextPage))
-                }
+                            pageSize: Int) async throws -> Bool {
+        let coupons = try await remote.loadAllCoupons(for: siteID,
+                                                      pageNumber: pageNumber,
+                                                      pageSize: pageSize)
+        let shouldClearData = pageNumber == Remote.Default.firstPageNumber
+        let hasNextPage = coupons.count == pageSize
+        return await withCheckedContinuation { continuation in
+            self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons,
+                                                 siteID: siteID,
+                                                 shouldClearExistingCoupons: shouldClearData) {
+                continuation.resume(returning: hasNextPage)
             }
         }
     }
@@ -216,28 +206,22 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///   - keyword: The string to match the results with.
     ///   - pageNumber: Page number of coupons to fetch from the API
     ///   - pageSize: Number of coupons per page to fetch from the API
-    ///   - onCompletion: Closure to call after the search is complete. Called on the main thread.
     ///
     func searchCoupons(siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
-                       pageSize: Int,
-                       onCompletion: @escaping (_ result: Result<Void, Error>) -> Void) {
-        remote.searchCoupons(for: siteID,
+                       pageSize: Int) async throws {
+       let coupons = try await remote.searchCoupons(for: siteID,
                              keyword: keyword,
                              pageNumber: pageNumber,
-                             pageSize: pageSize) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let coupons):
-                self.upsertSearchResultsInBackground(siteID: siteID,
-                                                     keyword: keyword,
-                                                     readOnlyCoupons: coupons) {
-                    onCompletion(.success(()))
-                }
-            }
+                             pageSize: pageSize)
+
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
+            upsertSearchResultsInBackground(siteID: siteID,
+                                            keyword: keyword,
+                                            readOnlyCoupons: coupons, onCompletion: {
+                continuation.resume(returning: ())
+            })
         }
     }
 
@@ -288,11 +272,14 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     }
 
     func validateCouponCode(code: String, siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.searchCoupons(for: siteID, keyword: code, pageNumber: Remote.Default.firstPageNumber, pageSize: 25) { result in
-            switch result {
-            case let .success(coupons):
+        Task {
+            do {
+                let coupons = try await remote.searchCoupons(for: siteID,
+                                                             keyword: code,
+                                                             pageNumber: Remote.Default.firstPageNumber,
+                                                             pageSize: 25)
                 onCompletion(.success(coupons.contains(where: { $0.code == code })))
-            case let .failure(error):
+            } catch {
                 onCompletion(.failure(error))
             }
         }

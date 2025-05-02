@@ -50,10 +50,16 @@ public final class CouponStore: Store {
 
         switch action {
         case .synchronizeCoupons(let siteID, let pageNumber, let pageSize, let onCompletion):
-            methods.synchronizeCoupons(siteID: siteID,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize,
-                                       onCompletion: onCompletion)
+            Task {
+                do {
+                    let hasMorePages = try await methods.synchronizeCoupons(siteID: siteID,
+                                                                            pageNumber: pageNumber,
+                                                                            pageSize: pageSize)
+                    onCompletion(.success(hasMorePages))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case .deleteCoupon(let siteID, let couponID, let onCompletion):
             methods.deleteCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .updateCoupon(let coupon, let siteTimezone, let onCompletion):
@@ -69,11 +75,17 @@ public final class CouponStore: Store {
                                           siteTimezone: siteTimezone,
                                           onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
-            methods.searchCoupons(siteID: siteID,
-                                  keyword: keyword,
-                                  pageNumber: pageNumber,
-                                  pageSize: pageSize,
-                                  onCompletion: onCompletion)
+            Task {
+                do {
+                    try await methods.searchCoupons(siteID: siteID,
+                                                    keyword: keyword,
+                                                    pageNumber: pageNumber,
+                                                    pageSize: pageSize)
+                    onCompletion(.success(()))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case .retrieveCoupon(let siteID, let couponID, let onCompletion):
             methods.retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .validateCouponCode(let code, let siteID, let onCompletion):

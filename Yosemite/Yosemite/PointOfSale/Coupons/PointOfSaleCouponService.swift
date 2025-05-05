@@ -7,7 +7,7 @@ import Storage
 import enum Alamofire.AFError
 
 public enum PointOfSaleCouponServiceError: Error {
-    case couponsLoadingError
+    case couponsLoadingError(underlyingError: Error)
     case couponsDisabled
     case couponsEnablingError
     case requestCancelled
@@ -67,7 +67,7 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             throw PointOfSaleCouponServiceError.requestCancelled
         } catch {
             if try await checkRemoteStoreCouponSettings() {
-                throw PointOfSaleCouponServiceError.couponsLoadingError
+                throw PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
             } else {
                 throw PointOfSaleCouponServiceError.couponsDisabled
             }
@@ -109,8 +109,8 @@ private extension PointOfSaleCouponService {
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
-                case .failure:
-                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
+                case .failure(let error):
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error))
                 }
             }
         }

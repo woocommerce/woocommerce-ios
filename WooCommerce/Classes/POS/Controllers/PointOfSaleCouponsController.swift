@@ -102,9 +102,7 @@ private extension PointOfSaleCouponsController {
 
             await loadFirstPageRemotely()
         } catch {
-            if let couponError = error as? PointOfSaleCouponServiceError {
-                setCouponsErrorViewState(couponError)
-            }
+            setCouponsErrorViewState(error)
         }
     }
 
@@ -115,9 +113,7 @@ private extension PointOfSaleCouponsController {
                 return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
-            if let couponError = error as? PointOfSaleCouponServiceError {
-                setCouponsErrorViewState(couponError)
-            }
+            setCouponsErrorViewState(error)
         }
     }
 
@@ -157,7 +153,12 @@ private extension PointOfSaleCouponsController {
                                                           itemStates: [:]))
     }
 
-    func setCouponsErrorViewState(_ couponError: PointOfSaleCouponServiceError) {
+    func setCouponsErrorViewState(_ error: Error) {
+        guard let couponError = error as? PointOfSaleCouponServiceError else {
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+            return
+        }
+
         switch couponError {
         case .couponsLoadingError:
             let items = itemsViewState.itemsStack.root.items

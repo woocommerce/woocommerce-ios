@@ -37,8 +37,6 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
-    @State private var isReadyToShowErrorNotice = false
-
     @State private var showingCustomsForm = false
     @State private var showingSplitShipments = false
 

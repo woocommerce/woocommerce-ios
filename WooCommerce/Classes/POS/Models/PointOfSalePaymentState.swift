@@ -8,6 +8,7 @@ enum PointOfSalePaymentState: Equatable {
 enum PointOfSaleCardPaymentState: Equatable {
     case idle
     case acceptingCard
+    case cardInserted
     case validatingOrder
     case validatingOrderError
     case preparingReader
@@ -33,6 +34,8 @@ extension PointOfSalePaymentState {
             self = .card(.preparingReader)
         case .show(.tapSwipeOrInsertCard):
             self = .card(.acceptingCard)
+        case .show(.cardInserted):
+            self = .card(.cardInserted)
         case .show(.processing),
                 .show(.displayReaderMessage):
             self = .card(.processingPayment)
@@ -65,7 +68,8 @@ extension PointOfSalePaymentState {
                 .card(.validatingOrder),
                 .card(.validatingOrderError),
                 .card(.preparingReader),
-                .card(.acceptingCard):
+                .card(.acceptingCard),
+                .card(.cardInserted):
             return false
         case .cash:
             return true

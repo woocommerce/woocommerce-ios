@@ -241,7 +241,7 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            if viewModel.shouldShowInitialNotices {
+            if viewModel.shouldShowNotices {
                 // Unverified notice for origin address
                 if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
                     verificationNotice(with: originAddressUnverifiedNoticeLabel,

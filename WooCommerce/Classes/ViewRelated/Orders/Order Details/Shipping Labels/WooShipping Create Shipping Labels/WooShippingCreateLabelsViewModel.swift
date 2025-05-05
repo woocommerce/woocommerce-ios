@@ -60,7 +60,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published private(set) var state = ContentState.loading
 
-    @Published private(set) var shouldShowInitialNotices = false
+    @Published private(set) var shouldShowNotices = false
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
@@ -539,7 +539,7 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         /// Clear the notice after a delay when the address is verified.
-        $shouldShowInitialNotices
+        $shouldShowNotices
             .combineLatest($destinationAddressStatusNoticeLabel)
             .filter { shouldShowNotices, destinationNotice in
                 shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
@@ -558,7 +558,7 @@ private extension WooShippingCreateLabelsViewModel {
                 state == .ready && shipments[selectedIndex].isPurchased == false
             }
             .delay(for: .seconds(2), scheduler: RunLoop.current)
-            .assign(to: &$shouldShowInitialNotices)
+            .assign(to: &$shouldShowNotices)
 
     }
 

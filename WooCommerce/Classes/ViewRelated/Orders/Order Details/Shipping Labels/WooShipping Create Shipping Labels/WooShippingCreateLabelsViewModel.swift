@@ -245,6 +245,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
+        observeDestinationAddress()
         observeViewStates()
 
         Task { @MainActor in

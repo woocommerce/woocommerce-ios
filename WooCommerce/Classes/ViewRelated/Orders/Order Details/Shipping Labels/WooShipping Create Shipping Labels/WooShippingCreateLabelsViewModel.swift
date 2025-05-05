@@ -20,7 +20,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
-    private let noticeDelay: RunLoop.SchedulerTimeType.Stride
+    private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
 
     private(set) var orderItems: WooShippingItemsViewModel
 
@@ -184,7 +184,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
-         noticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         self.shippingLabels = order.shippingLabels
@@ -197,7 +197,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.stores = stores
         self.shippingSettingsService = shippingSettingsService
-        self.noticeDelay = noticeDelay
+        self.initialNoticeDelay = initialNoticeDelay
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -226,7 +226,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
-         noticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2)) {
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2)) {
         self.order = order
         self.shippingSettingsService = shippingSettingsService
         self.shippingLabels = order.shippingLabels
@@ -238,7 +238,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
-        self.noticeDelay = noticeDelay
+        self.initialNoticeDelay = initialNoticeDelay
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -548,7 +548,7 @@ private extension WooShippingCreateLabelsViewModel {
             .filter { shouldShowNotices, destinationNotice in
                 shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
             }
-            .delay(for: noticeDelay, scheduler: RunLoop.current)
+            .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
     }
@@ -557,11 +557,12 @@ private extension WooShippingCreateLabelsViewModel {
     /// to avoid overwhelming users with too many information at once when opening the screen.
     func observeViewStates() {
         $state
+            .filter { $0 == .ready }
+            .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
             .combineLatest($shipments, $selectedShipmentIndex)
-            .map { state, shipments, selectedIndex in
-                state == .ready && shipments[selectedIndex].isPurchased == false
+            .map { _, shipments, selectedIndex in
+                shipments[selectedIndex].isPurchased == false
             }
-            .delay(for: noticeDelay, scheduler: RunLoop.current)
             .assign(to: &$shouldShowNotices)
 
     }

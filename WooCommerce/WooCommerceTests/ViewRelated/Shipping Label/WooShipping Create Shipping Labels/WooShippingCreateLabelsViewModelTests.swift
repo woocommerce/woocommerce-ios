@@ -551,7 +551,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, noticeDelay: .seconds(0))
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, initialNoticeDelay: .seconds(0))
         XCTAssertFalse(viewModel.shouldShowNotices)
 
         waitUntil {

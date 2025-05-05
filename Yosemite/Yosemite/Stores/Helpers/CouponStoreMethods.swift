@@ -8,6 +8,10 @@ internal protocol CouponStoreMethodsProtocol {
     func synchronizeCoupons(siteID: Int64,
                             pageNumber: Int,
                             pageSize: Int) async throws -> Bool
+    func synchronizeCoupons(siteID: Int64,
+                            pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: @escaping (Result<Bool, any Error>) -> Void)
 
     func deleteCoupon(siteID: Int64,
                       couponID: Int64,
@@ -36,6 +40,12 @@ internal protocol CouponStoreMethodsProtocol {
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws
+
+    func searchCoupons(siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       onCompletion: @escaping (Result<Void, any Error>) -> Void)
 
     func retrieveCoupon(siteID: Int64,
                         couponID: Int64,
@@ -85,6 +95,24 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                                                  siteID: siteID,
                                                  shouldClearExistingCoupons: shouldClearData) {
                 continuation.resume(returning: hasNextPage)
+            }
+        }
+    }
+
+
+    func synchronizeCoupons(siteID: Int64,
+                            pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
+
+        Task {
+            do {
+                let hasMorePages = try await synchronizeCoupons(siteID: siteID,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize)
+                onCompletion(.success(hasMorePages))
+            } catch {
+                onCompletion(.failure(error))
             }
         }
     }
@@ -222,6 +250,24 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                                             readOnlyCoupons: coupons, onCompletion: {
                 continuation.resume(returning: ())
             })
+        }
+    }
+
+    func searchCoupons(siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       onCompletion: @escaping (Result<Void, any Error>) -> Void) {
+        Task {
+            do {
+                try await searchCoupons(siteID: siteID,
+                                        keyword: keyword,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize)
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
         }
     }
 

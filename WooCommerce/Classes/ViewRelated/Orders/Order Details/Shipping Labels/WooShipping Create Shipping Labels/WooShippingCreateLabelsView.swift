@@ -241,7 +241,7 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            if isReadyToShowErrorNotice {
+            if viewModel.shouldShowInitialNotices {
                 // Unverified notice for origin address
                 if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
                     verificationNotice(with: originAddressUnverifiedNoticeLabel,
@@ -257,8 +257,7 @@ private extension WooShippingCreateLabelsView {
                 }
 
                 // Verification notice for destination address
-                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel,
-                   viewModel.canViewLabel == false {
+                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
                     verificationNotice(with: destinationAddressStatusNoticeLabel,
                                        isVerified: isDestinationAddressVerified,
                                        onDismiss: {
@@ -286,13 +285,6 @@ private extension WooShippingCreateLabelsView {
                         showingCustomsForm = true
                     })
                 }
-            }
-        }
-        .onAppear {
-            /// A brief delay in requesting user attention after the UI loads
-            /// to avoid overwhelming them with too many changes at once when opening the screen.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.isReadyToShowErrorNotice = true
             }
         }
     }

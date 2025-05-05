@@ -519,6 +519,63 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.addressToEdit)
     }
 
+    func test_shouldShowNotices_is_updated_correctly_for_unfulfilled_shipment() {
+        // Given
+        let order = Order.fake().copy(shippingAddress: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadOriginAddresses(_, let completion):
+                let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
+                completion(.success([originAddress]))
+            case .loadConfig(_, _, let completion):
+                // There exist 2 shipments, one of which has been fulfilled.
+                let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134)
+                let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
+                                 "shipment_1": [WooShippingShipmentItem.fake()]]
+                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
+                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                                      shipmentID: "shipment_0")
+                ])
+                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
+                                                                  shippingLabelData: shippingLabelData)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, noticeDelay: .seconds(0))
+        XCTAssertFalse(viewModel.shouldShowNotices)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then: first shipment is fulfilled
+        XCTAssertFalse(viewModel.shouldShowNotices)
+
+        // When: switching to unfulfilled shipment
+        viewModel.selectedShipmentIndex = 1
+
+        // Then
+        waitUntil {
+            viewModel.shouldShowNotices == true
+        }
+        XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
+
+        /// The notice should be dismissed after a bit
+        waitUntil {
+            viewModel.destinationAddressStatusNoticeLabel == nil
+        }
+    }
+
     func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())

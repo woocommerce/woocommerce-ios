@@ -39,7 +39,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await refreshFirstPage()
+        await loadFirstPageRemotely()
     }
 
     @MainActor
@@ -100,7 +100,7 @@ private extension PointOfSaleCouponsController {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
 
-            await refreshFirstPage()
+            await loadFirstPageRemotely()
         } catch {
             if let couponError = error as? PointOfSaleCouponServiceError {
                 setCouponsErrorViewState(couponError)
@@ -108,7 +108,7 @@ private extension PointOfSaleCouponsController {
         }
     }
 
-    func refreshFirstPage() async {
+    func loadFirstPageRemotely() async {
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }

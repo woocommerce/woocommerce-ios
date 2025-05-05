@@ -77,7 +77,8 @@ struct PointOfSaleCouponServiceTests {
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_enabled_then_throws_couponsLoadingError() async throws {
         // Given
         settingStoreMethods.couponsEnabled = true
-        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
+        let error = NSError(domain: "test", code: 0)
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
 
         // When
         do {
@@ -85,14 +86,15 @@ struct PointOfSaleCouponServiceTests {
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError
-            #expect(expectedError == .couponsLoadingError)
+            #expect(expectedError == .couponsLoadingError(underlyingError: error))
         }
     }
 
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_disabled_then_throws_couponsDisabled() async throws {
         // Given
         settingStoreMethods.couponsEnabled = false
-        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
+        let error = NSError(domain: "test", code: 0)
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
 
         // When
         do {

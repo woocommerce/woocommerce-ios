@@ -13,7 +13,7 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
     var retrieveCalled = false
     var loadCouponsCalled = false
     var validateCalled = false
-    var shouldFailSync = false
+    var errorToThrow: NSError?
 
     var onSynchronizeCalled: () -> Void = {}
 
@@ -22,10 +22,23 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
                             pageSize: Int) async throws -> Bool {
         synchronizeCalled = true
         onSynchronizeCalled()
-        if shouldFailSync {
-            throw NSError(domain: "test", code: 0)
+        if let errorToThrow {
+            throw errorToThrow
         }
         return true
+    }
+
+    func synchronizeCoupons(siteID: Int64,
+                            pageNumber: Int,
+                            pageSize: Int,
+                            onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
+        synchronizeCalled = true
+        if let errorToThrow {
+            onCompletion(.failure(errorToThrow))
+        } else {
+            onCompletion(.success(true))
+        }
+        onSynchronizeCalled()
     }
 
     func deleteCoupon(siteID: Int64,
@@ -62,6 +75,15 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
                                siteTimezone: TimeZone,
                                onCompletion: @escaping (Result<[Yosemite.CouponReport], any Error>) -> Void) {
         loadMostActiveCalled = true
+    }
+
+    func searchCoupons(siteID: Int64,
+                       keyword: String,
+                       pageNumber: Int,
+                       pageSize: Int,
+                       onCompletion: @escaping (Result<Void, any Error>) -> Void) {
+        searchCalled = true
+        onCompletion(.success(()))
     }
 
     func searchCoupons(siteID: Int64,

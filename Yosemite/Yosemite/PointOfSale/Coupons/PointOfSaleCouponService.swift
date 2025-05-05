@@ -6,13 +6,6 @@ import class WooFoundation.CurrencySettings
 import Storage
 import enum Alamofire.AFError
 
-public enum PointOfSaleCouponServiceError: Error {
-    case couponsLoadingError(underlyingError: Error)
-    case couponsDisabled
-    case couponsEnablingError
-    case requestCancelled
-}
-
 public protocol PointOfSaleCouponServiceProtocol {
     func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem]
     func providePointOfSaleCoupons(pageNumber: Int,
@@ -121,5 +114,24 @@ private extension PointOfSaleCouponService {
     enum Constants {
         static let enableCouponsSettingID: String = "woocommerce_enable_coupons"
         static let enableCouponsSettingValue: String = "yes"
+    }
+}
+
+public enum PointOfSaleCouponServiceError: Error, Equatable {
+    case couponsLoadingError(underlyingError: Error)
+    case couponsDisabled
+    case couponsEnablingError
+    case requestCancelled
+
+    public static func == (lhs: PointOfSaleCouponServiceError, rhs: PointOfSaleCouponServiceError) -> Bool {
+        switch (lhs, rhs) {
+        case (.couponsDisabled, .couponsDisabled),
+             (.couponsEnablingError, .couponsEnablingError),
+             (.requestCancelled, .requestCancelled),
+            (.couponsLoadingError, .couponsLoadingError):
+            return true
+        default:
+            return false
+        }
     }
 }

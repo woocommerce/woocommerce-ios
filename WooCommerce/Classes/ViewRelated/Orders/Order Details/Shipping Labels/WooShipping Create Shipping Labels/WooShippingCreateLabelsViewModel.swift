@@ -60,6 +60,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published private(set) var state = ContentState.loading
 
+    @Published private(set) var shouldShowInitialNotices = false
+
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
@@ -208,6 +210,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddress()
+        observeViewStates()
 
         Task {
             await loadRequiredData()
@@ -242,6 +245,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
+        observeViewStates()
 
         Task { @MainActor in
             await loadRequiredData()
@@ -534,11 +538,27 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         /// Clear the notice after a delay when the address is verified.
-        $destinationAddressStatusNoticeLabel
-            .filter { $0 == Localization.DestinationAddressStatus.verified }
+        $shouldShowInitialNotices
+            .combineLatest($destinationAddressStatusNoticeLabel)
+            .filter { shouldShowNotices, destinationNotice in
+                shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
+            }
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
+    /// Ensures that initial notices are only displayed 2 seconds after the view is ready
+    /// to avoid overwhelming users with too many information at once when opening the screen.
+    func observeViewStates() {
+        $state
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { state, shipments, selectedIndex in
+                state == .ready && shipments[selectedIndex].isPurchased == false
+            }
+            .delay(for: .seconds(2), scheduler: RunLoop.current)
+            .assign(to: &$shouldShowInitialNotices)
+
     }
 
     /// Gets the destination address as a `ShippingLabelAddress`.

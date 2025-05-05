@@ -257,7 +257,8 @@ private extension WooShippingCreateLabelsView {
                 }
 
                 // Verification notice for destination address
-                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel,
+                   viewModel.canViewLabel == false {
                     verificationNotice(with: destinationAddressStatusNoticeLabel,
                                        isVerified: isDestinationAddressVerified,
                                        onDismiss: {

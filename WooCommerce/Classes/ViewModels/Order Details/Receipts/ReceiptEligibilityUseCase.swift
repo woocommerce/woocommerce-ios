@@ -85,13 +85,24 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
     }
 
-    // Returns the current payment gateway ID, needed when checking if a transaction is eligible for receipts
-    // based on which plugin and versions are active
-    func selectedPaymentGatewayID(onCompletion: @escaping (String?) -> Void) {
-        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
-            onCompletion(paymentGatewayAccount?.gatewayID)
+    func meetsOrderStatusRequirement(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
+        switch orderStatus {
+        case .completed, .processing, .refunded:
+            isEligibleForBackendReceipts { isEligibleForReceipt in
+                onCompletion(isEligibleForReceipt)
+            }
+        case .failed:
+            selectedPaymentGatewayID { [weak self] gatewayID in
+                guard let gatewayID = gatewayID else {
+                    return onCompletion(false)
+                }
+                self?.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: gatewayID) { isEligibleForReceipt in
+                    onCompletion(isEligibleForReceipt)
+                }
+            }
+        default:
+            return onCompletion(false)
         }
-        stores.dispatch(action)
     }
 }
 
@@ -127,6 +138,15 @@ private extension ReceiptEligibilityUseCase {
             }
             stores.dispatch(action)
         }
+    }
+
+    // Returns the current payment gateway ID, needed when checking if a transaction is eligible for receipts
+    // based on which plugin and versions are active
+    private func selectedPaymentGatewayID(onCompletion: @escaping (String?) -> Void) {
+        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+            onCompletion(paymentGatewayAccount?.gatewayID)
+        }
+        stores.dispatch(action)
     }
 }
 

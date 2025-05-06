@@ -1541,28 +1541,13 @@ extension OrderDetailsDataSource {
     }
 
     private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
-        guard isOrderStatusEligibleForReceipt else {
+        guard !isEligibleForPayment else {
             return completion(false)
         }
         let receiptEligibility = ReceiptEligibilityUseCase()
-
-        switch order.status {
-        case .completed, .processing, .refunded:
-            receiptEligibility.isEligibleForBackendReceipts { isEligibleForReceipt in
-                completion(isEligibleForReceipt)
-            }
-        case .failed:
-            receiptEligibility.selectedPaymentGatewayID { gatewayID in
-                guard let gatewayID = gatewayID else {
-                    return completion(false)
-                }
-                receiptEligibility.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: gatewayID) { isEligibleForReceipt in
-                    completion(isEligibleForReceipt)
-                }
-            }
-        default:
-            completion(false)
-        }
+        receiptEligibility.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
+            completion(isEligible)
+        })
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
@@ -2071,12 +2056,5 @@ extension OrderDetailsDataSource {
         static let paymentCell = 1
         static let paidByCustomerCell = 1
         static let cellDefaultMargin: CGFloat = 16
-    }
-}
-
-// MARK: - Receipts helpers
-private extension OrderDetailsDataSource {
-    var isOrderStatusEligibleForReceipt: Bool {
-        isEligibleForPayment || order.status == .failed
     }
 }

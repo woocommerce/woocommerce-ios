@@ -220,4 +220,168 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         // Then
         XCTAssertFalse(isEligible)
     }
+
+    func test_meetsOrderStatusRequirement_with_completed_status_returns_true() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.completed) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_meetsOrderStatusRequirement_with_processing_status_returns_true() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.processing) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_meetsOrderStatusRequirement_with_refunded_status_returns_true() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.refunded) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_meetsOrderStatusRequirement_with_failed_status_and_no_gateway_returns_false() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .selectedPaymentGatewayAccount(onCompletion):
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.failed) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_meetsOrderStatusRequirement_with_failed_status_and_gateway_returns_true() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+
+        let gateway = createPaymentGatewayAccount()
+        let wcPlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
+        let wcPayPlugin = SystemPlugin.fake().copy(name: CardPresentPaymentsPlugin.wcPay.pluginName, version: "9.1.0", active: true)
+
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .selectedPaymentGatewayAccount(onCompletion):
+                onCompletion(gateway)
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, pluginName, onCompletion):
+                if pluginName == "WooCommerce" {
+                    onCompletion(wcPlugin)
+                } else if pluginName == CardPresentPaymentsPlugin.wcPay.pluginName {
+                    onCompletion(wcPayPlugin)
+                }
+            default:
+                XCTFail("Unexpected action")
+            }
+        }
+
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.failed) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_meetsOrderStatusRequirement_with_cancelled_status_returns_false() {
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let sut = ReceiptEligibilityUseCase(stores: stores)
+
+        let isEligible: Bool = waitFor { promise in
+            sut.meetsOrderStatusRequirement(.cancelled) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertFalse(isEligible)
+    }
+}
+
+private extension ReceiptEligibilityUseCaseTests {
+    func createPaymentGatewayAccount() -> PaymentGatewayAccount {
+        .fake()
+        .copy(
+            siteID: 123,
+            gatewayID: "woocommerce-payments",
+            status: "complete",
+            hasPendingRequirements: false,
+            hasOverdueRequirements: false,
+            isCardPresentEligible: true,
+            isLive: true,
+            isInTestMode: false
+        )
+    }
 }

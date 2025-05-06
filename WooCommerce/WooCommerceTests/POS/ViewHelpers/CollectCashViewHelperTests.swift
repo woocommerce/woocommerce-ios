@@ -277,49 +277,49 @@ struct CollectCashViewHelperTests {
         #expect(capturedErrorMessage == expectedErrorMessage)
     }
 
-    @Test func changeDueAmount_when_input_equals_total_and_includesZeroChange_is_true_then_returns_zero_amount() {
+    @Test func formattedChangeDueAmount_when_input_equals_total_and_includesZeroChange_is_true_then_returns_zero_amount() {
         // Given
         let orderTotal = "20.00"
         let textFieldAmountInput = "20.00"
-        let expectedAmount = "$0.00"
+        let expectedAmount = "0.00"
 
         // When
-        let result = sut.changeDueAmount(
+        let result = sut.formattedChangeDueAmount(
             orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput,
-            includesZeroChange: true)
+            textFieldAmountInput: textFieldAmountInput
+        )
 
         // Then
         #expect(result == expectedAmount)
     }
 
-    @Test func changeDueAmount_when_input_equals_total_with_grouping_separators_and_includesZeroChange_is_true_then_returns_zero_amount() {
+    @Test func formattedChangeDueAmount_when_input_equals_total_with_grouping_separators_and_includesZeroChange_is_true_then_returns_zero_amount() {
         // Given
         let orderTotal = "2,000.00"
         let textFieldAmountInput = "2,000.00"
-        let expectedAmount = "$0.00"
+        let expectedAmount = "0.00"
 
         // When
-        let result = sut.changeDueAmount(
+        let result = sut.formattedChangeDueAmount(
             orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput,
-            includesZeroChange: true)
+            textFieldAmountInput: textFieldAmountInput
+        )
 
         // Then
         #expect(result == expectedAmount)
     }
 
-    @Test func changeDueAmount_when_input_is_above_total_then_returns_change_due_formatted_amount() {
+    @Test func formattedChangeDueAmount_when_input_is_above_total_then_returns_change_due_formatted_amount() {
         // Given
         let orderTotal = "50.50"
         let textFieldAmountInput = "2,000.00"
-        let expectedAmount = "$1,949.50"
+        let expectedAmount = "1,949.50"
 
         // When
-        let result = sut.changeDueAmount(
+        let result = sut.formattedChangeDueAmount(
             orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput,
-            includesZeroChange: true)
+            textFieldAmountInput: textFieldAmountInput
+        )
 
         // Then
         #expect(result == expectedAmount)

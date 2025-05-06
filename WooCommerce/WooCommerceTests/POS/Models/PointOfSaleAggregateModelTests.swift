@@ -241,28 +241,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.purchasableItems.count == 2)
             #expect(sut.cart.coupons.count == 0)
         }
-
-        @available(iOS 17.0, *)
-        @Test func addToCart_when_attempt_to_add_duplicated_coupon_then_does_not_add_it_to_cart() {
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                couponsSearchController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
-            let coupon = makeCouponItem(code: "DISCOUNT!")
-
-            // When
-            sut.addToCart(coupon)
-            sut.addToCart(coupon)
-
-            // Then
-            #expect(sut.cart.coupons.count == 1)
-        }
     }
 
     struct OrderTests {

@@ -49,6 +49,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         await loadFirstPage()
     }
 
+    func clearSearchItems(baseItem: ItemListBaseItem) {
+        setSearchingState()
+    }
+
     @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         guard paginationTracker.hasNextPage else {

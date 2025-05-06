@@ -17,4 +17,5 @@ final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtoc
     func loadNextItems(base: ItemListBaseItem) async { }
     func enableCoupons() async { }
     func searchItems(searchTerm: String, baseItem: WooCommerce.ItemListBaseItem) async { }
+    func clearSearchItems(baseItem: WooCommerce.ItemListBaseItem) { }
 }

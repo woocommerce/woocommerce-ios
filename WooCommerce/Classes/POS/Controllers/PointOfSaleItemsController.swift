@@ -27,6 +27,7 @@ protocol PointOfSaleItemsControllerProtocol {
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
+    func clearSearchItems(baseItem: ItemListBaseItem)
 }
 
 
@@ -67,6 +68,10 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
+    }
+
+    func clearSearchItems(baseItem: ItemListBaseItem) {
+        setSearchingState(base: baseItem)
     }
 
     @MainActor

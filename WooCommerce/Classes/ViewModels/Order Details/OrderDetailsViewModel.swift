@@ -129,7 +129,6 @@ final class OrderDetailsViewModel {
             Task { @MainActor in
                 await dataSource.reloadSections()
             }
-            onUIReloadRequired?()
         }
     }
 

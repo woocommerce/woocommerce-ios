@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.4
+-----
+
+
 22.3
 -----
 - [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
@@ -9,6 +13,7 @@
 - [*] Payments: Prevent sleep during Tap to Pay on iPhone configuration step [https://github.com/woocommerce/woocommerce-ios/pull/15555]
 - [*] Payments: Use correct documentation link for pending requirements onboarding step [https://github.com/woocommerce/woocommerce-ios/pull/15556]
 - [**] POS: Added functionality for selecting and applying coupons. [https://github.com/woocommerce/woocommerce-ios/pull/15549]
+- [*] Order Form: Improve custom amount entry forms [https://github.com/woocommerce/woocommerce-ios/pull/15573]
 
 22.2
 -----

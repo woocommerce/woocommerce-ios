@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-08 17:54:04+0000 */
+/* Translation-Revision-Date: 2025-04-23 09:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -67,9 +67,6 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "Пользователь %1$@ оставил отзыв о %2$@";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
-"%1$@ off · %2$@" = "Скидка %1$@ на %2$@";
-
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "Запрошен возврат %1$@ (%2$@)";
 
@@ -81,9 +78,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ через %2$@";
-
-/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
-"%1$@ · Excl. %2$@" = "%1$@, кроме %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -98,26 +92,11 @@ which should be translated separately and considered part of this sentence. */
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "Заряд %1$@%%";
 
-/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
-"%1$@, %2$@" = "%1$@, %2$@";
-
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
-
-/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
-"%1$d Categories" = "%1$d Категории";
-
-/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
-"%1$d Category" = "%1$d Категория";
-
-/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
-"%1$d Product" = "%1$d Товар";
-
-/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
-"%1$d Products" = "%1$d Товары";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
 "%1$d Products Selected" = "Выбрано %1$d тов.";
@@ -612,12 +591,8 @@ which should be translated separately and considered part of this sentence. */
 "All Orders" = "Все заказы";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
-   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
    Title of the product search filter to search for all products. */
 "All Products" = "Все товары";
-
-/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
-"All Products · Excl. %1$@" = "Все товары, кроме %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "Все подходящие";
@@ -7790,9 +7765,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
 "Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Не удалось обработать платёж. Этот заказ уже оплачен. Дальнейшие платёжные действия могут привести к тому, что с клиента будет дважды списана плата за заказ.";
 
-/* Error message when retrying an In-Person Payment and an unknown error is received. */
-"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось завершить платёж при повторной попытке. Основная ошибка: %1$@";
-
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Не удалось обработать платёж. Не удалось подключиться к платёжной системе. Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдёт снова.";
 
@@ -11692,6 +11664,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Ошибка при попытке обработать платёж. Повторите попытку.";
 
+/* A message shown on the coupon if's not valid after attempting to apply it */
+"pointOfSale.couponRow.invalidCoupon" = "Купон не применён";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Подождите немного";
 
@@ -11719,11 +11694,17 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Удалить";
 
-/* Button title to remove coupons and retry synchronizing order and calculating order totals */
-"pointOfSale.orderSync.couponsError.proceed" = "Продолжить без купонов";
+/* Button to come back to order editing when coupon validation fails. */
+"pointOfSale.orderSync.couponsError.editOrder" = "Изменить заказ";
 
 /* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.title" = "Недействительные купоны";
+"pointOfSale.orderSync.couponsError.errorTitle" = "Не удалось применить купон";
+
+/* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupon" = "Удалить купон";
+
+/* Button title to remove coupons and retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.couponsError.removeCoupons" = "Удалить купоны";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Ошибка при загрузке итоговой суммы";
@@ -11797,6 +11778,24 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Выйти из режима «Пункт продажи»?";
 
+/* Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.. */
+"pos.itemList.enablingCouponsErrorRetry" = "Повторить";
+
+/* Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorSubtitle" = "Хотите повторить попытку?";
+
+/* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
+"pos.itemList.enablingCouponsErrorTitle" = "Ошибка при включении купонов";
+
+/* Text for the button appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageButtonTitle" = "Повторить попытку";
+
+/* Text appearing on the coupon list screen as subtitle when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageSubtitle" = "При загрузке купонов произошла ошибка.";
+
+/* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
+"pos.itemList.failedToLoadCouponsNextPageTitle" = "Не удалось загрузить дополнительные купоны";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadProductsButtonTitle" = "Повторить попытку";
 
@@ -11833,17 +11832,38 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading variations. */
 "pos.itemList.failedToLoadVariationsTitle" = "Ошибка при загрузке вариантов";
 
-/* Text for the button appearing on the coupons list screen when there's no coupons found. */
-"pos.itemList.noCouponsFoundButtonTitleButtonTitle" = "Создать купон";
+/* Text for the button appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsButtonTitle" = "Повторить";
 
-/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.itemList.noCouponsFoundSubtitle" = "Повышайте эффективность бизнеса, отправляя клиентам информацию о специальных предложениях и скидках.";
+/* Subtitle appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsSubtitle" = "Хотите повторить попытку?";
 
-/* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.itemList.noCouponsFoundTitle" = "Купонов не найдено";
+/* Title appearing on the coupon list screen when there's an error refreshing coupons. */
+"pos.itemList.failedToRefreshCouponsTitle" = "Ошибка при обновлении купонов";
+
+/* Text of the button appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledAction" = "Включить";
+
+/* Subtitle appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledSubtitle" = "Разрешите применять коды купонов в вашем магазине.";
+
+/* Title appearing on the coupon list screen when coupons are disabled. */
+"pos.itemList.loadingCouponsDisabledTitle" = "Ошибка загрузки купонов";
+
+/* Text of the button appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorRetry" = "Повторить";
+
+/* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorSubtitle" = "Ошибка загрузки купонов";
+
+/* Title appearing on the coupon list screen when there's an error loading coupons. */
+"pos.itemList.loadingCouponsErrorTitle" = "Ошибка загрузки купонов";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Товары";
+
+/* Title of the button at the top of Point of Sale to switch to Coupons list. */
+"pos.itemlistview.couponsTitle" = "Купоны";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Другие типы товаров станут доступны в ближайших обновлениях.";
@@ -11860,11 +11880,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Товары";
 
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.emptyListText" = "Нет недавних запросов поиска";
+
+/* Title for the list of recent searches shown before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.title" = "Недавние запросы поиска";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Закрыть";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Доступные опции";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Повышайте эффективность бизнеса, отправляя клиентам информацию о специальных предложениях и скидках.";
+
+/* Text appearing on the coupon list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "Купонов не найдено.";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Чтобы добавить товар, выйдите из POS и откройте «Товары»";
@@ -11883,6 +11915,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on screen when there are no variations to load. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Поддерживаемых вариантов не найдено.";
+
+/* Text for the button appearing on the coupons list screen when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Создать купон";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Создать заказ в разделе «Управление магазином»";
@@ -11911,8 +11946,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Оплата наличными";
 
-/* Title for discount amount field */
-"pos.totalsView.discountTotal" = "Скидка";
+/* Title for discount total amount field */
+"pos.totalsView.discountTotal2" = "Итоговая скидка";
 
 /* Text for the banner requiring specific WooCommerce version. */
 "pos.totalsView.receipts.banner.updateWooCommerceVersionText" = "Обновите WooCommerce до версии 9.5.0";
@@ -13686,6 +13721,12 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Если у вас нет учётной записи, создайте её с этим адресом эл. почты.";
 
+/* Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.enterUsername" = "Введите имя пользователя";
+
+/* Label for the username field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.usernameLabel" = "Имя пользователя";
+
 /* Error message when the username is not found */
 "wpComEmailLoginViewModel.unknownUsername" = "Не удалось найти учётную запись WordPress.com, связанную с этим именем пользователя. Введите адрес эл. почты, чтобы создать новую учётную запись.";
 
@@ -13697,6 +13738,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Проверьте, правильно ли указан ваш адрес эл. почты, и ещё раз загляните в папку «Спам».";
+
+/* A message that informs the user that a magic link will be sent to their email address. */
+"wpcomMagicLinkRequestView.label" = "Мы отправим вам ссылку для входа, которая позволит вам сразу войти без пароля.";
+
+/* Button title for the action of sending a magic link email to log in to WordPress.com. */
+"wpcomMagicLinkRequestView.primaryAction" = "Прислать ссылку по электронной почте";
+
+/* Button title for the action of signing in using WordPress.com username and password. */
+"wpcomMagicLinkRequestView.useUsernamePassword" = "Укажите имя пользователя и пароль";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

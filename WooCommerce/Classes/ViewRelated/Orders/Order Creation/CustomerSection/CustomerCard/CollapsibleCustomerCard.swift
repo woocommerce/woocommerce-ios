@@ -25,7 +25,7 @@ struct CollapsibleCustomerCard: View {
                 VStack(alignment: .leading) {
                     Text(Localization.emailAddressTitle)
                     TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
-                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                        .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
                 }
 
                 Text("Create new customer toggle")

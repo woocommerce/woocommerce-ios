@@ -138,6 +138,21 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
+    func didPurchaseLabel(for shipmentID: String, purchasedLabelID: Int64) {
+        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+            return
+        }
+        let currentShipment = shipments[index]
+        let updatedContents = currentShipment.contents.map {
+            CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
+        }
+        shipments[index] = Shipment(contents: updatedContents,
+                                    purchasedLabelID: purchasedLabelID,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+    }
+
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
         moveToNoticeViewModel = nil
         instructions = nil
@@ -310,6 +325,20 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
         return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
+    }
+
+    /// Determines if the "merge all unfulfilled" option should be disabled.
+    /// The option should be disabled if:
+    /// 1. The view model is currently saving shipment info
+    /// 2. There are no unfulfilled shipments
+    /// 3. There is only one unfulfilled shipment
+    func isMergeAllUnfulfilledDisabled() -> Bool {
+        if isSavingShipmentInfo {
+            return true
+        }
+
+        let unfulfilledShipments = shipments.filter { !$0.isPurchased }
+        return unfulfilledShipments.count <= 1
     }
 
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {

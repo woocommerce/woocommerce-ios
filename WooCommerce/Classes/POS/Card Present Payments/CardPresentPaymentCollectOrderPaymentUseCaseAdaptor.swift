@@ -148,6 +148,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             return
         case .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
+                .cardInserted(cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),
                 .paymentCaptureError(cancelPayment: let cancelPayment),
                 .paymentIntentCreationError(_, cancelPayment: let cancelPayment):

@@ -210,6 +210,46 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
 
+    @MainActor
+    func test_purchaseLabel_triggers_onLabelPurchase_with_correct_purchased_shipping_label() async throws {
+        // Given
+        let expectedShippingLabel = ShippingLabel.fake().copy(carrierID: "usps", trackingNumber: "1234567890")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+
+        // When
+        var purchasedLabel: ShippingLabel?
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            onLabelPurchase: { purchasedLabel = $0 })
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+                completion(.success(expectedShippingLabel))
+            case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        try await viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertNotNil(purchasedLabel)
+        XCTAssertEqual(purchasedLabel?.originAddress, originAddressSubject.value?.toShippingLabelAddress())
+        XCTAssertEqual(purchasedLabel?.destinationAddress, destinationAddressSubject.value?.toShippingLabelAddress())
+    }
+
     func test_selectPackage_sets_selectedPackage_with_package_data() {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
@@ -281,6 +321,92 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
+    }
+
+    func test_changing_customs_form_loads_new_label_rates_with_updated_customs_form() {
+        // Given
+        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(quantity: 2, productID: 1)
+        let expectedCustomsForm = ShippingLabelCustomsForm.fake().copy(contentsType: .gift,
+                                                                       restrictionType: .quarantine,
+                                                                       nonDeliveryOption: .abandon,
+                                                                       items: [expectedItem])
+        var sentCustomsForm: ShippingLabelCustomsForm?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, _):
+                sentCustomsForm = packages.first?.customsForm
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([]))
+            case .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            debounceDuration: 0)
+
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.customsFormViewModel.contentType = .gift
+        viewModel.customsFormViewModel.restrictionType = .quarantine
+        viewModel.customsFormViewModel.onDismiss()
+
+        // Then
+        waitUntil {
+            sentCustomsForm != nil
+        }
+        XCTAssertEqual(sentCustomsForm, expectedCustomsForm)
+    }
+
+    func test_changing_HAZMAT_category_loads_new_label_rates_with_updated_HAZMAT_category() {
+        // Given
+        let expectedHAZMATCategory = "CLASS_1"
+        var sentHAZMATCategory: String?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, _):
+                sentHAZMATCategory = packages.first?.hazmatCategory
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([]))
+            case .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores,
+                                                            debounceDuration: 0)
+
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        waitUntil {
+            sentHAZMATCategory != nil
+        }
+        XCTAssertEqual(sentHAZMATCategory, expectedHAZMATCategory)
     }
 
     func test_totalCost_has_expected_value_when_shipping_rate_is_set() throws {

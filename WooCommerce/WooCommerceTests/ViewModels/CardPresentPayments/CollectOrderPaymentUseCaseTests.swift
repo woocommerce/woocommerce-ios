@@ -368,6 +368,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in
@@ -380,6 +381,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in

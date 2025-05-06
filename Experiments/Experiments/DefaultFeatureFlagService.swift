@@ -103,6 +103,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsInPOSPt2PopularProducts:
             return false
+        case .searchCouponsInPOS:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

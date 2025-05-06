@@ -4,30 +4,19 @@ import class WooFoundation.CurrencySettings
 
 struct PointOfSaleCouponServiceTests {
     private let sut: PointOfSaleCouponService
-    private let couponStoreMethods: MockCouponStoreMethods
     private let settingStoreMethods: MockSettingStoreMethods
     private let storage: MockStorageManager
-
+    private let mockStrategy: MockPointOfSaleCouponFetchStrategy
     private let sampleSiteID: Int64 = 123
 
     init() {
-        self.couponStoreMethods = MockCouponStoreMethods()
         self.settingStoreMethods = MockSettingStoreMethods()
         self.storage = MockStorageManager()
+        self.mockStrategy = MockPointOfSaleCouponFetchStrategy()
         self.sut = .init(siteID: sampleSiteID,
                          currencySettings: CurrencySettings(),
-                         couponStoreMethods: couponStoreMethods,
                          settingStoreMethods: settingStoreMethods,
-                         storage: storage
-        )
-    }
-
-    @Test func provideLocalPointOfSaleCoupons_when_zero_coupons_in_local_storage_then_provides_zero_coupons() async throws {
-        // Given, When
-        let coupons = try await sut.provideLocalPointOfSaleCoupons()
-
-        // Then
-        #expect(coupons.isEmpty)
+                         storage: storage)
     }
 
     @Test func provideLocalPointOfSaleCoupons_when_disabled_then_expects_couponsDisabled_error() async throws {
@@ -48,7 +37,7 @@ struct PointOfSaleCouponServiceTests {
 
             do {
                 // Then
-                _ = try await sut.provideLocalPointOfSaleCoupons()
+                _ = try await sut.provideLocalPointOfSaleCoupons(fetchStrategy: mockStrategy)
             } catch {
                 let expectedError = error as? PointOfSaleCouponServiceError
                 #expect(expectedError == .couponsDisabled)
@@ -56,140 +45,43 @@ struct PointOfSaleCouponServiceTests {
         }
     }
 
-    @Test func provideLocalPointOfSaleCoupons_when_some_coupons_in_local_storage_then_provides_some_coupons() async throws {
-        // Given
-        let coupon1 = Coupon.fake().copy(siteID: sampleSiteID, code: "coupon_123")
-        let coupon2 = Coupon.fake().copy(siteID: sampleSiteID, code: "coupon_456")
-        let expectedCoupons = 2
-
-        storage.insertSampleCoupon(readOnlyCoupon: coupon1)
-        storage.insertSampleCoupon(readOnlyCoupon: coupon2)
-
-        // When
-        let coupons = try await sut.provideLocalPointOfSaleCoupons()
-
-        // Then
-        #expect(coupons.count == expectedCoupons)
-    }
-
-    @Test func provideLocalPointOfSaleCoupons_when_storage_has_enabled_setting_then_returns_coupons() async throws {
-        // Given
-        let setting = SiteSetting.fake().copy(siteID: sampleSiteID,
-                                            settingID: "woocommerce_enable_coupons",
-                                            value: "yes")
-        storage.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        let coupon = Coupon.fake().copy(siteID: sampleSiteID, code: "coupon_123")
-        storage.insertSampleCoupon(readOnlyCoupon: coupon)
-
-        // When
-        let coupons = try await sut.provideLocalPointOfSaleCoupons()
-
-        // Then
-        #expect(coupons.count == 1)
-        #expect(settingStoreMethods.retrieveCouponSettingCalled == false)
-    }
-
-    @Test func provideLocalPointOfSaleCoupons_when_storage_has_disabled_setting_then_checks_remote() async throws {
-        // Given
-        let setting = SiteSetting.fake().copy(siteID: sampleSiteID,
-                                            settingID: "woocommerce_enable_coupons",
-                                            value: "no")
-        storage.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        settingStoreMethods.couponsEnabled = true
-
-        // When
-        await confirmation(expectedCount: 1) { confirmation in
-            settingStoreMethods.retrieveCouponSetting(siteID: sampleSiteID) { _ in
-                confirmation()
-            }
-            _ = try? await sut.provideLocalPointOfSaleCoupons()
-        }
-
-        // Then
-        #expect(settingStoreMethods.retrieveCouponSettingCalled == true)
-    }
-
-    @Test func providePointOfSaleCoupons_when_one_coupon_in_store_then_one_coupon_returned() async throws {
-        // Given
-        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
-        storage.insertSampleCoupon(readOnlyCoupon: coupon)
-
-        // When
-        let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
-
-        // Then
-        #expect(coupons.items.count == 1)
-    }
-
-    @Test func providePointOfSaleCoupons_when_two_coupons_in_store_then_two_coupons_returned() async throws {
-        // Given
-        let coupon = Coupon.fake().copy(siteID: 123, couponID: 0, code: "coupon")
-        storage.insertSampleCoupon(readOnlyCoupon: coupon)
-        let coupon2 = Coupon.fake().copy(siteID: 123, couponID: 1, code: "coupon2")
-        storage.insertSampleCoupon(readOnlyCoupon: coupon2)
-
-        // When
-        let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
-
-        // Then
-        #expect(coupons.items.count == 2)
-    }
-
-    @Test func providePointOfSaleCoupons_when_have_expired_coupons_then_provides_all_coupons() async throws {
-        // Given
-        let now = Date()
-        let noExpiration: Date? = nil
-        let expiresTomorrow: Date = Calendar.current.date(byAdding: .day, value: 1, to: now) ?? Date()
-        let expiredYesterday: Date = Calendar.current.date(byAdding: .day, value: -1, to: now) ?? Date()
-
-        let validCouponWithNoExpiration = Coupon.fake().copy(siteID: 123, code: "ok_coupon_forever", dateExpires: noExpiration)
-        storage.insertSampleCoupon(readOnlyCoupon: validCouponWithNoExpiration)
-
-        let validCouponExpiresTomorrow = Coupon.fake().copy(siteID: 123, code: "ok_coupon_for_some_time", dateExpires: expiresTomorrow)
-        storage.insertSampleCoupon(readOnlyCoupon: validCouponExpiresTomorrow)
-
-        let expiredCoupon = Coupon.fake().copy(siteID: 123, code: "expired_coupon", dateExpires: expiredYesterday)
-        storage.insertSampleCoupon(readOnlyCoupon: expiredCoupon)
-
-        // When
-        let coupons = try await sut.providePointOfSaleCoupons(pageNumber: 0)
-
-        // Then
-        #expect(coupons.items.count == 3)
-    }
-
-    @Test func providePointOfSaleCoupons_when_no_coupons_then_synchronize_called() async throws {
-        try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
-
-        #expect(couponStoreMethods.synchronizeCalled == true)
-    }
-
-    @available(iOS 17.0, *)
-    @Test func providePointOfSaleCoupons_when_some_coupons_then_synchronize_called_later() async throws {
-        // Given
-        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
-        storage.insertSampleCoupon(readOnlyCoupon: coupon)
-
-        try await confirmation(expectedCount: 1) { confirmation in
-            couponStoreMethods.onSynchronizeCalled = {
-                // Then
-                confirmation()
-            }
-
-            // When
-            try await _ = sut.providePointOfSaleCoupons(pageNumber: 0)
-        }
-
-    }
-
-    @Test func providePointOfSaleCoupons_when_sync_fails_and_coupons_enabled_then_throws_couponsLoadingError() async throws {
+    @Test func provideLocalPointOfSaleCoupons_when_enabled_then_calls_strategy() async throws {
         // Given
         settingStoreMethods.couponsEnabled = true
-        couponStoreMethods.shouldFailSync = true
+        let expectedCoupons = [POSItem.coupon(POSCoupon(id: UUID(), code: "test", summary: "test", dateExpires: nil))]
+        mockStrategy.fetchLocalCouponsResult = expectedCoupons
+
+        // When
+        let coupons = try await sut.provideLocalPointOfSaleCoupons(fetchStrategy: mockStrategy)
+
+        // Then
+        #expect(mockStrategy.fetchLocalCouponsCalled)
+        #expect(coupons == expectedCoupons)
+    }
+
+    @Test func providePointOfSaleCoupons_when_enabled_then_calls_strategy() async throws {
+        // Given
+        settingStoreMethods.couponsEnabled = true
+        let expectedCoupons = PagedItems(items: [POSItem.coupon(POSCoupon(id: UUID(), code: "test", summary: "test", dateExpires: nil))], hasMorePages: false)
+        mockStrategy.fetchCouponsResult = expectedCoupons
+
+        // When
+        let pagedCoupons = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
+
+        // Then
+        #expect(mockStrategy.fetchCouponsCalled)
+        #expect(mockStrategy.fetchCouponsPageNumber == 1)
+        #expect(pagedCoupons.items == expectedCoupons.items)
+    }
+
+    @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_enabled_then_throws_couponsLoadingError() async throws {
+        // Given
+        settingStoreMethods.couponsEnabled = true
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
 
         // When
         do {
-            _ = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+            _ = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError
@@ -197,18 +89,45 @@ struct PointOfSaleCouponServiceTests {
         }
     }
 
-    @Test func providePointOfSaleCoupons_when_sync_fails_and_coupons_disabled_then_throws_couponsDisabled() async throws {
+    @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_disabled_then_throws_couponsDisabled() async throws {
         // Given
         settingStoreMethods.couponsEnabled = false
-        couponStoreMethods.shouldFailSync = true
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
 
         // When
         do {
-            _ = try await sut.providePointOfSaleCoupons(pageNumber: 0)
+            _ = try await sut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: mockStrategy)
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError
             #expect(expectedError == .couponsDisabled)
         }
+    }
+}
+
+private class MockPointOfSaleCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
+    var fetchCouponsCalled = false
+    var fetchLocalCouponsCalled = false
+    var fetchCouponsPageNumber: Int?
+    var fetchCouponsResult: PagedItems<POSItem>?
+    var fetchLocalCouponsResult: [POSItem]?
+    var fetchCouponsError: Error?
+    var fetchLocalCouponsError: Error?
+
+    func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        fetchCouponsCalled = true
+        fetchCouponsPageNumber = pageNumber
+        if let error = fetchCouponsError {
+            throw error
+        }
+        return fetchCouponsResult ?? .init(items: [], hasMorePages: false)
+    }
+
+    func fetchLocalCoupons() async throws -> [POSItem] {
+        fetchLocalCouponsCalled = true
+        if let error = fetchLocalCouponsError {
+            throw error
+        }
+        return fetchLocalCouponsResult ?? []
     }
 }

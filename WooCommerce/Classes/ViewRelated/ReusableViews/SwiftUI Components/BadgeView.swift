@@ -110,7 +110,11 @@ private extension BadgeView {
             }
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(customizations.backgroundColor)
+                .stroke(.white, lineWidth: Layout.borderLineWidth)
+                .background(
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(customizations.backgroundColor)
+                )
         }
     }
 }

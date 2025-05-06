@@ -270,7 +270,9 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
 
     func reloadSections() {
-        viewModel.reloadSections()
+        Task {
+            await viewModel.reloadSections()
+        }
     }
 }
 

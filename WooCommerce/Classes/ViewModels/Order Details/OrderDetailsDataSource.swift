@@ -2077,9 +2077,6 @@ extension OrderDetailsDataSource {
 // MARK: - Receipts helpers
 private extension OrderDetailsDataSource {
     var isOrderStatusEligibleForReceipt: Bool {
-        order.status == .completed ||
-        order.status == .processing ||
-        order.status == .refunded ||
-        order.status == .failed
+        isEligibleForPayment || order.status == .failed
     }
 }

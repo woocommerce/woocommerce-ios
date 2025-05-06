@@ -1508,7 +1508,14 @@ extension OrderDetailsDataSource {
         } else if await isEligibleForBackendReceipt() {
             rows.append(.seeReceipt)
         }
-        return buildPaymentSection(from: rows)
+        if isEligibleForRefund {
+            rows.append(.issueRefundButton)
+        }
+        return Section(
+            category: .payment,
+            title: Title.payment,
+            rows: rows
+        )
     }
 
     @MainActor
@@ -2048,17 +2055,5 @@ extension OrderDetailsDataSource {
         static let paymentCell = 1
         static let paidByCustomerCell = 1
         static let cellDefaultMargin: CGFloat = 16
-    }
-}
-
-private extension OrderDetailsDataSource {
-    private func buildPaymentSection(from rows: [Row]) -> Section {
-        var updatedRows = rows
-        if isEligibleForRefund {
-            updatedRows.append(.issueRefundButton)
-        }
-        return Section(category: .payment,
-                       title: Title.payment,
-                       rows: updatedRows)
     }
 }

@@ -49,8 +49,6 @@ extension Cart {
         case .variableParentProduct:
             return
         case .coupon(let coupon):
-            guard !coupons.contains(where: { $0.id == coupon.id }) else { return }
-
             let couponItem = Cart.CouponItem(id: coupon.id, code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
         }

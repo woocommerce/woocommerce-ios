@@ -1155,15 +1155,3 @@ private func makeLoadedOrderState(cartTotal: String = "",
         order
     )
 }
-
-private struct MockPOSSearchHistoryService: POSSearchHistoryProviding {
-    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
-
-    func searchHistory(for itemType: POSItemType) -> [String] {
-        return []
-    }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
-}

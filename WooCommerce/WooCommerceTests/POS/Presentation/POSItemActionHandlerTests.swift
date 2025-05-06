@@ -106,15 +106,3 @@ private func makeCouponItem(code: String = "") -> POSItem {
 private func makeProductItem() -> POSItem {
     return .simpleProduct(.init(id: UUID(), name: "some product name", formattedPrice: "$10.00", productID: 123, price: "10"))
 }
-
-private struct MockPOSSearchHistoryService: POSSearchHistoryProviding {
-    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
-
-    func searchHistory(for itemType: POSItemType) -> [String] {
-        return []
-    }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
-}

@@ -1550,7 +1550,7 @@ extension OrderDetailsDataSource {
         case .completed, .processing, .refunded:
             receiptEligibility.isEligibleForBackendReceipts { isEligibleForReceipt in
                 completion(isEligibleForReceipt)
-        }
+            }
         case .failed:
             receiptEligibility.selectedPaymentGatewayID { gatewayID in
                 guard let gatewayID = gatewayID else {

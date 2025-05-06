@@ -12,18 +12,6 @@ struct PointOfSaleItemListEmptyView: View {
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    private var shouldShowErrorIcon: Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) else {
-            return false
-        }
-        switch viewModel.itemListType {
-        case .coupons, .products(search: false):
-            return true
-        case .products(search: true):
-            return false
-        }
-    }
-
     init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onAction = onAction
@@ -86,16 +74,11 @@ struct PointOfSaleItemListEmptyView: View {
 
     @ViewBuilder
     private var icon: some View {
-        if shouldShowErrorIcon {
-            POSErrorExclamationMark(size: .large)
-                .accessibilityHidden(true)
-        } else {
-            Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-        }
+        Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: Constants.iconSize, height: Constants.iconSize)
+            .foregroundColor(.posOnSurfaceVariantHighest)
     }
 }
 
@@ -132,8 +115,10 @@ struct PointOfSaleItemListEmptyViewModel {
             return Localization.emptyProductsSearchSubtitle
         case (.root, .products(search: false)):
             return Localization.emptyProductsSubtitle
-        case (.root, .coupons):
+        case (.root, .coupons(search: false)):
             return Localization.emptyCouponsSubtitle
+        case (.root, .coupons(search: true)):
+            return Localization.emptyCouponSearchSubtitle
         case (.parent, .products):
             return Localization.emptyVariableParentProductSubtitle
         default:
@@ -160,7 +145,7 @@ struct PointOfSaleItemListEmptyViewModel {
 
     var buttonTitle: String? {
         switch itemListType {
-        case .coupons:
+        case .coupons(search: false):
             return Localization.emptyCouponsButtonTitle
         default:
             return nil
@@ -183,7 +168,6 @@ struct PointOfSaleItemListEmptyViewModel {
             value: "To add one, exit POS and go to Products.",
             comment: "Text hinting the merchant to create a product."
         )
-
         static let emptyProductsSearchTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle",
             value: "No products found.",
@@ -199,7 +183,6 @@ struct PointOfSaleItemListEmptyViewModel {
             value: "Variation names can't be searched, so use the parent product name.",
             comment: "Text providing additional search tips when no products are found in the POS product search."
         )
-
         static let emptyVariableParentProductTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle",
             value: "No supported variations found.",
@@ -215,7 +198,6 @@ struct PointOfSaleItemListEmptyViewModel {
             value: "To add one, exit POS and edit this product in the Products tab.",
             comment: "Text hinting the merchant to create a product."
         )
-
         static let emptyCouponsTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2",
             value: "No coupons found",
@@ -230,6 +212,11 @@ struct PointOfSaleItemListEmptyViewModel {
             "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle",
             value: "Create coupon",
             comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
+        )
+        static let emptyCouponSearchSubtitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle",
+            value: "Try adjusting your search term – searching part of a coupon name may help.",
+            comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
         )
     }
 }

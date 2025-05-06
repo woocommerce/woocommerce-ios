@@ -13,14 +13,16 @@ struct ItemListView: View {
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
 
+    private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
+        PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType)
+    }
+
     private var _isSearching: Binding<Bool> {
         Binding(
             get: {
                 switch selectedItemListType {
-                case .products(search: let searching):
-                    return searching
-                case .coupons:
-                    return false
+                case let .products(search), let .coupons(search):
+                    return search
                 }
             },
             set: { newValue in
@@ -28,7 +30,7 @@ struct ItemListView: View {
                 case .products:
                     selectedItemListType = .products(search: newValue)
                 case .coupons:
-                    break // No-op since coupons don't support search
+                    selectedItemListType = .coupons(search: newValue)
                 }
             }
         )
@@ -49,6 +51,10 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
     }
 
+    private var isSearchCouponsFeatureEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchCouponsInPOS)
+    }
+
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
         let itemListState = itemListState(selectedItemListType)
@@ -56,14 +62,11 @@ struct ItemListView: View {
     }
 
     private var isSearchAllowed: Bool {
-        guard isSearchProductsFeatureEnabled else {
-            return false
-        }
         switch selectedItemListType {
         case .products:
-            return true
+            return isSearchProductsFeatureEnabled
         case .coupons:
-            return false
+            return isSearchCouponsFeatureEnabled
         }
     }
 
@@ -94,7 +97,7 @@ struct ItemListView: View {
             TabView(selection: $selectedItemListType) {
                 itemListTabContent(.products(search: false))
                 if isCouponsFeatureEnabled {
-                    itemListTabContent(.coupons)
+                    itemListTabContent(.coupons(search: false))
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -117,14 +120,25 @@ struct ItemListView: View {
         })
     }
 
+    private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
+        switch selectedItemListType {
+        case .products:
+            return posModel.purchasableItemsSearchController
+        case .coupons:
+            return posModel.couponsSearchController
+        }
+    }
+
     @ViewBuilder
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
                 POSSearchContentView(
-                    searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
+                    searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                     itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
                     searchTerm: $searchTerm
                 ) { _ in
@@ -159,21 +173,20 @@ struct ItemListView: View {
             node: .root,
             itemActionHandler: actionHandler(itemListType),
             willLoadMore: {
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemListType: selectedItemListType))
+                analyticsTracker.trackNextPageWillLoad()
             }
         )
         .refreshable {
-            trackPullToRefresh()
+            analyticsTracker.trackRefresh()
             await itemsController(itemListType).refreshItems(base: .root)
         }
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
         switch itemListType {
-        case .products(search: false), .coupons:
+        case .products(search: false), .coupons(search: false):
             StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
-        case .products(search: true):
+        case .products(search: true), .coupons(search: true):
             SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
         }
     }
@@ -187,7 +200,9 @@ struct ItemListView: View {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
-                itemActionHandler: actionHandler(selectedItemListType)
+                itemActionHandler: actionHandler(selectedItemListType),
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation,
+                                                                      isSearching: selectedItemListType.isSearching)
             )
         default:
             EmptyView()
@@ -208,34 +223,31 @@ private extension ItemListView {
                         if isSearching {
                             POSSearchField(
                                 searchTerm: $searchTerm,
-                                searchable: POSProductSearchable(itemsController: posModel.purchasableItemsSearchController,
-                                                               searchHistoryProvider: posModel.searchHistoryService),
+                                searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                                 itemsController: searchItemsController,
+                                                                 searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
                                     withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                        selectedItemListType = .products(search: false)
+                                        setSearch(false)
                                     }
                                 }
                             )
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
+                            createCouponButton
+                                .renderedIf(isCouponsFeatureEnabled)
+
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                    ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.searchButtonTapped(
-                                        itemListType: selectedItemListType))
-                                    selectedItemListType = .products(search: true)
+                                    analyticsTracker.trackSearchTapped()
+                                    setSearch(true)
                                 }
                             }
                             .transition(.opacity.combined(with: .scale))
                         }
-                    }
-
-                    if isCouponsFeatureEnabled {
-                        POSPageHeaderActionButton(systemName: "plus") {
-                            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
-                            showCouponCreationModal = true
-                        }
-                        .renderedIf(isAddingCouponAllowed)
-                        .transition(.opacity.combined(with: .scale))
+                    } else {
+                        createCouponButton
+                            .renderedIf(isCouponsFeatureEnabled)
                     }
                 }
             })
@@ -265,7 +277,7 @@ private extension ItemListView {
                     title: Localization.couponsTitle,
                     isSelected: selectedItemListType.isCoupons,
                     action: {
-                        displayItemListType(.coupons)
+                        displayItemListType(.coupons(search: false))
                     }
                 )
             )
@@ -279,6 +291,16 @@ private extension ItemListView {
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
+    @ViewBuilder
+    private var createCouponButton: some View {
+        POSPageHeaderActionButton(systemName: "plus") {
+            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+            showCouponCreationModal = true
+        }
+        .renderedIf(isAddingCouponAllowed)
+        .transition(.opacity.combined(with: .scale))
+    }
+
     @ViewBuilder
     var emptyView: some View {
         switch selectedItemListType {
@@ -329,7 +351,7 @@ private extension ItemListView {
             }
         }
 
-        trackSelectedItemListTypeTapped(itemListType)
+        analyticsTracker.trackItemListSelected()
     }
 }
 
@@ -341,13 +363,24 @@ private extension ItemListView {
             posModel.purchasableItemsController
         case .products(search: true):
             posModel.purchasableItemsSearchController
-        case .coupons:
+        case .coupons(search: false):
             posModel.couponsController
+        case .coupons(search: true):
+            posModel.couponsSearchController
         }
     }
 
     private func itemListState(_ itemType: ItemListType) -> ItemListState {
         itemsController(itemType).itemsViewState.itemsStack.root
+    }
+
+    private func setSearch(_ isSearching: Bool) {
+        switch selectedItemListType {
+        case .products:
+            selectedItemListType = .products(search: isSearching)
+        case .coupons:
+            selectedItemListType = .coupons(search: isSearching)
+        }
     }
 }
 
@@ -375,27 +408,6 @@ private extension ItemListView {
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
-    }
-}
-
-@available(iOS 17.0, *)
-private extension ItemListView {
-    func trackSelectedItemListTypeTapped(_ type: ItemListType) {
-        switch type {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
-    }
-
-    func trackPullToRefresh() {
-        switch selectedItemListType {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsPullToRefresh)
-        }
     }
 }
 

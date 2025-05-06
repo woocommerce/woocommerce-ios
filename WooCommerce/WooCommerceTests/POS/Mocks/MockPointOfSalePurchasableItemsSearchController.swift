@@ -15,4 +15,6 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
     func refreshItems(base: ItemListBaseItem) async { }
 
     func loadNextItems(base: ItemListBaseItem) async { }
+
+    func clearSearchItems(baseItem: WooCommerce.ItemListBaseItem) { }
 }

@@ -215,7 +215,22 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: use delete action when it is ready (https://github.com/woocommerce/woocommerce-ios/issues/14679)
+            let action = WooShippingAction.deletePackage(siteID: siteID,
+                                                         packageID: packageID,
+                                                         packageType: .predefined,
+                                                         completion: { [weak self] result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
+                    self?.starredCarriersPackages.insert(packageID)
+                    self?.notice = Notice(title: Localization.removingPackageFailure,
+                                          feedbackType: .error,
+                                          actionTitle: Localization.retry,
+                                          actionHandler: {
+                        self?.starUnstarPackage(packageID, carrierID: carrierID)
+                    })
+                }
+            })
+            stores.dispatch(action)
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -229,7 +244,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                     self?.starredCarriersPackages.remove(packageID)
                     self?.notice = Notice(title: Localization.savingPackageFailure,
                                           feedbackType: .error,
-                                          actionTitle: Localization.savingPackageRetry,
+                                          actionTitle: Localization.retry,
                                           actionHandler: {
                         self?.starUnstarPackage(packageID, carrierID: carrierID)
                     })
@@ -240,7 +255,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // delete saved packages
-    @MainActor
     func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // delete the package locally and on backend
 
@@ -257,28 +271,38 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         let removedStarredCarrierID = starredCarriersPackages.remove(packageToRemove.id)
 
-        if self.selectedSavedPackageId == packageToRemove.id {
-            self.selectedSavedPackageId = nil
+        if selectedSavedPackageId == packageToRemove.id {
+            selectedSavedPackageId = nil
         }
 
         // delete on backend
-        let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID,
+                                                           packageID: packageToRemove.id,
+                                                           packageType: packageToRemove.source.isCustomPackage ? .custom : .predefined) { [weak self] result in
+            guard let self else { return }
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
 
                 // undo removing of the package
                 // first: undo starring
                 if let carrierID = removedStarredCarrierID {
-                    self.starredCarriersPackages.insert(carrierID)
+                    starredCarriersPackages.insert(carrierID)
                 }
                 // second: undo removing from custom saved
                 if let customPackagesIndex {
-                    self.customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
+                    customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
                 }
                 // third: undo removing from predefined saved
                 if let predefinedPackagesIndex {
-                    self.predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
+                    predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
                 }
+
+                notice = Notice(title: Localization.removingPackageFailure,
+                                      feedbackType: .error,
+                                      actionTitle: Localization.retry,
+                                      actionHandler: { [weak self] in
+                    self?.removeSavedPackage(packageToRemove)
+                })
             }
         }
 
@@ -288,15 +312,20 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
 extension WooShippingAddPackageViewModel {
     enum Localization {
+        static let removingPackageFailure = NSLocalizedString(
+            "wooShippingAddPackageViewModel.removingPackageFailure",
+            value: "Unable to remove package",
+            comment: "Message on a notice when removing a package fails in the shipping creation flow"
+        )
         static let savingPackageFailure = NSLocalizedString(
             "wooShippingAddPackageViewModel.savingPackageFailure",
             value: "Unable to save package",
             comment: "Message on a notice when saving a package fails in the shipping creation flow"
         )
-        static let savingPackageRetry = NSLocalizedString(
-            "wooShippingAddPackageViewModel.savingPackageRetry",
+        static let retry = NSLocalizedString(
+            "wooShippingAddPackageViewModel.retry",
             value: "Retry",
-            comment: "Button to retry saving a package fails in the shipping creation flow"
+            comment: "Button to retry saving/removing a package in the shipping creation flow"
         )
     }
 }

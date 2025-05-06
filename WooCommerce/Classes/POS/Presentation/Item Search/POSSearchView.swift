@@ -13,6 +13,8 @@ protocol POSSearchable {
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
     func performSearch(term: String) async
+
+    func clearSearchResults()
 }
 
 /// A reusable search field view for POS items
@@ -24,6 +26,7 @@ struct POSSearchField: View {
     @FocusState private var isSearchFieldFocused: Bool
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
+    @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
 
     private let searchable: any POSSearchable
     private let onBack: () -> Void
@@ -38,21 +41,18 @@ struct POSSearchField: View {
 
     var body: some View {
         HStack(spacing: POSSpacing.small) {
-            Button {
+            POSPageHeaderBackButton(configuration: .init(state: .enabled, action: {
                 searchTerm = ""
                 onBack()
                 isSearchFieldFocused = false
-            } label: {
-                Image(systemName: "chevron.backward")
-                    .foregroundColor(.posOnSurface)
-                    .font(.posButtonSymbolLarge)
-            }
+            }))
 
             TextField(text: $searchTerm) {
-                Text(Localization.searchFieldLabel)
+                Text(searchable.itemListType.itemType.searchFieldLabel)
             }
-            .textFieldStyle(.roundedBorder)
-            .font(POSFontStyle.posBodyLargeRegular())
+            .textFieldStyle(POSSearchTextFieldStyle(focused: isSearchFieldFocused,
+                                                    searchTerm: $searchTerm))
+            .font(.posBodyLargeBold)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
@@ -72,7 +72,9 @@ struct POSSearchField: View {
 
                 searchTask = Task {
                     if shouldDebounceNextSearchRequest {
-                        try? await Task.sleep(nanoseconds: 300 * NSEC_PER_MSEC)
+                        try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+                    } else {
+                        searchable.clearSearchResults()
                     }
 
                     guard !Task.isCancelled else { return }
@@ -90,17 +92,6 @@ struct POSSearchField: View {
                     }
                 }
             }
-
-            Button {
-                searchTerm = ""
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .accessibilityLabel(Localization.searchFieldClearButtonAccessibilityLabel)
-                    .foregroundColor(.posOnSurfaceVariantHighest)
-                    .font(.posButtonSymbolSmall)
-            }
-            .transition(.opacity)
-            .renderedIf(searchTerm.isNotEmpty)
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
@@ -148,28 +139,13 @@ struct POSSearchContentView<Content: View>: View {
 }
 
 // MARK: - Localization
-@available(iOS 17.0, *)
-private extension POSSearchField {
-    enum Localization {
-        static let searchFieldLabel = NSLocalizedString(
-            "pos.searchview.searchField.label",
-            value: "Search",
-            comment: "Label/placeholder text for the search field in Point of Sale."
-        )
-
-        static let searchFieldClearButtonAccessibilityLabel = NSLocalizedString(
-            "pos.searchview.searchField.clearButton.accessibilityLabel",
-            value: "Clear Search",
-            comment: "Accessibility label for the clear button in the Point of Sale search screen."
-        )
-    }
-}
-
 private extension POSItemType {
     var searchFieldLabel: String {
         switch self {
         case .product:
             return Localization.productsSearchFieldLabel
+        case .coupon:
+            return Localization.couponsSearchFieldLabel
         default:
             return Localization.defaultSearchFieldLabel
         }
@@ -177,9 +153,15 @@ private extension POSItemType {
 
     enum Localization {
         static let productsSearchFieldLabel = NSLocalizedString(
-            "pos.itemListView.products.searchField.label",
-            value: "Search Products",
+            "pos.itemListView.products.searchField.label.1",
+            value: "Search products",
             comment: "Label/placeholder text for the search field for Products in Point of Sale."
+        )
+
+        static let couponsSearchFieldLabel = NSLocalizedString(
+            "pos.itemListView.coupons.searchField.label",
+            value: "Search coupons",
+            comment: "Label/placeholder text for the search field for Coupons in Point of Sale."
         )
 
         static let defaultSearchFieldLabel = NSLocalizedString(

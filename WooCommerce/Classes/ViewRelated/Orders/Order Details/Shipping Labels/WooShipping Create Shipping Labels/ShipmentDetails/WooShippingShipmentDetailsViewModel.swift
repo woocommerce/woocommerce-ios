@@ -59,7 +59,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selected shipping rate when creating a shipping label.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
-    private var customsForm: ShippingLabelCustomsForm?
+    @Published private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
         WooShippingCustomsFormViewModel(order: order, shipment: shipment, onCompletion: { [weak self] form in
@@ -124,7 +124,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
         return buildSelectedPackage(selectedPackage,
                                     weight: Double(shipmentWeight) ?? 0,
-                                    shipmentID: shipment.id)
+                                    shipmentID: shipment.id,
+                                    hazmatCategory: hazmatCategory,
+                                    customsForm: customsForm)
     }
 
     private var debounceDuration: Double
@@ -260,11 +262,15 @@ private extension WooShippingShipmentDetailsViewModel {
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .combineLatest($selectedPackage, $shippingService)
-            .sink { [weak self] weight, selectedPackage, shippingService in
+            .combineLatest($customsForm, $hazmatCategory)
+            .sink { [weak self] input in
+                let ((weight, selectedPackage, shippingService), customsForm, hazmatCategory) = input
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
-                                                   shipmentID: shipment.id)
+                                                   shipmentID: shipment.id,
+                                                   hazmatCategory: hazmatCategory,
+                                                   customsForm: customsForm)
                 shippingService.loadLabelRates(for: package)
             }
             .store(in: &subscriptions)
@@ -305,7 +311,11 @@ private extension WooShippingShipmentDetailsViewModel {
     }
 
     /// Converts the package data to a `ShippingLabelPackageSelected` object.
-    func buildSelectedPackage(_ packageData: WooShippingPackageDataRepresentable, weight: Double, shipmentID: String) -> ShippingLabelPackageSelected {
+    func buildSelectedPackage(_ packageData: WooShippingPackageDataRepresentable,
+                              weight: Double,
+                              shipmentID: String,
+                              hazmatCategory: ShippingLabelHazmatCategory?,
+                              customsForm: ShippingLabelCustomsForm?) -> ShippingLabelPackageSelected {
         ShippingLabelPackageSelected(id: shipmentID,
                                      boxID: packageData.id,
                                      length: Double(packageData.length) ?? 0,

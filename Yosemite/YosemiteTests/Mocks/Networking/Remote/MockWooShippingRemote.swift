@@ -181,7 +181,10 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         }
     }
 
-    func deletePackage(siteID: Int64, packageID: String, completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       packageType: WooShippingPackageType,
+                       completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

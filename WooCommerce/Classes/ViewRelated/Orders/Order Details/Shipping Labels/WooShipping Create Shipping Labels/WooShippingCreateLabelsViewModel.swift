@@ -564,7 +564,6 @@ private extension WooShippingCreateLabelsViewModel {
                 shipments[selectedIndex].isPurchased == false
             }
             .assign(to: &$shouldShowNotices)
-
     }
 
     /// Gets the destination address as a `ShippingLabelAddress`.

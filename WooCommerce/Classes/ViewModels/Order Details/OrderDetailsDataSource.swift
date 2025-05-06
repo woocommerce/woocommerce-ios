@@ -1544,8 +1544,7 @@ extension OrderDetailsDataSource {
         guard !isEligibleForPayment else {
             return completion(false)
         }
-        let receiptEligibility = ReceiptEligibilityUseCase()
-        receiptEligibility.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
+        receiptEligibilityUseCase.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
             completion(isEligible)
         })
     }

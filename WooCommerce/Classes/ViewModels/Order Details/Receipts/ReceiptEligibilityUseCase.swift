@@ -5,6 +5,7 @@ protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void)
+    func meetsOrderStatusRequirement(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void)
 }
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {

@@ -7,6 +7,7 @@ struct ParentProductCardView: View {
     private let detailText: String
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private var dimension: CGFloat {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
@@ -27,7 +28,7 @@ struct ParentProductCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(name)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
@@ -40,7 +41,7 @@ struct ParentProductCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }

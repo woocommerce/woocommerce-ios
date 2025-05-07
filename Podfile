@@ -369,10 +369,6 @@ def swiftlint_version
   YAML.load_file('.swiftlint.yml')['swiftlint_version']
 end
 
-abstract_target 'Tools' do
-  pod 'SwiftLint', swiftlint_version
-end
-
 # Workarounds:
 # ============
 #
@@ -470,8 +466,4 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
-
-  yellow_marker = "\033[33m"
-  reset_marker = "\033[0m"
-  puts "#{yellow_marker}The abstract target warning below is expected. Feel free to ignore it.#{reset_marker}"
 end

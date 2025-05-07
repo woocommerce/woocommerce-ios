@@ -38,7 +38,6 @@ PODS:
   - Specta (1.0.7)
   - StripeTerminal (4.2.0)
   - SVProgressHUD (2.2.5)
-  - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
@@ -79,7 +78,6 @@ DEPENDENCIES:
   - Specta (= 1.0.7)
   - StripeTerminal (~> 4.2.0)
   - SVProgressHUD (= 2.2.5)
-  - SwiftLint (= 0.54.0)
   - UIDeviceIdentifier (~> 2.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressShared (~> 2.1-beta)
@@ -107,7 +105,6 @@ SPEC REPOS:
     - Specta
     - StripeTerminal
     - SVProgressHUD
-    - SwiftLint
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
@@ -141,7 +138,6 @@ SPEC CHECKSUMS:
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
   StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
@@ -158,6 +154,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 09ad4048c8d60e433048e15d7af1181269dd4c17
+PODFILE CHECKSUM: f4232114b6627f47bf55bb5a50c8625241cdbbfd
 
 COCOAPODS: 1.16.2

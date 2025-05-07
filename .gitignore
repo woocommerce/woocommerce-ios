@@ -99,3 +99,8 @@ WooCommerce/WooCommerceScreenshots/Mocks/vendor/
 
 # AppCode
 .idea
+
+# Local modules
+Modules/.build
+Moudles/.swiftpm/configuration/registries.json
+Moudles/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata

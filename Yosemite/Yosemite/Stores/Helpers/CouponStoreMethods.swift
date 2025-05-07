@@ -105,7 +105,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                             pageSize: Int,
                             onCompletion: @escaping (Result<Bool, any Error>) -> Void) {
 
-        Task {
+        Task { @MainActor in
             do {
                 let hasMorePages = try await synchronizeCoupons(siteID: siteID,
                                                                 pageNumber: pageNumber,
@@ -258,7 +258,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                        pageNumber: Int,
                        pageSize: Int,
                        onCompletion: @escaping (Result<Void, any Error>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 try await searchCoupons(siteID: siteID,
                                         keyword: keyword,

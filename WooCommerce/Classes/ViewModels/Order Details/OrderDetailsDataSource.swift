@@ -2043,6 +2043,7 @@ extension OrderDetailsDataSource {
         case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
+        case openShippingLabelForm(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote

@@ -3,7 +3,7 @@ import Observation
 import enum Yosemite.POSItem
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import class Yosemite.PointOfSaleItemFetchStrategyFactory
+import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
@@ -36,11 +36,11 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private var itemProvider: PointOfSaleItemServiceProtocol
-    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
+    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
     init(itemProvider: PointOfSaleItemServiceProtocol,
-         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory,
+         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
          initialState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                        itemsStack: ItemsStackState(root: .loading([]),
                                                                                    itemStates: [:]))) {
@@ -49,17 +49,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         self.itemsViewState = initialState
         self.paginationTracker = .init()
         self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
-    }
-
-    convenience init(itemProvider: PointOfSaleItemServiceProtocol,
-                     fetchStrategy: PointOfSalePurchasableItemFetchStrategy,
-                     initialState: ItemsViewState = ItemsViewState(containerState: .loading,
-                                                                 itemsStack: ItemsStackState(root: .loading([]),
-                                                                                           itemStates: [:]))) {
-        self.init(itemProvider: itemProvider,
-                  itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 0, credentials: nil),
-                  initialState: initialState)
-        self.fetchStrategy = fetchStrategy
     }
 
     @MainActor

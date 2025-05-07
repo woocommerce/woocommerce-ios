@@ -124,6 +124,7 @@ private extension String {
     }
 }
 
+#if DEBUG
 #Preview {
     if #available(iOS 17.0, *) {
         PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
@@ -137,3 +138,4 @@ private extension String {
             .environment(POSPreviewHelpers.makePreviewAggregateModel())
     }
 }
+#endif

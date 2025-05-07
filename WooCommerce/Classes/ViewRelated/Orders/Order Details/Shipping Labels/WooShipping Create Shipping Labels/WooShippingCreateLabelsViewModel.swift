@@ -20,6 +20,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
+    private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
 
     private(set) var orderItems: WooShippingItemsViewModel
 
@@ -59,6 +60,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var labelPurchaseErrorNotice: Notice?
 
     @Published private(set) var state = ContentState.loading
+
+    @Published private(set) var shouldShowNotices = false
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
@@ -181,6 +184,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         self.shippingLabels = order.shippingLabels
@@ -193,6 +197,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.stores = stores
         self.shippingSettingsService = shippingSettingsService
+        self.initialNoticeDelay = initialNoticeDelay
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -208,6 +213,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddress()
+        observeViewStates()
 
         Task {
             await loadRequiredData()
@@ -219,7 +225,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          selectedShippingLabel: ShippingLabel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2)) {
         self.order = order
         self.shippingSettingsService = shippingSettingsService
         self.shippingLabels = order.shippingLabels
@@ -231,6 +238,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationAddressStatus = .verified
         self.onLabelPurchase = nil
         self.stores = stores
+        self.initialNoticeDelay = initialNoticeDelay
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -242,6 +250,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
+        observeDestinationAddress()
+        observeViewStates()
 
         Task { @MainActor in
             await loadRequiredData()
@@ -419,7 +429,6 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
-            // TODO-15483: map `shippingLabels` using `config`'s purchased labels.
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,
@@ -534,11 +543,27 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         /// Clear the notice after a delay when the address is verified.
-        $destinationAddressStatusNoticeLabel
-            .filter { $0 == Localization.DestinationAddressStatus.verified }
+        $shouldShowNotices
+            .combineLatest($destinationAddressStatusNoticeLabel)
+            .filter { shouldShowNotices, destinationNotice in
+                shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
+            }
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
+    /// Ensures that initial notices are only displayed after the view is ready
+    /// to avoid overwhelming users with too many information at once when opening the screen.
+    func observeViewStates() {
+        $state
+            .filter { $0 == .ready }
+            .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { _, shipments, selectedIndex in
+                shipments[selectedIndex].isPurchased == false
+            }
+            .assign(to: &$shouldShowNotices)
     }
 
     /// Gets the destination address as a `ShippingLabelAddress`.

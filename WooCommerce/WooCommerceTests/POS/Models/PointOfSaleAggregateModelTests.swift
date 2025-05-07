@@ -241,35 +241,6 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.purchasableItems.count == 2)
             #expect(sut.cart.coupons.count == 0)
         }
-
-        @available(iOS 17.0, *)
-        @Test(.disabled(
-            """
-            This test doesn't currently work; analytics extensions are not thread-safe,
-            and using the MainActor means the assert happens too early. I don't think
-            we want the addToCart to be async, but that would be one way to fix it.
-            """))
-        func addToCart_tracks_analytics_event() async throws {
-            // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                couponsController: MockPointOfSaleCouponsController(),
-                                                couponsSearchController: MockPointOfSaleCouponsController(),
-                                                cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                orderController: MockPointOfSaleOrderController(),
-                                                analytics: analytics,
-                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                searchHistoryService: MockPOSSearchHistoryService(),
-                                                popularItemsController: MockPointOfSalePopularItemsController())
-            let item = makePurchasableItem()
-
-            // When
-            sut.addToCart(item)
-
-            // Then
-            let event = try #require(analyticsProvider.receivedEvents.first)
-            #expect(event == "item_added_to_cart")
-        }
     }
 
     struct OrderTests {
@@ -1183,16 +1154,4 @@ private func makeLoadedOrderState(cartTotal: String = "",
         PointOfSaleOrderTotals(cartTotal: cartTotal, orderTotal: orderTotal, taxTotal: taxTotal, orderTotalDecimal: orderTotalDecimal),
         order
     )
-}
-
-private struct MockPOSSearchHistoryService: POSSearchHistoryProviding {
-    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
-
-    func searchHistory(for itemType: POSItemType) -> [String] {
-        return []
-    }
-
-    func clearSearchHistory(for itemType: POSItemType) {}
-
-    func clearAllSearchHistory() {}
 }

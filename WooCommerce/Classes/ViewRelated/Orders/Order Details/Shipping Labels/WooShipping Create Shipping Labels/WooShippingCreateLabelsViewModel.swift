@@ -178,9 +178,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
-    /// Initialize the view model without an existing shipping label.
+    /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
-         selectedOriginAddress: WooShippingOriginAddress? = nil,
          selectedShippingLabel: ShippingLabel? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
@@ -212,8 +211,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
         } else {
             destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
-            self.selectedOriginAddress = selectedOriginAddress
-            loadDestinationAddress()
+            verifyDestinationAddress()
         }
 
         updateShipmentDetailsViewModels()
@@ -408,7 +406,7 @@ private extension WooShippingCreateLabelsViewModel {
 
     /// Loads destination address of the order from remote.
     ///
-    func loadDestinationAddress() {
+    func verifyDestinationAddress() {
         let action = WooShippingAction.verifyDestinationAddress(siteID: order.siteID,
                                                                 orderID: order.orderID) { [weak self] result in
             guard let self else { return }

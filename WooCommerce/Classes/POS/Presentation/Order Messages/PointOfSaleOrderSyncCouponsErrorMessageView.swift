@@ -134,7 +134,7 @@ private extension String {
 
 #Preview {
     if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo siento, este cupón no se puede aplicar a los productos seleccionados.") {}
+        PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
             .environment(POSPreviewHelpers.makePreviewAggregateModel())
     }
 }

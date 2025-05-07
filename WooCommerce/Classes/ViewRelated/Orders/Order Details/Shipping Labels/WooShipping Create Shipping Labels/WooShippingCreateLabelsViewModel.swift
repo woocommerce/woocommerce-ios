@@ -211,7 +211,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
         } else {
             destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
-            verifyDestinationAddress()
+            loadDestinationAddress()
         }
 
         updateShipmentDetailsViewModels()
@@ -406,7 +406,7 @@ private extension WooShippingCreateLabelsViewModel {
 
     /// Loads destination address of the order from remote.
     ///
-    func verifyDestinationAddress() {
+    func loadDestinationAddress() {
         let action = WooShippingAction.verifyDestinationAddress(siteID: order.siteID,
                                                                 orderID: order.orderID) { [weak self] result in
             guard let self else { return }

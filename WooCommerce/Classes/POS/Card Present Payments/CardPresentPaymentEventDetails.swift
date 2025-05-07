@@ -43,6 +43,7 @@ enum CardPresentPaymentEventDetails {
     case connectionSuccess(done: () -> Void)
     case tapSwipeOrInsertCard(inputMethods: CardReaderInput,
                               cancelPayment: () -> Void)
+    case cardInserted(cancelPayment: () -> Void)
     case paymentSuccess(done: () -> Void)
     case paymentError(error: any Error,
                       retryApproach: CardPresentPaymentRetryApproach,

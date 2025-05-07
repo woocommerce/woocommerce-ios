@@ -89,6 +89,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func refreshItems(base: ItemListBaseItem) async { }
     func loadNextItems(base: ItemListBaseItem) async { }
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async { }
+    func clearSearchItems(baseItem: ItemListBaseItem) { }
 }
 
 @available(iOS 17.0, *)
@@ -109,6 +110,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     }
 
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
+
+    func clearSearchItems(baseItem: ItemListBaseItem) { }
 
     func refreshItems(base: ItemListBaseItem) async {
         await loadItems(base: base)

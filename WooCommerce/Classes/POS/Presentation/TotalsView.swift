@@ -340,6 +340,7 @@ private extension TotalsView {
                                          sidePadding: POSPadding.none)
             case .idle,
                     .acceptingCard,
+                    .cardInserted,
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:

@@ -14,6 +14,8 @@ protocol POSSearchable {
     /// Called when a search should be performed
     /// - Parameter term: The search term to use
     func performSearch(term: String) async
+
+    func clearSearchResults()
 }
 
 /// A reusable search field view for POS items
@@ -72,6 +74,8 @@ struct POSSearchField: View {
                 searchTask = Task {
                     if shouldDebounceNextSearchRequest {
                         try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+                    } else {
+                        searchable.clearSearchResults()
                     }
 
                     guard !Task.isCancelled else { return }

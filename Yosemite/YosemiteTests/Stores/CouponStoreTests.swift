@@ -82,13 +82,15 @@ final class CouponStoreTests: XCTestCase {
 
     func test_synchronizeCoupons_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
-        // Given
-        let action = CouponAction.synchronizeCoupons(siteID: 1092,
-                                                     pageNumber: 12,
-                                                     pageSize: 3) { _ in }
-
-        // When
-        store.onAction(action)
+        // Given & When
+        _ = waitFor { promise in
+            let action = CouponAction.synchronizeCoupons(siteID: 1092,
+                                                         pageNumber: 12,
+                                                         pageSize: 3) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
 
         // Then
         XCTAssertTrue(remote.didCallLoadAllCoupons)
@@ -560,13 +562,17 @@ final class CouponStoreTests: XCTestCase {
         let expectedKeyword = "Test keyword"
         let expectedPageNumber = 1
         let expectedPageSize = 20
-        let action = CouponAction.searchCoupons(siteID: sampleSiteID,
-                                                keyword: expectedKeyword,
-                                                pageNumber: expectedPageNumber,
-                                                pageSize: expectedPageSize) { _ in }
 
         // When
-        store.onAction(action)
+        _ = waitFor { promise in
+            let action = CouponAction.searchCoupons(siteID: self.sampleSiteID,
+                                                    keyword: expectedKeyword,
+                                                    pageNumber: expectedPageNumber,
+                                                    pageSize: expectedPageSize) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
 
         // Then
         XCTAssertTrue(remote.didCallSearchCoupons)
@@ -678,10 +684,15 @@ final class CouponStoreTests: XCTestCase {
         let expectedKeyword = "coupon-code"
         let expectedPageNumber = 1
         let expectedPageSize = 25
-        let action = CouponAction.validateCouponCode(code: expectedKeyword, siteID: sampleSiteID) { _ in }
 
         // When
-        store.onAction(action)
+        _ = waitFor { promise in
+            let action = CouponAction.validateCouponCode(code: expectedKeyword, siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+
+            self.store.onAction(action)
+        }
 
         // Then
         XCTAssertTrue(remote.didCallSearchCoupons)

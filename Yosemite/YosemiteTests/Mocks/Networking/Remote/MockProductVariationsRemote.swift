@@ -1,4 +1,3 @@
-
 import Foundation
 import Networking
 
@@ -30,6 +29,9 @@ final class MockProductVariationsRemote {
 
     /// The results to return based on the given arguments in `deleteProductVariation`
     private var productVariationDeleteResults = [ResultKey: Result<ProductVariation, Error>]()
+
+    /// The results to return based on the given arguments in `loadVariationsForPointOfSale`
+    private var variationsForPointOfSaleResults = [ResultKey: Result<[ProductVariation], Error>]()
 
     /// Set the value passed to the `completion` block if `createProductVariation()` is called.
     ///
@@ -76,6 +78,13 @@ final class MockProductVariationsRemote {
         let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
         productVariationDeleteResults[key] = result
     }
+
+    /// Set the value to return if `loadVariationsForPointOfSale()` is called.
+    ///
+    func whenLoadingVariationsForPointOfSale(siteID: Int64, parentProductID: Int64, thenReturn result: Result<[ProductVariation], Error>) {
+        let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
+        variationsForPointOfSaleResults[key] = result
+    }
 }
 
 // MARK: - ProductVariationsRemoteProtocol conformance
@@ -92,7 +101,16 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     }
 
     func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
-        .init(items: [], hasMorePages: false)
+        let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
+        guard let result = variationsForPointOfSaleResults[key] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(variations):
+            return PagedItems(items: variations, hasMorePages: false)
+        case let .failure(error):
+            throw error
+        }
     }
 
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {

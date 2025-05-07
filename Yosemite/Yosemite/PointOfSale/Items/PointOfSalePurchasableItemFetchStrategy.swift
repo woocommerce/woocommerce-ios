@@ -1,6 +1,6 @@
 import Foundation
-import class Networking.ProductsRemote
-import class Networking.ProductVariationsRemote
+import protocol Networking.ProductsRemoteProtocol
+import protocol Networking.ProductVariationsRemoteProtocol
 
 public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
@@ -14,10 +14,10 @@ extension PointOfSalePurchasableItemFetchStrategy {
 public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
 
-    private let productsRemote: ProductsRemote
-    private let variationsRemote: ProductVariationsRemote
+    private let productsRemote: ProductsRemoteProtocol
+    private let variationsRemote: ProductVariationsRemoteProtocol
 
-    init(siteID: Int64, productsRemote: ProductsRemote, variationsRemote: ProductVariationsRemote) {
+    init(siteID: Int64, productsRemote: ProductsRemoteProtocol, variationsRemote: ProductVariationsRemoteProtocol) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
@@ -42,11 +42,11 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
 
     let searchTerm: String
 
-    private let productsRemote: ProductsRemote
-    private let variationsRemote: ProductVariationsRemote
+    private let productsRemote: ProductsRemoteProtocol
+    private let variationsRemote: ProductVariationsRemoteProtocol
 
 
-    init(siteID: Int64, searchTerm: String, productsRemote: ProductsRemote, variationsRemote: ProductVariationsRemote) {
+    init(siteID: Int64, searchTerm: String, productsRemote: ProductsRemoteProtocol, variationsRemote: ProductVariationsRemoteProtocol) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.productsRemote = productsRemote
@@ -70,14 +70,14 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
 
 public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
-    private let productsRemote: ProductsRemote
-    private let variationsRemote: ProductVariationsRemote
+    private let productsRemote: ProductsRemoteProtocol
+    private let variationsRemote: ProductVariationsRemoteProtocol
     private let pageSize: Int
 
     init(siteID: Int64,
          pageSize: Int,
-         productsRemote: ProductsRemote,
-         variationsRemote: ProductVariationsRemote) {
+         productsRemote: ProductsRemoteProtocol,
+         variationsRemote: ProductVariationsRemoteProtocol) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote

@@ -81,6 +81,20 @@ public protocol ProductsRemoteProtocol {
                               pageNumber: Int,
                               orderBy: ProductsRemote.OrderKey,
                               order: ProductsRemote.Order) async throws -> [ProductReport]
+
+    func loadProductsForPointOfSale(for siteID: Int64,
+                                    productTypes: [ProductType],
+                                    pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    func searchProductsForPointOfSale(for siteID: Int64,
+                                      query: String,
+                                      productTypes: [ProductType],
+                                      pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType],
+                                           pageNumber: Int,
+                                           perPage: Int) async throws -> PagedItems<POSProduct>
 }
 
 extension ProductsRemoteProtocol {

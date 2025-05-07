@@ -54,11 +54,11 @@ public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetc
     public var defaultStrategy: PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
-    
+
     public func searchStrategy(searchTerm: String) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
-    
+
     public func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }

@@ -194,11 +194,3 @@ enum ShippingLabelDecodingError: Error {
     case missingSiteID
     case missingOrderID
 }
-
-public extension ShippingLabel {
-    /// Following logic in the plugin
-    /// https://github.com/woocommerce/woocommerce-shipping/blob/0f67a1eb349cbe90ce471d88c7b31bd4950d6744/client/utils/label/refund.ts#L5
-    var refundDuration: Int {
-        carrierID == "dhlexpress" ? 31 : 14
-    }
-}

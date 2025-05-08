@@ -44,7 +44,8 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               destinationAddress: destinationAddress?.toReadOnly() ?? .empty,
               productIDs: productIDs,
               productNames: productNames,
-              commercialInvoiceURL: commercialInvoiceURL)
+              commercialInvoiceURL: commercialInvoiceURL,
+              usedDate: nil) // TODO: add usedDate attribute
     }
 }
 

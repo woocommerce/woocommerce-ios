@@ -16,7 +16,8 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let productsRemote: ProductsRemote
     private let variationsRemote: ProductVariationsRemote
 
-    public init(siteID: Int64, credentials: Credentials?) {
+    public init(siteID: Int64,
+                credentials: Credentials?) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials)
         self.productsRemote = ProductsRemote(network: network)
@@ -28,12 +29,13 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                                        productsRemote: productsRemote,
                                                        variationsRemote: variationsRemote)
     }
-
-    public func searchStrategy(searchTerm: String) -> PointOfSalePurchasableItemFetchStrategy {
+    public func searchStrategy(searchTerm: String,
+                               analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                       searchTerm: searchTerm,
                                                       productsRemote: productsRemote,
-                                                      variationsRemote: variationsRemote)
+                                                      variationsRemote: variationsRemote,
+                                                      analytics: analytics)
     }
 
     public func popularStrategy(pageSize: Int = 10) -> PointOfSalePurchasableItemFetchStrategy {

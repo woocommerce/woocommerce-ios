@@ -44,20 +44,32 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
 
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
+    private let analytics: POSSearchAnalyticsTracking
 
-
-    init(siteID: Int64, searchTerm: String, productsRemote: ProductsRemoteProtocol, variationsRemote: ProductVariationsRemoteProtocol) {
+    init(siteID: Int64,
+         searchTerm: String,
+         productsRemote: ProductsRemoteProtocol,
+         variationsRemote: ProductVariationsRemoteProtocol,
+         analytics: POSSearchAnalyticsTracking) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
+        self.analytics = analytics
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return try await productsRemote.searchProductsForPointOfSale(for: siteID,
-                                                                     query: searchTerm,
-                                                                     productTypes: productTypes,
-                                                                     pageNumber: pageNumber)
+        let startTime = Date()
+        let pagedProducts = try await productsRemote.searchProductsForPointOfSale(for: siteID,
+                                                                                  query: searchTerm,
+                                                                                  productTypes: productTypes,
+                                                                                  pageNumber: pageNumber)
+        if pageNumber == 1 {
+            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
+            analytics.trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
+                                                            totalItems: pagedProducts.totalItems ?? 0)
+        }
+        return pagedProducts
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {

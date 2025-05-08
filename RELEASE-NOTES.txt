@@ -3,7 +3,7 @@
 
 22.4
 -----
-
+- [*] POS: Scrolling search results now dismisses the keyboard [https://github.com/woocommerce/woocommerce-ios/pull/15606]
 
 22.3
 -----

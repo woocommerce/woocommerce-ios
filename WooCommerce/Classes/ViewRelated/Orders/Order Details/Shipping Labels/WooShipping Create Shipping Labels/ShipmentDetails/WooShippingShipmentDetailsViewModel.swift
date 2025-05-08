@@ -129,6 +129,14 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                     customsForm: customsForm)
     }
 
+    var refundViewModel: WooShippingRefundViewModel? {
+        guard let shippingLabel else {
+            return nil
+        }
+        return WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
+                                          purchaseDate: shippingLabel.dateCreated)
+    }
+
     private var debounceDuration: Double
 
     init(order: Order,

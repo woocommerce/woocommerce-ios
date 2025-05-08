@@ -294,7 +294,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             .flatMap { Int($0.value) }
         let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
 
-        return .init(items: products, hasMorePages: hasMorePages)
+        // Extract total count from X-WP-Total header
+        let totalItems = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalCount.lowercased() })
+            .flatMap { Int($0.value) }
+
+        return .init(items: products, hasMorePages: hasMorePages, totalItems: totalItems)
     }
 
     /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.

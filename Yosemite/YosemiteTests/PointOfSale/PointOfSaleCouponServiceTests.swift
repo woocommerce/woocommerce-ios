@@ -62,7 +62,12 @@ struct PointOfSaleCouponServiceTests {
     @Test func providePointOfSaleCoupons_when_enabled_then_calls_strategy() async throws {
         // Given
         settingStoreMethods.couponsEnabled = true
-        let expectedCoupons = PagedItems(items: [POSItem.coupon(POSCoupon(id: UUID(), code: "test", summary: "test", dateExpires: nil))], hasMorePages: false, totalItems: nil)
+        let expectedCoupons = PagedItems(items: [POSItem.coupon(POSCoupon(id: UUID(),
+                                                                          code: "test",
+                                                                          summary: "test",
+                                                                          dateExpires: nil))],
+                                         hasMorePages: false,
+                                         totalItems: nil)
         mockStrategy.fetchCouponsResult = expectedCoupons
 
         // When

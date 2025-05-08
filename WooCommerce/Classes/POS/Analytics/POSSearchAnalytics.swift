@@ -1,9 +1,10 @@
 import Foundation
 import WooFoundation
 import enum Yosemite.POSItemType
+import protocol Yosemite.POSSearchAnalyticsTracking
 
 /// Analytics tracking for Point of Sale search functionality
-struct POSSearchAnalytics {
+struct POSSearchAnalytics: POSSearchAnalyticsTracking {
     /// The type of item being searched for
     private let itemType: POSItemType
     /// The analytics service to use for tracking

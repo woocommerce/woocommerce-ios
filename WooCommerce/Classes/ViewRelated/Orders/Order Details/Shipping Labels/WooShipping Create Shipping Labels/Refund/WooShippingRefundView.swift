@@ -8,7 +8,9 @@ struct WooShippingRefundView: View {
     let viewModel: WooShippingRefundViewModel
 
     var body: some View {
-        ScrollableVStack(alignment: .leading, spacing: Layout.contentSpacing) {
+        ScrollableVStack(alignment: .leading,
+                         padding: Layout.contentPadding,
+                         spacing: Layout.contentSpacing) {
             HStack {
                 Button(Localization.cancelButton) {
                     dismiss()
@@ -54,6 +56,7 @@ private extension WooShippingRefundView {
     enum Layout {
         static let contentSpacing = CGFloat(8)
         static let titleExtraPadding = CGFloat(16)
+        static let contentPadding = CGFloat(16)
     }
 
     enum Localization {

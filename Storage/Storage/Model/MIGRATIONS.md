@@ -4,7 +4,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 121 (Release 22.4.0.0)
 - @itsmeichigo 2025-05-08
-    - Added `usedDate` attribute to `ShippingLabel` entity.
+    - Added `usedDate` and `expiryDate` attributes to `ShippingLabel` entity.
 
 ## Model 120 (Release 21.8.0.0)
 - @itsmeichigo 2025-02-17

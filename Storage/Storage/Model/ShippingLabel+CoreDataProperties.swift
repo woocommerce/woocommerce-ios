@@ -28,5 +28,6 @@ extension ShippingLabel {
     @NSManaged public var order: Order?
     @NSManaged public var commercialInvoiceURL: String?
     @NSManaged public var usedDate: Date?
+    @NSManaged public var expiryDate: Date?
 
 }

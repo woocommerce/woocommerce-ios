@@ -3041,7 +3041,8 @@ extension Networking.ShippingLabel {
         productIDs: CopiableProp<[Int64]> = .copy,
         productNames: CopiableProp<[String]> = .copy,
         commercialInvoiceURL: NullableCopiableProp<String> = .copy,
-        usedDate: NullableCopiableProp<Date> = .copy
+        usedDate: NullableCopiableProp<Date> = .copy,
+        expiryDate: NullableCopiableProp<Date> = .copy
     ) -> Networking.ShippingLabel {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3062,6 +3063,7 @@ extension Networking.ShippingLabel {
         let productNames = productNames ?? self.productNames
         let commercialInvoiceURL = commercialInvoiceURL ?? self.commercialInvoiceURL
         let usedDate = usedDate ?? self.usedDate
+        let expiryDate = expiryDate ?? self.expiryDate
 
         return Networking.ShippingLabel(
             siteID: siteID,
@@ -3082,7 +3084,8 @@ extension Networking.ShippingLabel {
             productIDs: productIDs,
             productNames: productNames,
             commercialInvoiceURL: commercialInvoiceURL,
-            usedDate: usedDate
+            usedDate: usedDate,
+            expiryDate: expiryDate
         )
     }
 }

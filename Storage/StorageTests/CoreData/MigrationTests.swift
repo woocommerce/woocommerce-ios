@@ -3291,7 +3291,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertTrue(updatedHasSSOEnabled)
     }
 
-    func test_migrating_from_120_to_121_adds_new_attribute_usedDate_to_shippingLabel() throws {
+    func test_migrating_from_120_to_121_adds_new_attributes_usedDate_and_expiryDate_to_shippingLabel() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 120")
         let sourceContext = sourceContainer.viewContext
@@ -3300,6 +3300,7 @@ final class MigrationTests: XCTestCase {
         try sourceContext.save()
 
         XCTAssertNil(label.entity.attributesByName["usedDate"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(label.entity.attributesByName["expiryDate"], "Precondition. Attribute does not exist.")
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 121")
@@ -3311,15 +3312,25 @@ final class MigrationTests: XCTestCase {
         // `usedDate` should be present in `migratedLabel`
         XCTAssertNotNil(migratedLabel.entity.attributesByName["usedDate"])
 
+        // `expiryDate` should be present in `migratedLabel`
+        XCTAssertNotNil(migratedLabel.entity.attributesByName["expiryDate"])
+
         let savedUsedDate = migratedLabel.value(forKey: "usedDate") as? Date
         XCTAssertNil(savedUsedDate) // default value
 
+        let savedExpiryDate = migratedLabel.value(forKey: "expiryDate") as? Date
+        XCTAssertNil(savedExpiryDate) // default value
+
         let date = Date()
         migratedLabel.setValue(date, forKey: "usedDate")
+        migratedLabel.setValue(date, forKey: "expiryDate")
         try targetContext.save()
 
         let updatedUsedDate = migratedLabel.value(forKey: "usedDate") as? Date
         XCTAssertEqual(updatedUsedDate, date)
+
+        let updatedExpiryDate = migratedLabel.value(forKey: "expiryDate") as? Date
+        XCTAssertEqual(updatedExpiryDate, date)
     }
 }
 

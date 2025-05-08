@@ -64,6 +64,9 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
     /// Date when the label was used.
     public let usedDate: Date?
 
+    /// Expiry date of the label
+    public let expiryDate: Date?
+
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
@@ -82,7 +85,8 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
                 productIDs: [Int64],
                 productNames: [String],
                 commercialInvoiceURL: String?,
-                usedDate: Date?) {
+                usedDate: Date?,
+                expiryDate: Date?) {
         self.siteID = siteID
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
@@ -102,6 +106,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
         self.productNames = productNames
         self.commercialInvoiceURL = commercialInvoiceURL
         self.usedDate = usedDate
+        self.expiryDate = expiryDate
     }
 }
 
@@ -137,6 +142,7 @@ extension ShippingLabel: Decodable {
         let productNames = try container.decode([String].self, forKey: .productNames)
         let commercialInvoiceURL = try container.decodeIfPresent(String.self, forKey: .commercialInvoiceURL)
         let usedDate = try container.decodeIfPresent(Date.self, forKey: .usedDate)
+        let expiryDate = try container.decodeIfPresent(Date.self, forKey: .expiryDate)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -156,7 +162,8 @@ extension ShippingLabel: Decodable {
                   productIDs: productIDs,
                   productNames: productNames,
                   commercialInvoiceURL: commercialInvoiceURL,
-                  usedDate: usedDate)
+                  usedDate: usedDate,
+                  expiryDate: expiryDate)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -177,6 +184,7 @@ extension ShippingLabel: Decodable {
         case productNames = "product_names"
         case commercialInvoiceURL = "commercial_invoice_url"
         case usedDate = "used_date"
+        case expiryDate = "expiry_date"
     }
 }
 

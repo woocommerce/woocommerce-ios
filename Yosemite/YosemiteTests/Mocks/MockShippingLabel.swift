@@ -24,6 +24,7 @@ public struct MockShippingLabel {
               productIDs: [],
               productNames: [],
               commercialInvoiceURL: nil,
-              usedDate: nil)
+              usedDate: nil,
+              expiryDate: nil)
     }
 }

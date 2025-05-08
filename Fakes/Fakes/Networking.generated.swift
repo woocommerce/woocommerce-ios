@@ -1847,7 +1847,8 @@ extension Networking.ShippingLabel {
             productIDs: .fake(),
             productNames: .fake(),
             commercialInvoiceURL: .fake(),
-            usedDate: .fake()
+            usedDate: .fake(),
+            expiryDate: .fake()
         )
     }
 }

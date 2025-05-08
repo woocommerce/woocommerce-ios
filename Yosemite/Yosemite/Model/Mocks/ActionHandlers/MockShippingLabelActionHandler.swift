@@ -50,7 +50,8 @@ struct MockShippingLabelActionHandler: MockActionHandler {
                     productIDs: [],
                     productNames: [],
                     commercialInvoiceURL: nil,
-                    usedDate: nil
+                    usedDate: nil,
+                    expiryDate: nil
                 )
                 completion(.success([mockShippingLabel]))
             case .checkCreationEligibility(_, _, let onCompletion):

@@ -32,9 +32,6 @@ PODS:
     - Sentry/Core (= 8.46.0)
   - Sentry/Core (8.46.0)
   - Sodium (0.9.1)
-  - Sourcery (2.2.6):
-    - Sourcery/CLI-Only (= 2.2.6)
-  - Sourcery/CLI-Only (2.2.6)
   - Specta (1.0.7)
   - StripeTerminal (4.2.0)
   - SVProgressHUD (2.2.5)
@@ -74,7 +71,6 @@ DEPENDENCIES:
   - OHHTTPStubs (~> 9.0)
   - OHHTTPStubs/Swift (~> 9.0)
   - Sentry (~> 8.46.0)
-  - Sourcery (~> 2.2.6)
   - Specta (= 1.0.7)
   - StripeTerminal (~> 4.2.0)
   - SVProgressHUD (= 2.2.5)
@@ -101,7 +97,6 @@ SPEC REPOS:
     - OHHTTPStubs
     - Sentry
     - Sodium
-    - Sourcery
     - Specta
     - StripeTerminal
     - SVProgressHUD
@@ -134,7 +129,6 @@ SPEC CHECKSUMS:
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
-  Sourcery: 4427fd22f0c12bd1ef75dd9045d50e01c17a43e1
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
   StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
@@ -154,6 +148,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: bf1e4c8d480a1b0f40989e79260099831f2d01e8
+PODFILE CHECKSUM: 8e9a923af752885a3d6c8d622c176c342fac5156
 
 COCOAPODS: 1.16.2

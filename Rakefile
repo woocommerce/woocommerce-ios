@@ -145,7 +145,7 @@ task :generate do
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts '=' * 100
 
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"
+    sourcery(args: ["--config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"])
   end
 
   puts "\n\nDONE. Generated Copiable for all projects."
@@ -154,7 +154,7 @@ task :generate do
     puts "\n\nGenerating Fakes for #{prefix}..."
     puts '=' * 100
 
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"
+    sourcery(args: ["--config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"])
   end
 
   puts "\n\nDONE. Generated Fakes."
@@ -228,10 +228,16 @@ def check_dependencies_hook
   end
 end
 
-def swiftlint(additional_args = [])
-  run_in_build_tools(
-    cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory swiftlint --working-directory .. --quiet #{additional_args.join(' ')}"
-  )
+def swiftlint(additional_args: [])
+  run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
+end
+
+def sourcery(args: [])
+  run_package_plugin(cmd: "sourcery-command #{args.join(' ')}")
+end
+
+def run_package_plugin(cmd:)
+  run_in_build_tools(cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
 end
 
 # We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.

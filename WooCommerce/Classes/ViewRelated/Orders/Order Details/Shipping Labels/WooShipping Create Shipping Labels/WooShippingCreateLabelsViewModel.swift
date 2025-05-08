@@ -208,7 +208,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         if let selectedShippingLabel {
             destinationAddressStatus = .verified
             destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
-            originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
+            originAddress = selectedShippingLabel.originAddress.formattedInlineAddress ?? ""
         } else {
             destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
             loadDestinationAddress()

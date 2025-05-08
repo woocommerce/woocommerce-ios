@@ -83,7 +83,8 @@ final class ShippingLabelStoreTests: XCTestCase {
                                  destinationAddress: destination,
                                  productIDs: [3013],
                                  productNames: ["Password protected!"],
-                                 commercialInvoiceURL: nil)
+                                 commercialInvoiceURL: nil,
+                                 usedDate: nil)
         }()
         let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
         let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)

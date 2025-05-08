@@ -23,6 +23,7 @@ public struct MockShippingLabel {
               destinationAddress: MockShippingLabelAddress.sampleAddress(),
               productIDs: [],
               productNames: [],
-              commercialInvoiceURL: nil)
+              commercialInvoiceURL: nil,
+              usedDate: nil)
     }
 }

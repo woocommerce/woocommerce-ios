@@ -35,6 +35,7 @@ struct WooShippingRefundView: View {
                 .italic()
             Spacer()
         }
+        .font(.subheadline)
         .multilineTextAlignment(.leading)
         .safeAreaInset(edge: .bottom) {
             VStack {

@@ -6,7 +6,8 @@ import class Networking.AlamofireNetwork
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
     var defaultStrategy: PointOfSalePurchasableItemFetchStrategy { get }
 
-    func searchStrategy(searchTerm: String) -> PointOfSalePurchasableItemFetchStrategy
+    func searchStrategy(searchTerm: String,
+                        analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 
     func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy
 }
@@ -57,7 +58,8 @@ public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetc
         fixedStrategy
     }
 
-    public func searchStrategy(searchTerm: String) -> PointOfSalePurchasableItemFetchStrategy {
+    public func searchStrategy(searchTerm: String,
+                               analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
 

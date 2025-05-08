@@ -102,7 +102,8 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
                                                                                        pageNumber: pageNumber,
                                                                                        perPage: pageSize)
         let modifiedItems = PagedItems<POSProduct>(items: receivedItems.items,
-                                                   hasMorePages: false)
+                                                   hasMorePages: false,
+                                                   totalItems: receivedItems.totalItems)
         return modifiedItems
     }
 

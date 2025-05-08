@@ -893,6 +893,7 @@
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
 		209B7A682CEB6742003BDEF0 /* PointOfSalePaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B7A672CEB6742003BDEF0 /* PointOfSalePaymentState.swift */; };
+		209C60FD2DCCFC7100AB2D39 /* POSPreSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20050F182DC3E37400E12021 /* POSPreSearchView.swift */; };
 		209CA0EE2B50070D0073D1AC /* WooTabContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209CA0ED2B50070D0073D1AC /* WooTabContainerController.swift */; };
 		209E96BD2DB681B50089F3D2 /* KeyboardObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209E96BC2DB681B50089F3D2 /* KeyboardObserver.swift */; };
 		209ECA812DB8FC280089F3D2 /* PointOfSaleViewStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209ECA802DB8FC280089F3D2 /* PointOfSaleViewStateCoordinator.swift */; };
@@ -16432,6 +16433,7 @@
 				02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */,
 				026826AA2BF59DF70036F959 /* CartView.swift in Sources */,
 				2647F7BA292BE2F900D59FDF /* AnalyticsReportCard.swift in Sources */,
+				209C60FD2DCCFC7100AB2D39 /* POSPreSearchView.swift in Sources */,
 				01BD774A2C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift in Sources */,
 				451526392577D89E0076B03C /* AddAttributeViewModel.swift in Sources */,
 				68709D3D2A2ED94900A7FA6C /* UpgradesView.swift in Sources */,
@@ -16554,7 +16556,6 @@
 				023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
-				20050F192DC3E37400E12021 /* POSPreSearchView.swift in Sources */,
 				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				86023FB12B199F6200A28F07 /* ThemesCarouselView.swift in Sources */,
 				EE19058C2B5F744300617C53 /* BlazeAddPaymentMethodWebView.swift in Sources */,

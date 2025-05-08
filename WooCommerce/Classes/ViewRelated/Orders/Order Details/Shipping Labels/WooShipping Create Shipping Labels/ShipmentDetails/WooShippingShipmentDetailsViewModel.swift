@@ -130,7 +130,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     }
 
     var refundViewModel: WooShippingRefundViewModel? {
-        guard let shippingLabel else {
+        guard let shippingLabel, shippingLabel.isRefundable else {
             return nil
         }
         return WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,

@@ -176,6 +176,15 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let packageData = try XCTUnwrap(viewModel.packageData)
         XCTAssertEqual(packageData.dimensionsDescription(unit: dimensionUnit), expectedDimensions)
         XCTAssertEqual(packageData.weightDescription(unit: weightUnit), expectedWeight)
+        XCTAssertEqual(packageData.id, "custom_box")
+
+        // When: selecting a template
+        viewModel.showSaveTemplate = true
+        viewModel.packageTemplateName = "a"
+
+        // Then
+        let updatedPackageData = try XCTUnwrap(viewModel.packageData)
+        XCTAssertEqual(updatedPackageData.id, "a")
     }
 
     @MainActor

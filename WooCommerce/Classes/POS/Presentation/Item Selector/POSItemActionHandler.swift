@@ -84,7 +84,10 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
             return
         }
-        posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
+
+        if searchTerm.isNotEmpty {
+            posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
+        }
 
         posModel.addToCart(item)
         trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)

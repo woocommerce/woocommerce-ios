@@ -12,49 +12,83 @@ struct POSPreSearchView: View {
     let itemListType: ItemListType
 
     var body: some View {
-        // List of popular items
+        switch itemListType {
+        case .products:
+            recentSearchesAndPopularProducts
+        case .coupons:
+            recentSearchesOnly
+        }
+    }
+
+    @ViewBuilder private var recentSearchesAndPopularProducts: some View {
         ItemList(
             itemsController: posModel.popularPurchasableItemsController,
             node: .root,
             itemActionHandler: StandardPOSItemActionHandler(posModel: posModel, itemListType: itemListType),
             headerView: {
                 VStack(alignment: .leading, spacing: POSSpacing.none) {
-                    if savedSearches.isNotEmpty {
-                        // Search history
-                        sectionHeader(Localization.recentSearchesTitle)
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: POSSpacing.small) {
-                                ForEach(savedSearches, id: \.self) { searchTerm in
-                                    Button(action: {
-                                        onSearchSelected(searchTerm)
-                                    }) {
-                                        Label {
-                                            Text(searchTerm)
-                                                .font(.posBodyLargeRegular())
-                                                .foregroundColor(.posOnSurface)
-                                        } icon: {
-                                            Image(systemName: "magnifyingglass")
-                                                .font(.posBodyMediumRegular())
-                                                .foregroundColor(.posOnSurfaceVariantHighest)
-                                        }
-                                        .padding(.horizontal, POSPadding.medium)
-                                        .padding(.vertical, POSPadding.small)
-                                        .frame(height: chipHeight)
-                                        .background(Color.posSurfaceBright)
-                                        .cornerRadius(POSCornerRadiusStyle.medium.value)
-                                        .posShadow(.medium)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, POSPadding.medium)
-                        }
-                    }
+                    recentSearchesSection
 
                     sectionHeader(Localization.popularProductsTitle)
                         .padding(.bottom, POSPadding.medium)
                 }
             })
+    }
+
+    @ViewBuilder private var recentSearchesOnly: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
+            if savedSearches.isNotEmpty {
+                recentSearchesSection
+
+                Spacer()
+            } else {
+                Text(Localization.preSearchEmptyListText)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurface)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    .padding(.top, POSPadding.medium)
+            }
+        }
+        .padding(.horizontal, POSPadding.medium)
+    }
+
+    @ViewBuilder private var recentSearchesSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
+            if savedSearches.isNotEmpty {
+                sectionHeader(Localization.recentSearchesTitle)
+
+                recentSearches
+            }
+        }
+    }
+
+    @ViewBuilder private var recentSearches: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: POSSpacing.small) {
+                ForEach(savedSearches, id: \.self) { searchTerm in
+                    Button(action: {
+                        onSearchSelected(searchTerm)
+                    }) {
+                        Label {
+                            Text(searchTerm)
+                                .font(.posBodyLargeRegular())
+                                .foregroundColor(.posOnSurface)
+                        } icon: {
+                            Image(systemName: "magnifyingglass")
+                                .font(.posBodyMediumRegular())
+                                .foregroundColor(.posOnSurfaceVariantHighest)
+                        }
+                        .padding(.horizontal, POSPadding.medium)
+                        .padding(.vertical, POSPadding.small)
+                        .frame(height: chipHeight)
+                        .background(Color.posSurfaceBright)
+                        .cornerRadius(POSCornerRadiusStyle.medium.value)
+                        .posShadow(.medium)
+                    }
+                }
+            }
+            .padding(.vertical, POSPadding.medium) // Use padding not VStack spacing so the Chip shadows aren't clipped
+        }
     }
 
     @ViewBuilder private func sectionHeader(_ title: String) -> some View {

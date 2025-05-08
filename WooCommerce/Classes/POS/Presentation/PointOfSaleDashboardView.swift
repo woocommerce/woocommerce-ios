@@ -115,7 +115,7 @@ struct PointOfSaleDashboardView: View {
             }
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
-                await posModel.loadPopularItems(type: .product)
+                await posModel.popularPurchasableItemsController.loadItems(base: .root)
             }
         }
         .ignoresSafeArea(.keyboard)

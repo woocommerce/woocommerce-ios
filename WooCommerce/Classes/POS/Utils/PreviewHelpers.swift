@@ -220,7 +220,7 @@ struct POSPreviewHelpers {
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
-            popularItemsController: popularItemsController
+            popularPurchasableItemsController: itemsController
         )
     }
 }

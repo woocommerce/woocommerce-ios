@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.POSItemType
 import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItem
 
 @available(iOS 17.0, *)
 final class POSProductSearchable: POSSearchable {

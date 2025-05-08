@@ -2196,7 +2196,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = DE06C81B2D62E9AF00419FFA /* Model 120.xcdatamodel */;
+			currentVersion = DE6627E72DCCA2560068E12E /* Model 121.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

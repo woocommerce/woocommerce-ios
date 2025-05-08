@@ -144,6 +144,7 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
+                .scrollDismissesKeyboard(.immediately)
                 .transition(.opacity.combined(with: .move(edge: .trailing)))
                 .zIndex(1)
             }

@@ -1,13 +1,17 @@
 import SwiftUI
 
+/// View for requesting refund for a shipping label.
+///
 struct WooShippingRefundView: View {
+    @Environment(\.dismiss) var dismiss
+
     let viewModel: WooShippingRefundViewModel
 
     var body: some View {
-        ScrollableVStack(alignment: .leading, spacing: 8) {
+        ScrollableVStack(alignment: .leading, spacing: Layout.contentSpacing) {
             HStack {
                 Button(Localization.cancelButton) {
-                    // TODO
+                    dismiss()
                 }
                 Spacer()
             }
@@ -15,7 +19,7 @@ struct WooShippingRefundView: View {
             Text(Localization.title)
                 .font(.title2)
                 .bold()
-                .padding(.vertical, 16)
+                .padding(.vertical, Layout.titleExtraPadding)
 
             Text(Localization.description)
 
@@ -46,6 +50,11 @@ struct WooShippingRefundView: View {
 }
 
 private extension WooShippingRefundView {
+    enum Layout {
+        static let contentSpacing = CGFloat(8)
+        static let titleExtraPadding = CGFloat(16)
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "wooShippingRefundView.title",

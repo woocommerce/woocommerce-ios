@@ -2737,6 +2737,7 @@
 		DE653EAF2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */; };
 		DE65C1F72C48E7DC003EF8D1 /* SupportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE65C1F62C48E7DC003EF8D1 /* SupportButton.swift */; };
 		DE65C1F92C48E89C003EF8D1 /* WebCheckoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE65C1F82C48E89C003EF8D1 /* WebCheckoutViewModel.swift */; };
+		DE6627E42DCC503E0068E12E /* WooShippingRefundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6627E32DCC503E0068E12E /* WooShippingRefundView.swift */; };
 		DE66C56F2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */; };
 		DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */; };
 		DE67D46926BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */; };
@@ -5997,6 +5998,7 @@
 		DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+TestOrder.swift"; sourceTree = "<group>"; };
 		DE65C1F62C48E7DC003EF8D1 /* SupportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportButton.swift; sourceTree = "<group>"; };
 		DE65C1F82C48E89C003EF8D1 /* WebCheckoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCheckoutViewModel.swift; sourceTree = "<group>"; };
+		DE6627E32DCC503E0068E12E /* WooShippingRefundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingRefundView.swift; sourceTree = "<group>"; };
 		DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordDisabledViewModelTests.swift; sourceTree = "<group>"; };
 		DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFrom.swift"; sourceTree = "<group>"; };
 		DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFromTests.swift"; sourceTree = "<group>"; };
@@ -12630,6 +12632,7 @@
 		CEAB739A2C81E3A000A7EB39 /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				DE6627E22DCC50000068E12E /* Refund */,
 				DEDC5F5C2D9E7CB8005E38BD /* ShipmentDetails */,
 				EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */,
 				B90DD08C2D12FA6600EFC06A /* WooShipping Customs */,
@@ -13470,6 +13473,14 @@
 				95B6C60D2D9DA99200E1A661 /* WPComMagicLinkRequestViewModel.swift */,
 			);
 			path = WPComLogin;
+			sourceTree = "<group>";
+		};
+		DE6627E22DCC50000068E12E /* Refund */ = {
+			isa = PBXGroup;
+			children = (
+				DE6627E32DCC503E0068E12E /* WooShippingRefundView.swift */,
+			);
+			path = Refund;
 			sourceTree = "<group>";
 		};
 		DE68979D2A8F7C8C00154588 /* AccountSettings */ = {
@@ -16230,6 +16241,7 @@
 				456BEFB626D912EC002AC16C /* AuthenticatedWebView.swift in Sources */,
 				310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */,
 				AE1CC33829129A010021C8EF /* LinkBehavior.swift in Sources */,
+				DE6627E42DCC503E0068E12E /* WooShippingRefundView.swift in Sources */,
 				209CA0EE2B50070D0073D1AC /* WooTabContainerController.swift in Sources */,
 				26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,

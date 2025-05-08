@@ -23,7 +23,7 @@ struct WooShippingRefundView: View {
                 .bold()
                 .padding(.vertical, Layout.titleExtraPadding)
 
-            Text(Localization.description)
+            Text(String.localizedStringWithFormat(Localization.description, viewModel.refundDuration))
 
             Text(Localization.purchaseDate).bold() +
             Text(" ") +
@@ -69,8 +69,9 @@ private extension WooShippingRefundView {
             "wooShippingRefundView.description",
             value: "Request a refund for your unused shipping label. " +
             "The refund process for the shipping label will begin immediately and " +
-            "is typically completed within 14 business days.",
-            comment: "Description on the Request shipping label refund view"
+            "is typically completed within %1$d business days.",
+            comment: "Description on the Request shipping label refund view. " +
+            "The placeholder is the number of day to process the refund."
         )
         static let purchaseDate = NSLocalizedString(
             "wooShippingRefundView.purchaseDate",
@@ -102,5 +103,7 @@ private extension WooShippingRefundView {
 }
 
 #Preview {
-    WooShippingRefundView(viewModel: .init(refundableAmount: 11.33, purchaseDate: Date()))
+    WooShippingRefundView(viewModel: .init(refundableAmount: 11.33,
+                                           refundDuration: 14,
+                                           purchaseDate: Date()))
 }

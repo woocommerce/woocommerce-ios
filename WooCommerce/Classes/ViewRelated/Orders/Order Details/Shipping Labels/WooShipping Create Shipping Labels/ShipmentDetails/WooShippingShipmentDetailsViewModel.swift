@@ -134,6 +134,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             return nil
         }
         return WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
+                                          refundDuration: shippingLabel.refundDuration,
                                           purchaseDate: shippingLabel.dateCreated)
     }
 

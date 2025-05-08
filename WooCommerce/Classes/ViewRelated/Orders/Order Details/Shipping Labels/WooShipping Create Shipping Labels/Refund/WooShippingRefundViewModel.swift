@@ -7,14 +7,17 @@ import WooFoundation
 final class WooShippingRefundViewModel {
     private let stores: StoresManager
 
-    private(set) var formattedPurchaseDate: String
-    private(set) var formattedRefundAmount: String
+    let formattedPurchaseDate: String
+    let formattedRefundAmount: String
+    let refundDuration: Int
 
     init(refundableAmount: Double,
+         refundDuration: Int,
          purchaseDate: Date,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.stores = stores
+        self.refundDuration = refundDuration
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         formattedRefundAmount = currencyFormatter.formatAmount(refundableAmount.description) ?? refundableAmount.description

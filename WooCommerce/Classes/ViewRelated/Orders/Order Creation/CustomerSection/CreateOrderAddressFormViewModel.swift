@@ -51,14 +51,14 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     var sectionTitle: String {
         if showDifferentAddressForm {
-            return Localization.billingTitle.capitalized
+            return Localization.billingTitle.uppercased()
         } else {
-            return Localization.addressSection.capitalized
+            return Localization.addressSection.uppercased()
         }
     }
 
     var secondarySectionTitle: String {
-        Localization.shippingTitle.capitalized
+        Localization.shippingTitle.uppercased()
     }
 
     var showAlternativeUsageToggle: Bool {

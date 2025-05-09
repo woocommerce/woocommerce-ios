@@ -67,16 +67,16 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
             async let wooCommerceSupported = isPluginSupported(Constants.wcPluginName,
-                                                               minimumVersion: Constants.FailedReceiptAfterPayment.wcPluginMinimumVersion)
+                                                               minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
 
             async let gatewaySupported: Bool = {
                 switch paymentGatewayID {
                 case CardPresentPaymentsPlugin.wcPay.gatewayID:
                     return await isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
-                                                   minimumVersion: Constants.FailedReceiptAfterPayment.wcPayPluginMinimumVersion)
+                                                   minimumVersion: Constants.ReceiptAfterPayment.wcPayPluginMinimumVersion)
                 case CardPresentPaymentsPlugin.stripe.gatewayID:
                     return await isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
-                                                   minimumVersion: Constants.FailedReceiptAfterPayment.stripePluginMinimumVersion)
+                                                   minimumVersion: Constants.ReceiptAfterPayment.stripePluginMinimumVersion)
                 default:
                     return false
                 }
@@ -160,7 +160,7 @@ private extension ReceiptEligibilityUseCase {
             static let wcPluginMinimumVersion = "8.7.0"
         }
 
-        enum FailedReceiptAfterPayment {
+        enum ReceiptAfterPayment {
             static let wcPluginMinimumVersion = "9.5.0"
             static let wcPayPluginMinimumVersion = "8.6.0"
             static let stripePluginMinimumVersion = "9.1.0"

@@ -360,15 +360,6 @@ target 'WordPressAuthenticatorTests' do
   pod 'OCMock', '~> 3.4'
 end
 
-# Tools
-# ==========
-#
-def swiftlint_version
-  require 'yaml'
-
-  YAML.load_file('.swiftlint.yml')['swiftlint_version']
-end
-
 # Workarounds:
 # ============
 #

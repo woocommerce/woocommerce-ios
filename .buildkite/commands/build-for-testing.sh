@@ -1,5 +1,12 @@
 #!/bin/bash -eu
 
+if .buildkite/commands/should-skip-job.sh --build; then
+  message="Skipping Build - no relevant files changed"
+  echo "$message" | buildkite-agent annotate --style "info" --context "skip-build"
+  echo "$message"
+  exit 0
+fi
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
 

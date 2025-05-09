@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
-if .buildkite/commands/should-skip-tests.sh; then
-  message="Skipping Unit Tests as only documentation, tooling and/or non-code files were changed"
+if .buildkite/commands/should-skip-job.sh --validation; then
+  message="Skipping Unit Tests - no relevant files changed"
   echo "$message" | buildkite-agent annotate --style "info" --context "skip-unit-tests"
   echo "$message"
   exit 0

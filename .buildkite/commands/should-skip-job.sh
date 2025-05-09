@@ -28,7 +28,8 @@ if [ "$1" = "--validation" ]; then
   pr_changed_files --all-match "${PATTERNS[@]}"
 elif [ "$1" = "--localization" ]; then
   # Check if any localization files have changed
-  pr_changed_files --any-match "${LOCALIZATION_PATTERNS[@]}"
+  # Return true (skip) if NO localization files have changed
+  ! pr_changed_files --any-match "${LOCALIZATION_PATTERNS[@]}"
 elif [ "$1" = "--build" ]; then
   # Check if changes are limited to documentation, tooling, and non-code files (NOT localization files)
   PATTERNS=("${COMMON_PATTERNS[@]}")

@@ -3,7 +3,7 @@
 
 22.4
 -----
-
+- [*] Order Details: Improvements to textfield capitalization rules [https://github.com/woocommerce/woocommerce-ios/pull/15611]
 
 22.3
 -----

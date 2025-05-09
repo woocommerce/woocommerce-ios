@@ -3096,7 +3096,7 @@ which should be translated separately and considered part of this sentence. */
 "Creating Variations..." = "Creating Variations...";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "Credit card TEST UPDATE";
 
 /* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
 "Credit card ending in %1$@" = "Credit card ending in %1$@";

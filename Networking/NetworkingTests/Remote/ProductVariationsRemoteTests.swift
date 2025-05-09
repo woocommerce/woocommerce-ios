@@ -224,6 +224,33 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(firstVariation.menuOrder, 8)
     }
 
+    func test_loadVariationsForPointOfSale_returns_total_items_from_header() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let expectedTotalItems = 15
+        network.responseHeaders = ["X-WP-Total": "\(expectedTotalItems)"]
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(pagedVariations.totalItems, expectedTotalItems)
+    }
+
+    func test_loadVariationsForPointOfSale_returns_nil_total_items_when_header_missing() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
+
+        // Then
+        XCTAssertNil(pagedVariations.totalItems)
+    }
+
     func test_loadVariationsForPointOfSale_returns_page_details() async throws {
         // Given
         let remote = ProductVariationsRemote(network: network)

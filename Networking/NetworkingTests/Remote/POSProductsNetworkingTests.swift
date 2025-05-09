@@ -214,4 +214,47 @@ struct POSProductsNetworkingTests {
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
         #expect(queryParametersDictionary["_fields"] == POSProduct.requestFields.joined(separator: ","))
     }
+
+    @Test func loadProductsForPointOfSale_returns_total_items_from_header() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedTotalItems = 25
+        network.responseHeaders = ["X-WP-Total": "\(expectedTotalItems)"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+
+        // When
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        #expect(pagedProducts.totalItems == expectedTotalItems)
+    }
+
+    @Test func searchProductsForPointOfSale_returns_total_items_from_header() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedTotalItems = 10
+        network.responseHeaders = ["X-WP-Total": "\(expectedTotalItems)"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        let pagedProducts = try await remote.searchProductsForPointOfSale(
+            for: sampleSiteID,
+            query: "photo")
+
+        // Then
+        #expect(pagedProducts.totalItems == expectedTotalItems)
+    }
+
+    @Test func loadProductsForPointOfSale_returns_nil_total_items_when_header_missing() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+
+        // When
+        let pagedProducts = try await remote.loadProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        #expect(pagedProducts.totalItems == nil)
+    }
 }

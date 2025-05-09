@@ -59,7 +59,7 @@ public class SiteSettingsRemote: Remote {
                                      path: path,
                                      parameters: nil,
                                      availableAsRESTRequest: true)
-        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: settingGroup)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -86,7 +86,7 @@ public class SiteSettingsRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: settingGroup)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

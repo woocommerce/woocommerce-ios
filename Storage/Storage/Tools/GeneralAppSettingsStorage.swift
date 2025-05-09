@@ -7,6 +7,7 @@ import Combine
 ///
 public struct GeneralAppSettingsStorage {
     private let fileStorage: FileStorage
+    private let fileURL: URL
 
     /// This subject is used internally to force a refresh of any settings publisher.
     /// Every time the underlying settings change, we should emit a value here.
@@ -17,8 +18,13 @@ public struct GeneralAppSettingsStorage {
     ///
     private static let refreshSubject = CurrentValueSubject<Void, Never>(())
 
-    public init(fileStorage: FileStorage = PListFileStorage()) {
+    public init(fileStorage: FileStorage = PListFileStorage(), fileURL: URL? = nil) {
         self.fileStorage = fileStorage
+        if let fileURL = fileURL {
+            self.fileURL = fileURL
+        } else {
+            self.fileURL = Constants.generalAppSettingsFileURL
+        }
     }
 
     /// Reads the value of the stored setting for the given key path
@@ -72,7 +78,7 @@ private extension GeneralAppSettingsStorage {
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
-        guard let settings: GeneralAppSettings = try? fileStorage.data(for: Constants.generalAppSettingsFileURL) else {
+        guard let settings: GeneralAppSettings = try? fileStorage.data(for: fileURL) else {
             return GeneralAppSettings.default
         }
 
@@ -81,7 +87,7 @@ private extension GeneralAppSettingsStorage {
 
     /// Save the `GeneralAppSettings` to the appropriate file.
     func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
-        try fileStorage.write(settings, to: Constants.generalAppSettingsFileURL)
+        try fileStorage.write(settings, to: fileURL)
     }
 }
 

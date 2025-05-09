@@ -295,8 +295,12 @@ private extension WooShippingStore {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
-        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
-        setLastModifiedDateForOrder(siteID: siteID, orderID: orderID)
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address) { [weak self] result in
+            completion(result)
+
+            guard let self, case .success = result else { return }
+            setLastModifiedDateForOrder(siteID: siteID, orderID: orderID)
+        }
     }
 
     func loadConfig(siteID: Int64,

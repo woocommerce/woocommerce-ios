@@ -107,7 +107,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         }
         switch result {
         case let .success(variations):
-            return PagedItems(items: variations, hasMorePages: false)
+            return PagedItems(items: variations, hasMorePages: false, totalItems: 0)
         case let .failure(error):
             throw error
         }

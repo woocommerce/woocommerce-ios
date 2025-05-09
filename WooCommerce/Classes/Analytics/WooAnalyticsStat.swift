@@ -1311,6 +1311,7 @@ enum WooAnalyticsStat: String {
     case pointOfSalePreSearchRecentTermTapped = "pre_search_recent_term_tapped"
     case pointOfSaleKeyboardDismissedInSearch = "keyboard_dismissed_in_search"
     case pointOfSaleItemsNextPageLoaded = "items_next_page_loaded"
+    case pointOfSaleSearchRemoteResultsFetched = "search_remote_results_fetched"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -346,12 +346,19 @@ private extension Remote {
 
 /// Contains the result of a paginated request.
 public struct PagedItems<T> {
+    /// Items fetched in this page
     public let items: [T]
+
+    /// Whether there are more pages after this one
     public let hasMorePages: Bool
 
-    public init(items: [T], hasMorePages: Bool) {
+    /// Number of items available, across all pages, whether loaded or not
+    public let totalItems: Int?
+
+    public init(items: [T], hasMorePages: Bool, totalItems: Int?) {
         self.items = items
         self.hasMorePages = hasMorePages
+        self.totalItems = totalItems
     }
 }
 
@@ -365,6 +372,7 @@ public extension Remote {
 
     enum PaginationHeaderKey {
         static let totalPagesCount = "x-wp-totalpages"
+        static let totalCount = "x-wp-total"
     }
 
     enum JSONParsingErrorUserInfoKey {

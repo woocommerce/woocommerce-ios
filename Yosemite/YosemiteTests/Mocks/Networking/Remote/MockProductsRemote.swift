@@ -68,13 +68,13 @@ final class MockProductsRemote {
     private(set) var lastRequestedPageSize: Int?
 
     /// The results to return based on the given site ID in `loadProductsForPointOfSale`
-    private var posProductsResultsBySiteID = [Int64: Result<[POSProduct], Error>]()
+    private var posProductsResultsBySiteID = [Int64: Result<PagedItems<POSProduct>, Error>]()
 
     /// The results to return based on the given query in `searchProductsForPointOfSale`
-    private var posSearchResultsByQuery = [String: Result<[POSProduct], Error>]()
+    private var posSearchResultsByQuery = [String: Result<PagedItems<POSProduct>, Error>]()
 
     /// The results to return based on the given site ID in `loadPopularProductsForPointOfSale`
-    private var posPopularProductsResultsBySiteID = [Int64: Result<[POSProduct], Error>]()
+    private var posPopularProductsResultsBySiteID = [Int64: Result<PagedItems<POSProduct>, Error>]()
 
     /// Set the value passed to the `completion` block if `addProduct()` is called.
     ///
@@ -153,19 +153,19 @@ final class MockProductsRemote {
 
     /// Set the value passed to the `completion` block if `loadProductsForPointOfSale()` is called.
     ///
-    func whenLoadingProductsForPointOfSale(siteID: Int64, thenReturn result: Result<[POSProduct], Error>) {
+    func whenLoadingProductsForPointOfSale(siteID: Int64, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
         posProductsResultsBySiteID[siteID] = result
     }
 
     /// Set the value passed to the `completion` block if `searchProductsForPointOfSale()` is called.
     ///
-    func whenSearchingProductsForPointOfSale(query: String, thenReturn result: Result<[POSProduct], Error>) {
+    func whenSearchingProductsForPointOfSale(query: String, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
         posSearchResultsByQuery[query] = result
     }
 
     /// Set the value passed to the `completion` block if `loadPopularProductsForPointOfSale()` is called.
     ///
-    func whenLoadingPopularProductsForPointOfSale(siteID: Int64, thenReturn result: Result<[POSProduct], Error>) {
+    func whenLoadingPopularProductsForPointOfSale(siteID: Int64, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
         posPopularProductsResultsBySiteID[siteID] = result
     }
 }
@@ -418,8 +418,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             throw NetworkError.notFound()
         }
         switch result {
-        case let .success(products):
-            return PagedItems(items: products, hasMorePages: false)
+        case let .success(pagedProducts):
+            return pagedProducts
         case let .failure(error):
             throw error
         }
@@ -433,8 +433,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             throw NetworkError.notFound()
         }
         switch result {
-        case let .success(products):
-            return PagedItems(items: products, hasMorePages: false)
+        case let .success(pagedProducts):
+            return pagedProducts
         case let .failure(error):
             throw error
         }
@@ -449,8 +449,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             throw NetworkError.notFound()
         }
         switch result {
-        case let .success(products):
-            return PagedItems(items: products, hasMorePages: false)
+        case let .success(pagedProducts):
+            return pagedProducts
         case let .failure(error):
             throw error
         }

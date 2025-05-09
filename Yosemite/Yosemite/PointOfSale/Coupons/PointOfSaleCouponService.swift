@@ -4,12 +4,7 @@ import class Networking.AlamofireNetwork
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import Storage
-
-public enum PointOfSaleCouponServiceError: Error {
-    case couponsLoadingError
-    case couponsDisabled
-    case couponsEnablingError
-}
+import enum Alamofire.AFError
 
 public protocol PointOfSaleCouponServiceProtocol {
     func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem]
@@ -61,9 +56,11 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                                           fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
             return try await fetchStrategy.fetchCoupons(pageNumber: pageNumber)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleCouponServiceError.requestCancelled
         } catch {
             if try await checkRemoteStoreCouponSettings() {
-                throw error
+                throw PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
             } else {
                 throw PointOfSaleCouponServiceError.couponsDisabled
             }
@@ -105,8 +102,8 @@ private extension PointOfSaleCouponService {
                 switch result {
                 case let .success(isEnabled):
                     continuation.resume(returning: isEnabled)
-                case .failure:
-                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
+                case .failure(let error):
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error))
                 }
             }
         }
@@ -117,5 +114,24 @@ private extension PointOfSaleCouponService {
     enum Constants {
         static let enableCouponsSettingID: String = "woocommerce_enable_coupons"
         static let enableCouponsSettingValue: String = "yes"
+    }
+}
+
+public enum PointOfSaleCouponServiceError: Error, Equatable {
+    case couponsLoadingError(underlyingError: Error)
+    case couponsDisabled
+    case couponsEnablingError
+    case requestCancelled
+
+    public static func == (lhs: PointOfSaleCouponServiceError, rhs: PointOfSaleCouponServiceError) -> Bool {
+        switch (lhs, rhs) {
+        case (.couponsDisabled, .couponsDisabled),
+             (.couponsEnablingError, .couponsEnablingError),
+             (.requestCancelled, .requestCancelled),
+            (.couponsLoadingError, .couponsLoadingError):
+            return true
+        default:
+            return false
+        }
     }
 }

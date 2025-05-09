@@ -98,6 +98,11 @@ final class HubMenuViewModel: ObservableObject {
     private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
     }()
+
+    private(set) lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
+        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
+    }()
+
     private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
                                               currencySettings: ServiceLocator.currencySettings,

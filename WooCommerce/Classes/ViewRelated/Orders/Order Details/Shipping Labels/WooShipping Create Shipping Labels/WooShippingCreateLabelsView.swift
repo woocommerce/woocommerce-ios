@@ -37,8 +37,6 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
-    @State private var isReadyToShowErrorNotice = false
-
     @State private var showingCustomsForm = false
     @State private var showingSplitShipments = false
 
@@ -241,7 +239,7 @@ private extension WooShippingCreateLabelsView {
                 .foregroundStyle(Color(.primary))
                 .bold()
 
-            if isReadyToShowErrorNotice {
+            if viewModel.shouldShowNotices {
                 // Unverified notice for origin address
                 if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
                     verificationNotice(with: originAddressUnverifiedNoticeLabel,
@@ -285,13 +283,6 @@ private extension WooShippingCreateLabelsView {
                         showingCustomsForm = true
                     })
                 }
-            }
-        }
-        .onAppear {
-            /// A brief delay in requesting user attention after the UI loads
-            /// to avoid overwhelming them with too many changes at once when opening the screen.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.isReadyToShowErrorNotice = true
             }
         }
     }

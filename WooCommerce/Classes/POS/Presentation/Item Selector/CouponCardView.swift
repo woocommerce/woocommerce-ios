@@ -29,7 +29,7 @@ struct CouponCardView: View {
                 Text(coupon.summary)
                     .foregroundStyle(summaryColor)
                     .font(Constants.itemDetailFont)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .fixedSize(horizontal: false, vertical: true)
 
                 if coupon.isExpired, let expirationDate = coupon.dateExpires {
@@ -43,7 +43,7 @@ struct CouponCardView: View {
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, minHeight: dimension)
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(cardBackgroundColor)
         .posItemCardBorderStyles()
     }

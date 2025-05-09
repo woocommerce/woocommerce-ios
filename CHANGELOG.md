@@ -2,6 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 22.3
+TEST UPDATE
 This release brings major improvements to the WooCommerce Point of Sale (POS) experience, including the ability to search for products and apply coupons directly from the app. We’ve also improved the Tap to Pay onboarding flow and updated documentation links to ensure a smoother setup. Enhancements to the order form now make entering custom amounts more intuitive. Behind the scenes, we’ve made fixes to improve app stability and refined the POS interface for better usability.
 
 ## 22.2

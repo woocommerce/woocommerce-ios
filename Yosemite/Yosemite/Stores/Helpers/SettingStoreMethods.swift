@@ -222,9 +222,9 @@ private extension SettingStoreMethods {
     }
 
     func upsertSingleSetting(_ readOnlySiteSetting: SiteSetting, in storage: StorageType, siteID: Int64) {
-        let storageSiteSettings = storage.loadSiteSettings(siteID: siteID, settingGroupKey: readOnlySiteSetting.settingGroupKey)
+        let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlySiteSetting.settingID)
 
-        if let existingStorageItem = storageSiteSettings?.first(where: { $0.settingID == readOnlySiteSetting.settingID }) {
+        if let existingStorageItem {
             existingStorageItem.update(with: readOnlySiteSetting)
         } else {
             let newStorageItem = storage.insertNewObject(ofType: Storage.SiteSetting.self)

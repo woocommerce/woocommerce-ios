@@ -548,12 +548,22 @@ private extension OrderDetailsViewController {
 
         if shippingLabel.isRefundable {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
-                let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                    self?.navigationController?.popViewController(animated: true)
+                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
+                    let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                    // Disables the bottom bar (tab bar) when requesting a refund.
+                    refundViewController.hidesBottomBarWhenPushed = true
+                    self?.show(refundViewController, sender: self)
+                    return
                 }
-                // Disables the bottom bar (tab bar) when requesting a refund.
-                refundViewController.hidesBottomBarWhenPushed = true
-                self?.show(refundViewController, sender: self)
+
+                let viewModel = WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
+                                                           refundDuration: shippingLabel.refundDuration,
+                                                           purchaseDate: shippingLabel.dateCreated)
+                let view = WooShippingRefundView(viewModel: viewModel)
+                let refundViewController = UIHostingController(rootView: view)
+                self?.present(refundViewController, animated: true)
             }
         }
 

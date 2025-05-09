@@ -59,8 +59,6 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    // MARK: - Send Receipt After Payment
-
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_inactive_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

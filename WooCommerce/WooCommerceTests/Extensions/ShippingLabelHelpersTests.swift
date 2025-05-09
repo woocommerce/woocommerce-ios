@@ -96,4 +96,21 @@ struct ShippingLabelHelpersTests {
         // Then
         #expect(label.isRefundable)
     }
+
+    @Test(arguments: [
+        ShippingLabel.fake().copy(commercialInvoiceURL: nil),
+        ShippingLabel.fake().copy(commercialInvoiceURL: "")
+    ])
+    func hasCustomsForm_is_false_when_commercialInvoiceURL_is_nil_or_empty(label: ShippingLabel) {
+        // Then
+        #expect(label.hasCustomsForm == false)
+    }
+
+    @Test func hasCustomsForm_is_true_when_commercialInvoiceURL_is_not_empty() {
+        // Given
+        let label = ShippingLabel.fake().copy(commercialInvoiceURL: "https://example.com/form.pdf")
+
+        // Then
+        #expect(label.hasCustomsForm)
+    }
 }

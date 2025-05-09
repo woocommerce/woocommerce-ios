@@ -141,23 +141,8 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  %w[Hardware Networking Storage Yosemite WooCommerce WooFoundation].each do |prefix|
-    puts "\n\nGenerating Copiable for #{prefix}..."
-    puts '=' * 100
-
-    sourcery(args: ["--config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"])
-  end
-
-  puts "\n\nDONE. Generated Copiable for all projects."
-
-  %w[Hardware Networking Yosemite WooFoundation].each do |prefix|
-    puts "\n\nGenerating Fakes for #{prefix}..."
-    puts '=' * 100
-
-    sourcery(args: ["--config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"])
-  end
-
-  puts "\n\nDONE. Generated Fakes."
+  # See note in BuildTools/.sourcery.yml for why we call without arguments
+  run_package_plugin(cmd: 'sourcery-command')
 end
 
 def fold(label)
@@ -230,10 +215,6 @@ end
 
 def swiftlint(additional_args: [])
   run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
-end
-
-def sourcery(args: [])
-  run_package_plugin(cmd: "sourcery-command #{args.join(' ')}")
 end
 
 def run_package_plugin(cmd:)

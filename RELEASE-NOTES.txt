@@ -3,7 +3,7 @@
 
 22.4
 -----
-
+- [*] Payments: Receipts for failed transactions are now available in Order details  [https://github.com/woocommerce/woocommerce-ios/pull/15558]
 
 22.3
 -----

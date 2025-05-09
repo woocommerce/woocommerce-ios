@@ -25,4 +25,8 @@ extension ShippingLabel {
         }
         return true
     }
+
+    var hasCustomsForm: Bool {
+        commercialInvoiceURL?.isNotEmpty == true
+    }
 }

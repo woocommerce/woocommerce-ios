@@ -1520,11 +1520,10 @@ extension OrderDetailsDataSource {
 
     @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
-        guard !isEligibleForPayment else { return false }
         return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForBackendReceipts { isEligible in
+            receiptEligibilityUseCase.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
                 continuation.resume(returning: isEligible)
-            }
+            })
         }
     }
 
@@ -1538,15 +1537,6 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
-    }
-
-    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
-        guard !isEligibleForPayment else {
-            return completion(false)
-        }
-        receiptEligibilityUseCase.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
-            completion(isEligible)
-        })
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

@@ -26,5 +26,3 @@ extension ShippingLabel {
         return true
     }
 }
-
-

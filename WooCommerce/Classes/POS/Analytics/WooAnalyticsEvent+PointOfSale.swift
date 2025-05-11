@@ -23,6 +23,8 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
             static let source = "source"
             static let search = "search"
+            static let resultsCount = "results_count"
+            static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -94,6 +96,17 @@ extension WooAnalyticsEvent {
                                 Key.itemListType: itemType.analyticsValue,
                                 Key.search: searching
             ])
+        }
+
+        static func pointOfSaleSearchRemoteResultsFetched(itemType: POSItemType,
+                                                          resultsCount: Int,
+                                                          millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleSearchRemoteResultsFetched,
+                              properties: [
+                                Key.itemListType: itemType.analyticsValue,
+                                Key.resultsCount: "\(resultsCount)",
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                              ])
         }
     }
 }

@@ -29,7 +29,7 @@ public struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrat
         let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
         // Return all local coupons, including updated ones from the remote
         let coupons = await fetchLocalCoupons(limit: nil)
-        return .init(items: coupons, hasMorePages: hasMorePages)
+        return .init(items: coupons, hasMorePages: hasMorePages, totalItems: nil)
     }
 
     /// fetchLocalCoupons provides an array of coupons that are stored locally
@@ -93,7 +93,7 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
                                                    pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize)
         let results = await getSearchResults()
         let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
-        return PagedItems(items: results, hasMorePages: hasMorePages)
+        return PagedItems(items: results, hasMorePages: hasMorePages, totalItems: nil)
     }
 
     @MainActor

@@ -47,13 +47,13 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int,
                                  fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
-        .init(items: [], hasMorePages: true)
+        .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
                                           pageNumber: Int,
                                           fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
-        .init(items: mockVariationItems, hasMorePages: true)
+        .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
     func providePointOfSaleItems() -> [POSItem] {
@@ -71,11 +71,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return .init(items: [], hasMorePages: true)
+        return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
-        return .init(items: [], hasMorePages: true)
+        return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 }
 

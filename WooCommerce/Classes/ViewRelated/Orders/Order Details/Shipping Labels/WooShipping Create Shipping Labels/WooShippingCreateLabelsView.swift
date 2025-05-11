@@ -199,14 +199,20 @@ private extension WooShippingCreateLabelsView {
                     VStack(spacing: Layout.bottomSheetPadding) {
                         orderDetails
                         Divider()
-                            .padding(.trailing, Layout.bottomSheetPadding * -1)
+                            .padding(.trailing, -Layout.bottomSheetPadding)
+                        paymentMethod
+                        Divider()
+                            .padding(.trailing, -Layout.bottomSheetPadding)
                         shipmentDetails
                     }
                 } else {
                     HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
                         orderDetails
                         Divider()
-                            .padding(.trailing, Layout.bottomSheetPadding * -1)
+                            .padding(.trailing, -Layout.bottomSheetPadding)
+                        paymentMethod
+                        Divider()
+                            .padding(.trailing, -Layout.bottomSheetPadding)
                         shipmentDetails
                     }
                 }
@@ -412,6 +418,28 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
+    var paymentMethod: some View {
+        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+            Text(Localization.BottomSheet.paymentMethod)
+                .footnoteStyle()
+            Button(action: {
+                /// Trigger method selection
+            }) {
+                HStack {
+                    Image(systemName: "plus")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                    Text(Localization.BottomSheet.addPaymentMethod)
+                        .font(.body)
+                        .fontWeight(.regular)
+                        .foregroundColor(.primary)
+                    Spacer()
+                }
+            }
+            .frame(idealHeight: Layout.rowHeight)
+        }
+    }
+
     /// View showing the shipment details, such as shipping rate and additional costs.
     var shipmentDetails: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
@@ -595,6 +623,19 @@ private extension WooShippingCreateLabelsView {
             static let paperSize = NSLocalizedString("wooShipping.createLabels.bottomSheet.paperSize",
                                                      value: "Choose label paper size",
                                                      comment: "Label for the menu to select a paper size on the shipping label creation screen")
+
+            static let paymentMethod = NSLocalizedString(
+                "wooShipping.createLabels.bottomSheet.paymentMethod",
+                value: "Payment Method",
+                comment: "Header for payment method section on the shipping label creation screen"
+            ).localizedUppercase
+
+            static let addPaymentMethod = NSLocalizedString(
+                "wooShipping.createLabels.bottomSheet.addPaymentMethod",
+                value: "Add payment method",
+                comment: "Label for the option to add a payment method on the shipping label creation screen"
+            )
+
             static func purchaseLabel(with price: String?) -> String {
                 guard let price else {
                     return purchase

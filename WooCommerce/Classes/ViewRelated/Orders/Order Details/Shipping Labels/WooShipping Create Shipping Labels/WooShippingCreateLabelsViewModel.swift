@@ -178,6 +178,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
+    @Published var paymentMethodLine: WooShippingPaymentMethodLine?
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          selectedShippingLabel: ShippingLabel? = nil,
@@ -214,6 +216,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             loadDestinationAddress()
         }
 
+        setupPaymentMethodLine()
         updateShipmentDetailsViewModels()
         observeSelectedOriginAddress()
         observeDestinationAddress()
@@ -550,6 +553,11 @@ private extension WooShippingCreateLabelsViewModel {
         let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
         try? resultsController.performFetch()
         return resultsController.fetchedObjects.first
+    }
+
+    func setupPaymentMethodLine() {
+        /// Replace with payment methods data
+        paymentMethodLine = .add
     }
 }
 

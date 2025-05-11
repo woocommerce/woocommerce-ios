@@ -6453,6 +6453,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
 		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
 		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -12627,6 +12628,7 @@
 		CEAB739A2C81E3A000A7EB39 /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */,
 				DEDC5F5C2D9E7CB8005E38BD /* ShipmentDetails */,
 				EE7E75A62D83EAD200E6FF5B /* WooShipping Split Shipments */,
 				B90DD08C2D12FA6600EFC06A /* WooShipping Customs */,
@@ -14635,6 +14637,9 @@
 				260837142AA66E4B0004A12B /* PBXTargetDependency */,
 				26F81B212BE433A3009EC58E /* PBXTargetDependency */,
 				3F0904132D26A40800D8ACCE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */,
 			);
 			name = WooCommerce;
 			packageProductDependencies = (

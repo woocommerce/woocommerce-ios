@@ -200,17 +200,16 @@ private extension WooShippingCreateLabelsView {
                         orderDetails
                         Divider()
                             .padding(.trailing, -Layout.bottomSheetPadding)
-                        paymentMethod
-                        Divider()
-                            .padding(.trailing, -Layout.bottomSheetPadding)
+                        if let line = viewModel.paymentMethodLine {
+                            paymentMethod(line)
+                            Divider()
+                                .padding(.trailing, -Layout.bottomSheetPadding)
+                        }
                         shipmentDetails
                     }
                 } else {
                     HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
                         orderDetails
-                        Divider()
-                            .padding(.trailing, -Layout.bottomSheetPadding)
-                        paymentMethod
                         Divider()
                             .padding(.trailing, -Layout.bottomSheetPadding)
                         shipmentDetails
@@ -418,26 +417,57 @@ private extension WooShippingCreateLabelsView {
         }
     }
 
-    var paymentMethod: some View {
+    func paymentMethod(_ line: WooShippingPaymentMethodLine) -> some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             Text(Localization.BottomSheet.paymentMethod)
                 .footnoteStyle()
-            Button(action: {
-                /// Trigger method selection
-            }) {
-                HStack {
-                    Image(systemName: "plus")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                    Text(Localization.BottomSheet.addPaymentMethod)
-                        .font(.body)
-                        .fontWeight(.regular)
-                        .foregroundColor(.primary)
-                    Spacer()
-                }
+            switch line {
+            case .add:
+                addPaymentMethodLine
+            case .card(let cardLineViewModel):
+                cardPaymentMethodLine(cardLineViewModel)
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
+    }
+
+    var addPaymentMethodLine: some View {
+        Button(action: {
+            /// Trigger payment method selection
+        }) {
+            HStack {
+                Image(systemName: "plus")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                Text(Localization.BottomSheet.addPaymentMethod)
+                    .font(.body)
+                    .fontWeight(.regular)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+        }
+        .frame(idealHeight: Layout.rowHeight)
+    }
+
+    func cardPaymentMethodLine(
+        _ cardLineViewModel: WooShippingPaymentMethodLine.CardPaymentMethodLineViewModel
+    ) -> some View {
+        Button(action: {
+            /// Trigger payment method selection
+        }) {
+            HStack {
+                Text(cardLineViewModel.title)
+                    .font(.body)
+                    .fontWeight(.regular)
+                    .foregroundColor(.primary)
+                Spacer()
+                Image(systemName: "pencil")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .renderedIf(cardLineViewModel.isEditable)
+            }
+        }
+        .disabled(!cardLineViewModel.isEditable)
+        .frame(idealHeight: Layout.rowHeight)
     }
 
     /// View showing the shipment details, such as shipping rate and additional costs.

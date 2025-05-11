@@ -122,19 +122,17 @@ task :clean do
   xcodebuild(:clean)
 end
 
-# rubocop:disable Layout/LineLength
 desc 'Checks the source for style errors'
 task :lint do
-  sh 'pushd BuildTools; export SDKROOT=$(xcrun --sdk macosx --show-sdk-path); swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory swiftlint --working-directory .. --quiet; popd'
+  swiftlint
 end
 
 namespace :lint do
   desc 'Automatically corrects style errors where possible'
   task :autocorrect do
-    sh 'pushd BuildTools; export SDKROOT=$(xcrun --sdk macosx --show-sdk-path); swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory swiftlint --fix --working-directory .. --quiet; popd'
+    swiftlint(additional_args: ['--fix'])
   end
 end
-# rubocop:enable Layout/LineLength
 
 desc 'Open the project in Xcode'
 task xcode: [:dependencies] do
@@ -143,23 +141,8 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  %w[Hardware Networking Storage Yosemite WooCommerce WooFoundation].each do |prefix|
-    puts "\n\nGenerating Copiable for #{prefix}..."
-    puts '=' * 100
-
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"
-  end
-
-  puts "\n\nDONE. Generated Copiable for all projects."
-
-  %w[Hardware Networking Yosemite WooFoundation].each do |prefix|
-    puts "\n\nGenerating Fakes for #{prefix}..."
-    puts '=' * 100
-
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"
-  end
-
-  puts "\n\nDONE. Generated Fakes."
+  # See note in BuildTools/.sourcery.yml for why we call without arguments
+  run_package_plugin(cmd: 'sourcery-command')
 end
 
 def fold(label)
@@ -228,4 +211,17 @@ def check_dependencies_hook
     puts e.message
     exit 1
   end
+end
+
+def swiftlint(additional_args: [])
+  run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
+end
+
+def run_package_plugin(cmd:)
+  run_in_build_tools(cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
+end
+
+# We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.
+def run_in_build_tools(cmd:)
+  sh "pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd"
 end

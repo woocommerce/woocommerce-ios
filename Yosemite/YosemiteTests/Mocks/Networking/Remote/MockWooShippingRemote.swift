@@ -57,6 +57,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `updateShipment`
     private var updateShipment = [ResultKey: Result<WooShippingShipments, Error>]()
 
+    /// The results to return based on the given arguments in `refundShippingLabel`
+    private var refundShippingLabel = [ResultKey: Result<ShippingLabelRefund, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
                            thenReturn result: Result<WooShippingCreatePackageResponse, Error>) {
@@ -395,6 +398,21 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateShipment[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func refundShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let key = ResultKey(siteID: siteID)
+            if let result = self.refundShippingLabel[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

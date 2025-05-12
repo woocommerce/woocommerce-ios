@@ -126,7 +126,7 @@ final class CartDetailsViewModel: ObservableObject {
             // TODO
         case .coupon(let coupon):
             let couponCode = coupon.code
-            // TODO
+            try await postAddCouponToCart(couponCode)
         }
     }
 
@@ -199,6 +199,51 @@ final class CartDetailsViewModel: ObservableObject {
         - currency_thousand_separator: \(details.totals.currencyThousandSeparator ?? "N/A")
         - currency_prefix: \(details.totals.currencyPrefix ?? "N/A")
         - currency_suffix: \(details.totals.currencySuffix ?? "N/A")
+        """)
+
+        DispatchQueue.main.async {
+            let couponDetails = details.coupons?.map { coupon in
+                "- code: \(coupon.code ?? "N/A"), discount_type: \(coupon.discountType ?? "N/A")"
+            }.joined(separator: "\n") ?? "No coupons"
+
+            self.cartDetails = """
+            total_items: \(details.totals.totalItems ?? "N/A")
+            total_shipping: \(details.totals.totalShipping ?? "N/A")
+            total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
+            total_price: \(details.totals.totalPrice ?? "N/A")
+            total_tax: \(details.totals.totalTax ?? "N/A")
+            coupons:
+            \(couponDetails)
+            """
+        }
+    }
+
+    private func postAddCouponToCart(_ code: String) async throws {
+        guard let cartToken = cartToken else {
+            print("❌ no token")
+            return
+        }
+
+        guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart/coupons?code=\(code)") else {
+            print("Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        let decoder = JSONDecoder()
+        let details = try decoder.decode(CartDetails.self, from: data)
+        print("""
+        ✅ Cart Details After Adding Coupon:
+        - total_items: \(details.totals.totalItems ?? "N/A")
+        - total_shipping: \(details.totals.totalShipping ?? "N/A")
+        - total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
+        - total_price: \(details.totals.totalPrice ?? "N/A")
+        - total_tax: \(details.totals.totalTax ?? "N/A")
         """)
 
         DispatchQueue.main.async {

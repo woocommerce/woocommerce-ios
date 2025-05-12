@@ -1318,6 +1318,8 @@
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
+		3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */; };
+		3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */; };
 		3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA323262D63E0570017AE66 /* XCUITestHelpers */; };
 		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
@@ -6462,9 +6464,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WooShippingPaymentMethod;
+			sourceTree = "<group>";
+		};
 		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -6573,6 +6583,7 @@
 				DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */,
 				DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
+				3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */,
 				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
 				4598298128574688003A9AFE /* Inject in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
@@ -6581,6 +6592,7 @@
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
+				3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */,
@@ -14697,6 +14709,8 @@
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
 				DEA6BCA82BC6A7050017D671 /* DGCharts */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
+				3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */,
+				3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -14887,6 +14901,7 @@
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
+				3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -19862,6 +19877,14 @@
 				minimumVersion = 0.3.0;
 			};
 		};
+		3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Automattic/Automattic-Tracks-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.5.2;
+			};
+		};
 		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Automattic/ScreenObject";
@@ -19968,6 +19991,16 @@
 		3F368D972DCB74490065B48F /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
+		};
+		3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
+			productName = AutomatticTracks;
+		};
+		3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
+			productName = AutomatticEncryptedLogs;
 		};
 		3FA323262D63E0570017AE66 /* XCUITestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;

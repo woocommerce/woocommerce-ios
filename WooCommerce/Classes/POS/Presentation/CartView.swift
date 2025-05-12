@@ -125,6 +125,31 @@ final class CartDetailsViewModel: ObservableObject {
         }
     }
 
+    func deleteCart() async throws {
+        let endpoints = ["items", "coupons"]
+        for endpoint in endpoints {
+            guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart/\(endpoint)") else {
+                print("Invalid URL for \(endpoint)")
+                continue
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            if let cartToken = cartToken {
+                request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+            }
+
+            let (_, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                print("✅ Deleted \(endpoint) with status: \(httpResponse.statusCode)")
+            }
+        }
+
+        DispatchQueue.main.async {
+            self.cartDetails = "Cart cleared."
+        }
+    }
+
     func fetchCartToken() async throws {
         guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
@@ -382,6 +407,10 @@ struct CartView: View {
                         Button {
                             posModel.removeAllItemsFromCart()
                             ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
+                            
+                            Task {
+                                try await posModel.cartDetailsVM.deleteCart()
+                            }
                         } label: {
                             Text(Localization.clearButtonTitle)
                         }

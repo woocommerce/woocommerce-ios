@@ -114,10 +114,10 @@ final class CartDetailsViewModel: ObservableObject {
             let itemID = product.productID
             try await postAddItemToCart(itemID)
         case .variableParentProduct(let parentProduct):
-            let itemID = parentProduct.productID
+            let _ = parentProduct.productID
             // TODO
         case .variation(let variation):
-            let itemID = variation.productID
+            let _ = variation.productID
             // TODO
         case .coupon(let coupon):
             let couponCode = coupon.code

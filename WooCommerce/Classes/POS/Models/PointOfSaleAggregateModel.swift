@@ -511,14 +511,30 @@ private extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     @MainActor
     func checkOut() async {
-        collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
         orderStage = .finalizing
-        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
-            await self?.checkOut()
-        })
-        trackOrderSyncState(syncOrderResult)
-        await startPaymentWhenCardReaderConnected()
+        // We no longer need to pass the current Cart to create the order when syncing with the remote site,
+        // we just call /checkout on the current cart and it's produced in the backend.
+        do {
+            guard let token = cartDetailsVM.cartToken else {
+                fatalError()
+            }
+            try await orderController.syncOrder(token: token)
+        } catch {
+            fatalError()
+        }
     }
+
+//
+//    @MainActor
+//    func checkOut() async {
+//        collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
+//        orderStage = .finalizing
+//        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+//            await self?.rest_api_checkOut()
+//        })
+//        trackOrderSyncState(syncOrderResult)
+//        await startPaymentWhenCardReaderConnected()
+//    }
 }
 
 // MARK: - Lifecycle

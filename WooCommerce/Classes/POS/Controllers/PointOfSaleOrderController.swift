@@ -16,6 +16,7 @@ import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
+import Yosemite
 
 enum SyncOrderState {
     case newOrder
@@ -31,6 +32,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     @discardableResult
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
+    func syncOrder(token: String) async throws
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment() async throws
@@ -64,6 +66,65 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+
+    var siteURL: String {
+        ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+    }
+    
+    var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    }
+
+    func syncOrder(token: String) async throws {
+        // 1. Submit for checkout
+        guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/checkout") else {
+            fatalError()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(token, forHTTPHeaderField: "Cart-Token")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            print("❌ Request failed with response: \(response)")
+            return
+        }
+
+        struct CheckoutResponse: Decodable {
+            let orderID: Int64
+
+            enum CodingKeys: String, CodingKey {
+                case orderID = "order_id"
+            }
+        }
+
+        do {
+            let decodedResponse = try JSONDecoder().decode(CheckoutResponse.self, from: data)
+            print("✅ Checkout Response - Order ID: \(decodedResponse.orderID)")
+
+            // 2. Get order remotely using the fresh order id
+            await MainActor.run {
+                let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: decodedResponse.orderID) { result in
+                    switch result {
+                    case let .success(syncedOrder):
+                        self.order = syncedOrder
+                        self.orderState = .loaded(self.totals(for: syncedOrder), syncedOrder)
+                    case let .failure(error):
+                        debugPrint(error)
+                    }
+                }
+                ServiceLocator.stores.dispatch(action)
+            }
+        } catch {
+            print("❌ Failed to decode checkout response: \(error)")
+            if let rawResponse = String(data: data, encoding: .utf8) {
+                print("Raw response: \(rawResponse)")
+            }
+        }
+    }
 
     @MainActor @discardableResult
     func syncOrder(for cart: Cart,

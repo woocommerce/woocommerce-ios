@@ -12,6 +12,12 @@ final class MockWooShippingRemote {
         let siteID: Int64
     }
 
+    private struct RefundResultKey: Hashable {
+        let siteID: Int64
+        let orderID: Int64
+        let shippingLabelID: Int64
+    }
+
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
@@ -58,7 +64,7 @@ final class MockWooShippingRemote {
     private var updateShipment = [ResultKey: Result<WooShippingShipments, Error>]()
 
     /// The results to return based on the given arguments in `refundShippingLabel`
-    private var refundShippingLabel = [ResultKey: Result<ShippingLabel, Error>]()
+    private var refundShippingLabel = [RefundResultKey: Result<ShippingLabel, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
@@ -163,6 +169,15 @@ final class MockWooShippingRemote {
                               thenReturn result: Result<WooShippingShipments, Error>) {
         let key = ResultKey(siteID: siteID)
         updateShipment[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `refundShippingLabel` is called.
+    func whenRefundingShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                                    thenReturn result: Result<ShippingLabel, Error>) {
+        let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+        refundShippingLabel[key] = result
     }
 }
 
@@ -406,12 +421,12 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     }
 
     func refundShippingLabel(siteID: Int64,
-                                    orderID: Int64,
-                                    shippingLabelID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
                              completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let key = ResultKey(siteID: siteID)
+            let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
             if let result = self.refundShippingLabel[key] {
                 completion(result)
             } else {

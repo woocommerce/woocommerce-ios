@@ -85,6 +85,8 @@ public final class WooShippingStore: Store {
                            orderID: orderID,
                            shipmentToUpdate: shipmentToUpdate,
                            completion: completion)
+        case let .refundShippingLabel(shippingLabel, completion):
+            refundShippingLabel(shippingLabel: shippingLabel, completion: completion)
         }
     }
 }
@@ -210,6 +212,23 @@ private extension WooShippingStore {
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
         remote.loadOriginAddresses(siteID: siteID, completion: completion)
+    }
+
+    func refundShippingLabel(shippingLabel: ShippingLabel,
+                             completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+        remote.refundShippingLabel(siteID: shippingLabel.siteID,
+                                   orderID: shippingLabel.orderID,
+                                   shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let label):
+                upsertShippingLabelInBackground(shippingLabel: label) {
+                    completion(.success(label))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
 
@@ -527,6 +546,39 @@ private extension WooShippingStore {
         let predefinedPackage = storageSavedPackage.package ?? storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
         predefinedPackage.update(with: readOnlySavedPackage.package)
         storageSavedPackage.package = predefinedPackage
+    }
+
+    /// Updates/inserts the specified shipping label *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func upsertShippingLabelInBackground(shippingLabel: ShippingLabel,
+                                         onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave ({ [weak self] storage in
+            guard let self else { return }
+            guard let storageOrder = storage.loadOrder(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID) else {
+                return
+            }
+            let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                 orderID: shippingLabel.orderID,
+                                                                 shippingLabelID: shippingLabel.shippingLabelID) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
+            storageShippingLabel.update(with: shippingLabel)
+            storageShippingLabel.order = storageOrder
+
+            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund, using: storage)
+
+        }, completion: onCompletion, on: .main)
+    }
+
+    func update(shippingLabel storageShippingLabel: StorageShippingLabel,
+                withRefund refund: ShippingLabelRefund?,
+                using storage: StorageType) {
+        if let refund {
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            storageRefund.update(with: refund)
+            storageShippingLabel.refund = storageRefund
+        } else {
+            storageShippingLabel.refund = nil
+        }
     }
 }
 

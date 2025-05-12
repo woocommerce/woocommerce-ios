@@ -65,6 +65,10 @@ final class CartDetailsViewModel: ObservableObject {
     @Published var cartToken: String?
     @Published var lastModified: String?
 
+    var siteURL: String {
+        ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+    }
+
     init() {
         Task {
             try await fetchCartToken()
@@ -89,7 +93,7 @@ final class CartDetailsViewModel: ObservableObject {
     }
 
     private func fetchCartToken() async throws {
-        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
+        guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
             return
         }
@@ -125,7 +129,7 @@ final class CartDetailsViewModel: ObservableObject {
             return
         }
 
-        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart/add-item") else {
+        guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart/add-item") else {
             print("Invalid URL")
             return
         }
@@ -171,7 +175,7 @@ final class CartDetailsViewModel: ObservableObject {
     }
 
     func fetchCartDetails() async throws {
-        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
+        guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
             return
         }

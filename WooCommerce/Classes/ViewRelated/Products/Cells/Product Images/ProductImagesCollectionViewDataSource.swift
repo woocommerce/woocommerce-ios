@@ -77,21 +77,31 @@ private extension ProductImagesCollectionViewDataSource {
 
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
-        cell.cancellableTask = Task { @MainActor [weak self, weak cell] in
-            guard let image = try? await self?.productUIImageLoader.requestImage(productImage: productImage) else {
-                return
-            }
 
-            /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
-            /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
-            ///
-            guard !Task.isCancelled else {
-                return
+        do {
+            cell.cancellable = try productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
+                cell?.imageView.contentMode = .scaleAspectFit
+                cell?.imageView.image = image
             }
-            cell?.imageView.contentMode = .scaleAspectFit
-            cell?.imageView.image = image
+        } catch {
+            assertionFailure(error.localizedDescription)
         }
-        cell.coverTagView.isHidden = !isFirstImage
+
+//        cell.cancellableTask = Task { @MainActor [weak self, weak cell] in
+//            guard let image = try? await self?.productUIImageLoader.requestImage(productImage: productImage) else {
+//                return
+//            }
+//
+//            /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
+//            /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
+//            ///
+//            guard !Task.isCancelled else {
+//                return
+//            }
+//            cell?.imageView.contentMode = .scaleAspectFit
+//            cell?.imageView.image = image
+//        }
+//        cell.coverTagView.isHidden = !isFirstImage
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {

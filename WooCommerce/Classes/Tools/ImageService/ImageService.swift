@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 typealias ImageCacheRetrievalCompletion = (_ image: UIImage?) -> Void
 typealias ImageDownloadCompletion = (_ image: UIImage?, _ error: ImageServiceError?) -> Void
@@ -33,6 +34,13 @@ protocol ImageService {
                                            placeholder: UIImage?,
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?)
+
+    func retrieveImage(
+        with url: URL,
+        targetSize: CGSize?,
+        shouldCacheImage: Bool,
+        completion: ImageDownloadCompletion?
+    ) -> Cancellable?
 
     /// Clears memory cache to reduce memory usage.
     func clearMemoryCache()

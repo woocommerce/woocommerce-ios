@@ -55,6 +55,26 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
+    func requestImage(
+        productImage: ProductImage,
+        completion: @escaping (UIImage?) -> Void
+    ) throws -> Cancellable? {
+        guard
+            let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            let url = URL(string: encodedString)
+        else {
+            throw ImageLoaderError.invalidURL
+        }
+
+        return imageService.retrieveImage(
+            with: url,
+            targetSize: nil,
+            shouldCacheImage: true
+        ) { image, _ in
+            completion(image)
+        }
+    }
+
     func requestImage(productImage: ProductImage) async throws -> UIImage {
         if let image = await imageStorage.getImage(id: productImage.imageID) {
             return image

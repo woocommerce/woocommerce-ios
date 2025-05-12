@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Kingfisher
 
@@ -21,15 +22,10 @@ struct DefaultImageService: ImageService {
     /// Options for downloading images
     ///
     private var defaultOptions: KingfisherOptionsInfo {
-        let options: KingfisherOptionsInfo = [
-            .targetCache(imageCache),
-            .processor(DownsamplingImageProcessor(size: defaultThumbnailSize)),
-            .cacheOriginalImage
-        ]
-        if let imageDownloader = imageDownloader as? Kingfisher.ImageDownloader {
-            return options + [.downloader(imageDownloader)]
-        }
-        return options
+        return buildImageRetrieveOptions(
+            targetSize: defaultThumbnailSize,
+            shouldCacheImage: true
+        )
     }
 
     init(imageCache: ImageCache = ImageCache.optimizedCache,
@@ -86,8 +82,63 @@ struct DefaultImageService: ImageService {
         }
     }
 
+    func retrieveImage(
+        with url: URL,
+        targetSize: CGSize?,
+        shouldCacheImage: Bool,
+        completion: ImageDownloadCompletion? = nil
+    ) -> Cancellable? {
+        return KingfisherManager.shared.retrieveImage(
+            with: url,
+            options: buildImageRetrieveOptions(
+                targetSize: targetSize,
+                shouldCacheImage: shouldCacheImage
+            )
+        ) { result in
+            switch result {
+            case .success(let imageResult):
+                let image = imageResult.image
+                completion?(image, nil)
+            case .failure(let error):
+                completion?(nil, .other(error: error))
+            }
+        }
+    }
+
     func clearMemoryCache() {
         imageCache.clearMemoryCache()
+    }
+}
+
+private extension DefaultImageService {
+    func buildImageRetrieveOptions(
+        targetSize: CGSize?,
+        shouldCacheImage: Bool
+    ) -> KingfisherOptionsInfo {
+        var options: KingfisherOptionsInfo = []
+
+        if let targetSize {
+            options.append(
+                .processor(
+                    DownsamplingImageProcessor(size: targetSize)
+                )
+            )
+        }
+
+        if shouldCacheImage {
+            options += [
+                .targetCache(imageCache),
+                .cacheOriginalImage
+            ]
+        }
+
+        if let imageDownloader = imageDownloader as? Kingfisher.ImageDownloader {
+            options.append(
+                .downloader(imageDownloader)
+            )
+        }
+
+        return options
     }
 }
 

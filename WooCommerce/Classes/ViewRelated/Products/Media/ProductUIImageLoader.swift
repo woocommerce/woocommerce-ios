@@ -22,4 +22,9 @@ protocol ProductUIImageLoader {
     ///   - skipsDegradedImage: Whether to skip the degraded image while loading image from an asset.
     ///   - completion: Invoked when an image is available. Can be called more than once.
     func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void)
+
+    func requestImage(
+        productImage: ProductImage,
+        completion: @escaping (UIImage?) -> Void
+    ) throws -> Cancellable?
 }

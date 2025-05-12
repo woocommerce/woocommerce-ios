@@ -1318,10 +1318,15 @@ extension OrderDetailsDataSource {
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
-                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
-                        self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+
+                    if shippingLabel.isRefundable || shippingLabel.hasCustomsForm {
+                        let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                            self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+                        }
+                        headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
+                    } else {
+                        headerStyle = .primary
                     }
-                    headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }
                 return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: headerStyle)
             }

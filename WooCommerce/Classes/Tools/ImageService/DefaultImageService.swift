@@ -88,10 +88,21 @@ struct DefaultImageService: ImageService {
         shouldCacheImage: Bool,
         completion: ImageDownloadCompletion? = nil
     ) -> Cancellable? {
+        let scale = UIScreen.main.scale
+        let scaledSize: CGSize?
+        if let targetSize {
+            scaledSize = CGSize(
+                width: targetSize.width * scale,
+                height: targetSize.height * scale
+            )
+        } else {
+            scaledSize = nil
+        }
+
         return KingfisherManager.shared.retrieveImage(
             with: url,
             options: buildImageRetrieveOptions(
-                targetSize: targetSize,
+                targetSize: scaledSize,
                 shouldCacheImage: shouldCacheImage
             )
         ) { result in

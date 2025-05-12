@@ -201,7 +201,10 @@ private extension ProductImagesGalleryViewController {
         cell.contentView.layer.borderWidth = 0
 
         do {
-            cell.cancellable = try productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
+            cell.cancellable = try productUIImageLoader.requestImage(
+                productImage: productImage,
+                targetSize: cell.imageView.frame.size
+            ) { [weak cell] image in
                 cell?.imageView.contentMode = .scaleAspectFit
                 cell?.imageView.image = image
             }

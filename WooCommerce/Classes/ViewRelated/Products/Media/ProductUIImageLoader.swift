@@ -25,6 +25,7 @@ protocol ProductUIImageLoader {
 
     func requestImage(
         productImage: ProductImage,
+        targetSize: CGSize?,
         completion: @escaping (UIImage?) -> Void
     ) throws -> Cancellable?
 }

@@ -57,6 +57,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
     func requestImage(
         productImage: ProductImage,
+        targetSize: CGSize?,
         completion: @escaping (UIImage?) -> Void
     ) throws -> Cancellable? {
         guard
@@ -68,7 +69,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
         return imageService.retrieveImage(
             with: url,
-            targetSize: nil,
+            targetSize: targetSize,
             shouldCacheImage: true
         ) { image, _ in
             completion(image)

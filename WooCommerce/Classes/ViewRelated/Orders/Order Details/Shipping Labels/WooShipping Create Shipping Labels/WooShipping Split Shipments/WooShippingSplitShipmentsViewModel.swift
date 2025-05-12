@@ -89,6 +89,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         shipments[selectedShipmentIndex]
     }
 
+    var isSelectAllItemsDisabled: Bool {
+        return currentShipment.isPurchased || isSavingShipmentInfo
+    }
+
     @Published private(set) var moveToNoticeViewModel: MoveToShipmentNoticeViewModel?
 
     @Published private(set) var instructions: AttributedString?

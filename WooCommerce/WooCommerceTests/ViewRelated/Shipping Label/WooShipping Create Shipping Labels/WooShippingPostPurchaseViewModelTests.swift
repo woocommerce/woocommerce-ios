@@ -15,6 +15,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let viewModel = WooShippingPostPurchaseViewModel(siteID: 123,
                                                          labelID: 1,
                                                          labelSizes: labelSizes,
+                                                         isRefundable: true,
                                                          trackingURL: trackingURL,
                                                          pickupURL: pickupURL,
                                                          commercialInvoiceURL: customsFormURL)

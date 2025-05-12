@@ -6,6 +6,7 @@ public enum ShippingLabelStatus: Sendable, GeneratedFakeable {
     case purchased
     case purchaseError
     case purchaseInProgress
+    case anonymized
     case unknown
 }
 
@@ -21,6 +22,8 @@ extension ShippingLabelStatus: RawRepresentable {
             self = .purchaseInProgress
         case Keys.purchaseError:
             self = .purchaseError
+        case Keys.anonymized:
+            self = .anonymized
         default:
             DDLogError("⛔️ Unexpected value for `ShippingLabelStatus`: \(rawValue)")
             self = .unknown
@@ -37,6 +40,8 @@ extension ShippingLabelStatus: RawRepresentable {
             return Keys.purchaseInProgress
         case .purchaseError:
             return Keys.purchaseError
+        case .anonymized:
+            return Keys.anonymized
         case .unknown:
             return ""
         }
@@ -48,4 +53,5 @@ private enum Keys {
     static let purchased = "PURCHASED"
     static let purchaseError = "PURCHASE_ERROR"
     static let purchaseInProgress = "PURCHASE_IN_PROGRESS"
+    static let anonymized = "ANONYMIZED"
 }

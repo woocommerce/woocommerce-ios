@@ -391,6 +391,9 @@ struct CartView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
+                if let token = posModel.cartDetailsVM.cartToken {
+                    Text("Token: ...\(token.suffix(4))")
+                }
                 POSPageHeaderView(title: Localization.cartTitle,
                                   backButtonConfiguration: backButtonConfiguration,
                                   trailingContent: {

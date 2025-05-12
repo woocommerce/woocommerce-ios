@@ -3,6 +3,8 @@ import SwiftUI
 struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
+    let onRefundRequest: () -> Void
+
     @State private var isPrintingLabel = false
     @State private var showingLabelPrintingError = false
 
@@ -105,7 +107,7 @@ struct WooShippingPostPurchaseView: View {
                         }
                     }
                     Button {
-                        // TODO: Request label refund
+                        onRefundRequest()
                     } label: {
                         Text(Localization.requestRefund)
                     }
@@ -263,7 +265,8 @@ private extension WooShippingPostPurchaseView {
                                                                             labelSizes: [.label, .legal, .a4],
                                                                             trackingURL: URL(string: "https://woocommerce.com"),
                                                                             pickupURL: WooShippingCarrier.usps.pickupURL,
-                                                                            commercialInvoiceURL: URL(string: "https://example.com")))
+                                                                            commercialInvoiceURL: URL(string: "https://example.com")),
+                                onRefundRequest: {})
         .padding()
 }
 
@@ -273,6 +276,7 @@ private extension WooShippingPostPurchaseView {
                                                                             labelSizes: [.label, .legal, .a4],
                                                                             trackingURL: nil,
                                                                             pickupURL: nil,
-                                                                            commercialInvoiceURL: nil))
+                                                                            commercialInvoiceURL: nil),
+                                onRefundRequest: {})
         .padding()
 }

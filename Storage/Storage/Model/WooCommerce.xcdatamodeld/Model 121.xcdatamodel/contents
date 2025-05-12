@@ -755,6 +755,7 @@
         <attribute name="commercialInvoiceURL" optional="YES" attributeType="String"/>
         <attribute name="currency" attributeType="String" defaultValueString=""/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="expiryDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="packageName" attributeType="String" defaultValueString=""/>
         <attribute name="productIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
@@ -766,6 +767,7 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="status" attributeType="String" defaultValueString=""/>
         <attribute name="trackingNumber" attributeType="String" defaultValueString=""/>
+        <attribute name="usedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="destinationAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="destinationShippingLabel" inverseEntity="ShippingLabelAddress"/>
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLabels" inverseEntity="Order"/>
         <relationship name="originAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>

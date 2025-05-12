@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.POSItem
 
 struct CartDetails: Decodable {
     let totals: Totals
@@ -40,13 +41,30 @@ final class CartDetailsViewModel: ObservableObject {
     @Published var cartDetails: String = "Loading..."
     @Published var cartToken: String?
     @Published var lastModified: String?
-    
+
     init() {
         Task {
             try await fetchCartToken()
         }
     }
-    
+
+    func addToCart(_ item: POSItem) async throws {
+        switch item {
+        case .simpleProduct(let product):
+            let itemID = product.productID
+            try await postAddItemToCart(itemID)
+        case .variableParentProduct(let parentProduct):
+            let itemID = parentProduct.productID
+            // TODO
+        case .variation(let variation):
+            let itemID = variation.productID
+            // TODO
+        case .coupon(let coupon):
+            let couponCode = coupon.code
+            // TODO
+        }
+    }
+
     private func fetchCartToken() async throws {
         guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
@@ -66,7 +84,7 @@ final class CartDetailsViewModel: ObservableObject {
                     self.cartToken = cartTokenValue
                 }
             } else {
-                print("🍍 no token")
+                print("❌ no token")
             }
 
             if let lastModifiedValue = headers.first(where: { "\($0.key)".lowercased() == "last-modified" })?.value as? String {
@@ -75,6 +93,36 @@ final class CartDetailsViewModel: ObservableObject {
                     self.lastModified = lastModifiedValue
                 }
             }
+        }
+    }
+
+    private func postAddItemToCart(_ productID: Int64) async throws {
+        guard let cartToken = cartToken else {
+            print("❌ no token")
+            return
+        }
+
+        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart/add-item") else {
+            print("Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+
+        let body: [String: Any] = ["id": "\(productID)", "quantity": "1"]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        if let httpResponse = response as? HTTPURLResponse {
+            print("Response Status Code: \(httpResponse.statusCode)")
+        }
+
+        if let responseBody = String(data: data, encoding: .utf8) {
+            print("Response Body: \(responseBody)")
         }
     }
 

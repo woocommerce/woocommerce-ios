@@ -22,6 +22,15 @@ struct CartDetails: Decodable {
         let totalPrice: String?
         let totalTax: String?
 
+        let taxLines: [TaxLine]?
+        let currencyCode: String?
+        let currencySymbol: String?
+        let currencyMinorUnit: Int?
+        let currencyDecimalSeparator: String?
+        let currencyThousandSeparator: String?
+        let currencyPrefix: String?
+        let currencySuffix: String?
+
         enum CodingKeys: String, CodingKey {
             case totalItems = "total_items"
             case totalItemsTax = "total_items_tax"
@@ -33,6 +42,20 @@ struct CartDetails: Decodable {
             case totalShippingTax = "total_shipping_tax"
             case totalPrice = "total_price"
             case totalTax = "total_tax"
+            case taxLines = "tax_lines"
+            case currencyCode = "currency_code"
+            case currencySymbol = "currency_symbol"
+            case currencyMinorUnit = "currency_minor_unit"
+            case currencyDecimalSeparator = "currency_decimal_separator"
+            case currencyThousandSeparator = "currency_thousand_separator"
+            case currencyPrefix = "currency_prefix"
+            case currencySuffix = "currency_suffix"
+        }
+
+        struct TaxLine: Decodable {
+            let name: String?
+            let price: String?
+            let rate: String?
         }
     }
 }
@@ -115,14 +138,35 @@ final class CartDetailsViewModel: ObservableObject {
         let body: [String: Any] = ["id": "\(productID)", "quantity": "1"]
         request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await URLSession.shared.data(for: request)
 
-        if let httpResponse = response as? HTTPURLResponse {
-            print("Response Status Code: \(httpResponse.statusCode)")
-        }
+        let decoder = JSONDecoder()
+        let details = try decoder.decode(CartDetails.self, from: data)
+        print("""
+        ✅ Cart Details Updated:
+        - total_items: \(details.totals.totalItems ?? "N/A")
+        - total_shipping: \(details.totals.totalShipping ?? "N/A")
+        - total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
+        - total_price: \(details.totals.totalPrice ?? "N/A")
+        - total_tax: \(details.totals.totalTax ?? "N/A")
+        - tax_lines: \(details.totals.taxLines?.map { "\($0.name ?? "N/A"): \($0.price ?? "N/A") @ \($0.rate ?? "N/A")" }.joined(separator: ", ") ?? "N/A")
+        - currency_code: \(details.totals.currencyCode ?? "N/A")
+        - currency_symbol: \(details.totals.currencySymbol ?? "N/A")
+        - currency_minor_unit: \(details.totals.currencyMinorUnit?.description ?? "N/A")
+        - currency_decimal_separator: \(details.totals.currencyDecimalSeparator ?? "N/A")
+        - currency_thousand_separator: \(details.totals.currencyThousandSeparator ?? "N/A")
+        - currency_prefix: \(details.totals.currencyPrefix ?? "N/A")
+        - currency_suffix: \(details.totals.currencySuffix ?? "N/A")
+        """)
 
-        if let responseBody = String(data: data, encoding: .utf8) {
-            print("Response Body: \(responseBody)")
+        DispatchQueue.main.async {
+            self.cartDetails = """
+            total_items: \(details.totals.totalItems ?? "N/A")
+            total_shipping: \(details.totals.totalShipping ?? "N/A")
+            total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
+            total_price: \(details.totals.totalPrice ?? "N/A")
+            total_tax: \(details.totals.totalTax ?? "N/A")
+            """
         }
     }
 
@@ -140,10 +184,6 @@ final class CartDetailsViewModel: ObservableObject {
         let decoder = JSONDecoder()
         let details = try decoder.decode(CartDetails.self, from: data)
         print("Parsed Cart Details: \(details)")
-
-        DispatchQueue.main.async {
-            self.cartDetails = "✅"
-        }
     }
 }
 

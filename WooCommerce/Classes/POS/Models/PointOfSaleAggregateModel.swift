@@ -134,11 +134,11 @@ extension PointOfSaleAggregateModel {
             // These will return nothing as nothing has been POSTed to the cart, just the fresh token on each call.
             // We could be calling these in the background to update data, no need to be in main thread
             try await cartDetailsVM.addToCart(item)
-            
             // There is no need to fetch the latest cart separately, the POST call returns the latest cart in the response
             // try await cartDetailsVM.fetchCartDetails()
+
+            cart.add(item)
         }
-        cart.add(item)
     }
 
     func remove(cartItem: CartItem) {

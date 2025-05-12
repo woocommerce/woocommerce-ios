@@ -178,6 +178,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
+    @Published private var paymentMethod: ShippingLabelPaymentMethod?
     @Published var paymentMethodLine: WooShippingPaymentMethodLine?
 
     /// Initialize the view model with or without an existing shipping label.
@@ -220,6 +221,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observeSelectedOriginAddress()
         observeDestinationAddress()
         observeViewStates()
+        observePaymentMethod()
 
         Task { @MainActor in
             await loadRequiredData()
@@ -354,7 +356,7 @@ private extension WooShippingCreateLabelsViewModel {
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
 
-        setupPaymentMethodLine(accountSettings: settings?.accountSettings)
+        setupPaymentMethod(accountSettings: settings?.accountSettings)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
@@ -556,18 +558,30 @@ private extension WooShippingCreateLabelsViewModel {
         return resultsController.fetchedObjects.first
     }
 
-    func setupPaymentMethodLine(accountSettings: ShippingLabelAccountSettings?) {
-        guard let paymentMethod = accountSettings?.paymentMethods.first(where: {
-            return $0.paymentMethodID == accountSettings?.selectedPaymentMethodID
-        }) else {
-            paymentMethodLine = .add
-            return
-        }
+    func observePaymentMethod() {
+        $paymentMethod
+            .combineLatest($selectedShipmentIndex)
+            .map { [weak self] paymentMethod, selectedIndex -> WooShippingPaymentMethodLine? in
+                guard let self else {
+                    return nil
+                }
 
-        paymentMethodLine = WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
-            paymentMethod,
-            isEditable: !currentShipment.isPurchased
-        )
+                guard let paymentMethod else {
+                    return .add
+                }
+
+                return WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
+                    paymentMethod,
+                    isEditable: !shipments[selectedIndex].isPurchased
+                )
+            }
+            .assign(to: &$paymentMethodLine)
+    }
+
+    func setupPaymentMethod(accountSettings: ShippingLabelAccountSettings?) {
+        self.paymentMethod = accountSettings?.paymentMethods.first {
+            return $0.paymentMethodID == accountSettings?.selectedPaymentMethodID
+        }
     }
 }
 

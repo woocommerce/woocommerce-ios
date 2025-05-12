@@ -62,7 +62,7 @@ struct WooShippingSplitShipmentsView: View {
                         viewModel.selectAll()
                     }
                     .disabled(
-                        viewModel.currentShipment.isPurchased
+                        viewModel.isSelectAllItemsDisabled
                     )
                 }
 

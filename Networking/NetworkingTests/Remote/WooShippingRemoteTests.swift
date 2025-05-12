@@ -721,10 +721,10 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let labelID: Int64 = 332
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "shipping-label-refund-success")
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "wooshipping-label-refund-success")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        shippingLabelID: labelID) { result in
@@ -733,18 +733,19 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let refund = try XCTUnwrap(result.get())
-        XCTAssertEqual(refund, .init(dateRequested: Date(timeIntervalSince1970: 1607331363.627), status: .pending))
+        let label = try XCTUnwrap(result.get())
+        XCTAssertEqual(label.shippingLabelID, 1149)
+        XCTAssertEqual(label.refund, ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1723147248.000), status: .pending))
     }
 
     func test_refundShippingLabel_returns_error_on_failure() throws {
         // Given
         let labelID: Int64 = 332
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "shipping-label-refund-status-error")
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "wooshipping-label-refund-error")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        shippingLabelID: labelID) { result in

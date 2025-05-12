@@ -68,7 +68,7 @@ public protocol WooShippingRemoteProtocol {
     func refundShippingLabel(siteID: Int64,
                              orderID: Int64,
                              shippingLabelID: Int64,
-                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
+                             completion: @escaping (Result<ShippingLabel, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -484,14 +484,14 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func refundShippingLabel(siteID: Int64,
                                     orderID: Int64,
                                     shippingLabelID: Int64,
-                                    completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+                                    completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
         let path = Path.refundLabel(orderID: orderID, labelID: shippingLabelID)
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
                                      availableAsRESTRequest: true)
-        let mapper = ShippingLabelRefundMapper()
+        let mapper = WooShippingLabelRefundMapper(siteID: siteID, orderID: orderID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

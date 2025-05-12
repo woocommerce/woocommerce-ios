@@ -70,7 +70,7 @@ protocol PointOfSaleOrderControllerProtocol {
     var siteURL: String {
         ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
     }
-    
+
     var siteID: Int64 {
         ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
     }

@@ -56,6 +56,32 @@ struct TotalsView: View {
 
                     Spacer()
                         .renderedIf(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState))
+                    HStack {
+                        Button(action: {
+                            Task { @MainActor in
+                                await posModel.cartDetailsVM.syncDetails()
+                            }
+                        }, label: {
+                            Text("Fill cart data")
+                        })
+                        .buttonStyle(.bordered)
+                        Button(action: {
+                            Task { @MainActor in
+                                await posModel.cartDetailsVM.pay()
+                            }
+                        }, label: {
+                            Text("Pay (COD)")
+                        })
+                        .buttonStyle(.bordered)
+                        Button(action: {
+                            Task { @MainActor in
+                                // TODO
+                            }
+                        }, label: {
+                            Text("🚧 Pay (Card)")
+                        })
+                        .buttonStyle(.bordered)
+                    }
 
                     Button(action: {
                         Task { @MainActor in

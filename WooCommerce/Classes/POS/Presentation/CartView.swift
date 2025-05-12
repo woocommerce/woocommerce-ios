@@ -108,6 +108,144 @@ final class CartDetailsViewModel: ObservableObject {
         ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
     }
 
+    func pay() async {
+        guard let cartToken = cartToken, let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/checkout") else {
+            fatalError()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+
+        let body: [String: Any] = [
+            // Req
+            "payment_method": "cod",
+            // Req
+            "billing_address": [
+                "first_name": "John",
+                "last_name": "Doe",
+                "company": "Example Inc",
+                "address_1": "123 Market Street",
+                "address_2": "Suite 456",
+                "city": "San Francisco",
+                "state": "CA",
+                "postcode": "94103",
+                "country": "US",
+                "email": "john.doe@example.com", // Req
+                "phone": "555-123-4567"
+            ],
+            // Req
+            "shipping_address": [
+                "first_name": "John",
+                "last_name": "Doe",
+                "company": "Example Inc",
+                "address_1": "123 Market Street",
+                "address_2": "Suite 456",
+                "city": "San Francisco",
+                "state": "CA",
+                "postcode": "94103",
+                "country": "US",
+                "phone": "555-123-4567"
+            ]
+        ]
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                print("✅ Checkout Status: \(httpResponse.statusCode)")
+            }
+            if let responseBody = String(data: data, encoding: .utf8) {
+                print("✅ Checkout Response Body: \(responseBody)")
+            }
+        } catch {
+            print("❌ Failed to checkout: \(error.localizedDescription)")
+        }
+    }
+
+    // Covers Store API limitation, need billing/shipping/customer email and payment method
+    // not really necessary to separate it since we have to pass them again explicitely when we attempt to POST checkout
+    // so this bit is more cart-facing than checkout-order-facing
+    func syncDetails() async {
+        // 1. Update customer details
+        guard let cartToken = cartToken,
+              let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart/update-customer") else { fatalError() }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+
+        let body: [String: Any] = [
+            "billing_address": [
+                "first_name": "John",
+                "last_name": "Doe",
+                "company": "Example Inc",
+                "address_1": "123 Market Street",
+                "address_2": "Suite 456",
+                "city": "San Francisco",
+                "state": "CA",
+                "postcode": "94103",
+                "country": "US",
+                "email": "john.doe@example.com",
+                "phone": "555-123-4567"
+            ],
+            "shipping_address": [
+                "first_name": "John",
+                "last_name": "Doe",
+                "company": "Example Inc",
+                "address_1": "123 Market Street",
+                "address_2": "Suite 456",
+                "city": "San Francisco",
+                "state": "CA",
+                "postcode": "94103",
+                "country": "US",
+                "phone": "555-123-4567"
+            ]
+        ]
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+            let (data, response) = try await URLSession.shared.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse {
+                print("✅ Update Customer Status: \(httpResponse.statusCode)")
+            }
+            if let responseBody = String(data: data, encoding: .utf8) {
+                print("✅ Response Body: \(responseBody)")
+            }
+        } catch {
+            print("❌ Failed to update customer: \(error.localizedDescription)")
+        }
+
+        // 2. Update payment method
+        guard let paymentURL = URL(string: "\(siteURL)/wp-json/wc/store/v1/checkout") else {
+            fatalError()
+        }
+
+        var paymentRequest = URLRequest(url: paymentURL)
+        paymentRequest.httpMethod = "PUT"
+        paymentRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        paymentRequest.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+
+        let paymentBody: [String: Any] = ["payment_method": "cod"]
+
+        do {
+            paymentRequest.httpBody = try JSONSerialization.data(withJSONObject: paymentBody, options: [])
+            let (paymentData, paymentResponse) = try await URLSession.shared.data(for: paymentRequest)
+
+            if let httpResponse = paymentResponse as? HTTPURLResponse {
+                print("✅ Update Payment Method Status: \(httpResponse.statusCode)")
+            }
+            if let paymentResponseBody = String(data: paymentData, encoding: .utf8) {
+                print("✅ Payment Method Response Body: \(paymentResponseBody)")
+            }
+        } catch {
+            print("❌ Failed to update payment method: \(error.localizedDescription)")
+        }
+    }
+
     func addToCart(_ item: POSItem) async throws {
         switch item {
         case .simpleProduct(let product):

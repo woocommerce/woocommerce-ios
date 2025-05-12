@@ -102,15 +102,10 @@ final class CartDetailsViewModel: ObservableObject {
     @Published var cartDetails: String = "Loading..."
     @Published var cartToken: String?
     @Published var lastModified: String?
+    @Published var errorMessage: String?
 
     var siteURL: String {
         ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
-    }
-
-    init() {
-        Task {
-            try await fetchCartToken()
-        }
     }
 
     func addToCart(_ item: POSItem) async throws {
@@ -130,7 +125,7 @@ final class CartDetailsViewModel: ObservableObject {
         }
     }
 
-    private func fetchCartToken() async throws {
+    func fetchCartToken() async throws {
         guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
             return
@@ -233,33 +228,59 @@ final class CartDetailsViewModel: ObservableObject {
         request.httpMethod = "POST"
         request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-        let decoder = JSONDecoder()
-        let details = try decoder.decode(CartDetails.self, from: data)
-        print("""
-        ✅ Cart Details After Adding Coupon:
-        - total_items: \(details.totals.totalItems ?? "N/A")
-        - total_shipping: \(details.totals.totalShipping ?? "N/A")
-        - total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
-        - total_price: \(details.totals.totalPrice ?? "N/A")
-        - total_tax: \(details.totals.totalTax ?? "N/A")
-        """)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
 
-        DispatchQueue.main.async {
-            let couponDetails = details.coupons?.map { coupon in
-                "- code: \(coupon.code ?? "N/A"), discount_type: \(coupon.discountType ?? "N/A")"
-            }.joined(separator: "\n") ?? "No coupons"
+        if (200...299).contains(httpResponse.statusCode) {
+            let decoder = JSONDecoder()
+            let details = try decoder.decode(CartDetails.self, from: data)
+            print("✅ Cart Details After Adding Coupon: \(details)")
 
-            self.cartDetails = """
-            total_items: \(details.totals.totalItems ?? "N/A")
-            total_shipping: \(details.totals.totalShipping ?? "N/A")
-            total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
-            total_price: \(details.totals.totalPrice ?? "N/A")
-            total_tax: \(details.totals.totalTax ?? "N/A")
-            coupons:
-            \(couponDetails)
-            """
+            DispatchQueue.main.async {
+                let couponDetails = details.coupons?.map { coupon in
+                    "- code: \(coupon.code ?? "N/A"), discount_type: \(coupon.discountType ?? "N/A")"
+                }.joined(separator: "\n") ?? "No coupons"
+
+                self.cartDetails = """
+                total_items: \(details.totals.totalItems ?? "N/A")
+                total_shipping: \(details.totals.totalShipping ?? "N/A")
+                total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
+                total_price: \(details.totals.totalPrice ?? "N/A")
+                total_tax: \(details.totals.totalTax ?? "N/A")
+                coupons:
+                \(couponDetails)
+                """
+            }
+        } else {
+            if let errorResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = errorResponse["message"] as? String,
+               let code = errorResponse["code"] as? String,
+               let dataDict = errorResponse["data"] as? [String: Any] {
+
+                let dataDescription = dataDict.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
+                let detailedErrorMessage = """
+                Error:
+                - Message: \(message)
+                - Code: \(code)
+                - Data: \(dataDescription)
+                """
+                print("❌ \(detailedErrorMessage)")
+
+                DispatchQueue.main.async {
+                    self.errorMessage = detailedErrorMessage
+                }
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: detailedErrorMessage])
+            } else {
+                let fallbackMessage = "Unknown error with status code \(httpResponse.statusCode)"
+                print("❌ \(fallbackMessage)")
+                DispatchQueue.main.async {
+                    self.errorMessage = fallbackMessage
+                }
+                throw NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: fallbackMessage])
+            }
         }
     }
 
@@ -288,11 +309,20 @@ struct CartDetailsView: View {
     }
 
     var body: some View {
+        if let error = viewModel.errorMessage {
+            Text(error)
+                .foregroundColor(.red)
+                .padding()
+        }
         VStack {
             Text(viewModel.cartDetails)
                 .padding()
                 .task {
-                    try? await viewModel.fetchCartDetails()
+                    do {
+                        try await viewModel.fetchCartDetails()
+                    } catch {
+                        viewModel.errorMessage = error.localizedDescription
+                    }
                 }
         }
     }

@@ -121,6 +121,10 @@ protocol PointOfSaleAggregateModelProtocol {
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
+
+        Task {
+            try await cartDetailsVM.fetchCartToken()
+        }
     }
 }
 

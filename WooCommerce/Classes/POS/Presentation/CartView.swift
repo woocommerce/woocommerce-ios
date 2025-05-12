@@ -40,8 +40,14 @@ final class CartDetailsViewModel: ObservableObject {
     @Published var cartDetails: String = "Loading..."
     @Published var cartToken: String?
     @Published var lastModified: String?
-
-    func fetchCartDetails() async throws {
+    
+    init() {
+        Task {
+            try await fetchCartToken()
+        }
+    }
+    
+    private func fetchCartToken() async throws {
         guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")
             return
@@ -50,11 +56,7 @@ final class CartDetailsViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
 
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        let decoder = JSONDecoder()
-        let details = try decoder.decode(CartDetails.self, from: data)
-        print("Parsed Cart Details: \(details)")
+        let (_, response) = try await URLSession.shared.data(for: request)
 
         if let httpResponse = response as? HTTPURLResponse {
             let headers = httpResponse.allHeaderFields
@@ -66,8 +68,7 @@ final class CartDetailsViewModel: ObservableObject {
             } else {
                 print("🍍 no token")
             }
-            
-            
+
             if let lastModifiedValue = headers.first(where: { "\($0.key)".lowercased() == "last-modified" })?.value as? String {
                 print("🕒 \(lastModifiedValue)")
                 DispatchQueue.main.async {
@@ -75,7 +76,23 @@ final class CartDetailsViewModel: ObservableObject {
                 }
             }
         }
-        
+    }
+
+    func fetchCartDetails() async throws {
+        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
+            print("Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        let decoder = JSONDecoder()
+        let details = try decoder.decode(CartDetails.self, from: data)
+        print("Parsed Cart Details: \(details)")
+
         DispatchQueue.main.async {
             self.cartDetails = "✅"
         }

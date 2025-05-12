@@ -1,5 +1,111 @@
 import SwiftUI
 
+struct CartDetails: Decodable {
+    let totals: Totals
+    let paymentMethods: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case totals
+        case paymentMethods = "payment_methods"
+    }
+
+    struct Totals: Decodable {
+        let totalItems: String?
+        let totalItemsTax: String?
+        let totalFees: String?
+        let totalFeesTax: String?
+        let totalDiscount: String?
+        let totalDiscountTax: String?
+        let totalShipping: String?
+        let totalShippingTax: String?
+        let totalPrice: String?
+        let totalTax: String?
+
+        enum CodingKeys: String, CodingKey {
+            case totalItems = "total_items"
+            case totalItemsTax = "total_items_tax"
+            case totalFees = "total_fees"
+            case totalFeesTax = "total_fees_tax"
+            case totalDiscount = "total_discount"
+            case totalDiscountTax = "total_discount_tax"
+            case totalShipping = "total_shipping"
+            case totalShippingTax = "total_shipping_tax"
+            case totalPrice = "total_price"
+            case totalTax = "total_tax"
+        }
+    }
+}
+
+final class CartDetailsViewModel: ObservableObject {
+    @Published var cartDetails: String = "Loading..."
+    @Published var cartToken: String?
+    @Published var lastModified: String?
+
+    func fetchCartDetails() async throws {
+        guard let url = URL(string: "https://indiemelon.mystagingwebsite.com/wp-json/wc/store/v1/cart") else {
+            print("Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        let decoder = JSONDecoder()
+        let details = try decoder.decode(CartDetails.self, from: data)
+        print("Parsed Cart Details: \(details)")
+
+        if let httpResponse = response as? HTTPURLResponse {
+            let headers = httpResponse.allHeaderFields
+            if let cartTokenValue = headers.first(where: { "\($0.key)".lowercased() == "cart-token" })?.value as? String {
+                print("🍍 \(cartTokenValue)")
+                DispatchQueue.main.async {
+                    self.cartToken = cartTokenValue
+                }
+            } else {
+                print("🍍 no token")
+            }
+            
+            
+            if let lastModifiedValue = headers.first(where: { "\($0.key)".lowercased() == "last-modified" })?.value as? String {
+                print("🕒 \(lastModifiedValue)")
+                DispatchQueue.main.async {
+                    self.lastModified = lastModifiedValue
+                }
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.cartDetails = "✅"
+        }
+    }
+}
+
+struct CartDetailsView: View {
+    @ObservedObject private var viewModel: CartDetailsViewModel
+
+    init(viewModel: CartDetailsViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        VStack {
+            Text(viewModel.cartDetails)
+                .padding()
+                .task {
+                    try? await viewModel.fetchCartDetails()
+                }
+        }
+    }
+
+    func getLatestCart() {
+        Task {
+            try? await viewModel.fetchCartDetails()
+        }
+    }
+}
+
 @available(iOS 17.0, *)
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -127,6 +233,7 @@ struct CartView: View {
                 }
 
                 if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
+                    CartDetailsView(viewModel: posModel.cartDetailsVM)
                     checkoutButton
                         .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                         .padding(.vertical, Constants.checkoutButtonVerticalPadding)

@@ -92,6 +92,8 @@ protocol PointOfSaleAggregateModelProtocol {
     var viewStateCoordinatorForView: PointOfSaleViewStateCoordinator {
         _viewStateCoordinator
     }
+    
+    private(set) var cartDetailsVM = CartDetailsViewModel()
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -127,6 +129,12 @@ protocol PointOfSaleAggregateModelProtocol {
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
+
+        Task {
+            // These will return nothing as nothing has been POSTed to the cart, just the fresh token on each call.
+            // We could be calling these in the background
+            try await cartDetailsVM.fetchCartDetails()
+        }
         cart.add(item)
     }
 

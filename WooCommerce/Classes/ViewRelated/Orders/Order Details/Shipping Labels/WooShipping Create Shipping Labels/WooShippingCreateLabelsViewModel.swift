@@ -216,7 +216,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             loadDestinationAddress()
         }
 
-        setupPaymentMethodLine()
         updateShipmentDetailsViewModels()
         observeSelectedOriginAddress()
         observeDestinationAddress()
@@ -354,6 +353,8 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+
+        setupPaymentMethodLine(accountSettings: settings?.accountSettings)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
@@ -555,9 +556,18 @@ private extension WooShippingCreateLabelsViewModel {
         return resultsController.fetchedObjects.first
     }
 
-    func setupPaymentMethodLine() {
-        /// Replace with payment methods data
-        paymentMethodLine = .add
+    func setupPaymentMethodLine(accountSettings: ShippingLabelAccountSettings?) {
+        guard let paymentMethod = accountSettings?.paymentMethods.first(where: {
+            return $0.paymentMethodID == accountSettings?.selectedPaymentMethodID
+        }) else {
+            paymentMethodLine = .add
+            return
+        }
+
+        paymentMethodLine = WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
+            paymentMethod,
+            isEditable: !currentShipment.isPurchased
+        )
     }
 }
 

@@ -3,11 +3,49 @@ import enum Yosemite.POSItem
 
 struct CartDetails: Decodable {
     let totals: Totals
+    let coupons: [Coupon]?
     let paymentMethods: [String]
 
     enum CodingKeys: String, CodingKey {
         case totals
+        case coupons
         case paymentMethods = "payment_methods"
+    }
+    
+    struct Coupon: Decodable {
+        let code: String?
+        let discountType: String?
+        let totals: Totals
+
+        enum CodingKeys: String, CodingKey {
+            case code
+            case discountType = "discount_type"
+            case totals
+        }
+
+        struct Totals: Decodable {
+            let totalDiscount: String?
+            let totalDiscountTax: String?
+            let currencyCode: String?
+            let currencySymbol: String?
+            let currencyMinorUnit: Int?
+            let currencyDecimalSeparator: String?
+            let currencyThousandSeparator: String?
+            let currencyPrefix: String?
+            let currencySuffix: String?
+
+            enum CodingKeys: String, CodingKey {
+                case totalDiscount = "total_discount"
+                case totalDiscountTax = "total_discount_tax"
+                case currencyCode = "currency_code"
+                case currencySymbol = "currency_symbol"
+                case currencyMinorUnit = "currency_minor_unit"
+                case currencyDecimalSeparator = "currency_decimal_separator"
+                case currencyThousandSeparator = "currency_thousand_separator"
+                case currencyPrefix = "currency_prefix"
+                case currencySuffix = "currency_suffix"
+            }
+        }
     }
 
     struct Totals: Decodable {
@@ -164,12 +202,18 @@ final class CartDetailsViewModel: ObservableObject {
         """)
 
         DispatchQueue.main.async {
+            let couponDetails = details.coupons?.map { coupon in
+                "- code: \(coupon.code ?? "N/A"), discount_type: \(coupon.discountType ?? "N/A")"
+            }.joined(separator: "\n") ?? "No coupons"
+
             self.cartDetails = """
             total_items: \(details.totals.totalItems ?? "N/A")
             total_shipping: \(details.totals.totalShipping ?? "N/A")
             total_shipping_tax: \(details.totals.totalShippingTax ?? "N/A")
             total_price: \(details.totals.totalPrice ?? "N/A")
             total_tax: \(details.totals.totalTax ?? "N/A")
+            coupons:
+            \(couponDetails)
             """
         }
     }

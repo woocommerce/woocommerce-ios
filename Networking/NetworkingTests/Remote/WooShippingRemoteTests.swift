@@ -714,6 +714,47 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    // MARK: Refund shipping label
+
+    func test_refundShippingLabel_parses_success_response() throws {
+        // Given
+        let labelID: Int64 = 332
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "shipping-label-refund-success")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: self.sampleOrderID,
+                                       shippingLabelID: labelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, .init(dateRequested: Date(timeIntervalSince1970: 1607331363.627), status: .pending))
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let labelID: Int64 = 332
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "shipping-label-refund-status-error")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: self.sampleOrderID,
+                                       shippingLabelID: labelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

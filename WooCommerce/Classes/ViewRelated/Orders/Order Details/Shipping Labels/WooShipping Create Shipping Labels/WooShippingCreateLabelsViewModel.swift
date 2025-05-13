@@ -561,11 +561,7 @@ private extension WooShippingCreateLabelsViewModel {
     func observePaymentMethod() {
         $paymentMethod
             .combineLatest($shipments, $selectedShipmentIndex)
-            .map { [weak self] paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
-                guard let self else {
-                    return nil
-                }
-
+            .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
                 let isCurrentShipmentPurchased = shipments[selectedIndex].isPurchased
 
                 guard let paymentMethod else {

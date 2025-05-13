@@ -62,7 +62,12 @@ struct PointOfSaleCouponServiceTests {
     @Test func providePointOfSaleCoupons_when_enabled_then_calls_strategy() async throws {
         // Given
         settingStoreMethods.couponsEnabled = true
-        let expectedCoupons = PagedItems(items: [POSItem.coupon(POSCoupon(id: UUID(), code: "test", summary: "test", dateExpires: nil))], hasMorePages: false)
+        let expectedCoupons = PagedItems(items: [POSItem.coupon(POSCoupon(id: UUID(),
+                                                                          code: "test",
+                                                                          summary: "test",
+                                                                          dateExpires: nil))],
+                                         hasMorePages: false,
+                                         totalItems: nil)
         mockStrategy.fetchCouponsResult = expectedCoupons
 
         // When
@@ -77,7 +82,8 @@ struct PointOfSaleCouponServiceTests {
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_enabled_then_throws_couponsLoadingError() async throws {
         // Given
         settingStoreMethods.couponsEnabled = true
-        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
+        let error = NSError(domain: "test", code: 0)
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
 
         // When
         do {
@@ -85,14 +91,15 @@ struct PointOfSaleCouponServiceTests {
         } catch {
             // Then
             let expectedError = error as? PointOfSaleCouponServiceError
-            #expect(expectedError == .couponsLoadingError)
+            #expect(expectedError == .couponsLoadingError(underlyingError: error))
         }
     }
 
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_disabled_then_throws_couponsDisabled() async throws {
         // Given
         settingStoreMethods.couponsEnabled = false
-        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError
+        let error = NSError(domain: "test", code: 0)
+        mockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: error)
 
         // When
         do {
@@ -120,7 +127,7 @@ private class MockPointOfSaleCouponFetchStrategy: PointOfSaleCouponFetchStrategy
         if let error = fetchCouponsError {
             throw error
         }
-        return fetchCouponsResult ?? .init(items: [], hasMorePages: false)
+        return fetchCouponsResult ?? .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
     func fetchLocalCoupons() async throws -> [POSItem] {

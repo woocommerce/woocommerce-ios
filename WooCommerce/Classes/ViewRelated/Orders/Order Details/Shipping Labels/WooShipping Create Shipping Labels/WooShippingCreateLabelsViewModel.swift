@@ -178,9 +178,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
-    /// Initialize the view model without an existing shipping label.
+    /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
-         selectedOriginAddress: WooShippingOriginAddress? = nil,
+         selectedShippingLabel: ShippingLabel? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
@@ -188,8 +188,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
         self.shippingLabels = order.shippingLabels
-        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
-        self.itemsDataSource = itemsDataSource
+        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
         self.currencySettings = currencySettings
@@ -206,50 +205,17 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
 
-        destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
-        self.selectedOriginAddress = selectedOriginAddress
-
-        updateShipmentDetailsViewModels()
-        loadDestinationAddress()
-        observeSelectedOriginAddress()
-        observeDestinationAddress()
-        observeViewStates()
-
-        Task {
-            await loadRequiredData()
+        if let selectedShippingLabel {
+            destinationAddressStatus = .verified
+            destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
+            originAddress = selectedShippingLabel.originAddress.formattedInlineAddress ?? ""
+        } else {
+            destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
+            loadDestinationAddress()
         }
-    }
-
-    /// Initialize the view model from an existing shipping label.
-    init(order: Order,
-         selectedShippingLabel: ShippingLabel,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         stores: StoresManager = ServiceLocator.stores,
-         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2)) {
-        self.order = order
-        self.shippingSettingsService = shippingSettingsService
-        self.shippingLabels = order.shippingLabels
-        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
-        self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
-        self.currencySettings = currencySettings
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddressStatus = .verified
-        self.onLabelPurchase = nil
-        self.stores = stores
-        self.initialNoticeDelay = initialNoticeDelay
-
-        let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
-                                                                         config: nil,
-                                                                         items: itemsDataSource.items,
-                                                                         stores: stores)
-        self.splitShipmentsViewModel = splitShipmentsViewModel
-        self.shipments = splitShipmentsViewModel.shipments
-
-        destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
 
         updateShipmentDetailsViewModels()
+        observeSelectedOriginAddress()
         observeDestinationAddress()
         observeViewStates()
 
@@ -258,7 +224,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
             // After shipment configs are updated, shipments are updated with purchased label details
             // Update the selected tab now by comparing the purchased labels with the initial selected label.
-            if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
+            if let selectedShippingLabel,
+                let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
                 selectedShipmentIndex = matchingIndex
             }
         }

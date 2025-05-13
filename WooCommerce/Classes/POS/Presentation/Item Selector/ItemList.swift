@@ -140,7 +140,7 @@ private enum Constants {
 }
 
 @available(iOS 17.0, *)
-private struct ItemListRow: View {
+struct ItemListRow: View {
     let item: POSItem
     let itemActionHandler: POSItemActionHandler
     @Binding var activeNavigationItem: POSItem?

@@ -64,7 +64,6 @@ def networking_pods
   alamofire
   cocoa_lumberjack
 
-  pod 'Sourcery', '~> 2.2.6', configuration: 'Debug'
   wordpress_shared
 
   # Used for HTML parsing
@@ -360,19 +359,6 @@ target 'WordPressAuthenticatorTests' do
   pod 'OCMock', '~> 3.4'
 end
 
-# Tools
-# ==========
-#
-def swiftlint_version
-  require 'yaml'
-
-  YAML.load_file('.swiftlint.yml')['swiftlint_version']
-end
-
-abstract_target 'Tools' do
-  pod 'SwiftLint', swiftlint_version
-end
-
 # Workarounds:
 # ============
 #
@@ -470,8 +456,4 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
-
-  yellow_marker = "\033[33m"
-  reset_marker = "\033[0m"
-  puts "#{yellow_marker}The abstract target warning below is expected. Feel free to ignore it.#{reset_marker}"
 end

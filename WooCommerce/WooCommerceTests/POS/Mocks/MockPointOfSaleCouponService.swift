@@ -23,14 +23,14 @@ final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
             throw error
         }
         if shouldReturnZeroItems {
-            return .init(items: [], hasMorePages: false)
+            return .init(items: [], hasMorePages: false, totalItems: nil)
         }
         if shouldSimulateTwoPages {
             return pageNumber > 1 ?
-                .init(items: Self.makeSecondPageCoupons(), hasMorePages: shouldSimulateMorePages):
-                .init(items: Self.makeInitialCoupons(), hasMorePages: shouldSimulateTwoPages)
+                .init(items: Self.makeSecondPageCoupons(), hasMorePages: shouldSimulateMorePages, totalItems: nil):
+                .init(items: Self.makeInitialCoupons(), hasMorePages: shouldSimulateTwoPages, totalItems: nil)
         }
-        return .init(items: Self.makeInitialCoupons(), hasMorePages: false)
+        return .init(items: Self.makeInitialCoupons(), hasMorePages: false, totalItems: nil)
     }
 
     static func makeInitialCoupons() -> [POSItem] {

@@ -99,7 +99,11 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             .flatMap { Int($0.value) }
         let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
 
-        return PagedItems(items: variations, hasMorePages: hasMorePages)
+        // Extract total count from X-WP-Total header
+        let totalItems = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalCount.lowercased() })
+            .flatMap { Int($0.value) }
+
+        return PagedItems(items: variations, hasMorePages: hasMorePages, totalItems: totalItems)
     }
 
     private func productVariationsRequest(for siteID: Int64,

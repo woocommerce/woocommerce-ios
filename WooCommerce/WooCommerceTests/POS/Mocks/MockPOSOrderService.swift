@@ -6,10 +6,13 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var simulateSyncing = false
     var orderToReturn: Order?
     var errorToReturn: Error?
+    // This does not replace the previous `errorToReturn`/`orderToReturn` only to keep the changes small.
+    var resultToReturn: Result<Void, Error> = .success(())
 
     var syncOrderWasCalled = false
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
+    var spyCashPaymentChangeDueAmount: String?
 
     func syncOrder(cart: Yosemite.POSCart,
                    currency: CurrencyCode) async throws -> Yosemite.Order {
@@ -45,6 +48,17 @@ class MockPOSOrderService: POSOrderServiceProtocol {
                                                                                  phone: nil,
                                                                                  email: recipientEmail))
         orderToReturn = orderWithUpdatedEmail
+    }
+
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {
+        spyCashPaymentChangeDueAmount = changeDueAmount
+
+        switch resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
     }
 }
 

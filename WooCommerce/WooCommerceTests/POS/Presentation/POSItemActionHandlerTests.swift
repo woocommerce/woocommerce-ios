@@ -16,7 +16,7 @@ struct POSItemActionHandlerTests {
                                                            orderController: MockPointOfSaleOrderController(),
                                                            collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                            searchHistoryService: MockPOSSearchHistoryService(),
-                                                           popularItemsController: MockPointOfSalePopularItemsController())
+                                                           popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = StandardPOSItemActionHandler(posModel: aggregateModel,
                                                itemListType: .coupons(search: false))
 
@@ -39,7 +39,7 @@ struct POSItemActionHandlerTests {
                                                            orderController: MockPointOfSaleOrderController(),
                                                            collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                            searchHistoryService: MockPOSSearchHistoryService(),
-                                                           popularItemsController: MockPointOfSalePopularItemsController())
+                                                           popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = SearchResultItemActionHandler(posModel: aggregateModel,
                                                 searchTerm: "",
                                                 itemListType: .coupons(search: true))
@@ -63,7 +63,7 @@ struct POSItemActionHandlerTests {
                                                            orderController: MockPointOfSaleOrderController(),
                                                            collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                            searchHistoryService: MockPOSSearchHistoryService(),
-                                                           popularItemsController: MockPointOfSalePopularItemsController())
+                                                           popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = StandardPOSItemActionHandler(posModel: aggregateModel,
                                                itemListType: .products(search: false))
 
@@ -86,7 +86,7 @@ struct POSItemActionHandlerTests {
                                                            orderController: MockPointOfSaleOrderController(),
                                                            collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                            searchHistoryService: MockPOSSearchHistoryService(),
-                                                           popularItemsController: MockPointOfSalePopularItemsController())
+                                                           popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = SearchResultItemActionHandler(posModel: aggregateModel,
                                                 searchTerm: "",
                                                 itemListType: .coupons(search: true))

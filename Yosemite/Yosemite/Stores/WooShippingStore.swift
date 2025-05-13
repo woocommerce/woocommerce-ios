@@ -314,7 +314,12 @@ private extension WooShippingStore {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
-        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address) { [weak self] result in
+            completion(result)
+
+            guard let self, case .success = result else { return }
+            setLastModifiedDateForOrder(siteID: siteID, orderID: orderID)
+        }
     }
 
     func loadConfig(siteID: Int64,
@@ -569,6 +574,21 @@ private extension WooShippingStore {
             }
 
         }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates order's `dateModified` locally
+    /// Used as temp workaround to reflect that the order instance was updated
+    private func setLastModifiedDateForOrder(siteID: Int64, orderID: Int64) {
+        storageManager.performAndSave({ derivedStorage in
+            guard let storedOrder = derivedStorage.loadOrder(
+                siteID: siteID,
+                orderID: orderID
+            ) else {
+                return
+            }
+
+            storedOrder.dateModified = Date()
+        }, completion: nil, on: .main)
     }
 }
 

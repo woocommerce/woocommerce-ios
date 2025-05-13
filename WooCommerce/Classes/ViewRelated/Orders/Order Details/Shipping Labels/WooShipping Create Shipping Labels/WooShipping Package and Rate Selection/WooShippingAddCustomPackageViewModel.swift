@@ -15,6 +15,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
 
+    var packageID: String {
+        packageTemplateName.isEmpty ? Constants.defaultBoxID : packageTemplateName
+    }
+
     // MARK: Initialization
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
@@ -54,7 +58,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
-        return WooShippingPackageData(id: packageTemplateName,
+        return WooShippingPackageData(id: packageID,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
@@ -131,6 +135,12 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             return !packageTemplateName.isEmpty
         }
         return true
+    }
+}
+
+private extension WooShippingAddCustomPackageViewModel {
+    enum Constants {
+        static let defaultBoxID = "custom_box"
     }
 }
 

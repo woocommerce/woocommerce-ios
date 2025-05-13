@@ -211,20 +211,5 @@ private extension ProductImagesGalleryViewController {
         } catch {
             assertionFailure(error.localizedDescription)
         }
-
-//        cell.cancellableTask = Task {
-//            guard let image = try? await productUIImageLoader.requestImage(productImage: productImage) else {
-//                return
-//            }
-//
-//            /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
-//            /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
-//            ///
-//            guard !Task.isCancelled else {
-//                return
-//            }
-//            cell.imageView.contentMode = .scaleAspectFit
-//            cell.imageView.image = image
-//        }
     }
 }

@@ -563,7 +563,9 @@ private extension OrderDetailsViewController {
                 }
 
                 let viewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
-                let view = WooShippingRefundView(viewModel: viewModel)
+                let view = WooShippingRefundView(viewModel: viewModel) { updatedLabel in
+                    // TODO
+                }
                 let refundViewController = UIHostingController(rootView: view)
                 self?.present(refundViewController, animated: true)
             }

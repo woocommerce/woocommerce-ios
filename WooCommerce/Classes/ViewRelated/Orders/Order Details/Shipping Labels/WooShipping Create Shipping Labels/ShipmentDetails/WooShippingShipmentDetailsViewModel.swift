@@ -204,6 +204,10 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
         onLabelPurchase?(updatedLabel)
     }
+
+    func didRequestRefund(updatedLabel: ShippingLabel) {
+        // TODO
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModel {

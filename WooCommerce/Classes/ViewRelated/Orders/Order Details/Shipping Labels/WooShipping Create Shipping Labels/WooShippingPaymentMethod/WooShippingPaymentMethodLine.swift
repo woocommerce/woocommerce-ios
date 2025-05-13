@@ -1,11 +1,3 @@
-//
-//  WooShippingPaymentMethodLine.swift
-//  WooCommerce
-//
-//  Created by Rafael Kayumov on 11.05.2025.
-//  Copyright © 2025 Automattic. All rights reserved.
-//
-
 import Networking
 
 /// Represents payment method line in the order details bottom sheet.

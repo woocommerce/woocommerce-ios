@@ -445,7 +445,6 @@ private extension WooShippingCreateLabelsView {
                 Spacer()
             }
         }
-        .frame(idealHeight: Layout.rowHeight)
     }
 
     func cardPaymentMethodLine(
@@ -467,7 +466,6 @@ private extension WooShippingCreateLabelsView {
             }
         }
         .disabled(!cardLineViewModel.isEditable)
-        .frame(idealHeight: Layout.rowHeight)
     }
 
     /// View showing the shipment details, such as shipping rate and additional costs.

@@ -222,7 +222,7 @@ private extension WooShippingStore {
             guard let self else { return }
             switch result {
             case .success(let label):
-                upsertShippingLabelInBackground(shippingLabel: label) {
+                upsertShippingLabelRefundInBackground(shippingLabel: label) {
                     completion(.success(label))
                 }
             case .failure(let error):
@@ -548,37 +548,27 @@ private extension WooShippingStore {
         storageSavedPackage.package = predefinedPackage
     }
 
-    /// Updates/inserts the specified shipping label *in a background thread*.
+    /// Updates the specified shipping label with the given refund *in a background thread*.
     /// `onCompletion` will be called on the main thread!
-    func upsertShippingLabelInBackground(shippingLabel: ShippingLabel,
-                                         onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave ({ [weak self] storage in
-            guard let self else { return }
-            guard let storageOrder = storage.loadOrder(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID) else {
-                return
-            }
+    func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
+                                               onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave ({ storage in
             let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
                                                                  orderID: shippingLabel.orderID,
-                                                                 shippingLabelID: shippingLabel.shippingLabelID) ??
-            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
-            storageShippingLabel.update(with: shippingLabel)
-            storageShippingLabel.order = storageOrder
+                                                                 shippingLabelID: shippingLabel.shippingLabelID)
+            guard let storageShippingLabel else {
+                return
+            }
 
-            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund, using: storage)
+            if let refund = shippingLabel.refund {
+                let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+                storageRefund.update(with: refund)
+                storageShippingLabel.refund = storageRefund
+            } else {
+                storageShippingLabel.refund = nil
+            }
 
         }, completion: onCompletion, on: .main)
-    }
-
-    func update(shippingLabel storageShippingLabel: StorageShippingLabel,
-                withRefund refund: ShippingLabelRefund?,
-                using storage: StorageType) {
-        if let refund {
-            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
-            storageRefund.update(with: refund)
-            storageShippingLabel.refund = storageRefund
-        } else {
-            storageShippingLabel.refund = nil
-        }
     }
 }
 

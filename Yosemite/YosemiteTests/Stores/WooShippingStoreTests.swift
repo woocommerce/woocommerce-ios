@@ -967,7 +967,6 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Inserts a shipping label without a refund.
         insertShippingLabel(shippingLabel)
-        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
@@ -1077,13 +1076,6 @@ private extension WooShippingStoreTests {
                                                                                                  dimensions: "",
                                                                                                  boxWeight: "",
                                                                                                  groupId: "")])])
-    }
-
-    func insertOrder(siteID: Int64, orderID: Int64) {
-        let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
-        order.siteID = siteID
-        order.orderID = orderID
-        order.statusKey = ""
     }
 
     func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {

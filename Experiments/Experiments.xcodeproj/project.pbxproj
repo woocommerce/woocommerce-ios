@@ -15,6 +15,7 @@
 		0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A627069BA500FC799F /* BuildConfiguration.swift */; };
 		3F8115032DD2A6EC0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115022DD2A6EC0042DDB6 /* AutomatticTracks */; };
 		3F8B84192DD2FEC2002DD6E8 /* Experiments.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 3F8B84182DD2FEC2002DD6E8 /* Experiments.xctestplan */; };
+		3F8B841B2DD301C6002DD6E8 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8B841A2DD301C6002DD6E8 /* AutomatticTracks */; };
 		BC10218D75FEA979BDA1E68C /* Pods_Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */; };
 		C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */; };
 		CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB47275E426900C4CA4F /* ABTest.swift */; };
@@ -79,6 +80,7 @@
 			files = (
 				0270C08B27069A8900FC799F /* Experiments.framework in Frameworks */,
 				C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */,
+				3F8B841B2DD301C6002DD6E8 /* AutomatticTracks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,6 +756,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		3F8115022DD2A6EC0042DDB6 /* AutomatticTracks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F8115012DD2A6EC0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
+			productName = AutomatticTracks;
+		};
+		3F8B841A2DD301C6002DD6E8 /* AutomatticTracks */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3F8115012DD2A6EC0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
 			productName = AutomatticTracks;

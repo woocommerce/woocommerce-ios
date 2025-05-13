@@ -1320,6 +1320,7 @@
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
 		3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */; };
 		3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */; };
+		3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */; };
 		3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA323262D63E0570017AE66 /* XCUITestHelpers */; };
 		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
@@ -6612,6 +6613,7 @@
 				263E38462641FF3400260D3B /* Codegen in Frameworks */,
 				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */,
+				3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
 				2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */,
@@ -14738,6 +14740,7 @@
 				2621D1F32C81085D00654C4C /* ViewInspector */,
 				2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */,
 				3F368D972DCB74490065B48F /* TestKit */,
+				3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -20001,6 +20004,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
 			productName = AutomatticEncryptedLogs;
+		};
+		3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
+			productName = AutomatticTracks;
 		};
 		3FA323262D63E0570017AE66 /* XCUITestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;

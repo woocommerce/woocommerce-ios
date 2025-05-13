@@ -102,5 +102,5 @@ WooCommerce/WooCommerceScreenshots/Mocks/vendor/
 
 # Local modules
 Modules/.build
-Moudles/.swiftpm/configuration/registries.json
-Moudles/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+Modules/.swiftpm/configuration/registries.json
+Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata

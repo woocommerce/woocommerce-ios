@@ -957,12 +957,11 @@ final class WooShippingStoreTests: XCTestCase {
         let remote = MockWooShippingRemote()
         let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
         let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123)
-        let expectedUpdatedLabel = shippingLabel.copy(refund: expectedRefund)
 
         remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
                                           orderID: shippingLabel.orderID,
                                           shippingLabelID: shippingLabel.shippingLabelID,
-                                          thenReturn: .success(expectedUpdatedLabel))
+                                          thenReturn: .success(expectedRefund))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Inserts a shipping label without a refund.

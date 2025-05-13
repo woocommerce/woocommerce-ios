@@ -221,9 +221,10 @@ private extension WooShippingStore {
                                    shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let label):
-                upsertShippingLabelRefundInBackground(shippingLabel: label) {
-                    completion(.success(label))
+            case .success(let refund):
+                upsertShippingLabelRefundInBackground(shippingLabel: shippingLabel,
+                                                      refund: refund) { updatedLabel in
+                    completion(.success(updatedLabel))
                 }
             case .failure(let error):
                 completion(.failure(error))
@@ -556,24 +557,31 @@ private extension WooShippingStore {
     /// Updates the specified shipping label with the given refund *in a background thread*.
     /// `onCompletion` will be called on the main thread!
     func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
-                                               onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave ({ storage in
+                                               refund: ShippingLabelRefund,
+                                               onCompletion: @escaping (_ updatedLabel: ShippingLabel) -> Void) {
+        storageManager.performAndSave ({ storage -> ShippingLabel in
             let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
                                                                  orderID: shippingLabel.orderID,
                                                                  shippingLabelID: shippingLabel.shippingLabelID)
             guard let storageShippingLabel else {
-                return
+                DDLogWarn("⚠️ No shipping label found in storage when updating refund")
+                return shippingLabel.copy(refund: refund)
             }
 
-            if let refund = shippingLabel.refund {
-                let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
-                storageRefund.update(with: refund)
-                storageShippingLabel.refund = storageRefund
-            } else {
-                storageShippingLabel.refund = nil
-            }
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            storageRefund.update(with: refund)
+            storageShippingLabel.refund = storageRefund
+            return storageShippingLabel.toReadOnly()
 
-        }, completion: onCompletion, on: .main)
+        }, completion: { result in
+            switch result {
+            case .success(let label):
+                onCompletion(label)
+            case .failure(let error):
+                DDLogError("⛔️ Error upserting shipping label refund: \(error)")
+                onCompletion(shippingLabel.copy(refund: refund))
+            }
+        }, on: .main)
     }
 
     /// Updates order's `dateModified` locally

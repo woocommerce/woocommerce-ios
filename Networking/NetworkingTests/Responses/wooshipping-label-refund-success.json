@@ -3,7 +3,7 @@
     "success": false,
     "refund": {
       "status": "pending",
-      "request_date": 1723147248369,
+      "request_date": 1723147248000,
       "is_manual": false
     },
     "label": {

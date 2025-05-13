@@ -20,11 +20,7 @@ public struct GeneralAppSettingsStorage {
 
     public init(fileStorage: FileStorage = PListFileStorage(), fileURL: URL? = nil) {
         self.fileStorage = fileStorage
-        if let fileURL = fileURL {
-            self.fileURL = fileURL
-        } else {
-            self.fileURL = Constants.generalAppSettingsFileURL
-        }
+        self.fileURL = fileURL ?? Constants.generalAppSettingsFileURL
     }
 
     /// Reads the value of the stored setting for the given key path

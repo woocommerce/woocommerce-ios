@@ -43,6 +43,7 @@ struct WooShippingShipmentDetailsView: View {
         .sheet(isPresented: $showingRefundRequest) {
             if let refundViewModel = viewModel.refundViewModel {
                 WooShippingRefundView(viewModel: refundViewModel) { updatedLabel in
+                    showingRefundRequest = false
                     viewModel.didRequestRefund(updatedLabel: updatedLabel)
                 }
             }

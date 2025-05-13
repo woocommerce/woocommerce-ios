@@ -55,6 +55,22 @@ struct WooShippingRefundView: View {
             }
             .background(Color(.systemBackground))
         }
+        .alert(Localization.ErrorAlert.title, isPresented: $didFailToRequestRefund) {
+            Button(role: .cancel, action: {}, label: {
+                Text(Localization.ErrorAlert.cancel)
+            })
+
+            Button {
+                Task { @MainActor in
+                    await submitRefundRequest()
+                }
+            } label: {
+                Text(Localization.ErrorAlert.retry)
+            }
+        } message: {
+            Text(Localization.ErrorAlert.message)
+        }
+
     }
 }
 
@@ -120,6 +136,28 @@ private extension WooShippingRefundView {
             value: "Refund Label (%1$@)",
             comment: "Button to submit refund request the Request shipping label refund view"
         )
+        enum ErrorAlert {
+            static let title = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.title",
+                value: "Refund request failed",
+                comment: "Title of the error alert when requesting refund for a shipping label fails"
+            )
+            static let message = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.message",
+                value: "We were unable to request a refund for your label. Please try again",
+                comment: "Message on the error alert when requesting refund for a shipping label fails"
+            )
+            static let retry = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.retry",
+                value: "Retry",
+                comment: "Button to retry when requesting refund for a shipping label fails"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the error alert when requesting refund for a shipping label fails"
+            )
+        }
     }
 }
 

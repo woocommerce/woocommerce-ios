@@ -103,12 +103,18 @@ final class CartDetailsViewModel: ObservableObject {
     @Published var cartToken: String?
     @Published var lastModified: String?
     @Published var errorMessage: String?
+    
+    enum PaymentMethod: String {
+        case cod
+        case woocommercePayments = "woocommerce_payments"
+        case stripe = "stripe"
+    }
 
     var siteURL: String {
         ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
     }
 
-    func pay() async {
+    func pay(using method: PaymentMethod) async {
         guard let cartToken = cartToken, let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/checkout") else {
             fatalError()
         }
@@ -117,11 +123,30 @@ final class CartDetailsViewModel: ObservableObject {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
+        
+        let paymentData: [[String: Any]]
+        switch method {
+        case .cod:
+            paymentData = []
+        case .woocommercePayments, .stripe:
+            paymentData = [
+                ["key": "stripe_source", "value": "src_xxxxxxxxxxxxx"], // Intent required
+                ["key": "billing_email", "value": "john.doe@example.com"],
+                ["key": "billing_first_name", "value": "John"],
+                ["key": "billing_last_name", "value": "Doe"],
+                ["key": "paymentMethod", "value": method.rawValue],
+                ["key": "paymentRequestType", "value": "cc"],
+                ["key": "wc-stripe-new-payment-method", "value": true]
+            ]
+        }
+
 
         let body: [String: Any] = [
-            // Req
-            "payment_method": "cod",
-            // Req
+            // Required
+            "payment_method": "\(method.rawValue)",
+            // Required depending the payment gateway
+            "payment_data": paymentData,
+            // Required
             "billing_address": [
                 "first_name": "John",
                 "last_name": "Doe",
@@ -132,10 +157,10 @@ final class CartDetailsViewModel: ObservableObject {
                 "state": "CA",
                 "postcode": "94103",
                 "country": "US",
-                "email": "john.doe@example.com", // Req
+                "email": "john.doe@example.com", // Required
                 "phone": "555-123-4567"
             ],
-            // Req
+            // Required
             "shipping_address": [
                 "first_name": "John",
                 "last_name": "Doe",
@@ -288,6 +313,12 @@ final class CartDetailsViewModel: ObservableObject {
         }
     }
 
+    // Since the token is a JWT we can use the initial token or the subsequent tokens as response of any modifications to the cart
+    // it's expected to change as we mutate it via different requests, but should keep the cart identified.
+    // We have to be careful when refreshing or using a new token for orders, as this persists between sessions
+    // Additional headers that we might find useful:
+    // woocommerce_items_in_cart: boolean flag to know items in cart (0 vs 1), actual items in the response
+    // woocommerce_cart_hash: A hash of the current cart contents
     func fetchCartToken() async throws {
         guard let url = URL(string: "\(siteURL)/wp-json/wc/store/v1/cart") else {
             print("Invalid URL")

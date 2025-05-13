@@ -67,7 +67,7 @@ struct TotalsView: View {
                         .buttonStyle(.bordered)
                         Button(action: {
                             Task { @MainActor in
-                                await posModel.cartDetailsVM.pay()
+                                await posModel.cartDetailsVM.pay(using: .cod)
                             }
                         }, label: {
                             Text("Pay (COD)")
@@ -75,10 +75,10 @@ struct TotalsView: View {
                         .buttonStyle(.bordered)
                         Button(action: {
                             Task { @MainActor in
-                                // TODO
+                                await posModel.cartDetailsVM.pay(using: .woocommercePayments)
                             }
                         }, label: {
-                            Text("🚧 Pay (Card)")
+                            Text("🚧 Pay (WooPayments)")
                         })
                         .buttonStyle(.bordered)
                     }

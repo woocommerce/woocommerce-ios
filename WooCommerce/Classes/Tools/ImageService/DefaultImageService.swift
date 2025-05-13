@@ -136,6 +136,10 @@ struct DefaultImageService: ImageService {
     func clearMemoryCache() {
         imageCache.clearMemoryCache()
     }
+
+    func storeImageInCache(_ image: UIImage, for url: URL) {
+        imageCache.store(image, forKey: url.imageCacheKey)
+    }
 }
 
 private extension DefaultImageService {

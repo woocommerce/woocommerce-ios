@@ -9,6 +9,12 @@ typealias ImageDownloadProgressBlock = (_ receivedSize: Int64, _ totalSize: Int6
 ///
 protocol ImageService {
 
+    /// Stores an image directly in the cache.
+    /// - Parameters:
+    ///   - image: The image to store in cache.
+    ///   - url: The URL to use as the cache key.
+    func storeImageInCache(_ image: UIImage, for url: URL)
+
     /// Retrieves an image from cache.
     /// - Parameters:
     ///   - url: url of the image.
@@ -27,7 +33,8 @@ protocol ImageService {
     ///   - imageView: `UIImageView` that displays the target image.
     ///   - url: url of the image.
     ///   - placeholder: an optional placeholder image to be displayed before the image is downloaded.
-    ///   - targetImageViewSize: whether to resize the image to match the target image view size. If true, the image will be resized to fit the image view's dimensions while maintaining aspect ratio.
+    ///   - targetImageViewSize: whether to resize the image to match the target image view size.
+    ///   If true, the image will be resized to fit the image view's dimensions while maintaining aspect ratio.
     ///   - progressBlock: called when the image download progress changes.
     ///   - completion: called when the image download completes.
     func downloadAndCacheImageForImageView(_ imageView: UIImageView,

@@ -149,4 +149,121 @@ final class DefaultImageServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
+    func testRetrieveImageWithCachingFlow() {
+        // Given
+        let mockCache = MockImageCache(name: "Testing")
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // When - First retrieve (should download and cache)
+        let waitForFirstRetrieval = expectation(description: "Wait for first image retrieval")
+        let waitForSecondRetrieval = expectation(description: "Wait for second image retrieval")
+
+        let task = imageService.retrieveImage(
+            with: url,
+            targetSize: nil,
+            shouldCacheImage: true
+        ) { image, error in
+            XCTAssertNotNil(image)
+            XCTAssertNil(error)
+
+            // Then - Second retrieve (should use cache)
+            self.imageService.retrieveImageFromCache(with: self.url) { cachedImage in
+                XCTAssertNotNil(cachedImage)
+                waitForSecondRetrieval.fulfill()
+            }
+            waitForFirstRetrieval.fulfill()
+        }
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testRetrieveImageWithoutCaching() {
+        // Given
+        let mockCache = MockImageCache(name: "Testing")
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // When
+        let waitForRetrieval = expectation(description: "Wait for image retrieval")
+        let waitForCacheCheck = expectation(description: "Wait for cache check")
+
+        let task = imageService.retrieveImage(
+            with: url,
+            targetSize: nil,
+            shouldCacheImage: false
+        ) { image, error in
+            XCTAssertNotNil(image)
+            XCTAssertNil(error)
+
+            // Then - Check cache (should be empty)
+            self.imageService.retrieveImageFromCache(with: self.url) { cachedImage in
+                XCTAssertNil(cachedImage)
+                waitForCacheCheck.fulfill()
+            }
+            waitForRetrieval.fulfill()
+        }
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testRetrieveImageWithTargetSize() {
+        // Given
+        let targetSize = CGSize(width: 100, height: 100)
+        let mockCache = MockImageCache(name: "Testing")
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // When
+        let waitForRetrieval = expectation(description: "Wait for image retrieval")
+
+        let task = imageService.retrieveImage(
+            with: url,
+            targetSize: targetSize,
+            shouldCacheImage: true
+        ) { image, error in
+            XCTAssertNotNil(image)
+            XCTAssertNil(error)
+
+            // Verify image size
+            if let image = image {
+                XCTAssertLessThanOrEqual(image.size.width, targetSize.width)
+                XCTAssertLessThanOrEqual(image.size.height, targetSize.height)
+                // Check aspect ratio is maintained (with some floating point tolerance)
+                let originalAspect = self.testImage.size.width / self.testImage.size.height
+                let resizedAspect = image.size.width / image.size.height
+                XCTAssertEqual(originalAspect, resizedAspect, accuracy: 0.01)
+            }
+
+            waitForRetrieval.fulfill()
+        }
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testRetrieveImageWithSpecialCharacters() {
+        // Given
+        let urlStringWithSpecialChars = "https://woocommerce.com/тест-图像"
+        let encodedURLStringWithSpecialChars = urlStringWithSpecialChars.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let encodedURL = URL(string: encodedURLStringWithSpecialChars)!
+
+        let mockCache = MockImageCache(name: "Testing")
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [encodedURLStringWithSpecialChars: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // When
+        let waitForRetrieval = expectation(description: "Wait for image retrieval")
+
+        let task = imageService.retrieveImage(
+            with: encodedURL,
+            targetSize: nil,
+            shouldCacheImage: true
+        ) { image, error in
+            XCTAssertNotNil(image)
+            XCTAssertNil(error)
+            waitForRetrieval.fulfill()
+        }
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
 }

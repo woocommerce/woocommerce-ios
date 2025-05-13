@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View for requesting refund for a shipping label.
 ///
@@ -103,7 +104,44 @@ private extension WooShippingRefundView {
 }
 
 #Preview {
-    WooShippingRefundView(viewModel: .init(refundableAmount: 11.33,
-                                           refundDuration: 14,
-                                           purchaseDate: Date()))
+    WooShippingRefundView(viewModel: .init(
+        shippingLabel: ShippingLabel(
+            siteID: 123,
+            orderID: 456,
+            shippingLabelID: 789,
+            carrierID: "usps",
+            dateCreated: Date(),
+            packageName: "unknown",
+            rate: 12.11,
+            currency: "usd",
+            trackingNumber: "1345",
+            serviceName: "",
+            refundableAmount: 11.22,
+            status: .purchased,
+            refund: nil,
+            originAddress: ShippingLabelAddress(company: "Automattic Inc.",
+                                                name: "Tes",
+                                                phone: "01234567",
+                                                country: "USA",
+                                                state: "CA",
+                                                address1: "Woo Street",
+                                                address2: "",
+                                                city: "San Francisco",
+                                                postcode: "90210"),
+            destinationAddress: ShippingLabelAddress(company: "",
+                                                     name: "La",
+                                                     phone: "01234567",
+                                                     country: "USA",
+                                                     state: "NY",
+                                                     address1: "Main Street",
+                                                     address2: "",
+                                                     city: "New York",
+                                                     postcode: "10023"),
+            productIDs: [],
+            productNames: [],
+            commercialInvoiceURL: nil,
+            usedDate: nil,
+            expiryDate: nil
+        )
+    ))
 }

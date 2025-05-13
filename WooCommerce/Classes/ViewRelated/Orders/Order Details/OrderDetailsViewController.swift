@@ -562,9 +562,7 @@ private extension OrderDetailsViewController {
                     return
                 }
 
-                let viewModel = WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
-                                                           refundDuration: shippingLabel.refundDuration,
-                                                           purchaseDate: shippingLabel.dateCreated)
+                let viewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
                 let view = WooShippingRefundView(viewModel: viewModel)
                 let refundViewController = UIHostingController(rootView: view)
                 self?.present(refundViewController, animated: true)

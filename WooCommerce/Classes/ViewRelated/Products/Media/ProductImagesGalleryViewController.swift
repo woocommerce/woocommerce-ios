@@ -203,7 +203,7 @@ private extension ProductImagesGalleryViewController {
         do {
             cell.cancellable = try productUIImageLoader.requestImage(
                 productImage: productImage,
-                targetSize: cell.imageView.frame.size
+                targetSize: cell.frame.size
             ) { [weak cell] image in
                 cell?.imageView.contentMode = .scaleAspectFit
                 cell?.imageView.image = image

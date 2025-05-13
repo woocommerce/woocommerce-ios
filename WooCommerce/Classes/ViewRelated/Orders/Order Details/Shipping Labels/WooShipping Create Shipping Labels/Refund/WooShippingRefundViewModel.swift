@@ -25,7 +25,12 @@ final class WooShippingRefundViewModel {
         formattedPurchaseDate = shippingLabel.dateCreated.formatted(date: .abbreviated, time: .omitted)
     }
 
-    func submitRefundRequest() {
-        // TODO: integrate refund API
+    @MainActor
+    func submitRefundRequest() async throws -> ShippingLabel {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }

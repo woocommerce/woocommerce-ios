@@ -4,9 +4,12 @@ import Yosemite
 /// View for requesting refund for a shipping label.
 ///
 struct WooShippingRefundView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @State private var isRequestingRefund = false
+    @State private var didFailToRequestRefund = false
 
     let viewModel: WooShippingRefundViewModel
+    let onRefundRequested: (_ updatedLabel: ShippingLabel) -> Void
 
     var body: some View {
         ScrollableVStack(alignment: .leading,
@@ -43,12 +46,29 @@ struct WooShippingRefundView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 Button(String.localizedStringWithFormat(Localization.submitButton, "-" + viewModel.formattedRefundAmount)) {
-                    viewModel.submitRefundRequest()
+                    Task { @MainActor in
+                        await submitRefundRequest()
+                    }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isRequestingRefund))
                 .padding()
             }
             .background(Color(.systemBackground))
+        }
+    }
+}
+
+private extension WooShippingRefundView {
+    func submitRefundRequest() async {
+        isRequestingRefund = true
+        defer {
+            isRequestingRefund = false
+        }
+        do {
+            let updatedLabel = try await viewModel.submitRefundRequest()
+            onRefundRequested(updatedLabel)
+        } catch {
+            didFailToRequestRefund = true
         }
     }
 }
@@ -143,5 +163,5 @@ private extension WooShippingRefundView {
             usedDate: nil,
             expiryDate: nil
         )
-    ))
+    ), onRefundRequested: { _ in })
 }

@@ -8,7 +8,7 @@ struct PointOfSaleItemListErrorView: View {
     private let onAction: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
-    
+
     @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {

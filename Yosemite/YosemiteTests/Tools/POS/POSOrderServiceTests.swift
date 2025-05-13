@@ -117,6 +117,54 @@ struct POSOrderServiceTests {
             #expect(item.subtotal == "", "Subtotal should be empty string")
         }
     }
+
+    @Test
+    func markOrderAsCompletedWithCashPayment_updates_order_status_and_payment_method() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+
+        // When
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+
+        // Then
+        let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
+        #expect(updatedOrder.status == .completed)
+        #expect(updatedOrder.paymentMethodID == PaymentGateway.Constants.cashOnDeliveryGatewayID)
+        #expect(updatedOrder.paymentMethodTitle == "Pay in Person")
+
+        let fields = try #require(mockOrdersRemote.spyUpdatePOSOrderFields)
+        #expect(fields.contains(.status))
+        #expect(fields.contains(.paymentMethodID))
+        #expect(fields.contains(.paymentMethodTitle))
+    }
+
+    @Test
+    func markOrderAsCompletedWithCashPayment_passes_change_due_amount() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+
+        // When
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: "$6.02")
+
+        // Then
+        let changeDueAmount = try #require(mockOrdersRemote.spyUpdatePOSOrderCashPaymentChangeDueAmount)
+        #expect(changeDueAmount == "$6.02")
+    }
+
+    @Test
+    func markOrderAsCompletedWithCashPayment_throws_error_when_update_fails() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+        mockOrdersRemote.updatePOSOrderResult = .failure(NSError(domain: "", code: 0))
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+        }, throws: { _ in
+            // The actual error `POSOrderServiceError.updateOrderFailed` is private, thus we cannot check against the exact error.
+            return true
+        })
+    }
 }
 
 private func makePOSCartItem(

@@ -1,4 +1,3 @@
-
 import Foundation
 import Networking
 
@@ -65,6 +64,18 @@ final class MockProductsRemote {
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
+    /// The last requested page size for popular products
+    private(set) var lastRequestedPageSize: Int?
+
+    /// The results to return based on the given site ID in `loadProductsForPointOfSale`
+    private var posProductsResultsBySiteID = [Int64: Result<PagedItems<POSProduct>, Error>]()
+
+    /// The results to return based on the given query in `searchProductsForPointOfSale`
+    private var posSearchResultsByQuery = [String: Result<PagedItems<POSProduct>, Error>]()
+
+    /// The results to return based on the given site ID in `loadPopularProductsForPointOfSale`
+    private var posPopularProductsResultsBySiteID = [Int64: Result<PagedItems<POSProduct>, Error>]()
+
     /// Set the value passed to the `completion` block if `addProduct()` is called.
     ///
     func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
@@ -128,7 +139,6 @@ final class MockProductsRemote {
         searchProductsByGlobalUniqueIdentifierResults[identifier] = result
     }
 
-
     func whenFetchingStock(thenReturn result: Result<[ProductStock], Error>) {
         fetchedStockResult = result
     }
@@ -139,6 +149,24 @@ final class MockProductsRemote {
 
     func whenFetchingVariationReports(thenReturn result: Result<[ProductReport], Error>) {
         fetchedVariationReports = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadProductsForPointOfSale()` is called.
+    ///
+    func whenLoadingProductsForPointOfSale(siteID: Int64, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
+        posProductsResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `searchProductsForPointOfSale()` is called.
+    ///
+    func whenSearchingProductsForPointOfSale(query: String, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
+        posSearchResultsByQuery[query] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadPopularProductsForPointOfSale()` is called.
+    ///
+    func whenLoadingPopularProductsForPointOfSale(siteID: Int64, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
+        posPopularProductsResultsBySiteID[siteID] = result
     }
 }
 
@@ -378,6 +406,51 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         switch result {
         case let .success(reports):
             return reports
+        case let .failure(error):
+            throw error
+        }
+    }
+
+    func loadProductsForPointOfSale(for siteID: Int64,
+                                    productTypes: [ProductType],
+                                    pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        guard let result = posProductsResultsBySiteID[siteID] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(pagedProducts):
+            return pagedProducts
+        case let .failure(error):
+            throw error
+        }
+    }
+
+    func searchProductsForPointOfSale(for siteID: Int64,
+                                      query: String,
+                                      productTypes: [ProductType],
+                                      pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        guard let result = posSearchResultsByQuery[query] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(pagedProducts):
+            return pagedProducts
+        case let .failure(error):
+            throw error
+        }
+    }
+
+    func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType],
+                                           pageNumber: Int,
+                                           perPage: Int) async throws -> PagedItems<POSProduct> {
+        lastRequestedPageSize = perPage
+        guard let result = posPopularProductsResultsBySiteID[siteID] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(pagedProducts):
+            return pagedProducts
         case let .failure(error):
             throw error
         }

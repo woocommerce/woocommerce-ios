@@ -31,10 +31,12 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             let products = pagedProducts.items
 
             if pageNumber != 1 && products.count == 0 {
-                return .init(items: [], hasMorePages: false)
+                return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            return .init(items: mapProductsToPOSItems(products: products), hasMorePages: pagedProducts.hasMorePages)
+            return .init(items: mapProductsToPOSItems(products: products),
+                         hasMorePages: pagedProducts.hasMorePages,
+                         totalItems: pagedProducts.totalItems)
         } catch AFError.explicitlyCancelled {
             throw PointOfSaleItemServiceError.requestCancelled
         }
@@ -66,7 +68,8 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                          variationID: variation.productVariationID,
                                          parentProductName: parentProduct.name))
                 }),
-                hasMorePages: pagedVariations.hasMorePages
+                hasMorePages: pagedVariations.hasMorePages,
+                totalItems: pagedVariations.totalItems
             )
         } catch AFError.explicitlyCancelled {
             throw PointOfSaleItemServiceError.requestCancelled

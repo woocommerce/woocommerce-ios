@@ -45,8 +45,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func checkOut() async
 
     func pointOfSaleClosed()
-
-    func loadPopularItems(type: POSItemType) async
 }
 
 @available(iOS 17.0, *)
@@ -67,9 +65,9 @@ protocol PointOfSaleAggregateModelProtocol {
 
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let popularItemsController: PointOfSalePopularItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -104,7 +102,7 @@ protocol PointOfSaleAggregateModelProtocol {
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
-         popularItemsController: PointOfSalePopularItemsControllerProtocol,
+         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -116,19 +114,11 @@ protocol PointOfSaleAggregateModelProtocol {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
-        self.popularItemsController = popularItemsController
+        self.popularPurchasableItemsController = popularPurchasableItemsController
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
-    }
-
-    var popularItemsState: [POSItemType: [POSItem]] {
-        popularItemsController.itemsByType
-    }
-
-    func loadPopularItems(type: POSItemType = .product) async {
-        await popularItemsController.loadPopularItems(for: type)
     }
 }
 

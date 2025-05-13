@@ -25,33 +25,26 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllCoupons properly parses the `coupons-all` sample response.
     ///
-    func test_loadAllCoupons_returns_parsed_coupons() throws {
+    func test_loadAllCoupons_returns_parsed_coupons() async throws {
         // Given
         let remote = CouponsRemote(network: network)
-
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        let result = waitFor { promise in
-            remote.loadAllCoupons(for: self.sampleSiteID) { result in
-                promise(result)
-            }
-        }
+        let coupons = try await remote.loadAllCoupons(for: sampleSiteID)
 
         // Then
-        XCTAssert(result.isSuccess)
-        let coupons = try XCTUnwrap(result.get())
         XCTAssertEqual(coupons.count, 4)
     }
 
     /// Verifies that loadAllCoupons uses the passed in parameters to specify the page of results wanted.
     ///
-    func test_loadAllCoupons_uses_passed_pagination_parameters() throws {
+    func test_loadAllCoupons_uses_passed_pagination_parameters() async throws {
         // Given
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17) { _ in }
+        _ = try? await remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
@@ -66,12 +59,12 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllCoupons uses the SiteID passed in for the request.
     ///
-    func test_loadAllCoupons_uses_passed_siteID_for_request() throws {
+    func test_loadAllCoupons_uses_passed_siteID_for_request() async throws {
         // Given
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID) { _ in }
+        _ = try? await remote.loadAllCoupons(for: sampleSiteID)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
@@ -80,45 +73,33 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllCoupons uses the SiteID passed in to build the models.
     ///
-    func test_loadAllCoupons_uses_passed_siteID_for_model_creation() throws {
+    func test_loadAllCoupons_uses_passed_siteID_for_model_creation() async throws {
         // Given
         let remote = CouponsRemote(network: network)
-
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        let result = waitFor { promise in
-            remote.loadAllCoupons(for: self.sampleSiteID) { result in
-                promise(result)
-            }
-        }
+        let coupons = try await remote.loadAllCoupons(for: sampleSiteID)
 
         // Then
-        let coupons = try result.get()
         XCTAssertEqual(coupons.first?.siteID, sampleSiteID)
     }
 
     /// Verifies that loadAllCoupons properly relays Networking Layer errors.
     ///
-    func test_loadAllCoupons_properly_relays_networking_errors() throws {
+    func test_loadAllCoupons_properly_relays_networking_errors() async throws {
         // Given
         let remote = CouponsRemote(network: network)
-
         let error = NetworkError.unacceptableStatusCode(statusCode: 403)
         network.simulateError(requestUrlSuffix: "coupons", error: error)
 
-        // When
-        let result = waitFor { promise in
-            remote.loadAllCoupons(for: self.sampleSiteID,
-                                  completion: { (result) in
-                                    promise(result)
-                                })
+        // When/Then
+        do {
+            _ = try await remote.loadAllCoupons(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch let resultError as NetworkError {
+            XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
         }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        let resultError = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
     }
 
     // MARK: - Delete Coupon tests
@@ -411,44 +392,33 @@ final class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that searchCoupons properly parses the `coupons-all` sample response.
     ///
-    func test_searchCoupons_properly_returns_parsed_coupons() throws {
+    func test_searchCoupons_properly_returns_parsed_coupons() async throws {
         // Given
         let remote = CouponsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        let result = waitFor { promise in
-            remote.searchCoupons(for: self.sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
-                promise(result)
-            }
-        }
+        let coupons = try await remote.searchCoupons(for: sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20)
 
         // Then
-        XCTAssert(result.isSuccess)
-        let coupons = try XCTUnwrap(result.get())
         XCTAssertEqual(coupons.count, 4)
     }
 
     /// Verifies that searchCoupons properly relays Networking Layer errors.
     ///
-    func test_searchCoupons_properly_relays_networking_errors() throws {
+    func test_searchCoupons_properly_relays_networking_errors() async throws {
         // Given
         let remote = CouponsRemote(network: network)
-
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "coupons", error: error)
 
-        // When
-        let result = waitFor { promise in
-            remote.searchCoupons(for: self.sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20) { (result) in
-                promise(result)
-            }
+        // When/Then
+        do {
+            _ = try await remote.searchCoupons(for: sampleSiteID, keyword: "test", pageNumber: 0, pageSize: 20)
+            XCTFail("Expected error to be thrown")
+        } catch let resultError as NetworkError {
+            XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
         }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-        let resultError = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 
     // MARK: - Retrieve coupon

@@ -8,7 +8,7 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         fetchProductsCalled = true
         spyFetchProductsPageNumber = 5
-        return .init(items: [], hasMorePages: false)
+        return .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
     var fetchVariationsCalled = false
@@ -18,6 +18,6 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
         fetchVariationsCalled = true
         spyFetchVariationsParentProductID = parentProductID
         spyFetchProductsPageNumber = pageNumber
-        return .init(items: [], hasMorePages: false)
+        return .init(items: [], hasMorePages: false, totalItems: nil)
     }
 }

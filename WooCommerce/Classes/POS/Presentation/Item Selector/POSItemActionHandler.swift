@@ -29,6 +29,15 @@ extension POSItemActionHandler {
             break
         }
     }
+
+    func shouldSkipDuplicate(_ item: POSItem, itemListType: ItemListType, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
+        switch itemListType {
+        case .coupons:
+            return posModel.cart.coupons.contains(where: { $0.id == item.id })
+        default:
+            return false
+        }
+    }
 }
 
 /// Standard handler for handling item taps without any special context
@@ -45,8 +54,10 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
     }
 
     func handleTap(_ item: POSItem) {
+        if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
+            return
+        }
         posModel.addToCart(item)
-
         trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
     }
 }
@@ -70,7 +81,13 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     }
 
     func handleTap(_ item: POSItem) {
-        posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
+        if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
+            return
+        }
+
+        if searchTerm.isNotEmpty {
+            posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
+        }
 
         posModel.addToCart(item)
         trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)

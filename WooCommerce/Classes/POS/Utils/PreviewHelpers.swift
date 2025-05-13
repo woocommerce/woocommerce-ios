@@ -47,13 +47,13 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
     func providePointOfSaleItems(pageNumber: Int,
                                  fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
-        .init(items: [], hasMorePages: true)
+        .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
                                           pageNumber: Int,
                                           fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
-        .init(items: mockVariationItems, hasMorePages: true)
+        .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
     func providePointOfSaleItems() -> [POSItem] {
@@ -71,11 +71,11 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return .init(items: [], hasMorePages: true)
+        return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
-        return .init(items: [], hasMorePages: true)
+        return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 }
 
@@ -191,14 +191,6 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
 }
 
 @available(iOS 17.0, *)
-final class PointOfSalePreviewPopularItemsController: PointOfSalePopularItemsControllerProtocol {
-    private(set) var itemsByType: [POSItemType: [POSItem]] = [:]
-    private(set) var isLoading = false
-
-    func loadPopularItems(for type: POSItemType) async {}
-}
-
-@available(iOS 17.0, *)
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -209,7 +201,7 @@ struct POSPreviewHelpers {
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
-        popularItemsController: PointOfSalePopularItemsControllerProtocol = PointOfSalePreviewPopularItemsController()
+        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             itemsController: itemsController,
@@ -220,7 +212,7 @@ struct POSPreviewHelpers {
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
-            popularItemsController: popularItemsController as! PointOfSalePopularItemsController
+            popularPurchasableItemsController: popularItemsController
         )
     }
 }

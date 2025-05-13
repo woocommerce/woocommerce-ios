@@ -3,6 +3,8 @@ import SwiftUI
 struct WooShippingPostPurchaseView: View {
     @ObservedObject private(set) var viewModel: WooShippingPostPurchaseViewModel
 
+    let onRefundRequest: () -> Void
+
     @State private var isPrintingLabel = false
     @State private var showingLabelPrintingError = false
 
@@ -105,10 +107,11 @@ struct WooShippingPostPurchaseView: View {
                         }
                     }
                     Button {
-                        // TODO: Request label refund
+                        onRefundRequest()
                     } label: {
                         Text(Localization.requestRefund)
                     }
+                    .renderedIf(viewModel.isRefundable)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .font(.subheadline)
@@ -261,9 +264,11 @@ private extension WooShippingPostPurchaseView {
     WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(siteID: 123,
                                                                             labelID: 1,
                                                                             labelSizes: [.label, .legal, .a4],
+                                                                            isRefundable: true,
                                                                             trackingURL: URL(string: "https://woocommerce.com"),
                                                                             pickupURL: WooShippingCarrier.usps.pickupURL,
-                                                                            commercialInvoiceURL: URL(string: "https://example.com")))
+                                                                            commercialInvoiceURL: URL(string: "https://example.com")),
+                                onRefundRequest: {})
         .padding()
 }
 
@@ -271,8 +276,10 @@ private extension WooShippingPostPurchaseView {
     WooShippingPostPurchaseView(viewModel: WooShippingPostPurchaseViewModel(siteID: 123,
                                                                             labelID: 1,
                                                                             labelSizes: [.label, .legal, .a4],
+                                                                            isRefundable: false,
                                                                             trackingURL: nil,
                                                                             pickupURL: nil,
-                                                                            commercialInvoiceURL: nil))
+                                                                            commercialInvoiceURL: nil),
+                                onRefundRequest: {})
         .padding()
 }

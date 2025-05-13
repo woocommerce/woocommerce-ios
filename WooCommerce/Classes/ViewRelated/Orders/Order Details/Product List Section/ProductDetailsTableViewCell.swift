@@ -188,6 +188,7 @@ extension ProductDetailsTableViewCell {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
+                                                       targetImageViewSize: true,
                                                        progressBlock: nil,
                                                        completion: nil)
 

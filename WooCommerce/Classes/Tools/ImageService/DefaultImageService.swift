@@ -64,13 +64,30 @@ struct DefaultImageService: ImageService {
     func downloadAndCacheImageForImageView(_ imageView: UIImageView,
                                            with url: String?,
                                            placeholder: UIImage? = nil,
+                                           targetImageViewSize: Bool,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
         let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let url = URL(string: encodedString ?? "")
+
+        let options: KingfisherOptionsInfo
+        if targetImageViewSize {
+            let scale = UIScreen.main.scale
+            let targetSize = CGSize(
+                width: imageView.bounds.width * scale,
+                height: imageView.bounds.height * scale
+            )
+            options = buildImageRetrieveOptions(
+                targetSize: targetSize,
+                shouldCacheImage: true
+            )
+        } else {
+            options = defaultOptions
+        }
+
         imageView.kf.setImage(with: url,
                               placeholder: placeholder,
-                              options: defaultOptions,
+                              options: options,
                               progressBlock: progressBlock) { (result) in
             switch result {
             case .success(let imageResult):

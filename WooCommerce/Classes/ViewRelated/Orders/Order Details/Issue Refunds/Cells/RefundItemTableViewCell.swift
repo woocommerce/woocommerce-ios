@@ -126,6 +126,7 @@ extension RefundItemTableViewCell {
         imageService.downloadAndCacheImageForImageView(itemImageView,
                                                        with: productImage,
                                                        placeholder: nil,
+                                                       targetImageViewSize: true,
                                                        progressBlock: nil,
                                                        completion: nil)
     }

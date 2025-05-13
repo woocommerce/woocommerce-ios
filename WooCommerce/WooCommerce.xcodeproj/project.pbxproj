@@ -1334,6 +1334,7 @@
 		3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
 		3FF837132DD326850049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837122DD326850049E028 /* CocoaLumberjackSwift */; };
 		3FF8371A2DD32B8D0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */; };
+		3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -6616,6 +6617,7 @@
 				3F368D982DCB74490065B48F /* TestKit in Frameworks */,
 				263E38462641FF3400260D3B /* Codegen in Frameworks */,
 				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
+				3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */,
 				2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */,
 				3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
@@ -14747,6 +14749,7 @@
 				2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */,
 				3F368D972DCB74490065B48F /* TestKit */,
 				3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */,
+				3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -20051,6 +20054,11 @@
 			productName = CocoaLumberjackSwift;
 		};
 		3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwift;

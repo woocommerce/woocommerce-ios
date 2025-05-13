@@ -14,6 +14,7 @@
 		0270C0A527069B8900FC799F /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */; };
 		0270C0A727069BA500FC799F /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A627069BA500FC799F /* BuildConfiguration.swift */; };
 		3F8115032DD2A6EC0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115022DD2A6EC0042DDB6 /* AutomatticTracks */; };
+		3F8B84192DD2FEC2002DD6E8 /* Experiments.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 3F8B84182DD2FEC2002DD6E8 /* Experiments.xctestplan */; };
 		BC10218D75FEA979BDA1E68C /* Pods_Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */; };
 		C8E16F0EE6954B58A1C402F0 /* Pods_ExperimentsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */; };
 		CC53FB48275E426900C4CA4F /* ABTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB47275E426900C4CA4F /* ABTest.swift */; };
@@ -47,6 +48,7 @@
 		2B7FCE683D4058A7A16F7946 /* Pods-Experiments.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Experiments.debug.xcconfig"; path = "Target Support Files/Pods-Experiments/Pods-Experiments.debug.xcconfig"; sourceTree = "<group>"; };
 		3022E2766134CE2735C73FC6 /* Pods-ExperimentsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.debug.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F8B84182DD2FEC2002DD6E8 /* Experiments.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Experiments.xctestplan; sourceTree = "<group>"; };
 		3F9DB5FBFF7A42EFBCB746F3 /* Pods-ExperimentsTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		3FA7D9FB2D547E1700CE5611 /* Experiments.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Experiments.xcconfig; sourceTree = "<group>"; };
 		7C831644164B49828A485590 /* Pods-ExperimentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExperimentsTests.release.xcconfig"; path = "Target Support Files/Pods-ExperimentsTests/Pods-ExperimentsTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 		0270C08E27069A8900FC799F /* ExperimentsTests */ = {
 			isa = PBXGroup;
 			children = (
+				3F8B84182DD2FEC2002DD6E8 /* Experiments.xctestplan */,
 				0270C09127069A8900FC799F /* Info.plist */,
 				EEC8C0F0298B5AFB0047B4CB /* VariationCacheTests.swift */,
 				EEC8C0F2298B5F950047B4CB /* CachedABTestVariationProviderTests.swift */,
@@ -261,6 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F8B84192DD2FEC2002DD6E8 /* Experiments.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -144,7 +144,7 @@ private extension WooShippingRefundView {
             )
             static let message = NSLocalizedString(
                 "wooShippingRefundView.errorAlert.message",
-                value: "We were unable to request a refund for your label. Please try again",
+                value: "We were unable to request a refund for your label. Please try again.",
                 comment: "Message on the error alert when requesting refund for a shipping label fails"
             )
             static let retry = NSLocalizedString(

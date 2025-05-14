@@ -64,6 +64,11 @@ public protocol WooShippingRemoteProtocol {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, Error>) -> Void)
+
+    func refundShippingLabel(siteID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
+                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -469,6 +474,26 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Requests a refund for a shipping label.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - orderID: Remote ID of the order that owns the shipping labels.
+    ///   - shippingLabelID: Remote ID of the shipping label.
+    ///   - completion: Closure to be executed upon completion.
+    public func refundShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                                    completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        let path = Path.refundLabel(orderID: orderID, labelID: shippingLabelID)
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = ShippingLabelRefundMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -494,6 +519,9 @@ private extension WooShippingRemote {
         }
         static func updateShipment(orderID: Int64) -> String {
             "shipments/\(orderID)"
+        }
+        static func refundLabel(orderID: Int64, labelID: Int64) -> String {
+            "label/refund/\(orderID)/\(labelID)"
         }
     }
 

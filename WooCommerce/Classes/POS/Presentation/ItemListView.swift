@@ -144,7 +144,7 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
-                .transition(.opacity.combined(with: .move(edge: .trailing)))
+                .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }
         }
@@ -227,9 +227,7 @@ private extension ItemListView {
                                                                  itemsController: searchItemsController,
                                                                  searchHistoryProvider: posModel.searchHistoryService),
                                 onBack: {
-                                    withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                        setSearch(false)
-                                    }
+                                    setSearch(false)
                                 }
                             )
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
@@ -238,10 +236,8 @@ private extension ItemListView {
                                 .renderedIf(isCouponsFeatureEnabled)
 
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                                withAnimation(.easeInOut(duration: Constants.animationDuration)) {
-                                    analyticsTracker.trackSearchTapped()
-                                    setSearch(true)
-                                }
+                                analyticsTracker.trackSearchTapped()
+                                setSearch(true)
                             }
                             .transition(.opacity.combined(with: .scale))
                         }

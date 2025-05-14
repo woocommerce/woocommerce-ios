@@ -85,6 +85,8 @@ public final class WooShippingStore: Store {
                            orderID: orderID,
                            shipmentToUpdate: shipmentToUpdate,
                            completion: completion)
+        case let .refundShippingLabel(shippingLabel, completion):
+            refundShippingLabel(shippingLabel: shippingLabel, completion: completion)
         }
     }
 }
@@ -211,6 +213,24 @@ private extension WooShippingStore {
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
         remote.loadOriginAddresses(siteID: siteID, completion: completion)
     }
+
+    func refundShippingLabel(shippingLabel: ShippingLabel,
+                             completion: @escaping (Result<ShippingLabel, Error>) -> Void) {
+        remote.refundShippingLabel(siteID: shippingLabel.siteID,
+                                   orderID: shippingLabel.orderID,
+                                   shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let refund):
+                upsertShippingLabelRefundInBackground(shippingLabel: shippingLabel,
+                                                      refund: refund) { updatedLabel in
+                    completion(.success(updatedLabel))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 // MARK: Helpers
@@ -295,7 +315,12 @@ private extension WooShippingStore {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
-        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address) { [weak self] result in
+            completion(result)
+
+            guard let self, case .success = result else { return }
+            setLastModifiedDateForOrder(siteID: siteID, orderID: orderID)
+        }
     }
 
     func loadConfig(siteID: Int64,
@@ -527,6 +552,51 @@ private extension WooShippingStore {
         let predefinedPackage = storageSavedPackage.package ?? storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
         predefinedPackage.update(with: readOnlySavedPackage.package)
         storageSavedPackage.package = predefinedPackage
+    }
+
+    /// Updates the specified shipping label with the given refund *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
+                                               refund: ShippingLabelRefund,
+                                               onCompletion: @escaping (_ updatedLabel: ShippingLabel) -> Void) {
+        storageManager.performAndSave ({ storage -> ShippingLabel in
+            let storageShippingLabel = storage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                 orderID: shippingLabel.orderID,
+                                                                 shippingLabelID: shippingLabel.shippingLabelID)
+            guard let storageShippingLabel else {
+                DDLogWarn("⚠️ No shipping label found in storage when updating refund")
+                return shippingLabel.copy(refund: refund)
+            }
+
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            storageRefund.update(with: refund)
+            storageShippingLabel.refund = storageRefund
+            return storageShippingLabel.toReadOnly()
+
+        }, completion: { result in
+            switch result {
+            case .success(let label):
+                onCompletion(label)
+            case .failure(let error):
+                DDLogError("⛔️ Error upserting shipping label refund: \(error)")
+                onCompletion(shippingLabel.copy(refund: refund))
+            }
+        }, on: .main)
+    }
+
+    /// Updates order's `dateModified` locally
+    /// Used as temp workaround to reflect that the order instance was updated
+    private func setLastModifiedDateForOrder(siteID: Int64, orderID: Int64) {
+        storageManager.performAndSave({ derivedStorage in
+            guard let storedOrder = derivedStorage.loadOrder(
+                siteID: siteID,
+                orderID: orderID
+            ) else {
+                return
+            }
+
+            storedOrder.dateModified = Date()
+        }, completion: nil, on: .main)
     }
 }
 

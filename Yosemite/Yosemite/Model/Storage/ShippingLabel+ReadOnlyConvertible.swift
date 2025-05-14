@@ -22,6 +22,8 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
         productIDs = shippingLabel.productIDs
         productNames = shippingLabel.productNames
         commercialInvoiceURL = shippingLabel.commercialInvoiceURL
+        usedDate = shippingLabel.usedDate
+        expiryDate = shippingLabel.expiryDate
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -44,7 +46,9 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               destinationAddress: destinationAddress?.toReadOnly() ?? .empty,
               productIDs: productIDs,
               productNames: productNames,
-              commercialInvoiceURL: commercialInvoiceURL)
+              commercialInvoiceURL: commercialInvoiceURL,
+              usedDate: usedDate,
+              expiryDate: expiryDate)
     }
 }
 

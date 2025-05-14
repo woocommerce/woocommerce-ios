@@ -10,6 +10,7 @@ public protocol POSOrderServiceProtocol {
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
     func updatePOSOrder(order: Order, recipientEmail: String) async throws
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -53,7 +54,33 @@ public final class POSOrderService: POSOrderServiceProtocol {
         let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
 
         do {
-            let _ = try await ordersRemote.updatePOSOrder(siteID: siteID, order: updatedOrder, fields: [.billingAddress])
+            let _ = try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: nil,
+                fields: [.billingAddress]
+            )
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
+
+    public func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {
+        let fieldsToUpdate: [OrderUpdateField] = [
+            .status,
+            .paymentMethodID,
+            .paymentMethodTitle
+        ]
+        let updatedOrder = order.copy(status: .completed,
+                                      paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
+                                      paymentMethodTitle: Localization.cashPaymentMethodTitle)
+        do {
+            let _ = try await ordersRemote.updatePOSOrder(
+                siteID: siteID,
+                order: updatedOrder,
+                cashPaymentChangeDueAmount: changeDueAmount,
+                fields: fieldsToUpdate
+            )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
@@ -80,5 +107,15 @@ private extension POSOrderService {
     enum POSOrderServiceError: Error {
         case emailAlreadySet
         case updateOrderFailed
+    }
+}
+
+private extension POSOrderService {
+    enum Localization {
+        static let cashPaymentMethodTitle = NSLocalizedString(
+            "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
+            value: "Pay in Person",
+            comment: "Title for the payment method used when collecting cash payment in Point of Sale."
+        )
     }
 }

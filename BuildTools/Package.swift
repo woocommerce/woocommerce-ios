@@ -7,6 +7,7 @@ let package = Package(
     platforms: [.macOS(.v10_13)],
     dependencies: [
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: loadSwiftLintVersion()),
+        .package(url: "https://github.com/krzysztofzablocki/Sourcery.git", from: "2.2.6")
     ],
     targets: [.target(name: "BuildTools", path: "")]
 )

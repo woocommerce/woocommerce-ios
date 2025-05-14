@@ -1,0 +1,40 @@
+{
+  "data": {
+    "success": false,
+    "refund": {
+      "status": "pending",
+      "request_date": 1723147248000,
+      "is_manual": false
+    },
+    "label": {
+      "label_id": 1149,
+      "tracking": "CM199912222US",
+      "refundable_amount": 58.81,
+      "created": 1603716274809,
+      "carrier_id": "usps",
+      "service_name": "USPS - Priority Mail International",
+      "status": "PURCHASED",
+      "commercial_invoice_url": "https://woocommerce.com",
+      "package_name": "box",
+      "product_names": [
+        "Password protected!"
+      ],
+      "product_ids": [
+        3013
+      ],
+      "receipt_item_id": 24448314,
+      "created_date": 1603716279000,
+      "main_receipt_id": 19879722,
+      "rate": 58.81,
+      "currency": "USD",
+      "expiry_date": 1619268278000,
+      "label_cached": 1603716284000,
+      "refund": {
+        "request_date": 1723147248000,
+        "status": "pending",
+        "refund_date": 1
+      }
+    }
+  }
+}
+

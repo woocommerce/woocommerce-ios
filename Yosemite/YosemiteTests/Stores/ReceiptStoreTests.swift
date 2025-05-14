@@ -415,6 +415,10 @@ final class ReceiptStoreTests: XCTestCase {
     }
 
     func test_generateContent_callsGenerate_passingUnmodified_customerNote() throws {
+        if #available(iOS 18.4, *) {
+            throw XCTSkip("Skipped on iOS 18.4 because of a WebKit crash when running on that OS.")
+        }
+
         // Given
         let mockIntent = PaymentIntent.fake().copy(charges: [Mocks.cardPresentCharge])
         let mockParameters = try XCTUnwrap(mockIntent.receiptParameters())

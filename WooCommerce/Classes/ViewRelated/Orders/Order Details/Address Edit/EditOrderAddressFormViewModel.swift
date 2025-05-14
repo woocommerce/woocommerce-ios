@@ -75,9 +75,9 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     var sectionTitle: String {
         switch type {
         case .shipping:
-            return Localization.shippingAddressSection
+            return Localization.shippingTitle.uppercased()
         case .billing:
-            return Localization.billingAddressSection
+            return Localization.billingTitle.uppercased()
         }
     }
 
@@ -194,20 +194,27 @@ private extension EditOrderAddressFormViewModel {
         }
     }
 
-    // MARK: Constants
     enum Localization {
-        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
-        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
-
-        static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
-        static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
-
-        static let useAsBillingToggle = NSLocalizedString("Use as Billing Address",
-                                                          comment: "Title for the Use as Billing Address switch in the Address form")
-        static let useAsShippingToggle = NSLocalizedString("Use as Shipping Address",
-                                                           comment: "Title for the Use as Shipping Address switch in the Address form")
-
-        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
+        static let shippingTitle = NSLocalizedString(
+            "editOrderAddressFormViewModel.shippingTitle",
+            value: "Shipping Address",
+            comment: "Title for the Edit Shipping Address Form")
+        static let billingTitle = NSLocalizedString(
+            "editOrderAddressFormViewModel.billingTitle",
+            value: "Billing Address",
+            comment: "Title for the Edit Billing Address Form")
+        static let useAsBillingToggle = NSLocalizedString(
+            "editOrderAddressFormViewModel.useAsBillingToggle",
+            value: "Use as Billing Address",
+            comment: "Title for the Use as Billing Address switch in the Address form")
+        static let useAsShippingToggle = NSLocalizedString(
+            "editOrderAddressFormViewModel.useAsShippingToggle",
+            value: "Use as Shipping Address",
+            comment: "Title for the Use as Shipping Address switch in the Address form")
+        static let success = NSLocalizedString(
+            "editOrderAddressFormViewModel.success",
+            value: "Address successfully updated.",
+            comment: "Notice text after updating the shipping or billing address")
     }
 }
 

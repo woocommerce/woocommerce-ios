@@ -26,6 +26,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
     var allowMerchantAIAPIKey: Bool
+    var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -78,6 +79,12 @@ final class MockFeatureFlagService: FeatureFlagService {
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
+        // Checks if we a custom return value is set for a specific flag.
+        if let customValue = isFeatureFlagEnabledReturnValue[featureFlag] {
+            return customValue
+        }
+
+        // Otherwise use the default implementation.
         switch featureFlag {
         case .inbox:
             return isInboxOn

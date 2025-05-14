@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -43,6 +44,7 @@ protocol PointOfSaleOrderControllerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
@@ -50,6 +52,7 @@ protocol PointOfSaleOrderControllerProtocol {
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.celebration = celebration
     }
 
@@ -61,6 +64,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let storeCurrency: CurrencyCode
     private let analytics: Analytics
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -107,7 +111,7 @@ protocol PointOfSaleOrderControllerProtocol {
         try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
 
         let isEligibleForPOSReceipt: Bool
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
             isEligibleForPOSReceipt = await isPluginSupported(
                 POSReceiptEligibilityConstants.wcPluginName,
                 minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
@@ -193,7 +197,7 @@ private extension PointOfSaleOrderController {
         await withCheckedContinuation { continuation in
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
                 // Plugin must be installed and active
-                guard let plugin, plugin.active else {
+                guard let plugin, plugin.active, plugin.name == pluginName else {
                     return continuation.resume(returning: false)
                 }
 

@@ -62,7 +62,7 @@ struct TotalsView: View {
                                 await posModel.cartDetailsVM.syncDetails()
                             }
                         }, label: {
-                            Text("Fill cart data")
+                            Text("⚠️Fill cart data")
                         })
                         .buttonStyle(.bordered)
                         Button(action: {
@@ -78,7 +78,15 @@ struct TotalsView: View {
                                 await posModel.cartDetailsVM.pay(using: .woocommercePayments)
                             }
                         }, label: {
-                            Text("🚧 Pay (WooPayments)")
+                            Text("Pay (WooPayments)")
+                        })
+                        .buttonStyle(.bordered)
+                        Button(action: {
+                            Task { @MainActor in
+                                await posModel.cartDetailsVM.pay(using: .stripe)
+                            }
+                        }, label: {
+                            Text("Pay (Stripe)")
                         })
                         .buttonStyle(.bordered)
                     }

@@ -123,20 +123,28 @@ final class CartDetailsViewModel: ObservableObject {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(cartToken, forHTTPHeaderField: "Cart-Token")
-        
+
         let paymentData: [[String: Any]]
         switch method {
         case .cod:
             paymentData = []
-        case .woocommercePayments, .stripe:
+        case .stripe:
+            // TODO: Unhandled, we need different paymentData.
+            paymentData = []
+        case .woocommercePayments:
+            // From https://github.com/search?q=repo%3AAutomattic%2Fwoocommerce-payments+%22-new-payment-method%22&type=code
+            // potential values for WooPayments are wcpay-payment-method and wc-woocommerce_payments-new-payment-method
+            // but returns a `TypeError: WC_Payment_Gateway_WCPay::get_payment_method_types(): Return value must be of type array, null returned`
+            // from the server.
+            // For future reference, here's a Stripe payload and response example: p1747134021116369?thread_ts=1746594762.107929&cid=C8X6Q7XQU-slack-C8X6Q7XQU/
             paymentData = [
-                ["key": "stripe_source", "value": "src_xxxxxxxxxxxxx"], // Intent required
+                ["key": "wcpay-payment-method", "value": "pm_1ROFFaCQfjpTUUd4XZavdzzH"], // Intent required
                 ["key": "billing_email", "value": "john.doe@example.com"],
                 ["key": "billing_first_name", "value": "John"],
                 ["key": "billing_last_name", "value": "Doe"],
-                ["key": "paymentMethod", "value": method.rawValue],
+                ["key": "paymentMethod", "value": method.rawValue], // woocommerce_payments
                 ["key": "paymentRequestType", "value": "cc"],
-                ["key": "wc-stripe-new-payment-method", "value": true]
+                ["key": "wc-woocommerce_payments-new-payment-method", "value": true]
             ]
         }
 

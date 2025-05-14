@@ -246,7 +246,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligibleForReceipt_with_processing_status_returns_true() {
+    func test_isEligibleForReceipt_with_minimum_wc_version_and_processing_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
@@ -273,7 +273,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligibleForReceipt_with_refunded_status_returns_true() {
+    func test_isEligibleForReceipt_with_minimum_wc_version_and_refunded_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)

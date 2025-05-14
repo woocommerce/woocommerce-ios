@@ -2,7 +2,7 @@ import SwiftUI
 import Networking
 
 public protocol POSReceiptServiceProtocol {
-    func sendReceipt(order: Order, recipientEmail: String) async throws
+    func sendReceipt(order: Order, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws
 }
 
 public final class POSReceiptService: POSReceiptServiceProtocol {
@@ -25,9 +25,13 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
         self.receiptsRemote = receiptsRemote
     }
 
-    public func sendReceipt(order: Yosemite.Order, recipientEmail: String) async throws {
+    public func sendReceipt(order: Yosemite.Order, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {
         do {
-            try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+            if isEligibleForPOSReceipt {
+                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: order.orderID)
+            } else {
+                try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
+            }
         } catch {
             throw POSReceiptServiceError.sendReceiptFailed
         }

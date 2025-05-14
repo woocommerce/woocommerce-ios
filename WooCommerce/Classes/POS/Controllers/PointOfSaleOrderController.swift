@@ -10,6 +10,7 @@ import struct Yosemite.POSCoupon
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
+import enum Yosemite.SystemStatusAction
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
@@ -104,7 +105,18 @@ protocol PointOfSaleOrderControllerProtocol {
             return
         }
         try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
-        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail)
+
+        let isEligibleForPOSReceipt: Bool
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
+            isEligibleForPOSReceipt = await isPluginSupported(
+                POSReceiptEligibilityConstants.wcPluginName,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: order.siteID
+            )
+        } else {
+            isEligibleForPOSReceipt = false
+        }
+        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
     }
 
     func clearOrder() {
@@ -174,6 +186,32 @@ private extension PointOfSaleOrderController {
     }
 }
 
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    @MainActor
+    func isPluginSupported(_ pluginName: String, minimumVersion: String, siteID: Int64) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
+                // Plugin must be installed and active
+                guard let plugin, plugin.active else {
+                    return continuation.resume(returning: false)
+                }
+
+                // Checking for concrete versions to cover dev and beta versions
+                if plugin.version.contains(minimumVersion) {
+                    return continuation.resume(returning: true)
+                }
+
+                // If plugin version is higher than minimum required version, mark as eligible
+                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
+                                                                    minimumRequired: minimumVersion)
+                continuation.resume(returning: isSupported)
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
 
 // MARK: - Error Handling
 
@@ -187,6 +225,14 @@ private extension PointOfSaleOrderController {
         } else {
             return .other(error.localizedDescription)
         }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    enum POSReceiptEligibilityConstants {
+        static let wcPluginName = "WooCommerce"
+        static let wcPluginMinimumVersion = "10.0.0"
     }
 }
 

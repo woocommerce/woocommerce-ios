@@ -2,6 +2,7 @@ import Networking
 
 final class MockPOSReceiptsRemote: POSReceiptsRemoteProtocol {
     var sendReceiptCalled = false
+    var sendPOSReceiptCalled = false
     var spySiteID: Int64?
     var spyOrderID: Int64?
     var shouldThrowError: Error?
@@ -17,5 +18,6 @@ final class MockPOSReceiptsRemote: POSReceiptsRemoteProtocol {
     }
 
     func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
+        sendPOSReceiptCalled = true
     }
 }

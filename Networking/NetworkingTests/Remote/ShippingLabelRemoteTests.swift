@@ -610,6 +610,7 @@ private extension ShippingLabelRemoteTests {
                                      status: ShippingLabelStatus.purchaseInProgress,
                                      productIDs: [],
                                      productNames: ["Beanie"],
-                                     shipmentID: "0")
+                                     shipmentID: "0",
+                                     refund: nil)
     }
 }

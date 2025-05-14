@@ -562,10 +562,21 @@ private extension OrderDetailsViewController {
                     return
                 }
 
-                let viewModel = WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
-                                                           refundDuration: shippingLabel.refundDuration,
-                                                           purchaseDate: shippingLabel.dateCreated)
-                let view = WooShippingRefundView(viewModel: viewModel)
+                let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
+                let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
+                    guard let self else { return }
+                    presentedViewController?.dismiss(animated: true)
+
+                    var allLabels = viewModel.order.shippingLabels
+                    guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                        return
+                    }
+                    allLabels[index] = updatedLabel
+                    let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+                    viewModel.update(order: updatedOrder)
+                    reloadTableViewSectionsAndData()
+                }
                 let refundViewController = UIHostingController(rootView: view)
                 self?.present(refundViewController, animated: true)
             }

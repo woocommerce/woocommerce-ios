@@ -4,6 +4,7 @@
 22.4
 -----
 - [*] POS: Scrolling search results now dismisses the keyboard [https://github.com/woocommerce/woocommerce-ios/pull/15606]
+- [*] Order Creation: Display non-purchasable, zero-priced variable product variations [https://github.com/woocommerce/woocommerce-ios/pull/15620]
 - [*] POS: Improve error display in search screens [https://github.com/woocommerce/woocommerce-ios/pull/15627]
 
 22.3

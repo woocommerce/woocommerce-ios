@@ -2,6 +2,7 @@ import Foundation
 
 public protocol POSReceiptsRemoteProtocol {
     func sendReceipt(siteID: Int64, orderID: Int64) async throws
+    func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws
 }
 
 public protocol POSOrdersRemoteProtocol {

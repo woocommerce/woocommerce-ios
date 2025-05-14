@@ -48,6 +48,38 @@ public final class ReceiptRemote: Remote {
                                      availableAsRESTRequest: true)
         try await enqueue(request)
     }
+    
+    /// Sends the Point of Sale receipt to the customer attached to the order.
+    /// - Parameters:
+    ///   - siteID: Site which hosts the Order.
+    ///   - orderID: ID of the order that the receipt is associated to.
+    public func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
+        let templatesPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/email_templates"
+        let templatesRequest = JetpackRequest(wooApiVersion: .mark3,
+                                              method: .get,
+                                              siteID: siteID,
+                                              path: templatesPath,
+                                              parameters: [:],
+                                              availableAsRESTRequest: true)
+        let mapper = ListMapper<EmailTemplateResponse>(siteID: siteID)
+        let validTemplates = try await enqueue(templatesRequest, mapper: mapper)
+
+        let posReceiptTemplateID = POSConstants.receiptTemplateID
+        guard validTemplates.contains(where: { $0.id == posReceiptTemplateID }) else {
+            throw ReceiptRemoteError.missingTemplate(templateID: posReceiptTemplateID)
+        }
+
+        let sendEmailPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_email"
+        let sendEmailRequest = JetpackRequest(wooApiVersion: .mark3,
+                                              method: .post,
+                                              siteID: siteID,
+                                              path: sendEmailPath,
+                                              parameters: [
+                                                ParameterKeys.templateID: posReceiptTemplateID
+                                              ],
+                                              availableAsRESTRequest: true)
+        try await enqueue(sendEmailRequest)
+    }
 }
 
 extension ReceiptRemote: POSReceiptsRemoteProtocol { }
@@ -56,10 +88,25 @@ private extension ReceiptRemote {
     enum ParameterKeys {
         static let expirationDays: String = "expiration_days"
         static let forceRegenerate: String = "force_new"
+        static let templateID: String = "template_id"
     }
 
     enum Constants {
         static let ordersPath: String = "orders"
         static let actionsPath: String = "actions"
     }
+
+    enum POSConstants {
+        static let receiptTemplateID: String = "customer_pos_completed_order"
+    }
+}
+
+private extension ReceiptRemote {
+    struct EmailTemplateResponse: Decodable {
+        let id: String
+    }
+}
+
+public enum ReceiptRemoteError: Error {
+    case missingTemplate(templateID: String)
 }

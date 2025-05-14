@@ -1521,7 +1521,7 @@ extension OrderDetailsDataSource {
     @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
         return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.meetsOrderStatusRequirement(order.status, onCompletion: { isEligible in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status, onCompletion: { isEligible in
                 continuation.resume(returning: isEligible)
             })
         }

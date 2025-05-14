@@ -219,7 +219,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_completed_status_returns_true() {
+    func test_isEligibleForReceipt_with_completed_status_returns_true() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
 
@@ -235,7 +235,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.completed) { result in
+            sut.isEligibleForReceipt(.completed) { result in
                 promise(result)
             }
         }
@@ -243,7 +243,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_processing_status_returns_true() {
+    func test_isEligibleForReceipt_with_processing_status_returns_true() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
 
@@ -259,7 +259,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.processing) { result in
+            sut.isEligibleForReceipt(.processing) { result in
                 promise(result)
             }
         }
@@ -267,7 +267,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_refunded_status_returns_true() {
+    func test_isEligibleForReceipt_with_refunded_status_returns_true() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let plugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "9.5.0", active: true)
 
@@ -283,7 +283,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.refunded) { result in
+            sut.isEligibleForReceipt(.refunded) { result in
                 promise(result)
             }
         }
@@ -291,7 +291,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_failed_status_and_no_gateway_returns_false() {
+    func test_isEligibleForReceipt_with_failed_status_and_no_gateway_returns_false() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
 
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
@@ -306,7 +306,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.failed) { result in
+            sut.isEligibleForReceipt(.failed) { result in
                 promise(result)
             }
         }
@@ -314,7 +314,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_failed_status_and_gateway_returns_true() {
+    func test_isEligibleForReceipt_with_failed_status_and_gateway_returns_true() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
 
         let gateway = createPaymentGatewayAccount()
@@ -346,7 +346,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.failed) { result in
+            sut.isEligibleForReceipt(.failed) { result in
                 promise(result)
             }
         }
@@ -354,12 +354,12 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_meetsOrderStatusRequirement_with_cancelled_status_returns_false() {
+    func test_isEligibleForReceipt_with_cancelled_status_returns_false() {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let sut = ReceiptEligibilityUseCase(stores: stores)
 
         let isEligible: Bool = waitFor { promise in
-            sut.meetsOrderStatusRequirement(.cancelled) { result in
+            sut.isEligibleForReceipt(.cancelled) { result in
                 promise(result)
             }
         }

@@ -5,7 +5,7 @@ final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     var isEligibleForBackendReceipts: Bool = true
     var isEligibleForSuccessfulPaymentEmailReceipts: Bool = false
     var isEligibleForFailedPaymentEmailReceipts: Bool = false
-    var meetsOrderStatusRequirement: Bool = true
+    var isEligibleForReceipt: Bool = true
 
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
         onCompletion(isEligibleForBackendReceipts)
@@ -19,7 +19,7 @@ final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         onCompletion(isEligibleForFailedPaymentEmailReceipts)
     }
 
-    func meetsOrderStatusRequirement(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
-        onCompletion(meetsOrderStatusRequirement)
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
+        onCompletion(isEligibleForReceipt)
     }
 }

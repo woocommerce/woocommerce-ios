@@ -213,7 +213,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewDataIfPossible()
+            self?.reloadTableViewData()
         }
 
         viewModel.configureResultsControllers { [weak self] in
@@ -235,11 +235,7 @@ private extension OrderDetailsViewController {
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
-        }
-
+    func reloadTableViewData() {
         tableView.reloadData()
     }
 
@@ -248,7 +244,7 @@ private extension OrderDetailsViewController {
     func reloadTableViewSectionsAndData() {
         configureNavigationBar()
         reloadSections()
-        reloadTableViewDataIfPossible()
+        reloadTableViewData()
     }
 
     /// Registers all of the available TableViewCells

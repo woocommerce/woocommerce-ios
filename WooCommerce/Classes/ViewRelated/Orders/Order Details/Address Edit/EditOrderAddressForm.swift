@@ -253,7 +253,8 @@ struct SingleAddressForm: View {
                                  text: $fields.firstName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
                 .accessibilityIdentifier("order-address-form-first-name-field")
 
             Divider()
@@ -276,7 +277,8 @@ struct SingleAddressForm: View {
                                      text: $fields.email,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .emailAddress)
+                                     keyboardType: .emailAddress,
+                                     autocapitalization: .never)
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
@@ -319,7 +321,8 @@ struct SingleAddressForm: View {
                                      text: $fields.company,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address1Field,
@@ -348,7 +351,8 @@ struct SingleAddressForm: View {
                                      text: $fields.city,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.postcodeField,
@@ -357,7 +361,8 @@ struct SingleAddressForm: View {
                                      text: $fields.postcode,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .characters)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
             }
@@ -420,7 +425,8 @@ struct SingleAddressForm: View {
                                  text: $fields.state,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
         }
     }
 }

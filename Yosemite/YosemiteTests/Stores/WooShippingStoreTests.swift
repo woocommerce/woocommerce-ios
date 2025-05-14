@@ -1,6 +1,7 @@
 import XCTest
 @testable import Yosemite
 @testable import Networking
+import protocol Storage.StorageType
 
 final class WooShippingStoreTests: XCTestCase {
 
@@ -11,6 +12,11 @@ final class WooShippingStoreTests: XCTestCase {
     /// Mock Storage: InMemory
     ///
     private var storageManager: MockStorageManager!
+
+    /// Convenience Property: Returns the StorageType associated with the main thread.
+    private var viewStorage: StorageType {
+        storageManager.viewStorage
+    }
 
     /// Mock Network: Allows us to inject predefined responses!
     ///
@@ -942,6 +948,73 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: - `refundShippingLabel`
+
+    func test_refundShippingLabel_returns_updated_label_and_updates_stored_label_refund_on_success() throws {
+        // Given
+        let sampleOrderID: Int64 = 134
+        let remote = MockWooShippingRemote()
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123)
+
+        remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
+                                          orderID: shippingLabel.orderID,
+                                          shippingLabelID: shippingLabel.shippingLabelID,
+                                          thenReturn: .success(expectedRefund))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Inserts a shipping label without a refund.
+        insertShippingLabel(shippingLabel)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+
+        // When
+        let result: Result<Yosemite.ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let label = try XCTUnwrap(result.get())
+        XCTAssertEqual(label.refund, expectedRefund)
+
+        let persistedShippingLabel = try XCTUnwrap(viewStorage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                                 orderID: shippingLabel.orderID,
+                                                                                 shippingLabelID: shippingLabel.shippingLabelID))
+        XCTAssertEqual(persistedShippingLabel.refund?.toReadOnly(), expectedRefund)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 134, shippingLabelID: 132)
+
+        remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
+                                          orderID: shippingLabel.orderID,
+                                          shippingLabelID: shippingLabel.shippingLabelID,
+                                          thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabel, Error> = waitFor { promise in
+            let action = WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {
@@ -1002,5 +1075,10 @@ private extension WooShippingStoreTests {
                                                                                                  dimensions: "",
                                                                                                  boxWeight: "",
                                                                                                  groupId: "")])])
+    }
+
+    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
+        let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
+        shippingLabel.update(with: readOnlyShippingLabel)
     }
 }

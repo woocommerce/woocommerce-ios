@@ -5,27 +5,32 @@ import WooFoundation
 /// View model for `WooShippingRefundView`
 ///
 final class WooShippingRefundViewModel {
+    private let shippingLabel: ShippingLabel
     private let stores: StoresManager
 
     let formattedPurchaseDate: String
     let formattedRefundAmount: String
     let refundDuration: Int
 
-    init(refundableAmount: Double,
-         refundDuration: Int,
-         purchaseDate: Date,
+    init(shippingLabel: ShippingLabel,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.stores = stores
-        self.refundDuration = refundDuration
+        self.shippingLabel = shippingLabel
+        self.refundDuration = shippingLabel.refundDuration
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        formattedRefundAmount = currencyFormatter.formatAmount(refundableAmount.description) ?? refundableAmount.description
+        formattedRefundAmount = currencyFormatter.formatAmount(shippingLabel.refundableAmount.description) ?? shippingLabel.refundableAmount.description
 
-        formattedPurchaseDate = purchaseDate.formatted(date: .abbreviated, time: .omitted)
+        formattedPurchaseDate = shippingLabel.dateCreated.formatted(date: .abbreviated, time: .omitted)
     }
 
-    func submitRefundRequest() {
-        // TODO: integrate refund API
+    @MainActor
+    func submitRefundRequest() async throws -> ShippingLabel {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }

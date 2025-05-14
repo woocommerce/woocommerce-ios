@@ -133,9 +133,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         guard let shippingLabel, shippingLabel.isRefundable else {
             return nil
         }
-        return WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
-                                          refundDuration: shippingLabel.refundDuration,
-                                          purchaseDate: shippingLabel.dateCreated)
+        return WooShippingRefundViewModel(shippingLabel: shippingLabel)
     }
 
     private var debounceDuration: Double
@@ -205,6 +203,10 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel = updatedLabel
         postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
         onLabelPurchase?(updatedLabel)
+    }
+
+    func didRequestRefund(updatedLabel: ShippingLabel) {
+        // TODO
     }
 }
 

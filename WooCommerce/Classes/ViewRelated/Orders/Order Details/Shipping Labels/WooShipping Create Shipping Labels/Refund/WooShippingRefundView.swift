@@ -1,11 +1,15 @@
 import SwiftUI
+import Yosemite
 
 /// View for requesting refund for a shipping label.
 ///
 struct WooShippingRefundView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @State private var isRequestingRefund = false
+    @State private var didFailToRequestRefund = false
 
     let viewModel: WooShippingRefundViewModel
+    let onRefundRequested: (_ updatedLabel: ShippingLabel) -> Void
 
     var body: some View {
         ScrollableVStack(alignment: .leading,
@@ -42,12 +46,45 @@ struct WooShippingRefundView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 Button(String.localizedStringWithFormat(Localization.submitButton, "-" + viewModel.formattedRefundAmount)) {
-                    viewModel.submitRefundRequest()
+                    Task { @MainActor in
+                        await submitRefundRequest()
+                    }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: false))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isRequestingRefund))
                 .padding()
             }
             .background(Color(.systemBackground))
+        }
+        .alert(Localization.ErrorAlert.title, isPresented: $didFailToRequestRefund) {
+            Button(role: .cancel, action: {}, label: {
+                Text(Localization.ErrorAlert.cancel)
+            })
+
+            Button {
+                Task { @MainActor in
+                    await submitRefundRequest()
+                }
+            } label: {
+                Text(Localization.ErrorAlert.retry)
+            }
+        } message: {
+            Text(Localization.ErrorAlert.message)
+        }
+
+    }
+}
+
+private extension WooShippingRefundView {
+    func submitRefundRequest() async {
+        isRequestingRefund = true
+        defer {
+            isRequestingRefund = false
+        }
+        do {
+            let updatedLabel = try await viewModel.submitRefundRequest()
+            onRefundRequested(updatedLabel)
+        } catch {
+            didFailToRequestRefund = true
         }
     }
 }
@@ -99,11 +136,70 @@ private extension WooShippingRefundView {
             value: "Refund Label (%1$@)",
             comment: "Button to submit refund request the Request shipping label refund view"
         )
+        enum ErrorAlert {
+            static let title = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.title",
+                value: "Refund request failed",
+                comment: "Title of the error alert when requesting refund for a shipping label fails"
+            )
+            static let message = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.message",
+                value: "We were unable to request a refund for your label. Please try again.",
+                comment: "Message on the error alert when requesting refund for a shipping label fails"
+            )
+            static let retry = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.retry",
+                value: "Retry",
+                comment: "Button to retry when requesting refund for a shipping label fails"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShippingRefundView.errorAlert.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the error alert when requesting refund for a shipping label fails"
+            )
+        }
     }
 }
 
 #Preview {
-    WooShippingRefundView(viewModel: .init(refundableAmount: 11.33,
-                                           refundDuration: 14,
-                                           purchaseDate: Date()))
+    WooShippingRefundView(viewModel: .init(
+        shippingLabel: ShippingLabel(
+            siteID: 123,
+            orderID: 456,
+            shippingLabelID: 789,
+            carrierID: "usps",
+            dateCreated: Date(),
+            packageName: "unknown",
+            rate: 12.11,
+            currency: "usd",
+            trackingNumber: "1345",
+            serviceName: "",
+            refundableAmount: 11.22,
+            status: .purchased,
+            refund: nil,
+            originAddress: ShippingLabelAddress(company: "Automattic Inc.",
+                                                name: "Tes",
+                                                phone: "01234567",
+                                                country: "USA",
+                                                state: "CA",
+                                                address1: "Woo Street",
+                                                address2: "",
+                                                city: "San Francisco",
+                                                postcode: "90210"),
+            destinationAddress: ShippingLabelAddress(company: "",
+                                                     name: "La",
+                                                     phone: "01234567",
+                                                     country: "USA",
+                                                     state: "NY",
+                                                     address1: "Main Street",
+                                                     address2: "",
+                                                     city: "New York",
+                                                     postcode: "10023"),
+            productIDs: [],
+            productNames: [],
+            commercialInvoiceURL: nil,
+            usedDate: nil,
+            expiryDate: nil
+        )
+    ), onRefundRequested: { _ in })
 }

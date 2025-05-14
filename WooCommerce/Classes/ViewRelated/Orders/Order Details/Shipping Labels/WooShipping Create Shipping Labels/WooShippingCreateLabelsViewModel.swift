@@ -187,7 +187,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.shippingLabels = order.shippingLabels
+        self.shippingLabels = order.shippingLabels.filter { $0.refund == nil }
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase

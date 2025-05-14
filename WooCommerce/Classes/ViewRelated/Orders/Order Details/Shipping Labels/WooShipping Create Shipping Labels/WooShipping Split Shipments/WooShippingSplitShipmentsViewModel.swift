@@ -483,11 +483,10 @@ extension WooShippingSplitShipmentsViewModel {
                 continue
             }
 
-            let purchasedLabelID = currentOrderLabels
-                .first(where: { $0.shipmentID == key && $0.status == .purchased })
-                .map(\.shippingLabelID)
+            let purchasedLabel = currentOrderLabels
+                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil})
 
-            let isPurchased = purchasedLabelID != nil
+            let isPurchased = purchasedLabel != nil
 
             var shipmentContents = ShipmentContents()
             for shipmentItem in shipmentItems {
@@ -505,7 +504,7 @@ extension WooShippingSplitShipmentsViewModel {
             }
 
             let shipment = Shipment(contents: shipmentContents,
-                                    purchasedLabelID: purchasedLabelID,
+                                    purchasedLabelID: purchasedLabel?.shippingLabelID,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)

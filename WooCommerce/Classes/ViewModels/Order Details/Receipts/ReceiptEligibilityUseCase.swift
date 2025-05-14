@@ -109,21 +109,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 }
 
 private extension ReceiptEligibilityUseCase {
-    func isPluginSupported(_ pluginName: String, minimumVersion: String, onCompletion: @escaping (Bool) -> Void) {
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
-            // Plugin must be installed and active
-            guard let plugin, plugin.active else {
-                return onCompletion(false)
-            }
-
-            // If plugin version is higher than minimum required version, mark as eligible
-            let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
-                                                                minimumRequired: minimumVersion)
-            onCompletion(isSupported)
-        }
-        stores.dispatch(action)
-    }
-
     @MainActor
     func isPluginSupported(_ pluginName: String, minimumVersion: String) async -> Bool {
         await withCheckedContinuation { continuation in

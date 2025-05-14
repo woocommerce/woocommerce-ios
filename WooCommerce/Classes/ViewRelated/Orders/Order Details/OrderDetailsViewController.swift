@@ -244,7 +244,6 @@ private extension OrderDetailsViewController {
     func reloadTableViewSectionsAndData() {
         configureNavigationBar()
         reloadSections()
-        reloadTableViewData()
     }
 
     /// Registers all of the available TableViewCells

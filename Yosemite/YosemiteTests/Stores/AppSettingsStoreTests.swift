@@ -241,15 +241,21 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 100)
 
-        // Create our own infrastructure so we can inject `PListFileStorage`.
+        // Use a unique temp directory for isolation
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent(UUID().uuidString + "-general-app-settings.plist")
+        try? FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true, attributes: nil)
+
+        // Create our own infrastructure so we can inject `PListFileStorage` and custom fileURL.
         let fileStorage = PListFileStorage()
         let storageManager = MockStorageManager()
-        let generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        let generalAppSettings = GeneralAppSettingsStorage(fileStorage: fileStorage, fileURL: fileURL)
         let dispatcher = Dispatcher()
         let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
 
-        if FileManager.default.fileExists(atPath: expectedGeneralAppSettingsFileURL.path) {
-            try fileStorage.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        // Make sure the file does not exist
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            try? fileStorage.deleteFile(at: fileURL)
         }
 
         // When
@@ -263,8 +269,11 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
         XCTAssertTrue(try XCTUnwrap(result).get())
 
-        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage.data(for: expectedGeneralAppSettingsFileURL))
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage.data(for: fileURL))
         XCTAssertEqual(date, savedSettings.installationDate)
+
+        // Clean up
+        try? fileStorage.deleteFile(at: fileURL)
     }
 
     func testItDoesNotSaveTheAppInstallationDateIfTheGivenDateIsNewer() throws {

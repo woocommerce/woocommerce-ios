@@ -148,12 +148,12 @@ final class ReceiptRemoteTests: XCTestCase {
         XCTAssertEqual(sendEmailRequest.path, "orders/\(sampleOrderID)/actions/send_email")
         XCTAssertEqual(sendEmailRequest.parameters["template_id"] as? String, posReceiptTemplateID)
     }
-    
+
     func test_sendPOSReceipt_when_template_does_not_exist_throws_missingTemplate_error() async {
         // Given
         let remote = ReceiptRemote(network: network)
         let posReceiptTemplateID = "customer_pos_completed_order"
-        
+
         // Simulates the email templates request response with missing POS template.
         network.simulateResponse(
             requestUrlSuffix: "orders/\(sampleOrderID)/actions/email_templates",

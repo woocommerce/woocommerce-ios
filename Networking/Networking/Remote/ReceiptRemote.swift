@@ -48,7 +48,7 @@ public final class ReceiptRemote: Remote {
                                      availableAsRESTRequest: true)
         try await enqueue(request)
     }
-    
+
     /// Sends the Point of Sale receipt to the customer attached to the order.
     /// - Parameters:
     ///   - siteID: Site which hosts the Order.

@@ -265,7 +265,7 @@ struct SingleAddressForm: View {
                                  symbol: nil,
                                  fieldAlignment: .leading,
                                  keyboardType: .default,
-                                 textInputAutocapitalization: .words)
+                                 autocapitalization: .words)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
@@ -329,7 +329,7 @@ struct SingleAddressForm: View {
                                      symbol: nil,
                                      fieldAlignment: .leading,
                                      keyboardType: .default,
-                                     textInputAutocapitalization: .words)
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,
@@ -339,7 +339,7 @@ struct SingleAddressForm: View {
                                      symbol: nil,
                                      fieldAlignment: .leading,
                                      keyboardType: .default,
-                                     textInputAutocapitalization: .words)
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.cityField,

@@ -1,11 +1,11 @@
 import Networking
 
 /// Represents payment method line in the order details bottom sheet.
-enum WooShippingPaymentMethodLine {
+enum WooShippingPaymentMethodLine: Equatable {
     case add
     case card(CardPaymentMethodLineViewModel)
 
-    struct CardPaymentMethodLineViewModel {
+    struct CardPaymentMethodLineViewModel: Equatable {
         let id: Int64
         let title: String
         let isEditable: Bool

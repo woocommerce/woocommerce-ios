@@ -1,9 +1,6 @@
 #!/bin/bash
 
 if .buildkite/commands/should-skip-job.sh --job-type validation; then
-  message="Skipping WordPressAuthenticator Unit Tests - no relevant files changed"
-  echo "$message" | buildkite-agent annotate --style "info" --context "skip-wp-auth-tests"
-  echo "$message"
   exit 0
 fi
 

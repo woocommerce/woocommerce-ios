@@ -562,15 +562,17 @@ private extension WooShippingCreateLabelsViewModel {
         $paymentMethod
             .combineLatest($shipments, $selectedShipmentIndex)
             .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
-                let isCurrentShipmentPurchased = shipments[selectedIndex].isPurchased
+                if shipments[selectedIndex].isPurchased {
+                    return nil
+                }
 
                 guard let paymentMethod else {
-                    return isCurrentShipmentPurchased ? nil : .add
+                    return .add
                 }
 
                 return WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
                     paymentMethod,
-                    isEditable: !isCurrentShipmentPurchased
+                    isEditable: true
                 )
             }
             .assign(to: &$paymentMethodLine)

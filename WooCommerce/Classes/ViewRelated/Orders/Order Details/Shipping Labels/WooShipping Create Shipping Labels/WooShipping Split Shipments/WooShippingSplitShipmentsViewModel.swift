@@ -157,6 +157,21 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                     shippingSettingsService: shippingSettingsService)
     }
 
+    func didRequestRefund(for shipmentID: String) {
+        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+            return
+        }
+        let currentShipment = shipments[index]
+        let updatedContents = currentShipment.contents.map {
+            CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
+        }
+        shipments[index] = Shipment(contents: updatedContents,
+                                    purchasedLabelID: nil,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+    }
+
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
         moveToNoticeViewModel = nil
         instructions = nil

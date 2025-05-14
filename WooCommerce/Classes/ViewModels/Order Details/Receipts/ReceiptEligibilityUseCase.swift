@@ -95,7 +95,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             }
         case .failed:
             selectedPaymentGatewayID { [weak self] gatewayID in
-                guard let gatewayID = gatewayID else {
+                guard let gatewayID else {
                     return onCompletion(false)
                 }
                 self?.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: gatewayID) { isEligibleForReceipt in

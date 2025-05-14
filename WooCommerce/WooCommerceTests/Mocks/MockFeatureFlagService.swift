@@ -84,7 +84,7 @@ final class MockFeatureFlagService: FeatureFlagService {
             return customValue
         }
 
-        // Otherwise use the default implementation.
+        // Otherwise uses the default implementation.
         switch featureFlag {
         case .inbox:
             return isInboxOn

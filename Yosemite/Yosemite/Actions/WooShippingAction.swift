@@ -98,4 +98,10 @@ public enum WooShippingAction: Action {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: (Result<WooShippingShipments, Error>) -> Void)
+
+    /// Requests a refund for a shipping label
+    ///
+    case refundShippingLabel(shippingLabel: ShippingLabel,
+                             completion: (Result<ShippingLabel, Error>) -> Void)
+
 }

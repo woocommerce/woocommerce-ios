@@ -15,4 +15,7 @@ final class MockPOSReceiptsRemote: POSReceiptsRemoteProtocol {
             throw shouldThrowError
         }
     }
+
+    func sendPOSReceipt(siteID: Int64, orderID: Int64) async throws {
+    }
 }

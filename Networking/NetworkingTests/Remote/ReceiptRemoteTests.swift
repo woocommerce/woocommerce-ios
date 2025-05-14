@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 
 @testable import Networking
@@ -121,5 +122,50 @@ final class ReceiptRemoteTests: XCTestCase {
 
         // When & Then
         try await remote.sendReceipt(siteID: 123, orderID: orderID)
+    }
+
+    func test_sendPOSReceipt_when_template_exists_triggers_send_email_action() async throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let posReceiptTemplateID = "customer_pos_completed_order"
+
+        network.simulateResponse(
+            requestUrlSuffix: "orders/\(sampleOrderID)/actions/email_templates",
+            filename: "orders-actions-email-templates-with-pos"
+        )
+
+        network.simulateResponse(
+            requestUrlSuffix: "orders/\(sampleOrderID)/actions/send_email",
+            filename: "orders-actions-send-email-success"
+        )
+
+        // When
+        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID)
+
+        // Then the send email request was made with correct parameters.
+        let sendEmailRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(sendEmailRequest.method, .post)
+        XCTAssertEqual(sendEmailRequest.path, "orders/\(sampleOrderID)/actions/send_email")
+        XCTAssertEqual(sendEmailRequest.parameters["template_id"] as? String, posReceiptTemplateID)
+    }
+    
+    func test_sendPOSReceipt_when_template_does_not_exist_throws_missingTemplate_error() async {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let posReceiptTemplateID = "customer_pos_completed_order"
+        
+        // Simulates the email templates request response with missing POS template.
+        network.simulateResponse(
+            requestUrlSuffix: "orders/\(sampleOrderID)/actions/email_templates",
+            filename: "orders-actions-email-templates-no-pos"
+        )
+
+        await assertThrowsError({
+            // When
+            try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID)
+        }, errorAssert: { error in
+            // Then
+            (error as? ReceiptRemoteError) == ReceiptRemoteError.missingTemplate(templateID: posReceiptTemplateID)
+        })
     }
 }

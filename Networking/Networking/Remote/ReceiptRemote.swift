@@ -107,6 +107,6 @@ private extension ReceiptRemote {
     }
 }
 
-public enum ReceiptRemoteError: Error {
+public enum ReceiptRemoteError: Error, Equatable {
     case missingTemplate(templateID: String)
 }

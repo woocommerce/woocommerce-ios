@@ -12,6 +12,9 @@
 		0205021C27C86B9700FB1C6B /* inbox-note-without-isRead.json in Resources */ = {isa = PBXBuildFile; fileRef = 0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */; };
 		02050F57296FE90A00710E63 /* domain-suggestions-paid.json in Resources */ = {isa = PBXBuildFile; fileRef = 02050F56296FE90A00710E63 /* domain-suggestions-paid.json */; };
 		02050F59296FEC5B00710E63 /* domain-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 02050F58296FEC5B00710E63 /* domain-products.json */; };
+		02087F2B2DD4570200D59E3B /* orders-actions-email-templates-with-pos.json in Resources */ = {isa = PBXBuildFile; fileRef = 02087F292DD4570200D59E3B /* orders-actions-email-templates-with-pos.json */; };
+		02087F2C2DD4570200D59E3B /* orders-actions-email-templates-no-pos.json in Resources */ = {isa = PBXBuildFile; fileRef = 02087F282DD4570200D59E3B /* orders-actions-email-templates-no-pos.json */; };
+		02087F2D2DD4570200D59E3B /* orders-actions-send-email-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02087F2A2DD4570200D59E3B /* orders-actions-send-email-success.json */; };
 		020C907B24C6E108001E2BEB /* product-variation-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 020C907A24C6E108001E2BEB /* product-variation-update.json */; };
 		020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */; };
 		020D07B823D852BB00FD9580 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07B723D852BB00FD9580 /* Media.swift */; };
@@ -1364,6 +1367,9 @@
 		0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "inbox-note-without-isRead.json"; sourceTree = "<group>"; };
 		02050F56296FE90A00710E63 /* domain-suggestions-paid.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-suggestions-paid.json"; sourceTree = "<group>"; };
 		02050F58296FEC5B00710E63 /* domain-products.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-products.json"; sourceTree = "<group>"; };
+		02087F282DD4570200D59E3B /* orders-actions-email-templates-no-pos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-actions-email-templates-no-pos.json"; sourceTree = "<group>"; };
+		02087F292DD4570200D59E3B /* orders-actions-email-templates-with-pos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-actions-email-templates-with-pos.json"; sourceTree = "<group>"; };
+		02087F2A2DD4570200D59E3B /* orders-actions-send-email-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-actions-send-email-success.json"; sourceTree = "<group>"; };
 		020C907A24C6E108001E2BEB /* product-variation-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-update.json"; sourceTree = "<group>"; };
 		020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapperTests.swift; sourceTree = "<group>"; };
 		020D07B723D852BB00FD9580 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
@@ -3250,6 +3256,9 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				02087F282DD4570200D59E3B /* orders-actions-email-templates-no-pos.json */,
+				02087F292DD4570200D59E3B /* orders-actions-email-templates-with-pos.json */,
+				02087F2A2DD4570200D59E3B /* orders-actions-send-email-success.json */,
 				EE105F462D672AB2005AB07F /* wooshipping-update-destination-success.json */,
 				DE8BEF0C2D151396008B3A3F /* notification-settings.json */,
 				EED25B1C2CF74B9800503657 /* media-upload.json */,
@@ -4696,6 +4705,9 @@
 				EEA6583E2966B41E00112DF0 /* products-load-all-without-data.json in Resources */,
 				EE6C6B702C6A190500632BDA /* systemStatus-inconsistent-page-id-data-type.json in Resources */,
 				68F48B1328E3E5750045C15B /* wc-analytics-customers.json in Resources */,
+				02087F2B2DD4570200D59E3B /* orders-actions-email-templates-with-pos.json in Resources */,
+				02087F2C2DD4570200D59E3B /* orders-actions-email-templates-no-pos.json in Resources */,
+				02087F2D2DD4570200D59E3B /* orders-actions-send-email-success.json in Resources */,
 				D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */,
 				DEDA8DB72B187E770076BF0F /* theme-mine-success.json in Resources */,
 				74C947862193A6C70024CB60 /* comment-moderate-unapproved.json in Resources */,

@@ -1,0 +1,12 @@
+[
+    {
+        "id": "customer_invoice",
+        "title": "Order details",
+        "description": "Manually send an email to your shoppers containing their order information and payment links."
+    },
+    {
+        "id": "customer_refunded_order",
+        "title": "Refunded order",
+        "description": "Let shoppers know when a full or partial refund is on its way to them."
+    }
+]

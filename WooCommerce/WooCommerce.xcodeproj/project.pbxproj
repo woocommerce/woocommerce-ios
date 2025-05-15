@@ -2649,6 +2649,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */; };
 		DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */; };
 		DE2004602BF7092900660A72 /* ProductStockDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */; };
 		DE2004622BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */; };
@@ -5913,6 +5914,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+WooShipping.swift"; sourceTree = "<group>"; };
 		DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCard.swift; sourceTree = "<group>"; };
 		DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCardViewModel.swift; sourceTree = "<group>"; };
@@ -6407,7 +6409,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
+		3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -6448,7 +6450,7 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */ = {
+		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.swiftlint.yml,
@@ -6462,30 +6464,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = WordPressAuthenticator;
-			sourceTree = "<group>";
-		};
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = WordPressAuthenticatorTests;
-			sourceTree = "<group>";
-		};
+		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -10272,6 +10252,7 @@
 				262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */,
 				86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */,
 				DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */,
+				DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -16709,6 +16690,7 @@
 				EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */,
 				02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */,
 				B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */,
+				DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				CEE482D52B83A9A300FAC8C5 /* AnalyticsCard+UI.swift in Sources */,

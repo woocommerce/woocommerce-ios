@@ -47,6 +47,7 @@ struct CartView: View {
 
                         Button {
                             posModel.removeAllItemsFromCart()
+                            // TODO: Sync when removeAllItemsFromCart
                             ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
                         } label: {
                             Text(Localization.clearButtonTitle)

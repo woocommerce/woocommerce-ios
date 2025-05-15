@@ -478,15 +478,18 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteFromShippingLabels() {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
+        let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
-                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             else {
-                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded)
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded,
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             cancellables.remove(cancellable)
         } receiveValue: {

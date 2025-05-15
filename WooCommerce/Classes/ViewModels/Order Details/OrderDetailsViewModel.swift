@@ -784,12 +784,14 @@ extension OrderDetailsViewModel {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return false
         }
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
                 if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
                     ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus])
+                                                   withProperties: ["order_status": orderStatus,
+                                                                    "is_revamped_flow": isRevampedFlow])
                 }
                 continuation.resume(returning: isEligible)
             })

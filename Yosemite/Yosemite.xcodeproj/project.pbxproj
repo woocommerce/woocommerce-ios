@@ -238,6 +238,7 @@
 		31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */; };
 		31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
+		3F368D9A2DCB74B80065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D992DCB74B80065B48F /* TestKit */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
 		45010693239A6C9F00E24722 /* TaxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxStore.swift */; };
 		45010695239A6CDE00E24722 /* TaxAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxAction.swift */; };
@@ -272,7 +273,6 @@
 		45ED6092257E72F4007B4AC6 /* ProductAttributeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED6091257E72F4007B4AC6 /* ProductAttributeAction.swift */; };
 		45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */; };
 		570B05CF246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570B05CE246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift */; };
-		57150E1124F462D900E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1024F462D900E81611 /* TestKit */; };
 		5726456F250BD4E4005BBD7C /* OrdersUpsertUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726456E250BD4E4005BBD7C /* OrdersUpsertUseCase.swift */; };
 		57264572250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57264571250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift */; };
 		573B448B2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */; };
@@ -1145,9 +1145,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */,
-				57150E1124F462D900E81611 /* TestKit in Frameworks */,
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
 				263E38422641FF2300260D3B /* Codegen in Frameworks */,
+				3F368D9A2DCB74B80065B48F /* TestKit in Frameworks */,
 				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2324,8 +2324,8 @@
 			);
 			name = YosemiteTests;
 			packageProductDependencies = (
-				57150E1024F462D900E81611 /* TestKit */,
 				263E38412641FF2300260D3B /* Codegen */,
+				3F368D992DCB74B80065B48F /* TestKit */,
 			);
 			productName = FluxCTests;
 			productReference = B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */;
@@ -3381,7 +3381,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};
-		57150E1024F462D900E81611 /* TestKit */ = {
+		3F368D992DCB74B80065B48F /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};

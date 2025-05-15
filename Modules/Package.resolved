@@ -1,0 +1,42 @@
+{
+  "originHash" : "bb29d6323b456e7e7de7e41c0a33bb51a2970f028b1f718f84781c3170a1023e",
+  "pins" : [
+    {
+      "identity" : "cwlcatchexception",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlCatchException.git",
+      "state" : {
+        "revision" : "07b2ba21d361c223e25e3c1e924288742923f08c",
+        "version" : "2.2.1"
+      }
+    },
+    {
+      "identity" : "cwlpreconditiontesting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+      "state" : {
+        "revision" : "0139c665ebb45e6a9fbdb68aabfd7c39f3fe0071",
+        "version" : "2.2.2"
+      }
+    },
+    {
+      "identity" : "difference",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzysztofzablocki/Difference.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "1deadf0ef4215797e4a00567894462c22824a105"
+      }
+    },
+    {
+      "identity" : "nimble",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Quick/Nimble.git",
+      "state" : {
+        "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
+        "version" : "13.7.1"
+      }
+    }
+  ],
+  "version" : 3
+}

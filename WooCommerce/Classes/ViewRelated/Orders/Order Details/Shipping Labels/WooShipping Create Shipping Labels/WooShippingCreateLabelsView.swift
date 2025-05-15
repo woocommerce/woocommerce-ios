@@ -209,7 +209,13 @@ private extension WooShippingCreateLabelsView {
                     }
                 } else {
                     HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                        orderDetails
+                        VStack(spacing: Layout.bottomSheetPadding) {
+                            orderDetails
+                            if let line = viewModel.paymentMethodLine {
+                                Divider()
+                                paymentMethod(line)
+                            }
+                        }
                         Divider()
                             .padding(.trailing, -Layout.bottomSheetPadding)
                         shipmentDetails

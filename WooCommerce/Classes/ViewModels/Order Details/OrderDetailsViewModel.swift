@@ -701,20 +701,27 @@ extension OrderDetailsViewModel {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return []
         }
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
-                    case .success(let shippingLabels):
-                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
-                        continuation.resume(returning: shippingLabels)
-                    case .failure(let error):
-                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                        if error as? DotcomError == .noRestRoute {
-                            DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                        } else {
-                            DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                        }
-                        continuation.resume(returning: [])
+                case .success(let shippingLabels):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .success,
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    continuation.resume(returning: shippingLabels)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .failed(error: error),
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    if error as? DotcomError == .noRestRoute {
+                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                    } else {
+                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    }
+                    continuation.resume(returning: [])
                 }
             })
         }

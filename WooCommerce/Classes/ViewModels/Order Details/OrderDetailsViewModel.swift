@@ -506,7 +506,7 @@ extension OrderDetailsViewModel {
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return
             }
-            if dataSource.isEligibleForWooShipping && shippingLabel.refund == nil {
+            if dataSource.isEligibleForWooShipping {
                 onCellAction?(.openShippingLabelForm(shippingLabel: shippingLabel), indexPath)
             } else {
                 let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)

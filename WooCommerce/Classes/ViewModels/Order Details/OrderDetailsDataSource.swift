@@ -1314,7 +1314,7 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    rows = [.shippingLabelRefunded, .shippingLabelDetail]
+                    rows = [.shippingLabelRefunded]
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]

@@ -1,5 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
@@ -15,6 +16,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
+    func updateStockInRootItems(_ updatedProduct: Yosemite.POSSimpleProduct) {
+        //
+    }
+    
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

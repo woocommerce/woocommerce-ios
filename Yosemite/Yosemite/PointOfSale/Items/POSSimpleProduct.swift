@@ -14,7 +14,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     public let price: String
     public let productType: ProductType = .simple
     public let bundledItems: [ProductBundleItem] = []
-    
+
     // Stock
     public let manageStock: Bool
     public let stockQuantity: Decimal? // Core API reports Int or null; some extensions allow decimal values as well
@@ -53,6 +53,12 @@ extension POSSimpleProduct {
         // products already have tax in the price
         return productID == orderItem.productID
     }
+    
+//    public mutating func updateQuantity() {
+//        if let stockQuantity = stockQuantity {
+//            stockQuantity -= 1
+//        }
+//    }
 }
 
 extension POSSimpleProduct: GeneratedFakeable, GeneratedCopiable, Hashable, Equatable {}

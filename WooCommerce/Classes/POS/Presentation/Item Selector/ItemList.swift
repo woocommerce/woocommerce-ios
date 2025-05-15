@@ -149,6 +149,9 @@ struct ItemListRow: View {
     var body: some View {
         switch item {
         case let .simpleProduct(product):
+            // Problem: If we handle stock inside .handleTap, this won't be reflected in the cart view
+            // since we're passing the copy from the parent into SimpleProductCardView?
+            // When handleTap(item) we should mutate it by updating the item stack, and let the view rerender
             Button(action: {
                 itemActionHandler.handleTap(item)
             }, label: {

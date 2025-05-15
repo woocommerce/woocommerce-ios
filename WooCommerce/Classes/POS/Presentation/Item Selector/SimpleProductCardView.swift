@@ -17,7 +17,7 @@ struct SimpleProductCardView: View {
 
     var formattedStockQuantity: String {
         if !product.manageStock {
-            return "Not managed"
+            return product.stockStatusKey
         }
         if let stock = product.stockQuantity {
             if stock < 0 {

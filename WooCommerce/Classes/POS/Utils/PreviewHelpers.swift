@@ -81,6 +81,10 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 
 @available(iOS 17.0, *)
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
+    func updateStockInRootItems(_ updatedProduct: Yosemite.POSSimpleProduct) {
+        //
+    }
+    
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
@@ -94,6 +98,10 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 
 @available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
+    func updateStockInRootItems(_ updatedProduct: Yosemite.POSSimpleProduct) {
+        //
+    }
+    
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))

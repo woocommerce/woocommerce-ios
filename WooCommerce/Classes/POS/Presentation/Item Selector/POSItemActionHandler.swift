@@ -38,6 +38,20 @@ extension POSItemActionHandler {
             return false
         }
     }
+
+    func shouldUpdateStock(_ item: POSItem, itemListType: ItemListType, posModel: PointOfSaleAggregateModelProtocol) {
+        switch item {
+        case .simpleProduct(var simpleProduct):
+            guard let stock = simpleProduct.stockQuantity else { return }
+            var updatedStockQuantity = stock - 1
+            let simpleProductCopy = simpleProduct.copy(stockQuantity: updatedStockQuantity)
+
+            // update the item from the root:
+            posModel.purchasableItemsController.updateStockInRootItems(simpleProductCopy)
+        default:
+            break
+        }
+    }
 }
 
 /// Standard handler for handling item taps without any special context
@@ -57,6 +71,9 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
         if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
             return
         }
+        
+        shouldUpdateStock(item, itemListType: itemListType, posModel: posModel)
+        
         posModel.addToCart(item)
         trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
     }

@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
@@ -21,6 +22,8 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
+
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct)
 }
 
 @available(iOS 17.0, *)
@@ -30,9 +33,23 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     func clearSearchItems(baseItem: ItemListBaseItem)
 }
 
-
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
+    func updateStockInRootItems(_ updatedProduct: Yosemite.POSSimpleProduct) {
+        //
+        var currentRootState = itemsViewState.itemsStack.root
+        if case .loaded(var items, let hasMoreItems) = currentRootState,
+        let index = items.firstIndex(where: {
+            if case .simpleProduct(let product) = $0 {
+                return product.id == updatedProduct.id
+            }
+            return false
+        }) {
+            items[index] = .simpleProduct(updatedProduct)
+            itemsViewState.itemsStack.root = .loaded(items, hasMoreItems: hasMoreItems)
+        }
+    }
+    
     var itemsViewState: ItemsViewState
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]

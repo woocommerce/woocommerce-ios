@@ -1311,6 +1311,7 @@
 		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
+		3F368D982DCB74490065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D972DCB74490065B48F /* TestKit */; };
 		3F50FE4128C8319A00C89201 /* Entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 3F50FE4028C8319A00C89201 /* Entitlements */; };
 		3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F50FE4428CAEC5E00C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
@@ -1541,7 +1542,6 @@
 		532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */; };
 		53284E9AB1C65FD79E803694 /* EUShippingNoticeTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284F4A66A725F479CD9584 /* EUShippingNoticeTopBannerFactory.swift */; };
 		570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */; };
-		57150E0F24F462C200E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E0E24F462C200E81611 /* TestKit */; };
 		571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571CDD59250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift */; };
 		571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571FDDAD24C768DC00D486A5 /* MockZendeskManager.swift */; };
 		5739D2D426274D580020E737 /* NoSecureConnectionErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5739D2D326274D580020E737 /* NoSecureConnectionErrorViewModel.swift */; };
@@ -6596,12 +6596,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F368D982DCB74490065B48F /* TestKit in Frameworks */,
 				263E38462641FF3400260D3B /* Codegen in Frameworks */,
 				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
-				57150E0F24F462C200E81611 /* TestKit in Frameworks */,
 				2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14719,11 +14719,11 @@
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (
-				57150E0E24F462C200E81611 /* TestKit */,
 				263E38452641FF3400260D3B /* Codegen */,
 				3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */,
 				2621D1F32C81085D00654C4C /* ViewInspector */,
 				2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */,
+				3F368D972DCB74490065B48F /* TestKit */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -19965,6 +19965,10 @@
 			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
 			productName = BuildkiteTestCollector;
 		};
+		3F368D972DCB74490065B48F /* TestKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TestKit;
+		};
 		3FA323262D63E0570017AE66 /* XCUITestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
@@ -19994,10 +19998,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
 			productName = Inject;
-		};
-		57150E0E24F462C200E81611 /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
 		};
 		DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

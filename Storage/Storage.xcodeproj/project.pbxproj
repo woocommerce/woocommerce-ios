@@ -68,6 +68,7 @@
 		26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */; };
 		31D9C8C826684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D9C8C626684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift */; };
 		31D9C8C926684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D9C8C726684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift */; };
+		3F368D9C2DCB74DF0065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D9B2DCB74DF0065B48F /* TestKit */; };
 		450106892399AC7400E24722 /* TaxClass+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */; };
 		4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */; };
 		452C23B427B4129300822986 /* InboxAction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452C23B027B4129300822986 /* InboxAction+CoreDataClass.swift */; };
@@ -88,7 +89,6 @@
 		45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */; };
 		5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */; };
 		5707FBC825B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */; };
-		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
 		572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */; };
 		572C099625475208005372E1 /* SpyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C099525475208005372E1 /* SpyFileManager.swift */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
@@ -705,7 +705,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57150E1324F462DF00E81611 /* TestKit in Frameworks */,
+				3F368D9C2DCB74DF0065B48F /* TestKit in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
 				68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */,
 			);
@@ -1267,7 +1267,7 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
-				57150E1224F462DF00E81611 /* TestKit */,
+				3F368D9B2DCB74DF0065B48F /* TestKit */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -2064,7 +2064,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};
-		57150E1224F462DF00E81611 /* TestKit */ = {
+		3F368D9B2DCB74DF0065B48F /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};

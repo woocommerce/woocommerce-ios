@@ -345,22 +345,22 @@ private extension CartView {
     }
 }
 
-#if DEBUG
-@available(iOS 17.0, *)
-#Preview {
-    CartView()
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
-}
-
-@available(iOS 17.0, *)
-#Preview("Cart with one item") {
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
-    posModel.addToCart(.simpleProduct(.init(id: UUID(),
-                                            name: "Sample Product",
-                                            formattedPrice: "$10.00",
-                                            productID: 6,
-                                            price: "10")))
-    return CartView()
-        .environment(posModel)
-}
-#endif
+//#if DEBUG
+//@available(iOS 17.0, *)
+//#Preview {
+//    CartView()
+//        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+//}
+//
+//@available(iOS 17.0, *)
+//#Preview("Cart with one item") {
+//    let posModel = POSPreviewHelpers.makePreviewAggregateModel()
+//    posModel.addToCart(.simpleProduct(.init(id: UUID(),
+//                                            name: "Sample Product",
+//                                            formattedPrice: "$10.00",
+//                                            productID: 6,
+//                                            price: "10")))
+//    return CartView()
+//        .environment(posModel)
+//}
+//#endif

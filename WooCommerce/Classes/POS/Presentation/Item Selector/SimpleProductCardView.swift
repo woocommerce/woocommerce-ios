@@ -15,6 +15,20 @@ struct SimpleProductCardView: View {
         self.product = product
     }
 
+    var formattedStockQuantity: String {
+        if !product.manageStock {
+            return "Not managed"
+        }
+        if let stock = product.stockQuantity {
+            if stock < 0 {
+               return "Out of stock!"
+           } else {
+               return "✨💖 \(stock) in stock 💖✨"
+           }
+        }
+        return "☠️ unhandled!"
+    }
+
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
             POSItemImageView(imageSource: product.productImageSource,
@@ -31,6 +45,9 @@ struct SimpleProductCardView: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text(product.formattedPrice)
+                    .foregroundStyle(Constants.detailColor)
+                    .font(Constants.itemDetailFont)
+                Text(formattedStockQuantity)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
@@ -54,6 +71,9 @@ private extension SimpleProductCardView {
                                                     name: "Product name",
                                                     formattedPrice: "$3.00",
                                                     productID: 123,
-                                                    price: "3.00"))
+                                                    price: "3.00",
+                                                    manageStock: true,
+                                                    stockQuantity: 3,
+                                                    stockStatusKey: "in stock"))
 }
 #endif

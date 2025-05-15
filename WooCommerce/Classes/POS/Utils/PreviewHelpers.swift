@@ -146,9 +146,9 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
 
 private var mockItems: [POSItem] {
     return [
-        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00")),
-        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 2", formattedPrice: "$2.00", productID: 2, price: "2.00")),
-        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 3", formattedPrice: "$3.00", productID: 3, price: "3.00")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00", manageStock: false, stockQuantity: nil, stockStatusKey: "")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00", manageStock: false, stockQuantity: nil, stockStatusKey: "")),
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00", manageStock: false, stockQuantity: nil, stockStatusKey: "")),
         .variableParentProduct(
             .init(
                 id: .init(),
@@ -157,7 +157,7 @@ private var mockItems: [POSItem] {
                 productID: 5
             )
         ),
-        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 4", formattedPrice: "$4.00", productID: 4, price: "4.00"))
+        .simpleProduct(POSSimpleProduct(id: UUID(), name: "Product 1", formattedPrice: "$1.00", productID: 1, price: "1.00", manageStock: false, stockQuantity: nil, stockStatusKey: ""))
     ]
 }
 

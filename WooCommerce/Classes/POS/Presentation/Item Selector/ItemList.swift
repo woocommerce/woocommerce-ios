@@ -152,7 +152,7 @@ struct ItemListRow: View {
             Button(action: {
                 itemActionHandler.handleTap(item)
             }, label: {
-                SimpleProductCardView(product: product)
+                SimpleProductCardView(product: product) //
             })
         case let .variableParentProduct(parentProduct):
             if #available(iOS 18.0, *) {
@@ -208,44 +208,44 @@ private extension ItemListRow {
     }
 }
 
-#if DEBUG
-@available(iOS 17.0, *)
-#Preview("Loaded with items") {
-    let itemList: ItemListState = .loaded(
-        [
-            .simpleProduct(
-                .init(
-                    id: .init(),
-                    name: "Strong latte 16oz",
-                    formattedPrice: "$4.00",
-                    productID: 12,
-                    price: "4.00"
-                )
-            ),
-            .variableParentProduct(
-                .init(
-                    id: .init(),
-                    name: "Variable mocha",
-                    productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
-                    productID: 16
-                )
-            )
-        ],
-        hasMoreItems: false
-    )
-    ItemList(
-        itemsController: PointOfSalePreviewItemsController(),
-        node: .root,
-        itemActionHandler: PointOfSalePreviewItemActionHandler()
-    )
-}
-
-@available(iOS 17.0, *)
-#Preview("Loading") {
-    ItemList(itemsController: PointOfSalePreviewItemsController(),
-             node: .root,
-             itemActionHandler: PointOfSalePreviewItemActionHandler())
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
-}
-
-#endif
+//#if DEBUG
+//@available(iOS 17.0, *)
+//#Preview("Loaded with items") {
+//    let itemList: ItemListState = .loaded(
+//        [
+//            .simpleProduct(
+//                .init(
+//                    id: .init(),
+//                    name: "Strong latte 16oz",
+//                    formattedPrice: "$4.00",
+//                    productID: 12,
+//                    price: "4.00"
+//                )
+//            ),
+//            .variableParentProduct(
+//                .init(
+//                    id: .init(),
+//                    name: "Variable mocha",
+//                    productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
+//                    productID: 16
+//                )
+//            )
+//        ],
+//        hasMoreItems: false
+//    )
+//    ItemList(
+//        itemsController: PointOfSalePreviewItemsController(),
+//        node: .root,
+//        itemActionHandler: PointOfSalePreviewItemActionHandler()
+//    )
+//}
+//
+//@available(iOS 17.0, *)
+//#Preview("Loading") {
+//    ItemList(itemsController: PointOfSalePreviewItemsController(),
+//             node: .root,
+//             itemActionHandler: PointOfSalePreviewItemActionHandler())
+//        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+//}
+//
+//#endif

@@ -1891,7 +1891,10 @@ extension Networking.POSProduct {
         salePrice: NullableCopiableProp<String> = .copy,
         onSale: CopiableProp<Bool> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
-        attributes: CopiableProp<[ProductAttribute]> = .copy
+        attributes: CopiableProp<[ProductAttribute]> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1905,6 +1908,9 @@ extension Networking.POSProduct {
         let onSale = onSale ?? self.onSale
         let images = images ?? self.images
         let attributes = attributes ?? self.attributes
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
 
         return Networking.POSProduct(
             siteID: siteID,
@@ -1918,7 +1924,10 @@ extension Networking.POSProduct {
             salePrice: salePrice,
             onSale: onSale,
             images: images,
-            attributes: attributes
+            attributes: attributes,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
         )
     }
 }

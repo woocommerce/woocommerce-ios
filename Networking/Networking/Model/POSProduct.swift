@@ -34,6 +34,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public var attributesForVariations: [ProductAttribute] {
         attributes.filter { $0.variation }
     }
+    
+    public let manageStock: Bool
+    public let stockQuantity: Decimal?
+    public let stockStatusKey: String
 
     public init(siteID: Int64,
                 productID: Int64,
@@ -46,7 +50,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 salePrice: String?,
                 onSale: Bool,
                 images: [ProductImage],
-                attributes: [ProductAttribute]) {
+                attributes: [ProductAttribute],
+                manageStock: Bool, stockQuantity: Decimal?, stockStatusKey: String) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -62,6 +67,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.images = images
 
         self.attributes = attributes
+        
+        self.manageStock = manageStock
+        self.stockQuantity = stockQuantity
+        self.stockStatusKey = stockStatusKey
     }
 
     public init(from decoder: any Decoder) throws {
@@ -114,6 +123,17 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
 
+        //
+        let manageStock = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                            forKey: .manageStock,
+                                                            alternativeTypes: [
+                                                                .string(transform: { value in
+                                                                    value.lowercased() == "parent" ? true : false
+                                                                })
+        ]) ?? false
+        let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
+        let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -125,7 +145,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   salePrice: salePrice,
                   onSale: onSale,
                   images: images,
-                  attributes: attributes)
+                  attributes: attributes,
+                  manageStock: manageStock,
+                  stockQuantity: stockQuantity,
+                  stockStatusKey: stockStatusKey)
     }
 
     static let requestFields: [String] = {
@@ -154,5 +177,9 @@ private extension POSProduct {
         case onSale = "on_sale"
         case images
         case attributes
+        
+        case manageStock    = "manage_stock"
+        case stockQuantity  = "stock_quantity"
+        case stockStatusKey = "stock_status"
     }
 }

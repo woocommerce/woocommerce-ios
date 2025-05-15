@@ -130,11 +130,6 @@ final class ReceiptRemoteTests: XCTestCase {
         let posReceiptTemplateID = "customer_pos_completed_order"
 
         network.simulateResponse(
-            requestUrlSuffix: "orders/\(sampleOrderID)/actions/email_templates",
-            filename: "orders-actions-email-templates-with-pos"
-        )
-
-        network.simulateResponse(
             requestUrlSuffix: "orders/\(sampleOrderID)/actions/send_email",
             filename: "orders-actions-send-email-success"
         )
@@ -149,23 +144,16 @@ final class ReceiptRemoteTests: XCTestCase {
         XCTAssertEqual(sendEmailRequest.parameters["template_id"] as? String, posReceiptTemplateID)
     }
 
-    func test_sendPOSReceipt_when_template_does_not_exist_throws_missingTemplate_error() async {
+    func test_sendPOSReceipt_when_no_reponse_exist_throws_error() async {
         // Given
         let remote = ReceiptRemote(network: network)
-        let posReceiptTemplateID = "customer_pos_completed_order"
-
-        // Simulates the email templates request response with missing POS template.
-        network.simulateResponse(
-            requestUrlSuffix: "orders/\(sampleOrderID)/actions/email_templates",
-            filename: "orders-actions-email-templates-no-pos"
-        )
 
         await assertThrowsError({
             // When
             try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID)
         }, errorAssert: { error in
             // Then
-            (error as? ReceiptRemoteError) == ReceiptRemoteError.missingTemplate(templateID: posReceiptTemplateID)
+            return error is NetworkError
         })
     }
 }

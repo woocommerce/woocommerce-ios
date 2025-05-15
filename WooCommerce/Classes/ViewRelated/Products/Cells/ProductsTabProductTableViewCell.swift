@@ -103,10 +103,14 @@ extension ProductsTabProductTableViewCell {
             configureProductImageViewForBigImages()
             productImageView.image = .productsTabProductCellPlaceholderImage
             if let productURLString = viewModel.imageUrl {
+                let targetImageViewSize = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+                    .productImageOptimizedHandling
+                )
+
                 imageService.downloadAndCacheImageForImageView(productImageView,
                                                                with: productURLString,
                                                                placeholder: .productsTabProductCellPlaceholderImage,
-                                                               targetImageViewSize: true,
+                                                               targetImageViewSize: targetImageViewSize,
                                                                progressBlock: nil) { [weak self] (image, error) in
                                                                 let success = image != nil && error == nil
                                                                 if success {

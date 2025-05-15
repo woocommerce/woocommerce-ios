@@ -224,4 +224,8 @@ public enum FeatureFlag: Int {
     /// Allows searching coupons in POS
     ///
     case searchCouponsInPOS
+
+    /// Enables optimized handling of product images
+    ///
+    case productImageOptimizedHandling
 }

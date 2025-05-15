@@ -112,10 +112,14 @@ extension PickListTableViewCell {
     /// Configure a pick list cell
     ///
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
+        let targetImageViewSize = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        )
+
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
-                                                       targetImageViewSize: true,
+                                                       targetImageViewSize: targetImageViewSize,
                                                        progressBlock: nil,
                                                        completion: nil)
         name = item.name

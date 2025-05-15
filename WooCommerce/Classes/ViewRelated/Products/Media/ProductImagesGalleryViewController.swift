@@ -200,16 +200,37 @@ private extension ProductImagesGalleryViewController {
         cell.imageView.image = .productsTabProductCellPlaceholderImage
         cell.contentView.layer.borderWidth = 0
 
-        do {
-            cell.cancellable = try productUIImageLoader.requestImage(
-                productImage: productImage,
-                targetSize: cell.frame.size
-            ) { [weak cell] image in
-                cell?.imageView.contentMode = .scaleAspectFit
-                cell?.imageView.image = image
+        let useOptimizedImageRequest = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        )
+
+        if useOptimizedImageRequest {
+            do {
+                cell.cancellable = try productUIImageLoader.requestImage(
+                    productImage: productImage,
+                    targetSize: cell.frame.size
+                ) { [weak cell] image in
+                    cell?.imageView.contentMode = .scaleAspectFit
+                    cell?.imageView.image = image
+                }
+            } catch {
+                assertionFailure(error.localizedDescription)
             }
-        } catch {
-            assertionFailure(error.localizedDescription)
+        } else {
+            cell.cancellableTask = Task {
+                guard let image = try? await productUIImageLoader.requestImage(productImage: productImage) else {
+                    return
+                }
+
+                /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
+                /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
+                ///
+                guard !Task.isCancelled else {
+                    return
+                }
+                cell.imageView.contentMode = .scaleAspectFit
+                cell.imageView.image = image
+            }
         }
     }
 }

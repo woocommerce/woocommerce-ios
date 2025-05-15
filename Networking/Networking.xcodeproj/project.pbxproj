@@ -424,6 +424,7 @@
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
 		31D27C8F2602B553002EDB1D /* plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 31D27C8E2602B553002EDB1D /* plugins.json */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
+		3F368D9E2DCB750B0065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D9D2DCB750B0065B48F /* TestKit */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -533,7 +534,6 @@
 		45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */; };
 		45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ED4F11239E8C57004F1BE3 /* taxes-classes.json */; };
 		45ED4F14239E8F2E004F1BE3 /* TaxRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */; };
-		57150E1524F462E600E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1424F462E600E81611 /* TestKit */; };
 		5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */; };
 		5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F7332460A8F00031CAAC /* CopiableTests.swift */; };
 		57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */ = {isa = PBXBuildFile; fileRef = 57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */; };
@@ -2611,9 +2611,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
-				57150E1524F462E600E81611 /* TestKit in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
 				263E383F2641FF1600260D3B /* Codegen in Frameworks */,
+				3F368D9E2DCB750B0065B48F /* TestKit in Frameworks */,
 				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4409,8 +4409,8 @@
 			);
 			name = NetworkingTests;
 			packageProductDependencies = (
-				57150E1424F462E600E81611 /* TestKit */,
 				263E383E2641FF1600260D3B /* Codegen */,
+				3F368D9D2DCB750B0065B48F /* TestKit */,
 			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
@@ -6426,7 +6426,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};
-		57150E1424F462E600E81611 /* TestKit */ = {
+		3F368D9D2DCB750B0065B48F /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};

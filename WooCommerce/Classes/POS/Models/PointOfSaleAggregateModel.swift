@@ -133,6 +133,33 @@ extension PointOfSaleAggregateModel {
     func remove(cartItem: CartItem) {
         switch cartItem.type {
         case .purchasableItem:
+            // Handle removal sync
+            // We cannot match via { $0.id == cartItem.id } as the CartItem has no knowledge of the underlying ID of the item that holds
+            if let item = purchasableItemsController.itemsViewState.itemsStack.root.items.first(where: {
+                // 1. extract the real ID from each POSItem
+                switch $0 {
+                case .simpleProduct(let simpleProduct):
+                    return simpleProduct.id == cartItem.underlyingItemID
+                case .variation(let variation):
+                    return variation.id == cartItem.underlyingItemID
+                default:
+                    return false
+                }
+            }) {
+                // 2. And update the stock:
+                switch item {
+                case .simpleProduct(let simpleProduct):
+                    guard let stock = simpleProduct.stockQuantity else { return }
+                    var updatedStockQuantity = stock + 1 // When removing from cart, we add the back to stock
+                    let simpleProductCopy = simpleProduct.copy(stockQuantity: updatedStockQuantity)
+                    purchasableItemsController.updateStockInRootItems(simpleProductCopy)
+                default:
+                    break
+                }
+            } else {
+                debugPrint("❌ not found")
+            }
+
             cart.purchasableItems.removeAll { $0.id == cartItem.id }
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }

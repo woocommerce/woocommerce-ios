@@ -10,6 +10,7 @@ struct Cart {
 protocol CartItem {
     var id: UUID { get }
     var type: CartItemType { get }
+    var underlyingItemID: UUID { get }
 }
 
 enum CartItemType: CaseIterable {
@@ -25,6 +26,10 @@ extension Cart {
         let subtitle: String?
         let quantity: Int
         let type: CartItemType = .purchasableItem
+        
+        var underlyingItemID: UUID {
+            item.id
+        }
     }
 
     struct CouponItem: CartItem {
@@ -32,6 +37,10 @@ extension Cart {
         let code: String
         let summary: String
         let type: CartItemType = .coupon
+        
+        var underlyingItemID: UUID {
+            id
+        }
     }
 }
 

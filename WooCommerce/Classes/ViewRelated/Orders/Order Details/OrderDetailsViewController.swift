@@ -213,7 +213,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewDataIfPossible()
+            self?.reloadTableViewData()
         }
 
         viewModel.configureResultsControllers { [weak self] in
@@ -235,11 +235,7 @@ private extension OrderDetailsViewController {
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
-        }
-
+    func reloadTableViewData() {
         tableView.reloadData()
     }
 
@@ -248,7 +244,6 @@ private extension OrderDetailsViewController {
     func reloadTableViewSectionsAndData() {
         configureNavigationBar()
         reloadSections()
-        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
@@ -562,10 +557,21 @@ private extension OrderDetailsViewController {
                     return
                 }
 
-                let viewModel = WooShippingRefundViewModel(refundableAmount: shippingLabel.refundableAmount,
-                                                           refundDuration: shippingLabel.refundDuration,
-                                                           purchaseDate: shippingLabel.dateCreated)
-                let view = WooShippingRefundView(viewModel: viewModel)
+                let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
+                let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
+                    guard let self else { return }
+                    presentedViewController?.dismiss(animated: true)
+
+                    var allLabels = viewModel.order.shippingLabels
+                    guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                        return
+                    }
+                    allLabels[index] = updatedLabel
+                    let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+                    viewModel.update(order: updatedOrder)
+                    reloadTableViewSectionsAndData()
+                }
                 let refundViewController = UIHostingController(rootView: view)
                 self?.present(refundViewController, animated: true)
             }

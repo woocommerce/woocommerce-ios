@@ -1314,7 +1314,11 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    rows = [.shippingLabelRefunded]
+                    if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
+                        rows = [.shippingLabelRefunded]
+                    } else {
+                        rows = [.shippingLabelRefunded, .shippingLabelDetail]
+                    }
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]

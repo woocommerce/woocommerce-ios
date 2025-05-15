@@ -98,5 +98,3 @@ extension WooAnalyticsEvent {
         }
     }
 }
-
-

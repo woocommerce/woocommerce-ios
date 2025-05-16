@@ -37,7 +37,8 @@ struct TotalsViewHelperTests {
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.preparingReader),
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.processingPayment),
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrder),
-        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrderError)
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrderError),
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.cardInserted)
     ])
     func test_shouldShowDisconnectedMessage_returns_false_when_reader_connected(
         readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
@@ -48,7 +49,8 @@ struct TotalsViewHelperTests {
 
     @Test(arguments: [
         (PointOfSalePaymentState.card(.validatingOrderError)),
-        (PointOfSalePaymentState.card(.acceptingCard))
+        (PointOfSalePaymentState.card(.acceptingCard)),
+        (PointOfSalePaymentState.card(.cardInserted))
     ])
     func test_shouldShowCollectCashPaymentButton_returns_true_for_supported_states(
         paymentState: PointOfSalePaymentState) {
@@ -92,12 +94,58 @@ struct TotalsViewHelperTests {
 
     @Test(arguments: [
         (PointOfSalePaymentState.card(.validatingOrderError)),
-        (PointOfSalePaymentState.card(.acceptingCard))
+        (PointOfSalePaymentState.card(.acceptingCard)),
+        (PointOfSalePaymentState.card(.cardInserted))
     ])
     func test_shouldShowCollectCashPaymentButton_returns_false_when_order_syncing(
         paymentState: PointOfSalePaymentState) {
             #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .syncing,
                                                                          paymentState: paymentState,
                                                                           cardReaderConnectionStatus: .connected(.init(name: "", batteryLevel: nil))) == false)
+    }
+
+    @Test
+    func test_shouldShowTotalDiscountField_returns_false_when_cart_has_no_coupons() {
+        let cart = Cart()
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
+                                                 orderTotal: "10",
+                                                 taxTotal: "0",
+                                                 orderTotalDecimal: 10,
+                                                 discountTotal: "2")
+
+        #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) == false)
+    }
+
+    @Test
+    func test_shouldShowTotalDiscountField_returns_true_when_cart_has_coupons_order_syncing() {
+        var cart = Cart()
+        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+
+        #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: nil))
+    }
+
+    @Test
+    func test_shouldShowTotalDiscountField_returns_true_when_cart_has_coupons_and_orderTotals_with_discount() {
+        var cart = Cart()
+        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
+                                                 orderTotal: "8",
+                                                 taxTotal: "0",
+                                                 orderTotalDecimal: 8,
+                                                 discountTotal: "2")
+
+        #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals))
+    }
+
+    @Test
+    func test_shouldShowTotalDiscountField_returns_false_when_cart_has_coupons_and_orderTotals_without_discount() {
+        var cart = Cart()
+        cart.add(.coupon(.init(id: .init(), code: "TEST10", summary: "")))
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
+                                                 orderTotal: "10",
+                                                 taxTotal: "0",
+                                                 orderTotalDecimal: 10)
+
+        #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) == false)
     }
 }

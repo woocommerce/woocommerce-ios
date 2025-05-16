@@ -38,6 +38,8 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
+    @Published private(set) var packageLoadingError: Error?
+    @Published var notice: Notice?
 
     /// Holds the previously selected package data, which can be transformed e.g. to select the correct tabs in the view.
     let previousSelectedPackage: WooShippingPackageDataRepresentable?
@@ -75,15 +77,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - carrier
 
     @Published private(set) var carrierPackages: [WooShippingCarrierPackages] = []
-    @Published var selectedCarriersTabIndex: Int? = nil
+    @Published var selectedCarriersTabIndex = 0
     @Published var selectedCarriersPackageId: String? = nil
     @Published var starredCarriersPackages: Set<String> = []
     @Published private(set) var carrierTabs: [TopTabItem<EmptyView>] = []
     private var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
     var selectedCarrierTab: WooShippingCarrierPackages? {
-        guard let selectedCarriersTabIndex else { return nil }
-
-        return carrierPackages[selectedCarriersTabIndex]
+        carrierPackages[safe: selectedCarriersTabIndex]
     }
     var selectedCarriersPackage: WooShippingPackageDataRepresentable? {
         guard let selectedCarriersPackageId else { return nil }
@@ -131,28 +131,27 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // MARK: - loading
 
     @MainActor
-    @discardableResult
-    func loadPackages() async -> Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> {
+    func loadPackages() async {
         guard !isLoadingPackages else {
-            return .failure(WooShippingLoadPackagesError.loadingInProgress)
+            return
         }
 
         isLoadingPackages = true
+        packageLoadingError = nil
 
-        let result: Result<WooShippingPackagesResponse, WooShippingLoadPackagesError> = await withCheckedContinuation { continuation in
-            let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
-                continuation.resume(returning: result)
+        do {
+            _ = try await withCheckedThrowingContinuation { continuation in
+                let loadPackagesAction = WooShippingAction.loadPackages(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(loadPackagesAction)
             }
-            stores.dispatch(loadPackagesAction)
-        }
-
-        if case .failure(let error) = result {
+        } catch {
             DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
+            packageLoadingError = error
         }
 
         isLoadingPackages = false
-
-        return result
     }
 
     // transform packages
@@ -208,27 +207,30 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 selectedPackageType = customSavedPackages.contains(where: { $0.id == previousSelectedPackage.id }) ? .saved : .custom
             }
         }
-
-        if selectedCarriersTabIndex == nil {
-            // Select the carriers tab matching the previous selected carriers package, if it is the currently selected package
-            if let previousSelectedPackage, selectedCarriersPackageId == previousSelectedPackage.id {
-                selectedCarriersTabIndex = carrierPackages.firstIndex { carrierTab in
-                    return carrierTab.carrier.rawValue == previousSelectedPackage.source.sourceID
-                }
-            } else {
-                selectedCarriersTabIndex = carrierPackages.isEmpty ? nil : 0
-            }
-        }
     }
 
     // star/unstar packages
-    @MainActor
     func starUnstarPackage(_ packageID: String, carrierID: String) {
         if starredCarriersPackages.contains(packageID) {
             _ = withAnimation(starAnimation) {
                 starredCarriersPackages.remove(packageID)
             }
-            // TODO: use delete action when it is ready (https://github.com/woocommerce/woocommerce-ios/issues/14679)
+            let action = WooShippingAction.deletePackage(siteID: siteID,
+                                                         packageID: packageID,
+                                                         packageType: .predefined,
+                                                         completion: { [weak self] result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
+                    self?.starredCarriersPackages.insert(packageID)
+                    self?.notice = Notice(title: Localization.removingPackageFailure,
+                                          feedbackType: .error,
+                                          actionTitle: Localization.retry,
+                                          actionHandler: {
+                        self?.starUnstarPackage(packageID, carrierID: carrierID)
+                    })
+                }
+            })
+            stores.dispatch(action)
         }
         else {
             _ = withAnimation(starAnimation) {
@@ -240,6 +242,12 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
                     self?.starredCarriersPackages.remove(packageID)
+                    self?.notice = Notice(title: Localization.savingPackageFailure,
+                                          feedbackType: .error,
+                                          actionTitle: Localization.retry,
+                                          actionHandler: {
+                        self?.starUnstarPackage(packageID, carrierID: carrierID)
+                    })
                 }
             }
             stores.dispatch(createAction)
@@ -247,7 +255,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     }
 
     // delete saved packages
-    @MainActor
     func removeSavedPackage(_ packageToRemove: WooShippingPackageDataRepresentable) {
         // delete the package locally and on backend
 
@@ -264,32 +271,62 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
         let removedStarredCarrierID = starredCarriersPackages.remove(packageToRemove.id)
 
-        if self.selectedSavedPackageId == packageToRemove.id {
-            self.selectedSavedPackageId = nil
+        if selectedSavedPackageId == packageToRemove.id {
+            selectedSavedPackageId = nil
         }
 
         // delete on backend
-        let deleteAction = WooShippingAction.deletePackage(siteID: siteID, packageID: packageToRemove.id) { result in
+        let deleteAction = WooShippingAction.deletePackage(siteID: siteID,
+                                                           packageID: packageToRemove.id,
+                                                           packageType: packageToRemove.source.isCustomPackage ? .custom : .predefined) { [weak self] result in
+            guard let self else { return }
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error removing saved Woo Shipping package: \(error)")
 
                 // undo removing of the package
                 // first: undo starring
                 if let carrierID = removedStarredCarrierID {
-                    self.starredCarriersPackages.insert(carrierID)
+                    starredCarriersPackages.insert(carrierID)
                 }
                 // second: undo removing from custom saved
                 if let customPackagesIndex {
-                    self.customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
+                    customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
                 }
                 // third: undo removing from predefined saved
                 if let predefinedPackagesIndex {
-                    self.predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
+                    predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
                 }
+
+                notice = Notice(title: Localization.removingPackageFailure,
+                                      feedbackType: .error,
+                                      actionTitle: Localization.retry,
+                                      actionHandler: { [weak self] in
+                    self?.removeSavedPackage(packageToRemove)
+                })
             }
         }
 
         stores.dispatch(deleteAction)
+    }
+}
+
+extension WooShippingAddPackageViewModel {
+    enum Localization {
+        static let removingPackageFailure = NSLocalizedString(
+            "wooShippingAddPackageViewModel.removingPackageFailure",
+            value: "Unable to remove package",
+            comment: "Message on a notice when removing a package fails in the shipping creation flow"
+        )
+        static let savingPackageFailure = NSLocalizedString(
+            "wooShippingAddPackageViewModel.savingPackageFailure",
+            value: "Unable to save package",
+            comment: "Message on a notice when saving a package fails in the shipping creation flow"
+        )
+        static let retry = NSLocalizedString(
+            "wooShippingAddPackageViewModel.retry",
+            value: "Retry",
+            comment: "Button to retry saving/removing a package in the shipping creation flow"
+        )
     }
 }
 

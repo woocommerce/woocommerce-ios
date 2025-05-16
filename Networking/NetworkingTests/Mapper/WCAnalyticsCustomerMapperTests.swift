@@ -55,7 +55,7 @@ class WCAnalyticsCustomerMapperTests: XCTestCase {
         XCTAssertEqual(customers[1].userID, 1)
         XCTAssertEqual(customers[1].name, "John")
         XCTAssertEqual(customers[2].userID, 2)
-        XCTAssertEqual(customers[2].name, "Paul")
+        XCTAssertEqual(customers[2].name, "")
         XCTAssertEqual(customers[3].userID, 3)
         XCTAssertEqual(customers[3].name, "John Doe")
     }

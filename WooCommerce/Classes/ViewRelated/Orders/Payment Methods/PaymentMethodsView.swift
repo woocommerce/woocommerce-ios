@@ -43,10 +43,10 @@ struct PaymentMethodsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading, spacing: Layout.noSpacing) {
                         if viewModel.showTapToPayRow {
-                            MethodRow(icon: .tapToPayOnIPhoneIcon,
+                            MethodRow(icon: Image(systemName: "wave.3.right.circle"),
                                       title: Localization.tapToPay,
                                       accessibilityID: Accessibility.tapToPayMethod) {
-                                viewModel.collectPayment(using: .localMobile, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
+                                viewModel.collectPayment(using: .tapToPay, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
 
                             Divider()
@@ -77,7 +77,11 @@ struct PaymentMethodsView: View {
                         if viewModel.showScanToPayRow {
                             Divider()
 
-                            MethodRow(icon: .scanToPayIcon, title: Localization.scanToPay, accessibilityID: Accessibility.scanToPayMethod) {
+                            MethodRow(
+                                icon: Image(systemName: "qrcode.viewfinder"),
+                                title: Localization.scanToPay,
+                                accessibilityID: Accessibility.scanToPayMethod
+                            ) {
                                 showingScanToPayView = true
                                 viewModel.trackCollectByScanToPay()
                             }
@@ -150,7 +154,7 @@ struct PaymentMethodsView: View {
 private struct MethodRow: View {
     /// Icon of the row
     ///
-    private let icon: UIImage
+    private let icon: Image
 
     /// Title of the row
     ///
@@ -173,6 +177,13 @@ private struct MethodRow: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+        self.icon = Image(uiImage: icon)
+        self.title = title
+        self.accessibilityID = accessibilityID
+        self.action = action
+    }
+
+    init(icon: Image, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
         self.icon = icon
         self.title = title
         self.accessibilityID = accessibilityID
@@ -182,7 +193,7 @@ private struct MethodRow: View {
     var body: some View {
         Button(action: action) {
             HStack {
-                Image(uiImage: icon)
+                icon
                     .resizable()
                     .flipsForRightToLeftLayoutDirection(true)
                     .frame(width: PaymentMethodsView.Layout.iconWidthHeight(scale: scale),

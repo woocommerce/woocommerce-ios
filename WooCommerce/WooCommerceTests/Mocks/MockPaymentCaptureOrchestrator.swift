@@ -6,6 +6,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var mockCollectPaymentHandler: ((_ onPreparingReader: () -> Void,
                                      _ onWaitingForInput: (Yosemite.CardReaderInput) -> Void,
                                      _ onProcessingMessage: () -> Void,
+                                     _ onCardInserted: () -> Void,
                                      _ onDisplayMessage: (String) -> Void,
                                      _ onProcessingCompletion: (Yosemite.PaymentIntent) -> Void,
                                      _ onCompletion: (Result<CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
@@ -13,17 +14,18 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
-    var spyCollectPaymentMethodTypes: [String]? = nil
+    var spyCollectPaymentMethodTypes: [PaymentMethodType]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
     var spyChannel: PaymentChannel? = nil
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                        onCardInserted: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
@@ -38,6 +40,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         mockCollectPaymentHandler?(onPreparingReader,
                                    onWaitingForInput,
                                    onProcessingMessage,
+                                   onCardInserted,
                                    onDisplayMessage,
                                    onProcessingCompletion,
                                    onCompletion)

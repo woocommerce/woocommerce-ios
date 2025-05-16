@@ -98,7 +98,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
-        whenSyncingShippingLabels(thenReturn: .success(()))
+        whenSyncingShippingLabels(thenReturn: .success([]))
 
         // When
         await viewModel.syncShippingLabels()
@@ -514,7 +514,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
-    func whenSyncingShippingLabels(thenReturn result: Result<Void, Error>) {
+    func whenSyncingShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
                 case let .synchronizeShippingLabels(_, _, completion):

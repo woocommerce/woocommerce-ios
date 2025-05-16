@@ -66,9 +66,11 @@ struct WooShippingEditAddressView: View {
                 }
                 .padding(.bottom, Constants.extraPadding)
                 AddressTextField(field: viewModel.email,
-                                 focused: $focusedField)
+                                 focused: $focusedField,
+                                 keyboardType: .emailAddress)
                 AddressTextField(field: viewModel.phone,
-                                 focused: $focusedField)
+                                 focused: $focusedField,
+                                 keyboardType: .phonePad)
                 .padding(.bottom, Constants.extraPadding)
                 if viewModel.showSaveAsDefault {
                     Toggle(Localization.defaultAddress, isOn: $viewModel.isDefaultAddress)
@@ -186,6 +188,8 @@ struct WooShippingEditAddressView: View {
         /// The focused state of the field.
         @FocusState.Binding var focused: WooShippingAddressFieldType?
 
+        var keyboardType = UIKeyboardType.default
+
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
                 HStack(spacing: Constants.requiredLabelSpacing) {
@@ -198,6 +202,7 @@ struct WooShippingEditAddressView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
                 TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
+                    .keyboardType(keyboardType)
                     .focused($focused, equals: field.type)
                     .onChange(of: field.value) { _ in
                         field.clearError()

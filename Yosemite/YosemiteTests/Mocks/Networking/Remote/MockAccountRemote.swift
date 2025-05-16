@@ -22,6 +22,9 @@ final class MockAccountRemote {
     /// The results to return based on the given site ID in `loadUsernameSuggestions`.
     private var loadUsernameSuggestionsResult: Result<[String], Error>?
 
+    /// Returns the value when `getNotificationSettings` is called
+    private var loadNotificationSettingsResult: Result<NotificationSettings, Error>?
+
     /// Returns the value when `updateNotificationSettings` is called.
     private var updateNotificationSettingsResult: Result<Void, Error> = .success(())
 
@@ -59,6 +62,10 @@ final class MockAccountRemote {
     /// Returns  the value when `updateNotificationSettings` is called.
     func whenUpdatingNotificationSettings(thenReturn result: Result<Void, Error>) {
         updateNotificationSettingsResult = result
+    }
+
+    func whenLoadingNotificationSettings(thenReturn result: Result<NotificationSettings, Error>) {
+        loadNotificationSettingsResult = result
     }
 }
 
@@ -120,6 +127,14 @@ extension MockAccountRemote: AccountRemoteProtocol {
             throw NetworkError.notFound()
         }
 
+        return try result.get()
+    }
+
+    func loadNotificationSettings(deviceID: Int64) async throws -> NotificationSettings {
+        guard let result = loadNotificationSettingsResult else {
+            XCTFail("Could not find result for loading notification settings.")
+            throw NetworkError.notFound()
+        }
         return try result.get()
     }
 

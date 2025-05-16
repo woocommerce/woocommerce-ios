@@ -213,7 +213,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewDataIfPossible()
+            self?.reloadTableViewData()
         }
 
         viewModel.configureResultsControllers { [weak self] in
@@ -235,11 +235,7 @@ private extension OrderDetailsViewController {
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
-        }
-
+    func reloadTableViewData() {
         tableView.reloadData()
     }
 
@@ -248,7 +244,6 @@ private extension OrderDetailsViewController {
     func reloadTableViewSectionsAndData() {
         configureNavigationBar()
         reloadSections()
-        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
@@ -270,7 +265,9 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
 
     func reloadSections() {
-        viewModel.reloadSections()
+        Task {
+            await viewModel.reloadSections()
+        }
     }
 }
 
@@ -339,7 +336,7 @@ private extension OrderDetailsViewController {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            viewController.modalPresentationStyle = .overFullScreen
+            viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
         } else {
             let navController = UINavigationController(rootViewController: viewController)
@@ -411,6 +408,8 @@ private extension OrderDetailsViewController {
             present(printNavigationController, animated: true)
         case .createShippingLabel:
             navigateToCreateShippingLabelForm()
+        case .openShippingLabelForm(let shippingLabel):
+            navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
@@ -424,7 +423,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func navigateToCreateShippingLabelForm() {
+    func navigateToCreateShippingLabelForm(shippingLabel: ShippingLabel? = nil) {
         guard viewModel.dataSource.isEligibleForWooShipping else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -453,13 +452,15 @@ private extension OrderDetailsViewController {
             return
         }
 
-        let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order, onLabelPurchase: { [weak self] markOrderComplete in
+        let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order,
+                                                                       selectedShippingLabel: shippingLabel,
+                                                                       onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
                 self?.markOrderCompleteFromShippingLabels()
             }
         })
         let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
-        shippingLabelCreationVC.modalPresentationStyle = .overFullScreen
+        shippingLabelCreationVC.modalPresentationStyle = .fullScreen
         navigationController?.present(shippingLabelCreationVC, animated: true)
     }
 
@@ -544,13 +545,36 @@ private extension OrderDetailsViewController {
 
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelMoreMenu.cancelAction)
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
-            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+        if shippingLabel.isRefundable {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
+                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
+                    let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                    // Disables the bottom bar (tab bar) when requesting a refund.
+                    refundViewController.hidesBottomBarWhenPushed = true
+                    self?.show(refundViewController, sender: self)
+                    return
+                }
+
+                let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
+                let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
+                    guard let self else { return }
+                    presentedViewController?.dismiss(animated: true)
+
+                    var allLabels = viewModel.order.shippingLabels
+                    guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                        return
+                    }
+                    allLabels[index] = updatedLabel
+                    let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+                    viewModel.update(order: updatedOrder)
+                    reloadTableViewSectionsAndData()
+                }
+                let refundViewController = UIHostingController(rootView: view)
+                self?.present(refundViewController, animated: true)
             }
-            // Disables the bottom bar (tab bar) when requesting a refund.
-            refundViewController.hidesBottomBarWhenPushed = true
-            self?.show(refundViewController, sender: self)
         }
 
         if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {

@@ -43,6 +43,7 @@ enum CardPresentPaymentEventDetails {
     case connectionSuccess(done: () -> Void)
     case tapSwipeOrInsertCard(inputMethods: CardReaderInput,
                               cancelPayment: () -> Void)
+    case cardInserted(cancelPayment: () -> Void)
     case paymentSuccess(done: () -> Void)
     case paymentError(error: any Error,
                       retryApproach: CardPresentPaymentRetryApproach,
@@ -56,6 +57,5 @@ enum CardPresentPaymentEventDetails {
     case validatingOrder(cancelPayment: () -> Void)
 
     case locationRequestPreAlert(requestPermission: () -> Void)
-    case locationRequired(dismiss: () -> Void,
-                          skip: () -> Void)
+    case locationRequired(cancel: () -> Void)
 }

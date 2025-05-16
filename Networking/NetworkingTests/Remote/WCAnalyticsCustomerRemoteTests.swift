@@ -163,7 +163,7 @@ private extension WCAnalyticsCustomerRemoteTests {
         assertEqual(3, customers[3].userID)
         assertEqual("Matt The Unregistered", customers[0].name)
         assertEqual("John", customers[1].name)
-        assertEqual("Paul", customers[2].name)
+        assertEqual("", customers[2].name)
         assertEqual("John Doe", customers[3].name)
     }
 }

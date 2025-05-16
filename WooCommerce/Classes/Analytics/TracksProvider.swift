@@ -139,6 +139,19 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleCashPaymentTapped,
+            WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleProductsTapped,
+            WooAnalyticsStat.pointOfSaleCouponsTapped,
+            WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
+            WooAnalyticsStat.pointOfSaleCouponsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleCouponAddedToCart,
+            WooAnalyticsStat.pointOfSaleCouponRemovedFromCart,
+            WooAnalyticsStat.pointOfSaleSearchButtonTapped,
+            WooAnalyticsStat.pointOfSalePreSearchRecentTermTapped,
+            WooAnalyticsStat.pointOfSaleKeyboardDismissedInSearch,
+            WooAnalyticsStat.pointOfSaleItemsNextPageLoaded,
+            WooAnalyticsStat.pointOfSaleSearchRemoteResultsFetched,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,
@@ -146,13 +159,13 @@ private extension TracksProvider {
 
             // Card Reader Connection
             WooAnalyticsStat.cardReaderSelectTypeShown,
-            WooAnalyticsStat.cardReaderSelectTypeBuiltInTapped,
+            WooAnalyticsStat.cardReaderSelectTypeTapToPayTapped,
             WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
             WooAnalyticsStat.cardReaderDisconnectTapped,
-            WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect,
+            WooAnalyticsStat.manageCardReadersTapToPayReaderAutoDisconnect,
             WooAnalyticsStat.cardReaderAutomaticDisconnect,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
@@ -192,6 +205,10 @@ private extension TracksProvider {
             WooAnalyticsStat.paymentsFlowCanceled,
             WooAnalyticsStat.paymentsFlowFailed,
             WooAnalyticsStat.paymentsFlowCollect,
+
+            // Coupons
+            WooAnalyticsStat.couponSettingEnabled,
+            WooAnalyticsStat.couponCreationSuccess,
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

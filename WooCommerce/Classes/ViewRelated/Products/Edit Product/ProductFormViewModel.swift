@@ -601,7 +601,7 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
-            guard hasChangesExcludingImageUploads() else {
+            guard hasChangesExcludingImageUploads(productModelToSave: productModelToSave) else {
                 /// Skip product update if there are no changes
                 saveProductImagesWhenNoneIsPendingUploadAnymore()
                 onCompletion(.success(product))
@@ -662,9 +662,9 @@ extension ProductFormViewModel {
 //
 private extension ProductFormViewModel {
 
-    func hasChangesExcludingImageUploads() -> Bool {
-        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
-        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
+    func hasChangesExcludingImageUploads(productModelToSave: EditableProductModel) -> Bool {
+        let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
 
     }

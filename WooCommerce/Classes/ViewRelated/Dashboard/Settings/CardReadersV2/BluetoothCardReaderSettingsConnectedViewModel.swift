@@ -98,7 +98,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
                 return
             }
 
-            self.disconnectFromBuiltInReader(in: readers)
+            self.disconnectFromTapToPayReader(in: readers)
             self.readerUpdateError = nil
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
@@ -150,10 +150,10 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     /// This screen is only used for managing Bluetooth card readers.
     /// If we're connected to Tap to Pay on iPhone, we should disconnect, as users are unlikely to consider
     /// another part of their phone as something they connect to and manage.
-    private func disconnectFromBuiltInReader(in readers: [CardReader]) {
-        if readers.includesBuiltInReader() {
+    private func disconnectFromTapToPayReader(in readers: [CardReader]) {
+        if readers.includesTapToPayReader() {
             self.disconnect()
-            self.analyticsTracker.automaticallyDisconnectedFromBuiltInReader()
+            self.analyticsTracker.automaticallyDisconnectedFromTapToPayReader()
         }
     }
 
@@ -266,7 +266,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
             newShouldShow = .isUnknown
         } else if connectedReaders.isEmpty {
             newShouldShow = .isFalse
-        } else if connectedReaders.includesBuiltInReader() {
+        } else if connectedReaders.includesTapToPayReader() {
             /// This screen only supports management of Bluetooth readers, and will have started disconnection
             /// from Tap to Pay on iPhone in this instance.
             newShouldShow = .isFalse
@@ -284,8 +284,8 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 }
 
 private extension [CardReader] {
-    func includesBuiltInReader() -> Bool {
-        return self.first(where: { $0.readerType == .appleBuiltIn }) != nil
+    func includesTapToPayReader() -> Bool {
+        return self.first(where: { $0.readerType == .tapToPay }) != nil
     }
 }
 

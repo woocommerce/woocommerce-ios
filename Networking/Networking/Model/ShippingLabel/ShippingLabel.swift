@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Label.
 ///
-public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
 
@@ -61,6 +61,12 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     /// URL of commercial invoice with customs details, available to several carriers.
     public let commercialInvoiceURL: String?
 
+    /// Date when the label was used.
+    public let usedDate: Date?
+
+    /// Expiry date of the label
+    public let expiryDate: Date?
+
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
@@ -78,7 +84,9 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
                 destinationAddress: ShippingLabelAddress,
                 productIDs: [Int64],
                 productNames: [String],
-                commercialInvoiceURL: String?) {
+                commercialInvoiceURL: String?,
+                usedDate: Date?,
+                expiryDate: Date?) {
         self.siteID = siteID
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
@@ -97,6 +105,8 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
         self.productIDs = productIDs
         self.productNames = productNames
         self.commercialInvoiceURL = commercialInvoiceURL
+        self.usedDate = usedDate
+        self.expiryDate = expiryDate
     }
 }
 
@@ -131,6 +141,8 @@ extension ShippingLabel: Decodable {
         let productIDs = try container.decodeIfPresent([Int64].self, forKey: .productIDs) ?? []
         let productNames = try container.decode([String].self, forKey: .productNames)
         let commercialInvoiceURL = try container.decodeIfPresent(String.self, forKey: .commercialInvoiceURL)
+        let usedDate = try container.decodeIfPresent(Date.self, forKey: .usedDate)
+        let expiryDate = try container.decodeIfPresent(Date.self, forKey: .expiryDate)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -149,7 +161,9 @@ extension ShippingLabel: Decodable {
                   destinationAddress: .init(),
                   productIDs: productIDs,
                   productNames: productNames,
-                  commercialInvoiceURL: commercialInvoiceURL)
+                  commercialInvoiceURL: commercialInvoiceURL,
+                  usedDate: usedDate,
+                  expiryDate: expiryDate)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -169,6 +183,8 @@ extension ShippingLabel: Decodable {
         case productIDs = "product_ids"
         case productNames = "product_names"
         case commercialInvoiceURL = "commercial_invoice_url"
+        case usedDate = "used_date"
+        case expiryDate = "expiry_date"
     }
 }
 

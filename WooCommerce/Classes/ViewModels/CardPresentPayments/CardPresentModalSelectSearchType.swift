@@ -47,7 +47,7 @@ final class CardPresentModalSelectSearchType: CardPresentPaymentsModalViewModel 
          cancelAction: @escaping () -> Void) {
         textMode = .fullInfo
         actionsMode = .twoActionAndAuxiliary
-        primaryButtonTitle = CardReaderDiscoveryMethod.localMobile.name
+        primaryButtonTitle = CardReaderDiscoveryMethod.tapToPay.name
         self.tapOnIphoneAction = tapOnIPhoneAction
         secondaryButtonTitle = CardReaderDiscoveryMethod.bluetoothScan.name
         self.bluetoothScanAction = bluetoothAction
@@ -81,7 +81,7 @@ private extension CardReaderDiscoveryMethod {
             return NSLocalizedString(
                 "Bluetooth Reader",
                 comment: "The button title on the reader type alert, for the user to choose a bluetooth reader.")
-        case .localMobile:
+        case .tapToPay:
             return NSLocalizedString(
                 "Tap to Pay on iPhone",
                 comment: "The button title on the reader type alert, for the user to choose Tap to Pay on iPhone.")

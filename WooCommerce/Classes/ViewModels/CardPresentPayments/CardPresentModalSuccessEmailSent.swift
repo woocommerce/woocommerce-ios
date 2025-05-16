@@ -45,7 +45,7 @@ final class CardPresentModalSuccessEmailSent: CardPresentPaymentsModalViewModel 
         let attributedString = NSMutableAttributedString(string: formattedMessage)
         if let emailRange = formattedMessage.range(of: email) {
             let nsRange = NSRange(emailRange, in: formattedMessage)
-            attributedString.addAttributes([.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)], range: nsRange)
+            attributedString.addAttributes([.font: UIFont.preferredFont(forTextStyle: .body).bold], range: nsRange)
         }
         self.bottomAttributedTitle = attributedString
     }

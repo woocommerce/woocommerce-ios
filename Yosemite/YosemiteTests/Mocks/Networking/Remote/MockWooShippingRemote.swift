@@ -12,6 +12,12 @@ final class MockWooShippingRemote {
         let siteID: Int64
     }
 
+    private struct RefundResultKey: Hashable {
+        let siteID: Int64
+        let orderID: Int64
+        let shippingLabelID: Int64
+    }
+
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
@@ -50,6 +56,15 @@ final class MockWooShippingRemote {
 
     /// The results to return based on the given arguments in `updateDestinationAddress`
     private var updateDestinationAddress = [ResultKey: Result<WooShippingDestinationAddressUpdate, Error>]()
+
+    /// The results to return based on the given arguments in `loadConfig`
+    private var loadConfig = [ResultKey: Result<WooShippingConfig, Error>]()
+
+    /// The results to return based on the given arguments in `updateShipment`
+    private var updateShipment = [ResultKey: Result<WooShippingShipments, Error>]()
+
+    /// The results to return based on the given arguments in `refundShippingLabel`
+    private var refundShippingLabel = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
@@ -141,6 +156,29 @@ final class MockWooShippingRemote {
         let key = ResultKey(siteID: siteID)
         updateDestinationAddress[key] = result
     }
+
+    /// Set the value passed to the `completion` block if `loadConfig` is called.
+    func whenLoadingConfig(siteID: Int64,
+                           thenReturn result: Result<WooShippingConfig, Error>) {
+        let key = ResultKey(siteID: siteID)
+        loadConfig[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateShipment` is called.
+    func whenUpdatingShipment(siteID: Int64,
+                              thenReturn result: Result<WooShippingShipments, Error>) {
+        let key = ResultKey(siteID: siteID)
+        updateShipment[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `refundShippingLabel` is called.
+    func whenRefundingShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                                    thenReturn result: Result<ShippingLabelRefund, Error>) {
+        let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+        refundShippingLabel[key] = result
+    }
 }
 
 // MARK: - WooShippingRemoteProtocol
@@ -161,7 +199,10 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
         }
     }
 
-    func deletePackage(siteID: Int64, packageID: String, completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
+    func deletePackage(siteID: Int64,
+                       packageID: String,
+                       packageType: WooShippingPackageType,
+                       completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
@@ -341,6 +382,52 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
             let key = ResultKey(siteID: siteID)
             if let result = self.updateDestinationAddress[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.loadConfig[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: @escaping (Result<WooShippingShipments, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = ResultKey(siteID: siteID)
+            if let result = self.updateShipment[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func refundShippingLabel(siteID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
+                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+            if let result = self.refundShippingLabel[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

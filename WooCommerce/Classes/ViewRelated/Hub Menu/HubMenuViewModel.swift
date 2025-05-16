@@ -16,6 +16,7 @@ extension NSNotification.Name {
 /// Destination views that the hub menu can navigate to.
 enum HubMenuNavigationDestination: Hashable {
     case payments
+    case aiSettings
     case settings
     case blaze
     case blazeCampaignDetails(campaignID: String)
@@ -94,12 +95,29 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
+    private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
+        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
+    }()
+
+    private(set) lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
+        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
+    }()
+
+    private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
+        PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
+                                              currencySettings: ServiceLocator.currencySettings,
+                                              credentials: credentials,
+                                              storage: ServiceLocator.storageManager)
+    }()
+
+    private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
+        let storage = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
 
-        return PointOfSaleItemService(siteID: siteID,
-                                      currencySettings: currencySettings,
-                                      credentials: credentials)
+        return PointOfSaleCouponService(siteID: siteID,
+                                        currencySettings: currencySettings,
+                                        credentials: credentials,
+                                        storage: storage)
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -110,29 +128,23 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
 
+    private var shouldShowAISettings: Bool {
+        featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey)
+    }
+
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
-        // There is no straightforward way to convert a @Published var to a Binding value because we cannot use $self.
-        let navigationPathBinding = Binding(
-            get: { [weak self] in
-                self?.navigationPath ?? NavigationPath()
-            },
-            set: { [weak self] in
-                self?.navigationPath = $0
-            }
-        )
-        return InPersonPaymentsMenuViewModel(
+        InPersonPaymentsMenuViewModel(
             siteID: siteID,
             dependencies: .init(
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: siteID,
-                                                                     credentials: credentials)),
-            navigationPath: navigationPathBinding)
+                                                                     credentials: credentials)))
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
@@ -344,6 +356,10 @@ private extension HubMenuViewModel {
             Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
         ]
 
+        if shouldShowAISettings {
+            items.append(AISettings())
+        }
+
         if eligibleForGoogleAds {
             items.append(GoogleAds())
         }
@@ -544,6 +560,23 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .settings
     }
 
+    struct AISettings: HubMenuItem {
+        static var id = "ai-settings"
+
+        let title: String = Localization.aiSettings
+        let description: String = Localization.aiSettingsDescription
+        let icon: UIImage = .wandAndRaysInverse
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "ai-settings"
+        let trackingOption: String = "ai-settings"
+        let iconBadge: HubMenuBadgeType?
+        let navigationDestination: HubMenuNavigationDestination? = .aiSettings
+
+        init(iconBadge: HubMenuBadgeType? = nil) {
+            self.iconBadge = iconBadge
+        }
+    }
+
     struct Payments: HubMenuItem {
 
         static var id = "payments"
@@ -719,6 +752,16 @@ extension HubMenuViewModel {
         static let payments = NSLocalizedString(
             "Payments",
             comment: "Title of the hub menu payments button")
+
+        static let aiSettings = NSLocalizedString(
+            "hubMenuViewModel.aiSettings",
+            value: "AI Settings",
+            comment: "Title of the hub menu AI settings button")
+
+        static let aiSettingsDescription = NSLocalizedString(
+            "hubMenuViewModel.aiSettingsDescription",
+            value: "Manage your store's AI-powered features",
+            comment: "Description of the hub menu AI settings button")
 
         static let paymentsDescription = NSLocalizedString(
             "Take payments on the go",

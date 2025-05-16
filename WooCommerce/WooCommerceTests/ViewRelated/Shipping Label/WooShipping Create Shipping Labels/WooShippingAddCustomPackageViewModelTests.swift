@@ -109,6 +109,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
+        XCTAssertNil(viewModel.packageData)
     }
 
     @MainActor
@@ -124,6 +125,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), true)
+        XCTAssertNotNil(viewModel.packageData)
     }
 
     @MainActor
@@ -148,8 +150,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), true)
     }
 
-    @MainActor
-    func test_add_package_action() async {
+    func test_packageData_is_correct() throws {
         // Given
         let dimensionUnit = "cm"
         let weightUnit = "kg"
@@ -170,17 +171,20 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.fieldValues[.width] = width
         viewModel.fieldValues[.height] = height
         viewModel.fieldValues[.weight] = weight
-        let packageDataResult = await viewModel.addPackageAction()
 
         // Then
-        switch packageDataResult {
-        case .success(let packageData):
-            XCTAssertNotNil(packageData)
-            XCTAssertEqual(packageData.dimensionsDescription(unit: dimensionUnit), expectedDimensions)
-            XCTAssertEqual(packageData.weightDescription(unit: weightUnit), expectedWeight)
-        case .failure(let failure):
-            XCTFail(failure.localizedDescription)
-        }
+        let packageData = try XCTUnwrap(viewModel.packageData)
+        XCTAssertEqual(packageData.dimensionsDescription(unit: dimensionUnit), expectedDimensions)
+        XCTAssertEqual(packageData.weightDescription(unit: weightUnit), expectedWeight)
+        XCTAssertEqual(packageData.id, "custom_box")
+
+        // When: selecting a template
+        viewModel.showSaveTemplate = true
+        viewModel.packageTemplateName = "a"
+
+        // Then
+        let updatedPackageData = try XCTUnwrap(viewModel.packageData)
+        XCTAssertEqual(updatedPackageData.id, "a")
     }
 
     @MainActor

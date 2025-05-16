@@ -81,6 +81,20 @@ public protocol ProductsRemoteProtocol {
                               pageNumber: Int,
                               orderBy: ProductsRemote.OrderKey,
                               order: ProductsRemote.Order) async throws -> [ProductReport]
+
+    func loadProductsForPointOfSale(for siteID: Int64,
+                                    productTypes: [ProductType],
+                                    pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    func searchProductsForPointOfSale(for siteID: Int64,
+                                      query: String,
+                                      productTypes: [ProductType],
+                                      pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                           productTypes: [ProductType],
+                                           pageNumber: Int,
+                                           perPage: Int) async throws -> PagedItems<POSProduct>
 }
 
 extension ProductsRemoteProtocol {
@@ -202,29 +216,75 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
     /// - productTypes: A list of product types to be included in the results.
-    /// - pageNumber: Number of page that should be retrieved.
+    /// - pageNumber: Index of page that should be retrieved.
     ///
     public func loadProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType] = [.simple],
-                                           pageNumber: Int = 1) async throws -> PagedItems<Product> {
-        let parameters = [
+                                           pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+        let parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productTypes: productTypes)
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
+    }
+
+    /// Loads popular products for Point of Sale
+    ///
+    /// - Parameters:
+    ///   - siteID: The target site ID.
+    ///   - productTypes: The product types to filter by.
+    ///   - pageNumber: Number of page that should be retrieved.
+    ///
+    public func loadPopularProductsForPointOfSale(for siteID: Int64,
+                                                  productTypes: [ProductType] = [.simple],
+                                                  pageNumber: Int = 1,
+                                                  perPage: Int = Default.pageSize) async throws -> PagedItems<POSProduct> {
+        let parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productsPerPage: String(perPage),
+            productTypes: productTypes,
+            orderBy: .popularity,
+            order: .descending
+        )
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
+    }
+
+    private func pointOfSaleProductFetchParameters(pageNumber: Int,
+                                                   productsPerPage: String = POSConstants.productsPerPage,
+                                                   productTypes: [ProductType],
+                                                   orderBy: OrderKey = .name,
+                                                   order: Order = .ascending) -> [String: String] {
+        [
             ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: POSConstants.productsPerPage,
+            ParameterKey.perPage: productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
             ParameterKey.productType: POSConstants.productType,
             ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
-            ParameterKey.orderBy: OrderKey.name.value,
-            ParameterKey.order: Order.ascending.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.order: order.value,
             ParameterKey.productStatus: POSConstants.productStatus,
             ParameterKey.downloadable: String(false),
+            ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
+    }
+
+    private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
+                                                     pageNumber: Int,
+                                                     parameters: [String: String]) async throws -> PagedItems<POSProduct> {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
                                      path: Path.products,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<POSProduct>(siteID: siteID)
 
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -234,7 +294,37 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             .flatMap { Int($0.value) }
         let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
 
-        return .init(items: products, hasMorePages: hasMorePages)
+        // Extract total count from X-WP-Total header
+        let totalItems = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalCount.lowercased() })
+            .flatMap { Int($0.value) }
+
+        return .init(items: products, hasMorePages: hasMorePages, totalItems: totalItems)
+    }
+
+    /// Remote search of products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.
+    /// `search` is used, which searches in `name`, `description`, `short_description` fields.
+    /// We also send `search_name_or_sku`, which will be used in preference to `search` when implemented on a site (in future.)
+    ///
+    /// - Parameter siteID: Site for which we'll fetch remote products.
+    /// - Parameter query: search term passed in `search` and `search_name_or_sku` request field
+    /// - Parameter productTypes: A list of product types to be included in the results.
+    /// - Parameter pageNumber: Index of page that should be retrieved.
+    ///
+    public func searchProductsForPointOfSale(for siteID: Int64,
+                                             query: String,
+                                             productTypes: [ProductType] = [.simple],
+                                             pageNumber: Int = 1) async throws -> PagedItems<POSProduct> {
+        var parameters = pointOfSaleProductFetchParameters(
+            pageNumber: pageNumber,
+            productTypes: productTypes)
+
+        parameters.updateValue(query, forKey: ParameterKey.search)
+        parameters.updateValue(query, forKey: ParameterKey.searchNameOrSKU)
+
+        return try await makePagedPointOfSaleProductsRequest(
+            for: siteID,
+            pageNumber: pageNumber,
+            parameters: parameters)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.
@@ -589,6 +679,7 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
+        case popularity
         // available for use in `GET wc-analytics/reports/products/stats` only.
         case itemsSold
     }
@@ -619,6 +710,7 @@ public extension ProductsRemote {
         static let exclude: String    = "exclude"
         static let include: String    = "include"
         static let search: String     = "search"
+        static let searchNameOrSKU: String = "search_name_or_sku"
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"
@@ -677,6 +769,8 @@ private extension ProductsRemote.OrderKey {
             return "title"
         case .itemsSold:
             return "items_sold"
+        case .popularity:
+            return "popularity"
         }
     }
 }

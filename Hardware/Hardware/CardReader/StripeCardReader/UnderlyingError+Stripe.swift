@@ -92,24 +92,24 @@ extension UnderlyingError {
             self = .processorAPIError
         case .passcodeNotEnabled:
             self = .passcodeNotEnabled
-        case .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn:
-            self = .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn
+        case .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn:
+            self = .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn
         case .nfcDisabled:
             self = .nfcDisabled
-        case .appleBuiltInReaderFailedToPrepare:
-            self = .appleBuiltInReaderFailedToPrepare
-        case .appleBuiltInReaderTOSAcceptanceCanceled:
-            self = .appleBuiltInReaderTOSAcceptanceCanceled
-        case .appleBuiltInReaderTOSNotYetAccepted:
-            self = .appleBuiltInReaderTOSNotYetAccepted
-        case .appleBuiltInReaderTOSAcceptanceFailed:
-            self = .appleBuiltInReaderTOSAcceptanceFailed
-        case .appleBuiltInReaderMerchantBlocked:
-            self = .appleBuiltInReaderMerchantBlocked
-        case .appleBuiltInReaderInvalidMerchant:
-            self = .appleBuiltInReaderInvalidMerchant
-        case .appleBuiltInReaderDeviceBanned:
-            self = .appleBuiltInReaderDeviceBanned
+        case .tapToPayReaderFailedToPrepare:
+            self = .tapToPayReaderFailedToPrepare
+        case .tapToPayReaderTOSAcceptanceCanceled:
+            self = .tapToPayReaderTOSAcceptanceCanceled
+        case .tapToPayReaderTOSNotYetAccepted:
+            self = .tapToPayReaderTOSNotYetAccepted
+        case .tapToPayReaderTOSAcceptanceFailed:
+            self = .tapToPayReaderTOSAcceptanceFailed
+        case .tapToPayReaderMerchantBlocked:
+            self = .tapToPayReaderMerchantBlocked
+        case .tapToPayReaderInvalidMerchant:
+            self = .tapToPayReaderInvalidMerchant
+        case .tapToPayReaderDeviceBanned:
+            self = .tapToPayReaderDeviceBanned
         case .unsupportedMobileDeviceConfiguration:
             self = .unsupportedMobileDeviceConfiguration
         case .readerNotAccessibleInBackground:
@@ -170,8 +170,8 @@ extension UnderlyingError {
             self = .internetConnectTimeOut
         case .bluetoothReconnectStarted:
             self = .bluetoothReconnectStarted
-        case .appleBuiltInReaderAccountDeactivated:
-            self = .appleBuiltInReaderAccountDeactivated
+        case .tapToPayReaderAccountDeactivated:
+            self = .tapToPayReaderAccountDeactivated
         case .readerMissingEncryptionKeys:
             self = .readerMissingEncryptionKeys
         case .unexpectedReaderError:

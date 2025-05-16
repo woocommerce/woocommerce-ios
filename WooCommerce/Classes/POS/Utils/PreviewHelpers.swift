@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -12,6 +13,11 @@ import struct Yosemite.PagedItems
 import struct Yosemite.POSVariableParentProduct
 import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
+import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
+import struct Yosemite.POSProduct
+import struct Yosemite.ProductVariation
+import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItemType
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -39,12 +45,15 @@ struct POSProductPreview: POSOrderableItem, Equatable {
 }
 
 final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        .init(items: [], hasMorePages: true)
+    func providePointOfSaleItems(pageNumber: Int,
+                                 fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
-        .init(items: mockVariationItems, hasMorePages: true)
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        .init(items: mockVariationItems, hasMorePages: true, totalItems: nil)
     }
 
     func providePointOfSaleItems() -> [POSItem] {
@@ -56,10 +65,35 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
                           name: "Product 1",
                           formattedPrice: "$1.00")
     }
+
+    var fetchStrategy: PointOfSalePurchasableItemFetchStrategy = PointOfSalePreviewPurchasableItemFetchStrategy()
+}
+
+struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        return .init(items: [], hasMorePages: true, totalItems: nil)
+    }
+
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+        return .init(items: [], hasMorePages: true, totalItems: nil)
+    }
 }
 
 @available(iOS 17.0, *)
-final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtocol {
+final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
+    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
+                                                                   itemsStack: ItemsStackState(root: .loading([]),
+                                                                                               itemStates: [:]))
+    func enableCoupons() async { }
+    func loadItems(base: ItemListBaseItem) async { }
+    func refreshItems(base: ItemListBaseItem) async { }
+    func loadNextItems(base: ItemListBaseItem) async { }
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async { }
+    func clearSearchItems(baseItem: ItemListBaseItem) { }
+}
+
+@available(iOS 17.0, *)
+final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
@@ -75,6 +109,10 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
         }
     }
 
+    func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {}
+
+    func clearSearchItems(baseItem: ItemListBaseItem) { }
+
     func refreshItems(base: ItemListBaseItem) async {
         await loadItems(base: base)
     }
@@ -87,6 +125,23 @@ final class PointOfSalePreviewItemsController: PointOfSaleItemsControllerProtoco
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
     }
+}
+
+@available(iOS 17.0, *)
+final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
+    func handleTap(_ item: Yosemite.POSItem) { }
+}
+
+final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
+    func saveSuccessfulSearch(term: String, for itemType: POSItemType) {}
+
+    func searchHistory(for itemType: POSItemType) -> [String] {
+        return []
+    }
+
+    func clearSearchHistory(for itemType: POSItemType) {}
+
+    func clearAllSearchHistory() {}
 }
 
 private var mockItems: [POSItem] {
@@ -133,6 +188,33 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     func startObserving() {}
 
     func stopObserving() {}
+}
+
+@available(iOS 17.0, *)
+struct POSPreviewHelpers {
+    static func makePreviewAggregateModel(
+        itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
+        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
+        searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
+        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController()
+    ) -> PointOfSaleAggregateModel {
+        return PointOfSaleAggregateModel(
+            itemsController: itemsController,
+            purchasableItemsSearchController: purchasableItemsSearchController,
+            couponsController: couponsController,
+            couponsSearchController: couponsSearchController,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderController: orderController,
+            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            searchHistoryService: searchHistoryService,
+            popularPurchasableItemsController: popularItemsController
+        )
+    }
 }
 
 #endif

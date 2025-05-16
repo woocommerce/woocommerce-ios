@@ -8,25 +8,28 @@ public enum WooShippingAction: Action {
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
                        completion: (Result<WooShippingCreatePackageResponse, PackageCreationError>) -> Void)
 
-    /// Deletes a custom package or deactivates a carrier package with provided package ID.
+    /// Deletes a package or deactivates a carrier package with provided package ID and type.
     ///
     case deletePackage(siteID: Int64,
                        packageID: String,
+                       packageType: WooShippingPackageType,
                        completion: (Result<WooShippingCreatePackageResponse, Error>) -> Void)
 
     /// Fetch list of shipping label rates for the order.
+    ///
+    /// - Sends back the `packages` parameter value along with the result in the completion handler
     ///
     case loadLabelRates(siteID: Int64,
                         orderID: Int64,
                         originAddress: WooShippingAddress,
                         destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
-                        completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
+                        completion: ([ShippingLabelPackageSelected], Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 
     /// Fetch list of packages.
     ///
     case loadPackages(siteID: Int64,
-                      completion: (Result<WooShippingPackagesResponse, WooShippingLoadPackagesError>) -> Void)
+                      completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
 
     /// Fetch list of packages.
     ///
@@ -82,4 +85,23 @@ public enum WooShippingAction: Action {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
+
+    /// Loads label config for a given order
+    ///
+    case loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: (Result<WooShippingConfig, Error>) -> Void)
+
+    /// Updates shipments for given order
+    ///
+    case updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: (Result<WooShippingShipments, Error>) -> Void)
+
+    /// Requests a refund for a shipping label
+    ///
+    case refundShippingLabel(shippingLabel: ShippingLabel,
+                             completion: (Result<ShippingLabel, Error>) -> Void)
+
 }

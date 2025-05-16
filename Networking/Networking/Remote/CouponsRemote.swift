@@ -7,8 +7,7 @@ import Foundation
 public protocol CouponsRemoteProtocol {
     func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
-                        pageSize: Int,
-                        completion: @escaping (Result<[Coupon], Error>) -> ())
+                        pageSize: Int) async throws -> [Coupon]
 
     func loadCoupons(for siteID: Int64,
                      by couponIDs: [Int64],
@@ -19,8 +18,7 @@ public protocol CouponsRemoteProtocol {
     func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
-                       pageSize: Int,
-                       completion: @escaping (Result<[Coupon], Error>) -> ())
+                       pageSize: Int) async throws -> [Coupon]
 
     func retrieveCoupon(for siteID: Int64,
                         couponID: Int64,
@@ -75,8 +73,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
-                               pageSize: Int = Default.pageSize,
-                               completion: @escaping (Result<[Coupon], Error>) -> ()) {
+                               pageSize: Int = Default.pageSize) async throws -> [Coupon] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
@@ -91,7 +88,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
         let mapper = CouponListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a specific list of `Coupon`s by `couponID`.
@@ -139,8 +136,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     public func searchCoupons(for siteID: Int64,
                               keyword: String,
                               pageNumber: Int,
-                              pageSize: Int,
-                              completion: @escaping (Result<[Coupon], Error>) -> ()) {
+                              pageSize: Int) async throws -> [Coupon] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -156,7 +152,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
 
         let mapper = CouponListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a `Coupon`.

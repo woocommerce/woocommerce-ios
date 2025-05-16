@@ -12,16 +12,31 @@ struct POSPageHeaderBackButtonConfiguration {
     let action: () -> Void
 }
 
+struct POSPageHeaderItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String?
+    let isSelected: Bool
+    let action: (() -> Void)?
+
+    init(title: String, subtitle: String? = nil, isSelected: Bool, action: (() -> Void)? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.isSelected = isSelected
+        self.action = action
+    }
+}
+
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
+@available(iOS 17.0, *)
 struct POSPageHeaderView<TrailingContent: View>: View {
-    private let title: String
-    private let subtitle: String?
+    private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
     private let trailingContent: TrailingContent?
 
     private var hStackAlignment: VerticalAlignment {
-        subtitle == nil ? .center: .firstTextBaseline
+        items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
@@ -34,8 +49,17 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
     ) {
-        self.title = title
-        self.subtitle = subtitle
+        self.items = [.init(title: title, subtitle: subtitle, isSelected: true)]
+        self.backButtonConfiguration = backButtonConfiguration
+        self.trailingContent = trailingContent()
+    }
+
+    init(
+        items: [POSPageHeaderItem],
+        backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
+    ) {
+        self.items = items
         self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
     }
@@ -46,62 +70,73 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                 backButton
             }
 
-            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                Text(title)
-                    .font(.posHeadingBold)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .accessibilityAddTraits(.isHeader)
+            HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
+                ForEach(0..<items.count, id: \.self) { index in
+                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                        Button(action: {
+                            items[index].action?()
+                        }) {
+                            Text(items[index].title)
+                                .font(.posHeadingBold)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                        }
+                        .disabled(items[index].isSelected)
+                        .accessibilityElement()
+                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                        .accessibilityLabel(items[index].title)
 
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.posBodyLargeRegular())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        .foregroundColor(.posOnSurface)
+                        if let subtitle = items[index].subtitle {
+                            Text(subtitle)
+                                .font(.posBodyLargeRegular())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                .foregroundColor(.posOnSurface)
+                        }
+                    }
                 }
             }
 
-            Spacer()
+            if items.isNotEmpty {
+                Spacer()
+            }
 
             if let trailingContent {
                 trailingContent
             }
         }
-        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+        .frame(minHeight: POSHeaderLayoutConstants.minHeight)
+        .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
+        .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+    }
+
+    private var shouldHaveLeadingPaddingForItems: Bool {
+        items.isNotEmpty  || showsBackButton
     }
 
     @ViewBuilder
     private var backButton: some View {
         if let configuration = backButtonConfiguration {
-            Button(action: configuration.action) {
-                Text(Image(systemName: Constants.backButtonIcon))
-                    .font(.posButtonSymbolLarge)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
-                    .padding(.horizontal, Constants.backButtonHorizontalPadding)
-            }
-            .disabled(configuration.state == .disabled || configuration.state == .shimmering)
-            .if(configuration.state == .shimmering) { view in
-                view.shimmering()
-            }
+            POSPageHeaderBackButton(configuration: configuration)
         }
     }
 }
 
 private enum Constants {
-    static let backButtonIcon = "chevron.backward"
-    /// Icon container is 48x48, chevron icon width is 24px. Therefore, adding a horizontal padding (48-24)/2 = 12.
-    static let backButtonHorizontalPadding: CGFloat = 12
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
 
+
+
+@available(iOS 17.0, *)
 #Preview {
+    @Previewable @State var isProductsSelected: Bool = true
+
     VStack(spacing: 20) {
         // Header without back button.
         POSPageHeaderView(
@@ -171,6 +206,28 @@ private enum Constants {
                     .font(.posButtonSymbolLarge)
             }
             .foregroundColor(.posOnSurface)
+        }
+
+        // Header with two items and trailing content.
+        POSPageHeaderView(
+            items: [
+                .init(title: "Products", isSelected: isProductsSelected) { isProductsSelected.toggle() },
+                .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
+            ]
+        ) {
+            HStack(spacing: 16) {
+                Button(action: {}) {
+                    Text(Image(systemName: "plus"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+
+                Button(action: {}) {
+                    Text(Image(systemName: "magnifyingglass"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+            }
         }
     }
     .background(Color.posSurface)

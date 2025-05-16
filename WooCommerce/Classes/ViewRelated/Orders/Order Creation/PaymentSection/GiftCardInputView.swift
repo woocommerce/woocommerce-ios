@@ -23,12 +23,12 @@ struct GiftCardInputView: View {
                         HStack {
                             TextField(Localization.placeholder, text: $viewModel.code)
                                 .focused()
-                                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                                .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
                             Spacer()
                             Button {
                                 showsScanner = true
                             } label: {
-                                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                                Image(systemName: "barcode.viewfinder")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxHeight: Constants.scanImageSize * scale)

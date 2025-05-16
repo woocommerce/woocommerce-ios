@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ItemRowView: View {
-    private let cartItem: CartItem
+    private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -11,7 +11,7 @@ struct ItemRowView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(cartItem: CartItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: Cart.PurchasableItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
@@ -39,14 +39,9 @@ struct ItemRowView: View {
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
-                Button(action: {
+                CartRowRemoveButton {
                     onItemRemoveTapped()
-                }, label: {
-                    Text(Image(systemName: "xmark.circle"))
-                        .font(.posButtonSymbolMedium)
-                })
-                .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
@@ -81,34 +76,26 @@ private extension ItemRowView {
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
     }
-
-    enum Localization {
-        static let removeFromCartAccessibilityLabel = NSLocalizedString(
-            "pointOfSale.item.removeFromCart.button.accessibilityLabel",
-            value: "Remove",
-            comment: "The accessibility label for the `x` button next to each item in the Point of Sale cart." +
-            "The button removes the item. The translation should be short, to make it quick to navigate by voice.")
-    }
 }
 
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartItem(id: UUID(),
-                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                   title: "Item Title",
-                                   subtitle: "Item Subtitle",
-                                   quantity: 2),
+    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
+                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                               title: "Item Title",
+                                               subtitle: "Item Subtitle",
+                                               quantity: 2),
                 onItemRemoveTapped: { })
 }
 
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: CartItem(id: UUID(),
-                                   item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                   title: "Item Title",
-                                   subtitle: nil,
-                                   quantity: 2),
+    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
+                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                                               title: "Item Title",
+                                               subtitle: nil,
+                                               quantity: 2),
                 onItemRemoveTapped: { })
 }
 #endif

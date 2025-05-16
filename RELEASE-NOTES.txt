@@ -1,10 +1,66 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.5
+-----
+
+
+22.4
+-----
+- [*] Payments: Receipts for failed transactions are now available in Order details  [https://github.com/woocommerce/woocommerce-ios/pull/15558]
+- [*] Order Details: Improvements to textfield capitalization rules [https://github.com/woocommerce/woocommerce-ios/pull/15611]
+- [*] POS: Scrolling search results now dismisses the keyboard [https://github.com/woocommerce/woocommerce-ios/pull/15606]
+- [*] POS: Product search shows popular products before a search is entered. [https://github.com/woocommerce/woocommerce-ios/pull/15625]
+- [*] Order Creation: Display non-purchasable, zero-priced variable product variations [https://github.com/woocommerce/woocommerce-ios/pull/15620]
+- [*] POS: Improve error display in search screens [https://github.com/woocommerce/woocommerce-ios/pull/15627]
+- [*] POS: Added coupon search functionality [https://github.com/woocommerce/woocommerce-ios/pull/15634]
+- [*] Order Details: Fixed crash reloading the screen after refunding an order on the web. [https://github.com/woocommerce/woocommerce-ios/pull/15633]
+
+22.3
+-----
+- [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
+- [internal] Attempt fixing (incorrect) crash upon database dropping [https://github.com/woocommerce/woocommerce-ios/pull/15546]
+- [**] POS: Product search added [https://github.com/woocommerce/woocommerce-ios/pull/15545]
+- [*] Payments: Prevent sleep during Tap to Pay on iPhone configuration step [https://github.com/woocommerce/woocommerce-ios/pull/15555]
+- [*] Payments: Use correct documentation link for pending requirements onboarding step [https://github.com/woocommerce/woocommerce-ios/pull/15556]
+- [**] POS: Added functionality for selecting and applying coupons. [https://github.com/woocommerce/woocommerce-ios/pull/15549]
+- [*] Order Form: Improve custom amount entry forms [https://github.com/woocommerce/woocommerce-ios/pull/15573]
+
+22.2
+-----
+- [internal] Improved login flow during Jetpack Setup for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15491]
+- [internal] Update Sentry to 8.46.0 to allow building with Xcode 16.3 [https://github.com/woocommerce/woocommerce-ios/pull/15503]
+- [*] Product Form: Fixed an issue where a draft variable product cannot be published [https://github.com/woocommerce/woocommerce-ios/pull/15513]
+- [internal] Fixed the issue where some product thumbnails appeared blurry [https://github.com/woocommerce/woocommerce-ios/pull/15517]
+
+22.1
+-----
+- [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
+- [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [*] [Internal] Improved login flow for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15444]
+- [*] Order Creation: Updated the customer first/last name parsing after selecting a customer to support multi-word last names. [https://github.com/woocommerce/woocommerce-ios/pull/15462]
+- [*] Order Creation/Editing: Fixed blurry icons for product scanning, QR code & Tap To Pay payment methods. Polished checkmark icon color in selected product row. [https://github.com/woocommerce/woocommerce-ios/pull/15465]
+- [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
+- [internal] POS: Show location pre-alert and error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/15456].
+- [internal] Payments: update reader preparation spinner color [https://github.com/woocommerce/woocommerce-ios/pull/15460]
+
+22.0
+-----
+- [*] Payments: Puerto Rico is now available in the list of countries that are supported by In-Person Payments, when using WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/14972]
+- [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
+- [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
+- [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
+- [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
+- [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
+- [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
+- [internal] Update Stripe Terminal SDK to 4.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/15377]
+- [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
+
 21.9
 -----
 - [*] Product Form: Reset uploaded images upon discarding changes [https://github.com/woocommerce/woocommerce-ios/pull/15265]
-
+- [*] Improved accessibility on login flow [https://github.com/woocommerce/woocommerce-ios/pull/15281]
 
 21.8
 -----

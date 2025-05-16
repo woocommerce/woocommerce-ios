@@ -38,7 +38,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .accessibilityShowsLargeContentViewer()
                                 .background(backgroundColor.ignoresSafeArea(.all))
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                                 .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
                                 .geometryGroup()
                         }
@@ -49,7 +49,7 @@ struct TotalsView: View {
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
                                 .layoutPriority(1)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         }
                     }
                     .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
@@ -66,7 +66,7 @@ struct TotalsView: View {
                             .font(POSFontStyle.posBodyLargeBold)
                     })
                     .layoutPriority(1)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .padding(.horizontal, Constants.buttonHorizontalPadding)
                     .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
@@ -75,8 +75,11 @@ struct TotalsView: View {
                                                                               cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
                 }
                 .animation(.default, value: isShowingPaymentView)
-            case .error(let viewModel):
-                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+            case .error(.other(let message), let handler):
+                PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
+                    .transition(.opacity)
+            case .error(.invalidCoupon(let message), let handler):
+                PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
             }
         }
@@ -127,6 +130,15 @@ private extension TotalsView {
                               shimmeringActive: totalsLoading,
                               matchedGeometryId: Constants.matchedGeometrySubtotalId)
             Spacer().frame(height: Constants.subtotalsVerticalSpacing)
+
+            if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
+                subtotalFieldView(title: Localization.discountTotal,
+                                  formattedPrice: orderTotals?.discountTotal,
+                                  shimmeringActive: totalsLoading,
+                                  matchedGeometryId: Constants.matchedGeometryDiscountId)
+                Spacer().frame(height: Constants.subtotalsVerticalSpacing)
+            }
+
             subtotalFieldView(title: Localization.taxes,
                               formattedPrice: orderTotals?.taxTotal,
                               shimmeringActive: totalsLoading,
@@ -282,12 +294,6 @@ private extension TotalsView {
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
-
-        static let topAligned = PaymentViewLayout(
-            backgroundColor: .clear,
-            topPadding: 96,
-            bottomPadding: 96
-        )
     }
 
     private var isShowingPaymentView: Bool {
@@ -323,7 +329,10 @@ private extension TotalsView {
             case .validatingOrderError:
                 return .outlined
             case .paymentError:
-                return .topAligned
+                return PaymentViewLayout(backgroundColor: backgroundColor,
+                                         topPadding: POSPadding.none,
+                                         bottomPadding: POSPadding.none,
+                                         sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
                 return PaymentViewLayout(backgroundColor: backgroundColor,
                                          topPadding: POSPadding.none,
@@ -331,6 +340,7 @@ private extension TotalsView {
                                          sidePadding: POSPadding.none)
             case .idle,
                     .acceptingCard,
+                    .cardInserted,
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
@@ -411,6 +421,7 @@ private extension TotalsView {
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
+        static let matchedGeometryDiscountId: String = "pos_totals_view_subtotal_matched_discount_id"
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
         static let matchedGeometryCashId: String = "pos_totals_view_cash_matched_geometry_id"
@@ -431,6 +442,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
+        static let discountTotal = NSLocalizedString(
+            "pos.totalsView.discountTotal2",
+            value: "Discount total",
+            comment: "Title for discount total amount field")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -441,12 +456,7 @@ private extension TotalsView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     TotalsView()
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

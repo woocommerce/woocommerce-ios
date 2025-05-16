@@ -113,7 +113,9 @@ struct PointOfSaleCollectCashView: View {
     }
 
     private func markComplete() async throws {
-        try await posModel.collectCashPayment()
+        let changeDueAmount = viewHelper.formattedChangeDueAmount(orderTotal: orderTotal,
+                                                                  textFieldAmountInput: textFieldAmountInput)
+        try await posModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 }
 
@@ -196,12 +198,7 @@ private extension PointOfSaleCollectCashView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     PointOfSaleCollectCashView(orderTotal: "$1.23")
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

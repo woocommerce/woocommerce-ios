@@ -130,6 +130,12 @@ extension PaymentGateway: Codable {
     }
 }
 
+extension PaymentGateway {
+    public enum Constants {
+        public static let cashOnDeliveryGatewayID = "cod"
+    }
+}
+
 // MARK: - Features Decodable
 extension PaymentGateway.Feature: RawRepresentable, Codable {
 

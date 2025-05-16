@@ -16,8 +16,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             self = .stripeM2
         case .wisepad3:
             self = .wisepad3
-        case .appleBuiltIn:
-            self = .appleBuiltIn
+        case .tapToPay:
+            self = .tapToPay
         case .other:
             self = .other
         }
@@ -33,8 +33,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             return .stripeM2
         case .wisepad3:
             return .wisepad3
-        case .appleBuiltIn:
-            return .appleBuiltIn
+        case .tapToPay:
+            return .tapToPay
         case .other:
             return .other
         }

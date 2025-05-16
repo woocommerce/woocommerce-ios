@@ -1,22 +1,30 @@
 import SwiftUI
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
+@available(iOS 17.0, *)
 struct PointOfSaleItemListErrorView: View {
+    @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let error: PointOfSaleErrorState
-    private let onRetry: (() -> Void)?
+    private let onAction: (() -> Void)?
 
-    init(error: PointOfSaleErrorState, onRetry: (() -> Void)? = nil) {
+    @State private var viewWidth: CGFloat = 0
+
+    @Environment(\.keyboardObserver) private var keyboard
+
+    init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
         self.error = error
-        self.onRetry = onRetry
+        self.onAction = onAction
     }
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                POSErrorExclamationMark(size: .large)
+                if !keyboard.isFullSizeKeyboardVisible {
+                    POSErrorExclamationMark(size: .large)
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                }
 
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
@@ -33,19 +41,24 @@ struct PointOfSaleItemListErrorView: View {
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
 
                 Button(action: {
-                    onRetry?()
+                    onAction?()
                 }, label: {
                     Text(error.buttonText)
                 })
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .frame(maxWidth: PointOfSaleItemListErrorLayout.buttonWidth)
+                .frame(width: viewWidth / 2)
                 .padding([.leading, .trailing])
             }
             Spacer()
         }
+        .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
+        .measureWidth { width in
+            viewWidth = width
+        }
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts(), onRetry: nil)
+    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts, onAction: nil)
 }

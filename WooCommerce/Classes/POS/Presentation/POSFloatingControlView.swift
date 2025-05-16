@@ -8,6 +8,7 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @State private var showProductRestrictionsModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -47,6 +48,14 @@ struct POSFloatingControlView: View {
                         icon: { Image(systemName: "info.circle") }
                     )
                 }
+                Button {
+                    showProductRestrictionsModal = true
+                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                } label: {
+                    Label(
+                        title: { Text(Localization.productRestrictionsInfo) },
+                        icon: { Image(systemName: "magnifyingglass") })
+                }
             } label: {
                 VStack {
                     Spacer()
@@ -68,6 +77,9 @@ struct POSFloatingControlView: View {
                 .cornerRadius(Constants.cornerRadius)
                 .disabled(posModel.paymentState.shownFullScreen)
                 .disabled(horizontalSizeClass != .regular)
+        }
+        .posModal(isPresented: $showProductRestrictionsModal) {
+            SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .frame(height: Constants.size)
         .background(Color.clear)
@@ -115,20 +127,27 @@ private extension POSFloatingControlView {
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
-            comment: "The title of the floating button to exit Point of Sale, shown in a popover menu." +
+            comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
         )
 
         static let getSupport = NSLocalizedString(
             "pointOfSale.floatingButtons.getSupport.button.title",
             value: "Get Support",
-            comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
+            comment: "The title of the menu button to get support for Point of Sale, shown in a popover menu."
         )
 
         static let viewDocumentation = NSLocalizedString(
             "pointOfSale.floatingButtons.viewDocumentation.button.title",
             value: "Documentation",
-            comment: "The title of the floating button to read Point of Sale documentation, shown in a popover menu."
+            comment: "The title of the menu button to read Point of Sale documentation, shown in a popover menu."
+        )
+
+        static let productRestrictionsInfo = NSLocalizedString(
+            "pointOfSale.floatingButtons.productRestrictionsInfo.button.title",
+            value: "Where are my products?",
+            comment: "The title of the menu button to view product restrictions info, shown in a popover menu. " +
+            "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
         )
     }
 }
@@ -137,25 +156,18 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 @available(iOS 17.0, *)
 #Preview("Reader Connected") {
     let paymentService = CardPresentPaymentPreviewService()
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(
+        cardPresentPaymentService: paymentService
+    )
     return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -163,14 +175,9 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
-        .environment(posModel)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

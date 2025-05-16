@@ -44,6 +44,12 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
     /// This is only used to look up a product in case `productIDs` is not available.
     public let productNames: [String]
 
+    /// Shipment ID - Used for the split shipments feature
+    public let shipmentID: String?
+
+    /// Optional refund details if the user has requested refund for the shipping label.
+    public let refund: ShippingLabelRefund?
+
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
@@ -55,7 +61,9 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
                 refundableAmount: Double,
                 status: ShippingLabelStatus,
                 productIDs: [Int64],
-                productNames: [String]) {
+                productNames: [String],
+                shipmentID: String?,
+                refund: ShippingLabelRefund?) {
         self.siteID = siteID
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
@@ -68,6 +76,8 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
         self.status = status
         self.productIDs = productIDs
         self.productNames = productNames
+        self.shipmentID = shipmentID
+        self.refund = refund
     }
 }
 
@@ -99,6 +109,11 @@ extension ShippingLabelPurchase: Decodable {
         let productIDs = try container.decodeIfPresent([Int64].self, forKey: .productIDs) ?? []
         let productNames = try container.decode([String].self, forKey: .productNames)
 
+        let shipmentID = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                           forKey: .shipmentID,
+                                                           alternativeTypes: [.integer(transform: { String($0) })])
+        let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   shippingLabelID: shippingLabelID,
@@ -110,7 +125,9 @@ extension ShippingLabelPurchase: Decodable {
                   refundableAmount: refundableAmount,
                   status: status,
                   productIDs: productIDs,
-                  productNames: productNames)
+                  productNames: productNames,
+                  shipmentID: shipmentID,
+                  refund: refund)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -126,6 +143,8 @@ extension ShippingLabelPurchase: Decodable {
         case status
         case productIDs = "product_ids"
         case productNames = "product_names"
+        case shipmentID = "id"
+        case refund
     }
 }
 

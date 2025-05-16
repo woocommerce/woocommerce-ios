@@ -11,23 +11,49 @@ struct PointOfSaleDashboardView: View {
 
     @State private var floatingSize: CGSize = .zero
 
+    private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
+        posModel.viewStateCoordinatorForView
+    }
+
+    private var itemsViewState: ItemsViewState {
+        switch viewStateCoordinator.selectedItemListType {
+        case .products(let searching):
+            if searching {
+                return posModel.purchasableItemsSearchController.itemsViewState
+            } else {
+                return posModel.purchasableItemsController.itemsViewState
+            }
+        case .coupons(let searching):
+            if searching {
+                return posModel.couponsSearchController.itemsViewState
+            } else {
+                return posModel.couponsController.itemsViewState
+            }
+        }
+    }
+
     var body: some View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             if case .regular = horizontalSizeClass {
-                switch posModel.itemsViewState.containerState {
+                switch itemsViewState.containerState {
                 case .loading:
                     PointOfSaleLoadingView()
                         .transition(.opacity)
                         .ignoresSafeArea()
-                case .empty:
-                    PointOfSaleItemListFullscreenView {
-                        PointOfSaleItemListEmptyView(base: .root)
-                    }
-                case .error(let errorContents):
-                    PointOfSaleItemListFullscreenErrorView(error: errorContents, onRetry: {
+                case .error(let error):
+                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                         Task {
-                            await posModel.loadItems(base: .root)
+                            switch viewStateCoordinator.selectedItemListType {
+                            case .products(search: false):
+                                await posModel.purchasableItemsController.loadItems(base: .root)
+                            case .products(search: true):
+                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                            case .coupons(search: false):
+                                await posModel.couponsSearchController.loadItems(base: .root)
+                            case .coupons(search: true):
+                                await posModel.couponsSearchController.loadItems(base: .root)
+                            }
                         }
                     })
                 case .content:
@@ -47,7 +73,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(posModel.itemsViewState.containerState != .loading)
+            .renderedIf(itemsViewState.containerState != .loading)
 
             POSConnectivityView()
         }
@@ -55,7 +81,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
-        .animation(.easeInOut, value: posModel.itemsViewState.containerState == .loading)
+        .animation(.easeInOut, value: itemsViewState.containerState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -83,16 +109,25 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .task {
-            await posModel.loadItems(base: .root)
+            await posModel.purchasableItemsController.loadItems(base: .root)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale) {
+                await posModel.couponsController.loadItems(base: .root)
+            }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
+               ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
+                await posModel.popularPurchasableItemsController.loadItems(base: .root)
+            }
         }
         .ignoresSafeArea(.keyboard)
     }
 
     private var contentView: some View {
-        GeometryReader { geometry in
+        @Bindable var viewStateCoordinator = viewStateCoordinator
+        return GeometryReader { geometry in
             HStack {
                 if posModel.orderStage == .building {
-                    ItemListView()
+                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                                 searchTerm: $viewStateCoordinator.searchTerm)
                         .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }
@@ -189,14 +224,9 @@ private extension PointOfSaleDashboardView {
 
 @available(iOS 17.0, *)
 #Preview("Container loading state") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     return NavigationStack {
         PointOfSaleDashboardView()
-            .environment(posModel)
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
             .environmentObject(POSModalManager())
     }
 }
@@ -204,12 +234,8 @@ private extension PointOfSaleDashboardView {
 @available(iOS 17.0, *)
 #Preview("Content loading state") {
     let itemsController = PointOfSalePreviewItemsController()
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
     return NavigationStack {
         PointOfSaleDashboardView()
             .environment(posModel)

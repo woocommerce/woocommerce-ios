@@ -3,7 +3,7 @@ import WooFoundation
 
 public struct CardPresentPaymentsConfiguration: Equatable {
     public let countryCode: CountryCode
-    public let paymentMethods: [WCPayPaymentMethodType]
+    public let paymentMethods: [PaymentMethodType]
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
     public let supportedReaders: [CardReaderType]
@@ -22,7 +22,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion
 
     init(countryCode: CountryCode,
-         paymentMethods: [WCPayPaymentMethodType],
+         paymentMethods: [PaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
          supportedReaders: [CardReaderType],
@@ -52,10 +52,25 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.USD],
                 paymentGateways: [WCPayAccount.gatewayID, StripeAccount.gatewayID],
-                supportedReaders: [.chipper, .stripeM2, .appleBuiltIn],
+                supportedReaders: [.chipper, .stripeM2, .tapToPay],
                 supportedPluginVersions: [
                     .init(plugin: .wcPay, minimumVersion: "3.2.1"),
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
+                ],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
+            )
+        case .PR:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.USD],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.chipper, .stripeM2],
+                supportedPluginVersions: [
+                    .init(plugin: .wcPay, minimumVersion: "9.0.0")
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
@@ -81,7 +96,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 paymentMethods: [.cardPresent],
                 currencies: [.GBP],
                 paymentGateways: [WCPayAccount.gatewayID],
-                supportedReaders: shouldAllowTapToPayInUK ? [.wisepad3, .appleBuiltIn] : [.wisepad3],
+                supportedReaders: shouldAllowTapToPayInUK ? [.wisepad3, .tapToPay] : [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,

@@ -27,7 +27,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
                             CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
@@ -148,6 +148,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             return
         case .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
+                .cardInserted(cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),
                 .paymentCaptureError(cancelPayment: let cancelPayment),
                 .paymentIntentCreationError(_, cancelPayment: let cancelPayment):
@@ -161,8 +162,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             done()
         case .locationRequestPreAlert:
             return
-        case .locationRequired(let dismiss, _):
-            dismiss()
+        case .locationRequired(let cancel):
+            cancel()
         }
     }
 }

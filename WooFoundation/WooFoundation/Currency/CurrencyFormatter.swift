@@ -166,13 +166,20 @@ public class CurrencyFormatter {
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
+    ///     - isNegative: optional enforce number presentation as negative. e.g "-$19.23"
     ///
-    public func formatAmount(_ amount: String, with currency: String? = nil, locale: Locale = .current) -> String? {
+    public func formatAmount(_ amount: String,
+                             with currency: String? = nil,
+                             locale: Locale = .current,
+                             isNegative: Bool? = nil) -> String? {
         guard let decimalAmount = convertToDecimal(amount, locale: locale) else {
             return nil
         }
 
-        return formatAmount(decimalAmount, with: currency ?? currencySettings.currencyCode.rawValue, locale: locale)
+        return formatAmount(decimalAmount,
+                            with: currency ?? currencySettings.currencyCode.rawValue,
+                            locale: locale,
+                            isNegative: isNegative)
     }
 
     /// Formats the provided `amount` param into a human readable value and applies the currency option
@@ -278,8 +285,13 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
     ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
+    ///     - isNegative: optional enforce number presentation as negative. e.g "-$19.23"
     ///
-    public func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
+    public func formatAmount(_ amount: NSDecimalNumber,
+                             with currency: String? = nil,
+                             locale: Locale = .current,
+                             numberOfDecimals: Int? = nil,
+                             isNegative: Bool? = nil) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
         let code = CurrencyCode(rawValue: currency.uppercased()) ?? currencySettings.currencyCode
@@ -306,7 +318,7 @@ public class CurrencyFormatter {
         let formattedAmount = formatCurrency(using: localizedAmount,
                                              currencyPosition: position,
                                              currencySymbol: symbol,
-                                             isNegative: amount.isNegative(),
+                                             isNegative: isNegative ?? amount.isNegative(),
                                              locale: locale)
 
         return formattedAmount
@@ -318,7 +330,17 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///     - locale: the locale that is used to format the currency amount string.
     ///     - numberOfDecimals: optional number of decimal points to show for the amount. If nil, the currency settings value is used.
-    public func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
-        formatAmount(amount as NSDecimalNumber, with: currency, locale: locale, numberOfDecimals: numberOfDecimals)
+    ///     - isNegative: optional enforce number presentation as negative. e.g "-$19.23"
+    ///
+    public func formatAmount(_ amount: Decimal,
+                             with currency: String? = nil,
+                             locale: Locale = .current,
+                             numberOfDecimals: Int? = nil,
+                             isNegative: Bool? = nil) -> String? {
+        formatAmount(amount as NSDecimalNumber,
+                     with: currency,
+                     locale: locale,
+                     numberOfDecimals: numberOfDecimals,
+                     isNegative: isNegative)
     }
 }

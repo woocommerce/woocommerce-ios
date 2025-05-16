@@ -90,12 +90,13 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         let package = WooShippingCustomPackage.fake()
-        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "wooshipping-delete-package-success")
+        network.simulateResponse(requestUrlSuffix: "packages/custom/\(package.id)", filename: "wooshipping-delete-package-success")
 
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.deletePackage(siteID: self.sampleSiteID,
-                                 packageID: package.id) { result in
+                                 packageID: package.id,
+                                 packageType: .custom) { result in
                 promise(result)
             }
         }
@@ -110,12 +111,13 @@ final class WooShippingRemoteTests: XCTestCase {
         // Given
         let remote = WooShippingRemote(network: network)
         let package = WooShippingCustomPackage.fake()
-        network.simulateResponse(requestUrlSuffix: "packages/\(package.id)", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "packages/custom/\(package.id)", filename: "generic_error")
 
         // When
         let result: Result<WooShippingCreatePackageResponse, Error> = waitFor { promise in
             remote.deletePackage(siteID: self.sampleSiteID,
-                                 packageID: package.id) { result in
+                                 packageID: package.id,
+                                 packageType: .custom) { result in
                 promise(result)
             }
         }
@@ -610,6 +612,142 @@ final class WooShippingRemoteTests: XCTestCase {
             remote.updateDestinationAddress(siteID: self.sampleSiteID,
                                             orderID: self.sampleOrderID,
                                             address: WooShippingDestinationAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: Load config
+
+    func test_loadConfig_sends_correct_fields_value() async throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "shipping-label-config-success")
+
+        // When
+        _ = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID,
+                              orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let fieldsValue = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertEqual(WooShippingConfigMapper.fieldsToLoad, fieldsValue)
+    }
+
+    func test_loadConfig_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "shipping-label-config-success")
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID,
+                              orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let config = try XCTUnwrap(result.get())
+        XCTAssertEqual(config.shipments.count, 3)
+    }
+
+    func test_loadConfig_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID,
+                              orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: Update shipment
+
+    func test_updateShipment_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "shipping-label-update-shipment")
+
+        // When
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
+            remote.updateShipment(siteID: self.sampleSiteID,
+                                  orderID: self.sampleOrderID,
+                                  shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let shipments = try XCTUnwrap(result.get())
+        XCTAssertEqual(shipments.count, 3)
+    }
+
+    func test_updateShipment_returns_error_on_network_failure() {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "shipments/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<WooShippingShipments, Error> = waitFor { promise in
+            remote.updateShipment(siteID: self.sampleSiteID,
+                                  orderID: self.sampleOrderID,
+                                  shipmentToUpdate: WooShippingUpdateShipment.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: Refund shipping label
+
+    func test_refundShippingLabel_parses_success_response() throws {
+        // Given
+        let labelID: Int64 = 332
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "wooshipping-label-refund-success")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: self.sampleOrderID,
+                                       shippingLabelID: labelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1723147248.000), status: .pending))
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let labelID: Int64 = 332
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/refund/\(sampleOrderID)/\(labelID)", filename: "wooshipping-label-refund-error")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: self.sampleOrderID,
+                                       shippingLabelID: labelID) { result in
                 promise(result)
             }
         }

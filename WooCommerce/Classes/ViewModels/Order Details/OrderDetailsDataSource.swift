@@ -64,15 +64,19 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
-        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
-            !isEligibleForPayment
+        if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
+            // TODO-15375: update logic to show shipping label creation button
+            return isEligibleForShippingLabelCreation && !isEligibleForPayment
+        }
+        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty && !isEligibleForPayment
     }
 
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
-        return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
-            !isEligibleForPayment
+        isEligibleForShippingLabelCreation &&
+        shippingLabels.isNotEmpty &&
+        !isEligibleForPayment
     }
 
     /// Whether the option to install the WCShip extension should be visible.
@@ -244,7 +248,9 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderSubscriptions: [Subscription] = [] {
         didSet {
-            reloadSections()
+            Task { @MainActor in
+                await reloadSections()
+            }
         }
     }
 
@@ -267,6 +273,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
+    private let receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol
+
     private let currencySettings: CurrencySettings
 
     private let userIsAdmin: Bool
@@ -279,6 +287,7 @@ final class OrderDetailsDataSource: NSObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
@@ -288,6 +297,7 @@ final class OrderDetailsDataSource: NSObject {
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
@@ -401,10 +411,10 @@ extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard section >= 0 && section < sections.count else {
             ServiceLocator.crashLogging.logMessage(
-                            "Invalid section in viewForHeaderInSection in OrderDetailsDataSource",
-                            properties: ["section": section],
-                            level: .error
-                        )
+                "Invalid section in viewForHeaderInSection in OrderDetailsDataSource",
+                properties: ["section": section],
+                level: .error
+            )
             return nil
         }
         let section = sections[section]
@@ -545,8 +555,8 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-                "View Custom Fields",
-                comment: "Accessibility label for the 'View Custom Fields' button"
+            "View Custom Fields",
+            comment: "Accessibility label for the 'View Custom Fields' button"
         )
         cell.accessibilityHint = NSLocalizedString(
             "Show the custom fields for this order.",
@@ -1182,14 +1192,33 @@ extension OrderDetailsDataSource {
     /// When: Customer Note == nil          >>> Hide Customer Note
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
-    func reloadSections() {
+    @MainActor
+    func reloadSections() async {
         // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
         shippingLabels = resultsControllers.shippingLabels
-        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
-                                                                                   orderItems: items,
-                                                                                   products: products,
-                                                                                   productVariations: resultsControllers.productVariations)
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
+            shippingLabels: shippingLabels,
+            orderItems: items,
+            products: products,
+            productVariations: resultsControllers.productVariations
+        )
 
+        var sections = buildStaticSections().compactMap { $0 }
+        let paymentSection = await createPaymentSection()
+
+        // Finds the position between shippingLines and customerInformation to inject the payment section,
+        // otherwise will always appear last because of being async
+        let insertIndex = sections.firstIndex { $0.category == .customerInformation }
+            ?? sections.count
+
+        sections.insert(paymentSection, at: insertIndex)
+        self.sections = sections
+
+        self.updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
+        self.onUIReloadRequired?()
+    }
+
+    private func buildStaticSections() -> [Section?] {
         let summary = Section(category: .summary, row: .summary)
 
         let products: Section? = {
@@ -1218,7 +1247,6 @@ extension OrderDetailsDataSource {
                 // Order processing digital:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:
-                // Other cases
                 break
             }
 
@@ -1235,7 +1263,6 @@ extension OrderDetailsDataSource {
             } else {
                 headerStyle = .twoColumn
             }
-
             return Section(category: .products,
                            title: Title.products,
                            rows: rows,
@@ -1287,14 +1314,23 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    rows = [.shippingLabelRefunded, .shippingLabelDetail]
+                    if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
+                        rows = [.shippingLabelRefunded]
+                    } else {
+                        rows = [.shippingLabelRefunded, .shippingLabelDetail]
+                    }
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
-                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
-                        self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+
+                    if shippingLabel.isRefundable || shippingLabel.hasCustomsForm {
+                        let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                            self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+                        }
+                        headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
+                    } else {
+                        headerStyle = .primary
                     }
-                    headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }
                 return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: headerStyle)
             }
@@ -1307,69 +1343,6 @@ extension OrderDetailsDataSource {
             }
 
             return Section(category: .shippingLines, title: Title.shippingLines, rows: Array(repeating: .shippingLine, count: shippingLines.count))
-        }()
-
-        let customerInformation: Section? = {
-            var rows: [Row] = []
-
-            /// Customer Note
-            /// Always visible to allow adding & editing.
-            rows.append(.customerNote)
-
-            /// Shipping Address
-            /// Almost always visible to allow editing.
-            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
-            }.allSatisfy { $0.virtual == true }
-
-
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
-                rows.append(.shippingAddress)
-            }
-
-            /// Billing Address
-            /// Always visible to allow editing.
-            rows.append(.billingDetail)
-
-            /// Return `nil` if there is no rows to display.
-            guard rows.isNotEmpty else {
-                return nil
-            }
-
-            return Section(category: .customerInformation, title: Title.information, rows: rows)
-        }()
-
-        let payment: Section = {
-            var rows: [Row] = [.payment]
-
-            rows.append(.customerPaid)
-
-            if condensedRefunds.isNotEmpty {
-                let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
-                rows.append(contentsOf: refunds)
-                rows.append(.netAmount)
-            }
-
-            if isEligibleForPayment {
-                rows.append(.collectCardPaymentButton)
-            }
-
-            switch orderHasLocalReceipt {
-            case true:
-                rows.append(.seeLegacyReceipt)
-            case false:
-                isEligibleForBackendReceipt { isEligible in
-                    if isEligible {
-                        rows.append(.seeReceipt)
-                    }
-                }
-            }
-
-            if isEligibleForRefund {
-                rows.append(.issueRefundButton)
-            }
-
-            return Section(category: .payment, title: Title.payment, rows: rows)
         }()
 
         let subscriptions: Section? = {
@@ -1438,7 +1411,6 @@ extension OrderDetailsDataSource {
         }()
 
         let attribution: Section? = {
-
             let rows: [Row] = {
                 var rows: [Row] = [.attributionOrigin]
 
@@ -1477,28 +1449,91 @@ extension OrderDetailsDataSource {
         }()
 
         let trashOrderSection: Section? = {
-            return Section(category: .trashOrder, rows: [.trashOrder])
+            Section(category: .trashOrder, rows: [.trashOrder])
         }()
 
-        sections = ([summary,
-                     products,
-                     customAmountsSection,
-                     customFields,
-                     installWCShipSection,
-                     refundedProducts] +
-                    shippingLabelSections +
-                    [subscriptions,
-                     shippingLinesSection,
-                     payment,
-                     customerInformation,
-                     attribution,
-                     giftCards,
-                     tracking,
-                     addTracking,
-                     notes,
-                     trashOrderSection]).compactMap { $0 }
+        let customerInformation: Section? = {
+            var rows: [Row] = []
 
-        updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
+            /// Customer Note
+            /// Always visible to allow adding & editing.
+            rows.append(.customerNote)
+
+            /// Shipping Address
+            /// Almost always visible to allow editing.
+            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
+                return items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
+
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+                rows.append(.shippingAddress)
+            }
+
+            /// Billing Address
+            /// Always visible to allow editing.
+            rows.append(.billingDetail)
+
+            /// Return `nil` if there is no rows to display.
+            guard rows.isNotEmpty else {
+                return nil
+            }
+
+            return Section(category: .customerInformation, title: Title.information, rows: rows)
+        }()
+
+        return [
+            summary,
+            products,
+            customAmountsSection,
+            customFields,
+            installWCShipSection,
+            refundedProducts
+        ] + shippingLabelSections + [
+            subscriptions,
+            shippingLinesSection,
+            customerInformation,
+            attribution,
+            giftCards,
+            tracking,
+            addTracking,
+            notes,
+            trashOrderSection
+        ]
+    }
+
+    @MainActor
+    private func createPaymentSection() async -> Section {
+        var rows: [Row] = [.payment, .customerPaid]
+        if condensedRefunds.isNotEmpty {
+            rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
+            rows.append(.netAmount)
+        }
+        if isEligibleForPayment {
+            rows.append(.collectCardPaymentButton)
+        }
+        if orderHasLocalReceipt {
+            rows.append(.seeLegacyReceipt)
+        } else if await isEligibleForBackendReceipt() {
+            rows.append(.seeReceipt)
+        }
+        if isEligibleForRefund {
+            rows.append(.issueRefundButton)
+        }
+        return Section(
+            category: .payment,
+            title: Title.payment,
+            rows: rows
+        )
+    }
+
+    @MainActor
+    private func isEligibleForBackendReceipt() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status, onCompletion: { isEligible in
+                continuation.resume(returning: isEligible)
+            })
+        }
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {
@@ -1511,15 +1546,6 @@ extension OrderDetailsDataSource {
         }
 
         return refundFound
-    }
-
-    private func isEligibleForBackendReceipt(completion: @escaping (Bool) -> Void) {
-        guard !isEligibleForPayment else {
-            return completion(false)
-        }
-        ReceiptEligibilityUseCase().isEligibleForBackendReceipts { isEligibleForReceipt in
-            completion(isEligibleForReceipt)
-        }
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
@@ -2016,6 +2042,7 @@ extension OrderDetailsDataSource {
         case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
+        case openShippingLabelForm(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote

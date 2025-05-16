@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tabBarController.navigate(to: OrdersDestination.orderList)
             completionHandler(true)
         case QuickAction.collectPayment:
-            tabBarController.navigate(to: PaymentsMenuDestination.collectPayment)
+            tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         }
     }
@@ -294,7 +294,6 @@ private extension AppDelegate {
     func setupWooAppearance() {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
-        UISearchBar.applyWooAppearance()
         UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color

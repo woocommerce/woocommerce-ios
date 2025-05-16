@@ -9,6 +9,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     /// Available paper sizes for printing the shipping label.
     let labelSizes: [ShippingLabelPaperSize]
 
+    let isRefundable: Bool
+
     /// Selected paper size for printing the shipping label.
     @Published var selectedLabelSize: ShippingLabelPaperSize = .label
 
@@ -18,17 +20,24 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     /// Shipment pickup URL for the shipping label.
     let pickupURL: URL?
 
+    /// Customs form URL for the shipping label
+    let commercialInvoiceURL: URL?
+
     init(siteID: Int64,
          labelID: Int64,
          labelSizes: [ShippingLabelPaperSize],
+         isRefundable: Bool,
          trackingURL: URL?,
          pickupURL: URL?,
+         commercialInvoiceURL: URL?,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.labelID = labelID
         self.labelSizes = labelSizes
+        self.isRefundable = isRefundable
         self.trackingURL = trackingURL
         self.pickupURL = pickupURL
+        self.commercialInvoiceURL = commercialInvoiceURL
         self.stores = stores
     }
 
@@ -45,24 +54,34 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
         }()
         let trackingURL = ShippingLabelTrackingURLGenerator.url(for: shippingLabel)
         let pickupURL = WooShippingCarrier(rawValue: shippingLabel.carrierID)?.pickupURL
+        let commercialInvoiceURL: URL? = {
+            guard let urlString = shippingLabel.commercialInvoiceURL else {
+                return nil
+            }
+            return URL(string: urlString)
+        }()
 
         self.init(siteID: shippingLabel.siteID,
                   labelID: shippingLabel.shippingLabelID,
                   labelSizes: labelSizes,
+                  isRefundable: shippingLabel.isRefundable,
                   trackingURL: trackingURL,
                   pickupURL: pickupURL,
+                  commercialInvoiceURL: commercialInvoiceURL,
                   stores: stores)
     }
 
     /// Fetches the shipping label in the selected paper size and presents the print dialog.
     @MainActor
-    func printLabel() async {
-        do {
-            let printData = try await requestPrintData()
-            presentPrintDialog(with: printData)
-        } catch {
-            DDLogError("Error generating shipping label document for printing: \(error)")
-        }
+    func printLabel() async throws {
+        let printData = try await requestPrintData()
+        presentPrintDialog(with: printData.data)
+    }
+
+    @MainActor
+    func printCustomsForm(with url: URL) async throws {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        presentPrintDialog(with: data)
     }
 }
 
@@ -79,9 +98,9 @@ private extension WooShippingPostPurchaseViewModel {
     }
 
     /// Presents the print dialog with the provided print data.
-    func presentPrintDialog(with printData: ShippingLabelPrintData) {
+    func presentPrintDialog(with data: Data?) {
         let printController = UIPrintInteractionController()
-        printController.printingItem = printData.data
+        printController.printingItem = data
         printController.present(animated: true)
     }
 }

@@ -1,12 +1,13 @@
 import Foundation
 
-final class TotalsViewHelper {
+struct TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
         case .card(let cardPaymentState):
             switch cardPaymentState {
             case .idle,
                     .acceptingCard,
+                    .cardInserted,
                     .validatingOrder,
                     .validatingOrderError,
                     .preparingReader:
@@ -34,6 +35,7 @@ final class TotalsViewHelper {
         case .validatingOrder,
                 .validatingOrderError,
                 .processingPayment,
+                .cardInserted,
                 .paymentError,
                 .cardPaymentSuccessful:
             return false
@@ -67,10 +69,22 @@ final class TotalsViewHelper {
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .cash(.collectingCash):
+        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .cash(.collectingCash), .card(.paymentError):
             return false
         default:
             return true
         }
+    }
+
+    func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
+        let hasCoupons = cart.coupons.isNotEmpty
+        let orderIsLoading = orderTotals == nil
+        let hasDiscounts = orderTotals?.discountTotal != nil
+
+        guard hasCoupons else {
+            return false
+        }
+
+        return orderIsLoading || hasDiscounts
     }
 }

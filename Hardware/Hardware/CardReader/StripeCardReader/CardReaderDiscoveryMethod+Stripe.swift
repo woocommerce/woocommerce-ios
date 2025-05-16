@@ -4,8 +4,8 @@ import StripeTerminal
 public extension CardReaderDiscoveryMethod {
     func toStripe() -> DiscoveryMethod {
         switch self {
-        case .localMobile:
-            return .localMobile
+        case .tapToPay:
+            return .tapToPay
         case .bluetoothScan:
             return .bluetoothScan
         }

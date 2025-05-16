@@ -32,6 +32,7 @@ class ShippingLabelPurchaseMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabel.status, ShippingLabelStatus.purchaseInProgress)
         XCTAssertEqual(shippingLabel.productIDs, [])
         XCTAssertEqual(shippingLabel.productNames, ["Beanie"])
+        XCTAssertEqual(shippingLabel.shipmentID, "0")
     }
 
     /// Verifies that the Shipping Label Purchase is parsed correctly.
@@ -55,6 +56,7 @@ class ShippingLabelPurchaseMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabel.status, ShippingLabelStatus.purchaseInProgress)
         XCTAssertEqual(shippingLabel.productIDs, [])
         XCTAssertEqual(shippingLabel.productNames, ["Beanie"])
+        XCTAssertEqual(shippingLabel.shipmentID, "0")
     }
 }
 

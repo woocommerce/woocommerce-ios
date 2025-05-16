@@ -16,7 +16,9 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
     let currencySymbol: String
-    let orderItem: OrderItem
+
+    let itemProductID: Int64
+    let itemQuantity: Decimal
 
     let hsTariffURL = WooConstants.URLs.hsTariffURL.asURL()
 
@@ -29,6 +31,14 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     var countries: [Country] {
         resultsController.fetchedObjects
+    }
+
+    var totalValue: Decimal {
+        guard currencySymbol == "$",
+              let valuePerUnitDecimal = Decimal(string: valuePerUnit) else {
+            return 0
+        }
+        return valuePerUnitDecimal * itemQuantity
     }
 
     /// View model for selecting a country from a list.
@@ -58,12 +68,15 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(orderItem: OrderItem,
+    init(itemName: String,
+         itemProductID: Int64,
+         itemQuantity: Decimal,
          currencySymbol: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
-        self.title = orderItem.name
-        self.orderItem = orderItem
+        self.title = itemName
+        self.itemProductID = itemProductID
+        self.itemQuantity = itemQuantity
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
         self.stores = stores
@@ -112,7 +125,7 @@ private extension WooShippingCustomsItemViewModel {
                     return
                 }
 
-                self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * orderItem.quantity)
+                self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * itemQuantity)
             }
             .store(in: &cancellables)
     }

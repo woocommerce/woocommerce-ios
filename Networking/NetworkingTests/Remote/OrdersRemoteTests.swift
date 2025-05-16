@@ -477,6 +477,37 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received["payment_method_title"], "Pay in Person")
     }
 
+    func test_updateOrder_with_cashPaymentChangeDueAmount_encodes_cash_payment_change_due_amount() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+        let cashPaymentChangeDueAmount = "$6.00"
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["meta_data"] as? [[String: AnyHashable]])
+        let expected: [[String: AnyHashable]] = [["id": 0,
+                                                  "key": "_cash_change_amount",
+                                                  "value": cashPaymentChangeDueAmount]]
+        assertEqual(received, expected)
+    }
+
+    func test_updateOrder_without_cashPaymentChangeDueAmount_does_not_include_meta_data() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertNil(request.parameters["meta_data"])
+    }
+
     // MARK: - Load Order Notes Tests
 
     /// Verifies that loadOrderNotes properly parses the `order-notes` sample response.
@@ -739,6 +770,33 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_createPOSOrder_sets_created_via_for_point_of_sale() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        _ = try? await remote.createPOSOrder(siteID: 123, order: order, fields: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["created_via"] as? String)
+        assertEqual(received, "pos-rest-api")
+    }
+
+    func test_createOrder_without_source_parameter_does_not_set_created_via() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertNil(request.parameters["created_via"])
+    }
+
     // MARK: - Delete order tests
 
     func test_delete_order_properly_returns_parsed_order() throws {
@@ -812,6 +870,26 @@ final class OrdersRemoteTests: XCTestCase {
         await assertThrowsError({
             _ = try await remote.fetchDateModified(for: self.sampleSiteID, orderID: self.sampleOrderID)
         }, errorAssert: { ($0 as? NetworkError) == expectedError })
+    }
+
+    // MARK: - POS Orders Tests
+
+    func test_updatePOSOrder_encodes_cash_payment_change_due_amount() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+        let cashPaymentChangeDueAmount = "$6.00"
+
+        // When
+        _ = try? await remote.updatePOSOrder(siteID: sampleSiteID, order: order, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["meta_data"] as? [[String: AnyHashable]])
+        let expected: [[String: AnyHashable]] = [["id": 0,
+                                                  "key": "_cash_change_amount",
+                                                  "value": cashPaymentChangeDueAmount]]
+        assertEqual(received, expected)
     }
 }
 

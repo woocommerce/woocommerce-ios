@@ -39,14 +39,31 @@ struct HubMenu: View {
                                                           credentials: viewModel.credentials),
                        #available(iOS 17.0, *) {
                         PointOfSaleEntryPointView(
-                            itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
+                            itemsController: PointOfSaleItemsController(
+                                itemProvider: PointOfSaleItemService(
+                                    currencySettings: ServiceLocator.currencySettings),
+                                itemFetchStrategyFactory: viewModel.posItemFetchStrategyFactory),
+                            purchasableItemsSearchController: PointOfSaleItemsController(
+                                itemProvider: PointOfSaleItemService(
+                                    currencySettings: ServiceLocator.currencySettings),
+                                itemFetchStrategyFactory: viewModel.posItemFetchStrategyFactory,
+                            initialState: .init(containerState: .content,
+                                                itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
+                            couponsController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
+                                                                            fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
+                            couponsSearchController: PointOfSaleCouponsController(itemProvider: viewModel.posCouponProvider,
+                                                                                  fetchStrategyFactory: viewModel.posCouponFetchStrategyFactory),
                             onPointOfSaleModeActiveStateChange: { isEnabled in
                                 viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                             },
                             cardPresentPaymentService: cardPresentPaymentService,
                             orderController: PointOfSaleOrderController(orderService: orderService,
                                                                         receiptService: receiptService),
-                            collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker)
+                            collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker,
+                            searchHistoryService: POSSearchHistoryService(siteID: viewModel.siteID),
+                            popularPurchasableItemsController: PointOfSaleItemsController(
+                                itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
+                                itemFetchStrategyFactory: viewModel.posPopularItemFetchStrategyFactory))
                     } else {
                         // TODO: When we have a singleton for the card payment service, this should not be required.
                         Text("Error creating card payment service")
@@ -183,6 +200,8 @@ private extension HubMenu {
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
+            case .aiSettings:
+                AISettingsView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

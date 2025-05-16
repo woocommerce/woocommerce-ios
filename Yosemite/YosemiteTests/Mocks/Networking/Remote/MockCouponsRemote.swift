@@ -52,14 +52,22 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     // MARK: - CouponsRemoteProtocol conformance
     func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
-                        pageSize: Int,
-                        completion: @escaping (Result<[Coupon], Error>) -> ()) {
+                        pageSize: Int) async throws -> [Coupon] {
         didCallLoadAllCoupons = true
         spyLoadAllCouponsSiteID = siteID
         spyLoadAllCouponsPageNumber = pageNumber
         spyLoadAllCouponsPageSize = pageSize
-        guard let result = resultForLoadAllCoupons else { return }
-        completion(result)
+
+        guard let result = resultForLoadAllCoupons else {
+            return []
+        }
+
+        switch result {
+        case .success(let coupons):
+            return coupons
+        case .failure(let error):
+            throw error
+        }
     }
 
     func loadCoupons(for siteID: Int64,
@@ -77,15 +85,23 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
-                       pageSize: Int,
-                       completion: @escaping (Result<[Coupon], Error>) -> ()) {
+                       pageSize: Int) async throws -> [Coupon] {
         didCallSearchCoupons = true
         spySearchCouponsKeyword = keyword
         spySearchCouponsSiteID = siteID
         spySearchCouponsPageSize = pageSize
         spySearchCouponsPageNumber = pageNumber
-        guard let result = resultForSearchCoupons else { return }
-        completion(result)
+
+        guard let result = resultForSearchCoupons else {
+            return []
+        }
+
+        switch result {
+        case .success(let coupons):
+            return coupons
+        case .failure(let error):
+            throw error
+        }
     }
 
     func deleteCoupon(for siteID: Int64,

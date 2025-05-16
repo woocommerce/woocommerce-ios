@@ -83,7 +83,9 @@ final class ShippingLabelStoreTests: XCTestCase {
                                  destinationAddress: destination,
                                  productIDs: [3013],
                                  productNames: ["Password protected!"],
-                                 commercialInvoiceURL: nil)
+                                 commercialInvoiceURL: nil,
+                                 usedDate: nil,
+                                 expiryDate: nil)
         }()
         let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
         let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)
@@ -93,7 +95,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -126,7 +128,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -155,7 +157,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }

@@ -1,3 +1,10 @@
+/// Enum for package types supported by WooShipping
+///
+public enum WooShippingPackageType: String {
+    case custom
+    case predefined
+}
+
 /// Protocol for `WooShippingRemote` mainly used for mocking.
 ///
 public protocol WooShippingRemoteProtocol {
@@ -7,6 +14,7 @@ public protocol WooShippingRemoteProtocol {
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func deletePackage(siteID: Int64,
                        packageID: String,
+                       packageType: WooShippingPackageType,
                        completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void)
     func loadLabelRates(siteID: Int64,
                         orderID: Int64,
@@ -49,6 +57,18 @@ public protocol WooShippingRemoteProtocol {
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
+    func loadConfig(siteID: Int64,
+                    orderID: Int64,
+                    completion: @escaping (Result<WooShippingConfig, Error>) -> Void)
+    func updateShipment(siteID: Int64,
+                        orderID: Int64,
+                        shipmentToUpdate: WooShippingUpdateShipment,
+                        completion: @escaping (Result<WooShippingShipments, Error>) -> Void)
+
+    func refundShippingLabel(siteID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
+                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -100,8 +120,9 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
     public func deletePackage(siteID: Int64,
                               packageID: String,
+                              packageType: WooShippingPackageType,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
-        let path = "\(Path.packages)/\(packageID)"
+        let path = [Path.packages, packageType.rawValue, packageID].joined(separator: "/")
 
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .delete,
@@ -402,6 +423,77 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Loads label config for a given order
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadConfig(siteID: Int64,
+                           orderID: Int64,
+                           completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
+        do {
+            let path = Path.config(orderID: orderID)
+            let parameters = [
+                ParameterKey.fields: WooShippingConfigMapper.fieldsToLoad
+            ]
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .get,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+
+            let mapper = WooShippingConfigMapper(siteID: siteID, orderID: orderID)
+            enqueue(request, mapper: mapper, completion: completion)
+        }
+    }
+
+    /// Updates shipment for a given order
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order.
+    ///   - shipmentToUpdate: shipment info to send to remote
+    ///   - completion: Closure to be executed upon completion.
+    public func updateShipment(siteID: Int64,
+                               orderID: Int64,
+                               shipmentToUpdate: WooShippingUpdateShipment,
+                               completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
+        do {
+            let parameters = try shipmentToUpdate.toDictionary()
+            let path = Path.updateShipment(orderID: orderID)
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = WooShippingUpdateShipmentMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Requests a refund for a shipping label.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - orderID: Remote ID of the order that owns the shipping labels.
+    ///   - shippingLabelID: Remote ID of the shipping label.
+    ///   - completion: Closure to be executed upon completion.
+    public func refundShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                                    completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        let path = Path.refundLabel(orderID: orderID, labelID: shippingLabelID)
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = ShippingLabelRefundMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constants
@@ -422,6 +514,15 @@ private extension WooShippingRemote {
         static func updateDestination(orderID: Int64) -> String {
             "address/\(orderID)/update_destination"
         }
+        static func config(orderID: Int64) -> String {
+            "config/label-purchase/\(orderID)"
+        }
+        static func updateShipment(orderID: Int64) -> String {
+            "shipments/\(orderID)"
+        }
+        static func refundLabel(orderID: Int64, labelID: Int64) -> String {
+            "label/refund/\(orderID)/\(labelID)"
+        }
     }
 
     enum ParameterKey {
@@ -440,6 +541,7 @@ private extension WooShippingRemote {
         static let labelIDCSV = "label_id_csv"
         static let address = "address"
         static let isVerified = "isVerified"
+        static let fields = "_fields"
     }
 }
 

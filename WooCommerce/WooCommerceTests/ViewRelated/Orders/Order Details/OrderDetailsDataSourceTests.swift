@@ -31,7 +31,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() {
+    func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() async throws {
         // Given
         let order = makeOrder()
 
@@ -41,13 +41,14 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(
             order: order,
             storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let actualTitles = dataSource.sections.compactMap(\.title)
@@ -65,7 +66,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
-    func test_refunds_data_in_unpaid_order_is_acessible_by_indexes() throws {
+    func test_refunds_data_in_unpaid_order_is_acessible_by_indexes() async throws {
         // Given
         let refundItems = [
             OrderRefundCondensed(refundID: 1, reason: nil, total: "1"),
@@ -79,7 +80,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(
             order: order,
             storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         dataSource.configureResultsControllers { }
@@ -89,7 +91,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         tableView.registerNib(for: TwoColumnHeadlineFootnoteTableViewCell.self)
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Get IndexPaths for all `refund` rows
         var refundsRowsIndexes: [IndexPath] = []
@@ -109,13 +111,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(expectedRefunds.count, refundsRowsIndexes.count)
     }
 
-    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() throws {
+    func test_reloadSections_when_there_is_no_paid_date_then_customer_paid_row_is_visible() async throws {
         // Given
         let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -123,13 +128,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(customerPaidRow)
     }
 
-    func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() throws {
+    func test_reloadSections_when_there_is_a_paid_date_then_customer_paid_row_is_visible() async throws {
         // Given
         let order = Order.fake().copy(datePaid: Date())
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -137,13 +145,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(customerPaidRow)
     }
 
-    func test_refund_button_is_visible() throws {
+    func test_refund_button_is_visible() async throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -151,17 +162,18 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_there_is_no_date_paid() throws {
+    func test_refund_button_is_not_visible_when_there_is_no_date_paid() async throws {
         // Given
         let order = makeOrder().copy(datePaid: .some(nil))
         let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
+                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -169,13 +181,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_the_order_status_is_refunded() throws {
+    func test_refund_button_is_not_visible_when_the_order_status_is_refunded() async throws {
         // Given
         let order = MockOrders().makeOrder(status: .refunded, items: [makeOrderItem()])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -183,17 +198,18 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_the_status_is_other_than_refunded_but_the_order_is_not_refundable() throws {
+    func test_refund_button_is_not_visible_when_the_status_is_other_than_refunded_but_the_order_is_not_refundable() async throws {
         // Given
         let order = Order.fake().copy(status: .processing, items: [makeOrderItem()], refunds: [OrderRefundCondensed.fake()])
         let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: false)
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer)
+                                                refundableOrderItemsDeterminer: orderRefundsOptionsDeterminer,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
@@ -201,28 +217,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
+    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() async throws {
         // Given
         let order = makeOrder().copy(status: .processing)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = false
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
         XCTAssertNotNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
     }
 
-    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
+    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() async throws {
         // Given
         let order = makeOrder().copy(status: .processing)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
@@ -230,13 +252,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: false), in: productsSection))
     }
 
-    func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
+    func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() async throws {
         // Given
         let order = makeOrder().copy(status: .onHold)
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
@@ -244,40 +269,49 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() throws {
+    func test_reloadSections_when_isEligibleForPayment_is_false_then_collect_payment_button_is_not_visible() async throws {
         //Given
         let order = makeOrder().copy(datePaid: .some(Date())) // Paid orders are not eligible for payment
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() throws {
+    func test_reloadSections_when_isEligibleForPayment_is_true_then_collect_payment_button_is_visible() async throws {
         //Given
         let order = makeOrder().copy(datePaid: .some(nil)) // Unpaid orders are eligible for payment
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
     }
 
-    func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
+    func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() async throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -285,18 +319,21 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_visible_for_eligible_order_with_only_refunded_labels() throws {
+    func test_create_shipping_label_button_is_visible_for_eligible_order_with_only_refunded_labels() async throws {
         // Given
         let order = makeOrder()
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
-        insert(shippingLabel: refundedShippingLabel)
+        insert(shippingLabel: refundedShippingLabel, order: order)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -304,18 +341,23 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() throws {
+    func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() async throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
-        insert(shippingLabel: shippingLabel)
+        order = order.copy(shippingLabels: [shippingLabel])
+        insert(shippingLabel: shippingLabel, order: order)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -323,14 +365,17 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_for_ineligible_order() throws {
+    func test_create_shipping_label_button_is_not_visible_for_ineligible_order() async throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = false
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -338,15 +383,18 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
+    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() async throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
         dataSource.configureResultsControllers { }
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -354,18 +402,22 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
-    func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() throws {
+    func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() async throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
-        insert(shippingLabel: shippingLabel)
+        order = order.copy(shippingLabels: [shippingLabel])
+        insert(shippingLabel: shippingLabel, order: order)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -375,7 +427,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_WCShip_installation_section_is_not_visible_when_WCShip_plugin_is_installed_and_active() throws {
+    func test_WCShip_installation_section_is_not_visible_when_WCShip_plugin_is_installed_and_active() async throws {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()
@@ -398,19 +450,21 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
                                                 currencySettings: currencySettings,
-                                                siteSettings: [siteSetting], featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
+                                                siteSettings: [siteSetting],
+                                                featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let wcShipSection = section(withCategory: .installWCShip, from: dataSource)
         XCTAssertNil(wcShipSection)
     }
 
-    func test_WCShip_installation_section_is_visible_for_eligible_order() throws {
+    func test_WCShip_installation_section_is_visible_for_eligible_order() async throws {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()
@@ -431,6 +485,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: .US),
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
                                                 currencySettings: currencySettings,
                                                 siteSettings: [siteSetting],
                                                 userIsAdmin: true,
@@ -438,7 +493,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         guard let wcShipSection = section(withCategory: .installWCShip, from: dataSource) else {
@@ -449,18 +504,22 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(wcShipRow)
     }
 
-    func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() throws {
+    func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() async throws {
         // Given
-        let order = makeOrder()
+        var order = makeOrder()
         let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
-        insert(shippingLabel: refundedShippingLabel)
+        order = order.copy(shippingLabels: [refundedShippingLabel])
+        insert(shippingLabel: refundedShippingLabel, order: order)
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -470,16 +529,19 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_more_button_is_not_visible_in_product_section_for_eligible_order_without_shipping_labels() throws {
+    func test_more_button_is_not_visible_in_product_section_for_eligible_order_without_shipping_labels() async throws {
         // Given
         let order = makeOrder()
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -489,16 +551,19 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_more_button_is_not_visible_in_product_section_for_ineligible_order() throws {
+    func test_more_button_is_not_visible_in_product_section_for_ineligible_order() async throws {
         // Given
         let order = makeOrder()
 
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = false
         dataSource.configureResultsControllers { }
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -508,15 +573,18 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+    func test_more_button_is_not_visible_in_product_section_for_cash_on_delivery_order() async throws {
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
 
         // When
         dataSource.configureResultsControllers { }
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
@@ -526,62 +594,67 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
     }
 
-    func test_custom_fields_button_is_visible() throws {
+    func test_custom_fields_button_is_visible() async throws {
         // Given
         let order = MockOrders().makeOrder(customFields: [
             MetaData(metadataID: 123, key: "Key", value: "Value")
         ])
         let dataSource = OrderDetailsDataSource(
             order: order, storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
         XCTAssertNotNil(customFieldSection)
     }
 
-    func test_custom_fields_button_is_visible_when_order_contains_no_custom_fields_to_display() throws {
+    func test_custom_fields_button_is_visible_when_order_contains_no_custom_fields_to_display() async throws {
         // Given
         let order = MockOrders().makeOrder(customFields: [])
         let dataSource = OrderDetailsDataSource(
             order: order, storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+            cardPresentPaymentsConfiguration: Mocks.configuration,
+            receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
         XCTAssertNotNil(customFieldSection)
     }
 
-    func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() throws {
+    func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() async throws {
         // Given
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         // When
         dataSource.orderSubscriptions = [Subscription.fake()]
+        await dataSource.reloadSections()
 
         // Then
         let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
         XCTAssertNotNil(subscriptionSection)
     }
 
-    func test_subscriptions_section_is_hidden_when_order_has_no_associated_subscriptions() throws {
+    func test_subscriptions_section_is_hidden_when_order_has_no_associated_subscriptions() async throws {
         // Given
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase()
         )
 
         // When
@@ -592,62 +665,66 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(subscriptionSection)
     }
 
-    func test_reloadSections_when_order_has_custom_amounts_then_custom_amounts_section_is_visible() {
+    func test_reloadSections_when_order_has_custom_amounts_then_custom_amounts_section_is_visible() async throws {
         // Given
         let order = MockOrders().makeOrder(fees: [OrderFeeLine.fake()])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
         insertFee(with: order)
         dataSource.configureResultsControllers { }
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
         XCTAssertNotNil(customAmountsSection)
     }
 
-    func test_reloadSections_when_order_has_not_custom_amounts_then_custom_amounts_section_is_hidden() {
+    func test_reloadSections_when_order_has_not_custom_amounts_then_custom_amounts_section_is_hidden() async throws {
         // Given
         let order = MockOrders().makeOrder(fees: [])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
         XCTAssertNil(customAmountsSection)
     }
 
-    func test_giftCards_section_is_visible_when_order_has_gift_cards() throws {
+    func test_giftCards_section_is_visible_when_order_has_gift_cards() async throws {
         // Given
         let order = Order.fake().copy(appliedGiftCards: [.init(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
         XCTAssertNotNil(giftCardsSection)
     }
 
-    func test_giftCards_section_is_hidden_when_order_has_no_gift_cards() throws {
+    func test_giftCards_section_is_hidden_when_order_has_no_gift_cards() async throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
@@ -656,15 +733,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     // MARK: Order Attribution
 
-    func test_order_attribution_section_is_shown_with_origin_row_even_if_order_has_no_attribution_info() throws {
+    func test_order_attribution_section_is_shown_with_origin_row_even_if_order_has_no_attribution_info() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .some(nil))
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -672,13 +750,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(originRow)
     }
 
-    func test_order_attribution_section_hides_source_type_row_when_sourceType_is_nil() throws {
+    func test_order_attribution_section_hides_source_type_row_when_sourceType_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(sourceType: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -686,13 +767,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_source_type_row_when_sourceType_is_not_nil() throws {
+    func test_order_attribution_section_shows_source_type_row_when_sourceType_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(sourceType: "Source type"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -700,13 +784,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_order_attribution_section_hides_campaign_row_when_campaign_is_nil() throws {
+    func test_order_attribution_section_hides_campaign_row_when_campaign_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(campaign: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -714,13 +801,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_campaign_row_when_campaign_is_not_nil() throws {
+    func test_order_attribution_section_shows_campaign_row_when_campaign_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(campaign: "Campaign"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -728,13 +818,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_order_attribution_section_hides_source_row_when_source_is_nil() throws {
+    func test_order_attribution_section_hides_source_row_when_source_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(source: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -742,13 +835,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_source_row_when_source_is_not_nil() throws {
+    func test_order_attribution_section_shows_source_row_when_source_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(source: "Source"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -756,13 +852,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_order_attribution_section_hides_medium_row_when_medium_is_nil() throws {
+    func test_order_attribution_section_hides_medium_row_when_medium_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(medium: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -770,13 +869,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_medium_row_when_medium_is_not_nil() throws {
+    func test_order_attribution_section_shows_medium_row_when_medium_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(medium: "Medium"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -784,13 +886,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_order_attribution_section_hides_deviceType_row_when_deviceType_is_nil() throws {
+    func test_order_attribution_section_hides_deviceType_row_when_deviceType_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(deviceType: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -798,13 +903,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_deviceType_row_when_deviceType_is_not_nil() throws {
+    func test_order_attribution_section_shows_deviceType_row_when_deviceType_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(deviceType: "Device type"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -812,13 +920,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_order_attribution_section_hides_sessionPageViews_row_when_sessionPageViews_is_nil() throws {
+    func test_order_attribution_section_hides_sessionPageViews_row_when_sessionPageViews_is_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(sessionPageViews: .some(nil)))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -826,13 +937,16 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row)
     }
 
-    func test_order_attribution_section_shows_sessionPageViews_row_when_sessionPageViews_is_not_nil() throws {
+    func test_order_attribution_section_shows_sessionPageViews_row_when_sessionPageViews_is_not_nil() async throws {
         // Given
         let order = Order.fake().copy(attributionInfo: .fake().copy(sessionPageViews: "3"))
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
@@ -840,28 +954,32 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_shipping_section_hidden_when_order_has_no_shipping_lines() {
+    func test_shipping_section_hidden_when_order_has_no_shipping_lines() async throws {
         // Given
         let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let shippingSection = section(withCategory: .shippingLines, from: dataSource)
         XCTAssertNil(shippingSection)
     }
 
-    func test_shipping_section_shows_shipping_line_row_when_order_has_shipping_line() throws {
+    func test_shipping_section_shows_shipping_line_row_when_order_has_shipping_line() async throws {
         // Given
         let order = Order.fake().copy(shippingLines: [.fake()])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
 
         // When
-        dataSource.reloadSections()
+        await dataSource.reloadSections()
 
         // Then
         let shippingSection = try section(withTitle: Title.shippingLines, from: dataSource)
@@ -944,9 +1062,12 @@ private extension OrderDetailsDataSourceTests {
         storageFee.order = storageOrder
     }
 
-    /// Inserts the shipping label into storage
+    /// Inserts the shipping label into storage, and then shipping label into order
     ///
-    func insert(shippingLabel: ShippingLabel) {
+    func insert(shippingLabel: ShippingLabel, order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+
         let storageShippingLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
         storageShippingLabel.update(with: shippingLabel)
         if let shippingLabelRefund = shippingLabel.refund {
@@ -954,6 +1075,7 @@ private extension OrderDetailsDataSourceTests {
             storageRefund.update(with: shippingLabelRefund)
             storageShippingLabel.refund = storageRefund
         }
+        storageShippingLabel.order = storageOrder
     }
 
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {

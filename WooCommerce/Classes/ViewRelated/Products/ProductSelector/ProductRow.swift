@@ -87,7 +87,7 @@ struct ProductRow: View {
         Image(uiImage: viewModel.selectedState.image)
             .resizable()
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(isEnabled ? Color(.brand) : .gray)
+            .foregroundColor(isEnabled ? Color(.accent) : .gray)
     }
 }
 

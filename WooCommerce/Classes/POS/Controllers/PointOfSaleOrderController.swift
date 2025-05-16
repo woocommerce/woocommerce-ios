@@ -1,21 +1,25 @@
 import Foundation
 import Observation
+import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
-import struct Yosemite.PaymentGateway
+import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
+import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
+import enum Yosemite.SystemStatusAction
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
+import enum Alamofire.AFError
 
 enum SyncOrderState {
     case newOrder
-    case orderUpdated
     case orderNotChanged
 }
 
@@ -27,10 +31,10 @@ protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
+    func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
-    func collectCashPayment() async throws
+    func collectCashPayment(changeDueAmount: String?) async throws
 }
 
 @available(iOS 17.0, *)
@@ -40,6 +44,7 @@ protocol PointOfSaleOrderControllerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
@@ -47,6 +52,7 @@ protocol PointOfSaleOrderControllerProtocol {
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.celebration = celebration
     }
 
@@ -58,43 +64,32 @@ protocol PointOfSaleOrderControllerProtocol {
     private let storeCurrency: CurrencyCode
     private let analytics: Analytics
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
 
     @MainActor @discardableResult
-    func syncOrder(for cartItems: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
-        let posCartItems = cartItems.map {
-            POSCartItem(item: $0.item, quantity: Decimal($0.quantity))
-        }
+        let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCartItems.matches(order: order) else {
+        guard !orderState.isSyncing, !posCart.matches(order: order) else {
             return .success(.orderNotChanged)
         }
 
         orderState = .syncing
-        let isNewOrder = order == nil
 
         do {
-            let syncedOrder = try await orderService.syncOrder(cart: posCartItems,
-                                                               order: order,
+            let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                currency: storeCurrency)
             self.order = syncedOrder
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
-            if isNewOrder {
-                analytics.track(.orderCreationSuccess)
-                return .success(.newOrder)
-            } else {
-                return .success(.orderUpdated)
-            }
+            analytics.track(.orderCreationSuccess)
+            return .success(.newOrder)
         } catch {
-            if isNewOrder {
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
-                    usesGiftCard: false,
-                    errorContext: String(describing: error),
-                    errorDescription: error.localizedDescription))
-            }
+            self.order = nil
+            trackOrderCreationFailed(error: error)
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
         }
@@ -102,13 +97,11 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private func setOrderStateToError(_ error: Error,
                                       retryHandler: @escaping () async -> Void) {
-        // Consider removing error or handle specific errors with our own formatting and localization
-        orderState = .error(.init(message: error.localizedDescription,
-                                  handler: {
+        orderState = .error(orderStateError(from: error), {
             Task {
                 await retryHandler()
             }
-        }))
+        })
     }
 
     func sendReceipt(recipientEmail: String) async throws {
@@ -116,7 +109,18 @@ protocol PointOfSaleOrderControllerProtocol {
             return
         }
         try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
-        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail)
+
+        let isEligibleForPOSReceipt: Bool
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
+            isEligibleForPOSReceipt = await isPluginSupported(
+                POSReceiptEligibilityConstants.wcPluginName,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: order.siteID
+            )
+        } else {
+            isEligibleForPOSReceipt = false
+        }
+        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
     }
 
     func clearOrder() {
@@ -129,35 +133,17 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     @MainActor
-    func collectCashPayment() async throws {
-        guard let siteID = stores.sessionManager.defaultStoreID else {
-            throw PointOfSaleOrderControllerError.noSiteID
-        }
+    func collectCashPayment(changeDueAmount: String?) async throws {
         guard let order = order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        let fieldsToUpdate: [OrderUpdateField] = [
-            .status,
-            .paymentMethodID,
-            .paymentMethodTitle]
-        let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
-                                      paymentMethodTitle: Localization.cashPaymentMethodTitle)
-
-        let _ = try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.updateOrder(siteID: siteID,
-                                                 order: updatedOrder,
-                                                 giftCard: nil,
-                                                 fields: fieldsToUpdate,
-                                                 onCompletion: { [weak self] result in
-                guard let self = self else { return }
-                if case .success = result {
-                    self.celebrate()
-                }
-                continuation.resume(with: result)
-            })
-            stores.dispatch(action)
+        do {
+            try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
+            celebrate()
+        } catch {
+            analytics.track(.pointOfSaleCashPaymentFailed)
+            throw error
         }
     }
 }
@@ -172,14 +158,85 @@ private extension PointOfSaleOrderController {
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
-            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue)
+            orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
+            discountTotal: formattedDiscount(totalsCalculator.discountTotal,
+                                             currency: order.currency),
+            couponsTotals: couponsTotals(order))
     }
 
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
+    func formattedPrice(_ price: String?, currency: String?, isNegative: Bool = false) -> String? {
         guard let price, let currency else {
             return nil
         }
-        return currencyFormatter.formatAmount(price, with: currency)
+        return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
+    }
+
+    func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
+        return order.coupons.compactMap { coupon in
+            PointOfSaleCouponTotal(
+                code: coupon.code,
+                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? ""
+            )
+        }
+    }
+
+    func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
+        guard !discount.isZero(),
+              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency, isNegative: true) else {
+            return nil
+        }
+
+        return formattedDiscount
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    @MainActor
+    func isPluginSupported(_ pluginName: String, minimumVersion: String, siteID: Int64) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
+                // Plugin must be installed and active
+                guard let plugin, plugin.active, plugin.name == pluginName else {
+                    return continuation.resume(returning: false)
+                }
+
+                // Checking for concrete versions to cover dev and beta versions
+                if plugin.version.contains(minimumVersion) {
+                    return continuation.resume(returning: true)
+                }
+
+                // If plugin version is higher than minimum required version, mark as eligible
+                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
+                                                                    minimumRequired: minimumVersion)
+                continuation.resume(returning: isSupported)
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
+
+// MARK: - Error Handling
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
+        if let couponsError = CouponsError(underlyingError: error) {
+            return .invalidCoupon(couponsError.message)
+        } else if let afErrorDescription = (error as? AFError)?.underlyingError?.localizedDescription {
+            return .other(afErrorDescription)
+        } else {
+            return .other(error.localizedDescription)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    enum POSReceiptEligibilityConstants {
+        static let wcPluginName = "WooCommerce"
+        static let wcPluginMinimumVersion = "10.0.0"
     }
 }
 
@@ -189,7 +246,7 @@ enum PointOfSaleInternalOrderState {
     case idle
     case syncing
     case loaded(PointOfSaleOrderTotals, Order)
-    case error(PointOfSaleOrderSyncErrorMessageViewModel)
+    case error(PointOfSaleOrderState.OrderStateError, PointOfSaleOrderState.OrderStateRetryHandler)
 
     var isSyncing: Bool {
         switch self {
@@ -204,8 +261,8 @@ enum PointOfSaleInternalOrderState {
         switch self {
         case .idle:
             return .idle
-        case .error(let error):
-            return .error(error)
+        case .error(let error, let handler):
+            return .error(error, handler)
         case .loaded(let totals, _):
             return .loaded(totals)
         case .syncing:
@@ -219,9 +276,8 @@ extension PointOfSaleInternalOrderState: Equatable {
         switch (lhs, rhs) {
         case (.idle, .idle):
             return true
-        case (.error(let lhsError), .error(let rhsError)):
-            return lhsError.title == rhsError.title &&
-            lhsError.message == rhsError.message
+        case (.error(let lhsError, _), .error(let rhsError, _)):
+            return lhsError == rhsError
         case (.syncing, .syncing):
             return true
         case (.loaded(let lhsTotals, let lhsOrder), .loaded(let rhsTotals, let rhsOrder)):
@@ -235,14 +291,41 @@ extension PointOfSaleInternalOrderState: Equatable {
 
 @available(iOS 17.0, *)
 extension PointOfSaleOrderController {
-    enum Localization {
-        static let cashPaymentMethodTitle = NSLocalizedString(
-            "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
-            value: "Pay in Person",
-            comment: "Title for the payment method used when collecting cash payment in Point of Sale.")
-    }
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder
+    }
+}
+
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    func trackOrderCreationFailed(error: Error) {
+        let errorContext: String
+        let errorDescription: String
+
+        if let couponsError = CouponsError(underlyingError: error) {
+            errorContext = couponsError.code
+            errorDescription = couponsError.message
+        } else {
+            errorContext = String(describing: error)
+            errorDescription = error.localizedDescription
+        }
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
+            usesGiftCard: false,
+            errorContext: errorContext,
+            errorDescription: errorDescription)
+        )
+    }
+}
+
+// MARK: - Mapping
+
+private extension POSCart {
+    init(cart: Cart) {
+        let items = cart.purchasableItems.map { POSCartItem(item: $0.item, quantity: Decimal($0.quantity)) }
+        let coupons = cart.coupons.map { POSCoupon(id: $0.id, code: $0.code, summary: $0.summary) }
+        self.init(items: items, coupons: coupons)
     }
 }

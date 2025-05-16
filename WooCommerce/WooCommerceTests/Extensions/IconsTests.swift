@@ -23,10 +23,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
-    func test_bell_image_is_not_nil() {
-        XCTAssertNotNil(UIImage.bell)
-    }
-
     func test_blaze_image_is_not_nil() {
         XCTAssertNotNil(UIImage.blaze)
     }
@@ -228,6 +224,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.grayErrorIcon)
     }
 
+    func test_deliveryIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.deliveryIcon)
+    }
+
+    func test_giftIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.giftIcon)
+    }
+
     func test_fixed_cart_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.fixedCartDiscountIcon)
     }
@@ -238,6 +242,10 @@ final class IconsTests: XCTestCase {
 
     func test_percentage_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.percentageDiscountIcon)
+    }
+
+    func test_bell_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.bellIcon)
     }
 
     func testHeartOutlineImageIconIsNotNil() {

@@ -9,14 +9,22 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let labelSizes: [ShippingLabelPaperSize] = [.label, .letter, .a4]
         let trackingURL = URL(string: "https://woocommerce.com")
         let pickupURL = WooShippingCarrier.usps.pickupURL
+        let customsFormURL = URL(string: "https://example.com")
 
         // When
-        let viewModel = WooShippingPostPurchaseViewModel(siteID: 123, labelID: 1, labelSizes: labelSizes, trackingURL: trackingURL, pickupURL: pickupURL)
+        let viewModel = WooShippingPostPurchaseViewModel(siteID: 123,
+                                                         labelID: 1,
+                                                         labelSizes: labelSizes,
+                                                         isRefundable: true,
+                                                         trackingURL: trackingURL,
+                                                         pickupURL: pickupURL,
+                                                         commercialInvoiceURL: customsFormURL)
 
         // Then
         XCTAssertEqual(viewModel.labelSizes, labelSizes)
         XCTAssertEqual(viewModel.trackingURL, trackingURL)
         XCTAssertEqual(viewModel.pickupURL, pickupURL)
+        XCTAssertEqual(viewModel.commercialInvoiceURL, customsFormURL)
     }
 
     func test_labelSizes_includes_expected_default_values() {
@@ -68,8 +76,20 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.pickupURL, WooShippingCarrier.usps.pickupURL)
     }
 
+    func test_commercialInvoiceURL_parsed_from_shipping_label() {
+        // Given
+        let customsFormURL = "https://example.com"
+        let shippingLabel = ShippingLabel.fake().copy(commercialInvoiceURL: customsFormURL)
+
+        // When
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
+
+        // Then
+        XCTAssertEqual(viewModel.commercialInvoiceURL, URL(string: customsFormURL))
+    }
+
     @MainActor
-    func test_printLabel_fetches_label_data_from_remote() async {
+    func test_printLabel_fetches_label_data_from_remote() async throws {
         // Given
         var printData: ShippingLabelPrintData?
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -86,7 +106,7 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), stores: stores)
 
         // When
-        await viewModel.printLabel()
+        try await viewModel.printLabel()
 
         // Then
         XCTAssertNotNil(printData)

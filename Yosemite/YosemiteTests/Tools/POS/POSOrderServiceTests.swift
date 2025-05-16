@@ -7,29 +7,27 @@ struct POSOrderServiceTests {
 
     init() {
         let mockOrdersRemote = MockPOSOrdersRemote()
-
         self.mockOrdersRemote = mockOrdersRemote
-
         self.sut = POSOrderService(siteID: 123, ordersRemote: mockOrdersRemote)
     }
 
     @Test
-    func syncOrder_without_passing_an_order_creates_a_new_order() async throws {
+    func syncOrder_creates_a_new_order() async throws {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: nil, currency: .USD)
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
 
         // Then
         #expect(mockOrdersRemote.createPOSOrderCalled == true)
     }
 
     @Test
-    func syncOrder_without_passing_an_order_creates_a_new_order_using_passed_currency() async throws {
+    func syncOrder_creates_a_new_order_using_passed_currency() async throws {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: nil, currency: .EUR)
+        _ = try await sut.syncOrder(cart: .init(), currency: .EUR)
 
         // Then
         #expect(mockOrdersRemote.spyCreatePOSOrder?.currency.uppercased() == "EUR")
@@ -38,102 +36,134 @@ struct POSOrderServiceTests {
     }
 
     @Test
-    func syncOrder_with_an_existing_order_updates_it() async throws {
+    func syncOrder_adds_cart_items_to_new_order() async throws {
         // Given
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "JPY")
+        let cart = POSCart(items: [
+            makePOSCartItem(productID: 100, quantity: 2),
+            makePOSCartItem(productID: 102, quantity: 1)
+        ])
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
 
         // Then
-        #expect(mockOrdersRemote.updatePOSOrderCalled == true)
-        #expect(mockOrdersRemote.spyUpdatePOSOrder == order)
+        let createdOrderItems = try #require(mockOrdersRemote.spyCreatePOSOrder?.items)
+        #expect(createdOrderItems.contains(where: { (item: OrderItem) -> Bool in
+            item.productID == 100 && item.quantity == 2
+        }))
+        #expect(createdOrderItems.contains(where: { (item: OrderItem) -> Bool in
+            item.productID == 102 && item.quantity == 1
+        }))
     }
 
     @Test
-    func syncOrder_with_an_existing_order_does_not_change_the_currency() async throws {
+    func syncOrder_adds_cart_coupons_to_new_order() async throws {
         // Given
-        let order = Order.fake().copy(siteID: 123, orderID: 456, currency: "USD")
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: UUID(), code: "SAVE10")]
+        )
 
         // When
-        _ = try await sut.syncOrder(cart: [], order: order, currency: .JPY)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
 
         // Then
-        #expect(mockOrdersRemote.updatePOSOrderCalled == true)
-        #expect(mockOrdersRemote.spyUpdatePOSOrder?.currency.uppercased() == "USD")
+        let createdOrderCoupons = try #require(mockOrdersRemote.spyCreatePOSOrder?.coupons)
+        #expect(createdOrderCoupons.count == 1)
+        #expect(createdOrderCoupons.first?.code == "SAVE10")
     }
 
-    @Test func syncOrder_updates_by_deleting_existing_items_and_adding_everything_from_the_cart() async throws {
+    @Test
+    func syncOrder_with_multiple_coupons_adds_all_to_new_order() async throws {
         // Given
-        let orderItems: [OrderItem] = [
-            .fake().copy(itemID: 1, name: "Item 1", productID: 100, quantity: 1),
-            .fake().copy(itemID: 2, name: "Item 2", productID: 102, quantity: 5)]
-        let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [
+                .init(id: UUID(), code: "SAVE10"),
+                .init(id: UUID(), code: "FREESHIP"),
+                .init(id: UUID(), code: "EXTRA5")
+            ]
+        )
 
         // When
-        let cart: [POSCartItem] = [
-            makePOSCartItem(productID: 100, quantity: 2),
-            makePOSCartItem(productID: 102, quantity: 1)
-        ]
-        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
 
         // Then
-        let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
-        for item in updatedOrderItems {
-            #expect(item.itemID == 0 || item.quantity == 0,
-                    "Items should be deleted (quantity 0) or new (itemID 0)")
+        let createdOrderCoupons = try #require(mockOrdersRemote.spyCreatePOSOrder?.coupons)
+        #expect(createdOrderCoupons.count == 3)
+        #expect(createdOrderCoupons.contains(where: { $0.code == "SAVE10" }))
+        #expect(createdOrderCoupons.contains(where: { $0.code == "FREESHIP" }))
+        #expect(createdOrderCoupons.contains(where: { $0.code == "EXTRA5" }))
+    }
+
+    @Test
+    func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
+        // Given
+        let cart = POSCart(items: [
+            makePOSCartItem(productID: 100, quantity: 2),
+            makePOSCartItem(productID: 101, quantity: 1)
+        ])
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let orderSentToRemote = try #require(mockOrdersRemote.spyCreatePOSOrder)
+
+        // Verify all items in the order are sanitized
+        for item in orderSentToRemote.items {
+            #expect(item.itemID == 0, "Item ID should be zero for new items")
+            #expect(item.total == "", "Total should be empty string")
+            #expect(item.subtotal == "", "Subtotal should be empty string")
         }
     }
 
-    @Test func syncOrder_after_removing_item_from_cart_deletes_it_from_the_order() async throws {
+    @Test
+    func markOrderAsCompletedWithCashPayment_updates_order_status_and_payment_method() async throws {
         // Given
-        let orderItems: [OrderItem] = [
-            .fake().copy(itemID: 1, name: "Item 1", productID: 100, quantity: 1),
-            .fake().copy(itemID: 2, name: "Item 2", productID: 102, quantity: 5)]
-        let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
+        let order = OrderFactory.newOrder(currency: .USD)
 
         // When
-        let cart: [POSCartItem] = [
-            makePOSCartItem(productID: 102, quantity: 1)
-        ]
-        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
 
         // Then
-        let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
+        let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
+        #expect(updatedOrder.status == .completed)
+        #expect(updatedOrder.paymentMethodID == PaymentGateway.Constants.cashOnDeliveryGatewayID)
+        #expect(updatedOrder.paymentMethodTitle == "Pay in Person")
 
-        #expect(updatedOrderItems.contains(where: { item in
-            item.itemID == 1 && item.quantity == 0
-        }), "Item 1 should be deleted")
-
-        #expect(!updatedOrderItems.contains(where: { item in
-            item.productID == 100 && item.quantity > 0
-        }), "Product for item 1 should not be re-added")
-
-        #expect(updatedOrderItems.contains(where: { item in
-            item.productID == 102 && item.quantity > 0
-        }), "Product for item 2 should be re-added")
+        let fields = try #require(mockOrdersRemote.spyUpdatePOSOrderFields)
+        #expect(fields.contains(.status))
+        #expect(fields.contains(.paymentMethodID))
+        #expect(fields.contains(.paymentMethodTitle))
     }
 
-    @Test func syncOrder_after_adding_to_cart_adds_it_to_the_order() async throws {
+    @Test
+    func markOrderAsCompletedWithCashPayment_passes_change_due_amount() async throws {
         // Given
-        let orderItems: [OrderItem] = [
-            .fake().copy(itemID: 1, name: "Item 1", productID: 100, quantity: 1)
-        ]
-        let order = Order.fake().copy(siteID: 123, orderID: 456, items: orderItems)
+        let order = OrderFactory.newOrder(currency: .USD)
 
         // When
-        let cart: [POSCartItem] = [
-            makePOSCartItem(productID: 100, quantity: 1),
-            makePOSCartItem(productID: 102, quantity: 5)
-        ]
-        _ = try await sut.syncOrder(cart: cart, order: order, currency: .USD)
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: "$6.02")
 
         // Then
-        let updatedOrderItems = try #require(mockOrdersRemote.spyUpdatePOSOrder?.items)
+        let changeDueAmount = try #require(mockOrdersRemote.spyUpdatePOSOrderCashPaymentChangeDueAmount)
+        #expect(changeDueAmount == "$6.02")
+    }
 
-        #expect(updatedOrderItems.contains(where: { item in
-            item.productID == 102 && item.quantity == 5
-        }), "Item for product 102 should be added")
+    @Test
+    func markOrderAsCompletedWithCashPayment_throws_error_when_update_fails() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+        mockOrdersRemote.updatePOSOrderResult = .failure(NSError(domain: "", code: 0))
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+        }, throws: { _ in
+            // The actual error `POSOrderServiceError.updateOrderFailed` is private, thus we cannot check against the exact error.
+            return true
+        })
     }
 }
 
@@ -142,10 +172,10 @@ private func makePOSCartItem(
     quantity: Decimal) -> POSCartItem {
         return POSCartItem(
             item: POSSimpleProduct(id: UUID(),
-                             name: "",
-                             formattedPrice: "",
-                             productID: productID,
-                             price: ""),
+                                   name: "",
+                                   formattedPrice: "",
+                                   productID: productID,
+                                   price: ""),
             quantity: quantity
         )
     }

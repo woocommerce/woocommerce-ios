@@ -34,6 +34,7 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
     func test_inits_from_ShippingLabelPackageItem_with_expected_values() {
         // Given
         let item = ShippingLabelPackageItem(productOrVariationID: 1,
+                                            orderItemID: 123,
                                             name: "Little Nap Brazil",
                                             weight: 10,
                                             quantity: 3,

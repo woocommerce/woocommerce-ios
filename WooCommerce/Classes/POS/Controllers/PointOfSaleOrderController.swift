@@ -251,22 +251,18 @@ extension PointOfSaleOrderController {
 @available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     func trackOrderCreationFailed(error: Error) {
-        let errorContext: String
-        let errorDescription: String
+        var errorType: WooAnalyticsEvent.Orders.OrderCreationErrorType?
 
-        if let couponsError = CouponsError(underlyingError: error) {
-            errorContext = couponsError.code
-            errorDescription = couponsError.message
-        } else {
-            errorContext = String(describing: error)
-            errorDescription = error.localizedDescription
+        if let _ = CouponsError(underlyingError: error) {
+            errorType = .invalidCoupon
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(
             usesGiftCard: false,
-            errorContext: errorContext,
-            errorDescription: errorDescription)
-        )
+            errorContext: String(describing: error),
+            errorDescription: error.localizedDescription,
+            errorType: errorType
+        ))
     }
 }
 

@@ -964,6 +964,15 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
+    func requestImage(
+        productImage: Yosemite.ProductImage,
+        targetSize: CGSize?,
+        completion: @escaping (UIImage?) -> Void
+    ) throws -> (any Cancellable)? {
+        // no-op
+        return nil
+    }
+
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
         // no-op
     }

@@ -11,7 +11,7 @@ extension WooAnalyticsEvent {
             static let paymentsOnboardingState = "onboarding_state"
             static let itemType = "item_type"
             static let productType = "product_type"
-            static let itemsInCart = "items_in_cart"
+            static let productsInCart = "products_in_cart"
             static let couponsInCart = "coupons_in_cart"
             static let millisecondsSinceCustomerInteractionStarted = "milliseconds_since_customer_interaction_started"
             static let millisecondsSinceOrderSyncSuccess = "milliseconds_since_order_sync_success"
@@ -78,9 +78,13 @@ extension WooAnalyticsEvent {
         }
 
         static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleCheckoutTapped,
-                              properties: [Key.itemsInCart: purchasableItemsInCart,
-                                           Key.couponsInCart: couponsInCart])
+            WooAnalyticsEvent(
+                statName: .pointOfSaleCheckoutTapped,
+                properties: [
+                    Key.productsInCart: purchasableItemsInCart,
+                    Key.couponsInCart: couponsInCart
+                ]
+            )
         }
 
         /// Tracks the time elapsed preparing reader for payment, after successful order creation

@@ -19,6 +19,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardTapped = "milliseconds_since_card_tapped"
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
+            static let type = "type"
             static let source = "source"
             static let sourceType = "source_type"
             static let resultsCount = "results_count"
@@ -113,6 +114,13 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleSearchButtonTapped,
                 properties: [Key.source: Source(itemListType: itemListType).rawValue]
+            )
+        }
+
+        static func itemsHeaderTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .pointOfSaleItemsHeaderTapped,
+                properties: [Key.type: Source(itemListType: itemListType).rawValue]
             )
         }
 

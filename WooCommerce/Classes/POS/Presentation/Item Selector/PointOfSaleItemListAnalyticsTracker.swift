@@ -30,12 +30,8 @@ struct PointOfSaleItemListAnalyticsTracker {
         guard let itemListType else {
             return
         }
-        switch itemListType {
-        case .products:
-            ServiceLocator.analytics.track(.pointOfSaleProductsTapped)
-        case .coupons:
-            ServiceLocator.analytics.track(.pointOfSaleCouponsTapped)
-        }
+
+        ServiceLocator.analytics.track(event: .PointOfSale.itemsHeaderTapped(itemListType: itemListType))
     }
 
     func trackNextPageWillLoad() {

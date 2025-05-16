@@ -124,14 +124,9 @@ extension RefundItemTableViewCell {
 
         placeholderImageView.image = nil
 
-        let targetImageViewSize = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-            .productImageOptimizedHandling
-        )
-
         imageService.downloadAndCacheImageForImageView(itemImageView,
                                                        with: productImage,
                                                        placeholder: nil,
-                                                       targetImageViewSize: targetImageViewSize,
                                                        progressBlock: nil,
                                                        completion: nil)
     }

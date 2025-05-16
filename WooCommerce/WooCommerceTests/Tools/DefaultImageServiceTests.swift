@@ -97,7 +97,6 @@ final class DefaultImageServiceTests: XCTestCase {
             .downloadAndCacheImageForImageView(mockImageView,
                                                with: url.absoluteString,
                                                placeholder: mockPlaceholder,
-                                               targetImageViewSize: false,
                                                progressBlock: nil) { (image, error) in
                                                 XCTAssertNotNil(image)
                                                 waitForDownloadingAndCachingAnImage.fulfill()
@@ -134,7 +133,6 @@ final class DefaultImageServiceTests: XCTestCase {
             .downloadAndCacheImageForImageView(mockImageView,
                                                with: urlStringWithSpecialChars,
                                                placeholder: mockPlaceholder,
-                                               targetImageViewSize: false,
                                                progressBlock: nil) { (image, error) in
                 XCTAssertNotNil(image)
                 waitForDownloadingAndCachingAnImage.fulfill()

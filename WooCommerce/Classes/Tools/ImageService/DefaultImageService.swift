@@ -14,20 +14,6 @@ struct DefaultImageService: ImageService {
     private let imageDownloader: ImageDownloader
     private let imageCache: ImageCache
 
-    /// A generous size to use for the `DownsamplingImageProcessor`.
-    /// The exact ratio isn't important because the library only needs
-    /// the higher dimension for creating thumbnails.
-    private let defaultThumbnailSize = CGSize(width: 800, height: 800)
-
-    /// Options for downloading images
-    ///
-    private var defaultOptions: KingfisherOptionsInfo {
-        return buildImageRetrieveOptions(
-            targetSize: defaultThumbnailSize,
-            shouldCacheImage: true
-        )
-    }
-
     init(imageCache: ImageCache = ImageCache.optimizedCache,
          imageDownloader: ImageDownloader = Kingfisher.ImageDownloader.default) {
         self.imageCache = imageCache
@@ -64,26 +50,28 @@ struct DefaultImageService: ImageService {
     func downloadAndCacheImageForImageView(_ imageView: UIImageView,
                                            with url: String?,
                                            placeholder: UIImage? = nil,
-                                           targetImageViewSize: Bool,
                                            progressBlock: ImageDownloadProgressBlock? = nil,
                                            completion: ImageDownloadCompletion? = nil) {
         let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let url = URL(string: encodedString ?? "")
 
-        let options: KingfisherOptionsInfo
-        if targetImageViewSize {
+        let targetSize: CGSize
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        ) {
             let scale = UIScreen.main.scale
-            let targetSize = CGSize(
+            targetSize = CGSize(
                 width: imageView.bounds.width * scale,
                 height: imageView.bounds.height * scale
             )
-            options = buildImageRetrieveOptions(
-                targetSize: targetSize,
-                shouldCacheImage: true
-            )
         } else {
-            options = defaultOptions
+            targetSize = Constants.defaultThumbnailSize
         }
+
+        let options = buildImageRetrieveOptions(
+            targetSize: targetSize,
+            shouldCacheImage: true
+        )
 
         imageView.kf.setImage(with: url,
                               placeholder: placeholder,
@@ -171,6 +159,15 @@ private extension DefaultImageService {
         }
 
         return options
+    }
+}
+
+private extension DefaultImageService {
+    enum Constants {
+        /// A generous size to use for the `DownsamplingImageProcessor`.
+        /// The exact ratio isn't important because the library only needs
+        /// the higher dimension for creating thumbnails.
+        static let defaultThumbnailSize = CGSize(width: 800, height: 800)
     }
 }
 

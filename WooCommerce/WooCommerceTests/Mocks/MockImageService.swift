@@ -25,6 +25,10 @@ final class MockImageService {
 }
 
 extension MockImageService: ImageService {
+    func storeImageInCache(_ image: UIImage, for url: URL) {
+        // no-op
+    }
+
     func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
         retrieveImageFromCacheCalled = true
         completion(retrieveImageFromCacheCompletionImage)
@@ -40,7 +44,6 @@ extension MockImageService: ImageService {
     func downloadAndCacheImageForImageView(_ imageView: UIImageView,
                                            with url: String?,
                                            placeholder: UIImage?,
-                                           targetImageViewSize: Bool,
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?) {
         // no-op

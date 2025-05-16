@@ -40,7 +40,6 @@ protocol ImageService {
     func downloadAndCacheImageForImageView(_ imageView: UIImageView,
                                            with url: String?,
                                            placeholder: UIImage?,
-                                           targetImageViewSize: Bool,
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?)
 

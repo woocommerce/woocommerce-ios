@@ -691,6 +691,171 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
     }
+
+    func test_payment_method_line_is_nil_when_shipment_is_purchased() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress.fake().copy(
+            id: "default",
+            address1: "Test address line",
+            defaultAddress: true
+        )
+        let shippingLabel = ShippingLabel.fake()
+        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+        let shipment = Shipment(
+            contents: [],
+            purchasedLabelID: shippingLabel.shippingLabelID,
+            currency: "USD",
+            currencySettings: ServiceLocator.currencySettings,
+            shippingSettingsService: MockShippingSettingsService()
+        )
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        viewModel.updateShipments([shipment])
+
+        // Then
+        XCTAssertNil(viewModel.paymentMethodLine)
+    }
+
+    func test_payment_method_line_is_add_when_no_payment_method_selected() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress.fake().copy(
+            id: "default",
+            address1: "Test address line",
+            defaultAddress: true
+        )
+        let shipment = Shipment(
+            contents: [],
+            purchasedLabelID: nil,
+            currency: "USD",
+            currencySettings: ServiceLocator.currencySettings,
+            shippingSettingsService: MockShippingSettingsService()
+        )
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        viewModel.updateShipments([shipment])
+
+        // Then
+        XCTAssertEqual(viewModel.paymentMethodLine, .add)
+    }
+
+    func test_payment_method_line_shows_card_when_payment_method_selected() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress.fake().copy(
+            id: "default",
+            address1: "Test address line",
+            defaultAddress: true
+        )
+
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(
+            paymentMethodID: 11743265,
+            name: "Example User",
+            cardType: .visa,
+            cardDigits: "4242"
+        )
+
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(
+            paymentMethods: [paymentMethod],
+            selectedPaymentMethodID: paymentMethod.paymentMethodID
+        )
+
+        let settings = WooShippingAccountSettings(
+            storeOptions: ShippingLabelStoreOptions(
+                currencySymbol: "$",
+                dimensionUnit: "cm",
+                weightUnit: "g",
+                originCountry: "VN"
+            ),
+            accountSettings: accountSettings
+        )
+
+        let shipment = Shipment(
+            contents: [],
+            purchasedLabelID: nil,
+            currency: "USD",
+            currencySettings: ServiceLocator.currencySettings,
+            shippingSettingsService: MockShippingSettingsService()
+        )
+
+        var didLoadAccountSettings = false
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                didLoadAccountSettings = true
+                completion(.success(settings))
+            case .loadConfig(_, _, let completion):
+                completion(.success(WooShippingConfig.fake()))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        viewModel.updateShipments([shipment])
+
+        // Then
+        XCTAssertTrue(didLoadAccountSettings, "Account settings should be loaded")
+        if case .card(let cardViewModel) = viewModel.paymentMethodLine {
+            XCTAssertEqual(cardViewModel.title, "VISA****4242")
+            XCTAssertTrue(cardViewModel.isEditable)
+        } else {
+            XCTFail("Expected card payment method line")
+        }
+    }
 }
 
 private extension WooShippingCreateLabelsViewModelTests {

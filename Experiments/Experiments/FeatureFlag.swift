@@ -228,4 +228,12 @@ public enum FeatureFlag: Int {
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
+
+    /// Shows inventory levels and inventory status in POS item cards
+    ///
+    case inventoryProductLabelsInPOS
+
+    /// Enables sending POS specific email receipts for eligible stores
+    ///
+    case pointOfSaleReceipts
 }

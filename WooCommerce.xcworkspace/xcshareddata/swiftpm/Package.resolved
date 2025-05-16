@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AutomatticTracksiOS",
+        "repositoryURL": "https://github.com/Automattic/Automattic-Tracks-iOS",
+        "state": {
+          "branch": null,
+          "revision": "437f586a62c07c6ceec9baf043237b2afe7ea1ac",
+          "version": "3.5.2"
+        }
+      },
+      {
         "package": "AutomatticAbout",
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
@@ -101,6 +110,15 @@
         }
       },
       {
+        "package": "Sentry",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
+        "state": {
+          "branch": null,
+          "revision": "6c81e671154e63464dd6749b7ba3279dd390a146",
+          "version": "8.50.1"
+        }
+      },
+      {
         "package": "swift-algorithms",
         "repositoryURL": "https://github.com/apple/swift-algorithms",
         "state": {
@@ -119,6 +137,15 @@
         }
       },
       {
+        "package": "Sodium",
+        "repositoryURL": "https://github.com/jedisct1/swift-sodium",
+        "state": {
+          "branch": null,
+          "revision": "4f9164a0a2c9a6a7ff53a2833d54a5c79c957342",
+          "version": "0.9.1"
+        }
+      },
+      {
         "package": "SwiftUI-Shimmer",
         "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
         "state": {
@@ -134,6 +161,15 @@
           "branch": null,
           "revision": "631a2400dbe876141a3ef8c7400885907fec7f89",
           "version": "0.4.1"
+        }
+      },
+      {
+        "package": "UIDeviceIdentifier",
+        "repositoryURL": "https://github.com/squarefrog/UIDeviceIdentifier",
+        "state": {
+          "branch": null,
+          "revision": "4699794b08bb79a4d77785edaba6ea739e298e4b",
+          "version": "2.3.0"
         }
       },
       {

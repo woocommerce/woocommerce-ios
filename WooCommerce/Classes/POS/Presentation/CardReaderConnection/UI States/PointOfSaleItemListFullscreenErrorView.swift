@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// A view that displays an error message with a retry CTA when the list of products fails to load.
+@available(iOS 17.0, *)
 struct PointOfSaleItemListFullscreenErrorView: View {
     private let error: PointOfSaleErrorState
     private let onAction: (() -> Void)?
@@ -17,6 +18,7 @@ struct PointOfSaleItemListFullscreenErrorView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListFullscreenErrorView(error: .errorOnLoadingProducts, onAction: nil)
 }

@@ -1,9 +1,6 @@
 #!/bin/bash -eu
 
-if .buildkite/commands/should-skip-tests.sh; then
-  message="Skipping UI Tests as only documentation, tooling and/or non-code files were changed"
-  echo "$message" | buildkite-agent annotate --style "info" --context "skip-ui-tests"
-  echo "$message"
+if .buildkite/commands/should-skip-job.sh --job-type validation; then
   exit 0
 fi
 

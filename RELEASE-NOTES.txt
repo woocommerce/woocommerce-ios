@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.5
+-----
+
+
 22.4
 -----
 - [*] Payments: Receipts for failed transactions are now available in Order details  [https://github.com/woocommerce/woocommerce-ios/pull/15558]
@@ -9,6 +13,9 @@
 - [*] POS: Product search shows popular products before a search is entered. [https://github.com/woocommerce/woocommerce-ios/pull/15625]
 - [*] Order Creation: Display non-purchasable, zero-priced variable product variations [https://github.com/woocommerce/woocommerce-ios/pull/15620]
 - [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
+- [*] POS: Improve error display in search screens [https://github.com/woocommerce/woocommerce-ios/pull/15627]
+- [*] POS: Added coupon search functionality [https://github.com/woocommerce/woocommerce-ios/pull/15634]
+- [*] Order Details: Fixed crash reloading the screen after refunding an order on the web. [https://github.com/woocommerce/woocommerce-ios/pull/15633]
 
 22.3
 -----

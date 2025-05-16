@@ -177,7 +177,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
-        analytics.track(event: .WooShipping.packageSelectionStep(state: .completed))
+        analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
     /// Purchases a shipping label with the provided label details and settings.

@@ -55,8 +55,6 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onSelectRate = onSelectRate
-
-        analytics.track(event: .WooShipping.rateSelectionStep(state: .started))
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -71,7 +69,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.selectedRate = selectedRate
         generateServiceTabs()
         onSelectRate?(selectedRate)
-        analytics.track(event: .WooShipping.rateSelectionStep(state: .completed))
+        analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
     }
 
     /// Retrieves shipping label rates for this shipment from remote.

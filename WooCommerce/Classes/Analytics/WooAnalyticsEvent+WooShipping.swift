@@ -28,14 +28,13 @@ extension WooAnalyticsEvent {
             case savingFailed = "saving_failed"
             case removingSuccess = "removing_success"
             case removingFailed = "removing_failed"
-            case completed
+            case selected
         }
 
         enum RateSelectionStep: String {
-            case started
             case loadingSuccess = "loading_success"
             case loadingFailed = "loading_failed"
-            case completed
+            case selected
         }
 
         enum PaymentStep: String {

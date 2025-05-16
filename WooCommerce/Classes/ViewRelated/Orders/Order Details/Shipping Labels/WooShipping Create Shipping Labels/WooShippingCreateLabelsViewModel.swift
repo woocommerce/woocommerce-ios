@@ -21,6 +21,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
     private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
+    private let analytics: Analytics
 
     private(set) var orderItems: WooShippingItemsViewModel
 
@@ -184,6 +185,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
@@ -195,6 +197,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.stores = stores
+        self.analytics = analytics
         self.shippingSettingsService = shippingSettingsService
         self.initialNoticeDelay = initialNoticeDelay
 
@@ -257,6 +260,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             state = .missingRequiredData
         } else {
             state = .ready
+            let count = shipments.count(where: { $0.purchasedLabelID == nil })
+            analytics.track(event: .WooShipping.createShippingLabelFormShown(unfulfilledShipmentsCount: count))
         }
     }
 

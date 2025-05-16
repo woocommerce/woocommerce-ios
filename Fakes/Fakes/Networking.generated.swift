@@ -2142,7 +2142,8 @@ extension Networking.ShippingLabelPurchase {
             status: .fake(),
             productIDs: .fake(),
             productNames: .fake(),
-            shipmentID: .fake()
+            shipmentID: .fake(),
+            refund: .fake()
         )
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-05-05 13:54:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9929,6 +9929,9 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "حل مشكلات الاتصال";
 
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "انتهت الصلاحية في %@";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "تحرير مبلغ";
 
@@ -11673,11 +11676,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "فصل ربط القارئ";
 
-/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "إنهاء POS";
 
-/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "الحصول على الدعم";
+
+/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
 
 /* The title of the floating button to indicate that reader is connected. */
 "pointOfSale.floatingButtons.readerConnected.title" = "تم اتصال القارئ";
@@ -11688,7 +11694,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "فصل الربط";
 
-/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "الوثائق";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
@@ -11854,7 +11860,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.loadingCouponsErrorRetry" = "إعادة المحاولة";
 
 /* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle" = "خطأ في تحميل القسائم";
+"pos.itemList.loadingCouponsErrorSubtitle2" = "هل تريد المحاولة مرة أخرى؟";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
 "pos.itemList.loadingCouponsErrorTitle" = "خطأ في تحميل القسائم";
@@ -11862,26 +11868,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "المنتجات";
 
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "البحث عن القسائم";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "البحث عن المنتجات";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "البحث";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "القسائم";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "أما أنواع المنتجات الأخرى، فستصبح التحديثات المستقبلية متوفرة.";
-
-/* Link to more information within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.learnMoreHint" = "التعرُّف على المزيد";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "لا يمكن استخدام سوى المنتجات غير القابلة للتنزيل البسيطة والمتغيرة التي تتضمن نقطة بيع الآن.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title.simpleAndVariable" = "إظهار المنتجات البسيطة والمتغيرة فقط";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "المنتجات";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText" = "لا توجد عمليات بحث حديثة";
+"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "البحث في متجرك";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "عمليات البحث الحديثة";
@@ -11896,10 +11899,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "قم بتعزيز أعمالك عن طريق إرسال عروض وخصومات خاصة إلى العملاء.";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "لم يتم العثور على قسائم.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "لم يتم العثور على قسائم";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "لإضافة نقطة بيع، اخرج منها وانتقل إلى المنتجات.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "يتعذر البحث في أسماء الأشكال، لذا استخدم اسم المنتج الأصلي.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "حاول ضبط مصطلح البحث الخاص بك - قد يساعدك البحث عن جزء من اسم المنتج.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "لم يتم العثور على منتجات.";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "لا تدعم نقطة البيع حاليًا سوى المنتجات البسيطة والمتغيرة.";
@@ -11918,6 +11930,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "إنشاء قسيمة";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "مسح البحث";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "إنشاء طلب في إدارة المتجر";
@@ -13220,12 +13235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "تم التحقق من العنوان";
 
-/* Notice when a hazardous materials category is removed on the shipping label creation screen */
-"wooShipping.createLabels.hazmatRemoved" = "إزالة تصنيف المواد الخطرة";
-
-/* Notice when a hazardous materials category is set on the shipping label creation screen */
-"wooShipping.createLabels.hazmatSet" = "تعيين تصنيف المواد الخطرة";
-
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ من العناصر";
 
@@ -13234,9 +13243,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ × %2$@ × %3$@ %4$@";
-
-/* Notice when a International Transaction Number is missing on the shipping label creation screen */
-"wooShipping.createLabels.itnMissing" = "رقم المعاملة الدولي مطلوب.";
 
 /* Message in the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.message" = "يتعذر علينا شراء ملصق الشحن. يرجى المحاولة مجددًا.";
@@ -13271,20 +13277,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "طباعة ملصق الشحن";
 
+/* Title for button to print a customs form on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printCustomsFormButton" = "طباعة نموذج الجمارك";
+
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "من هنا، يمكنك طباعة ملصق الشحن مجددًا أو تغيير حجم ورق الملصق.";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
-"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "إلغاء";
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingError.cancel" = "إلغاء";
 
-/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.message" = "هل ترغب في المحاولة مرة أخرى؟";
+/* Title of the error alert when printing a customs form fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.customsForm" = "حدث خطأ في أثناء تنزيل نموذج الجمارك";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
-"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "إعادة المحاولة";
+/* Message of the error alert when printing a document fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.message" = "هل ترغب في المحاولة مرة أخرى؟";
+
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingError.retry" = "إعادة المحاولة";
 
 /* Title of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.title" = "حدث خطأ في أثناء معاينة ملصق الشحن";
+"wooShipping.createLabels.postPurchase.printingError.shippingLabel" = "حدث خطأ في أثناء معاينة ملصق الشحن";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "ملصق الشحن لديك جاهز للطباعة";
@@ -13308,7 +13320,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "إضافة عنوان وجهة للحصول على أسعار الشحن";
 
 /* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
-"wooShipping.createLabels.rates.noRatesAvailable" = "تعذر علينا العثور على خدمة الشحن لمجموعة من الطرود المحددة وإجمالي وزن الشحنة. يرجى ضبط إدخالك والمحاولة مجددًا.";
+"wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT" = "تعذر علينا العثور على خدمة الشحن لمجموعة من الطرود المحددة وإجمالي وزن الشحنة. يرجى ضبط إدخالك والمحاولة مجددًا.";
+
+/* Error message when no shipping rates were found based on the combination of the selected HAZMAT category, package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT" = "تعذر علينا العثور على خدمة الشحن لمجموعة من تصنيفات المواد الخطرة المحددة والطرود المحددة وإجمالي وزن الشحنة. يرجى ضبط إدخالك والمحاولة مجددًا.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "يتعين علينا معرفة وزن الشحنة قبل أن نتمكن من عرض أسعار الشحن المتوفرة.";
@@ -13333,6 +13348,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "إعادة المحاولة";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.shipmentFormat" = "الشحنة ⁦%1$d⁩";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "يلزم توقيع شخص بالغ (+%1$@)";
@@ -13378,9 +13396,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "إنشاء ملصقات الشحن";
-
-/* Button to undo a change on the shipping label creation screen */
-"wooShipping.createLabels.undo" = "تراجع";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "عرض ملصق الشحن";
@@ -13550,17 +13565,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry loading saved packages in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.retryCTA" = "إعادة المحاولة";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatRemoved" = "إزالة تصنيف المواد الخطرة";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatSet" = "تعيين تصنيف المواد الخطرة";
+
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.shipmentDetails.itnMissing" = "رقم المعاملة الدولي مطلوب.";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.shipmentDetails.undo" = "تراجع";
+
 /* Label for section in shipping label creation to split shipments. */
 "wooShipping.splitShipments.products" = "المنتجات";
 
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "تقسيم الشحنات";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.removingPackageFailure" = "تتعذر إزالة الطرد";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShippingAddPackageViewModel.retry" = "إعادة المحاولة";
+
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "يتعذر حفظ الطرد";
-
-/* Button to retry saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageRetry" = "إعادة المحاولة";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "يرجى إدخال رقم معاملة دولي صالح بأحد هذه التنسيقات: X12345678901234، أو AES X12345678901234، أو NOEEI 30.37(a).";

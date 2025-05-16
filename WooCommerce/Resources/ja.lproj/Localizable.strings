@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-05-07 09:54:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9929,6 +9929,9 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "接続のトラブルシューティング";
 
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "%@に期限が切れました";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
 
@@ -11673,11 +11676,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Reader の接続を解除";
 
-/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS を終了";
 
-/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "サポートを受ける";
+
+/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "商品はどこにありますか ?";
 
 /* The title of the floating button to indicate that reader is connected. */
 "pointOfSale.floatingButtons.readerConnected.title" = "Reader 接続済み";
@@ -11688,7 +11694,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "接続を切断中";
 
-/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "ドキュメント";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
@@ -11854,7 +11860,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.loadingCouponsErrorRetry" = "再試行";
 
 /* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle" = "クーポンの読み込み中にエラーが発生しました";
+"pos.itemList.loadingCouponsErrorSubtitle2" = "もう一度試しますか ?";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
 "pos.itemList.loadingCouponsErrorTitle" = "クーポンの読み込み中にエラーが発生しました";
@@ -11862,26 +11868,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "商品";
 
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "クーポンを検索";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "商品を検索";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "検索";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "クーポン";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "他の商品タイプは今後のアップデートで利用可能になります。";
-
-/* Link to more information within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.learnMoreHint" = "さらに詳しく";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "現在、POS で使用できるのはダウンロード不可のシンプルな商品とバリエーションのある商品のみです。";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title.simpleAndVariable" = "シンプルな商品とバリエーションのある商品のみ表示中";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "商品";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText" = "最近の検索がありません";
+"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "あなたのストアを検索";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "最近の検索";
@@ -11896,10 +11899,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "顧客に特別オファーや割引を提供して売上を向上";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "クーポンがありません。";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "クーポンが見つかりません";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "追加するには、POSを終了して「商品」に移動します。";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "バリエーション名は検索できないため、親商品名を使用してください。";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "検索する語句を調整してみてください。商品名の一部を検索することをお勧めします。";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "商品が見つかりません。";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "現在、POS はシンプルな商品とバリエーションのある商品のみに対応しています。";
@@ -11918,6 +11930,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "クーポンを作成";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "検索をクリア";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "ストア管理で注文を作成";
@@ -13220,12 +13235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "住所を確認済み";
 
-/* Notice when a hazardous materials category is removed on the shipping label creation screen */
-"wooShipping.createLabels.hazmatRemoved" = "有害物質カテゴリーを削除";
-
-/* Notice when a hazardous materials category is set on the shipping label creation screen */
-"wooShipping.createLabels.hazmatSet" = "有害物質カテゴリーセット";
-
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@個のアイテム";
 
@@ -13234,9 +13243,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Notice when a International Transaction Number is missing on the shipping label creation screen */
-"wooShipping.createLabels.itnMissing" = "ITN は必須項目です。";
 
 /* Message in the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.message" = "配送ラベルを購入できません。 もう一度お試しください。";
@@ -13271,20 +13277,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "配送ラベルを印刷";
 
+/* Title for button to print a customs form on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printCustomsFormButton" = "税関申告書を印刷";
+
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "こちらから再度配送ラベルを印刷するか、ラベルの用紙サイズを変更することができます。";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
-"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "キャンセル";
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingError.cancel" = "キャンセル";
 
-/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.message" = "再試行しますか ?";
+/* Title of the error alert when printing a customs form fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.customsForm" = "税関申告書をダウンロードする際にエラーが発生しました";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
-"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "再試行";
+/* Message of the error alert when printing a document fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.message" = "再試行しますか ?";
+
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingError.retry" = "再試行";
 
 /* Title of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.title" = "配送ラベルのプレビューでエラーが発生しました";
+"wooShipping.createLabels.postPurchase.printingError.shippingLabel" = "配送ラベルのプレビューでエラーが発生しました";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "配送ラベルを印刷する準備ができました";
@@ -13308,7 +13320,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "配送先住所を追加して配送料金を取得";
 
 /* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
-"wooShipping.createLabels.rates.noRatesAvailable" = "指定された貨物と配送総重量の組み合わせに対応する配送サービスが見つかりませんでした。 入力内容を調整して再度お試しください。";
+"wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT" = "指定された貨物と配送総重量の組み合わせに対応する配送サービスが見つかりませんでした。 入力内容を調整して再度お試しください。";
+
+/* Error message when no shipping rates were found based on the combination of the selected HAZMAT category, package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT" = "指定された HAZMAT カテゴリー、指定された貨物、配送総重量の組み合わせに対応する配送サービスが見つかりませんでした。 入力内容を調整して再度お試しください。";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "利用可能な配送料金を表示するには、配送重量を入力する必要があります。";
@@ -13333,6 +13348,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "再試行";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.shipmentFormat" = "配送 %1$d";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "成人の方の署名が必要 (+%1$@)";
@@ -13378,9 +13396,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "配送ラベルを作成";
-
-/* Button to undo a change on the shipping label creation screen */
-"wooShipping.createLabels.undo" = "取り消す";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "配送ラベルを表示";
@@ -13550,17 +13565,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry loading saved packages in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.retryCTA" = "再試行";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatRemoved" = "有害物質カテゴリーを削除";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatSet" = "有害物質カテゴリーセット";
+
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.shipmentDetails.itnMissing" = "ITN は必須項目です。";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.shipmentDetails.undo" = "取り消す";
+
 /* Label for section in shipping label creation to split shipments. */
 "wooShipping.splitShipments.products" = "商品";
 
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "分割配送";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.removingPackageFailure" = "荷物を削除できません";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShippingAddPackageViewModel.retry" = "再試行";
+
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "荷物を保存できません";
-
-/* Button to retry saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageRetry" = "再試行";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "有効な ITN を X12345678901234、AES X12345678901234、NOEEI 30.37(a) のいずれかの形式で入力してください";

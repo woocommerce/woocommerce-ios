@@ -106,5 +106,12 @@ private func makeCouponItem(code: String = "") -> POSItem {
 }
 
 private func makeProductItem() -> POSItem {
-    return .simpleProduct(.init(id: UUID(), name: "some product name", formattedPrice: "$10.00", productID: 123, price: "10"))
+    return .simpleProduct(.init(id: UUID(),
+                                name: "some product name",
+                                formattedPrice: "$10.00",
+                                productID: 123,
+                                price: "10",
+                                manageStock: false,
+                                stockQuantity: nil,
+                                stockStatusKey: ""))
 }

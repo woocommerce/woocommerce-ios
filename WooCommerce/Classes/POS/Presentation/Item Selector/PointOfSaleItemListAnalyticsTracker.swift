@@ -3,19 +3,26 @@ import WooFoundation
 import enum Yosemite.POSItemType
 
 struct PointOfSaleItemListAnalyticsTracker {
-    private let itemType: POSItemType
-    private let isSearching: Bool
+    private let source: WooAnalyticsEvent.PointOfSale.Source
+    private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
     private let itemListType: ItemListType?
 
-    init(itemType: POSItemType, isSearching: Bool) {
-        self.itemType = itemType
-        self.isSearching = isSearching
+    init(
+        source: WooAnalyticsEvent.PointOfSale.Source,
+        sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+    ) {
+        self.source = source
+        self.sourceType = sourceType
         self.itemListType = nil
     }
 
-    init(itemListType: ItemListType) {
-        self.itemType = itemListType.itemType
-        self.isSearching = itemListType.isSearching
+    init(
+        itemListType: ItemListType,
+        source: WooAnalyticsEvent.PointOfSale.Source,
+        sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+    ) {
+        self.source = source
+        self.sourceType = sourceType
         self.itemListType = itemListType
     }
 
@@ -34,8 +41,8 @@ struct PointOfSaleItemListAnalyticsTracker {
     func trackNextPageWillLoad() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.PointOfSale.itemsNextPageLoaded(
-                itemType: itemType,
-                searching: isSearching
+                source: source,
+                sourceType: sourceType
             )
         )
     }
@@ -43,8 +50,8 @@ struct PointOfSaleItemListAnalyticsTracker {
     func trackRefresh() {
         ServiceLocator.analytics.track(
             event: WooAnalyticsEvent.PointOfSale.itemsPullToRefresh(
-                 itemType: itemType,
-                 searching: isSearching
+                source: source,
+                sourceType: sourceType
             )
         )
     }

@@ -24,7 +24,11 @@ struct POSPreSearchView: View {
         ItemList(
             itemsController: posModel.popularPurchasableItemsController,
             node: .root,
-            itemActionHandler: StandardPOSItemActionHandler(posModel: posModel, itemListType: itemListType),
+            itemActionHandler: StandardPOSItemActionHandler(
+                posModel: posModel,
+                source: .init(itemListType: itemListType),
+                sourceType: .preSearch
+            ),
             headerView: {
                 VStack(alignment: .leading, spacing: POSSpacing.none) {
                     recentSearchesSection

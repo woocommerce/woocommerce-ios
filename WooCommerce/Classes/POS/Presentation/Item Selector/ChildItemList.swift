@@ -171,7 +171,7 @@ private extension ChildItemList {
                          title: parentProduct.name,
                          itemsController: itemsController,
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
-                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation, isSearching: false))
+                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(source: .variation, sourceType: .list))
 }
 
 @available(iOS 17.0, *)
@@ -194,7 +194,7 @@ private extension ChildItemList {
                          title: parentProduct.name,
                          itemsController: itemsController,
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
-                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation, isSearching: false))
+                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(source: .variation, sourceType: .list))
 }
 
 #endif

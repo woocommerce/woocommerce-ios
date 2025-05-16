@@ -14,7 +14,16 @@ struct ItemListView: View {
     @Binding var searchTerm: String
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
-        PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType)
+        switch selectedItemListType {
+        case .products(search: false):
+            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .product, sourceType: .list)
+        case .coupons(search: false):
+            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .coupon, sourceType: .list)
+        case .products(search: true):
+            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+        case .coupons(search: true):
+            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+        }
     }
 
     private var _isSearching: Binding<Bool> {
@@ -184,10 +193,22 @@ struct ItemListView: View {
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
         switch itemListType {
-        case .products(search: false), .coupons(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
-        case .products(search: true), .coupons(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
+        case .products(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, source: .product, sourceType: .list)
+        case .coupons(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, source: .coupon, sourceType: .list)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .product)
+        case .coupons(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .coupon)
+        }
+    }
+
+    private func variationActionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
+        if itemListType.isSearching {
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .variation)
+        } else {
+            StandardPOSItemActionHandler(posModel: posModel, source: .variation, sourceType: .list)
         }
     }
 
@@ -200,9 +221,11 @@ struct ItemListView: View {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
-                itemActionHandler: actionHandler(selectedItemListType),
-                analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation,
-                                                                      isSearching: selectedItemListType.isSearching)
+                itemActionHandler: variationActionHandler(selectedItemListType),
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                    source: .variation,
+                    sourceType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                )
             )
         default:
             EmptyView()

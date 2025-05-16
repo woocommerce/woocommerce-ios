@@ -1,18 +1,14 @@
 import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
+import enum Yosemite.POSItem
 
 extension WooAnalyticsEvent {
     enum PointOfSale {
-        enum CartItemType {
-            case simpleProduct
-            case variation
-        }
-
         /// Event property Key.
         private enum Key {
             static let paymentsOnboardingState = "onboarding_state"
-            static let itemListType = "item_list_type"
-            static let itemType = "product_type"
+            static let itemType = "item_type"
+            static let productType = "product_type"
             static let itemsInCart = "items_in_cart"
             static let couponsInCart = "coupons_in_cart"
             static let millisecondsSinceCustomerInteractionStarted = "milliseconds_since_customer_interaction_started"
@@ -36,8 +32,26 @@ extension WooAnalyticsEvent {
                               properties: [Key.paymentsOnboardingState: onboardingState.reasonForAnalytics])
         }
 
-        static func addItemToCart(type: CartItemType, itemListType: ItemListType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [:])
+        static func addItemToCart(
+            source: WooAnalyticsEvent.PointOfSale.Source,
+            sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+            itemType: WooAnalyticsEvent.PointOfSale.ItemType,
+            productType: WooAnalyticsEvent.PointOfSale.ProductType? = nil,
+        ) -> WooAnalyticsEvent {
+            var properties: [String: String] = [
+                Key.source: source.rawValue,
+                Key.sourceType: sourceType.rawValue,
+                Key.itemType: itemType.rawValue
+            ]
+
+            if let productType = productType {
+                properties[Key.productType] = productType.rawValue
+            }
+
+            return WooAnalyticsEvent(
+                statName: .pointOfSaleAddItemToCart,
+                properties: properties
+            )
         }
 
         static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
@@ -83,21 +97,23 @@ extension WooAnalyticsEvent {
                               properties: [:])
         }
 
-        static func itemsPullToRefresh(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
-            let source = Source(itemType: itemType).rawValue
-            let sourceType = SourceType(isSearching: searching).rawValue
-            return WooAnalyticsEvent(
+        static func itemsPullToRefresh(
+            source: WooAnalyticsEvent.PointOfSale.Source,
+            sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
                 statName: .pointOfSaleItemsPullToRefresh,
-                properties: [Key.source: source, Key.sourceType: sourceType]
+                properties: [Key.source: source.rawValue, Key.sourceType: sourceType.rawValue]
             )
         }
 
-        static func itemsNextPageLoaded(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
-            let source = Source(itemType: itemType).rawValue
-            let sourceType = SourceType(isSearching: searching).rawValue
-            return WooAnalyticsEvent(
+        static func itemsNextPageLoaded(
+            source: WooAnalyticsEvent.PointOfSale.Source,
+            sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+        ) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
                 statName: .pointOfSaleItemsNextPageLoaded,
-                properties: [Key.source: source, Key.sourceType: sourceType]
+                properties: [Key.source: source.rawValue, Key.sourceType: sourceType.rawValue]
             )
         }
 
@@ -113,7 +129,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-private extension WooAnalyticsEvent.PointOfSale {
+extension WooAnalyticsEvent.PointOfSale {
     enum Source: String {
         case product
         case variation
@@ -129,14 +145,41 @@ private extension WooAnalyticsEvent.PointOfSale {
                 self = .coupon
             }
         }
+
+        init(itemListType: ItemListType) {
+            switch itemListType {
+            case .products:
+                self = .product
+            case .coupons:
+                self = .coupon
+            }
+        }
     }
 
     enum SourceType: String {
         case list
         case search
+        case preSearch = "pre_search"
 
-        init(isSearching: Bool) {
-            self = isSearching ? .search : .list
+        init(isSearching: Bool, searchTerm: String = "") {
+            switch (isSearching, searchTerm.isEmpty) {
+            case (false, _):
+                self = .list
+            case (true, true):
+                self = .preSearch
+            case (true, false):
+                self = .search
+            }
         }
+    }
+
+    enum ItemType: String {
+        case product
+        case coupon
+    }
+
+    enum ProductType: String {
+        case simple
+        case variation
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.POSItem
+import enum Yosemite.POSItemType
 import protocol WooFoundation.Analytics
 
 /// Protocol for handling actions on POS items
@@ -8,31 +9,56 @@ protocol POSItemActionHandler {
     /// Handles a tap on an item
     /// - Parameter item: The item that was tapped
     func handleTap(_ item: POSItem)
-    /// Tracks analytics for a tap on an item
-    /// - Parameter for: The item that was tapped
-    /// - Parameter using: The analytics service to track to
-    func trackTapAnalytics(for item: POSItem, itemListType: ItemListType, using analytics: Analytics)
 }
 
 @available(iOS 17.0, *)
 extension POSItemActionHandler {
-    /// Default implementation for analytics tracking – it still needs to be called
-    func trackTapAnalytics(for item: POSItem, itemListType: ItemListType, using analytics: Analytics) {
+    /// Default implementation for analytics tracking
+    /// - Parameter item: The item that was tapped
+    /// - Parameter source: The source of the event
+    /// - Parameter sourceType: The type of the source
+    /// - Parameter using: The analytics service to track to
+    func trackTapAnalytics(
+        for item: POSItem,
+        source: WooAnalyticsEvent.PointOfSale.Source,
+        sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+        using analytics: Analytics
+    ) {
         switch item {
         case .simpleProduct:
-            analytics.track(event: .PointOfSale.addItemToCart(type: .simpleProduct, itemListType: itemListType))
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    source: source,
+                    sourceType: sourceType,
+                    itemType: .product,
+                    productType: .simple
+                )
+            )
         case .variation:
-            analytics.track(event: .PointOfSale.addItemToCart(type: .variation, itemListType: itemListType))
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    source: source,
+                    sourceType: sourceType,
+                    itemType: .product,
+                    productType: .variation
+                )
+            )
         case .coupon:
-            analytics.track(.pointOfSaleCouponAddedToCart)
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    source: source,
+                    sourceType: sourceType,
+                    itemType: .coupon
+                )
+            )
         default:
             break
         }
     }
 
-    func shouldSkipDuplicate(_ item: POSItem, itemListType: ItemListType, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
-        switch itemListType {
-        case .coupons:
+    func shouldSkipDuplicate(_ item: POSItem, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
+        switch item {
+        case .coupon:
             return posModel.cart.coupons.contains(where: { $0.id == item.id })
         default:
             return false
@@ -44,21 +70,33 @@ extension POSItemActionHandler {
 @available(iOS 17.0, *)
 final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
+    private let source: WooAnalyticsEvent.PointOfSale.Source
+    private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
     private let analytics: Analytics
-    private let itemListType: ItemListType
 
-    init(posModel: PointOfSaleAggregateModelProtocol, itemListType: ItemListType, analytics: Analytics = ServiceLocator.analytics) {
+    init(posModel: PointOfSaleAggregateModelProtocol,
+         source: WooAnalyticsEvent.PointOfSale.Source,
+         sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+         analytics: Analytics = ServiceLocator.analytics
+    ) {
         self.posModel = posModel
-        self.itemListType = itemListType
+        self.source = source
+        self.sourceType = sourceType
         self.analytics = analytics
     }
 
     func handleTap(_ item: POSItem) {
-        if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
+        if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
         posModel.addToCart(item)
-        trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
+
+        trackTapAnalytics(
+            for: item,
+            source: source,
+            sourceType: sourceType,
+            using: analytics
+        )
     }
 }
 
@@ -67,29 +105,38 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
 final class SearchResultItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let searchTerm: String
-    private let itemListType: ItemListType
+    private let itemType: POSItemType
+    private let source: WooAnalyticsEvent.PointOfSale.Source
     private let analytics: Analytics
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          searchTerm: String,
-         itemListType: ItemListType,
+         itemType: POSItemType,
+         source: WooAnalyticsEvent.PointOfSale.Source,
          analytics: Analytics = ServiceLocator.analytics) {
         self.posModel = posModel
         self.searchTerm = searchTerm
-        self.itemListType = itemListType
+        self.itemType = itemType
+        self.source = source
         self.analytics = analytics
     }
 
     func handleTap(_ item: POSItem) {
-        if shouldSkipDuplicate(item, itemListType: itemListType, posModel: posModel) {
+        if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
 
         if searchTerm.isNotEmpty {
-            posModel.saveSearchTerm(searchTerm, for: itemListType.itemType)
+            posModel.saveSearchTerm(searchTerm, for: itemType)
         }
 
         posModel.addToCart(item)
-        trackTapAnalytics(for: item, itemListType: itemListType, using: analytics)
+
+        trackTapAnalytics(
+            for: item,
+            source: source,
+            sourceType: searchTerm.isEmpty ? .preSearch : .search,
+            using: analytics
+        )
     }
 }

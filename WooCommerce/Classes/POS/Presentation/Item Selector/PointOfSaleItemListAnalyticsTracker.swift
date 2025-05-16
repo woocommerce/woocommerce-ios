@@ -38,18 +38,12 @@ struct PointOfSaleItemListAnalyticsTracker {
     }
 
     func trackRefresh() {
-        ServiceLocator.analytics.track(refreshEvent)
-    }
-
-    private var refreshEvent: WooAnalyticsStat {
-        switch itemType {
-        case .product:
-                .pointOfSaleProductsPullToRefresh
-        case .coupon:
-                .pointOfSaleCouponsPullToRefresh
-        case .variation:
-                .pointOfSaleVariationsPullToRefresh
-        }
+        ServiceLocator.analytics.track(
+            event: WooAnalyticsEvent.PointOfSale.itemsPullToRefresh(
+                 itemType: itemType,
+                 searching: isSearching
+            )
+        )
     }
 
     func trackSearchTapped() {

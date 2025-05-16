@@ -118,8 +118,7 @@ private extension TracksProvider {
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
             // POS-specific events
             WooAnalyticsStat.pointOfSaleLoaded,
-            WooAnalyticsStat.pointOfSaleProductsPullToRefresh,
-            WooAnalyticsStat.pointOfSaleVariationsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleItemsPullToRefresh,
             WooAnalyticsStat.pointOfSaleAddItemToCart,
             WooAnalyticsStat.pointOfSaleItemRemovedFromCart,
             WooAnalyticsStat.pointOfSaleCheckoutTapped,
@@ -144,7 +143,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleProductsTapped,
             WooAnalyticsStat.pointOfSaleCouponsTapped,
             WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
-            WooAnalyticsStat.pointOfSaleCouponsPullToRefresh,
             WooAnalyticsStat.pointOfSaleCouponAddedToCart,
             WooAnalyticsStat.pointOfSaleCouponRemovedFromCart,
             WooAnalyticsStat.pointOfSaleSearchButtonTapped,

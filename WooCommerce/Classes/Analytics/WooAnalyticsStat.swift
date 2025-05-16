@@ -1278,8 +1278,7 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleLoaded = "loaded"
-    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
-    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
+    case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
@@ -1304,7 +1303,6 @@ enum WooAnalyticsStat: String {
     case pointOfSaleProductsTapped = "products_tapped"
     case pointOfSaleCouponsTapped = "coupons_tapped"
     case pointOfSaleCouponsCreateTapped = "coupons_create_tapped"
-    case pointOfSaleCouponsPullToRefresh = "coupons_pull_to_refresh"
     case pointOfSaleCouponAddedToCart = "coupon_added_to_cart"
     case pointOfSaleCouponRemovedFromCart = "coupon_removed_from_cart"
     case pointOfSaleSearchButtonTapped = "search_button_tapped"

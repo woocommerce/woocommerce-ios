@@ -22,6 +22,7 @@ extension WooAnalyticsEvent {
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
             static let source = "source"
+            static let sourceType = "source_type"
             static let search = "search"
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
@@ -37,10 +38,7 @@ extension WooAnalyticsEvent {
         }
 
         static func addItemToCart(type: CartItemType, itemListType: ItemListType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [
-                Key.itemType: type.analyticsValue,
-                Key.source: itemListType.addItemSourceAnalyticsValue
-            ])
+            WooAnalyticsEvent(statName: .pointOfSaleAddItemToCart, properties: [:])
         }
 
         static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
@@ -78,22 +76,26 @@ extension WooAnalyticsEvent {
 
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchButtonTapped,
-                              properties: [
-                                Key.itemListType: itemListType.analyticsValue
-                              ])
+                              properties: [:])
         }
 
         static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSalePreSearchRecentTermTapped,
-                              properties: [
-                                Key.itemListType: itemListType.analyticsValue
-                              ])
+                              properties: [:])
+        }
+
+        static func itemsPullToRefresh(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
+            let source = Source(itemType: itemType).rawValue
+            let sourceType = SourceType(isSearching: searching).rawValue
+            return WooAnalyticsEvent(
+                statName: .pointOfSaleItemsPullToRefresh,
+                properties: [Key.source: source, Key.sourceType: sourceType]
+            )
         }
 
         static func pointOfSaleItemsNextPageLoaded(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleItemsNextPageLoaded,
                               properties: [
-                                Key.itemListType: itemType.analyticsValue,
                                 Key.search: searching
             ])
         }
@@ -103,7 +105,6 @@ extension WooAnalyticsEvent {
                                                           millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchRemoteResultsFetched,
                               properties: [
-                                Key.itemListType: itemType.analyticsValue,
                                 Key.resultsCount: "\(resultsCount)",
                                 Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
                               ])
@@ -111,47 +112,30 @@ extension WooAnalyticsEvent {
     }
 }
 
-private extension WooAnalyticsEvent.PointOfSale.CartItemType {
-    var analyticsValue: String {
-        switch self {
-        case .simpleProduct:
-            return "simple"
-        case .variation:
-            return "variation"
-        }
-    }
-}
+private extension WooAnalyticsEvent.PointOfSale {
+    enum Source: String {
+        case product
+        case variation
+        case coupon
 
-private extension ItemListType {
-    var analyticsValue: String {
-        switch self {
-        case .products:
-            return "products"
-        case .coupons:
-            return "coupons"
+        init(itemType: POSItemType) {
+            switch itemType {
+            case .product:
+                self = .product
+            case .variation:
+                self = .variation
+            case .coupon:
+                self = .coupon
+            }
         }
     }
 
-    var addItemSourceAnalyticsValue: String {
-        switch self {
-        case .products(search: true):
-            return "search_result"
-        case .products(search: false),
-                .coupons:
-            return "list"
-        }
-    }
-}
+    enum SourceType: String {
+        case list
+        case search
 
-private extension POSItemType {
-    var analyticsValue: String {
-        switch self {
-        case .product:
-            return "product"
-        case .variation:
-            return "variation"
-        case .coupon:
-            return "coupon"
+        init(isSearching: Bool) {
+            self = isSearching ? .search : .list
         }
     }
 }

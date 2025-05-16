@@ -2,7 +2,6 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
-import protocol WooFoundation.Analytics
 
 final class WooShippingShipmentDetailsViewModel: ObservableObject {
 

@@ -157,13 +157,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .ignoresSafeArea(edges: .bottom)
         .background(Color(.listForeground(modal: false)))
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
         let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
-        let screenHeight = UIScreen.main.bounds.height
+        let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
         let maxExpandedHeight = screenHeight * 0.8
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight

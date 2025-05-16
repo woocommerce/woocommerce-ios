@@ -408,7 +408,6 @@ private extension WooShippingCreateLabelsView {
                 Spacer()
                 Text(viewModel.orderItems.itemsPriceLabel)
             }
-            .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in
                 AdaptiveStack {
                     Image(uiImage: .shippingIcon)
@@ -419,7 +418,6 @@ private extension WooShippingCreateLabelsView {
                     Spacer()
                     Text(shippingLine.formattedTotal)
                 }
-                .frame(idealHeight: Layout.rowHeight)
             }
         }
     }
@@ -491,7 +489,6 @@ private extension WooShippingCreateLabelsView {
                 shippingRateRow(label: Localization.BottomSheet.total, amount: viewModel.totalCost)
                     .bold()
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
     }
 

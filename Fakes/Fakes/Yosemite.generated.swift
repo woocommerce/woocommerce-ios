@@ -45,7 +45,10 @@ extension Yosemite.POSSimpleProduct {
             productID: .fake(),
             price: .fake(),
             productType: .fake(),
-            bundledItems: .fake()
+            bundledItems: .fake(),
+            manageStock: .fake(),
+            stockQuantity: .fake(),
+            stockStatusKey: .fake()
         )
     }
 }

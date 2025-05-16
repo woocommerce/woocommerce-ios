@@ -359,7 +359,10 @@ private extension CartView {
                                             name: "Sample Product",
                                             formattedPrice: "$10.00",
                                             productID: 6,
-                                            price: "10")))
+                                            price: "10",
+                                            manageStock: false,
+                                            stockQuantity: nil,
+                                            stockStatusKey: "")))
     return CartView()
         .environment(posModel)
 }

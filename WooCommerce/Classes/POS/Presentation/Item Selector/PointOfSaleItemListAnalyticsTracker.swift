@@ -33,8 +33,11 @@ struct PointOfSaleItemListAnalyticsTracker {
 
     func trackNextPageWillLoad() {
         ServiceLocator.analytics.track(
-            event: WooAnalyticsEvent.PointOfSale.pointOfSaleItemsNextPageLoaded(itemType: itemType,
-                                                                                searching: isSearching))
+            event: WooAnalyticsEvent.PointOfSale.itemsNextPageLoaded(
+                itemType: itemType,
+                searching: isSearching
+            )
+        )
     }
 
     func trackRefresh() {

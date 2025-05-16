@@ -23,7 +23,6 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
             static let source = "source"
             static let sourceType = "source_type"
-            static let search = "search"
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
         }
@@ -93,11 +92,13 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func pointOfSaleItemsNextPageLoaded(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleItemsNextPageLoaded,
-                              properties: [
-                                Key.search: searching
-            ])
+        static func itemsNextPageLoaded(itemType: POSItemType, searching: Bool) -> WooAnalyticsEvent {
+            let source = Source(itemType: itemType).rawValue
+            let sourceType = SourceType(isSearching: searching).rawValue
+            return WooAnalyticsEvent(
+                statName: .pointOfSaleItemsNextPageLoaded,
+                properties: [Key.source: source, Key.sourceType: sourceType]
+            )
         }
 
         static func pointOfSaleSearchRemoteResultsFetched(itemType: POSItemType,

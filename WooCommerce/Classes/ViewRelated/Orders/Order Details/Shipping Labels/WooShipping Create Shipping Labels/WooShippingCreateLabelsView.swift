@@ -400,7 +400,7 @@ private extension WooShippingCreateLabelsView {
                 Text(Localization.BottomSheet.orderDetails)
                     .footnoteStyle()
             }
-            AdaptiveStack {
+            HStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
                 Text(viewModel.orderItems.itemsCountLabel)
@@ -409,7 +409,7 @@ private extension WooShippingCreateLabelsView {
                 Text(viewModel.orderItems.itemsPriceLabel)
             }
             ForEach(viewModel.shippingLines) { shippingLine in
-                AdaptiveStack {
+                HStack {
                     Image(uiImage: .shippingIcon)
                         .frame(width: Layout.iconSize)
                     Text(shippingLine.title)
@@ -493,7 +493,7 @@ private extension WooShippingCreateLabelsView {
     }
 
     func shippingRateRow(label: String, amount: String?) -> some View {
-        AdaptiveStack {
+        HStack {
             Text(label)
             Spacer()
             Text(amount ?? "$0.00")

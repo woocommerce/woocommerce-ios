@@ -149,7 +149,7 @@ final class DefaultImageServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testRetrieveImageWithCachingFlow() {
+    func test_image_returned_from_cache_on_second_retrieval_when_caching_is_enabled() {
         // Given
         let mockCache = MockImageCache(name: "Testing")
         let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
@@ -178,7 +178,7 @@ final class DefaultImageServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testRetrieveImageWithoutCaching() {
+    func test_no_image_returned_from_cache_on_second_retrieval_when_caching_is_disabled() {
         // Given
         let mockCache = MockImageCache(name: "Testing")
         let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
@@ -207,7 +207,7 @@ final class DefaultImageServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testRetrieveImageWithTargetSize() {
+    func test_retrieved_image_fits_target_size_when_target_size_is_passed() {
         // Given
         let targetSize = CGSize(width: 100, height: 100)
         let mockCache = MockImageCache(name: "Testing")
@@ -241,7 +241,7 @@ final class DefaultImageServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testRetrieveImageWithSpecialCharacters() {
+    func test_image_retrieved_when_url_contains_special_characters() {
         // Given
         let urlStringWithSpecialChars = "https://woocommerce.com/тест-图像"
         let encodedURLStringWithSpecialChars = urlStringWithSpecialChars.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!

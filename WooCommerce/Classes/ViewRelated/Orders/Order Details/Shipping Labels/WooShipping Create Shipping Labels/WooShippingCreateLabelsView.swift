@@ -305,9 +305,13 @@ private extension WooShippingCreateLabelsView {
             if isiPhonePortrait {
                 VStack(spacing: Layout.bottomSheetSpacing) {
                     if isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizePortrait)
+                        }
+                        .tint(Color(.primary))
                     }
                     if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
@@ -317,10 +321,14 @@ private extension WooShippingCreateLabelsView {
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
                     if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
-                            .fixedSize(horizontal: false, vertical: true)
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizeAlbum)
+                        }
+                        .tint(Color(.primary))
+                        .fixedSize(horizontal: false, vertical: true)
                         purchaseButton
                     }
                 }
@@ -608,6 +616,10 @@ private extension WooShippingCreateLabelsView {
         static let gradientViewWidth: CGFloat = 32
         static let purchasedIconWidth: CGFloat = 16
         static let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
+        static let toggleTextLineLimit = 3
+        static let toggleTextMaxDynamicTypeSizePortrait = DynamicTypeSize.accessibility1
+        static let toggleTextMaxDynamicTypeSizeAlbum = DynamicTypeSize.xxxLarge
     }
 
     enum Localization {
@@ -725,3 +737,4 @@ private extension WooShippingCreateLabelsView {
         )
     }
 }
+

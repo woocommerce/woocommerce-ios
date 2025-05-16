@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 22.4
-We've enhanced your WooCommerce experience with this update! Now view receipts for failed transactions in order details, enjoy improved POS features including coupon search and popular product suggestions, and benefit from smoother order management. We've also fixed a crash when reloading order details after web refunds.
+With this version of the Woo app, you'll be able to see receipts for failed transactions, and enter addresses more easily in order creation. On iPad, we've improved POS search by adding coupon search, and you'll see your most popular products before you search. We've also fixed a crash when reloading order details after a refund on the web.
 
 ## 22.3
 This release brings major improvements to the WooCommerce Point of Sale (POS) experience, including the ability to search for products and apply coupons directly from the app. We’ve also improved the Tap to Pay onboarding flow and updated documentation links to ensure a smoother setup. Enhancements to the order form now make entering custom amounts more intuitive. Behind the scenes, we’ve made fixes to improve app stability and refined the POS interface for better usability.

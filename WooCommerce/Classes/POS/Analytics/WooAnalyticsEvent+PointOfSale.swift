@@ -1,6 +1,8 @@
 import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
+import struct Yosemite.POSVariation
 
 extension WooAnalyticsEvent {
     enum PointOfSale {
@@ -50,6 +52,26 @@ extension WooAnalyticsEvent {
 
             return WooAnalyticsEvent(
                 statName: .pointOfSaleAddItemToCart,
+                properties: properties
+            )
+        }
+
+        static func itemRemovedFromCart(
+            source: WooAnalyticsEvent.PointOfSale.Source,
+            itemType: WooAnalyticsEvent.PointOfSale.ItemType,
+            productType: WooAnalyticsEvent.PointOfSale.ProductType? = nil
+        ) -> WooAnalyticsEvent {
+            var properties: [String: String] = [
+                Key.source: source.rawValue,
+                Key.itemType: itemType.rawValue
+            ]
+
+            if let productType = productType {
+                properties[Key.productType] = productType.rawValue
+            }
+
+            return WooAnalyticsEvent(
+                statName: .pointOfSaleItemRemovedFromCart,
                 properties: properties
             )
         }
@@ -134,6 +156,8 @@ extension WooAnalyticsEvent.PointOfSale {
         case product
         case variation
         case coupon
+        case cart
+        case error
 
         init(itemType: POSItemType) {
             switch itemType {
@@ -181,5 +205,15 @@ extension WooAnalyticsEvent.PointOfSale {
     enum ProductType: String {
         case simple
         case variation
+
+        init?(cartItem: Cart.PurchasableItem) {
+            if cartItem.item is POSSimpleProduct {
+                self = .simple
+            } else if cartItem.item is POSVariation {
+                self = .variation
+            } else {
+                return nil
+            }
+        }
     }
 }

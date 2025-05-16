@@ -45,21 +45,7 @@ steps:
           context: Unit Tests
 
   - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
-    command: |
-      echo "--- :rubygems: Setting up Gems"
-      install_gems
-
-      echo "--- :cocoapods: Setting up Pods"
-      install_cocoapods
-
-      echo "--- :swift: Setting up Swift Packages"
-      install_swiftpm_dependencies
-
-      echo "--- 🧪 Testing"
-      bundle exec fastlane run scan \
-        scheme:WordPressAuthenticator \
-        prelaunch_simulator:true \
-        device:'iPhone 16'
+    command: .buildkite/commands/run-wordpress-authenticator-tests.sh
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

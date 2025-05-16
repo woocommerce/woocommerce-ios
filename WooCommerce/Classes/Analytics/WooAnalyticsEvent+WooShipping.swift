@@ -22,6 +22,8 @@ extension WooAnalyticsEvent {
 
         enum PackageSelectionStep: String {
             case started
+            case loadingSuccess = "loading_success"
+            case loadingFailed = "loading_failed"
             case savingSuccess = "saving_success"
             case savingFailed = "saving_failed"
             case removingSuccess = "removing_success"

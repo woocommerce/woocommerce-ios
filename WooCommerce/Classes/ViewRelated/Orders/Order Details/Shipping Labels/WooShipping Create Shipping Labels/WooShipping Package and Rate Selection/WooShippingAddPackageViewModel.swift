@@ -3,11 +3,13 @@ import SwiftUI
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 final class WooShippingAddPackageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let storage: StorageManagerType
+    private let analytics: Analytics
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
@@ -17,10 +19,13 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
+        self.analytics = analytics
+
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage
         // Optimistically set the selected package ID.
@@ -35,6 +40,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
             break
         }
         configureResultsController()
+        analytics.track(event: .WooShipping.packageSelectionStep(state: .started))
     }
 
     @Published private(set) var isLoadingPackages: Bool = false
@@ -146,9 +152,11 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                 }
                 stores.dispatch(loadPackagesAction)
             }
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .loadingSuccess))
         } catch {
             DDLogError("⛔️ Error loading packages for Woo Shipping labels: \(error)")
             packageLoadingError = error
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .loadingFailed, error: error))
         }
 
         isLoadingPackages = false
@@ -219,15 +227,19 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                                                          packageID: packageID,
                                                          packageType: .predefined,
                                                          completion: { [weak self] result in
+                guard let self else { return }
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
-                    self?.starredCarriersPackages.insert(packageID)
-                    self?.notice = Notice(title: Localization.removingPackageFailure,
+                    starredCarriersPackages.insert(packageID)
+                    notice = Notice(title: Localization.removingPackageFailure,
                                           feedbackType: .error,
                                           actionTitle: Localization.retry,
-                                          actionHandler: {
+                                          actionHandler: { [weak self] in
                         self?.starUnstarPackage(packageID, carrierID: carrierID)
                     })
+                    analytics.track(event: .WooShipping.packageSelectionStep(state: .removingFailed, error: error))
+                } else {
+                    analytics.track(event: .WooShipping.packageSelectionStep(state: .removingSuccess))
                 }
             })
             stores.dispatch(action)
@@ -239,15 +251,19 @@ final class WooShippingAddPackageViewModel: ObservableObject {
 
             let predefined = WooShippingPredefinedSavedOption(id: carrierID, predefinedPackageIDs: [packageID])
             let createAction = WooShippingAction.createPackage(siteID: siteID, customPackage: nil, predefinedOption: predefined) { [weak self] result in
+                guard let self else { return }
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Error saving Woo Shipping package: \(error)")
-                    self?.starredCarriersPackages.remove(packageID)
-                    self?.notice = Notice(title: Localization.savingPackageFailure,
+                    starredCarriersPackages.remove(packageID)
+                    notice = Notice(title: Localization.savingPackageFailure,
                                           feedbackType: .error,
                                           actionTitle: Localization.retry,
-                                          actionHandler: {
+                                          actionHandler: { [weak self] in
                         self?.starUnstarPackage(packageID, carrierID: carrierID)
                     })
+                    analytics.track(event: .WooShipping.packageSelectionStep(state: .savingFailed, error: error))
+                } else {
+                    analytics.track(event: .WooShipping.packageSelectionStep(state: .savingSuccess))
                 }
             }
             stores.dispatch(createAction)
@@ -303,6 +319,9 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                                       actionHandler: { [weak self] in
                     self?.removeSavedPackage(packageToRemove)
                 })
+                analytics.track(event: .WooShipping.packageSelectionStep(state: .removingFailed, error: error))
+            } else {
+                analytics.track(event: .WooShipping.packageSelectionStep(state: .removingSuccess))
             }
         }
 

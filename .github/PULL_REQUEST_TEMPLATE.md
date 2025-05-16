@@ -1,4 +1,4 @@
-### <!-- Remember about a good descriptive title. -->
+<!-- Remember about a good descriptive title. -->
 
 #### <!-- Id number of the Linear issue this PR addresses, e.g., WOOMOB-373. -->
 

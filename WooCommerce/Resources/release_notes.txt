@@ -1,1 +1,8 @@
-This release brings major improvements to the WooCommerce Point of Sale (POS) experience, including the ability to search for products and apply coupons directly from the app. We’ve also improved the Tap to Pay onboarding flow and updated documentation links to ensure a smoother setup. Enhancements to the order form now make entering custom amounts more intuitive. Behind the scenes, we’ve made fixes to improve app stability and refined the POS interface for better usability.
+- [*] Payments: Receipts for failed transactions are now available in Order details  [https://github.com/woocommerce/woocommerce-ios/pull/15558]
+- [*] Order Details: Improvements to textfield capitalization rules [https://github.com/woocommerce/woocommerce-ios/pull/15611]
+- [*] POS: Scrolling search results now dismisses the keyboard [https://github.com/woocommerce/woocommerce-ios/pull/15606]
+- [*] POS: Product search shows popular products before a search is entered. [https://github.com/woocommerce/woocommerce-ios/pull/15625]
+- [*] Order Creation: Display non-purchasable, zero-priced variable product variations [https://github.com/woocommerce/woocommerce-ios/pull/15620]
+- [*] POS: Improve error display in search screens [https://github.com/woocommerce/woocommerce-ios/pull/15627]
+- [*] POS: Added coupon search functionality [https://github.com/woocommerce/woocommerce-ios/pull/15634]
+- [*] Order Details: Fixed crash reloading the screen after refunding an order on the web. [https://github.com/woocommerce/woocommerce-ios/pull/15633]

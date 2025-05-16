@@ -189,6 +189,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             return
         }
 
+        analytics.track(event: .WooShipping.purchaseStep(state: .started))
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.id,
                                                          package: package,
                                                          rate: selectedRate.purchaseRate,
@@ -198,7 +199,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
-                                                                 package: packagePurchase) { result in
+                                                                 package: packagePurchase) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
+                case .failure(let error):
+                    self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseFailed, error: error))
+                }
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

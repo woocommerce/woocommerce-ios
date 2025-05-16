@@ -125,8 +125,10 @@ extension WooAnalyticsEvent {
         }
 
         static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSalePreSearchRecentTermTapped,
-                              properties: [:])
+            WooAnalyticsEvent(
+                statName: .pointOfSalePreSearchRecentTermTapped,
+                properties: [Key.source: Source(itemListType: itemListType).rawValue]
+            )
         }
 
         static func itemsPullToRefresh(

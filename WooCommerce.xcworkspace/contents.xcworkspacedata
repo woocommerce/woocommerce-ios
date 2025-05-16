@@ -26,9 +26,6 @@
       location = "group:Fakes/Fakes.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:TestKit">
-   </FileRef>
-   <FileRef
       location = "group:CodeGeneration">
    </FileRef>
    <FileRef

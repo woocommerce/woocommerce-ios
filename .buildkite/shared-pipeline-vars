@@ -4,7 +4,7 @@
 # to set up some variables that will be interpolated in the `.yml` pipeline before uploading it.
 
 XCODE_VERSION=$(sed 's/^~> *//' .xcode-version)
-CI_TOOLKIT_PLUGIN_VERSION="4.0.0"
+CI_TOOLKIT_PLUGIN_VERSION="5.3.1"
 
 # FIXME: The -v2 suffix is required only as long as we use the 16.3 image.
 # This if check is here just so that we won't break the build if we forget about the suffix when it comes upgrade time.

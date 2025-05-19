@@ -29,13 +29,6 @@ def aztec
   # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
 end
 
-def tracks
-  pod 'Automattic-Tracks-iOS', '~> 3.4.1'
-  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
-  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
-  # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
-end
-
 def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
@@ -99,8 +92,6 @@ target 'WooCommerce' do
   # ====================
   #
 
-  tracks
-
   gridicons
 
   wordpress_shared
@@ -135,7 +126,6 @@ end
 #
 target 'StoreWidgetsExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
-  tracks
   keychain
 end
 
@@ -144,7 +134,6 @@ end
 #
 target 'NotificationExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
-  tracks
   keychain
 end
 
@@ -308,7 +297,6 @@ end
 # ==================
 #
 def experiments_pods
-  tracks
   cocoa_lumberjack
 end
 
@@ -351,12 +339,8 @@ target 'WordPressAuthenticatorTests' do
   wordpress_authenticator_pods
 
   alamofire
-  pod 'OCMock', '~> 3.4'
-  pod 'Expecta', '1.0.6'
-  pod 'Specta', '1.0.7'
   pod 'OHHTTPStubs', '~> 9.0'
   pod 'OHHTTPStubs/Swift', '~> 9.0'
-  pod 'OCMock', '~> 3.4'
 end
 
 # Workarounds:

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-22 09:54:16+0000 */
+/* Translation-Revision-Date: 2025-05-06 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -9929,6 +9929,9 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Felsök anslutning";
 
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "Upphörde den %@";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Redigera belopp";
 
@@ -11673,11 +11676,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Koppla från läsare";
 
-/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Avsluta POS";
 
-/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Skaffa support";
+
+/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Var är mina produkter?";
 
 /* The title of the floating button to indicate that reader is connected. */
 "pointOfSale.floatingButtons.readerConnected.title" = "Läsare ansluten";
@@ -11688,7 +11694,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Kopplar ifrån";
 
-/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Dokumentation";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
@@ -11854,7 +11860,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.loadingCouponsErrorRetry" = "Försök igen";
 
 /* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle" = "Det gick inte att ladda in rabattkoder";
+"pos.itemList.loadingCouponsErrorSubtitle2" = "Vill du försöka igen?";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
 "pos.itemList.loadingCouponsErrorTitle" = "Det gick inte att ladda in rabattkoder";
@@ -11862,26 +11868,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produkter";
 
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Sök rabattkoder";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Sök produkter";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Sök";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Rabattkoder";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Andra produkttyper kommer att bli tillgängliga i framtida uppdateringar.";
-
-/* Link to more information within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Endast enkla och variabla nedladdningsbara produkter kan användas med POS just nu.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Visar endast enkla och variabla produkter";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produkter";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText" = "Inga senaste sökningar";
+"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "Sök i din butik";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "Senaste sökningarna";
@@ -11896,10 +11899,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Öka din försäljning genom att skicka specialerbjudanden och rabatter till kunder.";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "Inga rabattkoder hittades.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Inga rabattkoder hittades";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "För att lägga till en, avsluta POS och gå till produkter.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variationsnamn går inte att söka efter, så använd det överordnade produktnamnet.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "Prova att justera din sökterm – att söka efter en del av ett produktnamn kan hjälpa.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "Inga produkter hittades.";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS stöder för närvarande bara enkla och variabla produkter.";
@@ -11918,6 +11930,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Skapa rabattkod";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Rensa sök";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
@@ -13220,12 +13235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Adress verifierad";
 
-/* Notice when a hazardous materials category is removed on the shipping label creation screen */
-"wooShipping.createLabels.hazmatRemoved" = "Ta bort kategori för farligt material";
-
-/* Notice when a hazardous materials category is set on the shipping label creation screen */
-"wooShipping.createLabels.hazmatSet" = "Kategori för farligt material inställd";
-
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ artiklar";
 
@@ -13234,9 +13243,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Notice when a International Transaction Number is missing on the shipping label creation screen */
-"wooShipping.createLabels.itnMissing" = "ITN är obligatoriskt.";
 
 /* Message in the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.message" = "Vi kunde inte köpa fraktetiketten. Försök igen.";
@@ -13271,20 +13277,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "Skriv ut fraktetikett";
 
+/* Title for button to print a customs form on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printCustomsFormButton" = "Skriv ut tullformulär";
+
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "Härifrån kan du skriva ut fraktetiketten igen eller ändra storlek på fraktetiketten.";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
-"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "Avbryt";
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingError.cancel" = "Avbryt";
 
-/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.message" = "Vill du försöka igen?";
+/* Title of the error alert when printing a customs form fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.customsForm" = "Det gick inte att ladda ner tullformuläret";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
-"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "Försök igen";
+/* Message of the error alert when printing a document fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.message" = "Vill du försöka igen?";
+
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingError.retry" = "Försök igen";
 
 /* Title of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.title" = "Fel vid förhandsgranskning av fraktetikett";
+"wooShipping.createLabels.postPurchase.printingError.shippingLabel" = "Fel vid förhandsgranskning av fraktetikett";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "Din fraktetikett är klar att skrivas ut.";
@@ -13308,7 +13320,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Lägg till en destinationsadress för att få fraktpriser";
 
 /* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
-"wooShipping.createLabels.rates.noRatesAvailable" = "Vi kunde inte hitta någon frakttjänst för kombinationen av det valda paketet och den totala vikten på försändelsen. Justera dina val och försök igen.";
+"wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT" = "Vi kunde inte hitta någon frakttjänst för kombinationen av det valda paketet och den totala vikten på försändelsen. Justera dina val och försök igen.";
+
+/* Error message when no shipping rates were found based on the combination of the selected HAZMAT category, package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT" = "Vi kunde inte hitta någon frakttjänst för kombinationen av den valda kategorin för farligt material, det valda paketet och den totala vikten på försändelsen. Justera dina val och försök igen.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Vi måste veta fraktvikten innan vi kan visa de tillgängliga fraktavgifterna.";
@@ -13333,6 +13348,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Försök igen";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.shipmentFormat" = "Försändelse %1$d";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Vuxen signatur krävs (+%1$@)";
@@ -13378,9 +13396,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Skapa fraktetiketter";
-
-/* Button to undo a change on the shipping label creation screen */
-"wooShipping.createLabels.undo" = "Ångra";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Visa köpt fraktsedel";
@@ -13550,17 +13565,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry loading saved packages in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.retryCTA" = "Försök igen";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatRemoved" = "Ta bort kategori för farligt material";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatSet" = "Kategori för farligt material inställd";
+
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.shipmentDetails.itnMissing" = "ITN är obligatoriskt.";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.shipmentDetails.undo" = "Ångra";
+
 /* Label for section in shipping label creation to split shipments. */
 "wooShipping.splitShipments.products" = "Produkter";
 
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Dela upp försändelser";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.removingPackageFailure" = "Kan inte ta bort paket";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShippingAddPackageViewModel.retry" = "Försök igen";
+
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "Kan inte spara paket";
-
-/* Button to retry saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageRetry" = "Försök igen";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Ange ett giltigt ITN i något av dessa format: X12345678901234, AES X12345678901234 eller NOEEI 30.37(a).";

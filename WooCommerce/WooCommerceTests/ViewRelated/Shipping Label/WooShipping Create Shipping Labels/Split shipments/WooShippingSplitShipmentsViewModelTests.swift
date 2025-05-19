@@ -761,6 +761,47 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.shipments[1].purchasedLabelID)
     }
 
+    // MARK: - `didRequestRefund`
+    func test_didRequestRefund_updates_shipment_correctly() throws {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+
+        let shippingLabelData = WooShippingLabelData(
+            currentOrderLabels: [
+                ShippingLabelPurchase.fake().copy(shipmentID: "1")
+            ]
+        )
+        let config = WooShippingConfig(siteID: 123, shipments: [
+            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+        ], shippingLabelData: shippingLabelData)
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: config,
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // Confidence check
+        XCTAssertTrue(viewModel.shipments[0].contents.allSatisfy({ $0.mainItemRow.isSelectable == false }))
+
+        // When
+        let shipmentID = viewModel.shipments[0].id
+        viewModel.didRequestRefund(for: shipmentID)
+
+        // Then
+        XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertNil(viewModel.shipments[0].purchasedLabelID)
+        XCTAssertTrue(viewModel.shipments[0].contents[0].mainItemRow.isSelectable)
+        XCTAssertTrue(viewModel.shipments[0].contents[0].childItemRows.allSatisfy({ $0.isSelectable }))
+
+
+        XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
+        XCTAssertTrue(viewModel.shipments[1].contents[0].mainItemRow.isSelectable)
+        XCTAssertNil(viewModel.shipments[1].purchasedLabelID)
+    }
+
     // MARK: - `enableDoneButton`
 
     @MainActor

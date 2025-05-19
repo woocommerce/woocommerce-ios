@@ -1,5 +1,6 @@
 import Foundation
 import AutomatticTracks
+import AutomatticEncryptedLogs
 
 struct WCEventLoggingDataSource: EventLoggingDataSource {
     var loggingEncryptionKey: String {

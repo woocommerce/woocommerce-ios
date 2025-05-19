@@ -29,6 +29,8 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                         Text(viewModel.progressTitle)
                             .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)
+                            // Removes the text change transition animation
+                            .animation(nil, value: viewModel.progressTitle)
                         Text(viewModel.progressSubtitle)
                             .font(POSFontStyle.posBodyLargeRegular())
                             .fixedSize(horizontal: false, vertical: true)

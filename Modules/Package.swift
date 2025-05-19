@@ -13,6 +13,11 @@ let package = Package(
             targets: ["Modules"]
         ),
         .library(
+            name: "Codegen",
+            type: .dynamic,
+            targets: ["Codegen"]
+        ),
+        .library(
             name: "TestKit",
             targets: ["TestKit"]
         ),
@@ -26,6 +31,10 @@ let package = Package(
         .testTarget(
             name: "ModulesTests",
             dependencies: [.target(name: "Modules")]
+        ),
+        .target(
+            name: "Codegen",
+            exclude: ["README.md", "Sourcery"] // Relative to sources path
         ),
         .target(
             name: "TestKit",

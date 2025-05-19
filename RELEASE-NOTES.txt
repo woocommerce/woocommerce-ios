@@ -3,7 +3,7 @@
 
 22.5
 -----
-
+- [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
 
 22.4
 -----

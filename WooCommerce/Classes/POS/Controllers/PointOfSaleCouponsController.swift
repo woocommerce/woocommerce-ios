@@ -71,9 +71,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
                 return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
+            let underlyingError = (error as? PointOfSaleCouponServiceError)?.underlyingError
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingCouponsNextPage(error: error),
+                                                                           error: .errorOnLoadingCouponsNextPage(error: underlyingError),
                                                                            context: .pagination),
                                                         itemStates: currentItemStates)
         }

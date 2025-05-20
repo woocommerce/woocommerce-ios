@@ -134,4 +134,13 @@ public enum PointOfSaleCouponServiceError: Error, Equatable {
             return false
         }
     }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .couponsLoadingError(let underlyingError), .couponsEnablingError(let underlyingError):
+            return underlyingError
+        default:
+            return nil
+        }
+    }
 }

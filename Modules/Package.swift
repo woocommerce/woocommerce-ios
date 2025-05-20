@@ -37,6 +37,7 @@ let package = Package(
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
+        .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
@@ -240,6 +241,7 @@ enum XcodeSupport {
                     "TestKit",
                     .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
+                    .product(name: "ViewInspector", package: "ViewInspector"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
             ),

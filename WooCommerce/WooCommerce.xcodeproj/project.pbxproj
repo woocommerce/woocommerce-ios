@@ -987,7 +987,6 @@
 		261E91A329C9882600A5C118 /* SubscriptionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A229C9882600A5C118 /* SubscriptionsViewModelTests.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
-		2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 2621D1F32C81085D00654C4C /* ViewInspector */; };
 		262418332B8D3630009A3834 /* ApplicationPasswordTutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418322B8D3630009A3834 /* ApplicationPasswordTutorial.swift */; };
 		262418372B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418362B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift */; };
 		262562352C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */; };
@@ -6596,7 +6595,6 @@
 				3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
-				2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14706,7 +14704,6 @@
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (
-				2621D1F32C81085D00654C4C /* ViewInspector */,
 				3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */,
 			);
 			productName = WooCommerceTests;
@@ -14856,7 +14853,6 @@
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
 			packageReferences = (
-				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -19788,23 +19784,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nalexn/ViewInspector";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.10.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		2621D1F32C81085D00654C4C /* ViewInspector */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */;
-			productName = ViewInspector;
-		};
 		3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XcodeTarget_WordPressAuthenticatorTests;

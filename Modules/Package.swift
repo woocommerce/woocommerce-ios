@@ -108,33 +108,33 @@ enum XcodeTargetNames {
 enum XcodeSupport {
     static var products: [Product] {
         [
-            support(forXcodeTarget: XcodeTargetNames.experiments),
-            support(forXcodeTarget: XcodeTargetNames.experimentsTests),
-            support(forXcodeTarget: XcodeTargetNames.fakes),
-            support(forXcodeTarget: XcodeTargetNames.hardware),
-            support(forXcodeTarget: XcodeTargetNames.hardwareTests),
-            support(forXcodeTarget: XcodeTargetNames.networking),
-            support(forXcodeTarget: XcodeTargetNames.networkingTests),
-            support(forXcodeTarget: XcodeTargetNames.networkingWatchOS),
-            support(forXcodeTarget: XcodeTargetNames.notificationExtension),
-            support(forXcodeTarget: XcodeTargetNames.sampleReceiptPrinter),
-            support(forXcodeTarget: XcodeTargetNames.storage),
-            support(forXcodeTarget: XcodeTargetNames.storageTests),
-            support(forXcodeTarget: XcodeTargetNames.storeWidgetsExtension),
-            support(forXcodeTarget: XcodeTargetNames.uiTestsFoundation),
-            support(forXcodeTarget: XcodeTargetNames.wooCommerce),
-            support(forXcodeTarget: XcodeTargetNames.wooCommerceScreenshots),
-            support(forXcodeTarget: XcodeTargetNames.wooCommerceTests),
-            support(forXcodeTarget: XcodeTargetNames.wooCommerceUITests),
-            support(forXcodeTarget: XcodeTargetNames.wooCommerceWatchApp),
-            support(forXcodeTarget: XcodeTargetNames.wooFoundation),
-            support(forXcodeTarget: XcodeTargetNames.wooFoundationTests),
-            support(forXcodeTarget: XcodeTargetNames.wooFoundationWatchOS),
-            support(forXcodeTarget: XcodeTargetNames.wordPressAuthenticator),
-            support(forXcodeTarget: XcodeTargetNames.wordPressAuthenticatorTests),
-            support(forXcodeTarget: XcodeTargetNames.yosemite),
-            support(forXcodeTarget: XcodeTargetNames.yosemiteTests)
-        ]
+            XcodeTargetNames.experiments,
+            XcodeTargetNames.experimentsTests,
+            XcodeTargetNames.fakes,
+            XcodeTargetNames.hardware,
+            XcodeTargetNames.hardwareTests,
+            XcodeTargetNames.networking,
+            XcodeTargetNames.networkingTests,
+            XcodeTargetNames.networkingWatchOS,
+            XcodeTargetNames.notificationExtension,
+            XcodeTargetNames.sampleReceiptPrinter,
+            XcodeTargetNames.storage,
+            XcodeTargetNames.storageTests,
+            XcodeTargetNames.storeWidgetsExtension,
+            XcodeTargetNames.uiTestsFoundation,
+            XcodeTargetNames.wooCommerce,
+            XcodeTargetNames.wooCommerceScreenshots,
+            XcodeTargetNames.wooCommerceTests,
+            XcodeTargetNames.wooCommerceUITests,
+            XcodeTargetNames.wooCommerceWatchApp,
+            XcodeTargetNames.wooFoundation,
+            XcodeTargetNames.wooFoundationTests,
+            XcodeTargetNames.wooFoundationWatchOS,
+            XcodeTargetNames.wordPressAuthenticator,
+            XcodeTargetNames.wordPressAuthenticatorTests,
+            XcodeTargetNames.yosemite,
+            XcodeTargetNames.yosemiteTests
+        ].map { .supportingProduct(forXcodeTarget: $0) }
     }
 
     static var targets: [Target] {
@@ -310,19 +310,13 @@ enum XcodeSupport {
 //
 // > Static member 'support' cannot be used on instance of type 'Product'
 //
-//extension Product {
-//    static func support(forXcodeTarget targetName: String) -> Product {
-//        .library(
-//            name: "XcodeTarget_\(targetName)",
-//            targets: ["XcodeTarget_\(targetName)"]
-//        )
-//    }
-//}
-func support(forXcodeTarget targetName: String) -> Product {
-    .library(
-        name: targetName.supportingName,
-        targets: [targetName.supportingName]
-    )
+extension Product {
+    static func supportingProduct(forXcodeTarget targetName: String) -> Product {
+        .library(
+            name: "XcodeTarget_\(targetName)",
+            targets: ["XcodeTarget_\(targetName)"]
+        )
+    }
 }
 
 extension Target {

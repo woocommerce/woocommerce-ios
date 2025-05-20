@@ -1019,10 +1019,6 @@
 		26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E2D2BFD2F46008E6735 /* OrdersListViewModel.swift */; };
 		26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
 		263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263C4CBF2963784900CA7E05 /* ProductVariationGenerator.swift */; };
-		263E37E12641AD8300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; };
-		263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		263E38462641FF3400260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38452641FF3400260D3B /* Codegen */; };
-		263E38472641FF3400260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38452641FF3400260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */; };
 		263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		263EAF9A2A15D513008C66CB /* PrivacyBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EAF992A15D513008C66CB /* PrivacyBannerViewModel.swift */; };
@@ -1138,8 +1134,6 @@
 		26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */; };
 		26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; };
 		26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		26B542432BEAC68B003A55B5 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; };
-		26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B71DB5293FE490004D8052 /* RangedDatePicker.swift */; };
 		26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D32BEECC610052658C /* Environment+Dependencies.swift */; };
 		26B984D62BEECF260052658C /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D52BEECF260052658C /* ConnectView.swift */; };
@@ -1313,19 +1307,25 @@
 		3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3F2B4ADC2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */; };
+		3F2B4ADE2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADD2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator */; };
+		3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */; };
+		3F2B4AE22DDC317500E5E49C /* XcodeTarget_NotificationExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE12DDC317500E5E49C /* XcodeTarget_NotificationExtension */; };
+		3F2B4AE42DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE32DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension */; };
+		3F2B4AE62DDC318300E5E49C /* XcodeTarget_UITestsFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */; };
+		3F2B4AE82DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */; };
+		3F2B4AEA2DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */; };
+		3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */; };
+		3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */; };
 		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
 		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
-		3F368D982DCB74490065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D972DCB74490065B48F /* TestKit */; };
 		3F50FE4128C8319A00C89201 /* Entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 3F50FE4028C8319A00C89201 /* Entitlements */; };
 		3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F50FE4428CAEC5E00C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
-		3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */; };
-		3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */; };
-		3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */; };
 		3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA323262D63E0570017AE66 /* XCUITestHelpers */; };
 		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
@@ -1337,9 +1337,6 @@
 		3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
 		3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
 		3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
-		3FF837132DD326850049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837122DD326850049E028 /* CocoaLumberjackSwift */; };
-		3FF8371A2DD32B8D0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */; };
-		3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -3225,7 +3222,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				263E38472641FF3400260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3248,7 +3244,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */,
-				26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */,
 				26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */,
 				269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */,
 			);
@@ -3296,7 +3291,6 @@
 			files = (
 				3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 				D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */,
-				263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */,
 				B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */,
 				02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */,
 				B9151B402840EB340036180F /* WooFoundation.framework in Embed Frameworks */,
@@ -6423,7 +6417,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -6464,7 +6458,7 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.swiftlint.yml,
@@ -6478,9 +6472,41 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WooShippingPaymentMethod;
+			sourceTree = "<group>";
+		};
+		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticator;
+			sourceTree = "<group>";
+		};
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticatorTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6490,6 +6516,7 @@
 			files = (
 				2679F0262AAA2A3200AF80C5 /* WooFoundation.framework in Frameworks */,
 				26CA2BC72AAA17A2003B16C2 /* SwiftUI.framework in Frameworks */,
+				3F2B4AE22DDC317500E5E49C /* XcodeTarget_NotificationExtension in Frameworks */,
 				26EE795F2AA795A000857293 /* Networking.framework in Frameworks */,
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
@@ -6512,10 +6539,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */,
-				26B542432BEAC68B003A55B5 /* Codegen in Frameworks */,
+				3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */,
 				26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */,
 				269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */,
-				3FF8371A2DD32B8D0049E028 /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6524,6 +6550,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				632DA865048E7635121D1890 /* Pods_WordPressAuthenticator.framework in Frameworks */,
+				3F2B4ADE2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6532,6 +6559,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
+				3F2B4ADC2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests in Frameworks */,
 				9075D5FFEAEF1E29E3AE0BD9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6540,6 +6568,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2B4AE42DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension in Frameworks */,
 				260DE20C28CA8F31009ECD7C /* Networking.framework in Frameworks */,
 				3F1FA84328B60125009E246C /* SwiftUI.framework in Frameworks */,
 				26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */,
@@ -6555,6 +6584,7 @@
 			files = (
 				3FF314E726FC74560012E68E /* ScreenObject in Frameworks */,
 				3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */,
+				3F2B4AE62DDC318300E5E49C /* XcodeTarget_UITestsFoundation in Frameworks */,
 				3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6566,18 +6596,15 @@
 				DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */,
 				DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
-				3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */,
-				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
 				4598298128574688003A9AFE /* Inject in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				174CA86A27D90A6200126524 /* AutomatticAbout in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
-				3FF837132DD326850049E028 /* CocoaLumberjackSwift in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
-				3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
+				3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */,
 				202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */,
@@ -6592,12 +6619,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F368D982DCB74490065B48F /* TestKit in Frameworks */,
-				263E38462641FF3400260D3B /* Codegen in Frameworks */,
+				3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */,
 				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
-				3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */,
 				2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */,
-				3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
 				2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */,
@@ -6609,6 +6633,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */,
+				3F2B4AE82DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests in Frameworks */,
 				3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
 				3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */,
@@ -6622,6 +6647,7 @@
 				3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */,
 				3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */,
 				24C5AC7625A53021008FD769 /* Embassy in Frameworks */,
+				3F2B4AEA2DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots in Frameworks */,
 				3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14571,8 +14597,7 @@
 			);
 			name = "Woo Watch App";
 			packageProductDependencies = (
-				26B542422BEAC68B003A55B5 /* Codegen */,
-				3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */,
+				3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */,
 			);
 			productName = "Woo Watch App";
 			productReference = 26F81B152BE433A2009EC58E /* Woo Watch App.app */;
@@ -14659,6 +14684,7 @@
 			packageProductDependencies = (
 				3FF314E626FC74560012E68E /* ScreenObject */,
 				3FA323262D63E0570017AE66 /* XCUITestHelpers */,
+				3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */,
 			);
 			productName = UITestsFoundation;
 			productReference = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */;
@@ -14693,7 +14719,6 @@
 			);
 			name = WooCommerce;
 			packageProductDependencies = (
-				263E37E02641AD8300260D3B /* Codegen */,
 				45455E312657C3F300BBB0C4 /* Shimmer */,
 				174CA86927D90A6200126524 /* AutomatticAbout */,
 				4598298028574688003A9AFE /* Inject */,
@@ -14701,9 +14726,7 @@
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
 				DEA6BCA82BC6A7050017D671 /* DGCharts */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
-				3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */,
-				3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */,
-				3FF837122DD326850049E028 /* CocoaLumberjackSwift */,
+				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -14726,13 +14749,10 @@
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (
-				263E38452641FF3400260D3B /* Codegen */,
 				3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */,
 				2621D1F32C81085D00654C4C /* ViewInspector */,
 				2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */,
-				3F368D972DCB74490065B48F /* TestKit */,
-				3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */,
-				3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */,
+				3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -14756,6 +14776,7 @@
 			packageProductDependencies = (
 				3FF2247226706AA3008FFA87 /* ScreenObject */,
 				3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */,
+				3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */,
 			);
 			productName = WooCommerceUITests;
 			productReference = CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */;
@@ -14780,6 +14801,7 @@
 				247CE89B2583402A00F9D9D1 /* Embassy */,
 				3FF22489267073AE008FFA87 /* ScreenObject */,
 				3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */,
+				3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */,
 			);
 			productName = WooCommerceScreenshots;
 			productReference = F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */;
@@ -14896,8 +14918,6 @@
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
-				3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */,
-				3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -15290,13 +15310,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15475,13 +15491,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15518,13 +15530,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -19890,28 +19898,12 @@
 				minimumVersion = 0.3.0;
 			};
 		};
-		3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Automattic/Automattic-Tracks-iOS";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.5.2;
-			};
-		};
 		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Automattic/ScreenObject";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.3.0;
-			};
-		};
-		3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.8.5;
 			};
 		};
 		45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
@@ -19982,17 +19974,45 @@
 			package = 2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */;
 			productName = ViewControllerPresentationSpy;
 		};
-		263E37E02641AD8300260D3B /* Codegen */ = {
+		3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_WordPressAuthenticatorTests;
 		};
-		263E38452641FF3400260D3B /* Codegen */ = {
+		3F2B4ADD2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_WordPressAuthenticator;
 		};
-		26B542422BEAC68B003A55B5 /* Codegen */ = {
+		3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = "XcodeTarget_Woo Watch App";
+		};
+		3F2B4AE12DDC317500E5E49C /* XcodeTarget_NotificationExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_NotificationExtension;
+		};
+		3F2B4AE32DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_StoreWidgetsExtension;
+		};
+		3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_UITestsFoundation;
+		};
+		3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_WooCommerceUITests;
+		};
+		3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_WooCommerceScreenshots;
+		};
+		3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_WooCommerceTests;
+		};
+		3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_WooCommerce;
 		};
 		3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -20008,25 +20028,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
 			productName = BuildkiteTestCollector;
-		};
-		3F368D972DCB74490065B48F /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
-		};
-		3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticTracks;
-		};
-		3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticEncryptedLogs;
-		};
-		3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticTracks;
 		};
 		3FA323262D63E0570017AE66 /* XCUITestHelpers */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -20047,21 +20048,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
 			productName = ScreenObject;
-		};
-		3FF837122DD326850049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
 		};
 		45455E312657C3F300BBB0C4 /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;

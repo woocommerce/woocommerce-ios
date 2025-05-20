@@ -55,7 +55,6 @@
 		262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */; };
 		262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */; };
 		262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */; };
-		263E37D72641AD5100260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* Codegen */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */; };
@@ -68,9 +67,8 @@
 		26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */; };
 		31D9C8C826684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D9C8C626684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift */; };
 		31D9C8C926684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D9C8C726684AEC000AC134 /* PaymentGatewayAccount+CoreDataProperties.swift */; };
-		3F368D9C2DCB74DF0065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D9B2DCB74DF0065B48F /* TestKit */; };
-		3FF837162DD32B150049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837152DD32B150049E028 /* CocoaLumberjackSwift */; };
-		3FF837182DD32B2E0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837172DD32B2E0049E028 /* CocoaLumberjackSwift */; };
+		3F2B4AD42DDC312600E5E49C /* XcodeTarget_Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD32DDC312600E5E49C /* XcodeTarget_Storage */; };
+		3F2B4AD62DDC312F00E5E49C /* XcodeTarget_StorageTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD52DDC312F00E5E49C /* XcodeTarget_StorageTests */; };
 		450106892399AC7400E24722 /* TaxClass+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */; };
 		4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */; };
 		452C23B427B4129300822986 /* InboxAction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452C23B027B4129300822986 /* InboxAction+CoreDataClass.swift */; };
@@ -688,9 +686,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E37D72641AD5100260D3B /* Codegen in Frameworks */,
+				3F2B4AD42DDC312600E5E49C /* XcodeTarget_Storage in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
-				3FF837162DD32B150049E028 /* CocoaLumberjackSwift in Frameworks */,
 				B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -699,9 +696,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F368D9C2DCB74DF0065B48F /* TestKit in Frameworks */,
+				3F2B4AD62DDC312F00E5E49C /* XcodeTarget_StorageTests in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
-				3FF837182DD32B2E0049E028 /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1231,8 +1227,7 @@
 			);
 			name = Storage;
 			packageProductDependencies = (
-				263E37D62641AD5100260D3B /* Codegen */,
-				3FF837152DD32B150049E028 /* CocoaLumberjackSwift */,
+				3F2B4AD32DDC312600E5E49C /* XcodeTarget_Storage */,
 			);
 			productName = Storage;
 			productReference = B54CA59920A4BBA500F38CD1 /* Storage.framework */;
@@ -1253,8 +1248,7 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
-				3F368D9B2DCB74DF0065B48F /* TestKit */,
-				3FF837172DD32B2E0049E028 /* CocoaLumberjackSwift */,
+				3F2B4AD52DDC312F00E5E49C /* XcodeTarget_StorageTests */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -1291,7 +1285,6 @@
 			);
 			mainGroup = B54CA58F20A4BBA500F38CD1;
 			packageReferences = (
-				3FF837142DD32B150049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = B54CA59A20A4BBA500F38CD1 /* Products */;
 			projectDirPath = "";
@@ -1987,35 +1980,14 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		3FF837142DD32B150049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.8.5;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		263E37D62641AD5100260D3B /* Codegen */ = {
+		3F2B4AD32DDC312600E5E49C /* XcodeTarget_Storage */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_Storage;
 		};
-		3FF837152DD32B150049E028 /* CocoaLumberjackSwift */ = {
+		3F2B4AD52DDC312F00E5E49C /* XcodeTarget_StorageTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3FF837142DD32B150049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF837172DD32B2E0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837142DD32B150049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3F368D9B2DCB74DF0065B48F /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
+			productName = XcodeTarget_StorageTests;
 		};
 /* End XCSwiftPackageProductDependency section */
 

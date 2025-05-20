@@ -1,6 +1,15 @@
 {
-  "originHash" : "bb29d6323b456e7e7de7e41c0a33bb51a2970f028b1f718f84781c3170a1023e",
+  "originHash" : "0b6c18d217b4fbc73445b82e280af4b49389be115a57dce761235ee35a22fb35",
   "pins" : [
+    {
+      "identity" : "automattic-tracks-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Automattic/Automattic-Tracks-iOS.git",
+      "state" : {
+        "revision" : "437f586a62c07c6ceec9baf043237b2afe7ea1ac",
+        "version" : "3.5.2"
+      }
+    },
     {
       "identity" : "cwlcatchexception",
       "kind" : "remoteSourceControl",
@@ -35,6 +44,33 @@
       "state" : {
         "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
         "version" : "13.7.1"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "6c81e671154e63464dd6749b7ba3279dd390a146",
+        "version" : "8.50.1"
+      }
+    },
+    {
+      "identity" : "swift-sodium",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jedisct1/swift-sodium",
+      "state" : {
+        "revision" : "4f9164a0a2c9a6a7ff53a2833d54a5c79c957342",
+        "version" : "0.9.1"
+      }
+    },
+    {
+      "identity" : "uideviceidentifier",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/squarefrog/UIDeviceIdentifier",
+      "state" : {
+        "revision" : "4699794b08bb79a4d77785edaba6ea739e298e4b",
+        "version" : "2.3.0"
       }
     }
   ],

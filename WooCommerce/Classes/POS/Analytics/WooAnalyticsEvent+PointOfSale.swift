@@ -47,7 +47,7 @@ extension WooAnalyticsEvent {
                 Key.itemType: itemType.rawValue
             ]
 
-            if let productType = productType {
+            if let productType {
                 properties[Key.productType] = productType.rawValue
             }
 

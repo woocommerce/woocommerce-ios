@@ -845,7 +845,7 @@ extension WooAnalyticsEvent {
                 Keys.errorDescription: errorDescription
             ]
 
-            if let errorType = errorType {
+            if let errorType {
                 properties[Keys.errorType] = errorType.rawValue
             }
 

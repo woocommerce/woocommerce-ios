@@ -237,8 +237,6 @@ target 'WordPressAuthenticatorTests' do
   wordpress_authenticator_pods
 
   alamofire
-  pod 'OHHTTPStubs', '~> 9.0'
-  pod 'OHHTTPStubs/Swift', '~> 9.0'
 end
 
 # Workarounds:

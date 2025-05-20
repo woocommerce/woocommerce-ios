@@ -3,21 +3,6 @@ PODS:
   - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
-  - OHHTTPStubs (9.1.0):
-    - OHHTTPStubs/Default (= 9.1.0)
-  - OHHTTPStubs/Core (9.1.0)
-  - OHHTTPStubs/Default (9.1.0):
-    - OHHTTPStubs/Core
-    - OHHTTPStubs/JSON
-    - OHHTTPStubs/NSURLSession
-    - OHHTTPStubs/OHPathHelpers
-  - OHHTTPStubs/JSON (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/NSURLSession (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/OHPathHelpers (9.1.0)
-  - OHHTTPStubs/Swift (9.1.0):
-    - OHHTTPStubs/Default
   - Sentry (8.46.0):
     - Sentry/Core (= 8.46.0)
   - Sentry/Core (8.46.0)
@@ -50,8 +35,6 @@ DEPENDENCIES:
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
   - NSObject-SafeExpectations (~> 0.0.4)
-  - OHHTTPStubs (~> 9.0)
-  - OHHTTPStubs/Swift (~> 9.0)
   - Sentry (~> 8.46.0)
   - StripeTerminal (~> 4.2.0)
   - UIDeviceIdentifier (~> 2.0)
@@ -69,7 +52,6 @@ SPEC REPOS:
     - KeychainAccess
     - Kingfisher
     - NSObject-SafeExpectations
-    - OHHTTPStubs
     - Sentry
     - StripeTerminal
     - UIDeviceIdentifier
@@ -93,7 +75,6 @@ SPEC CHECKSUMS:
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
-  OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
@@ -112,6 +93,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: bb239f21675ecb184c2fc0251537194a3010dabb
+PODFILE CHECKSUM: 305f4aedeb3a7c7c0efe9ec9e60086340fec217f
 
 COCOAPODS: 1.16.2

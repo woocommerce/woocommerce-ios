@@ -5,7 +5,6 @@ import enum Yosemite.POSItemType
 struct PointOfSaleItemListAnalyticsTracker {
     private let source: WooAnalyticsEvent.PointOfSale.Source
     private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
-    private let itemListType: ItemListType?
 
     init(
         source: WooAnalyticsEvent.PointOfSale.Source,
@@ -13,24 +12,9 @@ struct PointOfSaleItemListAnalyticsTracker {
     ) {
         self.source = source
         self.sourceType = sourceType
-        self.itemListType = nil
     }
 
-    init(
-        itemListType: ItemListType,
-        source: WooAnalyticsEvent.PointOfSale.Source,
-        sourceType: WooAnalyticsEvent.PointOfSale.SourceType
-    ) {
-        self.source = source
-        self.sourceType = sourceType
-        self.itemListType = itemListType
-    }
-
-    func trackItemListSelected() {
-        guard let itemListType else {
-            return
-        }
-
+    func trackItemListSelected(itemListType: ItemListType) {
         ServiceLocator.analytics.track(event: .PointOfSale.itemsHeaderTapped(itemListType: itemListType))
     }
 
@@ -52,10 +36,7 @@ struct PointOfSaleItemListAnalyticsTracker {
         )
     }
 
-    func trackSearchTapped() {
-        guard let itemListType else {
-            return
-        }
+    func trackSearchTapped(itemListType: ItemListType) {
         ServiceLocator.analytics.track(event: .PointOfSale.searchButtonTapped(itemListType: itemListType))
     }
 }

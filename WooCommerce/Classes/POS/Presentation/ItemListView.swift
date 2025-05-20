@@ -16,13 +16,13 @@ struct ItemListView: View {
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         switch selectedItemListType {
         case .products(search: false):
-            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .product, sourceType: .list)
+            PointOfSaleItemListAnalyticsTracker(source: .product, sourceType: .list)
         case .coupons(search: false):
-            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .coupon, sourceType: .list)
+            PointOfSaleItemListAnalyticsTracker(source: .coupon, sourceType: .list)
         case .products(search: true):
-            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+            PointOfSaleItemListAnalyticsTracker(source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search)
         case .coupons(search: true):
-            PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType, source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+            PointOfSaleItemListAnalyticsTracker(source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search)
         }
     }
 
@@ -259,7 +259,7 @@ private extension ItemListView {
                                 .renderedIf(isCouponsFeatureEnabled)
 
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                                analyticsTracker.trackSearchTapped()
+                                analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                                 setSearch(true)
                             }
                             .transition(.opacity.combined(with: .scale))
@@ -370,7 +370,7 @@ private extension ItemListView {
             }
         }
 
-        analyticsTracker.trackItemListSelected()
+        analyticsTracker.trackItemListSelected(itemListType: itemListType)
     }
 }
 

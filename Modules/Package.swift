@@ -25,6 +25,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs", from: "9.0.0"),
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
@@ -288,7 +289,11 @@ enum XcodeSupport {
             ),
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticatorTests,
-                dependencies: [XcodeTargetNames.wordPressAuthenticator.asDependency]
+                dependencies: [
+                    .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
+                    .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
+                    XcodeTargetNames.wordPressAuthenticator.asDependency,
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.yosemite,

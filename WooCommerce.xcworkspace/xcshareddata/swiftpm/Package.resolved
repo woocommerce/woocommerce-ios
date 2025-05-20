@@ -1,5 +1,5 @@
 {
-  "originHash" : "c584474fbc32722e8a4ad484282002d736cb6356efee4388ee55d3ae0148bf8d",
+  "originHash" : "0aecff20267f6dad700b12d0381cddfaab761efcc36d3d73b60cad725bca19d8",
   "pins" : [
     {
       "identity" : "automattic-tracks-ios",
@@ -106,6 +106,15 @@
       "state" : {
         "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
         "version" : "13.7.1"
+      }
+    },
+    {
+      "identity" : "ohhttpstubs",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AliSoftware/OHHTTPStubs",
+      "state" : {
+        "revision" : "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+        "version" : "9.1.0"
       }
     },
     {

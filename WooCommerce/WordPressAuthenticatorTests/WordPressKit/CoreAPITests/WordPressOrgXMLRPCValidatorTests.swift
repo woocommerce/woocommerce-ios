@@ -1,5 +1,6 @@
 import XCTest
 import OHHTTPStubs
+import OHHTTPStubsSwift
 @testable import WordPressAuthenticator
 
 final class WordPressOrgXMLRPCValidatorTests: XCTestCase {

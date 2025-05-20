@@ -140,3 +140,48 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         )
     }
 }
+
+@available(iOS 17.0, *)
+struct POSItemActionHandlerFactory {
+    static func itemActionHandler(
+        itemListType: ItemListType,
+        searchTerm: String,
+        posModel: PointOfSaleAggregateModelProtocol,
+        analytics: Analytics = ServiceLocator.analytics
+    ) -> POSItemActionHandler {
+        switch itemListType {
+        case .products(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, source: .product, sourceType: .list, analytics: analytics)
+        case .coupons(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, source: .coupon, sourceType: .list, analytics: analytics)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .product, analytics: analytics)
+        case .coupons(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .coupon, analytics: analytics)
+        }
+    }
+
+    static func variationActionHandler(
+        itemListType: ItemListType,
+        searchTerm: String,
+        posModel: PointOfSaleAggregateModelProtocol,
+        analytics: Analytics = ServiceLocator.analytics
+    ) -> POSItemActionHandler {
+        if itemListType.isSearching {
+            SearchResultItemActionHandler(
+                posModel: posModel,
+                searchTerm: searchTerm,
+                itemType: itemListType.itemType,
+                source: .variation,
+                analytics: analytics
+            )
+        } else {
+            StandardPOSItemActionHandler(
+                posModel: posModel,
+                source: .variation,
+                sourceType: .list,
+                analytics: analytics
+            )
+        }
+    }
+}

@@ -183,24 +183,19 @@ struct ItemListView: View {
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
-        switch itemListType {
-        case .products(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, source: .product, sourceType: .list)
-        case .coupons(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, source: .coupon, sourceType: .list)
-        case .products(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .product)
-        case .coupons(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .coupon)
-        }
+        POSItemActionHandlerFactory.itemActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
     }
 
     private func variationActionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
-        if itemListType.isSearching {
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .variation)
-        } else {
-            StandardPOSItemActionHandler(posModel: posModel, source: .variation, sourceType: .list)
-        }
+        POSItemActionHandlerFactory.variationActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
     }
 
     @ViewBuilder

@@ -65,6 +65,8 @@
 		01A3093C2DAE768600B672F6 /* MockPointOfSaleCouponService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */; };
 		01AAD8142D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */; };
 		01AB2D122DDC7AD300AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */; };
+		01AB2D142DDC7CD200AA67FD /* POSItemActionHandlerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */; };
+		01AB2D162DDC8CDA00AA67FD /* MockAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
 		01B3A1F22DB6D48800286B7F /* ItemListType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B3A1F12DB6D48800286B7F /* ItemListType.swift */; };
@@ -3347,6 +3349,8 @@
 		01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleCouponService.swift; sourceTree = "<group>"; };
 		01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncCouponsErrorMessageView.swift; sourceTree = "<group>"; };
 		01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListAnalyticsTrackerTests.swift; sourceTree = "<group>"; };
+		01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandlerFactoryTests.swift; sourceTree = "<group>"; };
+		01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalytics.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
 		01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift; sourceTree = "<group>"; };
 		01B3A1F12DB6D48800286B7F /* ItemListType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListType.swift; sourceTree = "<group>"; };
@@ -7457,6 +7461,7 @@
 		026A502D2D2F8087002C42C2 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */,
 				01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */,
 				208628722D48E476003F45DC /* Payments Onboarding */,
 				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
@@ -7890,6 +7895,7 @@
 		02CD3BFC2C35D01600E575C4 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */,
 				686A71B72DC9EB6D0006E835 /* MockPOSSearchHistoryService.swift */,
 				01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */,
 				68503C352DA53E0800C07909 /* MockPointOfSaleCouponsController.swift */,
@@ -17615,6 +17621,7 @@
 				026A50302D2F80B5002C42C2 /* ThresholdInfiniteScrollTriggerDeterminerTests.swift in Sources */,
 				CC33238C29CDF67D00CA9709 /* ComponentSettingsViewModelTests.swift in Sources */,
 				86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */,
+				01AB2D162DDC8CDA00AA67FD /* MockAnalytics.swift in Sources */,
 				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,
 				098FFA1727AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift in Sources */,
 				DA24152B2D116EAE0008F69A /* WooShippingAddPackageViewModelTests.swift in Sources */,
@@ -17750,6 +17757,7 @@
 				027EB57829C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift in Sources */,
 				DEBAB70B2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift in Sources */,
 				CE6302462BAB528900E3325C /* CustomerListViewModelTests.swift in Sources */,
+				01AB2D142DDC7CD200AA67FD /* POSItemActionHandlerFactoryTests.swift in Sources */,
 				456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */,
 				B976D5BB2D3808A000D01E2E /* WooShippingCustomsFormViewModelTests.swift in Sources */,
 				DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */,

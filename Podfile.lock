@@ -1,6 +1,5 @@
 PODS:
   - Alamofire (5.8.1)
-  - Gridicons (1.2.0)
   - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
@@ -48,7 +47,6 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
-  - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
   - NSObject-SafeExpectations (~> 0.0.4)
@@ -68,7 +66,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - Gridicons
     - KeychainAccess
     - Kingfisher
     - NSObject-SafeExpectations
@@ -93,7 +90,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
@@ -116,6 +112,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: e8b7a720e1a5dfbd786d981801b57560dd250395
+PODFILE CHECKSUM: bb239f21675ecb184c2fc0251537194a3010dabb
 
 COCOAPODS: 1.16.2

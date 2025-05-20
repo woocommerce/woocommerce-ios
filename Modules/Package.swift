@@ -28,6 +28,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
+        .package(url: "https://github.com/Automattic/Gridicons-iOS", revision: "d5e02fe8121b93d1e598751c4be718ca331b8366"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
         .package(url: "https://github.com/buildkite/test-collector-swift", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
@@ -222,6 +223,7 @@ enum XcodeSupport {
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
                     .product(name: "DGCharts", package: "Charts"),
+                    .product(name: "Gridicons", package: "Gridicons-iOS"),
                     .product(name: "Inject", package: "Inject"),
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer")
@@ -280,6 +282,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticator,
                 dependencies: [
+                    .product(name: "Gridicons", package: "Gridicons-iOS"),
                     .product(name: "SVProgressHUD", package: "SVProgressHUD")
                 ]
             ),

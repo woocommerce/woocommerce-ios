@@ -62,10 +62,6 @@ def networking_watch_os_pods
   keychain
 end
 
-def gridicons
-  pod 'Gridicons', '~> 1.2.0'
-end
-
 def wordpress_ui
   pod 'WordPressUI', '~> 1.15'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
@@ -81,9 +77,6 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-
-  gridicons
-
   wordpress_shared
   wordpress_ui
 
@@ -227,7 +220,6 @@ end
 # ==========
 #
 def wordpress_authenticator_pods
-  gridicons
   wordpress_ui
   wordpress_shared
   pod 'NSObject-SafeExpectations', '~> 0.0.4'

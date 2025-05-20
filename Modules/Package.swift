@@ -29,6 +29,7 @@ let package = Package(
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
+        .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
     ],
@@ -202,6 +203,7 @@ enum XcodeSupport {
                     .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
                     .product(name: "AutomatticEncryptedLogs", package: "Automattic-Tracks-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
                     .product(name: "DGCharts", package: "Charts"),
                 ]
             ),

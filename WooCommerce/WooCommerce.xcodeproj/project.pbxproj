@@ -2817,7 +2817,6 @@
 		DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */; };
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
-		DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */; };
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
@@ -6591,7 +6590,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */,
 				DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
 				4598298128574688003A9AFE /* Inject in Frameworks */,
@@ -14717,7 +14715,6 @@
 			packageProductDependencies = (
 				45455E312657C3F300BBB0C4 /* Shimmer */,
 				4598298028574688003A9AFE /* Inject */,
-				DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */,
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
 				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
@@ -14905,7 +14902,6 @@
 				3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */,
 				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
-				DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
 				202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */,
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
@@ -19906,14 +19902,6 @@
 				version = 1.1.1;
 			};
 		};
-		DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -20029,11 +20017,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
 			productName = Inject;
-		};
-		DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
-			productName = ConfettiSwiftUI;
 		};
 		DEA6BCAB2BC6A7C30017D671 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;

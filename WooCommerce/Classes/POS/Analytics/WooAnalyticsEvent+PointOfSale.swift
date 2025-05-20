@@ -168,6 +168,9 @@ extension WooAnalyticsEvent {
 }
 
 extension WooAnalyticsEvent.PointOfSale {
+    /// Source of the event where the event is triggered
+    /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
+    ///
     enum Source: String {
         case product
         case variation
@@ -196,6 +199,9 @@ extension WooAnalyticsEvent.PointOfSale {
         }
     }
 
+    /// The state of the view where the event is triggered.
+    /// E.g. product list, procuct search, or product pre-search view where popular searches are shown.
+    ///
     enum SourceType: String {
         case list
         case search
@@ -213,11 +219,15 @@ extension WooAnalyticsEvent.PointOfSale {
         }
     }
 
+    /// Types of high-level items supported in the POS
+    ///
     enum ItemType: String {
         case product
         case coupon
     }
 
+    /// Types of products supported in the POS
+    ///
     enum ProductType: String {
         case simple
         case variation

@@ -1,4 +1,5 @@
 import Foundation
+import enum Alamofire.AFError
 
 struct PointOfSaleErrorState: Equatable {
     enum ErrorType: Equatable {
@@ -18,51 +19,51 @@ struct PointOfSaleErrorState: Equatable {
     let subtitle: String
     let buttonText: String
 
-    static var errorOnLoadingProducts: Self {
+    static func errorOnLoadingProducts(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .productsLoadError,
             title: Constants.failedToLoadProductsTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnLoadingVariations: Self {
+    static func errorOnLoadingVariations(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .variationsLoadError,
             title: Constants.failedToLoadVariationsTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnLoadingProductsNextPage: Self {
+    static func errorOnLoadingProductsNextPage(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .productsNextPageError,
             title: Constants.failedToLoadProductsNextPageTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnLoadingVariationsNextPage: Self {
+    static func errorOnLoadingVariationsNextPage(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .variationsNextPageError,
             title: Constants.failedToLoadVariationsNextPageTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnLoadingCoupons: Self {
+    static func errorOnLoadingCoupons(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .couponsLoadError,
             title: Constants.loadingCouponsErrorTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnEnablingCoupons: Self {
+    static func errorOnEnablingCoupons(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .couponsDisabled,
             title: Constants.enablingCouponsErrorTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
@@ -74,20 +75,28 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.loadingCouponsDisabledAction)
     }
 
-    static var errorOnLoadingCouponsNextPage: Self {
+    static func errorOnLoadingCouponsNextPage(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .couponsNextPageError,
             title: Constants.failedToLoadCouponsNextPageTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
-    static var errorOnRefreshingCoupons: Self {
+    static func errorOnRefreshingCoupons(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .couponsRefreshError,
             title: Constants.failedToRefreshCouponsTitle,
-            subtitle: Constants.genericErrorSubtitle,
+            subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
+    }
+
+    private static func subtitle(for error: Error?) -> String {
+        if let error, error.isConnectivityError {
+            return Constants.connectivityErrorSubtitle
+        }
+
+        return Constants.genericErrorSubtitle
     }
 
     enum Constants {
@@ -158,6 +167,11 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.failedToRefreshCouponsTitle2",
             value: "Unable to refresh coupons",
             comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
+        )
+        static let connectivityErrorSubtitle = NSLocalizedString(
+            "pos.itemList.connectivityErrorSubtitle",
+            value: "Please check your internet connection and try again.",
+            comment: "Subtitle appearing on error screens when there is a network connectivity error."
         )
     }
 }

@@ -74,8 +74,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                 switch result {
                 case .success:
                     continuation.resume(returning: ())
-                case .failure:
-                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsEnablingError)
+                case .failure(let error):
+                    continuation.resume(throwing: PointOfSaleCouponServiceError.couponsEnablingError(underlyingError: error))
                 }
             }
         }
@@ -120,7 +120,7 @@ private extension PointOfSaleCouponService {
 public enum PointOfSaleCouponServiceError: Error, Equatable {
     case couponsLoadingError(underlyingError: Error)
     case couponsDisabled
-    case couponsEnablingError
+    case couponsEnablingError(underlyingError: Error)
     case requestCancelled
 
     public static func == (lhs: PointOfSaleCouponServiceError, rhs: PointOfSaleCouponServiceError) -> Bool {

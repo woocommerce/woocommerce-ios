@@ -187,7 +187,7 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations)
+            parentItem: .error(.errorOnLoadingVariations())
         ])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
     return ChildItemList(parentItem: parentItem,

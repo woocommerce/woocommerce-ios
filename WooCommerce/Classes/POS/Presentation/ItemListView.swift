@@ -317,8 +317,8 @@ private extension ItemListView {
 
     @ViewBuilder
     func errorView(_ errorState: PointOfSaleErrorState) -> some View {
-        switch errorState {
-        case .errorCouponsDisabled, .errorOnEnablingCoupons:
+        switch errorState.errorType {
+        case .couponsDisabled:
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()

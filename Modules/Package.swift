@@ -27,11 +27,13 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
+        .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
+        .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
     ],
     targets: XcodeSupport.targets + [
@@ -195,7 +197,13 @@ enum XcodeSupport {
                 dependencies: ["TestKit", XcodeTargetNames.storage.asDependency]
             ),
             .xcodeTarget(XcodeTargetNames.storeWidgetsExtension, dependencies: []),
-            .xcodeTarget(XcodeTargetNames.uiTestsFoundation, dependencies: []),
+            .xcodeTarget(
+                XcodeTargetNames.uiTestsFoundation,
+                dependencies: [
+                    .product(name: "ScreenObject", package: "ScreenObject"),
+                    .product(name: "XCUITestHelpers", package: "ScreenObject"),
+                ]
+            ),
             .xcodeTarget(
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
@@ -205,13 +213,15 @@ enum XcodeSupport {
                     .product(name: "AutomatticEncryptedLogs", package: "Automattic-Tracks-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
-                    .product(name: "DGCharts", package: "Charts")
+                    .product(name: "DGCharts", package: "Charts"),
+                    .product(name: "Inject", package: "Inject")
                 ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceScreenshots,
                 dependencies: [
                     .product(name: "Embassy", package: "Embassy"),
+                    .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
             ),
@@ -225,7 +235,10 @@ enum XcodeSupport {
             ),
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceUITests,
-                dependencies: [XcodeTargetNames.wooCommerce.asDependency]
+                dependencies: [
+                    .product(name: "ScreenObject", package: "ScreenObject"),
+                    XcodeTargetNames.wooCommerce.asDependency
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,

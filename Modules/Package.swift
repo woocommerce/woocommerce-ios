@@ -35,6 +35,7 @@ let package = Package(
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
+        .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
     ],
     targets: XcodeSupport.targets + [
         .target(name: "Modules"),
@@ -214,7 +215,8 @@ enum XcodeSupport {
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
                     .product(name: "DGCharts", package: "Charts"),
-                    .product(name: "Inject", package: "Inject")
+                    .product(name: "Inject", package: "Inject"),
+                    .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit")
                 ]
             ),
             .xcodeTarget(

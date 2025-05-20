@@ -2812,7 +2812,6 @@
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
-		DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = DEA6BCAB2BC6A7C30017D671 /* Algorithms */; };
 		DEA6BCAF2BC6A9B10017D671 /* StoreStatsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */; };
 		DEA6BCB12BC6AA040017D671 /* StoreStatsChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */; };
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
@@ -6580,7 +6579,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
@@ -14696,7 +14694,6 @@
 			name = WooCommerce;
 			packageProductDependencies = (
 				45455E312657C3F300BBB0C4 /* Shimmer */,
-				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
 				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
 			);
 			productName = WooCommerce;
@@ -14876,7 +14873,6 @@
 			packageReferences = (
 				45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
-				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
 			);
@@ -19843,14 +19839,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -19943,11 +19931,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
 			productName = Shimmer;
-		};
-		DEA6BCAB2BC6A7C30017D671 /* Algorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
-			productName = Algorithms;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

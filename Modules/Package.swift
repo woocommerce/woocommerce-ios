@@ -25,6 +25,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
@@ -209,6 +210,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
                     .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
                     .product(name: "AutomatticEncryptedLogs", package: "Automattic-Tracks-iOS"),

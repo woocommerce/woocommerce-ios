@@ -33,6 +33,7 @@ let package = Package(
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
+        .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
@@ -238,6 +239,7 @@ enum XcodeSupport {
                     "Codegen",
                     "TestKit",
                     .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
+                    .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
             ),

@@ -290,7 +290,6 @@
 		74159623224D2C86003C21CF /* settings-product.json in Resources */ = {isa = PBXBuildFile; fileRef = 74159622224D2C86003C21CF /* settings-product.json */; };
 		74159628224D63CE003C21CF /* settings-product-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74159627224D63CE003C21CF /* settings-product-alt.json */; };
 		7426CA1321AF34A3004E9FFC /* site-api.json in Resources */ = {isa = PBXBuildFile; fileRef = 7426CA1221AF34A3004E9FFC /* site-api.json */; };
-		743057B5218B6ACD00441A76 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743057B4218B6ACD00441A76 /* Queue.swift */; };
 		743BF8BE21191B63008A9D87 /* site-visits.json in Resources */ = {isa = PBXBuildFile; fileRef = 743BF8BD21191B63008A9D87 /* site-visits.json */; };
 		743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84EF22172D0900FAC9D7 /* shipment_tracking_plugin_not_active.json */; };
 		743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 743E84F022172D0900FAC9D7 /* shipment_tracking_empty.json */; };
@@ -1029,7 +1028,6 @@
 		74159622224D2C86003C21CF /* settings-product.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "settings-product.json"; sourceTree = "<group>"; };
 		74159627224D63CE003C21CF /* settings-product-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-product-alt.json"; sourceTree = "<group>"; };
 		7426CA1221AF34A3004E9FFC /* site-api.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-api.json"; sourceTree = "<group>"; };
-		743057B4218B6ACD00441A76 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Queue.swift; path = ../../Yosemite/Yosemite/Internal/Queue.swift; sourceTree = "<group>"; };
 		743BF8BD21191B63008A9D87 /* site-visits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits.json"; sourceTree = "<group>"; };
 		743E84EF22172D0900FAC9D7 /* shipment_tracking_plugin_not_active.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_plugin_not_active.json; sourceTree = "<group>"; };
 		743E84F022172D0900FAC9D7 /* shipment_tracking_empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = shipment_tracking_empty.json; sourceTree = "<group>"; };
@@ -1591,6 +1589,7 @@
 				"Extended/Extensions/Array+Woo.swift",
 				"Extended/Extensions/Decimal+Extensions.swift",
 				"Extended/Extensions/URLRequest+Request.swift",
+				Extended/Internal/Queue.swift,
 				Extended/Mapper/AccountMapper.swift,
 				Extended/Mapper/AccountSettingsMapper.swift,
 				Extended/Mapper/AddOnGroupMapper.swift,
@@ -2304,7 +2303,6 @@
 			isa = PBXGroup;
 			children = (
 				3F7EA6532DDC02ED008309F0 /* Sources */,
-				B557D9E5209753AA005962F4 /* Networking */,
 				B557D9F0209753AA005962F4 /* NetworkingTests */,
 				26DAAB502BEA8D3400CE399E /* NetworkingWatchOS */,
 				B557D9E4209753AA005962F4 /* Products */,
@@ -2322,15 +2320,6 @@
 				26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B557D9E5209753AA005962F4 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				B5A0369F214C0F4C00774E2C /* Internal */,
-				B5BB1D0A20A204F400112D92 /* Extensions */,
-			);
-			path = Networking;
 			sourceTree = "<group>";
 		};
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
@@ -2856,21 +2845,6 @@
 				E137619A2915222100FD098F /* WordPressApiValidatorTests.swift */,
 			);
 			path = Validators;
-			sourceTree = "<group>";
-		};
-		B5A0369F214C0F4C00774E2C /* Internal */ = {
-			isa = PBXGroup;
-			children = (
-				743057B4218B6ACD00441A76 /* Queue.swift */,
-			);
-			name = Internal;
-			sourceTree = "<group>";
-		};
-		B5BB1D0A20A204F400112D92 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		B5C6FCC620A32E3100A4F8E4 /* Extensions */ = {
@@ -3828,7 +3802,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

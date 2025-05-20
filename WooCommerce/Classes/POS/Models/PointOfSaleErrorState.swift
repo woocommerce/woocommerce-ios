@@ -111,43 +111,43 @@ struct PointOfSaleErrorState: Equatable {
             comment: "Generic text for retry buttons appearing on error screens."
         )
         static let loadingCouponsErrorTitle = NSLocalizedString(
-            "pos.itemList.loadingCouponsErrorTitle2",
+            "pos.itemList.loadingCouponsErrorTitle.2",
             value: "Unable to load coupons",
             comment: "Title appearing on the coupon list screen when there's an error loading coupons."
         )
         static let loadingCouponsDisabledTitle = NSLocalizedString(
-            "pos.itemList.loadingCouponsDisabledTitle2",
+            "pos.itemList.loadingCouponsDisabledTitle.2",
             value: "Start accepting coupons",
             comment: "Title appearing on the coupon list screen when coupons are disabled."
         )
         static let loadingCouponsDisabledSubtitle = NSLocalizedString(
-            "pos.itemList.loadingCouponsDisabledSubtitle2",
+            "pos.itemList.loadingCouponsDisabledSubtitle.2",
             value: "Enable coupon codes in your store to start creating them for your customers.",
             comment: "Subtitle appearing on the coupon list screen when coupons are disabled."
         )
         static let loadingCouponsDisabledAction = NSLocalizedString(
-            "pos.itemList.loadingCouponsDisabledAction2",
+            "pos.itemList.loadingCouponsDisabledAction.2",
             value: "Enable coupons",
             comment: "Text of the button appearing on the coupon list screen when coupons are disabled."
         )
         static let failedToLoadProductsTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadProductsTitle2",
+            "pos.itemList.failedToLoadProductsTitle.2",
             value: "Unable to load products",
             comment: "Text appearing on the item list screen when there's an error loading products."
         )
         static let failedToLoadVariationsTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadVariationsTitle2",
+            "pos.itemList.failedToLoadVariationsTitle.2",
             value: "Unable to load variations",
             comment: "Text appearing on the item list screen when there's an error loading variations."
         )
         static let failedToLoadProductsNextPageTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadProductsNextPageTitle2",
+            "pos.itemList.failedToLoadProductsNextPageTitle.2",
             value: "Unable to load more products",
             comment: "Text appearing on the item list screen when there's an error loading a page of products after " +
             "the first. Shown inline with the previously loaded items above."
         )
         static let failedToLoadVariationsNextPageTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadVariationsNextPageTitle2",
+            "pos.itemList.failedToLoadVariationsNextPageTitle.2",
             value: "Unable to load more variations",
             comment: "Text appearing on the item list screen when there's an error loading a page of variations after " +
             "the first. Shown inline with the previously loaded items above."
@@ -158,13 +158,13 @@ struct PointOfSaleErrorState: Equatable {
             comment: "Title appearing on the coupon list screen when there's an error enabling coupons setting in the store."
         )
         static let failedToLoadCouponsNextPageTitle = NSLocalizedString(
-            "pos.itemList.failedToLoadCouponsNextPageTitle2",
+            "pos.itemList.failedToLoadCouponsNextPageTitle.2",
             value: "Unable to load more coupons",
             comment: "Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. " +
             "Shown inline with the previously loaded coupons above."
         )
         static let failedToRefreshCouponsTitle = NSLocalizedString(
-            "pos.itemList.failedToRefreshCouponsTitle2",
+            "pos.itemList.failedToRefreshCouponsTitle.2",
             value: "Unable to refresh coupons",
             comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
         )

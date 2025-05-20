@@ -26,30 +26,33 @@ struct PointOfSaleItemListEmptyView: View {
                 if shouldShowIcon {
                     icon
 
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                    Spacer().frame(height: POSSpacing.medium)
                 }
 
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
+                    .multilineTextAlignment(.center)
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                Spacer().frame(height: POSSpacing.small)
 
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
+                    .multilineTextAlignment(.center)
 
                 if let hint = viewModel.hint {
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                    Spacer().frame(height: POSSpacing.small)
                     Text(hint)
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         .font(.posBodyLargeRegular())
                         .padding([.leading, .trailing])
+                        .multilineTextAlignment(.center)
                 }
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                Spacer().frame(height: POSSpacing.large)
 
                 if let onAction, let buttonTitle = viewModel.buttonTitle {
                     Button(action: {
@@ -57,7 +60,7 @@ struct PointOfSaleItemListEmptyView: View {
                     }, label: {
                         Text(buttonTitle)
                     })
-                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     .frame(width: viewWidth / 2)
                     .padding([.leading, .trailing])
                 }
@@ -74,7 +77,7 @@ struct PointOfSaleItemListEmptyView: View {
 
     @ViewBuilder
     private var icon: some View {
-        Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+        Image(decorative: viewModel.iconName)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: Constants.iconSize, height: Constants.iconSize)
@@ -85,7 +88,7 @@ struct PointOfSaleItemListEmptyView: View {
 @available(iOS 17.0, *)
 private extension PointOfSaleItemListEmptyView {
     enum Constants {
-        static let iconSize: CGFloat = 100
+        static let iconSize: CGFloat = 88
     }
 }
 
@@ -152,10 +155,19 @@ struct PointOfSaleItemListEmptyViewModel {
         }
     }
 
+    var iconName: String {
+        switch itemListType {
+        case .coupons(search: false):
+            PointOfSaleAssets.coupons.imageName
+        default:
+            PointOfSaleAssets.magnifierNotFound.imageName
+        }
+    }
+
     enum Localization {
         static let emptyProductsTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1",
-            value: "No supported products found.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2",
+            value: "No supported products found",
             comment: "Text appearing on screen when there are no products to load."
         )
         static let emptyProductsSubtitle = NSLocalizedString(
@@ -169,13 +181,13 @@ struct PointOfSaleItemListEmptyViewModel {
             comment: "Text hinting the merchant to create a product."
         )
         static let emptyProductsSearchTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle",
-            value: "No products found.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2",
+            value: "No products found",
             comment: "Text appearing on screen when a POS product search returns no results."
         )
         static let emptyProductsSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle",
-            value: "Try adjusting your search term – searching part of a product name may help.",
+            "pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2",
+            value: "We couldn't find any matching products — try adjusting your search term.",
             comment: "Subtitle text suggesting to modify search terms when no products are found in the POS product search."
         )
         static let emptyProductsSearchHint = NSLocalizedString(
@@ -184,8 +196,8 @@ struct PointOfSaleItemListEmptyViewModel {
             comment: "Text providing additional search tips when no products are found in the POS product search."
         )
         static let emptyVariableParentProductTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle",
-            value: "No supported variations found.",
+            "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2",
+            value: "No supported variations found",
             comment: "Text appearing on screen when there are no variations to load."
         )
         static let emptyVariableParentProductSubtitle = NSLocalizedString(
@@ -204,8 +216,8 @@ struct PointOfSaleItemListEmptyViewModel {
             comment: "Text appearing on the coupon list screen when there's no coupons found."
         )
         static let emptyCouponsSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle",
-            value: "Boost your business by sending customers special offers and discounts.",
+            "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2",
+            value: "Coupons can be an effective way to drive business. Would you like to create one?",
             comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
         )
         static let emptyCouponsButtonTitle = NSLocalizedString(
@@ -214,9 +226,33 @@ struct PointOfSaleItemListEmptyViewModel {
             comment: "Text for the button appearing on the coupons list screen when there's no coupons found."
         )
         static let emptyCouponSearchSubtitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle",
-            value: "Try adjusting your search term – searching part of a coupon name may help.",
+            "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2",
+            value: "We couldn’t find any coupons with that name — try adjusting your search term.",
             comment: "Text appearing on the coupons list screen as subtitle when there's no coupons found."
         )
     }
+}
+
+// MARK: - Preview
+
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleItemListEmptyView(
+        viewModel: PointOfSaleItemListEmptyViewModel(
+            itemListType: .coupons(search: false),
+            baseItem: .root
+        )
+    ) {}
+    .environment(\.floatingControlAreaSize, CGSize(width: 0, height: 0))
+}
+
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleItemListEmptyView(
+        viewModel: PointOfSaleItemListEmptyViewModel(
+            itemListType: .products(search: true),
+            baseItem: .root
+        )
+    ) {}
+    .environment(\.floatingControlAreaSize, CGSize(width: 0, height: 0))
 }

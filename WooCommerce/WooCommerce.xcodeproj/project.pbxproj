@@ -2821,7 +2821,6 @@
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
-		DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = DEA6BCA82BC6A7050017D671 /* DGCharts */; };
 		DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = DEA6BCAB2BC6A7C30017D671 /* Algorithms */; };
 		DEA6BCAF2BC6A9B10017D671 /* StoreStatsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */; };
 		DEA6BCB12BC6AA040017D671 /* StoreStatsChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */; };
@@ -6600,7 +6599,6 @@
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
-				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
@@ -14721,7 +14719,6 @@
 				4598298028574688003A9AFE /* Inject */,
 				DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */,
 				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
-				DEA6BCA82BC6A7050017D671 /* DGCharts */,
 				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
 				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
 			);
@@ -14910,7 +14907,6 @@
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
 				DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
 				202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */,
-				DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */,
 				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
@@ -19918,14 +19914,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielgindi/Charts.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.0;
-			};
-		};
 		DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -20046,11 +20034,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
 			productName = ConfettiSwiftUI;
-		};
-		DEA6BCA82BC6A7050017D671 /* DGCharts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = DGCharts;
 		};
 		DEA6BCAB2BC6A7C30017D671 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;

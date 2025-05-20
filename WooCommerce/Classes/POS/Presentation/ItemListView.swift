@@ -14,16 +14,7 @@ struct ItemListView: View {
     @Binding var searchTerm: String
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
-        switch selectedItemListType {
-        case .products(search: false):
-            PointOfSaleItemListAnalyticsTracker(source: .product, sourceType: .list)
-        case .coupons(search: false):
-            PointOfSaleItemListAnalyticsTracker(source: .coupon, sourceType: .list)
-        case .products(search: true):
-            PointOfSaleItemListAnalyticsTracker(source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search)
-        case .coupons(search: true):
-            PointOfSaleItemListAnalyticsTracker(source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search)
-        }
+        PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
     }
 
     private var _isSearching: Binding<Bool> {

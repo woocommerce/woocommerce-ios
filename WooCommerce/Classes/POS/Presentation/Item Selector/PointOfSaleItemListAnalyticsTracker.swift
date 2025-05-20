@@ -3,8 +3,8 @@ import WooFoundation
 import enum Yosemite.POSItemType
 
 struct PointOfSaleItemListAnalyticsTracker {
-    private let source: WooAnalyticsEvent.PointOfSale.Source
-    private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+    let source: WooAnalyticsEvent.PointOfSale.Source
+    let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
 
     init(
         source: WooAnalyticsEvent.PointOfSale.Source,
@@ -12,6 +12,19 @@ struct PointOfSaleItemListAnalyticsTracker {
     ) {
         self.source = source
         self.sourceType = sourceType
+    }
+
+    init(selectedItemListType: ItemListType, searchTerm: String) {
+        switch selectedItemListType {
+        case .products(search: false):
+            self.init(source: .product, sourceType: .list)
+        case .coupons(search: false):
+            self.init(source: .coupon, sourceType: .list)
+        case .products(search: true):
+            self.init(source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+        case .coupons(search: true):
+            self.init(source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search)
+        }
     }
 
     func trackItemListSelected(itemListType: ItemListType) {

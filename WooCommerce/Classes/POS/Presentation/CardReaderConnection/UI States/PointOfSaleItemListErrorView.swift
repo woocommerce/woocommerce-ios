@@ -23,7 +23,7 @@ struct PointOfSaleItemListErrorView: View {
                 if !keyboard.isFullSizeKeyboardVisible {
                     POSErrorExclamationMark(size: .large)
 
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                    Spacer().frame(height: POSSpacing.medium)
                 }
 
                 Text(error.title)
@@ -31,14 +31,14 @@ struct PointOfSaleItemListErrorView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                Spacer().frame(height: POSSpacing.small)
 
                 Text(error.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
                     .padding([.leading, .trailing])
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                Spacer().frame(height: POSSpacing.large)
 
                 Button(action: {
                     onAction?()
@@ -60,5 +60,5 @@ struct PointOfSaleItemListErrorView: View {
 
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts, onAction: nil)
+    PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: nil)
 }

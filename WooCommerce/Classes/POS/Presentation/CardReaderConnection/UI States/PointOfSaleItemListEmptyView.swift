@@ -243,7 +243,6 @@ struct PointOfSaleItemListEmptyViewModel {
             baseItem: .root
         )
     ) {}
-    .environment(\.floatingControlAreaSize, CGSize(width: 0, height: 0))
 }
 
 @available(iOS 17.0, *)
@@ -254,5 +253,4 @@ struct PointOfSaleItemListEmptyViewModel {
             baseItem: .root
         )
     ) {}
-    .environment(\.floatingControlAreaSize, CGSize(width: 0, height: 0))
 }

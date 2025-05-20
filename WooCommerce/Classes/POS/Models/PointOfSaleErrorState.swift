@@ -153,7 +153,7 @@ struct PointOfSaleErrorState: Equatable {
             "the first. Shown inline with the previously loaded items above."
         )
         static let enablingCouponsErrorTitle = NSLocalizedString(
-            "pos.itemList.enablingCouponsErrorTitle2",
+            "pos.itemList.enablingCouponsErrorTitle.2",
             value: "Unable to enable coupons",
             comment: "Title appearing on the coupon list screen when there's an error enabling coupons setting in the store."
         )

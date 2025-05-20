@@ -160,6 +160,7 @@ extension WooAnalyticsEvent {
                                                           millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchRemoteResultsFetched,
                               properties: [
+                                Key.source: Source(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
                                 Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
                               ])

@@ -339,12 +339,8 @@ target 'WordPressAuthenticatorTests' do
   wordpress_authenticator_pods
 
   alamofire
-  pod 'OCMock', '~> 3.4'
-  pod 'Expecta', '1.0.6'
-  pod 'Specta', '1.0.7'
   pod 'OHHTTPStubs', '~> 9.0'
   pod 'OHHTTPStubs/Swift', '~> 9.0'
-  pod 'OCMock', '~> 3.4'
 end
 
 # Workarounds:

@@ -26,6 +26,8 @@ final class MockFeatureFlagService: FeatureFlagService {
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
     var allowMerchantAIAPIKey: Bool
+    var isProductImageOptimizedHandlingEnabled: Bool
+    var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -50,7 +52,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
-         allowMerchantAIAPIKey: Bool = false) {
+         allowMerchantAIAPIKey: Bool = false,
+         isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -75,9 +78,16 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
+        self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
+        // Checks if we a custom return value is set for a specific flag.
+        if let customValue = isFeatureFlagEnabledReturnValue[featureFlag] {
+            return customValue
+        }
+
+        // Otherwise uses the default implementation.
         switch featureFlag {
         case .inbox:
             return isInboxOn
@@ -127,6 +137,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return notificationSettings
         case .allowMerchantAIAPIKey:
             return allowMerchantAIAPIKey
+        case .productImageOptimizedHandling:
+            return isProductImageOptimizedHandlingEnabled
         default:
             return false
         }

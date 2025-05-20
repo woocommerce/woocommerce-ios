@@ -123,6 +123,7 @@ extension RefundItemTableViewCell {
         }
 
         placeholderImageView.image = nil
+
         imageService.downloadAndCacheImageForImageView(itemImageView,
                                                        with: productImage,
                                                        placeholder: nil,

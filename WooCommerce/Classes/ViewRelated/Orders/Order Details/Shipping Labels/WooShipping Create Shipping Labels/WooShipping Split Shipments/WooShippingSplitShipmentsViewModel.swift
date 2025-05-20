@@ -157,6 +157,21 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                     shippingSettingsService: shippingSettingsService)
     }
 
+    func didRequestRefund(for shipmentID: String) {
+        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+            return
+        }
+        let currentShipment = shipments[index]
+        let updatedContents = currentShipment.contents.map {
+            CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
+        }
+        shipments[index] = Shipment(contents: updatedContents,
+                                    purchasedLabelID: nil,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+    }
+
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
         moveToNoticeViewModel = nil
         instructions = nil
@@ -483,11 +498,10 @@ extension WooShippingSplitShipmentsViewModel {
                 continue
             }
 
-            let purchasedLabelID = currentOrderLabels
-                .first(where: { $0.shipmentID == key && $0.status == .purchased })
-                .map(\.shippingLabelID)
+            let purchasedLabel = currentOrderLabels
+                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil})
 
-            let isPurchased = purchasedLabelID != nil
+            let isPurchased = purchasedLabel != nil
 
             var shipmentContents = ShipmentContents()
             for shipmentItem in shipmentItems {
@@ -505,7 +519,7 @@ extension WooShippingSplitShipmentsViewModel {
             }
 
             let shipment = Shipment(contents: shipmentContents,
-                                    purchasedLabelID: purchasedLabelID,
+                                    purchasedLabelID: purchasedLabel?.shippingLabelID,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)

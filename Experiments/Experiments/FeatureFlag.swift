@@ -224,4 +224,16 @@ public enum FeatureFlag: Int {
     /// Allows searching coupons in POS
     ///
     case searchCouponsInPOS
+
+    /// Enables optimized handling of product images
+    ///
+    case productImageOptimizedHandling
+
+    /// Shows inventory levels and inventory status in POS item cards
+    ///
+    case inventoryProductLabelsInPOS
+
+    /// Enables sending POS specific email receipts for eligible stores
+    ///
+    case pointOfSaleReceipts
 }

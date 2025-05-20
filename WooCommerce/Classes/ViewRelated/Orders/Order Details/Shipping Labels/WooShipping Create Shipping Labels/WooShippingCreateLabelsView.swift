@@ -98,6 +98,7 @@ struct WooShippingCreateLabelsView: View {
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
+            .notice($viewModel.refundNotice)
             .fullScreenCover(isPresented: $showingSplitShipments) {
                 WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
                     viewModel.updateShipments(updatedShipments)
@@ -209,7 +210,13 @@ private extension WooShippingCreateLabelsView {
                     }
                 } else {
                     HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                        orderDetails
+                        VStack(spacing: Layout.bottomSheetPadding) {
+                            orderDetails
+                            if let line = viewModel.paymentMethodLine {
+                                Divider()
+                                paymentMethod(line)
+                            }
+                        }
                         Divider()
                             .padding(.trailing, -Layout.bottomSheetPadding)
                         shipmentDetails

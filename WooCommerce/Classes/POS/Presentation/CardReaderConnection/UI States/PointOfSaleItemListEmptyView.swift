@@ -26,7 +26,7 @@ struct PointOfSaleItemListEmptyView: View {
                 if shouldShowIcon {
                     icon
 
-                    Spacer().frame(height: POSSpacing.medium)
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
                 }
 
                 Text(viewModel.title)
@@ -35,7 +35,7 @@ struct PointOfSaleItemListEmptyView: View {
                     .font(.posHeadingBold)
                     .multilineTextAlignment(.center)
 
-                Spacer().frame(height: POSSpacing.small)
+                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
 
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
@@ -52,7 +52,7 @@ struct PointOfSaleItemListEmptyView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                Spacer().frame(height: POSSpacing.large)
+                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
 
                 if let onAction, let buttonTitle = viewModel.buttonTitle {
                     Button(action: {

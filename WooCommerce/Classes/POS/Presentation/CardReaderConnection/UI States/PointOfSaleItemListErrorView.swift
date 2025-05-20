@@ -30,7 +30,7 @@ struct PointOfSaleItemListErrorView: View {
                     } else {
                         POSErrorExclamationMark(size: .large)
                     }
-                    Spacer().frame(height: POSSpacing.medium)
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
                 }
 
                 Text(viewModel.title)
@@ -39,7 +39,7 @@ struct PointOfSaleItemListErrorView: View {
                     .multilineTextAlignment(.center)
                     .font(.posHeadingBold)
 
-                Spacer().frame(height: POSSpacing.small)
+                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
 
                 Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
@@ -48,7 +48,7 @@ struct PointOfSaleItemListErrorView: View {
                     .padding([.leading, .trailing])
 
                 if let onAction {
-                    Spacer().frame(height: POSSpacing.large)
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
                     Button(action: {
                         onAction()
                     }, label: {

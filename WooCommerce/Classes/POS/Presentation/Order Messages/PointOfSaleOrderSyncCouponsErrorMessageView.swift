@@ -16,8 +16,8 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                 VStack(alignment: .center, spacing: POSSpacing.none) {
                     Spacer()
                     POSErrorXMark()
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
-                    VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
+                    VStack(alignment: .center, spacing: PointOfSaleEmptyErrorStateViewLayout.textSpacing) {
                         Text(Localization.title)
                             .foregroundStyle(Color.posOnSurface)
                             .font(.posHeadingBold)
@@ -25,9 +25,9 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         Text(attributedMessage)
                             .padding([.leading, .trailing])
                     }
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
 
-                    VStack(spacing: POSSpacing.medium) {
+                    VStack(spacing: PointOfSaleEmptyErrorStateViewLayout.buttonSpacing) {
                         Button(Localization.editOrderTitle, action: {
                             posModel.addMoreToCart()
                         })
@@ -80,8 +80,8 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSale.orderSync.couponsError.errorTitle",
-            value: "Couldn't apply coupon",
+            "pointOfSale.orderSync.couponsError.errorTitle.2",
+            value: "Unable to apply coupon",
             comment: "Title of the error when failing to validate coupons and calculate order totals"
         )
 

@@ -1,5 +1,5 @@
 {
-  "originHash" : "018c7e8efebfcfa33d43c333b0db93ee0064d913e4937998dd2227260c2763e6",
+  "originHash" : "9ea1ab4271974e9606eddf01e2528d962e975d6abd3fb314fae28d3eeeb07fe9",
   "pins" : [
     {
       "identity" : "automattic-tracks-ios",
@@ -128,6 +128,15 @@
       }
     },
     {
+      "identity" : "svprogresshud",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SVProgressHUD/SVProgressHUD",
+      "state" : {
+        "revision" : "c33f7c775ba7feea6047a1fc3257f2e5863b44f7",
+        "version" : "2.3.1"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
@@ -188,6 +197,24 @@
       "state" : {
         "revision" : "4699794b08bb79a4d77785edaba6ea739e298e4b",
         "version" : "2.3.0"
+      }
+    },
+    {
+      "identity" : "viewcontrollerpresentationspy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jonreid/ViewControllerPresentationSpy",
+      "state" : {
+        "revision" : "e58d38ab5a32f7c0baf63cbcc5f7cdf02bb12a99",
+        "version" : "7.0.1"
+      }
+    },
+    {
+      "identity" : "viewinspector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nalexn/ViewInspector",
+      "state" : {
+        "revision" : "788e7879d38a839c4e348ab0762dcc0364e646a2",
+        "version" : "0.10.1"
       }
     }
   ],

@@ -14852,8 +14852,6 @@
 				nl,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
-			packageReferences = (
-			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

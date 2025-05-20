@@ -41,6 +41,7 @@ let package = Package(
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
+        .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
     ],
     targets: XcodeSupport.targets + [
         .target(name: "Modules"),
@@ -276,7 +277,12 @@ enum XcodeSupport {
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
                 ]
             ),
-            .xcodeTarget(XcodeTargetNames.wordPressAuthenticator, dependencies: []),
+            .xcodeTarget(
+                XcodeTargetNames.wordPressAuthenticator,
+                dependencies: [
+                    .product(name: "SVProgressHUD", package: "SVProgressHUD")
+                ]
+            ),
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticatorTests,
                 dependencies: [XcodeTargetNames.wordPressAuthenticator.asDependency]

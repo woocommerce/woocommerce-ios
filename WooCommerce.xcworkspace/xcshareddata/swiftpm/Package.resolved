@@ -1,5 +1,5 @@
 {
-  "originHash" : "ac14247d60042986e3c4f353c125551388bcefba2a37b88e3ad8884a742e47a8",
+  "originHash" : "9ea1ab4271974e9606eddf01e2528d962e975d6abd3fb314fae28d3eeeb07fe9",
   "pins" : [
     {
       "identity" : "automattic-tracks-ios",
@@ -125,6 +125,15 @@
       "state" : {
         "revision" : "6c81e671154e63464dd6749b7ba3279dd390a146",
         "version" : "8.50.1"
+      }
+    },
+    {
+      "identity" : "svprogresshud",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SVProgressHUD/SVProgressHUD",
+      "state" : {
+        "revision" : "c33f7c775ba7feea6047a1fc3257f2e5863b44f7",
+        "version" : "2.3.1"
       }
     },
     {

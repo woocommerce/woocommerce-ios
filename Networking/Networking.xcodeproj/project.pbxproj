@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 71;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -936,7 +936,6 @@
 		31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-implicitly-not-eligible.json"; sourceTree = "<group>"; };
 		31D27C8E2602B553002EDB1D /* plugins.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = plugins.json; sourceTree = "<group>"; };
 		31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemoteTests.swift; sourceTree = "<group>"; };
-		3FA7D9FA2D547DC700CE5611 /* Networking.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Networking.xcconfig; sourceTree = "<group>"; };
 		4507DDF32D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageAssetTypeCodableTests.swift; sourceTree = "<group>"; };
 		4507DDF52D6E770500D2F3BC /* PHAssetMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetMock.swift; sourceTree = "<group>"; };
 		4507DDF72D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductOrVariationIDCodableTests.swift; sourceTree = "<group>"; };
@@ -2181,14 +2180,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3FE2C9022DDF041300AB4F2D /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				3FA7D9FA2D547DC700CE5611 /* Networking.xcconfig */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		452EDBD52D6F55C2003A96BC /* ProductImageInBackground */ = {
 			isa = PBXGroup;
 			children = (
@@ -2308,7 +2299,6 @@
 				B557D9E4209753AA005962F4 /* Products */,
 				B66F21EDEB26EE811202794F /* Pods */,
 				35C45CCE73A311BE252F6BF4 /* Frameworks */,
-				3FE2C9022DDF041300AB4F2D /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -4044,7 +4034,8 @@
 /* Begin XCBuildConfiguration section */
 		1A96903E2359D9F30061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FA7D9FA2D547DC700CE5611 /* Networking.xcconfig */;
+			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
+			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -4271,7 +4262,8 @@
 		};
 		B557D9F5209753AA005962F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FA7D9FA2D547DC700CE5611 /* Networking.xcconfig */;
+			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
+			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -4336,7 +4328,8 @@
 		};
 		B557D9F6209753AA005962F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FA7D9FA2D547DC700CE5611 /* Networking.xcconfig */;
+			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
+			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

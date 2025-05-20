@@ -383,7 +383,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = makeOrder()
         let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID,
                                                   plugin: SitePlugin.SupportedPluginPath.LegacyWCShip,
-                                                  status: .active,)
+                                                  status: .active)
         insert(activePlugin)
 
         let currencySettings = CurrencySettings(currencyCode: .USD,

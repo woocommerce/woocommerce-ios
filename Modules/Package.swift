@@ -29,14 +29,16 @@ let package = Package(
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
         .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
+        .package(url: "https://github.com/buildkite/test-collector-swift", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
-        .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
+        .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
+        .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
+        .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
     ],
     targets: XcodeSupport.targets + [
         .target(name: "Modules"),
@@ -218,7 +220,8 @@ enum XcodeSupport {
                     .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
                     .product(name: "DGCharts", package: "Charts"),
                     .product(name: "Inject", package: "Inject"),
-                    .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit")
+                    .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
+                    .product(name: "Shimmer", package: "SwiftUI-Shimmer")
                 ]
             ),
             .xcodeTarget(
@@ -234,6 +237,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
             ),

@@ -319,7 +319,7 @@ private extension ItemListView {
     func errorView(_ errorState: PointOfSaleErrorState) -> some View {
         switch errorState.errorType {
         case .couponsDisabled:
-            PointOfSaleItemListErrorView(error: errorState, onAction: {
+            PointOfSaleItemListCouponsDisabledView(onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
                     ServiceLocator.analytics.track(.couponSettingEnabled)

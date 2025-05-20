@@ -6,6 +6,7 @@ struct PointOfSaleItemListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let error: PointOfSaleErrorState
     private let onAction: (() -> Void)?
+    private let iconView: () -> AnyView
 
     @State private var viewWidth: CGFloat = 0
 
@@ -14,6 +15,13 @@ struct PointOfSaleItemListErrorView: View {
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
         self.error = error
         self.onAction = onAction
+        self.iconView = { AnyView(POSErrorExclamationMark(size: .large)) }
+    }
+
+    init<Icon: View>(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil, iconView: @escaping () -> Icon) {
+        self.error = error
+        self.onAction = onAction
+        self.iconView = { AnyView(iconView()) }
     }
 
     var body: some View {
@@ -21,7 +29,7 @@ struct PointOfSaleItemListErrorView: View {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 if !keyboard.isFullSizeKeyboardVisible {
-                    POSErrorExclamationMark(size: .large)
+                    iconView()
 
                     Spacer().frame(height: POSSpacing.medium)
                 }
@@ -29,6 +37,7 @@ struct PointOfSaleItemListErrorView: View {
                 Text(error.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
                     .font(.posHeadingBold)
 
                 Spacer().frame(height: POSSpacing.small)
@@ -36,6 +45,7 @@ struct PointOfSaleItemListErrorView: View {
                 Text(error.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
+                    .multilineTextAlignment(.center)
                     .padding([.leading, .trailing])
 
                 Spacer().frame(height: POSSpacing.large)
@@ -60,5 +70,14 @@ struct PointOfSaleItemListErrorView: View {
 
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: nil)
+    VStack(spacing: 40) {
+        PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: nil)
+        PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: nil) {
+            Image(systemName: "xmark.octagon.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 64, height: 64)
+                .foregroundStyle(.red)
+        }
+    }
 }

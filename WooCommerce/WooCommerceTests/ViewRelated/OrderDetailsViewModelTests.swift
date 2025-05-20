@@ -516,8 +516,10 @@ private extension OrderDetailsViewModelTests {
                 onCompletion(plugin)
             case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
                 onCompletion(plugin)
-                default:
-                    break
+            case let .fetchSystemPluginWithPath(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                break
             }
         }
     }

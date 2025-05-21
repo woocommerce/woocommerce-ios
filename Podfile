@@ -139,7 +139,6 @@ def wordpress_authenticator_pods
   wordpress_shared
   pod 'NSObject-SafeExpectations', '~> 0.0.4'
   pod 'wpxmlrpc', '~> 0.10'
-  pod 'UIDeviceIdentifier', '~> 2.0'
 end
 
 target 'WordPressAuthenticator' do

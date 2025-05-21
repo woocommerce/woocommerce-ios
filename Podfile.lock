@@ -1,6 +1,5 @@
 PODS:
   - Alamofire (5.8.1)
-  - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - Sentry (8.46.0):
@@ -32,7 +31,6 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
-  - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
   - NSObject-SafeExpectations (~> 0.0.4)
   - Sentry (~> 8.46.0)
@@ -49,7 +47,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - KeychainAccess
     - Kingfisher
     - NSObject-SafeExpectations
     - Sentry
@@ -72,7 +69,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
@@ -93,6 +89,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 305f4aedeb3a7c7c0efe9ec9e60086340fec217f
+PODFILE CHECKSUM: f22cccbe807e719fdd3993a98a210fc4ad525d22
 
 COCOAPODS: 1.16.2

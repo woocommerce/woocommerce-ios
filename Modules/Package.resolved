@@ -1,5 +1,5 @@
 {
-  "originHash" : "b715502c17aab5b12c4e1048f85c7887c62e268a28e32acd7e3bc06eb311427a",
+  "originHash" : "fec54b4d5b324d185da6b386e4929f22ae9cb47a6b6d808c25785e1e95dffdbf",
   "pins" : [
     {
       "identity" : "automattic-tracks-ios",
@@ -97,6 +97,15 @@
       "state" : {
         "branch" : "1.1.1",
         "revision" : "c0ed5f5de62475e286a3b7c676cec99fa34533ce"
+      }
+    },
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
       }
     },
     {

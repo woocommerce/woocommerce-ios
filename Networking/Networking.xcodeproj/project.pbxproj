@@ -334,7 +334,6 @@
 		269014D42BEA9335006056E0 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
 		26AE25F52C6C0A110032A600 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		26B15E442A269F79000C35E4 /* ip-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B15E432A269F79000C35E4 /* ip-location.json */; };
-		26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
 		26BD9FCF2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BD9FCE2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift */; };
 		26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325C6217E22FC000B0E8E /* Note.swift */; };
@@ -1533,7 +1532,6 @@
 		077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapperTests.swift; sourceTree = "<group>"; };
 		09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-update.json"; sourceTree = "<group>"; };
 		09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkUpdateMapper.swift; sourceTree = "<group>"; };
-		14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release.xcconfig"; sourceTree = "<group>"; };
 		204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error-site-credentials.json"; sourceTree = "<group>"; };
 		207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-simple-products-empty-price.json"; sourceTree = "<group>"; };
 		20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductsNetworkingTests.swift; sourceTree = "<group>"; };
@@ -1774,8 +1772,6 @@
 		5726F7332460A8F00031CAAC /* CopiableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiableTests.swift; sourceTree = "<group>"; };
 		57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-missing-avatar-urls.json"; sourceTree = "<group>"; };
 		57E8FED2246616AC0057CD68 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
-		6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-for-eligibility-criteria.json"; sourceTree = "<group>"; };
@@ -1891,7 +1887,6 @@
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadDragAndDrop.swift; sourceTree = "<group>"; };
-		8409BB32277EE720D63713D4 /* Pods-NetworkingWatchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.debug.xcconfig"; sourceTree = "<group>"; };
 		8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapperTests.swift; sourceTree = "<group>"; };
 		8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-impressions.json"; sourceTree = "<group>"; };
 		8646A9B62B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeForecastedImpressionsInputEncoderTests.swift; sourceTree = "<group>"; };
@@ -2590,7 +2585,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */,
 				3F2B4AD02DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2694,7 +2688,6 @@
 				26FB056B25F6CB9100A40B26 /* Fakes.framework */,
 				F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */,
 				69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */,
-				6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4070,9 +4063,6 @@
 				F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */,
 				9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */,
 				D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */,
-				8409BB32277EE720D63713D4 /* Pods-NetworkingWatchOS.debug.xcconfig */,
-				14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */,
-				61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -4350,7 +4340,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26DAAB562BEA8D3400CE399E /* Build configuration list for PBXNativeTarget "NetworkingWatchOS" */;
 			buildPhases = (
-				24841ACBE18DD390B40F11F9 /* [CP] Check Pods Manifest.lock */,
 				26DAAB4A2BEA8D3400CE399E /* Headers */,
 				26DAAB4B2BEA8D3400CE399E /* Sources */,
 				26DAAB4C2BEA8D3400CE399E /* Frameworks */,
@@ -4963,28 +4952,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		24841ACBE18DD390B40F11F9 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NetworkingWatchOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		64AD9A97CC7706DAF87EE1E9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -6022,7 +5989,6 @@
 		};
 		26DAAB532BEA8D3400CE399E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8409BB32277EE720D63713D4 /* Pods-NetworkingWatchOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -6061,7 +6027,6 @@
 		};
 		26DAAB542BEA8D3400CE399E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -6098,7 +6063,6 @@
 		};
 		26DAAB552BEA8D3400CE399E /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

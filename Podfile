@@ -40,9 +40,6 @@ def networking_pods
   aztec
 end
 
-def networking_watch_os_pods
-end
-
 def wordpress_ui
   pod 'WordPressUI', '~> 1.15'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
@@ -88,7 +85,6 @@ target 'Woo Watch App' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   platform :watchos, app_watchos_deployment_target.version
   pod 'Sentry', '~> 8.46.0'
-  networking_watch_os_pods
 end
 
 # Yosemite Layer:
@@ -122,16 +118,6 @@ end
 target 'Networking' do
   project 'Networking/Networking.xcodeproj'
   networking_pods
-end
-
-# Networking WatchOS Target:
-# ==================
-#
-target 'NetworkingWatchOS' do
-  project 'Networking/Networking.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  networking_watch_os_pods
 end
 
 # Unit Tests

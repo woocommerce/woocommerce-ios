@@ -29,13 +29,6 @@ def aztec
   # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
 end
 
-def tracks
-  pod 'Automattic-Tracks-iOS', '~> 3.4.1'
-  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
-  # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
-  # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
-end
-
 def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
@@ -64,7 +57,6 @@ def networking_pods
   alamofire
   cocoa_lumberjack
 
-  pod 'Sourcery', '~> 2.2.6', configuration: 'Debug'
   wordpress_shared
 
   # Used for HTML parsing
@@ -100,8 +92,6 @@ target 'WooCommerce' do
   # ====================
   #
 
-  tracks
-
   gridicons
 
   wordpress_shared
@@ -136,7 +126,6 @@ end
 #
 target 'StoreWidgetsExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
-  tracks
   keychain
 end
 
@@ -145,7 +134,6 @@ end
 #
 target 'NotificationExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
-  tracks
   keychain
 end
 
@@ -309,7 +297,6 @@ end
 # ==================
 #
 def experiments_pods
-  tracks
   cocoa_lumberjack
 end
 
@@ -358,19 +345,6 @@ target 'WordPressAuthenticatorTests' do
   pod 'OHHTTPStubs', '~> 9.0'
   pod 'OHHTTPStubs/Swift', '~> 9.0'
   pod 'OCMock', '~> 3.4'
-end
-
-# Tools
-# ==========
-#
-def swiftlint_version
-  require 'yaml'
-
-  YAML.load_file('.swiftlint.yml')['swiftlint_version']
-end
-
-abstract_target 'Tools' do
-  pod 'SwiftLint', swiftlint_version
 end
 
 # Workarounds:
@@ -470,8 +444,4 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
-
-  yellow_marker = "\033[33m"
-  reset_marker = "\033[0m"
-  puts "#{yellow_marker}The abstract target warning below is expected. Feel free to ignore it.#{reset_marker}"
 end

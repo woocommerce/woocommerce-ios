@@ -39,7 +39,7 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     @MainActor
     func refreshItems(base: ItemListBaseItem) async {
-        await loadFirstPage()
+        await loadFirstPageRemotely()
     }
 
     @MainActor
@@ -47,6 +47,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
         setSearchingState()
         await loadFirstPage()
+    }
+
+    func clearSearchItems(baseItem: ItemListBaseItem) {
+        setSearchingState()
     }
 
     @MainActor
@@ -100,14 +104,20 @@ private extension PointOfSaleCouponsController {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
 
+            await loadFirstPageRemotely()
+        } catch {
+            setCouponsErrorViewState(error)
+        }
+    }
+
+    func loadFirstPageRemotely() async {
+        do {
             try await paginationTracker.resync { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
-            if let couponError = error as? PointOfSaleCouponServiceError {
-                setCouponsErrorViewState(couponError)
-            }
+            setCouponsErrorViewState(error)
         }
     }
 
@@ -147,24 +157,26 @@ private extension PointOfSaleCouponsController {
                                                           itemStates: [:]))
     }
 
-    func setCouponsErrorViewState(_ couponError: PointOfSaleCouponServiceError) {
-        let containerState = ItemsContainerState.content
-        let stackState: ItemsStackState
+    func setCouponsErrorViewState(_ error: Error) {
+        guard let couponError = error as? PointOfSaleCouponServiceError else {
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+            return
+        }
 
         switch couponError {
         case .couponsLoadingError:
             let items = itemsViewState.itemsStack.root.items
             if items.isEmpty {
-                stackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+                itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
             } else {
-                stackState = ItemsStackState(root: .inlineError(items, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
+                itemsViewState.itemsStack = ItemsStackState(root: .inlineError(items, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
             }
         case .couponsDisabled:
-            stackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
         case .couponsEnablingError:
-            stackState = ItemsStackState(root: .error(.errorOnEnablingCoupons), itemStates: [:])
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnEnablingCoupons), itemStates: [:])
+        case .requestCancelled:
+            break
         }
-
-        itemsViewState = ItemsViewState(containerState: containerState, itemsStack: stackState)
     }
 }

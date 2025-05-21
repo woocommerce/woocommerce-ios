@@ -3040,7 +3040,9 @@ extension Networking.ShippingLabel {
         destinationAddress: CopiableProp<ShippingLabelAddress> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
         productNames: CopiableProp<[String]> = .copy,
-        commercialInvoiceURL: NullableCopiableProp<String> = .copy
+        commercialInvoiceURL: NullableCopiableProp<String> = .copy,
+        usedDate: NullableCopiableProp<Date> = .copy,
+        expiryDate: NullableCopiableProp<Date> = .copy
     ) -> Networking.ShippingLabel {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3060,6 +3062,8 @@ extension Networking.ShippingLabel {
         let productIDs = productIDs ?? self.productIDs
         let productNames = productNames ?? self.productNames
         let commercialInvoiceURL = commercialInvoiceURL ?? self.commercialInvoiceURL
+        let usedDate = usedDate ?? self.usedDate
+        let expiryDate = expiryDate ?? self.expiryDate
 
         return Networking.ShippingLabel(
             siteID: siteID,
@@ -3079,7 +3083,9 @@ extension Networking.ShippingLabel {
             destinationAddress: destinationAddress,
             productIDs: productIDs,
             productNames: productNames,
-            commercialInvoiceURL: commercialInvoiceURL
+            commercialInvoiceURL: commercialInvoiceURL,
+            usedDate: usedDate,
+            expiryDate: expiryDate
         )
     }
 }
@@ -3326,7 +3332,8 @@ extension Networking.ShippingLabelPurchase {
         status: CopiableProp<ShippingLabelStatus> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
         productNames: CopiableProp<[String]> = .copy,
-        shipmentID: NullableCopiableProp<String> = .copy
+        shipmentID: NullableCopiableProp<String> = .copy,
+        refund: NullableCopiableProp<ShippingLabelRefund> = .copy
     ) -> Networking.ShippingLabelPurchase {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -3341,6 +3348,7 @@ extension Networking.ShippingLabelPurchase {
         let productIDs = productIDs ?? self.productIDs
         let productNames = productNames ?? self.productNames
         let shipmentID = shipmentID ?? self.shipmentID
+        let refund = refund ?? self.refund
 
         return Networking.ShippingLabelPurchase(
             siteID: siteID,
@@ -3355,7 +3363,8 @@ extension Networking.ShippingLabelPurchase {
             status: status,
             productIDs: productIDs,
             productNames: productNames,
-            shipmentID: shipmentID
+            shipmentID: shipmentID,
+            refund: refund
         )
     }
 }

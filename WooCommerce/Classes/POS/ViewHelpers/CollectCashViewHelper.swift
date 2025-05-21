@@ -21,13 +21,34 @@ final class CollectCashViewHelper {
 
     func updatechangeDueMessage(orderTotal: String,
                                 textFieldAmountInput: String) -> String? {
+        guard let amount = changeDueAmount(orderTotal: orderTotal, textFieldAmountInput: textFieldAmountInput, includesZeroChange: false) else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.changeDueMessage, formatAsCurrency(amount))
+    }
+
+    /// Returns the formatted change due amount without currency symbol.
+    func formattedChangeDueAmount(orderTotal: String,
+                                  textFieldAmountInput: String) -> String? {
+        guard let amount = changeDueAmount(orderTotal: orderTotal, textFieldAmountInput: textFieldAmountInput, includesZeroChange: true),
+              let formattedAmount = currencyFormatter.localize(amount) else {
+            return nil
+        }
+        return formattedAmount
+    }
+
+    private func changeDueAmount(orderTotal: String,
+                                 textFieldAmountInput: String,
+                                 includesZeroChange: Bool) -> Decimal? {
         guard let orderDecimal = parseCurrency(orderTotal),
               let inputDecimal = parseCurrency(textFieldAmountInput) else {
             return nil
         }
         if inputDecimal > orderDecimal {
             let changeDue = inputDecimal - orderDecimal
-            return String.localizedStringWithFormat(Localization.changeDueMessage, formatAsCurrency(changeDue))
+            return changeDue
+        } else if includesZeroChange && inputDecimal == orderDecimal {
+            return Decimal(0)
         } else {
             return nil
         }

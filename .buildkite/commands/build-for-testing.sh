@@ -1,5 +1,9 @@
 #!/bin/bash -eu
 
+if .buildkite/commands/should-skip-job.sh --job-type build; then
+  exit 0
+fi
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
 

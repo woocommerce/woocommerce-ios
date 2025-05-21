@@ -3,7 +3,7 @@ import Observation
 import enum Yosemite.POSItem
 import class Yosemite.PointOfSaleItemService
 import protocol Yosemite.PointOfSaleItemServiceProtocol
-import class Yosemite.PointOfSaleItemFetchStrategyFactory
+import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
@@ -27,6 +27,7 @@ protocol PointOfSaleItemsControllerProtocol {
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
+    func clearSearchItems(baseItem: ItemListBaseItem)
 }
 
 
@@ -36,11 +37,11 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private var itemProvider: PointOfSaleItemServiceProtocol
-    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory
+    private let itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol
     private var fetchStrategy: PointOfSalePurchasableItemFetchStrategy
 
     init(itemProvider: PointOfSaleItemServiceProtocol,
-         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory,
+         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
          initialState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                        itemsStack: ItemsStackState(root: .loading([]),
                                                                                    itemStates: [:]))) {
@@ -64,9 +65,14 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
-        fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
+                                                                analytics: POSSearchAnalytics(itemType: .product))
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
+    }
+
+    func clearSearchItems(baseItem: ItemListBaseItem) {
+        setSearchingState(base: baseItem)
     }
 
     @MainActor

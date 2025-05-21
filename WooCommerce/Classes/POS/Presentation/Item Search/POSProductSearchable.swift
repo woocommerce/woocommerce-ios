@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.POSItemType
 import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItem
 
 @available(iOS 17.0, *)
 final class POSProductSearchable: POSSearchable {
@@ -22,5 +23,9 @@ final class POSProductSearchable: POSSearchable {
 
     func performSearch(term: String) async {
         await itemsController.searchItems(searchTerm: term, baseItem: .root)
+    }
+
+    func clearSearchResults() {
+        itemsController.clearSearchItems(baseItem: .root)
     }
 }

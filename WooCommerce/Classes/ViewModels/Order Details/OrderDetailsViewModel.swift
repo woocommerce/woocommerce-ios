@@ -126,8 +126,9 @@ final class OrderDetailsViewModel {
     var orderNotes: [OrderNote] = [] {
         didSet {
             dataSource.orderNotes = orderNotes
-            dataSource.reloadSections()
-            onUIReloadRequired?()
+            Task { @MainActor in
+                await dataSource.reloadSections()
+            }
         }
     }
 
@@ -461,8 +462,8 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
-    func reloadSections() {
-        dataSource.reloadSections()
+    func reloadSections() async {
+        await dataSource.reloadSections()
     }
 }
 
@@ -506,9 +507,7 @@ extension OrderDetailsViewModel {
                 return
             }
             if dataSource.isEligibleForWooShipping {
-                let viewModel = WooShippingCreateLabelsViewModel(order: order, selectedShippingLabel: shippingLabel)
-                let shippingLabelDetailsViewController = WooShippingCreateLabelsViewHostingController(viewModel: viewModel)
-                viewController.present(shippingLabelDetailsViewController, animated: true)
+                onCellAction?(.openShippingLabelForm(shippingLabel: shippingLabel), indexPath)
             } else {
                 let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
                 viewController.show(shippingLabelDetailsViewController, sender: viewController)

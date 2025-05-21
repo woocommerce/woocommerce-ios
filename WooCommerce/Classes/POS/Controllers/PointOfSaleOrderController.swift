@@ -1,16 +1,17 @@
 import Foundation
 import Observation
+import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import struct Yosemite.Order
-import struct Yosemite.PaymentGateway
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
+import enum Yosemite.SystemStatusAction
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CurrencyCode
@@ -33,7 +34,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
-    func collectCashPayment() async throws
+    func collectCashPayment(changeDueAmount: String?) async throws
 }
 
 @available(iOS 17.0, *)
@@ -43,6 +44,7 @@ protocol PointOfSaleOrderControllerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
@@ -50,6 +52,7 @@ protocol PointOfSaleOrderControllerProtocol {
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.celebration = celebration
     }
 
@@ -61,6 +64,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let storeCurrency: CurrencyCode
     private let analytics: Analytics
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -105,7 +109,18 @@ protocol PointOfSaleOrderControllerProtocol {
             return
         }
         try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
-        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail)
+
+        let isEligibleForPOSReceipt: Bool
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
+            isEligibleForPOSReceipt = await isPluginSupported(
+                POSReceiptEligibilityConstants.wcPluginName,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: order.siteID
+            )
+        } else {
+            isEligibleForPOSReceipt = false
+        }
+        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
     }
 
     func clearOrder() {
@@ -118,38 +133,17 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     @MainActor
-    func collectCashPayment() async throws {
-        guard let siteID = stores.sessionManager.defaultStoreID else {
-            throw PointOfSaleOrderControllerError.noSiteID
-        }
+    func collectCashPayment(changeDueAmount: String?) async throws {
         guard let order = order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        let fieldsToUpdate: [OrderUpdateField] = [
-            .status,
-            .paymentMethodID,
-            .paymentMethodTitle]
-        let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
-                                      paymentMethodTitle: Localization.cashPaymentMethodTitle)
-
-        let _ = try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.updateOrder(siteID: siteID,
-                                                 order: updatedOrder,
-                                                 giftCard: nil,
-                                                 fields: fieldsToUpdate,
-                                                 onCompletion: { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success:
-                    self.celebrate()
-                case .failure:
-                    analytics.track(.pointOfSaleCashPaymentFailed)
-                }
-                continuation.resume(with: result)
-            })
-            stores.dispatch(action)
+        do {
+            try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
+            celebrate()
+        } catch {
+            analytics.track(.pointOfSaleCashPaymentFailed)
+            throw error
         }
     }
 }
@@ -196,6 +190,32 @@ private extension PointOfSaleOrderController {
     }
 }
 
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    @MainActor
+    func isPluginSupported(_ pluginName: String, minimumVersion: String, siteID: Int64) async -> Bool {
+        await withCheckedContinuation { continuation in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
+                // Plugin must be installed and active
+                guard let plugin, plugin.active, plugin.name == pluginName else {
+                    return continuation.resume(returning: false)
+                }
+
+                // Checking for concrete versions to cover dev and beta versions
+                if plugin.version.contains(minimumVersion) {
+                    return continuation.resume(returning: true)
+                }
+
+                // If plugin version is higher than minimum required version, mark as eligible
+                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
+                                                                    minimumRequired: minimumVersion)
+                continuation.resume(returning: isSupported)
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
 
 // MARK: - Error Handling
 
@@ -209,6 +229,14 @@ private extension PointOfSaleOrderController {
         } else {
             return .other(error.localizedDescription)
         }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleOrderController {
+    enum POSReceiptEligibilityConstants {
+        static let wcPluginName = "WooCommerce"
+        static let wcPluginMinimumVersion = "10.0.0"
     }
 }
 
@@ -263,12 +291,6 @@ extension PointOfSaleInternalOrderState: Equatable {
 
 @available(iOS 17.0, *)
 extension PointOfSaleOrderController {
-    enum Localization {
-        static let cashPaymentMethodTitle = NSLocalizedString(
-            "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
-            value: "Pay in Person",
-            comment: "Title for the payment method used when collecting cash payment in Point of Sale.")
-    }
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
         case noOrder

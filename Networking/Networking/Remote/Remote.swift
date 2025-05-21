@@ -10,7 +10,6 @@ public class Remote: NSObject {
     ///
     let network: Network
 
-
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -235,28 +234,7 @@ public class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
     func enqueue<M: Mapper>(_ request: Request, mapper: M) async throws -> M.Output {
-        try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { [weak self] (result: Swift.Result<Data, Error>) in
-                guard let self else { return }
-
-                switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        continuation.resume(returning: parsed)
-                    } catch {
-                        DDLogError("<> Mapping Error: \(error)")
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
-                }
-            }
-        }
+        try await enqueueWithResponseHeaders(request, mapper: mapper).data
     }
 
     func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]?) {
@@ -368,12 +346,19 @@ private extension Remote {
 
 /// Contains the result of a paginated request.
 public struct PagedItems<T> {
+    /// Items fetched in this page
     public let items: [T]
+
+    /// Whether there are more pages after this one
     public let hasMorePages: Bool
 
-    public init(items: [T], hasMorePages: Bool) {
+    /// Number of items available, across all pages, whether loaded or not
+    public let totalItems: Int?
+
+    public init(items: [T], hasMorePages: Bool, totalItems: Int?) {
         self.items = items
         self.hasMorePages = hasMorePages
+        self.totalItems = totalItems
     }
 }
 
@@ -387,6 +372,7 @@ public extension Remote {
 
     enum PaginationHeaderKey {
         static let totalPagesCount = "x-wp-totalpages"
+        static let totalCount = "x-wp-total"
     }
 
     enum JSONParsingErrorUserInfoKey {

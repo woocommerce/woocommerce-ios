@@ -9,6 +9,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     /// Available paper sizes for printing the shipping label.
     let labelSizes: [ShippingLabelPaperSize]
 
+    let isRefundable: Bool
+
     /// Selected paper size for printing the shipping label.
     @Published var selectedLabelSize: ShippingLabelPaperSize = .label
 
@@ -24,6 +26,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     init(siteID: Int64,
          labelID: Int64,
          labelSizes: [ShippingLabelPaperSize],
+         isRefundable: Bool,
          trackingURL: URL?,
          pickupURL: URL?,
          commercialInvoiceURL: URL?,
@@ -31,6 +34,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
         self.siteID = siteID
         self.labelID = labelID
         self.labelSizes = labelSizes
+        self.isRefundable = isRefundable
         self.trackingURL = trackingURL
         self.pickupURL = pickupURL
         self.commercialInvoiceURL = commercialInvoiceURL
@@ -60,6 +64,7 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
         self.init(siteID: shippingLabel.siteID,
                   labelID: shippingLabel.shippingLabelID,
                   labelSizes: labelSizes,
+                  isRefundable: shippingLabel.isRefundable,
                   trackingURL: trackingURL,
                   pickupURL: pickupURL,
                   commercialInvoiceURL: commercialInvoiceURL,

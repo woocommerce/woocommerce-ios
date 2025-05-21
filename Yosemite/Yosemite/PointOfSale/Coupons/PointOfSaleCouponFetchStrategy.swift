@@ -29,7 +29,7 @@ public struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrat
         let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
         // Return all local coupons, including updated ones from the remote
         let coupons = await fetchLocalCoupons(limit: nil)
-        return .init(items: coupons, hasMorePages: hasMorePages)
+        return .init(items: coupons, hasMorePages: hasMorePages, totalItems: nil)
     }
 
     /// fetchLocalCoupons provides an array of coupons that are stored locally
@@ -45,21 +45,9 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
     /// - Parameter pageNumber: Number of page that should be retrieved.
     /// - Returns: True if there are more pages to sync
     func syncCouponsFromRemote(pageNumber: Int) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            couponStoreMethods.synchronizeCoupons(
-                siteID: siteID,
-                pageNumber: pageNumber,
-                pageSize: Constants.defaultPageSize,
-                onCompletion: { result in
-                    switch result {
-                    case .success(let hasMorePages):
-                        continuation.resume(returning: hasMorePages)
-                    case .failure:
-                        continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
-                    }
-                }
-            )
-        }
+        return try await couponStoreMethods.synchronizeCoupons(siteID: siteID,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: Constants.defaultPageSize)
     }
 
     @MainActor
@@ -99,24 +87,16 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
     }
 
     public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        return try await withCheckedThrowingContinuation { continuation in
-            couponStoreMethods.searchCoupons(
-                siteID: siteID,
-                keyword: searchTerm,
-                pageNumber: pageNumber,
-                pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize) { result in
-                    switch result {
-                    case .success:
-                        let results = getSearchResults()
-                        let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
-                        continuation.resume(returning: .init(items: results, hasMorePages: hasMorePages))
-                    case .failure:
-                        continuation.resume(throwing: PointOfSaleCouponServiceError.couponsLoadingError)
-                    }
-                }
-        }
+        try await couponStoreMethods.searchCoupons(siteID: siteID,
+                                                   keyword: searchTerm,
+                                                   pageNumber: pageNumber,
+                                                   pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize)
+        let results = await getSearchResults()
+        let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
+        return PagedItems(items: results, hasMorePages: hasMorePages, totalItems: nil)
     }
 
+    @MainActor
     private func getSearchResults() -> [POSItem] {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let searchPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)

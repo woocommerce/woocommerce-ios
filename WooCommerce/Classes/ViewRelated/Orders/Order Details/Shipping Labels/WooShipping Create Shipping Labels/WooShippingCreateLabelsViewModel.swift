@@ -20,6 +20,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
+    private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
 
     private(set) var orderItems: WooShippingItemsViewModel
 
@@ -59,6 +60,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published var labelPurchaseErrorNotice: Notice?
 
     @Published private(set) var state = ContentState.loading
+
+    @Published private(set) var shouldShowNotices = false
 
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
@@ -166,6 +169,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var hazmatNotice: Notice?
 
+    @Published var refundNotice: Notice?
+
     /// Selected package data for the shipping label.
     @Published private var selectedPackage: WooShippingPackageDataRepresentable?
 
@@ -175,17 +180,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
-    /// Initialize the view model without an existing shipping label.
+    @Published private var paymentMethod: ShippingLabelPaymentMethod?
+    @Published var paymentMethodLine: WooShippingPaymentMethodLine?
+
+    /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
-         selectedOriginAddress: WooShippingOriginAddress? = nil,
+         selectedShippingLabel: ShippingLabel? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.shippingLabels = order.shippingLabels
-        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
-        self.itemsDataSource = itemsDataSource
+        self.shippingLabels = order.shippingLabels.filter { $0.refund == nil }
+        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
         self.currencySettings = currencySettings
@@ -193,6 +201,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
         self.stores = stores
         self.shippingSettingsService = shippingSettingsService
+        self.initialNoticeDelay = initialNoticeDelay
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -201,54 +210,28 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
 
-        destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
-        self.selectedOriginAddress = selectedOriginAddress
+        if let selectedShippingLabel {
+            destinationAddressStatus = .verified
+            destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
+            originAddress = selectedShippingLabel.originAddress.formattedInlineAddress ?? ""
+        } else {
+            destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
+            loadDestinationAddress()
+        }
 
         updateShipmentDetailsViewModels()
-        loadDestinationAddress()
         observeSelectedOriginAddress()
         observeDestinationAddress()
-
-        Task {
-            await loadRequiredData()
-        }
-    }
-
-    /// Initialize the view model from an existing shipping label.
-    init(order: Order,
-         selectedShippingLabel: ShippingLabel,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         stores: StoresManager = ServiceLocator.stores) {
-        self.order = order
-        self.shippingSettingsService = shippingSettingsService
-        self.shippingLabels = order.shippingLabels
-        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
-        self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
-        self.currencySettings = currencySettings
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.originAddress = selectedShippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddressStatus = .verified
-        self.onLabelPurchase = nil
-        self.stores = stores
-
-        let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
-                                                                         config: nil,
-                                                                         items: itemsDataSource.items,
-                                                                         stores: stores)
-        self.splitShipmentsViewModel = splitShipmentsViewModel
-        self.shipments = splitShipmentsViewModel.shipments
-
-        destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
-
-        updateShipmentDetailsViewModels()
+        observeViewStates()
+        observePaymentMethod()
 
         Task { @MainActor in
             await loadRequiredData()
 
             // After shipment configs are updated, shipments are updated with purchased label details
             // Update the selected tab now by comparing the purchased labels with the initial selected label.
-            if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
+            if let selectedShippingLabel,
+                let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
                 selectedShipmentIndex = matchingIndex
             }
         }
@@ -374,6 +357,8 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+
+        setupPaymentMethod(accountSettings: settings?.accountSettings)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
@@ -419,7 +404,6 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
-            // TODO-15483: map `shippingLabels` using `config`'s purchased labels.
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,
@@ -477,27 +461,51 @@ private extension WooShippingCreateLabelsViewModel {
             let originAddressPublisher = $selectedOriginAddress
                 .map { $0?.toWooShippingAddress() }
                 .eraseToAnyPublisher()
-            return WooShippingShipmentDetailsViewModel(order: order,
-                                                       shipment: shipment,
-                                                       shippingLabel: matchingShippingLabel,
-                                                       originAddress: originAddressPublisher,
-                                                       destinationAddress: $destinationAddress.eraseToAnyPublisher(),
-                                                       stores: stores) { [weak self] newLabel in
-                guard let self, let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
-                shippingLabels.append(newLabel)
-                shipments[index] = Shipment(contents: shipment.contents,
-                                            purchasedLabelID: newLabel.shippingLabelID,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
-                splitShipmentsViewModel.didPurchaseLabel(for: shipment.id,
-                                                         purchasedLabelID: newLabel.shippingLabelID)
-                onLabelPurchase?(markOrderComplete)
-            }
+            return WooShippingShipmentDetailsViewModel(
+                order: order,
+                shipment: shipment,
+                shippingLabel: matchingShippingLabel,
+                originAddress: originAddressPublisher,
+                destinationAddress: $destinationAddress.eraseToAnyPublisher(),
+                stores: stores,
+                onLabelPurchase: { [weak self] newLabel in
+                    self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
+                }, onLabelRefund: { [weak self] labelID in
+                    self?.handleLabelRefundRequested(labelID: labelID, in: shipment)
+                })
         }
         observeHAZMATNotices()
         observeSelectedPackage()
         observeSelectedRates()
+    }
+
+    func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
+        guard let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
+        shippingLabels.append(newLabel)
+        shipments[index] = Shipment(contents: shipment.contents,
+                                    purchasedLabelID: newLabel.shippingLabelID,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didPurchaseLabel(for: shipment.id,
+                                                 purchasedLabelID: newLabel.shippingLabelID)
+        onLabelPurchase?(markOrderComplete)
+    }
+
+    func handleLabelRefundRequested(labelID: Int64,
+                                    in shipment: Shipment) {
+        let shipmentIndex = shipments.firstIndex(where: { $0.id == shipment.id })
+        let labelIndex = shippingLabels.firstIndex(where: { $0.shippingLabelID == labelID })
+
+        guard let shipmentIndex, let labelIndex else { return }
+        shipments[shipmentIndex] = Shipment(contents: shipment.contents,
+                                            purchasedLabelID: nil,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
+        shippingLabels.remove(at: labelIndex)
+        splitShipmentsViewModel.didRequestRefund(for: shipment.id)
+        refundNotice = Notice(message: Localization.refundNotice)
     }
 
     /// Observes the selected origin address and updates the displayed origin address and shipping service.
@@ -534,11 +542,27 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         /// Clear the notice after a delay when the address is verified.
-        $destinationAddressStatusNoticeLabel
-            .filter { $0 == Localization.DestinationAddressStatus.verified }
+        $shouldShowNotices
+            .combineLatest($destinationAddressStatusNoticeLabel)
+            .filter { shouldShowNotices, destinationNotice in
+                shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
+            }
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
+    /// Ensures that initial notices are only displayed after the view is ready
+    /// to avoid overwhelming users with too many information at once when opening the screen.
+    func observeViewStates() {
+        $state
+            .filter { $0 == .ready }
+            .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { _, shipments, selectedIndex in
+                shipments[selectedIndex].isPurchased == false
+            }
+            .assign(to: &$shouldShowNotices)
     }
 
     /// Gets the destination address as a `ShippingLabelAddress`.
@@ -558,6 +582,32 @@ private extension WooShippingCreateLabelsViewModel {
         let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
         try? resultsController.performFetch()
         return resultsController.fetchedObjects.first
+    }
+
+    func observePaymentMethod() {
+        $paymentMethod
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
+                if shipments[selectedIndex].isPurchased {
+                    return nil
+                }
+
+                guard let paymentMethod else {
+                    return .add
+                }
+
+                return WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
+                    paymentMethod,
+                    isEditable: true
+                )
+            }
+            .assign(to: &$paymentMethodLine)
+    }
+
+    func setupPaymentMethod(accountSettings: ShippingLabelAccountSettings?) {
+        self.paymentMethod = accountSettings?.paymentMethods.first {
+            return $0.paymentMethodID == accountSettings?.selectedPaymentMethodID
+        }
     }
 }
 
@@ -594,6 +644,12 @@ private extension WooShippingCreateLabelsViewModel {
                                                    value: "Retry",
                                                    comment: "Button to retry label purchase when an error occurs")
         }
+
+        static let refundNotice = NSLocalizedString(
+            "wooShipping.createLabels.refundNotice",
+            value: "You have successfully submitted a request for refund. You can purchase a new label.",
+            comment: "Notice to display after requesting refund for a shipping label"
+        )
     }
 }
 

@@ -224,4 +224,8 @@ public enum FeatureFlag: Int {
     /// Allows searching coupons in POS
     ///
     case searchCouponsInPOS
+
+    /// Enables sending POS specific email receipts for eligible stores
+    ///
+    case pointOfSaleReceipts
 }

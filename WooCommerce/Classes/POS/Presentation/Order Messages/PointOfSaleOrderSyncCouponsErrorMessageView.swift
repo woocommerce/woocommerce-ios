@@ -105,18 +105,15 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     }
 }
 
-#Preview {
-    if #available(iOS 17.0, *) {
-        PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
-    }
-}
-
 private extension String {
     var attributedHTMLString: AttributedString {
         if let data = self.data(using: .utf8),
            let nsAttributedString = try? NSAttributedString(
                data: data,
-               options: [.documentType: NSAttributedString.DocumentType.html],
+               options: [
+                   .documentType: NSAttributedString.DocumentType.html,
+                   .characterEncoding: String.Encoding.utf8.rawValue
+               ],
                documentAttributes: nil) {
             var attributedString = AttributedString(nsAttributedString)
             attributedString.font = POSFontStyle.posBodyLargeRegular().font()
@@ -126,3 +123,19 @@ private extension String {
         return AttributedString(self)
     }
 }
+
+#if DEBUG
+#Preview {
+    if #available(iOS 17.0, *) {
+        PointOfSaleOrderSyncCouponsErrorMessageView(message: "An error happened!") {}
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
+    }
+}
+
+#Preview {
+    if #available(iOS 17.0, *) {
+        PointOfSaleOrderSyncCouponsErrorMessageView(message: "Lo sentimos, este cupón no se puede aplicar a los productos seleccionados.") {}
+            .environment(POSPreviewHelpers.makePreviewAggregateModel())
+    }
+}
+#endif

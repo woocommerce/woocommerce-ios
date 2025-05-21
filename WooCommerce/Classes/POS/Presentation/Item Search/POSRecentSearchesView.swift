@@ -75,7 +75,6 @@ private extension POSRecentSearchesView {
             "pos.itemsearch.before.search.recentSearches.emptyListText.1",
             value: "Search your store",
             comment: "Text shown when there's nothing to show before a search term is typed in POS")
-
     }
 
     enum Constants {

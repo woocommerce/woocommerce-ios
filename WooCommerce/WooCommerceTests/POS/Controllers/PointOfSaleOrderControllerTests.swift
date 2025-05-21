@@ -6,7 +6,9 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.OrderCouponLine
+import struct Yosemite.SystemPlugin
 import enum Yosemite.OrderAction
+import enum Yosemite.SystemStatusAction
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
@@ -197,7 +199,7 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(!mockOrderService.updateOrderWasCalled)
-        #expect(!mockReceiptService.sendReceiptWasCalled)
+        #expect(mockReceiptService.sendReceiptWasCalled == nil)
     }
 
     @available(iOS 17.0, *)
@@ -218,7 +220,6 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(mockOrderService.updateOrderWasCalled)
         #expect(mockOrderService.orderToReturn?.billingAddress?.email == recipientEmail)
-        #expect(mockReceiptService.sendReceiptWasCalled)
     }
 
     @available(iOS 17.0, *)
@@ -227,7 +228,7 @@ struct PointOfSaleOrderControllerTests {
             // Given/When
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService)
-            try await sut.collectCashPayment()
+            try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
             // Then
             #expect(error == .noOrder)
@@ -238,13 +239,9 @@ struct PointOfSaleOrderControllerTests {
     @available(iOS 17.0, *)
     @Test func collectCashPayment_when_successful_calls_celebrate() async throws {
         // Given
-        let sampleSiteID: Int64 = 1234
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        mockStores.sessionManager.setStoreId(sampleSiteID)
         let mockPaymentCelebration = MockPaymentCaptureCelebration()
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             stores: mockStores,
                                              celebration: mockPaymentCelebration)
 
         let orderItem = OrderItem.fake()
@@ -252,29 +249,33 @@ struct PointOfSaleOrderControllerTests {
         mockOrderService.orderToReturn = fakeOrder
         await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
+        mockOrderService.resultToReturn = .success(())
+
         // When
-        let completionResult: Bool = await withCheckedContinuation { continuation in
-            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case let .updateOrder(_, order, _, _, onCompletion):
-                    onCompletion(.success(order))
-                    continuation.resume(returning: true)
-                default:
-                    #expect(Bool(false), "Unexpected action \(action)")
-                }
-            }
-            Task { @MainActor in
-                do {
-                    try await sut.collectCashPayment()
-                } catch {
-                    continuation.resume(returning: false)
-                }
-            }
-        }
+        try await sut.collectCashPayment(changeDueAmount: nil)
 
         // Then
-        #expect(completionResult == true)
         #expect(mockPaymentCelebration.celebrationWasCalled == true)
+    }
+
+    @available(iOS 17.0, *)
+    @Test func collectCashPayment_passes_changeDueAmount_to_order_service() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService)
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: "$6.0")
+
+        // Then
+        #expect(mockOrderService.spyCashPaymentChangeDueAmount == "$6.0")
     }
 
     @available(iOS 17.0, *)
@@ -615,44 +616,186 @@ struct PointOfSaleOrderControllerTests {
         @available(iOS 17.0, *)
         @Test func collectCashPayment_when_failure_tracks_correct_event() async throws {
             // Given
-            // In order to test the order controller failure we need to succeed first in both having a site and creating a successful order
-            // which requires quite a bit of setup:
-            let sampleSiteID: Int64 = 1234
-            let mockStores = MockStoresManager(sessionManager: .testingInstance)
-            mockStores.sessionManager.setStoreId(sampleSiteID)
-
-            let mockOrderService = MockPOSOrderService()
             let mockAnalyticsProvider = MockAnalyticsProvider()
             let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
 
-            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+            let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: MockReceiptService(),
-                                                 stores: mockStores,
                                                  analytics: mockAnalytics)
 
+            // In order to test the order controller failure we need to succeed first in creating a successful order:
             let orderItem = OrderItem.fake()
             let fakeOrder = Order.fake().copy(items: [orderItem])
-            mockOrderService.orderToReturn = fakeOrder
+            orderService.orderToReturn = fakeOrder
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
 
+            orderService.resultToReturn = .failure(NSError(domain: "test", code: 0, userInfo: nil))
+
             // When
-            await withCheckedContinuation { continuation in
-                mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
-                    switch action {
-                    case let .updateOrder(_, _, _, _, onCompletion):
-                        onCompletion(.failure(NSError(domain: "oops", code: -1)))
-                        continuation.resume()
-                    default:
-                        #expect(Bool(false), "Unexpected action \(action)")
-                    }
-                }
-                Task { @MainActor in
-                    try await sut.collectCashPayment()
-                }
-            }
+            await #expect(performing: {
+                try await sut.collectCashPayment(changeDueAmount: nil)
+            }, throws: { _ in
+                return true
+            })
 
             // Then
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
+        }
+    }
+
+    @MainActor
+    struct ReceiptTests {
+        private let mockOrderService = MockPOSOrderService()
+
+        @available(iOS 17.0, *)
+        @Test("Eligible core plugin versions with feature flag enabled", arguments: Constants.eligibleWCPluginVersions)
+        func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockReceiptService = MockReceiptService()
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: mockReceiptService,
+                                                 stores: mockStores,
+                                                 analytics: ServiceLocator.analytics,
+                                                 featureFlagService: mockFeatureFlagService)
+            mockOrderService.orderToReturn = Order.fake()
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
+                    #expect(systemPluginName == Constants.wcPluginName)
+                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: wcPluginVersion, active: true)
+                    onCompletion(plugin)
+                }
+            }
+
+            // We need an existing order before we can update its email, and send a receipt:
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            // When
+            try await sut.sendReceipt(recipientEmail: "test@example.com")
+
+            // Then
+            #expect(mockReceiptService.sendReceiptWasCalled == true)
+            #expect(mockReceiptService.spyIsEligibleForPOSReceipt == true)
+        }
+
+        @available(iOS 17.0, *)
+        @Test(
+            "All core plugin versions with feature flag disabled",
+            arguments: Constants.eligibleWCPluginVersions + Constants.ineligibleWCPluginVersions
+        )
+        func sendReceipt_when_feature_flag_disabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockReceiptService = MockReceiptService()
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = false
+
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: mockReceiptService,
+                                                 stores: mockStores,
+                                                 analytics: ServiceLocator.analytics,
+                                                 featureFlagService: mockFeatureFlagService)
+            mockOrderService.orderToReturn = Order.fake()
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, _, onCompletion) = action {
+                    Issue.record("Plugin check should be skipped when feature flag is disabled.")
+                    onCompletion(nil)
+                }
+            }
+
+            // We need an existing order before we can update its email, and send a receipt:
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            // When
+            try await sut.sendReceipt(recipientEmail: "test@example.com")
+
+            // Then
+            #expect(mockReceiptService.sendReceiptWasCalled == true)
+            #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
+        }
+
+        @available(iOS 17.0, *)
+        @Test("Ineligible core plugin versions with feature flag enabled", arguments: Constants.ineligibleWCPluginVersions)
+        func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockReceiptService = MockReceiptService()
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: mockReceiptService,
+                                                 stores: mockStores,
+                                                 analytics: ServiceLocator.analytics,
+                                                 featureFlagService: mockFeatureFlagService)
+            mockOrderService.orderToReturn = Order.fake()
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
+                    #expect(systemPluginName == Constants.wcPluginName)
+                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: wcPluginVersion, active: true)
+                    onCompletion(plugin)
+                }
+            }
+
+            // We need an existing order before we can update its email, and send a receipt:
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            // When
+            try await sut.sendReceipt(recipientEmail: "test@example.com")
+
+            // Then
+            #expect(mockReceiptService.sendReceiptWasCalled == true)
+            #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
+        }
+
+        @available(iOS 17.0, *)
+        @Test("Unavailable core plugin with feature flag enabled",
+              arguments: [
+                SystemPlugin.fake().copy(name: Constants.wcPluginName, active: false),
+                SystemPlugin.fake().copy(name: "Other plugin name", active: true),
+                nil
+              ])
+        func sendReceipt_when_feature_flag_enabled_and_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockReceiptService = MockReceiptService()
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
+            let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                                 receiptService: mockReceiptService,
+                                                 stores: mockStores,
+                                                 analytics: ServiceLocator.analytics,
+                                                 featureFlagService: mockFeatureFlagService)
+            mockOrderService.orderToReturn = Order.fake()
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, _, onCompletion) = action {
+                    onCompletion(plugin)
+                }
+            }
+
+            // We need an existing order before we can update its email, and send a receipt:
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            // When
+            try await sut.sendReceipt(recipientEmail: "test@example.com")
+
+            // Then
+            #expect(mockReceiptService.sendReceiptWasCalled == true)
+            #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
+        }
+
+        private enum Constants {
+            static let eligibleWCPluginVersions = ["10.0.0", "10.0.0-dev", "10.0.0-beta", "10.0.1", "10.1"]
+            static let ineligibleWCPluginVersions = ["9.9.0", "9.9.9", "9.9.9-beta.9", "9.9.9-dev"]
+            static let wcPluginName = "WooCommerce"
         }
     }
 }

@@ -5,7 +5,7 @@ import Combine
 import struct Yosemite.Order
 
 final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
-    func collectCashPayment() async throws {
+    func collectCashPayment(changeDueAmount: String?) async throws {
         // no-op
     }
 

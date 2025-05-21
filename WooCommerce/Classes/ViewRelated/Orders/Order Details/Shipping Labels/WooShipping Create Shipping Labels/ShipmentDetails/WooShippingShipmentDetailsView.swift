@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WooShippingShipmentDetailsView: View {
     @ObservedObject private var viewModel: WooShippingShipmentDetailsViewModel
+    @State private var showingRefundRequest = false
 
     init(viewModel: WooShippingShipmentDetailsViewModel) {
         self.viewModel = viewModel
@@ -10,7 +11,9 @@ struct WooShippingShipmentDetailsView: View {
     var body: some View {
         VStack(spacing: Layout.verticalSpacing) {
             if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                WooShippingPostPurchaseView(viewModel: postPurchase)
+                WooShippingPostPurchaseView(viewModel: postPurchase, onRefundRequest: {
+                    showingRefundRequest = true
+                })
             }
 
             WooShippingItems(itemsCountLabel: viewModel.itemsCountLabel,
@@ -35,6 +38,14 @@ struct WooShippingShipmentDetailsView: View {
                 WooShippingServiceView(viewModel: shippingService)
             } else {
                 WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
+            }
+        }
+        .sheet(isPresented: $showingRefundRequest) {
+            if let refundViewModel = viewModel.refundViewModel {
+                WooShippingRefundView(viewModel: refundViewModel) { updatedLabel in
+                    showingRefundRequest = false
+                    viewModel.didRequestRefund(for: updatedLabel.shippingLabelID)
+                }
             }
         }
     }

@@ -65,15 +65,15 @@ struct PointOfSaleDefaultCouponFetchStrategyTests {
 
     @Test func fetchCoupons_when_sync_fails_then_throws_couponsLoadingError() async throws {
         // Given
-        couponStoreMethods.shouldFailSync = true
+        let expectedError = NSError(domain: "test", code: 0)
+        couponStoreMethods.errorToThrow = expectedError
 
         // When
         do {
             _ = try await sut.fetchCoupons(pageNumber: 0)
         } catch {
             // Then
-            let expectedError = error as? PointOfSaleCouponServiceError
-            #expect(expectedError == .couponsLoadingError)
+            #expect(expectedError == error as NSError)
         }
     }
 

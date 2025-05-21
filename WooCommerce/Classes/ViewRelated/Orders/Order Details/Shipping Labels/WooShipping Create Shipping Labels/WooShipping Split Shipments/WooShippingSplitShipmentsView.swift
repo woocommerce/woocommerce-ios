@@ -61,7 +61,9 @@ struct WooShippingSplitShipmentsView: View {
                     Button(Localization.selectAll) {
                         viewModel.selectAll()
                     }
-                    .disabled(viewModel.isSavingShipmentInfo)
+                    .disabled(
+                        viewModel.isSelectAllItemsDisabled
+                    )
                 }
 
                 ToolbarItem(placement: .confirmationAction) {

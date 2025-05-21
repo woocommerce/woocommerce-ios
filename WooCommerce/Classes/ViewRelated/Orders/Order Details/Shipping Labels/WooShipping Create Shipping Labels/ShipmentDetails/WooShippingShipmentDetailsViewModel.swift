@@ -9,6 +9,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private let stores: StoresManager
     private let currencyFormatter: CurrencyFormatter
     private let onLabelPurchase: ((ShippingLabel) -> Void)?
+    private let onLabelRefund: ((Int64) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
@@ -129,6 +130,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                     customsForm: customsForm)
     }
 
+    var refundViewModel: WooShippingRefundViewModel? {
+        guard let shippingLabel, shippingLabel.isRefundable else {
+            return nil
+        }
+        return WooShippingRefundViewModel(shippingLabel: shippingLabel)
+    }
+
     private var debounceDuration: Double
 
     init(order: Order,
@@ -139,13 +147,15 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
-         onLabelPurchase: ((ShippingLabel) -> Void)? = nil) {
+         onLabelPurchase: ((ShippingLabel) -> Void)? = nil,
+         onLabelRefund: ((Int64) -> Void)? = nil) {
         self.order = order
         self.stores = stores
         self.shipment = shipment
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.debounceDuration = debounceDuration
         self.onLabelPurchase = onLabelPurchase
+        self.onLabelRefund = onLabelRefund
 
         if let shippingLabel {
             self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
@@ -196,6 +206,12 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel = updatedLabel
         postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: updatedLabel)
         onLabelPurchase?(updatedLabel)
+    }
+
+    func didRequestRefund(for labelID: Int64) {
+        shippingLabel = nil
+        postPurchase = nil
+        onLabelRefund?(labelID)
     }
 }
 

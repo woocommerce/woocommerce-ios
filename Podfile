@@ -65,7 +65,6 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 
   # Unit Tests

@@ -1,3 +1,4 @@
+import UIKit
 import XCTest
 
 @testable import WooCommerce

@@ -1,5 +1,4 @@
 PODS:
-  - Kingfisher (7.6.2)
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
     - WordPress-Aztec-iOS (= 1.19.10)
@@ -9,7 +8,6 @@ PODS:
   - WPMediaPicker (1.8.12)
 
 DEPENDENCIES:
-  - Kingfisher (~> 7.6.2)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressShared (~> 2.1-beta)
   - WordPressUI (~> 1.15)
@@ -18,7 +16,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Kingfisher
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressShared
@@ -27,7 +24,6 @@ SPEC REPOS:
     - WPMediaPicker
 
 SPEC CHECKSUMS:
-  Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
@@ -35,6 +31,6 @@ SPEC CHECKSUMS:
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
 
-PODFILE CHECKSUM: 8804273eb0cc5d8b404cb1b9dad2e60640bd5529
+PODFILE CHECKSUM: a638f0872dc55648ed9f9dbbbafd7a7c1e8a50c2
 
 COCOAPODS: 1.16.2

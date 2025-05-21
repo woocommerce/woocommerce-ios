@@ -326,7 +326,8 @@ private extension TotalsView {
         switch posModel.paymentState {
         case .card(let cardPaymentState):
             switch cardPaymentState {
-            case .validatingOrderError:
+            case .validatingOrderError,
+                    .paymentIntentCreationError:
                 return .outlined
             case .paymentError:
                 return PaymentViewLayout(backgroundColor: backgroundColor,

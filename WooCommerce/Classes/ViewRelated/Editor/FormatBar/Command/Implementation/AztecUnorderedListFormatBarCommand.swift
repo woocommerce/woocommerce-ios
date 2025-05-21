@@ -1,4 +1,6 @@
 import Aztec
+import Foundation
+import UIKit
 import WordPressEditor
 
 struct AztecUnorderedListFormatBarCommand: AztecFormatBarCommand {

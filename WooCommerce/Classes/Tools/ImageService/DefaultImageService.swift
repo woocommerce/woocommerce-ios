@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Kingfisher
+import UIKit
 
 private extension URL {
     var imageCacheKey: String {

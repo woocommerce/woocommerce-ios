@@ -1,6 +1,15 @@
 {
-  "originHash" : "fec54b4d5b324d185da6b386e4929f22ae9cb47a6b6d808c25785e1e95dffdbf",
+  "originHash" : "734981fde8bd4c3e00ea72db847b124a82c6521eac2a4458d29c4314221d3a0d",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
     {
       "identity" : "automattic-tracks-ios",
       "kind" : "remoteSourceControl",

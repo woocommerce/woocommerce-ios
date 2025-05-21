@@ -131,36 +131,6 @@ target 'NetworkingTests' do
   yosemite_pods
 end
 
-# Hardware Layer:
-# =================
-#
-def hardware_pods
-end
-
-# Hardware Target:
-# ==================
-#
-target 'Hardware' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'HardwareTests' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# SampleReceiptPrinter Target:
-# ==================
-#
-target 'SampleReceiptPrinter' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
 # WordPressAuthenticator
 # ==========
 #

@@ -239,6 +239,7 @@
 		31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		3F368D9A2DCB74B80065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D992DCB74B80065B48F /* TestKit */; };
+		3F7E6AC82DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
 		45010693239A6C9F00E24722 /* TaxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxStore.swift */; };
 		45010695239A6CDE00E24722 /* TaxAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxAction.swift */; };
@@ -803,6 +804,7 @@
 		31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayReaderLocation+ReaderLocation.swift"; sourceTree = "<group>"; };
 		31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StripeAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePopularPurchasableItemFetchStrategyTests.swift; sourceTree = "<group>"; };
 		3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Yosemite.xcconfig; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxStore.swift; sourceTree = "<group>"; };
@@ -1632,8 +1634,8 @@
 				68E75F1F2DB8BFAC00A2DA21 /* POSCouponTests.swift */,
 				016A776A2D9D30C10004FCD6 /* PointOfSaleCouponServiceTests.swift */,
 				687F83712C0EBF8900460AB3 /* PointOfSaleItemServiceTests.swift */,
-				200525482DCBA0F500E12021 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */,
 				206643582DAEAC06002D5191 /* POSSearchHistoryServiceTests.swift */,
+				3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */,
 				2005590C2DCCF7CF00E12021 /* PointOfSaleSearchPurchasableItemFetchStrategyTests.swift */,
 			);
 			path = PointOfSale;
@@ -2845,6 +2847,7 @@
 				02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */,
 				02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */,
 				D87F27DB25E7E8EA006EC8C9 /* MockCardReader.swift in Sources */,
+				3F7E6AC82DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */,
 				02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */,
 				02124DAC24318D6B00980D74 /* Media+MediaTypeTests.swift in Sources */,
 				E1F54D0427AD4DAF00012983 /* CardPresentConfigurationTests.swift in Sources */,
@@ -2884,7 +2887,6 @@
 				D8652E4826307A5000350F37 /* MockReceiptPrinterService.swift in Sources */,
 				020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */,
 				02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */,
-				200525492DCBA0F500E12021 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */,
 				45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */,
 				02616F922921E1530095BC00 /* SiteStoreTests.swift in Sources */,
 				DEDA8DB12B184A660076BF0F /* MockWordPressThemeRemote.swift in Sources */,

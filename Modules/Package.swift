@@ -36,6 +36,8 @@ let package = Package(
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
+        // FIXME: This should be available via Tracks, but Tracks does not compile for watchOS
+        .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.46.0"),
         .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
@@ -288,6 +290,7 @@ enum XcodeSupport {
                 dependencies: [
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
+                    .product(name: "Sentry", package: "sentry-cocoa"),
                 ]
             ),
             .xcodeTarget(

@@ -15,7 +15,6 @@ use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for s
 use_modular_headers!
 
 app_ios_deployment_target = Gem::Version.new('16.0')
-app_watchos_deployment_target = Gem::Version.new('9.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -75,15 +74,6 @@ target 'WooCommerce' do
   target 'WooCommerceTests' do
     inherit! :search_paths
   end
-end
-
-# Woo Watch App Target
-# ==========
-#
-target 'Woo Watch App' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-  pod 'Sentry', '~> 8.46.0'
 end
 
 # Yosemite Layer:

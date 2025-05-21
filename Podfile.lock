@@ -1,8 +1,5 @@
 PODS:
   - Kingfisher (7.6.2)
-  - Sentry (8.46.0):
-    - Sentry/Core (= 8.46.0)
-  - Sentry/Core (8.46.0)
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
     - WordPress-Aztec-iOS (= 1.19.10)
@@ -13,7 +10,6 @@ PODS:
 
 DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
-  - Sentry (~> 8.46.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressShared (~> 2.1-beta)
   - WordPressUI (~> 1.15)
@@ -23,7 +19,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Kingfisher
-    - Sentry
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressShared
@@ -33,7 +28,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
-  Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
@@ -41,6 +35,6 @@ SPEC CHECKSUMS:
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
 
-PODFILE CHECKSUM: 28310b9e7e97893d9bbaef5381589c8bab3c702a
+PODFILE CHECKSUM: 8804273eb0cc5d8b404cb1b9dad2e60640bd5529
 
 COCOAPODS: 1.16.2

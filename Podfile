@@ -33,10 +33,6 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def keychain
-  pod 'KeychainAccess', '~> 4.2.2'
-end
-
 def alamofire
   pod 'Alamofire', '~> 5.0'
 end
@@ -52,14 +48,10 @@ def networking_pods
 
   # Used for HTML parsing
   aztec
-
-  # Used for storing application password
-  keychain
 end
 
 def networking_watch_os_pods
   alamofire
-  keychain
 end
 
 def wordpress_ui
@@ -89,7 +81,6 @@ target 'WooCommerce' do
   # ==================
   #
   alamofire
-  keychain
   pod 'ZendeskSupportSDK', '~> 9.0.0'
   stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'
@@ -101,22 +92,6 @@ target 'WooCommerce' do
   target 'WooCommerceTests' do
     inherit! :search_paths
   end
-end
-
-# StoreWidget Target
-# ==========
-#
-target 'StoreWidgetsExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
-end
-
-# Notification Content Target
-# ==========
-#
-target 'NotificationExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
 end
 
 # Woo Watch App Target

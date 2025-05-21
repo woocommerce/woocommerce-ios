@@ -36,6 +36,7 @@ let package = Package(
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
         .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
+        .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
@@ -174,6 +175,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.wooFoundation.asDependency
                 ]
             ),
@@ -182,6 +184,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.networking.asDependency
                 ]
             ),
@@ -189,10 +192,16 @@ enum XcodeSupport {
                 XcodeTargetNames.networkingWatchOS,
                 dependencies: [
                     "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
-            .xcodeTarget(XcodeTargetNames.notificationExtension, dependencies: []),
+            .xcodeTarget(
+                XcodeTargetNames.notificationExtension,
+                dependencies: [
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
+                ]
+            ),
             .xcodeTarget(
                 XcodeTargetNames.sampleReceiptPrinter,
                 dependencies: [XcodeTargetNames.hardware.asDependency]
@@ -205,7 +214,12 @@ enum XcodeSupport {
                 XcodeTargetNames.storageTests,
                 dependencies: ["TestKit", XcodeTargetNames.storage.asDependency]
             ),
-            .xcodeTarget(XcodeTargetNames.storeWidgetsExtension, dependencies: []),
+            .xcodeTarget(
+                XcodeTargetNames.storeWidgetsExtension,
+                dependencies: [
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
+                ]
+            ),
             .xcodeTarget(
                 XcodeTargetNames.uiTestsFoundation,
                 dependencies: [
@@ -226,6 +240,7 @@ enum XcodeSupport {
                     .product(name: "DGCharts", package: "Charts"),
                     .product(name: "Gridicons", package: "Gridicons-iOS"),
                     .product(name: "Inject", package: "Inject"),
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer")
                 ]
@@ -259,7 +274,8 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(
@@ -299,7 +315,8 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(

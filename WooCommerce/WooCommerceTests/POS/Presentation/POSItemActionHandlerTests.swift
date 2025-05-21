@@ -19,8 +19,8 @@ struct POSItemActionHandlerTests {
                                                            popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
-            source: .coupon,
-            sourceType: .list
+            sourceView: .coupon,
+            sourceViewType: .list
         )
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
@@ -47,7 +47,7 @@ struct POSItemActionHandlerTests {
             posModel: aggregateModel,
             searchTerm: "",
             itemType: .coupon,
-            source: .coupon
+            sourceView: .coupon
         )
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
@@ -72,8 +72,8 @@ struct POSItemActionHandlerTests {
                                                            popularPurchasableItemsController: MockPointOfSaleItemsController())
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
-            source: .product,
-            sourceType: .list
+            sourceView: .product,
+            sourceViewType: .list
         )
 
         let product = makeProductItem()
@@ -100,7 +100,7 @@ struct POSItemActionHandlerTests {
             posModel: aggregateModel,
             searchTerm: "",
             itemType: .product,
-            source: .product
+            sourceView: .product
         )
 
         let product = makeProductItem()

@@ -20,8 +20,8 @@ extension WooAnalyticsEvent {
             static let checkoutTapCount = "checkout_tap_count"
             static let waitingTime = "waiting_time"
             static let type = "type"
-            static let source = "source"
-            static let sourceType = "source_type"
+            static let sourceView = "source"
+            static let sourceViewType = "source_type"
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
         }
@@ -36,14 +36,14 @@ extension WooAnalyticsEvent {
         }
 
         static func addItemToCart(
-            source: WooAnalyticsEvent.PointOfSale.Source,
-            sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+            sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
-                Key.source: source.rawValue,
-                Key.sourceType: sourceType.rawValue,
+                Key.sourceView: sourceView.rawValue,
+                Key.sourceViewType: sourceViewType.rawValue,
                 Key.itemType: itemType.rawValue
             ]
 
@@ -58,12 +58,12 @@ extension WooAnalyticsEvent {
         }
 
         static func itemRemovedFromCart(
-            source: WooAnalyticsEvent.PointOfSale.Source,
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
-                Key.source: source.rawValue,
+                Key.sourceView: sourceView.rawValue,
                 Key.itemType: itemType.rawValue
             ]
 
@@ -117,41 +117,41 @@ extension WooAnalyticsEvent {
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleSearchButtonTapped,
-                properties: [Key.source: Source(itemListType: itemListType).rawValue]
+                properties: [Key.sourceView: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
         static func itemsHeaderTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleItemsHeaderTapped,
-                properties: [Key.type: Source(itemListType: itemListType).rawValue]
+                properties: [Key.type: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
         static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSalePreSearchRecentTermTapped,
-                properties: [Key.source: Source(itemListType: itemListType).rawValue]
+                properties: [Key.sourceView: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
         static func itemsPullToRefresh(
-            source: WooAnalyticsEvent.PointOfSale.Source,
-            sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+            sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleItemsPullToRefresh,
-                properties: [Key.source: source.rawValue, Key.sourceType: sourceType.rawValue]
+                properties: [Key.sourceView: sourceView.rawValue, Key.sourceViewType: sourceViewType.rawValue]
             )
         }
 
         static func itemsNextPageLoaded(
-            source: WooAnalyticsEvent.PointOfSale.Source,
-            sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+            sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
         ) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleItemsNextPageLoaded,
-                properties: [Key.source: source.rawValue, Key.sourceType: sourceType.rawValue]
+                properties: [Key.sourceView: sourceView.rawValue, Key.sourceViewType: sourceViewType.rawValue]
             )
         }
 
@@ -160,7 +160,7 @@ extension WooAnalyticsEvent {
                                                           millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchRemoteResultsFetched,
                               properties: [
-                                Key.source: Source(itemType: itemType).rawValue,
+                                Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
                                 Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
                               ])
@@ -172,7 +172,7 @@ extension WooAnalyticsEvent.PointOfSale {
     /// Source of the event where the event is triggered
     /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
     ///
-    enum Source: String {
+    enum SourceView: String {
         case product
         case variation
         case coupon
@@ -203,7 +203,7 @@ extension WooAnalyticsEvent.PointOfSale {
     /// The state of the view where the event is triggered.
     /// E.g. product list, procuct search, or product pre-search view where popular searches are shown.
     ///
-    enum SourceType: String {
+    enum SourceViewType: String {
         case list
         case search
         case preSearch = "pre_search"

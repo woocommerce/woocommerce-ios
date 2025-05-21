@@ -20,16 +20,16 @@ extension POSItemActionHandler {
     /// - Parameter using: The analytics service to track to
     func trackTapAnalytics(
         for item: POSItem,
-        source: WooAnalyticsEvent.PointOfSale.Source,
-        sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+        sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+        sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
         using analytics: Analytics
     ) {
         switch item {
         case .simpleProduct:
             analytics.track(
                 event: .PointOfSale.addItemToCart(
-                    source: source,
-                    sourceType: sourceType,
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
                     itemType: .product,
                     productType: .simple
                 )
@@ -37,8 +37,8 @@ extension POSItemActionHandler {
         case .variation:
             analytics.track(
                 event: .PointOfSale.addItemToCart(
-                    source: source,
-                    sourceType: sourceType,
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
                     itemType: .product,
                     productType: .variation
                 )
@@ -46,8 +46,8 @@ extension POSItemActionHandler {
         case .coupon:
             analytics.track(
                 event: .PointOfSale.addItemToCart(
-                    source: source,
-                    sourceType: sourceType,
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
                     itemType: .coupon
                 )
             )
@@ -70,18 +70,18 @@ extension POSItemActionHandler {
 @available(iOS 17.0, *)
 final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
-    private let source: WooAnalyticsEvent.PointOfSale.Source
-    private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+    private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
+    private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
     private let analytics: Analytics
 
     init(posModel: PointOfSaleAggregateModelProtocol,
-         source: WooAnalyticsEvent.PointOfSale.Source,
-         sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
          analytics: Analytics = ServiceLocator.analytics
     ) {
         self.posModel = posModel
-        self.source = source
-        self.sourceType = sourceType
+        self.sourceView = sourceView
+        self.sourceViewType = sourceViewType
         self.analytics = analytics
     }
 
@@ -93,8 +93,8 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
 
         trackTapAnalytics(
             for: item,
-            source: source,
-            sourceType: sourceType,
+            sourceView: sourceView,
+            sourceViewType: sourceViewType,
             using: analytics
         )
     }
@@ -106,18 +106,18 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let searchTerm: String
     private let itemType: POSItemType
-    private let source: WooAnalyticsEvent.PointOfSale.Source
+    private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
     private let analytics: Analytics
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          searchTerm: String,
          itemType: POSItemType,
-         source: WooAnalyticsEvent.PointOfSale.Source,
+         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
          analytics: Analytics = ServiceLocator.analytics) {
         self.posModel = posModel
         self.searchTerm = searchTerm
         self.itemType = itemType
-        self.source = source
+        self.sourceView = sourceView
         self.analytics = analytics
     }
 
@@ -134,8 +134,8 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
 
         trackTapAnalytics(
             for: item,
-            source: source,
-            sourceType: searchTerm.isEmpty ? .preSearch : .search,
+            sourceView: sourceView,
+            sourceViewType: searchTerm.isEmpty ? .preSearch : .search,
             using: analytics
         )
     }
@@ -151,13 +151,13 @@ struct POSItemActionHandlerFactory {
     ) -> POSItemActionHandler {
         switch itemListType {
         case .products(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, source: .product, sourceType: .list, analytics: analytics)
+            StandardPOSItemActionHandler(posModel: posModel, sourceView: .product, sourceViewType: .list, analytics: analytics)
         case .coupons(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, source: .coupon, sourceType: .list, analytics: analytics)
+            StandardPOSItemActionHandler(posModel: posModel, sourceView: .coupon, sourceViewType: .list, analytics: analytics)
         case .products(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .product, analytics: analytics)
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, sourceView: .product, analytics: analytics)
         case .coupons(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, source: .coupon, analytics: analytics)
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, sourceView: .coupon, analytics: analytics)
         }
     }
 
@@ -172,14 +172,14 @@ struct POSItemActionHandlerFactory {
                 posModel: posModel,
                 searchTerm: searchTerm,
                 itemType: itemListType.itemType,
-                source: .variation,
+                sourceView: .variation,
                 analytics: analytics
             )
         } else {
             StandardPOSItemActionHandler(
                 posModel: posModel,
-                source: .variation,
-                sourceType: .list,
+                sourceView: .variation,
+                sourceViewType: .list,
                 analytics: analytics
             )
         }

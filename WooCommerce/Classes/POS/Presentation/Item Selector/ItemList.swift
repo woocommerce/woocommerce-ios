@@ -84,8 +84,8 @@ struct ItemList<HeaderView: View>: View {
                                                itemsController: posModel.purchasableItemsController,
                                                itemActionHandler: itemActionHandler,
                                                analyticsTracker: PointOfSaleItemListAnalyticsTracker(
-                                                source: .variation,
-                                                sourceType: .init(
+                                                sourceView: .variation,
+                                                sourceViewType: .init(
                                                     isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
                                                     searchTerm: posModel.viewStateCoordinatorForView.searchTerm
                                                 ))),

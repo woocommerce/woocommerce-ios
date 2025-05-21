@@ -3,17 +3,17 @@ import WooFoundation
 import enum Yosemite.POSItemType
 
 struct PointOfSaleItemListAnalyticsTracker {
-    private let source: WooAnalyticsEvent.PointOfSale.Source
-    private let sourceType: WooAnalyticsEvent.PointOfSale.SourceType
+    private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
+    private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
     private let analytics: Analytics
 
     init(
-        source: WooAnalyticsEvent.PointOfSale.Source,
-        sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
+        sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+        sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
         analytics: Analytics = ServiceLocator.analytics
     ) {
-        self.source = source
-        self.sourceType = sourceType
+        self.sourceView = sourceView
+        self.sourceViewType = sourceViewType
         self.analytics = analytics
     }
 
@@ -24,13 +24,13 @@ struct PointOfSaleItemListAnalyticsTracker {
     ) {
         switch selectedItemListType {
         case .products(search: false):
-            self.init(source: .product, sourceType: .list, analytics: analytics)
+            self.init(sourceView: .product, sourceViewType: .list, analytics: analytics)
         case .coupons(search: false):
-            self.init(source: .coupon, sourceType: .list, analytics: analytics)
+            self.init(sourceView: .coupon, sourceViewType: .list, analytics: analytics)
         case .products(search: true):
-            self.init(source: .product, sourceType: searchTerm.isEmpty ? .preSearch : .search, analytics: analytics)
+            self.init(sourceView: .product, sourceViewType: searchTerm.isEmpty ? .preSearch : .search, analytics: analytics)
         case .coupons(search: true):
-            self.init(source: .coupon, sourceType: searchTerm.isEmpty ? .preSearch : .search, analytics: analytics)
+            self.init(sourceView: .coupon, sourceViewType: searchTerm.isEmpty ? .preSearch : .search, analytics: analytics)
         }
     }
 
@@ -41,8 +41,8 @@ struct PointOfSaleItemListAnalyticsTracker {
     func trackNextPageWillLoad() {
         analytics.track(
             event: WooAnalyticsEvent.PointOfSale.itemsNextPageLoaded(
-                source: source,
-                sourceType: sourceType
+                sourceView: sourceView,
+                sourceViewType: sourceViewType
             )
         )
     }
@@ -50,8 +50,8 @@ struct PointOfSaleItemListAnalyticsTracker {
     func trackRefresh() {
         analytics.track(
             event: WooAnalyticsEvent.PointOfSale.itemsPullToRefresh(
-                source: source,
-                sourceType: sourceType
+                sourceView: sourceView,
+                sourceViewType: sourceViewType
             )
         )
     }

@@ -36,7 +36,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         Button(retryActionTitle, action: {
                             ServiceLocator.analytics.track(
                                 event: .PointOfSale.itemRemovedFromCart(
-                                    source: .error,
+                                    sourceView: .error,
                                     itemType: .coupon
                                 )
                             )

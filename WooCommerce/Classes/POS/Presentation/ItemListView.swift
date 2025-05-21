@@ -209,8 +209,8 @@ struct ItemListView: View {
                 itemsController: itemsController(selectedItemListType),
                 itemActionHandler: variationActionHandler(selectedItemListType),
                 analyticsTracker: PointOfSaleItemListAnalyticsTracker(
-                    source: .variation,
-                    sourceType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                    sourceView: .variation,
+                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
                 )
             )
         default:

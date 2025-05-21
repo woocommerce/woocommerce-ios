@@ -72,7 +72,7 @@ struct CartView: View {
                                                 onItemRemoveTapped: posModel.orderStage == .building ? {
                                         ServiceLocator.analytics.track(
                                             event: .PointOfSale.itemRemovedFromCart(
-                                                source: .cart,
+                                                sourceView: .cart,
                                                 itemType: .product,
                                                 productType: .init(cartItem: cartItem)
                                             )
@@ -329,7 +329,7 @@ private extension CartView {
                               onItemRemoveTapped: posModel.orderStage == .building ? {
                     ServiceLocator.analytics.track(
                         event: .PointOfSale.itemRemovedFromCart(
-                            source: .cart,
+                            sourceView: .cart,
                             itemType: .coupon
                         )
                     )

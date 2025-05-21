@@ -26,8 +26,8 @@ struct POSPreSearchView: View {
             node: .root,
             itemActionHandler: StandardPOSItemActionHandler(
                 posModel: posModel,
-                source: .init(itemListType: itemListType),
-                sourceType: .preSearch
+                sourceView: .init(itemListType: itemListType),
+                sourceViewType: .preSearch
             ),
             headerView: {
                 VStack(alignment: .leading, spacing: POSSpacing.none) {

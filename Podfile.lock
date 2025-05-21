@@ -10,19 +10,6 @@ PODS:
   - WordPressUI (1.15.1)
   - Wormholy (1.6.6)
   - WPMediaPicker (1.8.12)
-  - ZendeskCommonUISDK (9.0.3)
-  - ZendeskCoreSDK (5.0.5)
-  - ZendeskMessagingAPISDK (6.0.2):
-    - ZendeskSDKConfigurationsSDK (~> 4.0.1)
-  - ZendeskMessagingSDK (6.0.3):
-    - ZendeskCommonUISDK (~> 9.0.3)
-    - ZendeskMessagingAPISDK (~> 6.0.2)
-  - ZendeskSDKConfigurationsSDK (4.0.1)
-  - ZendeskSupportProvidersSDK (9.0.0):
-    - ZendeskCoreSDK (~> 5.0.5)
-  - ZendeskSupportSDK (9.0.0):
-    - ZendeskMessagingSDK (~> 6.0.3)
-    - ZendeskSupportProvidersSDK (~> 9.0.0)
 
 DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
@@ -32,7 +19,6 @@ DEPENDENCIES:
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8)
-  - ZendeskSupportSDK (~> 9.0.0)
 
 SPEC REPOS:
   trunk:
@@ -44,13 +30,6 @@ SPEC REPOS:
     - WordPressUI
     - Wormholy
     - WPMediaPicker
-    - ZendeskCommonUISDK
-    - ZendeskCoreSDK
-    - ZendeskMessagingAPISDK
-    - ZendeskMessagingSDK
-    - ZendeskSDKConfigurationsSDK
-    - ZendeskSupportProvidersSDK
-    - ZendeskSupportSDK
 
 SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
@@ -61,14 +40,7 @@ SPEC CHECKSUMS:
   WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
-  ZendeskCommonUISDK: f3ce3e7a1bd7762550a78dbaff57509f3112c22b
-  ZendeskCoreSDK: c542b3f82abc3ee52e1291c6fb3436515e098806
-  ZendeskMessagingAPISDK: 5b3a9d16f2f4d8b3c07b4ca0451a7cf9bfd8107d
-  ZendeskMessagingSDK: 3915f0647246f079dd20bf2fd85084f495598fde
-  ZendeskSDKConfigurationsSDK: d0b28eeb9c3d88191cfd2c7f246b2522c8c357f4
-  ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
-  ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: d8fd5c43056587dd29385146f035b8411a221c6f
+PODFILE CHECKSUM: 28310b9e7e97893d9bbaef5381589c8bab3c702a
 
 COCOAPODS: 1.16.2

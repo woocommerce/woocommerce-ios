@@ -546,6 +546,7 @@ extension WooAnalyticsEvent {
             static let isGiftCardRemoved = "removed"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
+            static let errorType = "error_type"
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
@@ -826,12 +827,29 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
-        static func orderCreationFailed(usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+        /// Matches errors on Android for consistency
+        /// Only coupon tracking is relevant for now
+        enum OrderCreationErrorType: String {
+            case invalidCoupon = "INVALID_COUPON"
+        }
+
+        static func orderCreationFailed(
+            usesGiftCard: Bool,
+            errorContext: String,
+            errorDescription: String,
+            errorType: OrderCreationErrorType? = nil
+        ) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
-            ])
+            ]
+
+            if let errorType {
+                properties[Keys.errorType] = errorType.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationFailed, properties: properties)
         }
 
         static func orderSyncFailed(flow: Flow, usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {

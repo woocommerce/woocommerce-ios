@@ -72,26 +72,37 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
     private let storage: StorageManagerType
     private let currencySettings: CurrencySettings
     private let searchTerm: String
+    private let analytics: POSSearchAnalyticsTracking
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
          storage: StorageManagerType,
          couponStoreMethods: CouponStoreMethodsProtocol,
-         searchTerm: String
+         searchTerm: String,
+         analytics: POSSearchAnalyticsTracking
     ) {
         self.siteID = siteID
         self.couponStoreMethods = couponStoreMethods
         self.storage = storage
         self.currencySettings = currencySettings
         self.searchTerm = searchTerm
+        self.analytics = analytics
     }
 
     public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        let startTime = Date()
         try await couponStoreMethods.searchCoupons(siteID: siteID,
                                                    keyword: searchTerm,
                                                    pageNumber: pageNumber,
                                                    pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize)
         let results = await getSearchResults()
+
+        if pageNumber == 1 {
+            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
+            analytics.trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
+                                                            totalItems: results.count)
+        }
+
         let hasMorePages = results.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize * pageNumber
         return PagedItems(items: results, hasMorePages: hasMorePages, totalItems: nil)
     }

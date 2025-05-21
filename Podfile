@@ -137,7 +137,6 @@ end
 def wordpress_authenticator_pods
   wordpress_ui
   wordpress_shared
-  pod 'NSObject-SafeExpectations', '~> 0.0.4'
 end
 
 target 'WordPressAuthenticator' do

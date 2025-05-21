@@ -50,6 +50,7 @@ let package = Package(
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
         .package(url: "https://github.com/wordpress-mobile/NSObject-SafeExpectations", from: "0.0.6"),
         .package(url: "https://github.com/wordpress-mobile/wpxmlrpc", from: "0.10.0"),
+        .package(url: "https://github.com/zendesk/support_sdk_ios", from: "9.0.0"),
     ],
     targets: XcodeSupport.targets + [
         .target(name: "Modules"),
@@ -252,7 +253,8 @@ enum XcodeSupport {
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+                    .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                    .product(name: "ZendeskSupportSDK", package: "support_sdk_ios"),
                 ]
             ),
             .xcodeTarget(

@@ -66,7 +66,6 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'ZendeskSupportSDK', '~> 9.0.0'
   pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 

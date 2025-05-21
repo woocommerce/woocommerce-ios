@@ -1,5 +1,5 @@
 {
-  "originHash" : "51c2c4e2f94f2467f7428c93fcf36b4a63c78737946f1cac66da0fdb74629526",
+  "originHash" : "b1b7186bafdf3c2729057150ebd8f18698563de939762d3f41eb81d3aae807d4",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -47,12 +47,30 @@
       }
     },
     {
+      "identity" : "commonui_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/commonui_sdk_ios",
+      "state" : {
+        "revision" : "cb8b971b84c596145528f3f3e107fd150fd9dff2",
+        "version" : "9.0.3"
+      }
+    },
+    {
       "identity" : "confettiswiftui",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simibac/ConfettiSwiftUI.git",
       "state" : {
         "revision" : "8d3a15d0aa2991e0761749b767ef8d89bca6275a",
         "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "core_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/core_sdk_ios",
+      "state" : {
+        "revision" : "36091ee0cd0fb888fc98f815f460b66e30132192",
+        "version" : "5.0.5"
       }
     },
     {
@@ -118,6 +136,24 @@
       }
     },
     {
+      "identity" : "messaging_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/messaging_sdk_ios",
+      "state" : {
+        "revision" : "bb99e77fe0b696bf188e48c605943dad1ba66571",
+        "version" : "6.0.3"
+      }
+    },
+    {
+      "identity" : "messagingapi_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/messagingapi_sdk_ios",
+      "state" : {
+        "revision" : "ae7f3169d07016893c52ec887b26fac4e247db25",
+        "version" : "6.0.2"
+      }
+    },
+    {
       "identity" : "nimble",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Quick/Nimble.git",
@@ -163,6 +199,15 @@
       }
     },
     {
+      "identity" : "sdkconfigurations_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/sdkconfigurations_sdk_ios",
+      "state" : {
+        "revision" : "18de371f71f6a92b34f63013fe2fbe46caf0811e",
+        "version" : "4.0.1"
+      }
+    },
+    {
       "identity" : "sentry-cocoa",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
@@ -178,6 +223,24 @@
       "state" : {
         "revision" : "99d3ce8f3d0d90973c41e4c8aa2475c3b20c91f0",
         "version" : "4.4.0"
+      }
+    },
+    {
+      "identity" : "support_providers_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/support_providers_sdk_ios",
+      "state" : {
+        "revision" : "23008686dba97417a38973c1c33387acbb203dd8",
+        "version" : "9.0.0"
+      }
+    },
+    {
+      "identity" : "support_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/support_sdk_ios",
+      "state" : {
+        "revision" : "757a915bd74bbc2995a3d894c65f79198827edca",
+        "version" : "9.0.0"
       }
     },
     {

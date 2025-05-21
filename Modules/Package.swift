@@ -45,6 +45,7 @@ let package = Package(
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
+        .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
     ],
     targets: XcodeSupport.targets + [
@@ -164,7 +165,8 @@ enum XcodeSupport {
                 XcodeTargetNames.hardware,
                 dependencies: [
                     "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
                 ]
             ),
             .xcodeTarget(
@@ -246,7 +248,8 @@ enum XcodeSupport {
                     .product(name: "Inject", package: "Inject"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
-                    .product(name: "Shimmer", package: "SwiftUI-Shimmer")
+                    .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
                 ]
             ),
             .xcodeTarget(
@@ -323,6 +326,7 @@ enum XcodeSupport {
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
+                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
                 ]
             ),
             .xcodeTarget(

@@ -1,5 +1,5 @@
 {
-  "originHash" : "5870da7ce6d1cac539f38d3caeee7250b4edfe1aa5ddc18b330fed7d2c6b38d6",
+  "originHash" : "51c2c4e2f94f2467f7428c93fcf36b4a63c78737946f1cac66da0fdb74629526",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -124,6 +124,15 @@
       "state" : {
         "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
         "version" : "13.7.1"
+      }
+    },
+    {
+      "identity" : "nsobject-safeexpectations",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/NSObject-SafeExpectations",
+      "state" : {
+        "revision" : "eb84d994ab13a153888a19e5b99f536aafa77434",
+        "version" : "0.0.6"
       }
     },
     {

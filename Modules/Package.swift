@@ -48,6 +48,7 @@ let package = Package(
         .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
         .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
+        .package(url: "https://github.com/wordpress-mobile/NSObject-SafeExpectations", from: "0.0.6"),
         .package(url: "https://github.com/wordpress-mobile/wpxmlrpc", from: "0.10.0"),
     ],
     targets: XcodeSupport.targets + [
@@ -309,6 +310,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wordPressAuthenticator,
                 dependencies: [
                     .product(name: "Gridicons", package: "Gridicons-iOS"),
+                    .product(name: "NSObject-SafeExpectations", package: "NSObject-SafeExpectations"),
                     .product(name: "SVProgressHUD", package: "SVProgressHUD"),
                     .product(name: "UIDeviceIdentifier", package: "UIDeviceIdentifier"),
                     .product(name: "wpxmlrpc", package: "wpxmlrpc")

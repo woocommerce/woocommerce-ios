@@ -1,6 +1,5 @@
 PODS:
   - Kingfisher (7.6.2)
-  - NSObject-SafeExpectations (0.0.6)
   - Sentry (8.46.0):
     - Sentry/Core (= 8.46.0)
   - Sentry/Core (8.46.0)
@@ -27,7 +26,6 @@ PODS:
 
 DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
-  - NSObject-SafeExpectations (~> 0.0.4)
   - Sentry (~> 8.46.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressShared (~> 2.1-beta)
@@ -39,7 +37,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Kingfisher
-    - NSObject-SafeExpectations
     - Sentry
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
@@ -57,7 +54,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
-  NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
@@ -73,6 +69,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: da4903564bebf4c6a21c261985e237d7931783a0
+PODFILE CHECKSUM: d8fd5c43056587dd29385146f035b8411a221c6f
 
 COCOAPODS: 1.16.2

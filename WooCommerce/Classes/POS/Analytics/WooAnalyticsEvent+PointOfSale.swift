@@ -39,7 +39,7 @@ extension WooAnalyticsEvent {
             source: WooAnalyticsEvent.PointOfSale.Source,
             sourceType: WooAnalyticsEvent.PointOfSale.SourceType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
-            productType: WooAnalyticsEvent.PointOfSale.ProductType? = nil,
+            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
                 Key.source: source.rawValue,
@@ -60,7 +60,7 @@ extension WooAnalyticsEvent {
         static func itemRemovedFromCart(
             source: WooAnalyticsEvent.PointOfSale.Source,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
-            productType: WooAnalyticsEvent.PointOfSale.ProductType? = nil
+            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
                 Key.source: source.rawValue,
@@ -229,7 +229,7 @@ extension WooAnalyticsEvent.PointOfSale {
 
     /// Types of products supported in the POS
     ///
-    enum ProductType: String {
+    enum CartItemProductType: String {
         case simple
         case variation
 

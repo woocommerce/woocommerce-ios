@@ -51,6 +51,7 @@ let package = Package(
         .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
         .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
+        .package(url: "https://github.com/wordpress-mobile/AztecEditor-iOS", from: "1.20.0"),
         .package(url: "https://github.com/wordpress-mobile/NSObject-SafeExpectations", from: "0.0.6"),
         .package(url: "https://github.com/wordpress-mobile/wpxmlrpc", from: "0.10.0"),
         .package(url: "https://github.com/zendesk/support_sdk_ios", from: "9.0.0"),
@@ -185,6 +186,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     .product(name: "Alamofire", package: "Alamofire"),
+                    .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.wooFoundation.asDependency
@@ -248,6 +250,7 @@ enum XcodeSupport {
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
                     .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
                     .product(name: "AutomatticEncryptedLogs", package: "Automattic-Tracks-iOS"),
+                    .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "ConfettiSwiftUI", package: "ConfettiSwiftUI"),
                     .product(name: "DGCharts", package: "Charts"),
@@ -258,6 +261,7 @@ enum XcodeSupport {
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                     .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                    .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
                     .product(name: "ZendeskSupportSDK", package: "support_sdk_ios"),
                 ]
             ),
@@ -274,9 +278,11 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
                     .product(name: "ViewInspector", package: "ViewInspector"),
+                    .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
             ),
@@ -337,9 +343,11 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     .product(name: "Alamofire", package: "Alamofire"),
+                    .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+                    .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                    .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
                 ]
             ),
             .xcodeTarget(

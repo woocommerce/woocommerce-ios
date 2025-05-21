@@ -16,6 +16,10 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
+            name: "WPMediaPicker",
+            targets: ["WPMediaPicker"]
+        ),
+        .library(
             name: "TestKit",
             targets: ["TestKit"]
         ),
@@ -64,6 +68,10 @@ let package = Package(
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"] // Relative to sources path
+        ),
+        .target(
+            name: "WPMediaPicker",
+            resources: [.process("Resources")]
         ),
         .target(
             name: "TestKit",
@@ -278,6 +286,7 @@ enum XcodeSupport {
                     "Codegen",
                     "WordPressShared",
                     "WordPressUI",
+                    "WPMediaPicker",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),

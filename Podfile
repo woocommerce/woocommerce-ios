@@ -28,8 +28,6 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-  pod 'WPMediaPicker', '~> 1.8'
-  # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
 
   # Unit Tests
   # ==========

@@ -28,7 +28,8 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
             POSProduct.fake().copy(siteID: siteID, productID: 1),
             POSProduct.fake().copy(siteID: siteID, productID: 2)
         ]
-        productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(products))
+        let pagedProducts = PagedItems(items: products, hasMorePages: true, totalItems: 10)
+        productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(pagedProducts))
 
         // When
         let result = try await sut.fetchProducts(pageNumber: 1)
@@ -47,7 +48,8 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
             POSProduct.fake().copy(siteID: siteID, productID: 1),
             POSProduct.fake().copy(siteID: siteID, productID: 2)
         ]
-        productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(products))
+        let pagedProducts = PagedItems(items: products, hasMorePages: true, totalItems: 10)
+        productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(pagedProducts))
 
         // When
         _ = try await sut.fetchProducts(pageNumber: 1)

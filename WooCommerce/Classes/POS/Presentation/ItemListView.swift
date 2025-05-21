@@ -14,7 +14,7 @@ struct ItemListView: View {
     @Binding var searchTerm: String
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
-        PointOfSaleItemListAnalyticsTracker(itemListType: selectedItemListType)
+        PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
     }
 
     private var _isSearching: Binding<Bool> {
@@ -183,12 +183,19 @@ struct ItemListView: View {
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
-        switch itemListType {
-        case .products(search: false), .coupons(search: false):
-            StandardPOSItemActionHandler(posModel: posModel, itemListType: selectedItemListType)
-        case .products(search: true), .coupons(search: true):
-            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemListType: itemListType)
-        }
+        POSItemActionHandlerFactory.itemActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
+    }
+
+    private func variationActionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
+        POSItemActionHandlerFactory.variationActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
     }
 
     @ViewBuilder
@@ -200,9 +207,11 @@ struct ItemListView: View {
                 parentItem: parentItem,
                 title: parentProduct.name,
                 itemsController: itemsController(selectedItemListType),
-                itemActionHandler: actionHandler(selectedItemListType),
-                analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation,
-                                                                      isSearching: selectedItemListType.isSearching)
+                itemActionHandler: variationActionHandler(selectedItemListType),
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                    sourceView: .variation,
+                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                )
             )
         default:
             EmptyView()
@@ -236,7 +245,7 @@ private extension ItemListView {
                                 .renderedIf(isCouponsFeatureEnabled)
 
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                                analyticsTracker.trackSearchTapped()
+                                analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                                 setSearch(true)
                             }
                             .transition(.opacity.combined(with: .scale))
@@ -347,7 +356,7 @@ private extension ItemListView {
             }
         }
 
-        analyticsTracker.trackItemListSelected()
+        analyticsTracker.trackItemListSelected(itemListType: itemListType)
     }
 }
 

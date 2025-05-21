@@ -10,18 +10,18 @@
 // `@inline(__always)` to enfore inlining, but that attribute is not officially
 // supported as of Swift 4.0.)
 
-import CocoaLumberjack
+import CocoaLumberjackSwift
 
 /// The logging level threshold for DDLog… calls from Swift.
 /// Change this to adjust the verbosity of the log.
 ///
 /// Example:
 ///     internal var defaultDebugLevel: DDLogLevel = .verbose
-internal var defaultDebugLevel: DDLogLevel = CocoaLumberjack.dynamicLogLevel
+internal var defaultDebugLevel: DDLogLevel = CocoaLumberjackSwift.dynamicLogLevel
 
 /// Reset the logging level threshold to the app-wide default.
 internal func resetDefaultDebugLevel() {
-    defaultDebugLevel = CocoaLumberjack.dynamicLogLevel
+    defaultDebugLevel = CocoaLumberjackSwift.dynamicLogLevel
 }
 
 internal func DDLogDebug(_ message: @autoclosure () -> String,
@@ -31,7 +31,7 @@ internal func DDLogDebug(_ message: @autoclosure () -> String,
                          line: UInt = #line, tag: Any? = nil,
                          asynchronous async: Bool = true,
                          ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogDebug("\(message())",
+    CocoaLumberjackSwift.DDLogDebug("\(message())",
                                level: level,
                                context: context,
                                file: file,
@@ -49,7 +49,7 @@ internal func DDLogInfo(_ message: @autoclosure () -> String,
                         line: UInt = #line, tag: Any? = nil,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogInfo("\(message())",
+    CocoaLumberjackSwift.DDLogInfo("\(message())",
                               level: level,
                               context: context,
                               file: file,
@@ -67,7 +67,7 @@ internal func DDLogWarn(_ message: @autoclosure () -> String,
                         line: UInt = #line, tag: Any? = nil,
                         asynchronous async: Bool = true,
                         ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogWarn("\(message())",
+    CocoaLumberjackSwift.DDLogWarn("\(message())",
                               level: level,
                               context: context,
                               file: file,
@@ -85,7 +85,7 @@ internal func DDLogVerbose(_ message: @autoclosure () -> String,
                            line: UInt = #line, tag: Any? = nil,
                            asynchronous async: Bool = true,
                            ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogVerbose("\(message())",
+    CocoaLumberjackSwift.DDLogVerbose("\(message())",
                                  level: level,
                                  context: context,
                                  file: file,
@@ -103,7 +103,7 @@ internal func DDLogError(_ message: @autoclosure () -> String,
                          line: UInt = #line, tag: Any? = nil,
                          asynchronous async: Bool = false,
                          ddlog: DDLog = DDLog.sharedInstance) {
-    CocoaLumberjack.DDLogError("\(message())",
+    CocoaLumberjackSwift.DDLogError("\(message())",
                                level: level,
                                context: context,
                                file: file,

@@ -1,8 +1,5 @@
 PODS:
   - Alamofire (5.8.1)
-  - CocoaLumberjack/Core (3.8.5)
-  - CocoaLumberjack/Swift (3.8.5):
-    - CocoaLumberjack/Core
   - Gridicons (1.2.0)
   - KeychainAccess (4.2.2)
   - Kingfisher (7.6.2)
@@ -52,7 +49,6 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
-  - CocoaLumberjack/Swift (~> 3.8.5)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
@@ -74,7 +70,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - CocoaLumberjack
     - Gridicons
     - KeychainAccess
     - Kingfisher
@@ -101,7 +96,6 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
@@ -126,6 +120,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 0bcc33e3f57eb06d5e7354ff8f7a420eab49c5ce
+PODFILE CHECKSUM: d34daa04154fd73f4a565d54cee6f58d87a1a730
 
 COCOAPODS: 1.16.2

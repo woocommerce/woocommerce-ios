@@ -426,6 +426,8 @@
 		31D27C8F2602B553002EDB1D /* plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 31D27C8E2602B553002EDB1D /* plugins.json */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
 		3F368D9E2DCB750B0065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D9D2DCB750B0065B48F /* TestKit */; };
+		3FF8370C2DD322FF0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */; };
+		3FF8371F2DD32CB30049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -2595,6 +2597,7 @@
 			files = (
 				26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */,
 				269014C72BEA9166006056E0 /* Codegen in Frameworks */,
+				3FF8370C2DD322FF0049E028 /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2604,6 +2607,7 @@
 			files = (
 				263E37D22641ACEA00260D3B /* Codegen in Frameworks */,
 				68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */,
+				3FF8371F2DD32CB30049E028 /* CocoaLumberjackSwift in Frameworks */,
 				6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4367,6 +4371,7 @@
 			name = NetworkingWatchOS;
 			packageProductDependencies = (
 				269014C62BEA9166006056E0 /* Codegen */,
+				3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */,
 			);
 			productName = NetworkingWatchOS;
 			productReference = 26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */;
@@ -4389,6 +4394,7 @@
 			name = Networking;
 			packageProductDependencies = (
 				263E37D12641ACEA00260D3B /* Codegen */,
+				3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */,
 			);
 			productName = Networking;
 			productReference = B557D9E3209753AA005962F4 /* Networking.framework */;
@@ -4452,6 +4458,9 @@
 				Base,
 			);
 			mainGroup = B557D9D9209753AA005962F4;
+			packageReferences = (
+				3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+			);
 			productRefGroup = B557D9E4209753AA005962F4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -6417,6 +6426,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.8.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		263E37D12641ACEA00260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -6433,6 +6453,16 @@
 		3F368D9D2DCB750B0065B48F /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
+		};
+		3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

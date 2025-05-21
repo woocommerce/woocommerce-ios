@@ -1,5 +1,5 @@
 {
-  "originHash" : "36a9f9c3e222b5492c98acc0007b47ee672316b23709db53285361b3a4b04b60",
+  "originHash" : "0f7c1c4703b2551c535a789186bf31af8e6eb5035056a9fed98a70a1554f7b3c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -258,6 +258,15 @@
       "location" : "https://github.com/nalexn/ViewInspector",
       "state" : {
         "revision" : "5acfa0a3c095ac9ad050abe51c60d1831e8321da",
+        "version" : "0.10.0"
+      }
+    },
+    {
+      "identity" : "wpxmlrpc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/wpxmlrpc",
+      "state" : {
+        "revision" : "bfc413d336bdeaab89e62dc483380baa99b2257e",
         "version" : "0.10.0"
       }
     }

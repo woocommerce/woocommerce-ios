@@ -1,5 +1,5 @@
 {
-  "originHash" : "36a9f9c3e222b5492c98acc0007b47ee672316b23709db53285361b3a4b04b60",
+  "originHash" : "e438dc5c8775c1bf021bc5718886b090c1246d9547ee6cbc966b2093789481f0",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -259,6 +259,15 @@
       "state" : {
         "revision" : "788e7879d38a839c4e348ab0762dcc0364e646a2",
         "version" : "0.10.1"
+      }
+    },
+    {
+      "identity" : "wpxmlrpc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/wpxmlrpc",
+      "state" : {
+        "revision" : "bfc413d336bdeaab89e62dc483380baa99b2257e",
+        "version" : "0.10.0"
       }
     }
   ],

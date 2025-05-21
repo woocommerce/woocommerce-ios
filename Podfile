@@ -22,21 +22,12 @@ workspace 'WooCommerce.xcworkspace'
 ## Pods shared between all the targets
 ## =====================================
 ##
-def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.19'
-  # pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-  # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-end
-
 def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
 def networking_pods
   wordpress_shared
-
-  # Used for HTML parsing
-  aztec
 end
 
 def wordpress_ui
@@ -56,8 +47,6 @@ target 'WooCommerce' do
   #
   wordpress_shared
   wordpress_ui
-
-  aztec
 
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
@@ -80,8 +69,6 @@ end
 #
 def yosemite_pods
   networking_pods
-
-  aztec
 end
 
 # Yosemite Target:

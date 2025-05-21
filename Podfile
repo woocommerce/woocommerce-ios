@@ -33,17 +33,11 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def alamofire
-  pod 'Alamofire', '~> 5.0'
-end
-
 def stripe_terminal
   pod 'StripeTerminal', '~> 4.2.0'
 end
 
 def networking_pods
-  alamofire
-
   wordpress_shared
 
   # Used for HTML parsing
@@ -51,7 +45,6 @@ def networking_pods
 end
 
 def networking_watch_os_pods
-  alamofire
 end
 
 def wordpress_ui
@@ -80,7 +73,6 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  alamofire
   pod 'ZendeskSupportSDK', '~> 9.0.0'
   stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'
@@ -108,7 +100,6 @@ end
 # ===============
 #
 def yosemite_pods
-  alamofire
   stripe_terminal
   networking_pods
 
@@ -210,8 +201,6 @@ end
 target 'WordPressAuthenticatorTests' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   wordpress_authenticator_pods
-
-  alamofire
 end
 
 # Workarounds:

@@ -25,6 +25,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
         .package(url: "https://github.com/AliSoftware/OHHTTPStubs", from: "9.0.0"),
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
@@ -174,6 +175,7 @@ enum XcodeSupport {
                 XcodeTargetNames.networking,
                 dependencies: [
                     "Codegen",
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.wooFoundation.asDependency
@@ -192,6 +194,7 @@ enum XcodeSupport {
                 XcodeTargetNames.networkingWatchOS,
                 dependencies: [
                     "Codegen",
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
@@ -231,6 +234,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
                     .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
@@ -306,6 +310,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticatorTests,
                 dependencies: [
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                     .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
                     XcodeTargetNames.wordPressAuthenticator.asDependency,
@@ -315,6 +320,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]

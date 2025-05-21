@@ -1125,8 +1125,6 @@
 		26B233D12A14208800926EAD /* PrivacyBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B233D02A14208800926EAD /* PrivacyBannerPresenter.swift */; };
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
 		26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */; };
-		26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; };
-		26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B71DB5293FE490004D8052 /* RangedDatePicker.swift */; };
 		26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D32BEECC610052658C /* Environment+Dependencies.swift */; };
 		26B984D62BEECF260052658C /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D52BEECF260052658C /* ConnectView.swift */; };
@@ -3224,7 +3222,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */,
-				26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */,
 				269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -4033,7 +4030,6 @@
 		03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponListViewController.xib; sourceTree = "<group>"; };
 		03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModel.swift; sourceTree = "<group>"; };
 		03FBDAFC263EE4E700ACE257 /* CouponListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModelTests.swift; sourceTree = "<group>"; };
-		07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.release.xcconfig"; sourceTree = "<group>"; };
 		093B265427DE8F020026F92D /* UnitInputViewModel+BulkUpdatePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitInputViewModel+BulkUpdatePrice.swift"; sourceTree = "<group>"; };
 		093B265627DF05270026F92D /* UnitInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputViewModelTests.swift; sourceTree = "<group>"; };
 		093B265827DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulkUpdatePriceViewControllerTests.swift; sourceTree = "<group>"; };
@@ -4160,7 +4156,6 @@
 		2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift; sourceTree = "<group>"; };
 		2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift; sourceTree = "<group>"; };
 		20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleUnsupportedWidthView.swift; sourceTree = "<group>"; };
-		20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.debug.xcconfig"; sourceTree = "<group>"; };
 		209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentMethod.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -4881,7 +4876,6 @@
 		68F68A4F2D6730DF00BB9568 /* POSCollectOrderPaymentAnalyticsTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalyticsTracking.swift; sourceTree = "<group>"; };
 		68F68A512D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCollectOrderPaymentAnalyticsTracker.swift; sourceTree = "<group>"; };
 		68F896412D5E4321000B308B /* POSCollectOrderPaymentAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalytics.swift; sourceTree = "<group>"; };
-		6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Woo_Watch_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
 		740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LargeImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -5727,7 +5721,6 @@
 		D449C52526DFBBDA00D75B02 /* WhatsNewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewFactory.swift; sourceTree = "<group>"; };
 		D449C52826DFBCCC00D75B02 /* WhatsNewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewHostingController.swift; sourceTree = "<group>"; };
 		D449C52B26E02F2F00D75B02 /* WhatsNewFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewFactoryTests.swift; sourceTree = "<group>"; };
-		D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D7E76EDE8E6FA4DFBA931388 /* Pods_WordPressAuthenticatorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticatorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCardTests.swift; sourceTree = "<group>"; };
@@ -6511,7 +6504,6 @@
 			files = (
 				263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */,
 				3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */,
-				26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */,
 				269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -10533,7 +10525,6 @@
 				3F1FA84128B60125009E246C /* WidgetKit.framework */,
 				260837082AA66E4A0004A12B /* UserNotifications.framework */,
 				2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */,
-				6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */,
 				5976D2D72C5C0C7DA2D15C33 /* Pods_WordPressAuthenticator.framework */,
 				D7E76EDE8E6FA4DFBA931388 /* Pods_WordPressAuthenticatorTests.framework */,
 			);
@@ -14347,9 +14338,6 @@
 				8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */,
 				25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */,
 				2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */,
-				20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */,
-				07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */,
-				D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */,
 				BD723D247190F25416C7BF39 /* Pods-WordPressAuthenticator.debug.xcconfig */,
 				306EE9B1304588997C72017A /* Pods-WordPressAuthenticator.release.xcconfig */,
 				209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */,
@@ -14525,11 +14513,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26F81B272BE433A4009EC58E /* Build configuration list for PBXNativeTarget "Woo Watch App" */;
 			buildPhases = (
-				5B6BDB4C6584622D9C752CDA /* [CP] Check Pods Manifest.lock */,
 				26F81B112BE433A2009EC58E /* Sources */,
 				26F81B122BE433A2009EC58E /* Frameworks */,
 				26F81B132BE433A2009EC58E /* Resources */,
-				3EAFD89A971180F04F849D00 /* [CP] Embed Pods Frameworks */,
 				26B5423A2BEAC35C003A55B5 /* Embed Frameworks */,
 				267A04912C051C5700C91CB4 /* Embed Foundation Extensions */,
 			);
@@ -15213,23 +15199,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3EAFD89A971180F04F849D00 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -15267,28 +15236,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
-		};
-		5B6BDB4C6584622D9C752CDA /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Woo Watch App-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 		723C3ADC40B4376CB0E8B087 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -18684,7 +18631,6 @@
 		};
 		26F81B242BE433A4009EC58E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -18726,7 +18672,6 @@
 		};
 		26F81B252BE433A4009EC58E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -18766,7 +18711,6 @@
 		};
 		26F81B262BE433A4009EC58E /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

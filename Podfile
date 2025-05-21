@@ -33,10 +33,6 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def stripe_terminal
-  pod 'StripeTerminal', '~> 4.2.0'
-end
-
 def networking_pods
   wordpress_shared
 
@@ -74,7 +70,6 @@ target 'WooCommerce' do
   # ==================
   #
   pod 'ZendeskSupportSDK', '~> 9.0.0'
-  stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 
@@ -100,7 +95,6 @@ end
 # ===============
 #
 def yosemite_pods
-  stripe_terminal
   networking_pods
 
   aztec
@@ -155,7 +149,6 @@ end
 # =================
 #
 def hardware_pods
-  stripe_terminal
 end
 
 # Hardware Target:

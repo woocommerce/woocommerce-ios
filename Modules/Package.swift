@@ -45,6 +45,7 @@ let package = Package(
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
+        .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
         .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
     ],
@@ -307,7 +308,8 @@ enum XcodeSupport {
                 XcodeTargetNames.wordPressAuthenticator,
                 dependencies: [
                     .product(name: "Gridicons", package: "Gridicons-iOS"),
-                    .product(name: "SVProgressHUD", package: "SVProgressHUD")
+                    .product(name: "SVProgressHUD", package: "SVProgressHUD"),
+                    .product(name: "UIDeviceIdentifier", package: "UIDeviceIdentifier")
                 ]
             ),
             .xcodeTarget(

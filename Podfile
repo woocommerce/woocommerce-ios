@@ -68,7 +68,7 @@ end
 
 def gridicons
   # pod 'Gridicons', '~> 1.2.0'
-  pod 'Gridicons', git: 'https://github.com/Automattic/Gridicons-iOS.git', commit: '5ed68663d62cf09694f791cf5cc2c317537701ff'
+  pod 'Gridicons', git: 'https://github.com/Automattic/Gridicons-iOS.git', commit: 'c904cb73e26e86463a78e1335c6f4fd54a9e9223'
 end
 
 def wordpress_ui

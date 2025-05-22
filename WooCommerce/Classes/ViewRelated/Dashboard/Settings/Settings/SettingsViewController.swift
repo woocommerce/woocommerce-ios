@@ -168,8 +168,6 @@ private extension SettingsViewController {
             configureWhatsNew(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
-        case let cell as BasicTableViewCell where row == .wormholy:
-            configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .accountSettings:
             configureAccountSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
@@ -274,12 +272,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.openDeviceSettings
-    }
-
-    func configureWormholy(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.launchWormHolyDebug
     }
 
     func configureWhatsNew(cell: BasicTableViewCell) {
@@ -511,11 +503,6 @@ private extension SettingsViewController {
         UIApplication.shared.open(targetURL)
     }
 
-    func wormholyWasPressed() {
-        // Fire a local notification, which fires Wormholy if enabled.
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
-    }
-
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = viewModel.announcement else { return }
@@ -671,8 +658,6 @@ extension SettingsViewController: UITableViewDelegate {
             aboutWasPressed()
         case .deviceSettings:
             deviceSettingsWasPressed()
-        case .wormholy:
-            wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
         case .accountSettings:
@@ -761,7 +746,6 @@ extension SettingsViewController {
 
         // Other
         case deviceSettings
-        case wormholy
 
         // Account settings
         case accountSettings
@@ -805,8 +789,6 @@ extension SettingsViewController {
             case .about:
                 return BasicTableViewCell.self
             case .deviceSettings:
-                return BasicTableViewCell.self
-            case .wormholy:
                 return BasicTableViewCell.self
             case .whatsNew:
                 return BasicTableViewCell.self
@@ -917,11 +899,6 @@ private extension SettingsViewController {
         static let openDeviceSettings = NSLocalizedString(
             "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
-        )
-
-        static let launchWormHolyDebug = NSLocalizedString(
-            "Launch Wormholy Debug",
-            comment: "Opens an internal library called Wormholy. Not visible to users."
         )
 
         static let whatsNew = NSLocalizedString(

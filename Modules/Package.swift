@@ -12,10 +12,6 @@ let package = Package(
     ],
     products: XcodeSupport.products + [
         .library(
-            name: "Modules",
-            targets: ["Modules"]
-        ),
-        .library(
             name: "Codegen",
             targets: ["Codegen"]
         ),
@@ -57,11 +53,6 @@ let package = Package(
         .package(url: "https://github.com/zendesk/support_sdk_ios", from: "9.0.0"),
     ],
     targets: XcodeSupport.targets + [
-        .target(name: "Modules"),
-        .testTarget(
-            name: "ModulesTests",
-            dependencies: [.target(name: "Modules")]
-        ),
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"] // Relative to sources path

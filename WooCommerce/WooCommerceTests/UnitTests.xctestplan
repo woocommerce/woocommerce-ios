@@ -117,13 +117,6 @@
         "identifier" : "D88FDB0725DD216B00CB0DBD",
         "name" : "HardwareTests"
       }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "ModulesTests",
-        "name" : "ModulesTests"
-      }
     }
   ],
   "version" : 1

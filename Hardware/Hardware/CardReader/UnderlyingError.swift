@@ -378,6 +378,10 @@ public enum UnderlyingError: Error, Equatable {
     /// The connection token provider operation timed out.
     /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html#/c:@E@SCPError@SCPErrorConnectionTokenProviderTimedOut
     case connectionTokenProviderTimedOut
+
+    /// Our payment method collection time limit was exceeded. This error comes from our StripeCardReaderService, not the Terminal.
+    ///
+    case paymentMethodCollectionTimedOut
 }
 
 extension UnderlyingError {
@@ -973,6 +977,13 @@ extension UnderlyingError: LocalizedError {
                 "hardware.cardReader.underlyingError.connectionTokenProviderTimedOut",
                 value: "The connection token request timed out.",
                 comment: "Error message when the connection token provider operation times out."
+            )
+
+        case .paymentMethodCollectionTimedOut:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut",
+                value: "A card wasn't presented within the time limit.",
+                comment: "Error message when a payment times out while waiting for a card to be tapped/inserted/swiped."
             )
         }
     }

@@ -345,6 +345,11 @@ extension StripeCardReaderService: CardReaderService {
                 self.createPaymentIntent(parameters)
             }.flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
+                    .timeout(120, scheduler: DispatchQueue.main, customError: { [weak self] in
+                        // Cancel the payment if a card isn't provided within two minutes
+                        _ = self?.cancelPaymentIntent()
+                        return CardReaderServiceError.paymentMethodCollection(underlyingError: .paymentMethodCollectionTimedOut)
+                    })
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }

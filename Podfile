@@ -51,11 +51,6 @@ target 'WooCommerce' do
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
 
-  # External Libraries
-  # ==================
-  #
-  pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
-
   # Unit Tests
   # ==========
   #

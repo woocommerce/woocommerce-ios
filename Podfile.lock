@@ -49,7 +49,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
-  - Gridicons (from `https://github.com/Automattic/Gridicons-iOS.git`, commit `445310aa6082a1a2f794ed6b17d009da3a6155f2`)
+  - Gridicons (from `https://github.com/Automattic/Gridicons-iOS.git`, commit `5ed68663d62cf09694f791cf5cc2c317537701ff`)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
   - NSObject-SafeExpectations (~> 0.0.4)
@@ -95,12 +95,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Gridicons:
-    :commit: 445310aa6082a1a2f794ed6b17d009da3a6155f2
+    :commit: 5ed68663d62cf09694f791cf5cc2c317537701ff
     :git: https://github.com/Automattic/Gridicons-iOS.git
 
 CHECKOUT OPTIONS:
   Gridicons:
-    :commit: 445310aa6082a1a2f794ed6b17d009da3a6155f2
+    :commit: 5ed68663d62cf09694f791cf5cc2c317537701ff
     :git: https://github.com/Automattic/Gridicons-iOS.git
 
 SPEC CHECKSUMS:
@@ -129,6 +129,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: 3d83165c2fb69a342ae6e613817f342882d1c876
+PODFILE CHECKSUM: aeffa4e72bee1cfd57e23bd5d603e16769d0c45b
 
 COCOAPODS: 1.16.2

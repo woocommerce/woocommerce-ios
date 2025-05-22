@@ -21,7 +21,7 @@ struct PointOfSaleItemListErrorView: View {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 if !keyboard.isFullSizeKeyboardVisible {
-                    if let imageName = viewModel.imageName {
+                    if let imageName = viewModel.imageAsset?.imageName {
                         Image(decorative: imageName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -72,7 +72,7 @@ struct PointOfSaleItemListErrorViewModel {
     let title: String
     let subtitle: String
     let buttonText: String
-    let imageName: String?
+    let imageAsset: PointOfSaleAssets?
 
     init(error: PointOfSaleErrorState) {
         self.title = error.title
@@ -80,9 +80,9 @@ struct PointOfSaleItemListErrorViewModel {
         self.buttonText = error.buttonText
         switch error.errorType {
         case .couponsDisabled:
-            self.imageName = PointOfSaleAssets.coupons.imageName
+            self.imageAsset = PointOfSaleAssets.coupons
         default:
-            self.imageName = nil
+            self.imageAsset = nil
         }
     }
 }

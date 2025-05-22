@@ -273,9 +273,6 @@
 		263A6DBC2BEAA49B00C292B2 /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7452387121124B7700A973CD /* AnyDecodable.swift */; };
 		263A6DBD2BEAA49B00C292B2 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7452386F21124B7700A973CD /* AnyEncodable.swift */; };
 		263A6DBE2BEAA4A900C292B2 /* MIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D3BD132114FE6900A6E85E /* MIContainer.swift */; };
-		263E37D22641ACEA00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D12641ACEA00260D3B /* Codegen */; };
-		263E383F2641FF1600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; };
-		263E38402641FF1600260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		264541B72CA64522006C13A2 /* WooShippingRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264541B62CA644D0006C13A2 /* WooShippingRemote.swift */; };
 		264541B92CA6580E006C13A2 /* WooShippingRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264541B82CA6580E006C13A2 /* WooShippingRemoteTests.swift */; };
 		26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */; };
@@ -324,7 +321,6 @@
 		269014C32BEA9134006056E0 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2820A0FA1E00AB6C62 /* Mapper.swift */; };
 		269014C42BEA9142006056E0 /* ResponseDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C22913FA6400C3982B /* ResponseDataValidator.swift */; };
 		269014C52BEA914B006056E0 /* DotcomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53721813806003E146F /* DotcomError.swift */; };
-		269014C72BEA9166006056E0 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 269014C62BEA9166006056E0 /* Codegen */; };
 		269014CA2BEA924B006056E0 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B556FD68211CE2EC00B5DAE7 /* NetworkError.swift */; };
 		269014CB2BEA9253006056E0 /* JetpackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557D9FF209754FF005962F4 /* JetpackRequest.swift */; };
 		269014CC2BEA925F006056E0 /* RESTRequestConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDBEDD296845F400293C4E /* RESTRequestConvertible.swift */; };
@@ -425,9 +421,9 @@
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
 		31D27C8F2602B553002EDB1D /* plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 31D27C8E2602B553002EDB1D /* plugins.json */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
-		3F368D9E2DCB750B0065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D9D2DCB750B0065B48F /* TestKit */; };
-		3FF8370C2DD322FF0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */; };
-		3FF8371F2DD32CB30049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */; };
+		3F2B4ACE2DDC30F400E5E49C /* XcodeTarget_NetworkingTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ACD2DDC30F400E5E49C /* XcodeTarget_NetworkingTests */; };
+		3F2B4AD02DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */; };
+		3F2B4AD22DDC310600E5E49C /* XcodeTarget_Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -1354,7 +1350,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				263E38402641FF1600260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2596,8 +2591,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */,
-				269014C72BEA9166006056E0 /* Codegen in Frameworks */,
-				3FF8370C2DD322FF0049E028 /* CocoaLumberjackSwift in Frameworks */,
+				3F2B4AD02DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2605,10 +2599,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E37D22641ACEA00260D3B /* Codegen in Frameworks */,
 				68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */,
-				3FF8371F2DD32CB30049E028 /* CocoaLumberjackSwift in Frameworks */,
 				6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */,
+				3F2B4AD22DDC310600E5E49C /* XcodeTarget_Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2618,9 +2611,8 @@
 			files = (
 				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
-				263E383F2641FF1600260D3B /* Codegen in Frameworks */,
-				3F368D9E2DCB750B0065B48F /* TestKit in Frameworks */,
 				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
+				3F2B4ACE2DDC30F400E5E49C /* XcodeTarget_NetworkingTests in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4370,8 +4362,7 @@
 			);
 			name = NetworkingWatchOS;
 			packageProductDependencies = (
-				269014C62BEA9166006056E0 /* Codegen */,
-				3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */,
+				3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */,
 			);
 			productName = NetworkingWatchOS;
 			productReference = 26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */;
@@ -4393,8 +4384,7 @@
 			);
 			name = Networking;
 			packageProductDependencies = (
-				263E37D12641ACEA00260D3B /* Codegen */,
-				3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */,
+				3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */,
 			);
 			productName = Networking;
 			productReference = B557D9E3209753AA005962F4 /* Networking.framework */;
@@ -4418,8 +4408,7 @@
 			);
 			name = NetworkingTests;
 			packageProductDependencies = (
-				263E383E2641FF1600260D3B /* Codegen */,
-				3F368D9D2DCB750B0065B48F /* TestKit */,
+				3F2B4ACD2DDC30F400E5E49C /* XcodeTarget_NetworkingTests */,
 			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
@@ -4458,9 +4447,6 @@
 				Base,
 			);
 			mainGroup = B557D9D9209753AA005962F4;
-			packageReferences = (
-				3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
-			);
 			productRefGroup = B557D9E4209753AA005962F4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -6426,43 +6412,18 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.8.5;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		263E37D12641ACEA00260D3B /* Codegen */ = {
+		3F2B4ACD2DDC30F400E5E49C /* XcodeTarget_NetworkingTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_NetworkingTests;
 		};
-		263E383E2641FF1600260D3B /* Codegen */ = {
+		3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_NetworkingWatchOS;
 		};
-		269014C62BEA9166006056E0 /* Codegen */ = {
+		3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
-		};
-		3F368D9D2DCB750B0065B48F /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
-		};
-		3FF8370B2DD322FF0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF8371E2DD32CB30049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF8370A2DD322FF0049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
+			productName = XcodeTarget_Networking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

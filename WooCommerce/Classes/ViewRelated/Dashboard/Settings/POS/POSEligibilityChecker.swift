@@ -8,6 +8,7 @@ import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
+import enum Yosemite.SettingAction
 
 protocol POSEligibilityCheckerProtocol {
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
@@ -25,7 +26,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+        return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
             .filter { [weak self] _ in
                 self?.isEligibleFromSiteChecks ?? false
             }
@@ -53,7 +54,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 }
 
 private extension POSEligibilityChecker {
-    var isWooCommerceVersionSupported: AnyPublisher<Bool, Never> {
+    var isWooCommerceVersionSupportedAndFeatureSwitchEnabled: AnyPublisher<Bool, Never> {
         Future<Bool, Never> { [weak self] promise in
             guard let self else {
                 promise(.success(false))
@@ -68,15 +69,42 @@ private extension POSEligibilityChecker {
 
             let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
 
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { [weak self] wcPlugin in
+                guard let self else {
+                    return promise(.success(false))
+                }
                 guard let wcPlugin = wcPlugin, wcPlugin.active else {
-                    promise(.success(false))
-                    return
+                    return promise(.success(false))
                 }
 
                 let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                                     minimumRequired: wcPluginMinimumVersion)
-                promise(.success(isSupported))
+
+                guard isSupported else {
+                    return promise(.success(false))
+                }
+
+                // Checks if POS feature is enabled in store settings.
+                // The POS feature switch in core is available from version 10.0.0.
+                // For core versions below 10.0.0, the feature is enabled by default.
+                let isFeatureSwitchSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                                                 minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
+                                                                                 includesDevAndBetaVersions: true)
+
+
+                guard isFeatureSwitchSupported else {
+                    return promise(.success(true))
+                }
+
+                let featureAction = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
+                    switch result {
+                    case .success(let isEnabled):
+                        promise(.success(isEnabled))
+                    case .failure:
+                        promise(.success(false))
+                    }
+                }
+                self.stores.dispatch(featureAction)
             }
             self.stores.dispatch(action)
         }
@@ -125,5 +153,6 @@ private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "9.6.0-beta"
+        static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
     }
 }

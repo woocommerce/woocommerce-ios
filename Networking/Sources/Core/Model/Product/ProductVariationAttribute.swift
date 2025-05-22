@@ -1,3 +1,4 @@
+// TODO: Is this required in the watchOS framework?
 import Foundation
 import Codegen
 

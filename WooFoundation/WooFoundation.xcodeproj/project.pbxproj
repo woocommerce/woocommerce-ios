@@ -44,7 +44,8 @@
 		26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */; };
 		26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */; };
 		26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */; };
-		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
+		3FF80E382DD322300049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF80E372DD322300049E028 /* CocoaLumberjackSwift */; };
+		3FF8370E2DD323380049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF8370D2DD323380049E028 /* CocoaLumberjackSwift */; };
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
@@ -53,13 +54,11 @@
 		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
-		7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */; };
 		9502369C2D2C1A9F00E2F796 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
 		9502369E2D2C1AB600E2F796 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
 		950236A12D2C1BCF00E2F796 /* Color+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */; };
 		950236A42D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */; };
 		950236A52D2C1C0A00E2F796 /* WooFoundationBundleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */; };
-		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
 		B95B15CB2B15FA3A00A54044 /* Publishers+KeyboardFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95B15CA2B15FA3A00A54044 /* Publishers+KeyboardFrame.swift */; };
@@ -140,7 +139,6 @@
 		26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
 		3FA7D9FE2D547EDC00CE5611 /* WooFoundation.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WooFoundation.xcconfig; sourceTree = "<group>"; };
 		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
 		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
 		6874E81328998AD300074A97 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
@@ -149,12 +147,7 @@
 		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
-		73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release.xcconfig"; sourceTree = "<group>"; };
-		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooFoundationBundleClass.swift; sourceTree = "<group>"; };
-		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
-		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
@@ -176,10 +169,7 @@
 		B9C9C65F283E71F4001B879F /* Double+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
 		B9C9C662283E7296001B879F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release.xcconfig"; sourceTree = "<group>"; };
-		ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,8 +177,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF8370E2DD323380049E028 /* CocoaLumberjackSwift in Frameworks */,
 				269FFA4F2BF5B040004E6B86 /* Codegen in Frameworks */,
-				7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,8 +186,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF80E382DD322300049E028 /* CocoaLumberjackSwift in Frameworks */,
 				20AD34D32B0CDB8900F38F44 /* Codegen in Frameworks */,
-				9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +197,6 @@
 			files = (
 				036563D728F93F8D00D84BFD /* TestKit in Frameworks */,
 				B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */,
-				397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -429,15 +418,6 @@
 		C8E281DD95DE8EF39194328A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */,
-				D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */,
-				BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */,
-				5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */,
-				81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */,
-				A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */,
-				ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */,
-				73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */,
-				8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			path = ../Pods;
@@ -468,7 +448,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 264E9EA22BF4037D009C48FD /* Build configuration list for PBXNativeTarget "WooFoundationWatchOS" */;
 			buildPhases = (
-				474919A7190423CC4A2DAB24 /* [CP] Check Pods Manifest.lock */,
 				264E9E962BF4037D009C48FD /* Headers */,
 				264E9E972BF4037D009C48FD /* Sources */,
 				264E9E982BF4037D009C48FD /* Frameworks */,
@@ -482,6 +461,7 @@
 			name = WooFoundationWatchOS;
 			packageProductDependencies = (
 				269FFA4E2BF5B040004E6B86 /* Codegen */,
+				3FF8370D2DD323380049E028 /* CocoaLumberjackSwift */,
 			);
 			productName = WooFoundationWatchOS;
 			productReference = 264E9E9B2BF4037D009C48FD /* WooFoundationWatchOS.framework */;
@@ -491,7 +471,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C9C646283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundation" */;
 			buildPhases = (
-				785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */,
 				B9C9C630283E703C001B879F /* Headers */,
 				B9C9C631283E703C001B879F /* Sources */,
 				B9C9C632283E703C001B879F /* Frameworks */,
@@ -505,6 +484,7 @@
 			name = WooFoundation;
 			packageProductDependencies = (
 				20AD34D22B0CDB8900F38F44 /* Codegen */,
+				3FF80E372DD322300049E028 /* CocoaLumberjackSwift */,
 			);
 			productName = Tools;
 			productReference = B9C9C635283E703C001B879F /* WooFoundation.framework */;
@@ -514,11 +494,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C9C649283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundationTests" */;
 			buildPhases = (
-				8412E9AEB5C292FAFA14BB34 /* [CP] Check Pods Manifest.lock */,
 				B9C9C63A283E703C001B879F /* Sources */,
 				B9C9C63B283E703C001B879F /* Frameworks */,
 				B9C9C63C283E703C001B879F /* Resources */,
-				D8F50D6FB8B57B87F4399E61 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -563,6 +541,9 @@
 				Base,
 			);
 			mainGroup = B9C9C5ED283E6FAA001B879F;
+			packageReferences = (
+				3FF80E362DD322300049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+			);
 			productRefGroup = B9C9C5FB283E6FAB001B879F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -599,92 +580,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		474919A7190423CC4A2DAB24 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooFoundationWatchOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooFoundation-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8412E9AEB5C292FAFA14BB34 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooFoundationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D8F50D6FB8B57B87F4399E61 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		264E9E972BF4037D009C48FD /* Sources */ = {
@@ -780,7 +675,6 @@
 /* Begin XCBuildConfiguration section */
 		264E9E9F2BF4037D009C48FD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -823,7 +717,6 @@
 		};
 		264E9EA02BF4037D009C48FD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -866,7 +759,6 @@
 		};
 		264E9EA12BF4037D009C48FD /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -962,7 +854,6 @@
 		};
 		B9BD4BD52844E20300F835D6 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -999,7 +890,6 @@
 		};
 		B9BD4BD62844E20300F835D6 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1131,7 +1021,6 @@
 		};
 		B9C9C647283E703C001B879F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1167,7 +1056,6 @@
 		};
 		B9C9C648283E703C001B879F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1204,7 +1092,6 @@
 		};
 		B9C9C64A283E703C001B879F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1221,7 +1108,6 @@
 		};
 		B9C9C64B283E703C001B879F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1282,6 +1168,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3FF80E362DD322300049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.8.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		036563D628F93F8D00D84BFD /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1294,6 +1191,16 @@
 		269FFA4E2BF5B040004E6B86 /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
+		};
+		3FF80E372DD322300049E028 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF80E362DD322300049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		3FF8370D2DD323380049E028 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF80E362DD322300049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -84,8 +84,11 @@ struct ItemList<HeaderView: View>: View {
                                                itemsController: posModel.purchasableItemsController,
                                                itemActionHandler: itemActionHandler,
                                                analyticsTracker: PointOfSaleItemListAnalyticsTracker(
-                                                itemType: .variation,
-                                                isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching)),
+                                                sourceView: .variation,
+                                                sourceViewType: .init(
+                                                    isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
+                                                    searchTerm: posModel.viewStateCoordinatorForView.searchTerm
+                                                ))),
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }

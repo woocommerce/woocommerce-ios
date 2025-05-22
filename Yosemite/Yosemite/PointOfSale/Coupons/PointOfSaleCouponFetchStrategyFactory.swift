@@ -29,11 +29,12 @@ public struct PointOfSaleCouponFetchStrategyFactory {
                                               couponStoreMethods: couponStoreMethods)
     }
 
-    public func searchStrategy(searchTerm: String) -> PointOfSaleSearchCouponFetchStrategy {
+    public func searchStrategy(searchTerm: String, analytics: POSSearchAnalyticsTracking) -> PointOfSaleSearchCouponFetchStrategy {
         PointOfSaleSearchCouponFetchStrategy(siteID: siteID,
                                              currencySettings: currencySettings,
                                              storage: storage,
                                              couponStoreMethods: couponStoreMethods,
-                                             searchTerm: searchTerm)
+                                             searchTerm: searchTerm,
+                                             analytics: analytics)
     }
 }

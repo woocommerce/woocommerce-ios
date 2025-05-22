@@ -20,5 +20,5 @@ struct PointOfSaleItemListFullscreenErrorView: View {
 
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListFullscreenErrorView(error: .errorOnLoadingProducts, onAction: nil)
+    PointOfSaleItemListFullscreenErrorView(error: .errorOnLoadingProducts(), onAction: nil)
 }

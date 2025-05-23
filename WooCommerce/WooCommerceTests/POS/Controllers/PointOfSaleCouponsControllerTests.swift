@@ -125,7 +125,7 @@ struct PointOfSaleCouponsControllerTests {
         couponProvider.errorToThrow = .couponsLoadingError(underlyingError: error)
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
 
-        let expectedItemStackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorOnLoadingCoupons()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When
@@ -138,8 +138,9 @@ struct PointOfSaleCouponsControllerTests {
     @available(iOS 17.0, *)
     @Test func enableCoupons_sets_error_state_when_fails() async throws {
         // Given
+        struct MockError: Error {}
         let couponProvider = MockPointOfSaleCouponService()
-        couponProvider.errorToThrow = .couponsEnablingError
+        couponProvider.errorToThrow = .couponsEnablingError(underlyingError: MockError())
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
 
         // When
@@ -182,7 +183,7 @@ struct PointOfSaleCouponsControllerTests {
         await sut.loadItems(base: .root)
 
         // Then
-        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems, error: .errorOnRefreshingCoupons(), context: .refresh), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
         #expect(sut.itemsViewState == expectedViewState)
     }
@@ -203,7 +204,7 @@ struct PointOfSaleCouponsControllerTests {
 
         // Then
         let expectedItemStackState = ItemsStackState(root: .inlineError(currentItems,
-                                                                        error: .errorOnLoadingCouponsNextPage,
+                                                                        error: .errorOnLoadingCouponsNextPage(),
                                                                         context: .pagination),
                                                      itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
@@ -289,7 +290,7 @@ struct PointOfSaleCouponsControllerTests {
         couponProvider.errorToThrow = .couponsLoadingError(underlyingError: error)
         let sut = PointOfSaleCouponsController(itemProvider: couponProvider, fetchStrategyFactory: fetchStrategyFactory)
 
-        let expectedItemStackState = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+        let expectedItemStackState = ItemsStackState(root: .error(.errorOnLoadingCoupons()), itemStates: [:])
         let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
 
         // When

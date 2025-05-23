@@ -23,7 +23,6 @@ PODS:
     - Sentry/Core (= 8.46.0)
   - Sentry/Core (8.46.0)
   - StripeTerminal (4.2.0)
-  - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (2.3.0)
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
@@ -57,7 +56,6 @@ DEPENDENCIES:
   - OHHTTPStubs/Swift (~> 9.0)
   - Sentry (~> 8.46.0)
   - StripeTerminal (~> 4.2.0)
-  - SVProgressHUD (= 2.2.5)
   - UIDeviceIdentifier (~> 2.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressShared (~> 2.1-beta)
@@ -76,7 +74,6 @@ SPEC REPOS:
     - OHHTTPStubs
     - Sentry
     - StripeTerminal
-    - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
@@ -112,7 +109,6 @@ SPEC CHECKSUMS:
   OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
-  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
@@ -129,6 +125,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
   ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: fbfb4e37966da1c618258c38f1de2523bb738131
+PODFILE CHECKSUM: d31cc69df3854753fd96bdc473de14827b26a880
 
 COCOAPODS: 1.16.2

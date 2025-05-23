@@ -33,10 +33,6 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def svprogresshud
-  pod 'SVProgressHUD', '2.2.5'
-end
-
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -232,7 +228,6 @@ end
 # ==========
 #
 def wordpress_authenticator_pods
-  svprogresshud
   gridicons
   wordpress_ui
   wordpress_shared

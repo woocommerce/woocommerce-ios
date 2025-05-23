@@ -71,9 +71,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
                 return try await fetchCoupons(pageNumber: pageNumber)
             }
         } catch {
+            let underlyingError = (error as? PointOfSaleCouponServiceError)?.underlyingError
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingCouponsNextPage,
+                                                                           error: .errorOnLoadingCouponsNextPage(error: underlyingError),
                                                                            context: .pagination),
                                                         itemStates: currentItemStates)
         }
@@ -159,22 +160,24 @@ private extension PointOfSaleCouponsController {
 
     func setCouponsErrorViewState(_ error: Error) {
         guard let couponError = error as? PointOfSaleCouponServiceError else {
-            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons(error: error)), itemStates: [:])
             return
         }
 
         switch couponError {
-        case .couponsLoadingError:
+        case .couponsLoadingError(let underlyingError):
             let items = itemsViewState.itemsStack.root.items
             if items.isEmpty {
-                itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons), itemStates: [:])
+                itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnLoadingCoupons(error: underlyingError)), itemStates: [:])
             } else {
-                itemsViewState.itemsStack = ItemsStackState(root: .inlineError(items, error: .errorOnRefreshingCoupons, context: .refresh), itemStates: [:])
+                itemsViewState.itemsStack = ItemsStackState(
+                    root: .inlineError(items, error: .errorOnRefreshingCoupons(error: underlyingError), context: .refresh), itemStates: [:]
+                )
             }
         case .couponsDisabled:
             itemsViewState.itemsStack = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
-        case .couponsEnablingError:
-            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnEnablingCoupons), itemStates: [:])
+        case .couponsEnablingError(let underlyingError):
+            itemsViewState.itemsStack = ItemsStackState(root: .error(.errorOnEnablingCoupons(error: underlyingError)), itemStates: [:])
         case .requestCancelled:
             break
         }

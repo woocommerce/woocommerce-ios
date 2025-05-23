@@ -4,7 +4,7 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct PointOfSaleItemListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let error: PointOfSaleErrorState
+    private let viewModel: PointOfSaleItemListErrorViewModel
     private let onAction: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
@@ -12,7 +12,7 @@ struct PointOfSaleItemListErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
-        self.error = error
+        self.viewModel = PointOfSaleItemListErrorViewModel(error: error)
         self.onAction = onAction
     }
 
@@ -21,33 +21,43 @@ struct PointOfSaleItemListErrorView: View {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 if !keyboard.isFullSizeKeyboardVisible {
-                    POSErrorExclamationMark(size: .large)
-
-                    Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                    if let imageName = viewModel.imageAsset?.imageName {
+                        Image(decorative: imageName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 88, height: 88)
+                            .foregroundColor(.posOnSurfaceVariantHighest)
+                    } else {
+                        POSErrorExclamationMark(size: .large)
+                    }
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.imageAndTextSpacing)
                 }
 
-                Text(error.title)
+                Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
                     .font(.posHeadingBold)
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textSpacing)
+                Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textSpacing)
 
-                Text(error.subtitle)
+                Text(viewModel.subtitle)
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posBodyLargeRegular())
+                    .multilineTextAlignment(.center)
                     .padding([.leading, .trailing])
 
-                Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-
-                Button(action: {
-                    onAction?()
-                }, label: {
-                    Text(error.buttonText)
-                })
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .frame(width: viewWidth / 2)
-                .padding([.leading, .trailing])
+                if let onAction {
+                    Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
+                    Button(action: {
+                        onAction()
+                    }, label: {
+                        Text(viewModel.buttonText)
+                    })
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    .frame(width: viewWidth / 2)
+                    .padding([.leading, .trailing])
+                }
             }
             Spacer()
         }
@@ -58,7 +68,31 @@ struct PointOfSaleItemListErrorView: View {
     }
 }
 
+struct PointOfSaleItemListErrorViewModel {
+    let title: String
+    let subtitle: String
+    let buttonText: String
+    let imageAsset: PointOfSaleAssets?
+
+    init(error: PointOfSaleErrorState) {
+        self.title = error.title
+        self.subtitle = error.subtitle
+        self.buttonText = error.buttonText
+        switch error.errorType {
+        case .couponsDisabled:
+            self.imageAsset = PointOfSaleAssets.coupons
+        default:
+            self.imageAsset = nil
+        }
+    }
+}
+
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingProducts, onAction: nil)
+    PointOfSaleItemListErrorView(error: .errorCouponsDisabled, onAction: {})
+}
+
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: {})
 }

@@ -164,6 +164,15 @@ struct TopTabView<Content: View>: View {
                                                     scrollFocusTab(in: scrollViewProxy, at: index)
                                                 }
                                             }
+                                            .onChange(of: geometry.size) { newSize in
+                                                /// Support dynamic type size change
+                                                if index < tabWidths.count {
+                                                    tabWidths[index] = newSize.width
+                                                    if index == selectedTab {
+                                                        underlineTabWith(tabGeometry: geometry)
+                                                    }
+                                                }
+                                            }
                                         })
                                 }
                             }

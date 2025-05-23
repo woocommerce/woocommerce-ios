@@ -63,7 +63,8 @@ def networking_watch_os_pods
 end
 
 def gridicons
-  pod 'Gridicons', '~> 1.2.0'
+  # pod 'Gridicons', '~> 1.2.0'
+  pod 'Gridicons', git: 'https://github.com/Automattic/Gridicons-iOS.git', commit: 'c904cb73e26e86463a78e1335c6f4fd54a9e9223'
 end
 
 def wordpress_ui

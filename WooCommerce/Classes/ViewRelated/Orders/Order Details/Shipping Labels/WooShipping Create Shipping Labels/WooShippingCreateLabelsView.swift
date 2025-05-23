@@ -325,7 +325,7 @@ private extension WooShippingCreateLabelsView {
                             Text(Localization.BottomSheet.markComplete)
                                 .font(.subheadline)
                                 .lineLimit(Layout.toggleTextLineLimit)
-                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizeAlbum)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizeLandscape)
                         }
                         .tint(Color(.primary))
                         .fixedSize(horizontal: false, vertical: true)
@@ -619,7 +619,7 @@ private extension WooShippingCreateLabelsView {
 
         static let toggleTextLineLimit = 3
         static let toggleTextMaxDynamicTypeSizePortrait = DynamicTypeSize.accessibility1
-        static let toggleTextMaxDynamicTypeSizeAlbum = DynamicTypeSize.xxxLarge
+        static let toggleTextMaxDynamicTypeSizeLandscape = DynamicTypeSize.xxxLarge
     }
 
     enum Localization {

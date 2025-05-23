@@ -1,3 +1,4 @@
+import UIKit
 @testable import Kingfisher
 
 final class MockImageCache: ImageCache {

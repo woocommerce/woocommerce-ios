@@ -1,5 +1,6 @@
 import Aztec
 import Gridicons
+import UIKit
 import WordPressEditor
 
 /// Creates Aztec format bar & action handling coordinator for the format bar.

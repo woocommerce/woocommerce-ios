@@ -15,7 +15,6 @@ use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for s
 use_modular_headers!
 
 app_ios_deployment_target = Gem::Version.new('16.0')
-app_watchos_deployment_target = Gem::Version.new('9.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -23,48 +22,12 @@ workspace 'WooCommerce.xcworkspace'
 ## Pods shared between all the targets
 ## =====================================
 ##
-def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.19'
-  # pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-  # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-end
-
 def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def keychain
-  pod 'KeychainAccess', '~> 4.2.2'
-end
-
-def alamofire
-  pod 'Alamofire', '~> 5.0'
-end
-
-def stripe_terminal
-  pod 'StripeTerminal', '~> 4.2.0'
-end
-
 def networking_pods
-  alamofire
-
   wordpress_shared
-
-  # Used for HTML parsing
-  aztec
-
-  # Used for storing application password
-  keychain
-end
-
-def networking_watch_os_pods
-  alamofire
-  keychain
-end
-
-def gridicons
-  # pod 'Gridicons', '~> 1.2.0'
-  pod 'Gridicons', git: 'https://github.com/Automattic/Gridicons-iOS.git', commit: 'c904cb73e26e86463a78e1335c6f4fd54a9e9223'
 end
 
 def wordpress_ui
@@ -82,13 +45,8 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-
-  gridicons
-
   wordpress_shared
   wordpress_ui
-
-  aztec
 
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
@@ -96,11 +54,6 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  alamofire
-  keychain
-  pod 'ZendeskSupportSDK', '~> 9.0.0'
-  stripe_terminal
-  pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 
   # Unit Tests
@@ -111,41 +64,11 @@ target 'WooCommerce' do
   end
 end
 
-# StoreWidget Target
-# ==========
-#
-target 'StoreWidgetsExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
-end
-
-# Notification Content Target
-# ==========
-#
-target 'NotificationExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
-end
-
-# Woo Watch App Target
-# ==========
-#
-target 'Woo Watch App' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-  pod 'Sentry', '~> 8.46.0'
-  networking_watch_os_pods
-end
-
 # Yosemite Layer:
 # ===============
 #
 def yosemite_pods
-  alamofire
-  stripe_terminal
   networking_pods
-
-  aztec
 end
 
 # Yosemite Target:
@@ -172,16 +95,6 @@ target 'Networking' do
   networking_pods
 end
 
-# Networking WatchOS Target:
-# ==================
-#
-target 'NetworkingWatchOS' do
-  project 'Networking/Networking.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  networking_watch_os_pods
-end
-
 # Unit Tests
 # ==========
 #
@@ -193,47 +106,12 @@ target 'NetworkingTests' do
   yosemite_pods
 end
 
-# Hardware Layer:
-# =================
-#
-def hardware_pods
-  stripe_terminal
-end
-
-# Hardware Target:
-# ==================
-#
-target 'Hardware' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'HardwareTests' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# SampleReceiptPrinter Target:
-# ==================
-#
-target 'SampleReceiptPrinter' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
 # WordPressAuthenticator
 # ==========
 #
 def wordpress_authenticator_pods
-  gridicons
   wordpress_ui
   wordpress_shared
-  pod 'NSObject-SafeExpectations', '~> 0.0.4'
-  pod 'wpxmlrpc', '~> 0.10'
-  pod 'UIDeviceIdentifier', '~> 2.0'
 end
 
 target 'WordPressAuthenticator' do
@@ -244,10 +122,6 @@ end
 target 'WordPressAuthenticatorTests' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   wordpress_authenticator_pods
-
-  alamofire
-  pod 'OHHTTPStubs', '~> 9.0'
-  pod 'OHHTTPStubs/Swift', '~> 9.0'
 end
 
 # Workarounds:

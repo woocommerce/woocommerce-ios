@@ -8,7 +8,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
 
-import CocoaLumberjack
+import CocoaLumberjackSwift
 import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
@@ -368,7 +368,7 @@ private extension AppDelegate {
     /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        CocoaLumberjack.dynamicLogLevel = level
+        CocoaLumberjackSwift.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter

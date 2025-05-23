@@ -48,7 +48,7 @@ private typealias Constants = PointOfSaleItemListCardConstants
 
 #Preview {
     ItemListErrorCardView(
-        errorState: .errorOnLoadingVariationsNextPage,
+        errorState: .errorOnLoadingVariationsNextPage(),
         buttonAction: {}
     )
 }

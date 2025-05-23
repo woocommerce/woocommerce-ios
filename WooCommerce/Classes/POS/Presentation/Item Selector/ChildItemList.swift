@@ -171,7 +171,10 @@ private extension ChildItemList {
                          title: parentProduct.name,
                          itemsController: itemsController,
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
-                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation, isSearching: false))
+                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                            sourceView: .variation,
+                            sourceViewType: .list
+                         ))
 }
 
 @available(iOS 17.0, *)
@@ -187,14 +190,17 @@ private extension ChildItemList {
     let itemsStack = ItemsStackState(
         root: .loading([]),
         itemStates: [
-            parentItem: .error(.errorOnLoadingVariations)
+            parentItem: .error(.errorOnLoadingVariations())
         ])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
     return ChildItemList(parentItem: parentItem,
                          title: parentProduct.name,
                          itemsController: itemsController,
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
-                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(itemType: .variation, isSearching: false))
+                         analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                            sourceView: .variation,
+                            sourceViewType: .list
+                         ))
 }
 
 #endif

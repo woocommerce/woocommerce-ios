@@ -8,16 +8,19 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
     private let storage: MockStorageManager
     private let sampleSiteID: Int64 = 123
     private let searchTerm = "test"
+    private let mockAnalytics: MockPOSSearchAnalyticsTracking
 
     init() {
         self.couponStoreMethods = MockCouponStoreMethods()
         self.storage = MockStorageManager()
+        self.mockAnalytics = MockPOSSearchAnalyticsTracking()
         self.sut = .init(
             siteID: sampleSiteID,
             currencySettings: CurrencySettings(),
             storage: storage,
             couponStoreMethods: couponStoreMethods,
-            searchTerm: searchTerm
+            searchTerm: searchTerm,
+            analytics: mockAnalytics
         )
     }
 
@@ -109,5 +112,37 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
         // Then
         #expect(result.items.count == PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize - 1)
         #expect(!result.hasMorePages)
+    }
+
+    @Test func fetchCoupons_tracks_analytics_for_first_page() async throws {
+        // Given
+        let coupon1 = Coupon.fake().copy(siteID: sampleSiteID, code: "test_coupon_1")
+        let coupon2 = Coupon.fake().copy(siteID: sampleSiteID, code: "test_coupon_2")
+        storage.insertSampleCoupon(readOnlyCoupon: coupon1)
+        storage.insertSampleCoupon(readOnlyCoupon: coupon2)
+        storage.insertSampleCouponSearchResult(keyword: searchTerm, coupons: [coupon1, coupon2])
+
+        // When
+        _ = try await sut.fetchCoupons(pageNumber: 1)
+
+        // Then
+        #expect(mockAnalytics.spyMillisecondsSinceRequestSent != nil)
+        #expect(mockAnalytics.spyTotalItems == 2)
+    }
+
+    @Test func fetchCoupons_does_not_track_analytics_for_subsequent_pages() async throws {
+        // Given
+        let coupon1 = Coupon.fake().copy(siteID: sampleSiteID, code: "test_coupon_1")
+        let coupon2 = Coupon.fake().copy(siteID: sampleSiteID, code: "test_coupon_2")
+        storage.insertSampleCoupon(readOnlyCoupon: coupon1)
+        storage.insertSampleCoupon(readOnlyCoupon: coupon2)
+        storage.insertSampleCouponSearchResult(keyword: searchTerm, coupons: [coupon1, coupon2])
+
+        // When
+        _ = try await sut.fetchCoupons(pageNumber: 2)
+
+        // Then
+        #expect(mockAnalytics.spyMillisecondsSinceRequestSent == nil)
+        #expect(mockAnalytics.spyTotalItems == nil)
     }
 }

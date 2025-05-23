@@ -96,7 +96,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenSyncingShippingLabels(thenReturn: .success([]))
 
@@ -108,13 +108,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.LegacyWCShip])
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
@@ -143,7 +143,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_a_non_virtual_product_returns_value_from_action() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
@@ -174,7 +174,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // Make sure the are plugins synced
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
+        let path = SitePlugin.SupportedPluginPath.LegacyWCShip
+        let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
@@ -186,13 +187,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.LegacyWCShip])
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
@@ -430,7 +431,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -444,7 +445,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -458,7 +459,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.5")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -472,7 +473,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.4")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.4")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -487,6 +488,13 @@ private extension OrderDetailsViewModelTests {
     @discardableResult
     func insertSystemPlugin(name: String, siteID: Int64, isActive: Bool, version: String? = nil) -> SystemPlugin {
         let plugin = SystemPlugin.fake().copy(siteID: siteID, name: name, version: version, active: isActive)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+        return plugin
+    }
+
+    @discardableResult
+    func insertSystemPlugin(path: String, siteID: Int64, isActive: Bool, version: String? = nil) -> SystemPlugin {
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: path, version: version, active: isActive)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
         return plugin
     }
@@ -508,8 +516,10 @@ private extension OrderDetailsViewModelTests {
                 onCompletion(plugin)
             case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
                 onCompletion(plugin)
-                default:
-                    break
+            case let .fetchSystemPluginWithPath(_, _, onCompletion):
+                onCompletion(plugin)
+            default:
+                break
             }
         }
     }

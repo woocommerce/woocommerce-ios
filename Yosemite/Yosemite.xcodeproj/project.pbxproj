@@ -214,9 +214,6 @@
 		261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF2C6255C445A0090D8D3 /* PaymentGatewayStoreTests.swift */; };
 		261F94E4242EFA6D00762B58 /* ProductCategoryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F94E3242EFA6D00762B58 /* ProductCategoryAction.swift */; };
 		261F94E6242EFF8700762B58 /* ProductCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */; };
-		263E37DC2641AD6B00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37DB2641AD6B00260D3B /* Codegen */; };
-		263E38422641FF2300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; };
-		263E38442641FF2300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		264D2C832B0B19F200FD2C05 /* SystemInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264D2C822B0B19F200FD2C05 /* SystemInformation.swift */; };
 		26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26577516243D5E42003168A5 /* ProductCategoryUpdated.swift */; };
 		265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */; };
@@ -238,7 +235,8 @@
 		31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */; };
 		31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
-		3F368D9A2DCB74B80065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D992DCB74B80065B48F /* TestKit */; };
+		3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD72DDC313800E5E49C /* XcodeTarget_Yosemite */; };
+		3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD92DDC313E00E5E49C /* XcodeTarget_YosemiteTests */; };
 		3F7E6AC82DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
 		45010693239A6C9F00E24722 /* TaxStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxStore.swift */; };
@@ -569,7 +567,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				263E38442641FF2300260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1135,9 +1132,9 @@
 			files = (
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
 				689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */,
+				3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */,
 				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
-				263E37DC2641AD6B00260D3B /* Codegen in Frameworks */,
 				0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1146,10 +1143,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */,
 				26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */,
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
-				263E38422641FF2300260D3B /* Codegen in Frameworks */,
-				3F368D9A2DCB74B80065B48F /* TestKit in Frameworks */,
 				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2302,7 +2298,7 @@
 			);
 			name = Yosemite;
 			packageProductDependencies = (
-				263E37DB2641AD6B00260D3B /* Codegen */,
+				3F2B4AD72DDC313800E5E49C /* XcodeTarget_Yosemite */,
 			);
 			productName = FluxC;
 			productReference = B5C9DDF52087FEC0006B910A /* Yosemite.framework */;
@@ -2326,8 +2322,7 @@
 			);
 			name = YosemiteTests;
 			packageProductDependencies = (
-				263E38412641FF2300260D3B /* Codegen */,
-				3F368D992DCB74B80065B48F /* TestKit */,
+				3F2B4AD92DDC313E00E5E49C /* XcodeTarget_YosemiteTests */,
 			);
 			productName = FluxCTests;
 			productReference = B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */;
@@ -2363,6 +2358,8 @@
 				Base,
 			);
 			mainGroup = B5C9DDEB2087FEC0006B910A;
+			packageReferences = (
+			);
 			productRefGroup = B5C9DDF62087FEC0006B910A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3375,17 +3372,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		263E37DB2641AD6B00260D3B /* Codegen */ = {
+		3F2B4AD72DDC313800E5E49C /* XcodeTarget_Yosemite */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_Yosemite;
 		};
-		263E38412641FF2300260D3B /* Codegen */ = {
+		3F2B4AD92DDC313E00E5E49C /* XcodeTarget_YosemiteTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
-		};
-		3F368D992DCB74B80065B48F /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
+			productName = XcodeTarget_YosemiteTests;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

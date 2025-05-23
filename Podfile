@@ -33,10 +33,6 @@ def wordpress_shared
   pod 'WordPressShared', '~> 2.1-beta'
 end
 
-def svprogresshud
-  pod 'SVProgressHUD', '2.2.5'
-end
-
 def keychain
   pod 'KeychainAccess', '~> 4.2.2'
 end
@@ -45,17 +41,12 @@ def alamofire
   pod 'Alamofire', '~> 5.0'
 end
 
-def cocoa_lumberjack
-  pod 'CocoaLumberjack/Swift', '~> 3.8.5'
-end
-
 def stripe_terminal
   pod 'StripeTerminal', '~> 4.2.0'
 end
 
 def networking_pods
   alamofire
-  cocoa_lumberjack
 
   wordpress_shared
 
@@ -68,12 +59,12 @@ end
 
 def networking_watch_os_pods
   alamofire
-  cocoa_lumberjack
   keychain
 end
 
 def gridicons
-  pod 'Gridicons', '~> 1.2.0'
+  # pod 'Gridicons', '~> 1.2.0'
+  pod 'Gridicons', git: 'https://github.com/Automattic/Gridicons-iOS.git', commit: 'c904cb73e26e86463a78e1335c6f4fd54a9e9223'
 end
 
 def wordpress_ui
@@ -106,7 +97,6 @@ target 'WooCommerce' do
   # ==================
   #
   alamofire
-  cocoa_lumberjack
   keychain
   pod 'ZendeskSupportSDK', '~> 9.0.0'
   stripe_terminal
@@ -153,7 +143,6 @@ end
 def yosemite_pods
   alamofire
   stripe_terminal
-  cocoa_lumberjack
   networking_pods
 
   aztec
@@ -173,40 +162,6 @@ end
 target 'YosemiteTests' do
   project 'Yosemite/Yosemite.xcodeproj'
   yosemite_pods
-end
-
-# WooFoundation Layer:
-# ===============
-#
-def woofoundation_pods
-  cocoa_lumberjack
-end
-
-def woofoundation_watchos_pods
-  cocoa_lumberjack
-end
-
-# Tools Target:
-# ================
-#
-target 'WooFoundation' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  woofoundation_pods
-end
-
-target 'WooFoundationWatchOS' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  woofoundation_watchos_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'WooFoundationTests' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  woofoundation_pods
 end
 
 # Networking Target:
@@ -238,35 +193,11 @@ target 'NetworkingTests' do
   yosemite_pods
 end
 
-# Storage Layer:
-# ==============
-#
-def storage_pods
-  cocoa_lumberjack
-end
-
-# Storage Target:
-# ===============
-#
-target 'Storage' do
-  project 'Storage/Storage.xcodeproj'
-  storage_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'StorageTests' do
-  project 'Storage/Storage.xcodeproj'
-  storage_pods
-end
-
 # Hardware Layer:
 # =================
 #
 def hardware_pods
   stripe_terminal
-  cocoa_lumberjack
 end
 
 # Hardware Target:
@@ -293,34 +224,10 @@ target 'SampleReceiptPrinter' do
   hardware_pods
 end
 
-# Experiments Layer:
-# ==================
-#
-def experiments_pods
-  cocoa_lumberjack
-end
-
-# Experiments Target:
-# ===================
-#
-target 'Experiments' do
-  project 'Experiments/Experiments.xcodeproj'
-  experiments_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'ExperimentsTests' do
-  project 'Experiments/Experiments.xcodeproj'
-  experiments_pods
-end
-
 # WordPressAuthenticator
 # ==========
 #
 def wordpress_authenticator_pods
-  svprogresshud
   gridicons
   wordpress_ui
   wordpress_shared

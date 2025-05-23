@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-05-20 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -297,8 +297,7 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "添加选项";
 
-/* Address section title in the domain contact info form.
-   Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form. */
 "ADDRESS" = "地址";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -437,9 +436,6 @@ which should be translated separately and considered part of this sentence. */
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "添加变体";
 
-/* Title for the Add a Different Address switch in the Address form */
-"Add a different shipping address" = "添加其他配送地址";
-
 /* Title of button to add a domain in domain settings. */
 "Add a domain" = "添加域";
 
@@ -547,9 +543,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "缺少地址";
-
-/* Notice text after updating the shipping or billing address */
-"Address successfully updated." = "已成功更新地址。";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "Adds product to order." = "将产品添加到订单。";
@@ -879,9 +872,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Azerbaijan" = "阿塞拜疆";
 
-/* Details section title in the Edit Address Form */
-"BILLING ADDRESS" = "账单地址";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -949,8 +939,7 @@ which should be translated separately and considered part of this sentence. */
 "Bhutan" = "不丹";
 
 /* Section header title for billing address in billing information
-   Title for the Billing Address section in order customer data
-   Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data */
 "Billing Address" = "账单地址";
 
 /* Billing Information view Title */
@@ -1972,9 +1961,6 @@ which should be translated separately and considered part of this sentence. */
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
 "Customer" = "客户";
-
-/* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "客户详情";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
 "Customer Note" = "客户备注";
@@ -5830,9 +5816,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "会话";
 
-/* Details section title in the Edit Address Form */
-"SHIPPING ADDRESS" = "配送地址";
-
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
@@ -6256,7 +6239,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Shipping" = "配送";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form
    Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "配送地址";
 
@@ -8012,12 +7994,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "请使用有效的电子邮箱地址，以便您可以收到我们的邮件。";
-
-/* Title for the Use as Billing Address switch in the Address form */
-"Use as Billing Address" = "使用账单地址";
-
-/* Title for the Use as Shipping Address switch in the Address form */
-"Use as Shipping Address" = "使用配送地址";
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "利用 AI 赋能的工具，快速生成产品描述。 只需输入关键词，剩下的交给我们处理！";
@@ -9932,6 +9908,21 @@ which should be translated separately and considered part of this sentence. */
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "到期日期：%@";
 
+/* Details section title in the Edit Address Form */
+"createOrderAddressFormViewModel.addressSection" = "地址";
+
+/* Title for the Edit Billing Address Form */
+"createOrderAddressFormViewModel.billingTitle" = "账单地址";
+
+/* Title for the Shipping Address Form for Customer Details */
+"createOrderAddressFormViewModel.customerDetailsTitle" = "客户详情";
+
+/* Title for the Add a Different Address switch in the Address form */
+"createOrderAddressFormViewModel.differentAddressToggleTitle" = "添加其他配送地址";
+
+/* Title for the Edit Shipping Address Form */
+"createOrderAddressFormViewModel.shippingTitle" = "配送地址";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "编辑金额";
 
@@ -10285,6 +10276,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "设备上的媒体";
+
+/* Title for the Edit Billing Address Form */
+"editOrderAddressFormViewModel.billingTitle" = "账单地址";
+
+/* Title for the Edit Shipping Address Form */
+"editOrderAddressFormViewModel.shippingTitle" = "配送地址";
+
+/* Notice text after updating the shipping or billing address */
+"editOrderAddressFormViewModel.success" = "地址更新成功。";
+
+/* Title for the Use as Billing Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsBillingToggle" = "用作账单地址";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsShippingToggle" = "用作配送地址";
 
 /* Button to dismiss the Edit Store List view */
 "editStoreListView.cancelButton" = "取消";
@@ -10640,6 +10646,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "我喜欢";
+
+/* Button to cancel a payment */
+"inPersonPayments.cardPresent.cardInserted.cancel" = "取消";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"inPersonPayments.cardPresent.cardInserted.title" = "卡片已插入";
 
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "取消";
@@ -11340,6 +11352,15 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "读卡器付款已取消";
 
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "再次尝试付款";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "卡片已插入";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "付款准备就绪";
+
 /* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
 "pointOfSale.cardPresent.connectReader.button.title" = "连接您的读卡器";
 
@@ -11748,9 +11769,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "完成";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "现场付款";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "点击产品以 \n 将其添加到购物车";
 
@@ -11884,6 +11902,12 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.title" = "产品";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "搜索您的商店";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "热销产品";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.emptyListText.1" = "搜索您的商店";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
@@ -11894,6 +11918,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "可用选项";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "尝试调整您的搜索字词 — 搜索优惠券名称的一部分可能会有所帮助。";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "通过向客户发送特别优惠和折扣来推动您的业务发展。";
@@ -13106,6 +13133,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is verified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.verified" = "地址已验证";
 
+/* Label for the option to add a payment method on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.addPaymentMethod" = "添加付款方式";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "必须由成年人签收";
 
@@ -13123,6 +13153,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the menu to select a paper size on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.paperSize" = "选择标签纸张尺寸";
+
+/* Header for payment method section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paymentMethod" = "付款方式";
 
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "购买标签";
@@ -13345,6 +13378,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "费用最低";
+
+/* Notice to display after requesting refund for a shipping label */
+"wooShipping.createLabels.refundNotice" = "您已经成功提交退款请求。 您可以购买新的标签。";
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "重试";
@@ -13639,6 +13675,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "您是否要运输危险品或危险物质？";
+
+/* Button to dismiss the Request shipping label refund view */
+"wooShippingRefundView.cancelButton" = "取消";
+
+/* Description on the Request shipping label refund view. The placeholder is the number of day to process the refund. */
+"wooShippingRefundView.description" = "为您未使用的运输标签请求退款。 该运输标签的退款流程将立即开始，通常会在 %1$d 个工作日内完成。";
+
+/* Button to dismiss the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.cancel" = "取消";
+
+/* Message on the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.message" = "我们无法为您的标签请求退款。 请重试。";
+
+/* Button to retry when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.retry" = "重试";
+
+/* Title of the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.title" = "退款请求失败";
+
+/* Note on the Request shipping label refund view */
+"wooShippingRefundView.note" = "请注意，此退款请求仅适用于未使用的运输标签，并且不会影响订单本身。";
+
+/* Purchase date label on the Request shipping label refund view. */
+"wooShippingRefundView.purchaseDate" = "购买日期：";
+
+/* Refund amount label on the Request shipping label refund view. */
+"wooShippingRefundView.refundAmount" = "符合退款条件的金额：";
+
+/* Button to submit refund request the Request shipping label refund view */
+"wooShippingRefundView.submitButton" = "退款标签 (%1$@)";
+
+/* title on the Request shipping label refund view */
+"wooShippingRefundView.title" = "请求运输标签退款";
 
 /* Button to move selected items to a shipment in split shipments flow */
 "wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "移至";

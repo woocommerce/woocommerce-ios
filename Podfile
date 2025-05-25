@@ -30,12 +30,6 @@ def networking_pods
   wordpress_shared
 end
 
-def wordpress_ui
-  pod 'WordPressUI', '~> 1.15'
-  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
-end
-
 # Main Target!
 # ============
 #
@@ -46,7 +40,6 @@ target 'WooCommerce' do
   # ====================
   #
   wordpress_shared
-  wordpress_ui
 
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
@@ -110,7 +103,6 @@ end
 # ==========
 #
 def wordpress_authenticator_pods
-  wordpress_ui
   wordpress_shared
 end
 

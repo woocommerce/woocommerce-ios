@@ -19,6 +19,10 @@ let package = Package(
             name: "TestKit",
             targets: ["TestKit"]
         ),
+        .library(
+            name: "WordPressUI",
+            targets: ["WordPressUI", "WordPressUIObjC"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -61,6 +65,16 @@ let package = Package(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
+        .target(name: "WordPressUIObjC"),
+        .target(
+            name: "WordPressUI",
+            dependencies: [.target(name: "WordPressUIObjC")],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "WordPressUITests",
+            dependencies: [.target(name: "WordPressUI")]
+        )
     ]
 )
 
@@ -236,6 +250,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    "WordPressUI",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
@@ -313,6 +328,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticator,
                 dependencies: [
+                    "WordPressUI",
                     .product(name: "Gridicons", package: "Gridicons-iOS"),
                     .product(name: "NSObject-SafeExpectations", package: "NSObject-SafeExpectations"),
                     .product(name: "SVProgressHUD", package: "SVProgressHUD"),

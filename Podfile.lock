@@ -1,28 +1,24 @@
 PODS:
   - WordPressShared (2.1.0)
-  - WordPressUI (1.15.1)
   - Wormholy (1.6.6)
   - WPMediaPicker (1.8.12)
 
 DEPENDENCIES:
   - WordPressShared (~> 2.1-beta)
-  - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8)
 
 SPEC REPOS:
   trunk:
     - WordPressShared
-    - WordPressUI
     - Wormholy
     - WPMediaPicker
 
 SPEC CHECKSUMS:
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
-  WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
 
-PODFILE CHECKSUM: bba16ee5a26e554750998f34114b2c9de00861a0
+PODFILE CHECKSUM: dc92ad9048fcc52de0e242c76e3cf53e735aa975
 
 COCOAPODS: 1.16.2

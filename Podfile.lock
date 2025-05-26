@@ -1,20 +1,16 @@
 PODS:
-  - WordPressShared (2.1.0)
   - WPMediaPicker (1.8.12)
 
 DEPENDENCIES:
-  - WordPressShared (~> 2.1-beta)
   - WPMediaPicker (~> 1.8)
 
 SPEC REPOS:
   trunk:
-    - WordPressShared
     - WPMediaPicker
 
 SPEC CHECKSUMS:
-  WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
 
-PODFILE CHECKSUM: 3cdc2cfeea28093a0febd43eee21482afb084eeb
+PODFILE CHECKSUM: facd615e57143a47b70e5802a227100b2a07b7a0
 
 COCOAPODS: 1.16.2

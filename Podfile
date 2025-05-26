@@ -19,17 +19,6 @@ app_ios_deployment_target = Gem::Version.new('16.0')
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
-## Pods shared between all the targets
-## =====================================
-##
-def wordpress_shared
-  pod 'WordPressShared', '~> 2.1-beta'
-end
-
-def networking_pods
-  wordpress_shared
-end
-
 # Main Target!
 # ============
 #
@@ -39,8 +28,6 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-  wordpress_shared
-
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
 
@@ -55,60 +42,17 @@ end
 # Yosemite Layer:
 # ===============
 #
-def yosemite_pods
-  networking_pods
-end
-
 # Yosemite Target:
 # ================
 #
 target 'Yosemite' do
   project 'Yosemite/Yosemite.xcodeproj'
-  yosemite_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'YosemiteTests' do
-  project 'Yosemite/Yosemite.xcodeproj'
-  yosemite_pods
-end
-
-# Networking Target:
-# ==================
-#
-target 'Networking' do
-  project 'Networking/Networking.xcodeproj'
-  networking_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'NetworkingTests' do
-  project 'Networking/Networking.xcodeproj'
-  networking_pods
-
-  # Including `yosemite_pods` because `Fakes.framework` has a dependency `Yosemite` while `Networking` does not.
-  yosemite_pods
-end
-
-# WordPressAuthenticator
-# ==========
-#
-def wordpress_authenticator_pods
-  wordpress_shared
-end
-
-target 'WordPressAuthenticator' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  wordpress_authenticator_pods
-end
-
-target 'WordPressAuthenticatorTests' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  wordpress_authenticator_pods
+  # Empty, but if we remove this we get a CocoaPods crash.
+  #
+  # ArgumentError - [Xcodeproj] Unable to find compatibility version string for object version `70`.
+  #
+  # Given we're in the process of removing CocoaPods, we can ignore this for
+  # the time being.
 end
 
 # Workarounds:
@@ -121,7 +65,7 @@ end
 # Make all pods that are not shared across multiple targets into static frameworks by overriding the static_framework? function to return true
 # Linking the shared frameworks statically would lead to duplicate symbols
 # A future version of CocoaPods may make this easier to do. See https://github.com/CocoaPods/CocoaPods/issues/7428
-shared_targets = %w[Storage Networking Yosemite Hardware]
+shared_targets = %w[Storage Hardware]
 # Statically linking Sentry results in a conflict with `NSDictionary.objectAtKeyPath`, but dynamically
 # linking it resolves this.
 dynamic_pods = ['Sentry']

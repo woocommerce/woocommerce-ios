@@ -8,7 +8,7 @@ let package = Package(
         // Keep in sync with Common.xcconfig
         .iOS(.v16),
         .macOS(.v10_14),
-        .watchOS(.v9)
+        .watchOS(.v9),
     ],
     products: XcodeSupport.products + [
         .library(
@@ -20,9 +20,13 @@ let package = Package(
             targets: ["TestKit"]
         ),
         .library(
+            name: "WordPressShared",
+            targets: ["WordPressShared"]
+        ),
+        .library(
             name: "WordPressUI",
             targets: ["WordPressUI", "WordPressUIObjC"]
-        )
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -65,6 +69,17 @@ let package = Package(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
+        .target(
+            name: "WordPressSharedObjC",
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "WordPressShared",
+            dependencies: [
+                .target(name: "WordPressSharedObjC"),
+            ],
+            resources: [.process("Resources")]
+        ),
         .target(name: "WordPressUIObjC"),
         .target(
             name: "WordPressUI",
@@ -74,7 +89,16 @@ let package = Package(
         .testTarget(
             name: "WordPressUITests",
             dependencies: [.target(name: "WordPressUI")]
-        )
+        ),
+        .testTarget(
+            name: "WordPressSharedTests",
+            dependencies: [.target(name: "WordPressShared")]
+        ),
+        .testTarget(
+            name: "WordPressSharedObjCTests",
+            dependencies: [.target(name: "WordPressShared")],
+            resources: [.process("Resources")]
+        ),
     ]
 )
 
@@ -190,6 +214,7 @@ enum XcodeSupport {
                 XcodeTargetNames.networking,
                 dependencies: [
                     "Codegen",
+                    "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
@@ -202,6 +227,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    "WordPressShared",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.networking.asDependency
                 ]
@@ -250,6 +276,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    "WordPressShared",
                     "WordPressUI",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
@@ -284,6 +311,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    "WordPressShared",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
@@ -328,6 +356,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticator,
                 dependencies: [
+                    "WordPressShared",
                     "WordPressUI",
                     .product(name: "Gridicons", package: "Gridicons-iOS"),
                     .product(name: "NSObject-SafeExpectations", package: "NSObject-SafeExpectations"),
@@ -339,6 +368,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wordPressAuthenticatorTests,
                 dependencies: [
+                    "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                     .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
@@ -349,6 +379,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
+                    "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
@@ -362,6 +393,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    "WordPressShared",
                     XcodeTargetNames.yosemite.asDependency
                 ]
             )

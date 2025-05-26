@@ -1,8 +1,7 @@
 #import "WPWalkthroughOverlayView.h"
 #import "WPNUXPrimaryButton.h"
 #import "WPNUXSecondaryButton.h"
-#import <WordPressShared/WPFontManager.h>
-#import <WordPressShared/WPNUXUtility.h>
+@import WordPressSharedObjC;
 @import WordPressUIObjC;
 
 @interface WPWalkthroughOverlayView() {

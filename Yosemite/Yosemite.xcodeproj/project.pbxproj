@@ -234,7 +234,6 @@
 		3147030C2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */; };
 		31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */; };
 		31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */; };
-		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD72DDC313800E5E49C /* XcodeTarget_Yosemite */; };
 		3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD92DDC313E00E5E49C /* XcodeTarget_YosemiteTests */; };
 		3F7E6AC82DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */; };
@@ -800,7 +799,6 @@
 		3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
 		31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayReaderLocation+ReaderLocation.swift"; sourceTree = "<group>"; };
 		31A89EE5278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StripeAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
-		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePopularPurchasableItemFetchStrategyTests.swift; sourceTree = "<group>"; };
 		3FA7D5362D5474D900CE5611 /* Yosemite.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Yosemite.xcconfig; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -914,7 +912,6 @@
 		74D42DBB221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTracking+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentStore.swift; sourceTree = "<group>"; };
-		79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.debug.xcconfig"; sourceTree = "<group>"; };
 		864177A72CDBC9A1001F9640 /* MockShippingMethodActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingMethodActionHandler.swift; sourceTree = "<group>"; };
 		86969E752CEEEF220032E50F /* MockCouponActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCouponActionHandler.swift; sourceTree = "<group>"; };
@@ -926,8 +923,6 @@
 		933A27342222352500C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release.xcconfig"; sourceTree = "<group>"; };
 		93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YosemiteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		AEF945862729760F001DCCFB /* TelemetryAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryAction.swift; sourceTree = "<group>"; };
 		AEF945882729766D001DCCFB /* TelemetryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStore.swift; sourceTree = "<group>"; };
 		AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStoreTests.swift; sourceTree = "<group>"; };
@@ -1146,7 +1141,6 @@
 				3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */,
 				26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */,
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
-				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1984,7 +1978,6 @@
 				B5B19DE120E6A45E00899568 /* Networking.framework */,
 				B5B19DDF20E6A45900899568 /* Storage.framework */,
 				C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */,
-				991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2260,10 +2253,7 @@
 			children = (
 				7F47E19203B04CF6BB5EA659 /* Pods-Yosemite.debug.xcconfig */,
 				93D120F57D5D14A10B3AFFFD /* Pods-Yosemite.release.xcconfig */,
-				79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */,
-				ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */,
 				585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */,
-				35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2308,11 +2298,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5C9DE0C2087FEC0006B910A /* Build configuration list for PBXNativeTarget "YosemiteTests" */;
 			buildPhases = (
-				18AB88228C25CBAA8D621FD0 /* [CP] Check Pods Manifest.lock */,
 				B5C9DDFA2087FEC0006B910A /* Sources */,
 				B5C9DDFB2087FEC0006B910A /* Frameworks */,
 				B5C9DDFC2087FEC0006B910A /* Resources */,
-				8EA29A17ED8EE4344F10161F /* [CP] Embed Pods Frameworks */,
 				263E38432641FF2300260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -2358,8 +2346,6 @@
 				Base,
 			);
 			mainGroup = B5C9DDEB2087FEC0006B910A;
-			packageReferences = (
-			);
 			productRefGroup = B5C9DDF62087FEC0006B910A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2392,41 +2378,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		18AB88228C25CBAA8D621FD0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-YosemiteTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8EA29A17ED8EE4344F10161F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D05CE52EBA8EDA14B248EF77 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3091,7 +3042,6 @@
 		};
 		1A96903A2359D99E0061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -3296,7 +3246,6 @@
 		};
 		B5C9DE0D2087FEC0006B910A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79402E7AD394EEB60C39A4B8 /* Pods-YosemiteTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -3317,7 +3266,6 @@
 		};
 		B5C9DE0E2087FEC0006B910A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;

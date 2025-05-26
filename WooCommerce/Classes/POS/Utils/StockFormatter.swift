@@ -6,8 +6,14 @@ struct StockFormatter {
         case false:
             return product.productStockStatus.description
         case true:
-            // TODO: Needs additional handling to show the number of items in stock.
-            return product.productStockStatus.description
+            guard let stock = product.stockQuantity else {
+                return product.productStockStatus.description
+            }
+            if stock <= 0 {
+                return "Out of stock"
+            } else {
+                return "\(stock) in stock"
+            }
         }
     }
 }

@@ -55,4 +55,60 @@ struct StockFormatterTests {
         // Then
         #expect(result == "Out of stock")
     }
+
+    @Test func test_managestock_when_enabled_and_stockQuantity_not_set_then_returns_productStockStatus_stockLabel() async throws {
+        // Given
+        let manageStockEnabled: Bool = true
+        let stockStatusKey: String = "instock"
+        let product = POSSimpleProduct.fake().copy(manageStock: manageStockEnabled,
+                                                   stockStatusKey: stockStatusKey)
+
+        // When
+        let result = StockFormatter.stockStatusLabel(for: product)
+
+        // Then
+        #expect(result == "In stock")
+    }
+
+    @Test func test_managestock_when_enabled_and_stockQuantity_less_than_zero_then_returns_out_of_stock_stockLabel() async throws {
+        // Given
+        let manageStockEnabled: Bool = true
+        let stockQuantity: Decimal = -3
+        let product = POSSimpleProduct.fake().copy(manageStock: manageStockEnabled,
+                                                   stockQuantity: stockQuantity)
+
+        // When
+        let result = StockFormatter.stockStatusLabel(for: product)
+
+        // Then
+        #expect(result == "Out of stock")
+    }
+
+    @Test func test_managestock_when_enabled_and_stockQuantity_is_zero_then_returns_out_of_stock_stockLabel() async throws {
+        // Given
+        let manageStockEnabled: Bool = true
+        let stockQuantity: Decimal = 0
+        let product = POSSimpleProduct.fake().copy(manageStock: manageStockEnabled,
+                                                   stockQuantity: stockQuantity)
+
+        // When
+        let result = StockFormatter.stockStatusLabel(for: product)
+
+        // Then
+        #expect(result == "Out of stock")
+    }
+
+    @Test func test_managestock_when_enabled_and_stockQuantity_is_positive_then_returns_number_in_stock_stockLabel() async throws {
+        // Given
+        let manageStockEnabled: Bool = true
+        let stockQuantity: Decimal = 5
+        let product = POSSimpleProduct.fake().copy(manageStock: manageStockEnabled,
+                                                   stockQuantity: stockQuantity)
+
+        // When
+        let result = StockFormatter.stockStatusLabel(for: product)
+
+        // Then
+        #expect(result == "5 in stock")
+    }
 }

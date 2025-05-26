@@ -1,3 +1,4 @@
+import Foundation
 import struct Yosemite.POSSimpleProduct
 
 struct StockFormatter {
@@ -10,10 +11,22 @@ struct StockFormatter {
                 return product.productStockStatus.description
             }
             if stock <= 0 {
-                return "Out of stock"
+                return Localization.outOfStock
             } else {
-                return "\(stock) in stock"
+                return String.localizedStringWithFormat(Localization.inStockWithQuantity, "\(stock)")
             }
         }
+    }
+
+    enum Localization {
+        static let outOfStock = NSLocalizedString(
+            "pos.stockStatusLabel.outofstock",
+            value: "Out of stock",
+            comment: "Label to be displayed in the product's card when out of stock")
+
+        static let inStockWithQuantity = NSLocalizedString(
+            "pos.stockStatusLabel.outofstock",
+            value: "%@ in stock",
+            comment: "Label to be displayed in the product's card when there's stock of a given product")
     }
 }

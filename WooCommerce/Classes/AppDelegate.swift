@@ -8,7 +8,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
 
-import CocoaLumberjack
+import CocoaLumberjackSwift
 import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
@@ -18,11 +18,6 @@ import class Yosemite.ScreenshotStoresManager
 
 // In that way, Inject will be available in the entire target.
 @_exported import Inject
-
-#if DEBUG
-import Wormholy
-#endif
-
 
 // MARK: - Woo's App Delegate!
 //
@@ -82,7 +77,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
         setupAppRatingManager()
-        setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
         setupUserNotificationCenter()
@@ -368,7 +362,7 @@ private extension AppDelegate {
     /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        CocoaLumberjack.dynamicLogLevel = level
+        CocoaLumberjackSwift.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter
@@ -411,15 +405,6 @@ private extension AppDelegate {
         appRating.register(section: "notifications", significantEventCount: WooConstants.notificationEventCount)
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
-    }
-
-    /// Set up Wormholy only in Debug build configuration
-    ///
-    func setupWormholy() {
-        #if DEBUG
-        /// We want to activate it programmatically, not using the shake.
-        Wormholy.shakeEnabled = false
-        #endif
     }
 
     /// Set up `KeyboardStateProvider`

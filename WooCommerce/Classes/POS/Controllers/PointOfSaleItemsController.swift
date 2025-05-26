@@ -96,9 +96,9 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
             let items = itemsViewState.itemsStack.root.items
             let stackState: ItemsStackState
             if items.isEmpty {
-                stackState = ItemsStackState(root: .error(.errorOnLoadingProducts), itemStates: [:])
+                stackState = ItemsStackState(root: .error(.errorOnLoadingProducts(error: error)), itemStates: [:])
             } else {
-                stackState = ItemsStackState(root: .inlineError(items, error: .errorOnLoadingProducts, context: .refresh), itemStates: [:])
+                stackState = ItemsStackState(root: .inlineError(items, error: .errorOnLoadingProducts(error: error), context: .refresh), itemStates: [:])
             }
             itemsViewState = ItemsViewState(containerState: .content, itemsStack: stackState)
         }
@@ -132,7 +132,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         } catch {
             itemsViewState.containerState = .content
             itemsViewState.itemsStack = ItemsStackState(root: .inlineError(currentItems,
-                                                                           error: .errorOnLoadingProductsNextPage,
+                                                                           error: .errorOnLoadingProductsNextPage(error: error),
                                                                            context: .pagination),
                                                         itemStates: currentItemStates)
         }
@@ -147,7 +147,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }
         } catch {
-            updateState(for: parent, to: .error(.errorOnLoadingVariations))
+            updateState(for: parent, to: .error(.errorOnLoadingVariations(error: error)))
         }
     }
 
@@ -168,7 +168,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
             }
         } catch {
             updateState(for: parent, to: .inlineError(currentItems,
-                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage,
+                                                      error: PointOfSaleErrorState.errorOnLoadingVariationsNextPage(error: error),
                                                       context: .pagination))
         }
     }

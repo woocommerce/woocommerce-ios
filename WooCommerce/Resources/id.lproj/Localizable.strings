@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-05-20 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -297,8 +297,7 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "TAMBAHKAN PILIHAN";
 
-/* Address section title in the domain contact info form.
-   Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form. */
 "ADDRESS" = "ALAMAT";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -437,9 +436,6 @@ which should be translated separately and considered part of this sentence. */
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Tambahkan Variasi";
 
-/* Title for the Add a Different Address switch in the Address form */
-"Add a different shipping address" = "Tambahkan alamat pengiriman lain";
-
 /* Title of button to add a domain in domain settings. */
 "Add a domain" = "Tambah domain";
 
@@ -547,9 +543,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "Alamat belum diisi";
-
-/* Notice text after updating the shipping or billing address */
-"Address successfully updated." = "Alamat berhasil diperbarui.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "Adds product to order." = "Menambahkan produk ke pesanan.";
@@ -879,9 +872,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Azerbaijan" = "Azerbaijan";
 
-/* Details section title in the Edit Address Form */
-"BILLING ADDRESS" = "ALAMAT PENAGIHAN";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -949,8 +939,7 @@ which should be translated separately and considered part of this sentence. */
 "Bhutan" = "Bhutan";
 
 /* Section header title for billing address in billing information
-   Title for the Billing Address section in order customer data
-   Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data */
 "Billing Address" = "Alamat Penagihan";
 
 /* Billing Information view Title */
@@ -1972,9 +1961,6 @@ which should be translated separately and considered part of this sentence. */
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
 "Customer" = "Pelanggan";
-
-/* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Detail Pelanggan";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
 "Customer Note" = "Catatan Pelanggan";
@@ -5830,9 +5816,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "SESI";
 
-/* Details section title in the Edit Address Form */
-"SHIPPING ADDRESS" = "ALAMAT PENGIRIMAN";
-
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
@@ -6256,7 +6239,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Shipping" = "Pengiriman";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form
    Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "Alamat Pengiriman";
 
@@ -8012,12 +7994,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Gunakan alamat email yang aktif agar Anda bisa menerima pesan-pesan kami.";
-
-/* Title for the Use as Billing Address switch in the Address form */
-"Use as Billing Address" = "Gunakan sebagai Alamat Penagihan";
-
-/* Title for the Use as Shipping Address switch in the Address form */
-"Use as Shipping Address" = "Gunakan sebagai Alamat Pengiriman";
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Gunakan alat berbasis AI untuk membuat deskripsi produk secara cepat. Cukup masukkan kata kunci dan biarkan kami mengurus selebihnya!";
@@ -9926,6 +9902,24 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
 
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "Kedaluwarsa pada %@";
+
+/* Details section title in the Edit Address Form */
+"createOrderAddressFormViewModel.addressSection" = "Alamat";
+
+/* Title for the Edit Billing Address Form */
+"createOrderAddressFormViewModel.billingTitle" = "Alamat Penagihan";
+
+/* Title for the Shipping Address Form for Customer Details */
+"createOrderAddressFormViewModel.customerDetailsTitle" = "Detail Pelanggan";
+
+/* Title for the Add a Different Address switch in the Address form */
+"createOrderAddressFormViewModel.differentAddressToggleTitle" = "Tambahkan alamat pengiriman lain";
+
+/* Title for the Edit Shipping Address Form */
+"createOrderAddressFormViewModel.shippingTitle" = "Alamat Pengiriman";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Edit jumlah";
 
@@ -10279,6 +10273,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media di perangkat";
+
+/* Title for the Edit Billing Address Form */
+"editOrderAddressFormViewModel.billingTitle" = "Alamat Penagihan";
+
+/* Title for the Edit Shipping Address Form */
+"editOrderAddressFormViewModel.shippingTitle" = "Alamat Pengiriman";
+
+/* Notice text after updating the shipping or billing address */
+"editOrderAddressFormViewModel.success" = "Alamat berhasil diperbarui.";
+
+/* Title for the Use as Billing Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsBillingToggle" = "Gunakan sebagai Alamat Penagihan";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsShippingToggle" = "Gunakan sebagai Alamat Pengiriman";
 
 /* Button to dismiss the Edit Store List view */
 "editStoreListView.cancelButton" = "Batal";
@@ -10634,6 +10643,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Saya menyukainya";
+
+/* Button to cancel a payment */
+"inPersonPayments.cardPresent.cardInserted.cancel" = "Batalkan";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"inPersonPayments.cardPresent.cardInserted.title" = "Kartu dimasukkan";
 
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "Batal";
@@ -11334,6 +11349,15 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Pembayaran dibatalkan pada pembaca kartu";
 
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Coba bayar lagi";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Kartu dimasukkan";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Siap untuk pembayaran";
+
 /* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
 "pointOfSale.cardPresent.connectReader.button.title" = "Hubungkan ke pembaca";
 
@@ -11670,11 +11694,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Putus Sambungan Pembaca";
 
-/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Keluar dari POS";
 
-/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Dapatkan Dukungan";
+
+/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Di mana produk saya?";
 
 /* The title of the floating button to indicate that reader is connected. */
 "pointOfSale.floatingButtons.readerConnected.title" = "Pembaca Terhubung";
@@ -11685,7 +11712,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Memutuskan sambungan";
 
-/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Dokumentasi";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
@@ -11738,9 +11765,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Selesai";
-
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pembayaran Langsung";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Ketuk produk ke \n tambahkan ke keranjang";
@@ -11851,7 +11875,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.loadingCouponsErrorRetry" = "Coba lagi";
 
 /* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle" = "Error saat memuat kupon";
+"pos.itemList.loadingCouponsErrorSubtitle2" = "Coba lagi?";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
 "pos.itemList.loadingCouponsErrorTitle" = "Error saat memuat kupon";
@@ -11859,26 +11883,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Produk";
 
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Cari kupon";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Cari produk";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Cari";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Kupon";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Jenis produk lain akan tersedia dalam pembaruan mendatang.";
-
-/* Link to more information within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.learnMoreHint" = "Baca selengkapnya";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Saat ini, hanya produk sederhana dan bukan unduhan yang dapat menggunakan POS.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Hanya menampilkan produk sederhana dan bervariasi";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Produk";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText" = "Tidak ada pencarian terbaru";
+"pos.itemsearch.before.search.emptyListText" = "Cari di toko Anda";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Produk populer";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "Cari di toko Anda";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "Pencarian terbaru";
@@ -11890,13 +11917,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Pilihan tersedia";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "Coba sesuaikan kata kunci pencarian Anda. Pencarian dengan bagian dari nama kupon mungkin bisa membantu.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Tingkatkan penjualan dengan mengirimi pelanggan promosi dan diskon spesial.";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "Kupon tidak ditemukan.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Kupon tidak ditemukan";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Nama variasi tidak dapat dicari, maka gunakan nama produk induk.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "Coba sesuaikan istilah pencarian Anda. Pencarian dengan bagian nama produk mungkin bisa membantu.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "Tidak ada produk yang ditemukan.";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS saat ini hanya mendukung produk sederhana dan bervariasi.";
@@ -11915,6 +11954,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Buat kupon";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Hapus Pencarian";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
@@ -13088,6 +13130,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is verified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.verified" = "Alamat terverifikasi";
 
+/* Label for the option to add a payment method on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Tambahkan metode pembayaran";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Tanda Tangan Orang Dewasa Wajib Diisi";
 
@@ -13105,6 +13150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the menu to select a paper size on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.paperSize" = "Pilih ukuran kertas label";
+
+/* Header for payment method section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paymentMethod" = "Metode Pembayaran";
 
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Beli Label";
@@ -13217,12 +13265,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Alamat terverifikasi";
 
-/* Notice when a hazardous materials category is removed on the shipping label creation screen */
-"wooShipping.createLabels.hazmatRemoved" = "Hapus kategori bahan berbahaya";
-
-/* Notice when a hazardous materials category is set on the shipping label creation screen */
-"wooShipping.createLabels.hazmatSet" = "Kategori bahan berbahaya ditetapkan";
-
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ item";
 
@@ -13231,9 +13273,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Notice when a International Transaction Number is missing on the shipping label creation screen */
-"wooShipping.createLabels.itnMissing" = "ITN wajib diisi.";
 
 /* Message in the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.message" = "Kami tidak dapat membeli label pengiriman. Coba lagi.";
@@ -13268,20 +13307,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "Cetak Label Pengiriman";
 
+/* Title for button to print a customs form on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printCustomsFormButton" = "Cetak formulir bea cukai";
+
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "Dari sini, Anda dapat mencetak label pengiriman lagi atau mengubah ukuran kertas label.";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
-"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "Batalkan";
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingError.cancel" = "Batalkan";
 
-/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.message" = "Apakah Anda ingin mencoba lagi?";
+/* Title of the error alert when printing a customs form fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.customsForm" = "Terjadi error saat mengunduh formulir bea cukai";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
-"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "Coba lagi";
+/* Message of the error alert when printing a document fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.message" = "Apakah Anda ingin mencoba lagi?";
+
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingError.retry" = "Coba lagi";
 
 /* Title of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.title" = "Kesalahan saat menampilkan pratinjau label pengiriman";
+"wooShipping.createLabels.postPurchase.printingError.shippingLabel" = "Terjadi error saat menampilkan pratinjau label pengiriman";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "Label pengiriman siap dicetak";
@@ -13305,7 +13350,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Tambahkan alamat tujuan untuk mendapatkan tarif pengiriman";
 
 /* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
-"wooShipping.createLabels.rates.noRatesAvailable" = "Kami tidak dapat menemukan layanan pengiriman untuk kombinasi paket yang dipilih dan total berat pengiriman. Sesuaikan input dan coba lagi.";
+"wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT" = "Kami tidak dapat menemukan layanan pengiriman untuk kombinasi paket yang dipilih dan total berat pengiriman. Sesuaikan input dan coba lagi.";
+
+/* Error message when no shipping rates were found based on the combination of the selected HAZMAT category, package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT" = "Kami tidak dapat menemukan layanan pengiriman untuk kombinasi paket HAZMAT yang dipilih, paket yang dipilih, dan total berat pengiriman. Sesuaikan input dan coba lagi.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Kami perlu mengetahui berat paket ini sebelum dapat menampilkan tarif pengiriman yang tersedia.";
@@ -13328,8 +13376,14 @@ which should be translated separately and considered part of this sentence. */
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "Termurah";
 
+/* Notice to display after requesting refund for a shipping label */
+"wooShipping.createLabels.refundNotice" = "Anda telah berhasil mengajukan permintaan pengembalian dana. Anda dapat membeli label baru.";
+
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Coba lagi";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.shipmentFormat" = "Pengiriman %1$d";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Tanda Tangan Orang Dewasa Wajib Diisi (+%1$@)";
@@ -13375,9 +13429,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Buat Label Pengiriman";
-
-/* Button to undo a change on the shipping label creation screen */
-"wooShipping.createLabels.undo" = "Batal";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Lihat Label Pengiriman";
@@ -13547,17 +13598,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry loading saved packages in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.retryCTA" = "Coba lagi";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatRemoved" = "Hapus kategori bahan berbahaya";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatSet" = "Kategori bahan berbahaya ditetapkan";
+
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.shipmentDetails.itnMissing" = "ITN wajib diisi.";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.shipmentDetails.undo" = "Urungkan";
+
 /* Label for section in shipping label creation to split shipments. */
 "wooShipping.splitShipments.products" = "Produk";
 
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Pisahkan pengiriman";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.removingPackageFailure" = "Tidak dapat menghapus paket";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShippingAddPackageViewModel.retry" = "Coba lagi";
+
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "Tidak dapat menyimpan paket";
-
-/* Button to retry saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageRetry" = "Coba lagi";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Masukkan ITN yang valid dalam salah satu format berikut: X12345678901234, AES X12345678901234, atau NOEEI 30.37(a).";
@@ -13606,6 +13672,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Apakah Anda mengirim barang berisiko atau bahan berbahaya?";
+
+/* Button to dismiss the Request shipping label refund view */
+"wooShippingRefundView.cancelButton" = "Batalkan";
+
+/* Description on the Request shipping label refund view. The placeholder is the number of day to process the refund. */
+"wooShippingRefundView.description" = "Minta pengembalian dana untuk label pengiriman yang tidak terpakai. Proses pengembalian dana untuk label pengiriman akan segera diajukan dan biasanya selesai dalam waktu %1$d hari kerja.";
+
+/* Button to dismiss the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.cancel" = "Batalkan";
+
+/* Message on the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.message" = "Kami tidak dapat meminta pengembalian dana untuk label Anda. Silakan coba lagi.";
+
+/* Button to retry when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.retry" = "Coba lagi";
+
+/* Title of the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.title" = "Permintaan pengembalian dana gagal";
+
+/* Note on the Request shipping label refund view */
+"wooShippingRefundView.note" = "Perhatikan bahwa permintaan pengembalian dana ini hanya berlaku untuk label pengiriman yang belum digunakan dan tidak memengaruhi pesanan itu sendiri.";
+
+/* Purchase date label on the Request shipping label refund view. */
+"wooShippingRefundView.purchaseDate" = "Tanggal pembelian:";
+
+/* Refund amount label on the Request shipping label refund view. */
+"wooShippingRefundView.refundAmount" = "Jumlah yang memenuhi syarat pengembalian dana:";
+
+/* Button to submit refund request the Request shipping label refund view */
+"wooShippingRefundView.submitButton" = "Kembalikan Dana Label (%1$@)";
+
+/* title on the Request shipping label refund view */
+"wooShippingRefundView.title" = "Minta pengembalian dana label pengiriman";
 
 /* Button to move selected items to a shipment in split shipments flow */
 "wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Pindah ke";

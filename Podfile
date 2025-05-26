@@ -15,72 +15,9 @@ use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for s
 use_modular_headers!
 
 app_ios_deployment_target = Gem::Version.new('16.0')
-app_watchos_deployment_target = Gem::Version.new('9.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
-
-## Pods shared between all the targets
-## =====================================
-##
-def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.19'
-  # pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-  # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
-end
-
-def wordpress_shared
-  pod 'WordPressShared', '~> 2.1-beta'
-end
-
-def svprogresshud
-  pod 'SVProgressHUD', '2.2.5'
-end
-
-def keychain
-  pod 'KeychainAccess', '~> 4.2.2'
-end
-
-def alamofire
-  pod 'Alamofire', '~> 5.0'
-end
-
-def cocoa_lumberjack
-  pod 'CocoaLumberjack/Swift', '~> 3.8.5'
-end
-
-def stripe_terminal
-  pod 'StripeTerminal', '~> 4.2.0'
-end
-
-def networking_pods
-  alamofire
-  cocoa_lumberjack
-
-  wordpress_shared
-
-  # Used for HTML parsing
-  aztec
-
-  # Used for storing application password
-  keychain
-end
-
-def networking_watch_os_pods
-  alamofire
-  cocoa_lumberjack
-  keychain
-end
-
-def gridicons
-  pod 'Gridicons', '~> 1.2.0'
-end
-
-def wordpress_ui
-  pod 'WordPressUI', '~> 1.15'
-  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
-end
 
 # Main Target!
 # ============
@@ -91,27 +28,8 @@ target 'WooCommerce' do
   # Automattic Libraries
   # ====================
   #
-
-  gridicons
-
-  wordpress_shared
-  wordpress_ui
-
-  aztec
-
   pod 'WPMediaPicker', '~> 1.8'
   # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
-
-  # External Libraries
-  # ==================
-  #
-  alamofire
-  cocoa_lumberjack
-  keychain
-  pod 'ZendeskSupportSDK', '~> 9.0.0'
-  stripe_terminal
-  pod 'Kingfisher', '~> 7.6.2'
-  pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 
   # Unit Tests
   # ==========
@@ -121,230 +39,20 @@ target 'WooCommerce' do
   end
 end
 
-# StoreWidget Target
-# ==========
-#
-target 'StoreWidgetsExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
-end
-
-# Notification Content Target
-# ==========
-#
-target 'NotificationExtension' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  keychain
-end
-
-# Woo Watch App Target
-# ==========
-#
-target 'Woo Watch App' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-  pod 'Sentry', '~> 8.46.0'
-  networking_watch_os_pods
-end
-
 # Yosemite Layer:
 # ===============
 #
-def yosemite_pods
-  alamofire
-  stripe_terminal
-  cocoa_lumberjack
-  networking_pods
-
-  aztec
-end
-
 # Yosemite Target:
 # ================
 #
 target 'Yosemite' do
   project 'Yosemite/Yosemite.xcodeproj'
-  yosemite_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'YosemiteTests' do
-  project 'Yosemite/Yosemite.xcodeproj'
-  yosemite_pods
-end
-
-# WooFoundation Layer:
-# ===============
-#
-def woofoundation_pods
-  cocoa_lumberjack
-end
-
-def woofoundation_watchos_pods
-  cocoa_lumberjack
-end
-
-# Tools Target:
-# ================
-#
-target 'WooFoundation' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  woofoundation_pods
-end
-
-target 'WooFoundationWatchOS' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  woofoundation_watchos_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'WooFoundationTests' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  woofoundation_pods
-end
-
-# Networking Target:
-# ==================
-#
-target 'Networking' do
-  project 'Networking/Networking.xcodeproj'
-  networking_pods
-end
-
-# Networking WatchOS Target:
-# ==================
-#
-target 'NetworkingWatchOS' do
-  project 'Networking/Networking.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  networking_watch_os_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'NetworkingTests' do
-  project 'Networking/Networking.xcodeproj'
-  networking_pods
-
-  # Including `yosemite_pods` because `Fakes.framework` has a dependency `Yosemite` while `Networking` does not.
-  yosemite_pods
-end
-
-# Storage Layer:
-# ==============
-#
-def storage_pods
-  cocoa_lumberjack
-end
-
-# Storage Target:
-# ===============
-#
-target 'Storage' do
-  project 'Storage/Storage.xcodeproj'
-  storage_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'StorageTests' do
-  project 'Storage/Storage.xcodeproj'
-  storage_pods
-end
-
-# Hardware Layer:
-# =================
-#
-def hardware_pods
-  stripe_terminal
-  cocoa_lumberjack
-end
-
-# Hardware Target:
-# ==================
-#
-target 'Hardware' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'HardwareTests' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# SampleReceiptPrinter Target:
-# ==================
-#
-target 'SampleReceiptPrinter' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# Experiments Layer:
-# ==================
-#
-def experiments_pods
-  cocoa_lumberjack
-end
-
-# Experiments Target:
-# ===================
-#
-target 'Experiments' do
-  project 'Experiments/Experiments.xcodeproj'
-  experiments_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'ExperimentsTests' do
-  project 'Experiments/Experiments.xcodeproj'
-  experiments_pods
-end
-
-# WordPressAuthenticator
-# ==========
-#
-def wordpress_authenticator_pods
-  svprogresshud
-  gridicons
-  wordpress_ui
-  wordpress_shared
-  pod 'NSObject-SafeExpectations', '~> 0.0.4'
-  pod 'wpxmlrpc', '~> 0.10'
-  pod 'UIDeviceIdentifier', '~> 2.0'
-end
-
-target 'WordPressAuthenticator' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  wordpress_authenticator_pods
-end
-
-target 'WordPressAuthenticatorTests' do
-  project 'WooCommerce/WooCommerce.xcodeproj'
-  wordpress_authenticator_pods
-
-  alamofire
-  pod 'OCMock', '~> 3.4'
-  pod 'Expecta', '1.0.6'
-  pod 'Specta', '1.0.7'
-  pod 'OHHTTPStubs', '~> 9.0'
-  pod 'OHHTTPStubs/Swift', '~> 9.0'
-  pod 'OCMock', '~> 3.4'
+  # Empty, but if we remove this we get a CocoaPods crash.
+  #
+  # ArgumentError - [Xcodeproj] Unable to find compatibility version string for object version `70`.
+  #
+  # Given we're in the process of removing CocoaPods, we can ignore this for
+  # the time being.
 end
 
 # Workarounds:
@@ -357,7 +65,7 @@ end
 # Make all pods that are not shared across multiple targets into static frameworks by overriding the static_framework? function to return true
 # Linking the shared frameworks statically would lead to duplicate symbols
 # A future version of CocoaPods may make this easier to do. See https://github.com/CocoaPods/CocoaPods/issues/7428
-shared_targets = %w[Storage Networking Yosemite Hardware]
+shared_targets = %w[Storage Hardware]
 # Statically linking Sentry results in a conflict with `NSDictionary.objectAtKeyPath`, but dynamically
 # linking it resolves this.
 dynamic_pods = ['Sentry']

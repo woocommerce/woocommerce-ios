@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		019A77CA2D88645100ABBB71 /* PaymentMethodType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019A77C92D88645100ABBB71 /* PaymentMethodType.swift */; };
 		028C39E028255CFE0007BA25 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */; };
-		02B5147A28254ED300750B71 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 02B5147928254ED300750B71 /* Codegen */; };
 		02FDAB102CEEF11F00B6C8AA /* PaymentChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */; };
 		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		035DBA3929251ED6003E5125 /* CardReaderInputOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035DBA3829251ED6003E5125 /* CardReaderInputOptions.swift */; };
@@ -28,13 +27,13 @@
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
 		317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C3274ED591004357B1 /* DeclineReasonTests.swift */; };
+		3F2B4AC42DDC30C300E5E49C /* XcodeTarget_Hardware in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AC32DDC30C300E5E49C /* XcodeTarget_Hardware */; };
+		3F2B4AC62DDC30D000E5E49C /* XcodeTarget_HardwareTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AC52DDC30D000E5E49C /* XcodeTarget_HardwareTests */; };
+		3F2B4AC82DDC30D800E5E49C /* XcodeTarget_SampleReceiptPrinter in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AC72DDC30D800E5E49C /* XcodeTarget_SampleReceiptPrinter */; };
 		55CD4BB4273E617C007686D3 /* ReceiptRendererTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */; };
-		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
-		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
 		B96B536D281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */; };
 		B96B536F281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */; };
 		B9C4AB2327FDE133007008B8 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2227FDE133007008B8 /* Email.swift */; };
-		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; platformFilter = ios; };
 		D80409A625FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */; };
 		D80B4652260E19590092EDC0 /* PaymentIntentParametersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */; };
 		D80B4656260E1B290092EDC0 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4655260E1B290092EDC0 /* CurrencyCode.swift */; };
@@ -161,7 +160,6 @@
 
 /* Begin PBXFileReference section */
 		019A77C92D88645100ABBB71 /* PaymentMethodType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodType.swift; sourceTree = "<group>"; };
-		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
 		028C39DF28255CFE0007BA25 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		02FDAB0F2CEEF11D00B6C8AA /* PaymentChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentChannel.swift; sourceTree = "<group>"; };
 		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
@@ -176,26 +174,18 @@
 		03CF78D427C92FF900523706 /* ReaderDisplayMessage+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReaderDisplayMessage+Localization.swift"; sourceTree = "<group>"; };
 		03CF78D627DF9BE500523706 /* RefundParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundParameters.swift; sourceTree = "<group>"; };
 		03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RefundParameters+Stripe.swift"; sourceTree = "<group>"; };
-		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnderlyingError+StripeTests.swift"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
 		317975BF274EB1F9004357B1 /* DeclineReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReason.swift; sourceTree = "<group>"; };
 		317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeclineReason+Stripe.swift"; sourceTree = "<group>"; };
 		317975C3274ED591004357B1 /* DeclineReasonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReasonTests.swift; sourceTree = "<group>"; };
-		3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.debug.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.debug.xcconfig"; sourceTree = "<group>"; };
 		3FA7D9FD2D547E6D00CE5611 /* Hardware.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Hardware.xcconfig; sourceTree = "<group>"; };
-		47BDD50287B7B0CF8D769BFC /* Pods-PrinterPlayground.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release-alpha.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRendererTest.swift; sourceTree = "<group>"; };
-		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
-		AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.debug.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.debug.xcconfig"; sourceTree = "<group>"; };
 		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminer.swift; sourceTree = "<group>"; };
 		B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminerTests.swift; sourceTree = "<group>"; };
 		B9C4AB2227FDE133007008B8 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
-		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
-		C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release-alpha.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D80409A525FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentIntentParameters+Stripe.swift"; sourceTree = "<group>"; };
 		D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentParametersTests.swift; sourceTree = "<group>"; };
 		D80B4655260E1B290092EDC0 /* CurrencyCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
@@ -262,10 +252,8 @@
 		D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConfigProvider.swift; sourceTree = "<group>"; };
 		DA4A834E2B99B7BA00B4B5AD /* unionpay.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = unionpay.svg; sourceTree = "<group>"; };
 		DAE622402B8E120F00FAE1D8 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
-		DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		E11986942643EDF00054285D /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		E140F61B2668CDC900FDB5FF /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
-		E15805FBEFD39C9C35DB54A6 /* Pods-PrinterPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.debug.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.debug.xcconfig"; sourceTree = "<group>"; };
 		E1B6855126490E3C0077F8BF /* unknown.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = unknown.svg; sourceTree = "<group>"; };
 		E1B6855226490E3C0077F8BF /* discover.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = discover.svg; sourceTree = "<group>"; };
 		E1B6855326490E3D0077F8BF /* mastercard.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mastercard.svg; sourceTree = "<group>"; };
@@ -283,7 +271,6 @@
 		E1E125AF26EB66EA0068A9B0 /* Cancelable+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cancelable+Stripe.swift"; sourceTree = "<group>"; };
 		E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingResult.swift; sourceTree = "<group>"; };
 		E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F45592A33DEE569C9775EEE7 /* Pods-PrinterPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,8 +278,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02B5147A28254ED300750B71 /* Codegen in Frameworks */,
-				C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */,
+				3F2B4AC42DDC30C300E5E49C /* XcodeTarget_Hardware in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,8 +286,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2B4AC62DDC30D000E5E49C /* XcodeTarget_HardwareTests in Frameworks */,
 				D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */,
-				5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,8 +295,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2B4AC82DDC30D800E5E49C /* XcodeTarget_SampleReceiptPrinter in Frameworks */,
 				E1CFC16D2643EBCB0089F86F /* Hardware.framework in Frameworks */,
-				8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,26 +325,6 @@
 				55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */,
 			);
 			path = AirPrintReceipt;
-			sourceTree = "<group>";
-		};
-		ADED522B787D093F499BD540 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */,
-				9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */,
-				1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */,
-				C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */,
-				0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */,
-				DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */,
-				E15805FBEFD39C9C35DB54A6 /* Pods-PrinterPlayground.debug.xcconfig */,
-				F45592A33DEE569C9775EEE7 /* Pods-PrinterPlayground.release.xcconfig */,
-				47BDD50287B7B0CF8D769BFC /* Pods-PrinterPlayground.release-alpha.xcconfig */,
-				AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */,
-				02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */,
-				C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */,
-			);
-			name = Pods;
-			path = ../Pods;
 			sourceTree = "<group>";
 		};
 		D845BDF3262DD65D00A3E40F /* Mocks */ = {
@@ -404,7 +370,6 @@
 				E1CFC14C2643E9EE0089F86F /* SampleReceiptPrinter */,
 				E1AE0A0E264557D6001D947A /* Resources */,
 				D88FDB0025DD216B00CB0DBD /* Products */,
-				ADED522B787D093F499BD540 /* Pods */,
 				EF9EE401B2930AC16BD86FE2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -602,7 +567,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D88FDB1325DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "Hardware" */;
 			buildPhases = (
-				84973D985DDEC124CBFAFFBD /* [CP] Check Pods Manifest.lock */,
 				D88FDAFA25DD216B00CB0DBD /* Headers */,
 				D88FDAFB25DD216B00CB0DBD /* Sources */,
 				D88FDAFC25DD216B00CB0DBD /* Frameworks */,
@@ -615,7 +579,7 @@
 			);
 			name = Hardware;
 			packageProductDependencies = (
-				02B5147928254ED300750B71 /* Codegen */,
+				3F2B4AC32DDC30C300E5E49C /* XcodeTarget_Hardware */,
 			);
 			productName = Hardware;
 			productReference = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */;
@@ -625,11 +589,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D88FDB1625DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "HardwareTests" */;
 			buildPhases = (
-				0527257C87F0190B55C7EDFB /* [CP] Check Pods Manifest.lock */,
 				D88FDB0425DD216B00CB0DBD /* Sources */,
 				D88FDB0525DD216B00CB0DBD /* Frameworks */,
 				D88FDB0625DD216B00CB0DBD /* Resources */,
-				2EAAA3A4E3365D114A040CFC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -645,12 +607,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1CFC15A2643E9EE0089F86F /* Build configuration list for PBXNativeTarget "SampleReceiptPrinter" */;
 			buildPhases = (
-				0365DCC784ED586AC4CBDE8D /* [CP] Check Pods Manifest.lock */,
 				E1CFC1472643E9EE0089F86F /* Sources */,
 				E1CFC1482643E9EE0089F86F /* Frameworks */,
 				E1CFC1492643E9EE0089F86F /* Resources */,
 				E1CFC1712643EBCB0089F86F /* Embed Frameworks */,
-				455C5C8132C0012656889176 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -737,109 +697,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		0365DCC784ED586AC4CBDE8D /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SampleReceiptPrinter-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		0527257C87F0190B55C7EDFB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HardwareTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2EAAA3A4E3365D114A040CFC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		455C5C8132C0012656889176 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		84973D985DDEC124CBFAFFBD /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Hardware-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D88FDAFB25DD216B00CB0DBD /* Sources */ = {
@@ -1099,7 +956,6 @@
 		};
 		D88FDB1425DD216B00CB0DBD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1130,7 +986,6 @@
 		};
 		D88FDB1525DD216B00CB0DBD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1160,7 +1015,6 @@
 		};
 		D88FDB1725DD216B00CB0DBD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1183,7 +1037,6 @@
 		};
 		D88FDB1825DD216B00CB0DBD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1265,7 +1118,6 @@
 		};
 		D88FDBDE25DD248C00CB0DBD /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1296,7 +1148,6 @@
 		};
 		D88FDBDF25DD248C00CB0DBD /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1318,7 +1169,6 @@
 		};
 		E1CFC1572643E9EE0089F86F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1338,7 +1188,6 @@
 		};
 		E1CFC1582643E9EE0089F86F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1358,7 +1207,6 @@
 		};
 		E1CFC1592643E9EE0089F86F /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -1422,9 +1270,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		02B5147928254ED300750B71 /* Codegen */ = {
+		3F2B4AC32DDC30C300E5E49C /* XcodeTarget_Hardware */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_Hardware;
+		};
+		3F2B4AC52DDC30D000E5E49C /* XcodeTarget_HardwareTests */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_HardwareTests;
+		};
+		3F2B4AC72DDC30D800E5E49C /* XcodeTarget_SampleReceiptPrinter */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_SampleReceiptPrinter;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

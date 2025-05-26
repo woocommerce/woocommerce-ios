@@ -7,13 +7,13 @@
 # Luckily, the configuration files supports child configurations, so we can
 # achieve the same result this way.
 configurations:
-  - child: ../CodeGeneration/Sourcery/Copiable/Hardware-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Copiable/Networking-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Copiable/Storage-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Copiable/WooCommerce-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Copiable/WooFoundation-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Copiable/Yosemite-Copiable.sourcery.yaml
-  - child: ../CodeGeneration/Sourcery/Fakes/Hardware-Fakes.yaml
-  - child: ../CodeGeneration/Sourcery/Fakes/Networking-Fakes.yaml
-  - child: ../CodeGeneration/Sourcery/Fakes/WooFoundation-Fakes.yaml
-  - child: ../CodeGeneration/Sourcery/Fakes/Yosemite-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Hardware-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Networking-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Storage-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooCommerce-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooFoundation-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Yosemite-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Hardware-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Networking-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/WooFoundation-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Yosemite-Fakes.yaml

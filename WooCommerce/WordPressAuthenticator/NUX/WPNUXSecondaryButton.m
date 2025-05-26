@@ -1,5 +1,5 @@
 #import "WPNUXSecondaryButton.h"
-#import <WordPressShared/WPFontManager.h>
+@import WordPressSharedObjC;
 
 
 static UIEdgeInsets const WPNUXSecondaryButtonTitleEdgeInsets = {0, 15.0, 0, 15.0};

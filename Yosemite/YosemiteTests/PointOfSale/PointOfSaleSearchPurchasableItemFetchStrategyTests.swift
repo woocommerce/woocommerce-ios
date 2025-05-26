@@ -56,7 +56,7 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
 }
 
 // MARK: - Mocks
-private final class MockPOSSearchAnalyticsTracking: POSSearchAnalyticsTracking {
+final class MockPOSSearchAnalyticsTracking: POSSearchAnalyticsTracking {
     private(set) var spyMillisecondsSinceRequestSent: Int?
     private(set) var spyTotalItems: Int?
 

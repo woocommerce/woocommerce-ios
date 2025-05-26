@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-04-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-05-20 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -297,8 +297,7 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "SEÇENEK EKLE";
 
-/* Address section title in the domain contact info form.
-   Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form. */
 "ADDRESS" = "ADRES";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -437,9 +436,6 @@ which should be translated separately and considered part of this sentence. */
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Varyasyon Ekle";
 
-/* Title for the Add a Different Address switch in the Address form */
-"Add a different shipping address" = "Farklı bir gönderim adresi ekle";
-
 /* Title of button to add a domain in domain settings. */
 "Add a domain" = "Alan adı ekle";
 
@@ -547,9 +543,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "Adres eksik";
-
-/* Notice text after updating the shipping or billing address */
-"Address successfully updated." = "Adres başarıyla güncellendi.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "Adds product to order." = "Siparişe ürün ekler.";
@@ -879,9 +872,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Azerbaijan" = "Azerbaycan";
 
-/* Details section title in the Edit Address Form */
-"BILLING ADDRESS" = "FATURA ADRESİ";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -949,8 +939,7 @@ which should be translated separately and considered part of this sentence. */
 "Bhutan" = "Butan";
 
 /* Section header title for billing address in billing information
-   Title for the Billing Address section in order customer data
-   Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data */
 "Billing Address" = "Fatura Adresi";
 
 /* Billing Information view Title */
@@ -1972,9 +1961,6 @@ which should be translated separately and considered part of this sentence. */
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
 "Customer" = "Müşteri";
-
-/* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Müşteri Bilgileri";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
 "Customer Note" = "Müşteri notu";
@@ -5830,9 +5816,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "OTURUMLAR";
 
-/* Details section title in the Edit Address Form */
-"SHIPPING ADDRESS" = "GÖNDERİM ADRESİ";
-
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
@@ -6256,7 +6239,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Shipping" = "Gönderim";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form
    Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "Gönderim Adresi";
 
@@ -8012,12 +7994,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "İletilerimizi alabilmek için çalışan bir e-posta adresi kullanın.";
-
-/* Title for the Use as Billing Address switch in the Address form */
-"Use as Billing Address" = "Fatura Adresi olarak kullan";
-
-/* Title for the Use as Shipping Address switch in the Address form */
-"Use as Shipping Address" = "Gönderim Adresi olarak kullan";
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Ürün açıklamalarınızı hızlıca oluşturmak için yapay zeka destekli aracımızı kullanın. Anahtar sözcükleri girin ve gerisini bize bırakın!";
@@ -9926,6 +9902,24 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Bağlantı Sorununu Giderin";
 
+/* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
+"couponCardView.expirationText" = "%@ tarihinde süresi doldu";
+
+/* Details section title in the Edit Address Form */
+"createOrderAddressFormViewModel.addressSection" = "Adres";
+
+/* Title for the Edit Billing Address Form */
+"createOrderAddressFormViewModel.billingTitle" = "Fatura Adresi";
+
+/* Title for the Shipping Address Form for Customer Details */
+"createOrderAddressFormViewModel.customerDetailsTitle" = "Müşteri Bilgileri";
+
+/* Title for the Add a Different Address switch in the Address form */
+"createOrderAddressFormViewModel.differentAddressToggleTitle" = "Farklı bir gönderim adresi ekle";
+
+/* Title for the Edit Shipping Address Form */
+"createOrderAddressFormViewModel.shippingTitle" = "Gönderim Adresi";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Tutarı düzenleyin";
 
@@ -10279,6 +10273,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Cihazdaki ortamlar";
+
+/* Title for the Edit Billing Address Form */
+"editOrderAddressFormViewModel.billingTitle" = "Fatura Adresi";
+
+/* Title for the Edit Shipping Address Form */
+"editOrderAddressFormViewModel.shippingTitle" = "Gönderim Adresi";
+
+/* Notice text after updating the shipping or billing address */
+"editOrderAddressFormViewModel.success" = "Adres başarıyla güncellendi.";
+
+/* Title for the Use as Billing Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsBillingToggle" = "Fatura Adresi olarak kullan";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsShippingToggle" = "Gönderim Adresi olarak kullan";
 
 /* Button to dismiss the Edit Store List view */
 "editStoreListView.cancelButton" = "İptal Et";
@@ -10634,6 +10643,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Beğendim";
+
+/* Button to cancel a payment */
+"inPersonPayments.cardPresent.cardInserted.cancel" = "İptal Et";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"inPersonPayments.cardPresent.cardInserted.title" = "Kart takıldı";
 
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "İptal Et";
@@ -11334,6 +11349,15 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Ödeme okuyucuda iptal edildi";
 
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Ödemeyi tekrar dene";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Kart takıldı";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Ödemeye hazır";
+
 /* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
 "pointOfSale.cardPresent.connectReader.button.title" = "Okuyucunuzu bağlayın";
 
@@ -11670,11 +11694,14 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Okuyucunun Bağlantısını Kes";
 
-/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+/* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS'tan çık";
 
-/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+/* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Destek Alın";
+
+/* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Ürünlerim nerede?";
 
 /* The title of the floating button to indicate that reader is connected. */
 "pointOfSale.floatingButtons.readerConnected.title" = "Okuyucu Bağlandı";
@@ -11685,7 +11712,7 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Bağlantı kesiliyor";
 
-/* The title of the floating button to read Point of Sale documentation, shown in a popover menu. */
+/* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Belgeler";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
@@ -11738,9 +11765,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Tamam";
-
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Şahsen Ödeyin";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = " için ürüne dokunun Sepete eklemek";
@@ -11851,7 +11875,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.loadingCouponsErrorRetry" = "Tekrar dene";
 
 /* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle" = "Kuponlar yüklenirken hata oluştu";
+"pos.itemList.loadingCouponsErrorSubtitle2" = "Bir kez daha denemek ister misiniz?";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
 "pos.itemList.loadingCouponsErrorTitle" = "Kuponlar yüklenirken hata oluştu";
@@ -11859,26 +11883,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Ürünler";
 
+/* Label/placeholder text for the search field for Coupons in Point of Sale. */
+"pos.itemListView.coupons.searchField.label" = "Kuponları arayın";
+
+/* Label/placeholder text for the search field for Products in Point of Sale. */
+"pos.itemListView.products.searchField.label.1" = "Ürünleri arayın";
+
+/* Fallback label/placeholder text for the search field in Point of Sale. */
+"pos.itemListView.searchField.label" = "Arama";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Kuponlar";
-
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.hint.simpleAndVariable" = "Diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
-
-/* Link to more information within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.learnMoreHint" = "Daha Fazla Bilgi Edinin";
-
-/* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.subtitle.simpleAndVariable" = "Şu anda POS ile yalnızca basit ürünler ve varyasyonlu indirilemeyen ürünler kullanılabiliyor.";
-
-/* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBanner.title.simpleAndVariable" = "Yalnızca basit ve varyasyonlu ürünler gösteriliyor";
 
 /* Title at the top of the Point of Sale product selector screen. */
 "pos.itemlistview.title" = "Ürünler";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText" = "Son arama yok";
+"pos.itemsearch.before.search.emptyListText" = "Mağazanızda arayın";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Popüler ürünler";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "Mağazanızda arayın";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "Son aramalar";
@@ -11890,13 +11917,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Kullanılabilir seçenekler var";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "Arama teriminizi düzenlemeyi deneyin, bir kupon adının bir parçasını aramak yardımcı olabilir.";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Müşterilere özel teklifler ve indirimler göndererek işletmenizi güçlendirin.";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle" = "Kupon bulunamadı.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Kupon bulunamadı";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Birini eklemek için POS'tan çıkın ve Ürünler'e gidin.";
+
+/* Text providing additional search tips when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Varyasyon adlarında arama yapılamaz, bu nedenle ana ürün adını kullanın.";
+
+/* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "Arama teriminizi düzenlemeyi deneyin, bir ürün adının bir parçasını aramak yardımcı olabilir.";
+
+/* Text appearing on screen when a POS product search returns no results. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "Ürün bulunamadı.";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS şu anda yalnızca basit ve varyasyonlu ürünleri destekliyor.";
@@ -11915,6 +11954,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Kupon oluştur";
+
+/* Accessibility label for the clear button in the Point of Sale search screen. */
+"pos.searchview.searchField.clearButton.accessibilityLabel" = "Aramayı Temizle";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Mağaza yönetiminde sipariş oluşturun";
@@ -13088,6 +13130,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is verified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.verified" = "Adres doğrulandı";
 
+/* Label for the option to add a payment method on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Ödeme yöntemi ekle";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Yetişkin İmzası Gerekli";
 
@@ -13105,6 +13150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the menu to select a paper size on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.paperSize" = "Etiket kağıdı boyutu seç";
+
+/* Header for payment method section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paymentMethod" = "Ödeme Yöntemi";
 
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Satın Alma Etiketi";
@@ -13217,12 +13265,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label when the address has been verified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.verified" = "Adres doğrulandı";
 
-/* Notice when a hazardous materials category is removed on the shipping label creation screen */
-"wooShipping.createLabels.hazmatRemoved" = "Tehlikeli maddeler kategorisini kaldırın";
-
-/* Notice when a hazardous materials category is set on the shipping label creation screen */
-"wooShipping.createLabels.hazmatSet" = "Tehlikeli maddeler kategorisi ayarlandı";
-
 /* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ öğe";
 
@@ -13231,9 +13273,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
-
-/* Notice when a International Transaction Number is missing on the shipping label creation screen */
-"wooShipping.createLabels.itnMissing" = "ITN zorunludur.";
 
 /* Message in the notice when purchasing a shipping label fails */
 "wooShipping.createLabels.labelPurchaseError.message" = "Gönderim etiketini satın alamıyoruz. Lütfen tekrar deneyin.";
@@ -13268,20 +13307,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.printButton" = "Gönderi Etiketini Yazdır";
 
+/* Title for button to print a customs form on the shipping label screen */
+"wooShipping.createLabels.postPurchase.printCustomsFormButton" = "Gümrük formu yazdır";
+
 /* Message displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.printMessage" = "Buradan gönderim etiketini yeniden yazdırabilir veya etiketin kağıt boyutunu değiştirebilirsiniz.";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would cancel the printing. */
-"wooShipping.createLabels.postPurchase.printingLabelError.cancel" = "İptal Et";
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would cancel the printing. */
+"wooShipping.createLabels.postPurchase.printingError.cancel" = "İptal Et";
 
-/* Message of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.message" = "Tekrar denemek ister misiniz?";
+/* Title of the error alert when printing a customs form fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.customsForm" = "Gümrük formu indirilirken hata oluştu";
 
-/* Button on the error alert when printing a shipping label fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
-"wooShipping.createLabels.postPurchase.printingLabelError.retry" = "Tekrar dene";
+/* Message of the error alert when printing a document fails in the post purchase flow. */
+"wooShipping.createLabels.postPurchase.printingError.message" = "Tekrar denemek ister misiniz?";
+
+/* Button on the error alert when printing a document fails in the post purchase flow.Tapping on this button would retry printing the shipping label. */
+"wooShipping.createLabels.postPurchase.printingError.retry" = "Tekrar dene";
 
 /* Title of the error alert when printing a shipping label fails in the post purchase flow. */
-"wooShipping.createLabels.postPurchase.printingLabelError.title" = "Kargo etiketi önizlenirken hata oluştu";
+"wooShipping.createLabels.postPurchase.printingError.shippingLabel" = "Kargo etiketi önizlenirken hata oluştu";
 
 /* Heading displayed on the shipping label screen when a purchased shipping label can be printed */
 "wooShipping.createLabels.postPurchase.readyToPrint" = "Gönderim etiketiniz yazdırmaya hazır";
@@ -13305,7 +13350,10 @@ which should be translated separately and considered part of this sentence. */
 "wooShipping.createLabels.rates.noDestinationAddressTitle" = "Gönderim ücretlerini almak için bir hedef adres ekleyin";
 
 /* Error message when no shipping rates were found based on the combination of the selected package and the total shipment weight. */
-"wooShipping.createLabels.rates.noRatesAvailable" = "Seçilen paket ve toplam gönderim ağırlığı kombinasyonunun gönderim hizmeti bulunamadı. Lütfen girdinizi ayarlayın ve yeniden deneyin.";
+"wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT" = "Seçilen paket ve toplam gönderim ağırlığı kombinasyonunun gönderim hizmeti bulunamadı. Lütfen girdinizi ayarlayın ve yeniden deneyin.";
+
+/* Error message when no shipping rates were found based on the combination of the selected HAZMAT category, package and the total shipment weight. */
+"wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT" = "Seçilen Tehlikeli Maddeler kategorisi, seçilen paket ve toplam gönderim ağırlığı kombinasyonunun gönderim hizmeti bulunamadı. Lütfen girdinizi ayarlayın ve yeniden deneyin.";
 
 /* Message displayed when no shipment weight is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noWeightMessage" = "Mevcut gönderim ücretlerini göstermeden önce gönderim ağırlığını bilmemiz gerekiyor.";
@@ -13328,8 +13376,14 @@ which should be translated separately and considered part of this sentence. */
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "En ucuz";
 
+/* Notice to display after requesting refund for a shipping label */
+"wooShipping.createLabels.refundNotice" = "İade için başarıyla bir talep gönderdiniz. Yeni bir etiket satın alabilirsiniz.";
+
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Tekrar dene";
+
+/* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
+"wooShipping.createLabels.shipmentFormat" = "%1$d gönderimi";
 
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequired" = "Yetişkin İmzası Gerekli (+%1$@)";
@@ -13375,9 +13429,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Gönderim Etiketleri Oluşturun";
-
-/* Button to undo a change on the shipping label creation screen */
-"wooShipping.createLabels.undo" = "Geri Al";
 
 /* Title for the screen to view a shipping label */
 "wooShipping.createLabels.viewLabelTitle" = "Gönderim Etiketini Görüntüleyin";
@@ -13547,17 +13598,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry loading saved packages in the shipping label creation flow */
 "wooShipping.savedPackagesSelectionView.retryCTA" = "Tekrar dene";
 
+/* Notice when a hazardous materials category is removed on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatRemoved" = "Tehlikeli maddeler kategorisini kaldırın";
+
+/* Notice when a hazardous materials category is set on the shipping label creation screen */
+"wooShipping.shipmentDetails.hazmatSet" = "Tehlikeli maddeler kategorisi ayarlandı";
+
+/* Notice when a International Transaction Number is missing on the shipping label creation screen */
+"wooShipping.shipmentDetails.itnMissing" = "ITN zorunludur.";
+
+/* Button to undo a change on the shipping label creation screen */
+"wooShipping.shipmentDetails.undo" = "Geri Al";
+
 /* Label for section in shipping label creation to split shipments. */
 "wooShipping.splitShipments.products" = "Ürünler";
 
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Gönderimleri böl";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShippingAddPackageViewModel.removingPackageFailure" = "Paket kaldırılamıyor";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShippingAddPackageViewModel.retry" = "Tekrar dene";
+
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "Paket kaydedilemiyor";
-
-/* Button to retry saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageRetry" = "Tekrar dene";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Lütfen şu biçimlerden birine geçerli bir ITN girin: X12345678901234, AES X1234568901234 veya NOEI 30.37(a).";
@@ -13606,6 +13672,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Zararlı ürünler veya tehlikeli materyaller mi gönderiyorsunuz?";
+
+/* Button to dismiss the Request shipping label refund view */
+"wooShippingRefundView.cancelButton" = "İptal Et";
+
+/* Description on the Request shipping label refund view. The placeholder is the number of day to process the refund. */
+"wooShippingRefundView.description" = "Kullanılmayan gönderim etiketiniz için bir iade talep edin. Gönderim etiketinin iade işlemi hemen başlayacak ve genellikle %1$d iş gününde tamamlanır.";
+
+/* Button to dismiss the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.cancel" = "İptal Et";
+
+/* Message on the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.message" = "Etiketiniz için iade talep edemedik. Lütfen tekrar deneyin.";
+
+/* Button to retry when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.retry" = "Tekrar dene";
+
+/* Title of the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.title" = "İade talep edilemedi";
+
+/* Note on the Request shipping label refund view */
+"wooShippingRefundView.note" = "Lütfen bu iade isteğinin yalnızca kullanılmayan gönderim etiketlerine uygulandığını ve siparişin kendisini etkilemeyeceğini unutmayın.";
+
+/* Purchase date label on the Request shipping label refund view. */
+"wooShippingRefundView.purchaseDate" = "Satın alma tarihi:";
+
+/* Refund amount label on the Request shipping label refund view. */
+"wooShippingRefundView.refundAmount" = "İade edilebilecek tutar:";
+
+/* Button to submit refund request the Request shipping label refund view */
+"wooShippingRefundView.submitButton" = "İade Etiketi (%1$@)";
+
+/* title on the Request shipping label refund view */
+"wooShippingRefundView.title" = "Gönderim etiketi iadesi talep et";
 
 /* Button to move selected items to a shipment in split shipments flow */
 "wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Taşı:";

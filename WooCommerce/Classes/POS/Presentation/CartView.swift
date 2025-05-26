@@ -70,7 +70,13 @@ struct CartView: View {
                                     ItemRowView(cartItem: cartItem,
                                                 showImage: $shouldShowItemImages,
                                                 onItemRemoveTapped: posModel.orderStage == .building ? {
-                                        ServiceLocator.analytics.track(.pointOfSaleItemRemovedFromCart)
+                                        ServiceLocator.analytics.track(
+                                            event: .PointOfSale.itemRemovedFromCart(
+                                                sourceView: .cart,
+                                                itemType: .product,
+                                                productType: .init(cartItem: cartItem)
+                                            )
+                                        )
                                         posModel.remove(cartItem: cartItem)
                                     } : nil)
                                     .id(cartItem.id)
@@ -321,7 +327,12 @@ private extension CartView {
                                                                         couponItem: couponItem),
                               showImage: $shouldShowItemImages,
                               onItemRemoveTapped: posModel.orderStage == .building ? {
-                    ServiceLocator.analytics.track(.pointOfSaleCouponRemovedFromCart)
+                    ServiceLocator.analytics.track(
+                        event: .PointOfSale.itemRemovedFromCart(
+                            sourceView: .cart,
+                            itemType: .coupon
+                        )
+                    )
                     posModel.remove(cartItem: couponItem)
                 } : nil)
                 .id(couponItem.id)

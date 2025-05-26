@@ -52,7 +52,6 @@ struct TotalsView: View {
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         }
                     }
-                    .animation(.default, value: posModel.cardPresentPaymentInlineMessage)
 
                     Spacer()
                         .renderedIf(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState))

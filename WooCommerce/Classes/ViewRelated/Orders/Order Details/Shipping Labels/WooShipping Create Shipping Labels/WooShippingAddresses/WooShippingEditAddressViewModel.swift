@@ -165,6 +165,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
 
+    /// Whether to show the address validation error alert.
+    @Published var shouldShowAddressValidationAlert = false
+
     /// Closure called when an origin address is done being edited and the changes are confirmed.
     private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
 
@@ -356,8 +359,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 remoteValidationError = generalError
             }
         } catch {
-            // TODO: Display error if validation request fails.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
+
+            // Show error alert when validation request fails (HTTP error)
+            shouldShowAddressValidationAlert = true
         }
     }
 

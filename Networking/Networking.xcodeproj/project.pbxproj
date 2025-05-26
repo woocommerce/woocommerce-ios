@@ -1009,7 +1009,6 @@
 		68F48B1228E3E5750045C15B /* wc-analytics-customers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wc-analytics-customers.json"; sourceTree = "<group>"; };
 		68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-type-simple.json"; sourceTree = "<group>"; };
 		68FBC5B728928C8C00A05461 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteStatsRemoteTests.swift; sourceTree = "<group>"; };
 		740211DE2193985A002248DA /* comment-moderate-spam.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "comment-moderate-spam.json"; sourceTree = "<group>"; };
@@ -1449,7 +1448,6 @@
 		EEFC4C952A5E996C004C5A83 /* jwt-token-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jwt-token-success.json"; sourceTree = "<group>"; };
 		EEFC4C982A5E9E49004C5A83 /* generative-text-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generative-text-invalid-token.json"; sourceTree = "<group>"; };
 		EEFC4C9A2A5ED1F6004C5A83 /* identify-language-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "identify-language-invalid-token.json"; sourceTree = "<group>"; };
-		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE28F6E726842D57004465C7 /* user-complete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "user-complete.json"; sourceTree = "<group>"; };
 		FE28F6E926842E49004465C7 /* UserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMapperTests.swift; sourceTree = "<group>"; };
 		FE28F6EB268436C9004465C7 /* UserRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRemoteTests.swift; sourceTree = "<group>"; };
@@ -2145,8 +2143,6 @@
 			children = (
 				68FBC5B728928C8C00A05461 /* WooFoundation.framework */,
 				26FB056B25F6CB9100A40B26 /* Fakes.framework */,
-				F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */,
-				69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2268,7 +2264,6 @@
 				B557D9F0209753AA005962F4 /* NetworkingTests */,
 				26DAAB502BEA8D3400CE399E /* NetworkingWatchOS */,
 				B557D9E4209753AA005962F4 /* Products */,
-				B66F21EDEB26EE811202794F /* Pods */,
 				35C45CCE73A311BE252F6BF4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -2942,13 +2937,6 @@
 				20B8B37C2D96B6920025734D /* ListMapperTests.swift */,
 			);
 			path = Mapper;
-			sourceTree = "<group>";
-		};
-		B66F21EDEB26EE811202794F /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		DE97C3902861B8CD0042E973 /* Encoder */ = {

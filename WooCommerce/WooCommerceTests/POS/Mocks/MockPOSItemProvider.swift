@@ -57,13 +57,19 @@ extension MockPointOfSaleItemService {
                                         name: "Choco",
                                         formattedPrice: "$2.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
 
         let product2 = POSSimpleProduct(id: fakeUUID2,
                                         name: "Vanilla",
                                         formattedPrice: "$3.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
         return [.simpleProduct(product1), .simpleProduct(product2)]
     }
 
@@ -75,13 +81,19 @@ extension MockPointOfSaleItemService {
                                         name: "Strawberry",
                                         formattedPrice: "$2.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
 
         let product4 = POSSimpleProduct(id: fakeUUID4,
                                         name: "Pistachio",
                                         formattedPrice: "$3.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
         return [.simpleProduct(product3), .simpleProduct(product4)]
     }
 

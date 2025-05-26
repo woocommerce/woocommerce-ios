@@ -1,9 +1,8 @@
 #import "WPWalkthroughOverlayView.h"
 #import "WPNUXPrimaryButton.h"
 #import "WPNUXSecondaryButton.h"
-#import <WordPressUI/UILabel+SuggestSize.h>
-#import <WordPressShared/WPFontManager.h>
-#import <WordPressShared/WPNUXUtility.h>
+@import WordPressSharedObjC;
+@import WordPressUIObjC;
 
 @interface WPWalkthroughOverlayView() {
     UIImageView *_logo;

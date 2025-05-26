@@ -189,6 +189,9 @@ struct POSProductsNetworkingTests {
         #expect(fieldNames.contains("on_sale"))
         #expect(fieldNames.contains("images"))
         #expect(fieldNames.contains("attributes"))
+        #expect(fieldNames.contains("manage_stock"))
+        #expect(fieldNames.contains("stock_quantity"))
+        #expect(fieldNames.contains("stock_status"))
     }
 
     @Test func loadProductsForPointOfSale_requests_only_required_fields() async throws {

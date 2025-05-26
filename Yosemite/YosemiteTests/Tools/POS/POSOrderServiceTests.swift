@@ -175,7 +175,10 @@ private func makePOSCartItem(
                                    name: "",
                                    formattedPrice: "",
                                    productID: productID,
-                                   price: ""),
+                                   price: "",
+                                   manageStock: false,
+                                   stockQuantity: nil,
+                                   stockStatusKey: ""),
             quantity: quantity
         )
     }

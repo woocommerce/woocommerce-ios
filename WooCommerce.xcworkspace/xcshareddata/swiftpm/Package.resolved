@@ -1,6 +1,15 @@
 {
-  "originHash" : "9ea1ab4271974e9606eddf01e2528d962e975d6abd3fb314fae28d3eeeb07fe9",
+  "originHash" : "db213abf864107f30f3a2cce9fe3ec5df5cbc822b1e21108607e19c074b5d965",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
     {
       "identity" : "automattic-tracks-ios",
       "kind" : "remoteSourceControl",
@@ -17,6 +26,15 @@
       "state" : {
         "revision" : "606384a7492faa1139d489080dd961b0b57f9fd9",
         "version" : "1.1.5"
+      }
+    },
+    {
+      "identity" : "azteceditor-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/AztecEditor-iOS",
+      "state" : {
+        "revision" : "f20f4102aab2dd9a14dffe5d42af069dcb08538f",
+        "version" : "1.20.0"
       }
     },
     {
@@ -38,12 +56,30 @@
       }
     },
     {
+      "identity" : "commonui_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/commonui_sdk_ios",
+      "state" : {
+        "revision" : "cb8b971b84c596145528f3f3e107fd150fd9dff2",
+        "version" : "9.0.3"
+      }
+    },
+    {
       "identity" : "confettiswiftui",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simibac/ConfettiSwiftUI.git",
       "state" : {
         "revision" : "8d3a15d0aa2991e0761749b767ef8d89bca6275a",
         "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "core_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/core_sdk_ios",
+      "state" : {
+        "revision" : "36091ee0cd0fb888fc98f815f460b66e30132192",
+        "version" : "5.0.5"
       }
     },
     {
@@ -83,6 +119,14 @@
       }
     },
     {
+      "identity" : "gridicons-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Automattic/Gridicons-iOS",
+      "state" : {
+        "revision" : "c904cb73e26e86463a78e1335c6f4fd54a9e9223"
+      }
+    },
+    {
       "identity" : "inject",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzysztofzablocki/Inject.git",
@@ -92,12 +136,66 @@
       }
     },
     {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher",
+      "state" : {
+        "revision" : "2ef543ee21d63734e1c004ad6c870255e8716c50",
+        "version" : "7.12.0"
+      }
+    },
+    {
+      "identity" : "messaging_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/messaging_sdk_ios",
+      "state" : {
+        "revision" : "bb99e77fe0b696bf188e48c605943dad1ba66571",
+        "version" : "6.0.3"
+      }
+    },
+    {
+      "identity" : "messagingapi_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/messagingapi_sdk_ios",
+      "state" : {
+        "revision" : "ae7f3169d07016893c52ec887b26fac4e247db25",
+        "version" : "6.0.2"
+      }
+    },
+    {
       "identity" : "nimble",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Quick/Nimble.git",
       "state" : {
         "revision" : "7795df4fff1a9cd231fe4867ae54f4dc5f5734f9",
         "version" : "13.7.1"
+      }
+    },
+    {
+      "identity" : "nsobject-safeexpectations",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/NSObject-SafeExpectations",
+      "state" : {
+        "revision" : "eb84d994ab13a153888a19e5b99f536aafa77434",
+        "version" : "0.0.6"
+      }
+    },
+    {
+      "identity" : "ohhttpstubs",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AliSoftware/OHHTTPStubs",
+      "state" : {
+        "revision" : "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+        "version" : "9.1.0"
       }
     },
     {
@@ -119,12 +217,48 @@
       }
     },
     {
+      "identity" : "sdkconfigurations_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/sdkconfigurations_sdk_ios",
+      "state" : {
+        "revision" : "18de371f71f6a92b34f63013fe2fbe46caf0811e",
+        "version" : "4.0.1"
+      }
+    },
+    {
       "identity" : "sentry-cocoa",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
         "revision" : "6c81e671154e63464dd6749b7ba3279dd390a146",
         "version" : "8.50.1"
+      }
+    },
+    {
+      "identity" : "stripe-terminal-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stripe/stripe-terminal-ios",
+      "state" : {
+        "revision" : "99d3ce8f3d0d90973c41e4c8aa2475c3b20c91f0",
+        "version" : "4.4.0"
+      }
+    },
+    {
+      "identity" : "support_providers_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/support_providers_sdk_ios",
+      "state" : {
+        "revision" : "23008686dba97417a38973c1c33387acbb203dd8",
+        "version" : "9.0.0"
+      }
+    },
+    {
+      "identity" : "support_sdk_ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zendesk/support_sdk_ios",
+      "state" : {
+        "revision" : "757a915bd74bbc2995a3d894c65f79198827edca",
+        "version" : "9.0.0"
       }
     },
     {
@@ -214,6 +348,15 @@
       "location" : "https://github.com/nalexn/ViewInspector",
       "state" : {
         "revision" : "5acfa0a3c095ac9ad050abe51c60d1831e8321da",
+        "version" : "0.10.0"
+      }
+    },
+    {
+      "identity" : "wpxmlrpc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wordpress-mobile/wpxmlrpc",
+      "state" : {
+        "revision" : "bfc413d336bdeaab89e62dc483380baa99b2257e",
         "version" : "0.10.0"
       }
     }

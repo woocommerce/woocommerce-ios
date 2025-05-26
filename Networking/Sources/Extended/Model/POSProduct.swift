@@ -35,6 +35,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         attributes.filter { $0.variation }
     }
 
+    public let manageStock: Bool
+    public let stockQuantity: Decimal?
+    public let stockStatusKey: String
+
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
@@ -46,7 +50,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 salePrice: String?,
                 onSale: Bool,
                 images: [ProductImage],
-                attributes: [ProductAttribute]) {
+                attributes: [ProductAttribute],
+                manageStock: Bool,
+                stockQuantity: Decimal?,
+                stockStatusKey: String) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -62,6 +69,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.images = images
 
         self.attributes = attributes
+
+        self.manageStock = manageStock
+        self.stockQuantity = stockQuantity
+        self.stockStatusKey = stockStatusKey
     }
 
     public init(from decoder: any Decoder) throws {
@@ -109,10 +120,13 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
                 decimalString])
 
-
         let images = try container.decode([ProductImage].self, forKey: .images)
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
+
+        let manageStock = try container.decode(Bool.self, forKey: .manageStock)
+        let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
+        let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -125,7 +139,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   salePrice: salePrice,
                   onSale: onSale,
                   images: images,
-                  attributes: attributes)
+                  attributes: attributes,
+                  manageStock: manageStock,
+                  stockQuantity: stockQuantity,
+                  stockStatusKey: stockStatusKey)
     }
 
     static let requestFields: [String] = {
@@ -154,5 +171,8 @@ private extension POSProduct {
         case onSale = "on_sale"
         case images
         case attributes
+        case manageStock = "manage_stock"
+        case stockQuantity = "stock_quantity"
+        case stockStatusKey = "stock_status"
     }
 }

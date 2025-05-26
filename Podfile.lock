@@ -1,130 +1,16 @@
 PODS:
-  - Alamofire (5.8.1)
-  - Gridicons (1.3.0-beta.1)
-  - KeychainAccess (4.2.2)
-  - Kingfisher (7.6.2)
-  - NSObject-SafeExpectations (0.0.6)
-  - OHHTTPStubs (9.1.0):
-    - OHHTTPStubs/Default (= 9.1.0)
-  - OHHTTPStubs/Core (9.1.0)
-  - OHHTTPStubs/Default (9.1.0):
-    - OHHTTPStubs/Core
-    - OHHTTPStubs/JSON
-    - OHHTTPStubs/NSURLSession
-    - OHHTTPStubs/OHPathHelpers
-  - OHHTTPStubs/JSON (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/NSURLSession (9.1.0):
-    - OHHTTPStubs/Core
-  - OHHTTPStubs/OHPathHelpers (9.1.0)
-  - OHHTTPStubs/Swift (9.1.0):
-    - OHHTTPStubs/Default
-  - Sentry (8.46.0):
-    - Sentry/Core (= 8.46.0)
-  - Sentry/Core (8.46.0)
-  - StripeTerminal (4.2.0)
-  - UIDeviceIdentifier (2.3.0)
-  - WordPress-Aztec-iOS (1.19.10)
-  - WordPress-Editor-iOS (1.19.10):
-    - WordPress-Aztec-iOS (= 1.19.10)
-  - WordPressShared (2.1.0)
-  - WordPressUI (1.15.1)
-  - Wormholy (1.6.6)
   - WPMediaPicker (1.8.12)
-  - wpxmlrpc (0.10.0)
-  - ZendeskCommonUISDK (9.0.3)
-  - ZendeskCoreSDK (5.0.5)
-  - ZendeskMessagingAPISDK (6.0.2):
-    - ZendeskSDKConfigurationsSDK (~> 4.0.1)
-  - ZendeskMessagingSDK (6.0.3):
-    - ZendeskCommonUISDK (~> 9.0.3)
-    - ZendeskMessagingAPISDK (~> 6.0.2)
-  - ZendeskSDKConfigurationsSDK (4.0.1)
-  - ZendeskSupportProvidersSDK (9.0.0):
-    - ZendeskCoreSDK (~> 5.0.5)
-  - ZendeskSupportSDK (9.0.0):
-    - ZendeskMessagingSDK (~> 6.0.3)
-    - ZendeskSupportProvidersSDK (~> 9.0.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 5.0)
-  - Gridicons (from `https://github.com/Automattic/Gridicons-iOS.git`, commit `c904cb73e26e86463a78e1335c6f4fd54a9e9223`)
-  - KeychainAccess (~> 4.2.2)
-  - Kingfisher (~> 7.6.2)
-  - NSObject-SafeExpectations (~> 0.0.4)
-  - OHHTTPStubs (~> 9.0)
-  - OHHTTPStubs/Swift (~> 9.0)
-  - Sentry (~> 8.46.0)
-  - StripeTerminal (~> 4.2.0)
-  - UIDeviceIdentifier (~> 2.0)
-  - WordPress-Editor-iOS (~> 1.19)
-  - WordPressShared (~> 2.1-beta)
-  - WordPressUI (~> 1.15)
-  - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8)
-  - wpxmlrpc (~> 0.10)
-  - ZendeskSupportSDK (~> 9.0.0)
 
 SPEC REPOS:
   trunk:
-    - Alamofire
-    - KeychainAccess
-    - Kingfisher
-    - NSObject-SafeExpectations
-    - OHHTTPStubs
-    - Sentry
-    - StripeTerminal
-    - UIDeviceIdentifier
-    - WordPress-Aztec-iOS
-    - WordPress-Editor-iOS
-    - WordPressShared
-    - WordPressUI
-    - Wormholy
     - WPMediaPicker
-    - wpxmlrpc
-    - ZendeskCommonUISDK
-    - ZendeskCoreSDK
-    - ZendeskMessagingAPISDK
-    - ZendeskMessagingSDK
-    - ZendeskSDKConfigurationsSDK
-    - ZendeskSupportProvidersSDK
-    - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  Gridicons:
-    :commit: c904cb73e26e86463a78e1335c6f4fd54a9e9223
-    :git: https://github.com/Automattic/Gridicons-iOS.git
-
-CHECKOUT OPTIONS:
-  Gridicons:
-    :commit: c904cb73e26e86463a78e1335c6f4fd54a9e9223
-    :git: https://github.com/Automattic/Gridicons-iOS.git
 
 SPEC CHECKSUMS:
-  Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  Gridicons: 2c30feba78143786aa04e6d1304a86e246779689
-  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
-  NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
-  OHHTTPStubs: 90eac6d8f2c18317baeca36698523dc67c513831
-  Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
-  StripeTerminal: 58a08668f6731666fc1ab878ac4a510ecfb403c9
-  UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
-  WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
-  WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
-  WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
-  WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
-  Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
   WPMediaPicker: e9eaa804e1b0288d7969776608053ae0ea2941f2
-  wpxmlrpc: 68db063041e85d186db21f674adf08d9c70627fd
-  ZendeskCommonUISDK: f3ce3e7a1bd7762550a78dbaff57509f3112c22b
-  ZendeskCoreSDK: c542b3f82abc3ee52e1291c6fb3436515e098806
-  ZendeskMessagingAPISDK: 5b3a9d16f2f4d8b3c07b4ca0451a7cf9bfd8107d
-  ZendeskMessagingSDK: 3915f0647246f079dd20bf2fd85084f495598fde
-  ZendeskSDKConfigurationsSDK: d0b28eeb9c3d88191cfd2c7f246b2522c8c357f4
-  ZendeskSupportProvidersSDK: 281acf2bb731d2a67f913cfe653ed0da9f5b2f42
-  ZendeskSupportSDK: b512cfc74b6bf8490e589f02cf52e27ed4f2bebe
 
-PODFILE CHECKSUM: d31cc69df3854753fd96bdc473de14827b26a880
+PODFILE CHECKSUM: facd615e57143a47b70e5802a227100b2a07b7a0
 
 COCOAPODS: 1.16.2

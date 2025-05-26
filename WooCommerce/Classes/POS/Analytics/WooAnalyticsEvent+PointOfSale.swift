@@ -39,7 +39,7 @@ extension WooAnalyticsEvent {
             sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
-            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
+            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
                 Key.sourceView: sourceView.rawValue,

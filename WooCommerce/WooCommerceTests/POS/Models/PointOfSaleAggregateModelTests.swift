@@ -1138,7 +1138,10 @@ private func makePurchasableItem(name: String = "") -> POSItem {
         name: name,
         formattedPrice: "",
         productID: 1,
-        price: ""))
+        price: "",
+        manageStock: false,
+        stockQuantity: nil,
+        stockStatusKey: ""))
 }
 
 private func makeCouponItem(code: String = "") -> POSItem {

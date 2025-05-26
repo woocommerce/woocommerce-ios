@@ -1154,7 +1154,10 @@ extension Networking.POSProduct {
             salePrice: .fake(),
             onSale: .fake(),
             images: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            manageStock: .fake(),
+            stockQuantity: .fake(),
+            stockStatusKey: .fake()
         )
     }
 }

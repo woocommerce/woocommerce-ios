@@ -54,6 +54,9 @@ private extension SimpleProductCardView {
                                                     name: "Product name",
                                                     formattedPrice: "$3.00",
                                                     productID: 123,
-                                                    price: "3.00"))
+                                                    price: "3.00",
+                                                    manageStock: false,
+                                                    stockQuantity: nil,
+                                                    stockStatusKey: ""))
 }
 #endif

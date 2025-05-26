@@ -180,16 +180,16 @@ struct WooShippingEditAddressView: View {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
             }
         }
-        .alert(Localization.AddressValidationErrorAlert.title, isPresented: $viewModel.shouldShowAddressValidationAlert, actions: {
-            Button(Localization.AddressValidationErrorAlert.close) {}
-            Button(Localization.AddressValidationErrorAlert.retry) {
-                Task {
-                    await viewModel.remotelyValidateAddress()
-                }
-            }
-        }, message: {
-            Text(Localization.AddressValidationErrorAlert.message)
-        })
+        .alert(item: $viewModel.errorAlert) { alert in
+            Alert(
+                title: Text(alert.title),
+                message: Text(alert.message),
+                primaryButton: .default(Text(Localization.AlertButtons.retry)) {
+                    alert.retryAction()
+                },
+                secondaryButton: .cancel(Text(Localization.AlertButtons.close))
+            )
+        }
     }
 
     private struct AddressTextField: View {
@@ -428,29 +428,17 @@ private extension WooShippingEditAddressView {
                                                                  comment: "Button label indicating the address is missing information for a Woo Shipping label")
         }
 
-        enum AddressValidationErrorAlert {
-            static let title = NSLocalizedString(
-                "wooShipping.createLabels.editAddress.addressValidationAlert.title",
-                value: "Address Validation Error",
-                comment: "Title of the alert when address validation fails in the Woo Shipping label creation flow"
-            )
-
-            static let message = NSLocalizedString(
-                "wooShipping.createLabels.editAddress.addressValidationAlert.message",
-                value: "The address you entered could not be verified. Please try again later.",
-                comment: "Message of the alert when address validation fails in the Woo Shipping label creation flow"
-            )
-
+        enum AlertButtons {
             static let retry = NSLocalizedString(
-                "wooShipping.createLabels.editAddress.addressValidationAlert.retry",
+                "wooShipping.createLabels.editAddress.alert.retry",
                 value: "Retry",
-                comment: "Button label indicating the user wants to retry the address validation"
+                comment: "Button label indicating the user wants to retry an action"
             )
 
             static let close = NSLocalizedString(
-                "wooShipping.createLabels.editAddress.addressValidationAlert.close",
+                "wooShipping.createLabels.editAddress.alert.close",
                 value: "Close",
-                comment: "Button label indicating the user wants to close the address validation alert"
+                comment: "Button label indicating the user wants to close an alert"
             )
         }
     }

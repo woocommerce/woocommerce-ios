@@ -1116,6 +1116,325 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(result.0, normalizedAddress.toWooShippingAddress())
         XCTAssertEqual(result.1, "TEXT@EXAMPLE.COM")
     }
+
+    // MARK: - Error Alert Tests
+
+    @MainActor
+    func test_errorAlert_is_nil_initially() {
+        // Given & When
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "",
+                                                        address: "",
+                                                        city: "",
+                                                        state: "",
+                                                        postalCode: "",
+                                                        email: "",
+                                                        phone: "",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: false,
+                                                        isVerified: false)
+
+        // Then
+        XCTAssertNil(viewModel.errorAlert)
+    }
+
+    @MainActor
+    func test_errorAlert_is_set_when_address_validation_fails_with_network_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+        XCTAssertNil(viewModel.errorAlert)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(NSError(domain: "NetworkError", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network connection failed"])))
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertNotNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.errorAlert?.title, "Address Validation Error")
+        XCTAssertEqual(viewModel.errorAlert?.message, "The address you entered could not be verified. Please try again later.")
+    }
+
+    @MainActor
+    func test_errorAlert_is_set_when_origin_address_update_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores)
+        XCTAssertNil(viewModel.errorAlert)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, completion):
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            case let .updateOriginAddress(_, _, _, completion):
+                completion(.failure(NSError(domain: "UpdateError", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to update origin address"])))
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+        viewModel.normalizeAddressVM?.confirmSelectedAddress()
+
+        // Then
+        await until {
+            viewModel.errorAlert != nil
+        }
+
+        XCTAssertEqual(viewModel.errorAlert?.title, "Origin Address Update Error")
+        XCTAssertEqual(viewModel.errorAlert?.message, "The origin address could not be updated. Please try again later.")
+    }
+
+    @MainActor
+    func test_errorAlert_is_set_when_destination_address_update_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(address: .fake(),
+                                                        orderID: sampleOrderID,
+                                                        email: "test@example.com",
+                                                        isVerified: false,
+                                                        originCountryCode: nil,
+                                                        originStateCode: nil,
+                                                        stores: stores)
+        XCTAssertNil(viewModel.errorAlert)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, completion):
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            case let .updateDestinationAddress(_, _, _, completion):
+                completion(.failure(NSError(domain: "UpdateError", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to update destination address"])))
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+        viewModel.normalizeAddressVM?.confirmSelectedAddress()
+
+        // Then
+        await until {
+            viewModel.errorAlert != nil
+        }
+
+        XCTAssertEqual(viewModel.errorAlert?.title, "Destination Address Update Error")
+        XCTAssertEqual(viewModel.errorAlert?.message, "The destination address could not be updated. Please try again later.")
+    }
+
+    @MainActor
+    func test_address_validation_error_alert_retry_action_calls_remotelyValidateAddress() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        var validationCallCount = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                validationCallCount += 1
+                if validationCallCount == 1 {
+                    // First call fails
+                    completion(.failure(NSError(domain: "NetworkError", code: 500)))
+                } else {
+                    // Second call succeeds
+                    completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+                }
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress() // First call - should fail and set alert
+
+        // Then
+        await until {
+            viewModel.errorAlert != nil && validationCallCount == 1
+        }
+
+        // Simulate retry button tap
+        viewModel.errorAlert?.retryAction()
+
+        // Then
+        await until {
+            validationCallCount == 2
+        }
+    }
+
+    @MainActor
+    func test_origin_address_update_error_alert_retry_action_calls_retryOriginAddressUpdate() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores)
+
+        var validationCallCount = 0
+        var updateCallCount = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, completion):
+                validationCallCount += 1
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            case let .updateOriginAddress(_, _, _, completion):
+                updateCallCount += 1
+                if updateCallCount == 1 {
+                    // First update fails
+                    completion(.failure(NSError(domain: "UpdateError", code: 500)))
+                } else {
+                    // Second update succeeds
+                    completion(.success(WooShippingOriginAddressUpdate(address: .fake(), isVerified: true)))
+                }
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+        viewModel.normalizeAddressVM?.confirmSelectedAddress() // This should fail and set alert
+
+        // Then
+        await until {
+            viewModel.errorAlert != nil && updateCallCount == 1
+        }
+
+        // Simulate retry button tap
+        viewModel.errorAlert?.retryAction()
+
+        // Then
+        await until {
+            validationCallCount == 2
+        }
+    }
+
+    @MainActor
+    func test_destination_address_update_error_alert_retry_action_calls_retryDestinationAddressUpdate() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(address: .fake(),
+                                                        orderID: sampleOrderID,
+                                                        email: "test@example.com",
+                                                        isVerified: false,
+                                                        originCountryCode: nil,
+                                                        originStateCode: nil,
+                                                        stores: stores)
+
+        var validationCallCount = 0
+        var updateCallCount = 0
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, completion):
+                validationCallCount += 1
+                completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
+            case let .updateDestinationAddress(_, _, _, completion):
+                updateCallCount += 1
+                if updateCallCount == 1 {
+                    // First update fails
+                    completion(.failure(NSError(domain: "UpdateError", code: 500)))
+                } else {
+                    // Second update succeeds
+                    completion(.success(WooShippingDestinationAddressUpdate(address: .fake(), isVerified: true)))
+                }
+            default:
+                XCTFail("Unexpected action received: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+        viewModel.normalizeAddressVM?.confirmSelectedAddress() // This should fail and set alert
+
+        // Then
+        await until {
+            viewModel.errorAlert != nil && updateCallCount == 1
+        }
+
+        // Simulate retry button tap
+        viewModel.errorAlert?.retryAction()
+
+        // Then
+        await until {
+            validationCallCount == 2
+        }
+    }
+
+    @MainActor
+    func test_errorAlert_does_not_interfere_with_validation_error_handling() async {
+        // Given
+        let expectedNameError = "Either Name or Company is required"
+        let expectedAddressError = "House number is missing"
+        let expectedGeneralError = "Address not found"
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(WooShippingAddressValidationError(addressError: expectedAddressError,
+                                                                      generalError: expectedGeneralError,
+                                                                      nameError: expectedNameError)))
+            }
+        }
+
+        // When
+        // Make a change to trigger hasChanges = true
+        viewModel.address.value = "15 ALGONKIN ST" // This should trigger hasChanges
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        // Should handle validation errors normally, not show error alert
+        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.name.errorMessage, expectedNameError)
+        XCTAssertEqual(viewModel.address.errorMessage, expectedAddressError)
+        XCTAssertEqual(viewModel.statusLabel, expectedGeneralError)
+    }
 }
 
 private extension WooShippingEditAddressViewModel {

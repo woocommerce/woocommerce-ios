@@ -71,12 +71,7 @@ private extension POSEligibilityChecker {
 
                 let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                                     minimumRequired: wcPluginMinimumVersion)
-
-                guard isSupported else {
-                    return promise(.success((isSupported: false, wcVersion: nil)))
-                }
-
-                promise(.success((isSupported: true, wcVersion: wcPlugin.version)))
+                promise(.success((isSupported: isSupported, wcVersion: wcPlugin.version)))
             }
             self.stores.dispatch(action)
         }

@@ -105,22 +105,36 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func sendReceipt(recipientEmail: String) async throws {
-        guard let order = order else {
-            return
-        }
-        try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
+        var isEligibleForPOSReceipt: Bool?
+        do {
+            guard let order else {
+                throw PointOfSaleOrderControllerError.noOrder
+            }
 
-        let isEligibleForPOSReceipt: Bool
-        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
-            isEligibleForPOSReceipt = await isPluginSupported(
-                POSReceiptEligibilityConstants.wcPluginName,
-                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
-                siteID: order.siteID
-            )
-        } else {
-            isEligibleForPOSReceipt = false
+            try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
+
+            let posReceiptEligibility: Bool
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
+                posReceiptEligibility = await isPluginSupported(
+                    POSReceiptEligibilityConstants.wcPluginName,
+                    minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                    siteID: order.siteID
+                )
+            } else {
+                posReceiptEligibility = false
+            }
+            isEligibleForPOSReceipt = posReceiptEligibility
+
+            try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
+
+            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": posReceiptEligibility])
+        } catch {
+            let properties = [
+                "eligible_for_pos_receipt": isEligibleForPOSReceipt
+            ].compactMapValues( { $0 })
+            analytics.track(.receiptEmailFailed, properties: properties, error: error)
+            throw error
         }
-        try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
     }
 
     func clearOrder() {

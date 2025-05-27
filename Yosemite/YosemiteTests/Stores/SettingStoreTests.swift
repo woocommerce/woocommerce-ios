@@ -822,6 +822,45 @@ final class SettingStoreTests: XCTestCase {
         let allSettings = viewStorage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: "general")
         XCTAssertEqual(allSettings?.count, 2)
     }
+
+    // MARK: - SettingAction.isFeatureEnabled
+
+    func test_isFeatureEnabled_returns_true_when_feature_is_enabled() {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_feature_point_of_sale_enabled",
+                                 filename: "settings-advanced-feature-pos-enabled")
+
+        // When
+        let isFeatureEnabled = waitFor { promise in
+            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
+                switch result {
+                case .success(let isEnabled):
+                    promise(isEnabled)
+                case .failure(let error):
+                    XCTFail("Expected success but got error: \(error)")
+                }
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isFeatureEnabled)
+    }
+
+    func test_isFeatureEnabled_returns_failure_when_no_response() {
+        // Given
+        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 

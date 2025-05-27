@@ -142,6 +142,8 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
             return
         }
 
+        shouldUpdateStock(item)
+
         if searchTerm.isNotEmpty {
             posModel.saveSearchTerm(searchTerm, for: itemType)
         }
@@ -154,6 +156,19 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
             sourceViewType: searchTerm.isEmpty ? .preSearch : .search,
             using: analytics
         )
+    }
+    
+    func shouldUpdateStock(_ item: POSItem) {
+        switch item {
+        case .simpleProduct(let product):
+            guard let stock = product.stockQuantity else { return }
+            let updatedStockQuantity = stock - 1
+            let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
+            
+            posModel.purchasableItemsSearchController.updateStockInRootItems(updatedProduct)
+        default:
+            break
+        }
     }
 }
 

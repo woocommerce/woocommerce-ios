@@ -11,6 +11,7 @@ enum PointOfSaleCardPaymentState: Equatable {
     case cardInserted
     case validatingOrder
     case validatingOrderError
+    case paymentIntentCreationError
     case preparingReader
     case processingPayment
     case paymentError
@@ -53,6 +54,8 @@ extension PointOfSalePaymentState {
             self = .card(.paymentError)
         case .show(.paymentSuccess):
             self = .card(.cardPaymentSuccessful)
+        case .show(.paymentIntentCreationError):
+            self = .card(.paymentIntentCreationError)
         default:
             return nil
         }
@@ -67,6 +70,7 @@ extension PointOfSalePaymentState {
         case .card(.idle),
                 .card(.validatingOrder),
                 .card(.validatingOrderError),
+                .card(.paymentIntentCreationError),
                 .card(.preparingReader),
                 .card(.acceptingCard),
                 .card(.cardInserted):

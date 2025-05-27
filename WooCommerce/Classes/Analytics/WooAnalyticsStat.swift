@@ -1324,6 +1324,15 @@ enum WooAnalyticsStat: String {
     case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
     case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
     case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
+
+    // MARK: Woo Shipping events
+    case wooShippingCreateShippingLabelFormShown = "wcs_create_shipping_label_form_shown"
+    case wooShippingEditingAddressStep = "wcs_editing_address_step"
+    case wooShippingPackageSelectionStep = "wcs_package_selection_step"
+    case wooShippingRateSelectionStep = "wcs_rate_selection_step"
+    case wooShippingPaymentStep = "wcs_payment_step"
+    case wooShippingPurchaseStep = "wcs_purchase_step"
+    case wooShippingRefundRequested = "wcs_refund_requested"
 }
 
 extension WooAnalyticsStat {

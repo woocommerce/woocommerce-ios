@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 import Combine
 
 /// Alert model for error alerts in the address editing flow.
@@ -18,15 +19,23 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let debounceDelay: Double
+    private let analytics: Analytics
     private var cancellables: Set<AnyCancellable> = []
 
-    enum AddressType {
+    enum AddressType: Equatable {
         case origin
         case destination(orderID: Int64)
     }
 
     /// Type of address being edited.
     private let addressType: AddressType
+
+    private var analyticAddressType: WooAnalyticsEvent.WooShipping.AddressType {
+        switch addressType {
+        case .origin: .origin
+        case .destination: .destination
+        }
+    }
 
     // MARK: Address properties
 
@@ -202,6 +211,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          debounceDelayInSeconds: Double = 1,
+         analytics: Analytics = ServiceLocator.analytics,
          onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil,
          onDestinationAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
         self.addressType = type
@@ -239,6 +249,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
         self.storageManager = storageManager
         self.debounceDelay = debounceDelayInSeconds
+        self.analytics = analytics
         self.onOriginAddressEdited = onOriginAddressEdited
         self.onDestinationAddressEdited = onDestinationAddressEdited
         // Set validation rules for fields that rely on instance properties.
@@ -273,6 +284,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         observeFieldErrors()
         fetchCountries()
         validateAddress()
+
+        analytics.track(event: .WooShipping.editingAddressStep(
+            type: analyticAddressType,
+            state: .started
+        ))
     }
 
     /// Used to initialize the view model with an origin address.
@@ -344,6 +360,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                                    postcode: postalCode.value)
         do {
             let validation = try await remotelyValidateAddress(addressToValidate)
+            analytics.track(event: .WooShipping.editingAddressStep(
+                type: analyticAddressType,
+                state: .validationSuccess
+            ))
             normalizeAddressVM = WooShippingNormalizeAddressViewModel(enteredAddress: validation.originalAddress,
                                                                       suggestedAddress: validation.normalizedAddress.toWooShippingAddress(),
                                                                       onConfirm: { [weak self] confirmedAddress in
@@ -366,6 +386,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             if let generalError = error.generalError {
                 remoteValidationError = generalError
             }
+            analytics.track(event: .WooShipping.editingAddressStep(
+                type: analyticAddressType,
+                state: .validationFailed,
+                error: error
+            ))
         } catch {
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
 
@@ -379,6 +404,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                     }
                 }
             )
+
+            analytics.track(event: .WooShipping.editingAddressStep(
+                type: analyticAddressType,
+                state: .validationFailed,
+                error: error
+            ))
         }
     }
 
@@ -426,6 +457,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             do {
                 let updatedOriginAddress = try await updateOriginAddress(with: address)
                 onOriginAddressEdited?(updatedOriginAddress)
+                analytics.track(event: .WooShipping.editingAddressStep(type: .origin, state: .confirmed))
             } catch {
                 DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
 
@@ -439,6 +471,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                         }
                     }
                 )
+
+                analytics.track(event: .WooShipping.editingAddressStep(
+                    type: .origin,
+                    state: .confirmed,
+                    error: error
+                ))
             }
         }
     }
@@ -465,6 +503,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
                                                                                    with: address)
                 onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
+                analytics.track(event: .WooShipping.editingAddressStep(type: .destination, state: .confirmed))
             } catch {
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
 
@@ -478,6 +517,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                         }
                     }
                 )
+
+                analytics.track(event: .WooShipping.editingAddressStep(
+                    type: .destination,
+                    state: .confirmed,
+                    error: error
+                ))
             }
         }
     }

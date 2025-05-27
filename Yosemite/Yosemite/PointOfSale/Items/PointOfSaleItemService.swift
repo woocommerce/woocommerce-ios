@@ -91,9 +91,9 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
                                                            price: product.price,
-                                                           manageStock: false,
-                                                           stockQuantity: nil,
-                                                           stockStatusKey: ""))
+                                                           manageStock: product.manageStock,
+                                                           stockQuantity: product.stockQuantity,
+                                                           stockStatusKey: product.stockStatusKey))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
                         id: UUID(),

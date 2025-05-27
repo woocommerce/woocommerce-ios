@@ -6,7 +6,7 @@ import Networking
 import NetworkingWatchOS
 #endif
 
-import class WooFoundationLite.CurrencySettings
+import class WooFoundationCore.CurrencySettings
 
 
 

@@ -6,7 +6,7 @@ import Yosemite
 import NetworkingWatchOS
 #endif
 
-import WooFoundationLite
+import WooFoundationCore
 
 
 // MARK: - View Model for individual cells on the Order List screen

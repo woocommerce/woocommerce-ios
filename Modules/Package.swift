@@ -20,12 +20,12 @@ let package = Package(
             targets: ["TestKit"]
         ),
         .library(
-            name: "WooFoundationLite",
-            targets: ["WooFoundationLite"]
-        ),
-        .library(
             name: "WooFoundation",
             targets: ["WooFoundation"]
+        ),
+        .library(
+            name: "WooFoundationCore",
+            targets: ["WooFoundationCore"]
         ),
         .library(
             name: "WordPressShared",
@@ -82,7 +82,11 @@ let package = Package(
             dependencies: ["Difference", "Nimble"]
         ),
         .target(
-            name: "WooFoundationLite",
+            name: "WooFoundation",
+            dependencies: ["WooFoundationCore"]
+        ),
+        .target(
+            name: "WooFoundationCore",
             dependencies: [
                 "Codegen",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
@@ -90,18 +94,14 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
-            name: "WooFoundation",
-            dependencies: ["WooFoundationLite"]
-        ),
-        .target(
-            name: "WordPressSharedObjC",
-            resources: [.process("Resources")]
-        ),
-        .target(
             name: "WordPressShared",
             dependencies: [
                 .target(name: "WordPressSharedObjC"),
             ],
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "WordPressSharedObjC",
             resources: [.process("Resources")]
         ),
         .target(name: "WordPressUIObjC"),
@@ -361,7 +361,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
-                    "WooFoundationLite",
+                    "WooFoundationCore",
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "Sentry", package: "sentry-cocoa"),

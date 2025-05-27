@@ -1,1 +1,1 @@
-@_exported import WooFoundationLite
+@_exported import WooFoundationCore

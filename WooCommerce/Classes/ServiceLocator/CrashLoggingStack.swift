@@ -1,5 +1,5 @@
 import Foundation
-import WooFoundationLite
+import WooFoundationCore
 
 protocol CrashLoggingStack: CrashLogger {
     /// Forces the application to crash

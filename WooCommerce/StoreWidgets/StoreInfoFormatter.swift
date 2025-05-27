@@ -1,6 +1,6 @@
 import Foundation
 
-import WooFoundationLite
+import WooFoundationCore
 
 /// Type to help formatting values for presentation.
 ///

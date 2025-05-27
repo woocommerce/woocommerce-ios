@@ -1,4 +1,4 @@
-// FIXME: Figure out how to marry WooFoundationLite/Resources and UIKit
+// FIXME: Figure out how to marry WooFoundationCore/Resources and UIKit
 //import XCTest
 //@testable import WooFoundation
 //

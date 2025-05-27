@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Provides view data for `WooShippingServiceView`.
 ///
@@ -8,6 +9,7 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let originAddress: WooShippingAddress?
     private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
@@ -44,12 +46,14 @@ final class WooShippingServiceViewModel: ObservableObject {
          originAddress: WooShippingAddress?,
          destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
         self.stores = stores
+        self.analytics = analytics
         self.onSelectRate = onSelectRate
     }
 
@@ -65,6 +69,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.selectedRate = selectedRate
         generateServiceTabs()
         onSelectRate?(selectedRate)
+        analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
     }
 
     /// Retrieves shipping label rates for this shipment from remote.
@@ -98,7 +103,9 @@ final class WooShippingServiceViewModel: ObservableObject {
                       rates.defaultRates.isNotEmpty else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
                     let isHAZMAT = selectedPackage.hazmatCategory != nil
-                    updateLoadingState(to: .error(Error.noRatesAvailable(isHAZMAT: isHAZMAT)))
+                    let error = Error.noRatesAvailable(isHAZMAT: isHAZMAT)
+                    updateLoadingState(to: .error(error))
+                    analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
                     return
                 }
 
@@ -106,9 +113,11 @@ final class WooShippingServiceViewModel: ObservableObject {
                 signatureRates = rates.signatureRequired
                 adultSignatureRates = rates.adultSignatureRequired
                 updateLoadingState(to: .loaded)
+                analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingSuccess))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
                 updateLoadingState(to: .error(Error.failedLoadingLabelRates))
+                analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
             }
         }
         stores.dispatch(action)

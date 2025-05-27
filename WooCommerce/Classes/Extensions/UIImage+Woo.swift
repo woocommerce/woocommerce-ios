@@ -1352,6 +1352,10 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "icon-product").withRenderingMode(.alwaysTemplate)
     }
 
+    static var creditCardIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "credit-card")
+    }
+
     static var appPasswordTutorialImage: UIImage {
         UIImage(named: "app-password-tutorial-1")!
     }

@@ -26,7 +26,7 @@ struct POSStockFormatter {
 
         static let inStockWithQuantity = NSLocalizedString(
             "pos.stockStatusLabel.outofstock",
-            value: "%@ in stock",
+            value: "%1$@ in stock",
             comment: "Label to be displayed in the product's card when there's stock of a given product")
     }
 }

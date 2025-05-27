@@ -11,9 +11,6 @@
       location = "group:Storage/Storage.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Networking/Networking.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
    <FileRef

@@ -20,6 +20,14 @@ let package = Package(
             targets: ["Experiments"]
         ),
         .library(
+            name: "NetworkingCore",
+            targets: ["NetworkingCore"]
+        ),
+        .library(
+            name: "Networking",
+            targets: ["Networking"]
+        ),
+        .library(
             name: "TestKit",
             targets: ["TestKit"]
         ),
@@ -88,6 +96,28 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Networking",
+            dependencies: [
+                "Codegen",
+                "NetworkingCore",
+                "WooFoundation",
+                "WordPressShared",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "Aztec", package: "AztecEditor-iOS"),
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+            ]
+        ),
+        .target(
+            name: "NetworkingCore",
+            dependencies: [
+                "Codegen",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+            ]
+        ),
+        .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
@@ -132,6 +162,19 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "NetworkingTests",
+            dependencies: [
+                "Codegen",
+                "Networking",
+                "TestKit",
+                "WooFoundation",
+                "WordPressShared",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+            ],
+            resources: [.process("Responses")]
+        ),
+        .testTarget(
             name: "WooFoundationTests",
             dependencies: ["TestKit", .target(name: "WooFoundation")]
         ),
@@ -171,9 +214,6 @@ enum XcodeTargetNames {
     static let fakes = "Fakes"
     static let hardware = "Hardware"
     static let hardwareTests = "HardwareTests"
-    static let networking = "Networking"
-    static let networkingTests = "NetworkingTests"
-    static let networkingWatchOS = "NetworkingWatchOS"
     static let notificationExtension = "NotificationExtension"
     static let storage = "Storage"
     static let storageTests = "StorageTests"
@@ -196,9 +236,6 @@ enum XcodeSupport {
             XcodeTargetNames.fakes,
             XcodeTargetNames.hardware,
             XcodeTargetNames.hardwareTests,
-            XcodeTargetNames.networking,
-            XcodeTargetNames.networkingTests,
-            XcodeTargetNames.networkingWatchOS,
             XcodeTargetNames.notificationExtension,
             XcodeTargetNames.storage,
             XcodeTargetNames.storageTests,
@@ -220,7 +257,10 @@ enum XcodeSupport {
         [
             .xcodeTarget(
                 XcodeTargetNames.fakes,
-                dependencies: ["Codegen"]
+                dependencies: [
+                    "Codegen",
+                    "Networking",
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.hardware,
@@ -235,40 +275,9 @@ enum XcodeSupport {
                 dependencies: [XcodeTargetNames.hardware.asDependency]
             ),
             .xcodeTarget(
-                XcodeTargetNames.networking,
-                dependencies: [
-                    "Codegen",
-                    "WooFoundation",
-                    "WordPressShared",
-                    .product(name: "Alamofire", package: "Alamofire"),
-                    .product(name: "Aztec", package: "AztecEditor-iOS"),
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.networkingTests,
-                dependencies: [
-                    "Codegen",
-                    "TestKit",
-                    "WooFoundation",
-                    "WordPressShared",
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                    XcodeTargetNames.networking.asDependency
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.networkingWatchOS,
-                dependencies: [
-                    "Codegen",
-                    .product(name: "Alamofire", package: "Alamofire"),
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
+                    "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
@@ -285,6 +294,7 @@ enum XcodeSupport {
                 XcodeTargetNames.storeWidgetsExtension,
                 dependencies: [
                     "Experiments",
+                    "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
@@ -301,6 +311,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Experiments",
+                    "Networking",
                     "WooFoundation",
                     "WordPressShared",
                     "WordPressUI",
@@ -357,6 +368,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
+                    "NetworkingCore",
                     "WooFoundationCore",
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
@@ -389,6 +401,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
+                    "Networking",
                     "WooFoundation",
                     "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),

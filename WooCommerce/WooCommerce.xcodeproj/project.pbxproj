@@ -1321,6 +1321,7 @@
 		3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
 		3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
 		3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
+		3FF861B52DE5823100A6E053 /* XcodeTarget_WooFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -1621,6 +1622,8 @@
 		6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */; };
 		6891C3642D364AFE00B5B48C /* CollectCashViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */; };
 		6891C3662D364C1A00B5B48C /* CollectCashViewHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */; };
+		689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F29192DE4557D004DF52B /* POSStockFormatter.swift */; };
+		689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */; };
 		68A345642D029E12002EE324 /* PaymentButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A345632D029E09002EE324 /* PaymentButtons.swift */; };
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */; };
@@ -2636,6 +2639,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */; };
 		DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */; };
 		DE2004602BF7092900660A72 /* ProductStockDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */; };
 		DE2004622BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */; };
@@ -4832,6 +4836,8 @@
 		6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListViewModel.swift; sourceTree = "<group>"; };
 		6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelper.swift; sourceTree = "<group>"; };
 		6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelperTests.swift; sourceTree = "<group>"; };
+		689F29192DE4557D004DF52B /* POSStockFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatter.swift; sourceTree = "<group>"; };
+		689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatterTests.swift; sourceTree = "<group>"; };
 		68A345632D029E09002EE324 /* PaymentButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentButtons.swift; sourceTree = "<group>"; };
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -5880,6 +5886,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+WooShipping.swift"; sourceTree = "<group>"; };
 		DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCard.swift; sourceTree = "<group>"; };
 		DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCardViewModel.swift; sourceTree = "<group>"; };
@@ -6372,7 +6379,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
+		3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -6413,7 +6420,7 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */ = {
+		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.swiftlint.yml,
@@ -6427,41 +6434,9 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = WooShippingPaymentMethod;
-			sourceTree = "<group>";
-		};
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = WordPressAuthenticator;
-			sourceTree = "<group>";
-		};
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = WordPressAuthenticatorTests;
-			sourceTree = "<group>";
-		};
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
+		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6542,6 +6517,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
+				3FF861B52DE5823100A6E053 /* XcodeTarget_WooFoundation in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
@@ -7293,6 +7269,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				689F29192DE4557D004DF52B /* POSStockFormatter.swift */,
 				681BB5FD2D676060008AF8BB /* POSPadding.swift */,
 				681BB5FB2D676043008AF8BB /* POSSpacing.swift */,
 				68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */,
@@ -7435,6 +7412,7 @@
 				208628722D48E476003F45DC /* Payments Onboarding */,
 				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
 				686A71B52DC9E5C10006E835 /* POSItemActionHandlerTests.swift */,
+				689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -10235,6 +10213,7 @@
 				262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */,
 				86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */,
 				DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */,
+				DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -14623,6 +14602,7 @@
 			name = WooCommerce;
 			packageProductDependencies = (
 				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
+				3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -15260,9 +15240,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15848,6 +15832,7 @@
 				20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
+				689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
@@ -16479,6 +16464,7 @@
 				EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */,
 				02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */,
 				B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */,
+				DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				CEE482D52B83A9A300FAC8C5 /* AnalyticsCard+UI.swift in Sources */,
@@ -17506,6 +17492,7 @@
 				020EF5EF2A8C94E0009D2169 /* SiteSnapshotTrackerTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
+				689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */,
 				B92932E12AD5A616005B3153 /* AddCustomAmountViewModelTests.swift in Sources */,
 				204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,
@@ -19604,6 +19591,10 @@
 		3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XcodeTarget_WooCommerce;
+		};
+		3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XcodeTarget_WooFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

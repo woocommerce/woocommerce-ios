@@ -11,6 +11,10 @@ struct SimpleProductCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
+    private var shouldShowProductLabels: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
+    }
+
     init(product: POSSimpleProduct) {
         self.product = product
     }
@@ -33,6 +37,11 @@ struct SimpleProductCardView: View {
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
+
+                Text(POSStockFormatter.stockStatusLabel(for: product))
+                    .foregroundStyle(Constants.detailColor)
+                    .font(Constants.itemDetailFont)
+                    .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -57,6 +66,6 @@ private extension SimpleProductCardView {
                                                     price: "3.00",
                                                     manageStock: false,
                                                     stockQuantity: nil,
-                                                    stockStatusKey: ""))
+                                                    stockStatusKey: "instock"))
 }
 #endif

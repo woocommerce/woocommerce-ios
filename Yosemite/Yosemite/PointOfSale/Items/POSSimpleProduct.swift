@@ -19,6 +19,9 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public var productStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: stockStatusKey)
+    }
 
     public init(id: UUID,
                 name: String,

@@ -11,6 +11,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     private let onLabelPurchase: ((ShippingLabel) -> Void)?
     private let onLabelRefund: ((Int64) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
+    private let analytics: Analytics
 
     @Published var hazmatCategory: ShippingLabelHazmatCategory?
     @Published private(set) var hazmatNotice: Notice?
@@ -145,12 +146,14 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          originAddress: AnyPublisher<WooShippingAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
          onLabelPurchase: ((ShippingLabel) -> Void)? = nil,
          onLabelRefund: ((Int64) -> Void)? = nil) {
         self.order = order
         self.stores = stores
+        self.analytics = analytics
         self.shipment = shipment
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.debounceDuration = debounceDuration
@@ -174,6 +177,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selecting a package also refreshes the available rates for the shipping service.
     func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
         selectedPackage = packageData
+        analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
     /// Purchases a shipping label with the provided label details and settings.
@@ -185,6 +189,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             return
         }
 
+        analytics.track(event: .WooShipping.purchaseStep(state: .started))
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.id,
                                                          package: package,
                                                          rate: selectedRate.purchaseRate,
@@ -194,7 +199,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
-                                                                 package: packagePurchase) { result in
+                                                                 package: packagePurchase) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
+                case .failure(let error):
+                    self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseFailed, error: error))
+                }
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

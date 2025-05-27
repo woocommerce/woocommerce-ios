@@ -38,6 +38,7 @@ struct TotalsViewHelperTests {
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.processingPayment),
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrder),
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.validatingOrderError),
+        (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.paymentIntentCreationError),
         (CardPresentPaymentReaderConnectionStatus.connected(.init(name: "", batteryLevel: nil)), PointOfSaleCardPaymentState.cardInserted)
     ])
     func test_shouldShowDisconnectedMessage_returns_false_when_reader_connected(
@@ -50,7 +51,8 @@ struct TotalsViewHelperTests {
     @Test(arguments: [
         (PointOfSalePaymentState.card(.validatingOrderError)),
         (PointOfSalePaymentState.card(.acceptingCard)),
-        (PointOfSalePaymentState.card(.cardInserted))
+        (PointOfSalePaymentState.card(.cardInserted)),
+        (PointOfSalePaymentState.card(.paymentIntentCreationError))
     ])
     func test_shouldShowCollectCashPaymentButton_returns_true_for_supported_states(
         paymentState: PointOfSalePaymentState) {

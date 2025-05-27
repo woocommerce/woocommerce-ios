@@ -6,6 +6,7 @@
 - [*] Payments: payment method icons on the payment methods screen no longer appear blurry. [https://github.com/woocommerce/woocommerce-ios/pull/15659]
 - [*] POS: for WooCommerce version 10.0.0 and higher, a new check for POS feature switch value (in wp-admin WooCommerce Settings > Advanced > Features) was added for the POS entry point. [https://github.com/woocommerce/woocommerce-ios/pull/15662]
 - [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
+- [internal] POS: Handle payment intent creation error. [https://github.com/woocommerce/woocommerce-ios/pull/15661]
 
 22.4
 -----

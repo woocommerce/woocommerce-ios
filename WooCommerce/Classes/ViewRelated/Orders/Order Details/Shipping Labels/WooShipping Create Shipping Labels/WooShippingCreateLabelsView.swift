@@ -39,6 +39,7 @@ struct WooShippingCreateLabelsView: View {
 
     @State private var showingCustomsForm = false
     @State private var showingSplitShipments = false
+    @State private var showingPaymentMethods = false
 
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
@@ -103,6 +104,12 @@ struct WooShippingCreateLabelsView: View {
                 WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
                     viewModel.updateShipments(updatedShipments)
                     isShipmentDetailsExpanded = false
+                }
+            }
+            .sheet(isPresented: $showingPaymentMethods) {
+                if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                    WooShippingPaymentMethodsView(viewModel: paymentMethodsViewModel)
+                        .presentationDetents([.medium, .large])
                 }
             }
         }
@@ -445,7 +452,7 @@ private extension WooShippingCreateLabelsView {
 
     var addPaymentMethodLine: some View {
         Button(action: {
-            /// Trigger payment method selection
+            showingPaymentMethods = true
         }) {
             HStack {
                 Image(systemName: "plus")
@@ -464,7 +471,7 @@ private extension WooShippingCreateLabelsView {
         _ cardLineViewModel: WooShippingPaymentMethodLine.CardPaymentMethodLineViewModel
     ) -> some View {
         Button(action: {
-            /// Trigger payment method selection
+            showingPaymentMethods = true
         }) {
             HStack {
                 Text(cardLineViewModel.title)

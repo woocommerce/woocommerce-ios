@@ -22,7 +22,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
-    ///
+    /// Refreshes the item's stock quantities
     func updateStockInRootItems(_ updatedProduct: POSSimpleProduct)
 }
 

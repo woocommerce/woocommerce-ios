@@ -14,6 +14,6 @@ final class MockPointOfSaleItemsController: PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async { }
 
     func loadNextItems(base: ItemListBaseItem) async { }
-    
+
     func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }

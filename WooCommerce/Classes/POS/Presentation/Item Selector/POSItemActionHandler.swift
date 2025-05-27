@@ -89,6 +89,9 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
         if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
+
+        shouldUpdateStock(item)
+
         posModel.addToCart(item)
 
         trackTapAnalytics(
@@ -97,6 +100,19 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             sourceViewType: sourceViewType,
             using: analytics
         )
+    }
+
+    func shouldUpdateStock(_ item: POSItem) {
+        switch item {
+        case .simpleProduct(let product):
+            guard let stock = product.stockQuantity else { return }
+            let updatedStockQuantity = stock - 1
+            let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
+            
+
+        default:
+            break
+        }
     }
 }
 

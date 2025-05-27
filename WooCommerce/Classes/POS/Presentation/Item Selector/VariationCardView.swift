@@ -36,7 +36,9 @@ struct VariationCardView: View {
                 Text(variation.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
-                Text(variation.stockStatusKey)
+                Text(POSStockFormatter.stockStatusLabel(for: variation))
+                    .foregroundStyle(Constants.detailColor)
+                    .font(Constants.itemDetailFont)
                     .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))

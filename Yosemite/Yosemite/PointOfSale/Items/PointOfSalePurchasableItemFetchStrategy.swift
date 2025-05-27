@@ -55,13 +55,13 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
 
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
-    private let analytics: POSSearchAnalyticsTracking
+    private let analytics: POSItemFetchAnalyticsTracking
 
     init(siteID: Int64,
          searchTerm: String,
          productsRemote: ProductsRemoteProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
-         analytics: POSSearchAnalyticsTracking) {
+         analytics: POSItemFetchAnalyticsTracking) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.productsRemote = productsRemote

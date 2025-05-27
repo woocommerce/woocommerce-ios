@@ -66,7 +66,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
-                                                                analytics: POSSearchAnalytics(itemType: .product))
+                                                                analytics: POSItemFetchAnalytics(itemType: .product))
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }

@@ -7,7 +7,7 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
     private let searchTerm = "test search"
     private let productsRemote = MockProductsRemote()
     private let variationsRemote = MockProductVariationsRemote()
-    private let mockAnalytics = MockPOSSearchAnalyticsTracking()
+    private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
 
     @Test func fetchProducts_tracks_analytics_for_first_page() async throws {
         // Given
@@ -56,7 +56,11 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
 }
 
 // MARK: - Mocks
-final class MockPOSSearchAnalyticsTracking: POSSearchAnalyticsTracking {
+final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
+    func trackItemsFetchComplete(totalItems: Int) {
+        // no-op
+    }
+    
     private(set) var spyMillisecondsSinceRequestSent: Int?
     private(set) var spyTotalItems: Int?
 

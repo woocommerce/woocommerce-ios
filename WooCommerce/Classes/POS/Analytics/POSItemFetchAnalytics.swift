@@ -30,4 +30,18 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
             )
         )
     }
+
+    /// Tracks when a remote search results fetch completes
+    /// - Parameters:
+    ///   - milliseconds: The time taken to fetch results in milliseconds
+    ///   - totalItems: The total number of items found in the search
+    func trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
+        analytics.track(
+            event: .PointOfSale.pointOfSaleSearchRemoteResultsFetched(
+                itemType: itemType,
+                resultsCount: totalItems,
+                millisecondsSinceRequestSent: millisecondsSinceRequestSent
+            )
+        )
+    }
 }

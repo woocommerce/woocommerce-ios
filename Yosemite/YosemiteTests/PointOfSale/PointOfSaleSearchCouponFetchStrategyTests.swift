@@ -8,12 +8,12 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
     private let storage: MockStorageManager
     private let sampleSiteID: Int64 = 123
     private let searchTerm = "test"
-    private let mockAnalytics: MockPOSSearchAnalyticsTracking
+    private let mockAnalytics: MockPOSItemFetchAnalyticsTracking
 
     init() {
         self.couponStoreMethods = MockCouponStoreMethods()
         self.storage = MockStorageManager()
-        self.mockAnalytics = MockPOSSearchAnalyticsTracking()
+        self.mockAnalytics = MockPOSItemFetchAnalyticsTracking()
         self.sut = .init(
             siteID: sampleSiteID,
             currencySettings: CurrencySettings(),

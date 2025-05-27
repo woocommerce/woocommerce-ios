@@ -5,9 +5,10 @@ import Foundation
 final class VersionHelpers {
     /// Compares two strings as versions using the same approach as PHP `version_compare`.
     /// https://www.php.net/manual/en/function.version-compare.php
-    /// 
+    ///
     /// - Notable parameters:
-    ///   - includesDevAndBetaVersions: If true, the version string is considered supported if it contains the minimumRequired version e.g. "5.0.0-beta1" >= "5.0.0".
+    ///   - includesDevAndBetaVersions: If true, the version string is considered supported if it contains the minimumRequired version
+    ///     e.g. "5.0.0-beta1" >= "5.0.0".
     static func isVersionSupported(version: String, minimumRequired: String, includesDevAndBetaVersions: Bool = false) -> Bool {
         if includesDevAndBetaVersions && version.contains(minimumRequired) {
             return true

@@ -49,7 +49,11 @@ private extension WooShippingPaymentMethodsView {
             Button {
                 // TODO
             } label: {
-                Text(Localization.EmptyView.actionButton)
+                Label {
+                    Text(Localization.EmptyView.actionButton)
+                } icon: {
+                    Image(uiImage: .externalImage)
+                }
             }
             .buttonStyle(PrimaryButtonStyle())
         }

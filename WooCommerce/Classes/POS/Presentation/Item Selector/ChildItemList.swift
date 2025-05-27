@@ -150,7 +150,10 @@ private extension ChildItemList {
                             price: "5.75",
                             productID: 134,
                             variationID: 256,
-                            parentProductName: parentProduct.name
+                            parentProductName: parentProduct.name,
+                            manageStock: true,
+                            stockQuantity: 5,
+                            stockStatusKey: "instock"
                         )
                     ),
                     .variation(
@@ -161,7 +164,10 @@ private extension ChildItemList {
                             price: "6.5",
                             productID: 134,
                             variationID: 256,
-                            parentProductName: parentProduct.name
+                            parentProductName: parentProduct.name,
+                            manageStock: true,
+                            stockQuantity: 5,
+                            stockStatusKey: "instock"
                         )
                     )
                 ], hasMoreItems: false)])

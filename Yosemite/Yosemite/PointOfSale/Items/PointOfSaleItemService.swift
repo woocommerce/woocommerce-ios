@@ -66,7 +66,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                          productImageSource: variation.image?.src,
                                          productID: variation.productID,
                                          variationID: variation.productVariationID,
-                                         parentProductName: parentProduct.name))
+                                         parentProductName: parentProduct.name,
+                                         manageStock: variation.manageStock,
+                                         stockQuantity: variation.stockQuantity,
+                                         stockStatusKey: variation.stockStatus.rawValue))
                 }),
                 hasMorePages: pagedVariations.hasMorePages,
                 totalItems: pagedVariations.totalItems

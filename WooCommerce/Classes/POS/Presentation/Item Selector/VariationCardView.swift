@@ -11,6 +11,10 @@ struct VariationCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
+    private var shouldShowProductLabels: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
+    }
+
     init(variation: POSVariation) {
         self.variation = variation
     }
@@ -32,6 +36,8 @@ struct VariationCardView: View {
                 Text(variation.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
+                Text(variation.stockStatusKey)
+                    .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
@@ -54,7 +60,10 @@ private extension VariationCardView {
                                  price: "5.00",
                                  productID: 134,
                                  variationID: 256,
-                                 parentProductName: "Coffee")
+                                 parentProductName: "Coffee",
+                                 manageStock: true,
+                                 stockQuantity: 5,
+                                 stockStatusKey: "instock")
     VariationCardView(variation: variation)
 }
 
@@ -66,6 +75,9 @@ private extension VariationCardView {
                                  productImageSource: "https://pd.w.org/2024/12/986762d0d4d4cf17.82435881-scaled.jpeg",
                                  productID: 134,
                                  variationID: 256,
-                                 parentProductName: "Coffee")
+                                 parentProductName: "Coffee",
+                                 manageStock: true,
+                                 stockQuantity: 5,
+                                 stockStatusKey: "instock")
     VariationCardView(variation: variation)
 }

@@ -17,6 +17,11 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
     // Variation specific
     public let parentProductName: String
 
+    // Stock
+    public let manageStock: Bool
+    public let stockQuantity: Decimal?
+    public let stockStatusKey: String
+
     public init(id: UUID,
                 name: String,
                 formattedPrice: String,
@@ -24,7 +29,10 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
                 productImageSource: String? = nil,
                 productID: Int64,
                 variationID: Int64,
-                parentProductName: String) {
+                parentProductName: String,
+                manageStock: Bool,
+                stockQuantity: Decimal?,
+                stockStatusKey: String) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -33,6 +41,9 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
         self.productID = productID
         self.productVariationID = variationID
         self.parentProductName = parentProductName
+        self.manageStock = manageStock
+        self.stockQuantity = stockQuantity
+        self.stockStatusKey = stockStatusKey
     }
 }
 

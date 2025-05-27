@@ -2,10 +2,81 @@ import SwiftUI
 
 struct WooShippingPaymentMethodsView: View {
 
-    @ObservedObject var viewModel: WooShippingPaymentMethodsViewModel
+    @ObservedObject var viewModel: ShippingLabelPaymentMethodsViewModel
 
     var body: some View {
-        Text("Hello, World!")
+        ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
+            Text(Localization.title)
+                .font(.title3)
+                .bold()
+
+            Text(Localization.subtitle)
+
+            if viewModel.paymentMethods.isEmpty {
+                emptyView
+            } else {
+                paymentMethodList
+            }
+
+            Spacer()
+
+            Text(String(format: Localization.note, viewModel.storeOwnerUsername))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .footnoteStyle()
+        }
+        .padding(.top, Layout.contentPadding)
+    }
+}
+
+private extension WooShippingPaymentMethodsView {
+    var emptyView: some View {
+        VStack(spacing: Layout.EmptyView.contentSpacing) {
+            Image(uiImage: .creditCardIllustration)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.EmptyView.imageSize, height: Layout.EmptyView.imageSize)
+
+            VStack(spacing: Layout.EmptyView.textSpacing) {
+                Text(Localization.EmptyView.title)
+                    .font(.subheadline)
+                    .bold()
+                Text(Localization.EmptyView.subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .multilineTextAlignment(.center)
+
+            Button {
+                // TODO
+            } label: {
+                Text(Localization.EmptyView.actionButton)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+        }
+        .padding(Layout.EmptyView.contentInsets)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.EmptyView.corderRadius)
+                .stroke(Color.secondary, style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
+        )
+        .padding(.top, Layout.contentSpacing)
+    }
+
+    var paymentMethodList: some View {
+        EmptyView() // TODO
+    }
+}
+
+private extension WooShippingPaymentMethodsView {
+    enum Layout {
+        static let contentPadding: CGFloat = 16
+        static let contentSpacing: CGFloat = 8
+        enum EmptyView {
+            static let corderRadius: CGFloat = 8
+            static let contentInsets = EdgeInsets(top: 54, leading: 32, bottom: 54, trailing: 32)
+            static let contentSpacing: CGFloat = 16
+            static let textSpacing: CGFloat = 8
+            static let imageSize: CGFloat = 88
+        }
     }
 }
 
@@ -40,13 +111,13 @@ private extension WooShippingPaymentMethodsView {
         }
         static let note = NSLocalizedString(
             "wooShippingPaymentMethodsView.note",
-            value: "Credit cards are retrieved from the following WordPress.com account: %1$@",
+            value: "Credit cards are retrieved from the following WordPress.com account: @%1$@.",
             comment: "Note of the payment method sheet in the Shipping Label purchase flow. " +
-            "Placeholder is the username of an associated WordPress account."
+            "Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder."
         )
     }
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init())
+    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()))
 }

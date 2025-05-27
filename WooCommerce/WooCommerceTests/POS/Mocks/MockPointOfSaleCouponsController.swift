@@ -1,4 +1,5 @@
 @testable import WooCommerce
+import struct Yosemite.POSSimpleProduct
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
@@ -18,4 +19,5 @@ final class MockPointOfSaleCouponsController: PointOfSaleCouponsControllerProtoc
     func enableCoupons() async { }
     func searchItems(searchTerm: String, baseItem: WooCommerce.ItemListBaseItem) async { }
     func clearSearchItems(baseItem: WooCommerce.ItemListBaseItem) { }
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }

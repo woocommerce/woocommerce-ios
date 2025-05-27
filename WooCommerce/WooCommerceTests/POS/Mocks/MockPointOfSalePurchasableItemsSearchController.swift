@@ -2,6 +2,7 @@ import Foundation
 import Combine
 @testable import WooCommerce
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 
 @available(iOS 17.0, *)
 final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol {
@@ -17,4 +18,6 @@ final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchin
     func loadNextItems(base: ItemListBaseItem) async { }
 
     func clearSearchItems(baseItem: WooCommerce.ItemListBaseItem) { }
+    
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }

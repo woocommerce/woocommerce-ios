@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
+import struct Yosemite.POSSimpleProduct
 import protocol WooFoundation.Analytics
 
 /// Protocol for handling actions on POS items
@@ -64,6 +65,16 @@ extension POSItemActionHandler {
             return false
         }
     }
+
+    func shouldUpdateStock(_ item: POSItem, updatedItem: (POSSimpleProduct) -> Void) {
+        guard case .simpleProduct(let product) = item,
+              let stock = product.stockQuantity else { return }
+
+        let updatedStockQuantity = stock - 1
+        let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
+
+        updatedItem(updatedProduct)
+    }
 }
 
 /// Standard handler for handling item taps without any special context
@@ -90,7 +101,9 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             return
         }
 
-        shouldUpdateStock(item)
+        shouldUpdateStock(item) { updatedItem in
+            posModel.purchasableItemsController.updateStockInRootItems(updatedItem)
+        }
 
         posModel.addToCart(item)
 
@@ -100,19 +113,6 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             sourceViewType: sourceViewType,
             using: analytics
         )
-    }
-
-    func shouldUpdateStock(_ item: POSItem) {
-        switch item {
-        case .simpleProduct(let product):
-            guard let stock = product.stockQuantity else { return }
-            let updatedStockQuantity = stock - 1
-            let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
-
-            posModel.purchasableItemsController.updateStockInRootItems(updatedProduct)
-        default:
-            break
-        }
     }
 }
 
@@ -142,7 +142,9 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
             return
         }
 
-        shouldUpdateStock(item)
+        shouldUpdateStock(item) { updatedItem in
+            posModel.purchasableItemsSearchController.updateStockInRootItems(updatedItem)
+        }
 
         if searchTerm.isNotEmpty {
             posModel.saveSearchTerm(searchTerm, for: itemType)
@@ -156,19 +158,6 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
             sourceViewType: searchTerm.isEmpty ? .preSearch : .search,
             using: analytics
         )
-    }
-    
-    func shouldUpdateStock(_ item: POSItem) {
-        switch item {
-        case .simpleProduct(let product):
-            guard let stock = product.stockQuantity else { return }
-            let updatedStockQuantity = stock - 1
-            let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
-            
-            posModel.purchasableItemsSearchController.updateStockInRootItems(updatedProduct)
-        default:
-            break
-        }
     }
 }
 

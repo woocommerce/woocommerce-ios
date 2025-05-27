@@ -10,6 +10,7 @@ public final class StripeCardReaderService: NSObject {
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
     private var refundCancellable: StripeTerminal.Cancelable?
+    private var cancellables = Set<AnyCancellable>()
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -675,8 +676,8 @@ private extension StripeCardReaderService {
         }
     }
 
-    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
-        return Future() { [weak self] promise in
+    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
+        let collectPaymentMethodFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel
@@ -708,6 +709,22 @@ private extension StripeCardReaderService {
                     promise(.success(intent))
                 }
             }
+        }
+
+        switch connectedReadersSubject.value.first?.readerType {
+        case .tapToPay:
+            // Don't add a timeout to Tap to Pay, because Apple handle it in their UI.
+            return collectPaymentMethodFuture
+                .eraseToAnyPublisher()
+        case .chipper, .stripeM2, .wisepad3, .other, .none:
+            return collectPaymentMethodFuture
+                .timeout(120, scheduler: DispatchQueue.main, customError: { [weak self] in
+                    // Cancel the payment if a card isn't provided to an external reader within two minutes
+                    _ = self?.cancelPaymentIntent()
+                    return CardReaderServiceError.paymentMethodCollection(
+                        underlyingError: .paymentMethodCollectionTimedOut)
+                })
+                .eraseToAnyPublisher()
         }
     }
 
@@ -833,7 +850,7 @@ extension StripeCardReaderService {
     /// > When `confirmRefund` fails, the SDK returns an error that either includes the failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
     /// > Your app should inspect the `SCPConfirmRefundError` to decide how to proceed.
     /// >
-    /// > If the `refund` property is nil, the request to Stripe’s servers timed out and the refund’s status is unknown.
+    /// > If the `refund` property is nil, the request to Stripe's servers timed out and the refund's status is unknown.
     /// > We recommend that you retry processRefund with the original `SCPRefundParameters`.
     /// >
     /// > If the `SCPConfirmRefundError` has a `failure_reason`, the refund was declined.

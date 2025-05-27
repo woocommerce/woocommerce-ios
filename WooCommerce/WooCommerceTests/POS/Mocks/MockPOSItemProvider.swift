@@ -107,7 +107,10 @@ extension MockPointOfSaleItemService {
                                       price: "2.00",
                                       productID: 1,
                                       variationID: 1,
-                                      parentProductName: "Ice cream")
+                                      parentProductName: "Ice cream",
+                                      manageStock: true,
+                                      stockQuantity: 5,
+                                      stockStatusKey: "instock")
 
         let variation2 = POSVariation(id: fakeUUID2,
                                       name: "Vanilla",
@@ -115,7 +118,10 @@ extension MockPointOfSaleItemService {
                                       price: "2.00",
                                       productID: 1,
                                       variationID: 2,
-                                      parentProductName: "Ice cream")
+                                      parentProductName: "Ice cream",
+                                      manageStock: true,
+                                      stockQuantity: 5,
+                                      stockStatusKey: "instock")
         return [.variation(variation1), .variation(variation2)]
     }
 
@@ -129,7 +135,10 @@ extension MockPointOfSaleItemService {
                                       price: "2.00",
                                       productID: 1,
                                       variationID: 3,
-                                      parentProductName: "Ice cream")
+                                      parentProductName: "Ice cream",
+                                      manageStock: true,
+                                      stockQuantity: 5,
+                                      stockStatusKey: "instock")
 
         let variation4 = POSVariation(id: fakeUUID4,
                                       name: "Pistachio",
@@ -137,7 +146,10 @@ extension MockPointOfSaleItemService {
                                       price: "2.00",
                                       productID: 1,
                                       variationID: 4,
-                                      parentProductName: "Ice cream")
+                                      parentProductName: "Ice cream",
+                                      manageStock: true,
+                                      stockQuantity: 5,
+                                      stockStatusKey: "instock")
         return [.variation(variation3), .variation(variation4)]
     }
 }

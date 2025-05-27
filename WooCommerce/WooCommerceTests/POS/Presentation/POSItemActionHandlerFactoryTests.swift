@@ -186,6 +186,9 @@ private func makeVariationItem() -> POSItem {
         price: "2",
         productID: 2,
         variationID: 1,
-        parentProductName: "")
+        parentProductName: "",
+        manageStock: true,
+        stockQuantity: 5,
+        stockStatusKey: "instock")
     )
 }

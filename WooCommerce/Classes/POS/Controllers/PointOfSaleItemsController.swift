@@ -49,7 +49,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         self.itemFetchStrategyFactory = itemFetchStrategyFactory
         self.itemsViewState = initialState
         self.paginationTracker = .init()
-        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
+        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy(analytics: POSItemFetchAnalytics(itemType: .product))
     }
 
     @MainActor

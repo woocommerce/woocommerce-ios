@@ -16,17 +16,28 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
 
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
+    private let analytics: POSItemFetchAnalyticsTracking
 
-    init(siteID: Int64, productsRemote: ProductsRemoteProtocol, variationsRemote: ProductVariationsRemoteProtocol) {
+    init(siteID: Int64,
+         productsRemote: ProductsRemoteProtocol,
+         variationsRemote: ProductVariationsRemoteProtocol,
+         analytics: POSItemFetchAnalyticsTracking) {
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.variationsRemote = variationsRemote
+        self.analytics = analytics
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return try await productsRemote.loadProductsForPointOfSale(for: siteID,
-                                                                   productTypes: productTypes,
-                                                                   pageNumber: pageNumber)
+        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID,
+                                                                                productTypes: productTypes,
+                                                                                pageNumber: pageNumber)
+
+        if pageNumber == 1 {
+            analytics.trackItemsFetchComplete(totalItems: pagedProducts.totalItems ?? 0)
+        }
+
+        return pagedProducts
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {

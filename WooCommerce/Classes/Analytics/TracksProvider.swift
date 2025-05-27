@@ -118,6 +118,7 @@ private extension TracksProvider {
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
             // POS-specific events
             WooAnalyticsStat.pointOfSaleLoaded,
+            WooAnalyticsStat.pointOfSaleItemsFetched,
             WooAnalyticsStat.pointOfSaleItemsPullToRefresh,
             WooAnalyticsStat.pointOfSaleAddItemToCart,
             WooAnalyticsStat.pointOfSaleItemRemovedFromCart,

@@ -1278,6 +1278,7 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleLoaded = "loaded"
+    case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"

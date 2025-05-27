@@ -10,7 +10,7 @@ struct StockFormatterTests {
         let product = POSSimpleProduct.fake().copy(manageStock: manageStockDisabled)
 
         // When
-        let stockLabel = StockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(stockLabel == "")
@@ -23,7 +23,7 @@ struct StockFormatterTests {
         let product = POSSimpleProduct.fake().copy(manageStock: manageStockDisabled, stockStatusKey: stockStatusKey)
 
         // When
-        let stockLabel = StockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(stockLabel == "In stock")
@@ -36,7 +36,7 @@ struct StockFormatterTests {
         let product = POSSimpleProduct.fake().copy(manageStock: manageStockDisabled, stockStatusKey: stockStatusKey)
 
         // When
-        let stockLabel = StockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(stockLabel == "On back order")
@@ -50,7 +50,7 @@ struct StockFormatterTests {
                                                    stockStatusKey: stockStatusKey)
 
         // When
-        let result = StockFormatter.stockStatusLabel(for: product)
+        let result = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(result == "Out of stock")
@@ -64,7 +64,7 @@ struct StockFormatterTests {
                                                    stockStatusKey: stockStatusKey)
 
         // When
-        let result = StockFormatter.stockStatusLabel(for: product)
+        let result = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(result == "In stock")
@@ -78,7 +78,7 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = StockFormatter.stockStatusLabel(for: product)
+        let result = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(result == "Out of stock")
@@ -92,7 +92,7 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = StockFormatter.stockStatusLabel(for: product)
+        let result = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(result == "Out of stock")
@@ -106,7 +106,7 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = StockFormatter.stockStatusLabel(for: product)
+        let result = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
         #expect(result == "5 in stock")

@@ -38,7 +38,7 @@ struct SimpleProductCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
 
-                Text(StockFormatter.stockStatusLabel(for: product))
+                Text(POSStockFormatter.stockStatusLabel(for: product))
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
                     .renderedIf(shouldShowProductLabels)

@@ -1,7 +1,7 @@
 import Foundation
 import struct Yosemite.POSSimpleProduct
 
-struct StockFormatter {
+struct POSStockFormatter {
     static func stockStatusLabel(for product: POSSimpleProduct) -> String {
         switch product.manageStock {
         case false:

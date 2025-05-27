@@ -18,7 +18,7 @@ struct POSStockFormatter {
         }
     }
 
-    enum Localization {
+    private enum Localization {
         static let outOfStock = NSLocalizedString(
             "pos.stockStatusLabel.outofstock",
             value: "Out of stock",

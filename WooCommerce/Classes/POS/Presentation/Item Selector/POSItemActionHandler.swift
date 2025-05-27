@@ -108,8 +108,8 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             guard let stock = product.stockQuantity else { return }
             let updatedStockQuantity = stock - 1
             let updatedProduct = product.copy(stockQuantity: updatedStockQuantity)
-            
 
+            posModel.purchasableItemsController.updateStockInRootItems(updatedProduct)
         default:
             break
         }

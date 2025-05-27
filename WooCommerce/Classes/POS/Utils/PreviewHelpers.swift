@@ -90,6 +90,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func loadNextItems(base: ItemListBaseItem) async { }
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async { }
     func clearSearchItems(baseItem: ItemListBaseItem) { }
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }
 
 @available(iOS 17.0, *)
@@ -125,6 +126,8 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     private func loadInitialChildItems(for parent: POSItem) async {
         // Set `itemsViewState` instead.
     }
+
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }
 
 @available(iOS 17.0, *)

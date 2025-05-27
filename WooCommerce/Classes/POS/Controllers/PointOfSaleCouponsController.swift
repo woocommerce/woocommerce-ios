@@ -1,5 +1,6 @@
 import Observation
 import enum Yosemite.POSItem
+import struct Yosemite.POSSimpleProduct
 import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
@@ -182,4 +183,9 @@ private extension PointOfSaleCouponsController {
             break
         }
     }
+}
+
+@available(iOS 17.0, *)
+extension PointOfSaleCouponsController {
+    func updateStockInRootItems(_ updatedProduct: POSSimpleProduct) { }
 }

@@ -365,13 +365,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                                                       suggestedAddress: validation.normalizedAddress.toWooShippingAddress(),
                                                                       onConfirm: { [weak self] confirmedAddress in
                 guard let self else { return }
-                switch addressType {
-                case .origin:
-                    updateConfirmedOriginAddress(confirmedAddress)
-                case .destination(let orderID):
-                    updateConfirmedDestinationAddress(for: orderID,
-                                                      with: confirmedAddress)
-                }
+                updateConfirmedAddress(confirmedAddress)
             })
         } catch let error as WooShippingAddressValidationError {
             if let nameError = error.nameError {
@@ -402,22 +396,18 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
     }
 
-    /// Retries updating the origin address after a failure.
+    /// Update confirmed address remotely.
     @MainActor
-    func retryOriginAddressUpdate() async {
-        guard case .origin = addressType else { return }
-
-        // First validate the address remotely, then update
-        await remotelyValidateAddress()
-    }
-
-    /// Retries updating the destination address after a failure.
-    @MainActor
-    func retryDestinationAddressUpdate() async {
-        guard case .destination = addressType else { return }
-
-        // First validate the address remotely, then update
-        await remotelyValidateAddress()
+    func updateConfirmedAddress(_ address: WooShippingAddress) {
+        switch addressType {
+        case .origin:
+            updateConfirmedOriginAddress(address)
+        case .destination(let orderID):
+            updateConfirmedDestinationAddress(
+                for: orderID,
+                with: address
+            )
+        }
     }
 
     /// Updates the origin address remotely with the provided (normalized) address and other edits.
@@ -427,7 +417,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
 
         // Merge the provided (normalized) address with the edited address fields.
-        let address = WooShippingOriginAddress(id: id,
+        let originAddress = WooShippingOriginAddress(id: id,
                                                company: address.company,
                                                address1: address.address1,
                                                address2: address.address2,
@@ -444,14 +434,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
         Task { @MainActor in
             do {
-                let updatedOriginAddress = try await updateOriginAddress(with: address)
+                let updatedOriginAddress = try await updateOriginAddress(with: originAddress)
                 onOriginAddressEdited?(updatedOriginAddress)
                 analytics.track(event: .WooShipping.editingAddressStep(type: .origin, state: .confirmed))
             } catch {
                 DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
 
                 // Show error alert when origin address update fails
-                addressErrorState = .updateOrigin
+                addressErrorState = .updateOrigin(address)
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .origin,
@@ -466,7 +456,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private func updateConfirmedDestinationAddress(for orderID: Int64,
                                                    with address: WooShippingAddress) {
         // Merge the provided (normalized) address with the edited address fields.
-        let address = WooShippingDestinationAddress(company: address.company,
+        let destinationAddress = WooShippingDestinationAddress(company: address.company,
                                                     address1: address.address1,
                                                     address2: address.address2,
                                                     city: address.city,
@@ -482,14 +472,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         Task { @MainActor in
             do {
                 let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
-                                                                                   with: address)
+                                                                                   with: destinationAddress)
                 onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
                 analytics.track(event: .WooShipping.editingAddressStep(type: .destination, state: .confirmed))
             } catch {
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
 
                 // Show error alert when destination address update fails
-                addressErrorState = .updateDestination
+                addressErrorState = .updateDestination(address)
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
@@ -727,11 +717,13 @@ private extension WooShippingEditAddressViewModel {
 
 // MARK: Address update error handling
 extension WooShippingEditAddressViewModel {
-    enum AddressErrorState {
+    enum AddressErrorState: Equatable {
         case none
         case validation
-        case updateOrigin
-        case updateDestination
+
+        /// Associated address is used for retrying updating attempt
+        case updateOrigin(WooShippingAddress)
+        case updateDestination(WooShippingAddress)
 
         var title: String {
             switch self {

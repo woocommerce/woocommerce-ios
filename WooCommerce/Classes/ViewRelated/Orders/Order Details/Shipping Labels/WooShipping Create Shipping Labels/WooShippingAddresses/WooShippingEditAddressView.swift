@@ -191,10 +191,8 @@ struct WooShippingEditAddressView: View {
                             return
                         case .validation:
                             await viewModel.remotelyValidateAddress()
-                        case .updateOrigin:
-                            await viewModel.retryOriginAddressUpdate()
-                        case .updateDestination:
-                            await viewModel.retryDestinationAddressUpdate()
+                        case .updateOrigin(let address), .updateDestination(let address):
+                            viewModel.updateConfirmedAddress(address)
                         }
                     }
                 }

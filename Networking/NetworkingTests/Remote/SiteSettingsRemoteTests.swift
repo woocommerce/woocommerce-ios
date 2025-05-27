@@ -208,7 +208,6 @@ final class SiteSettingsRemoteTests: XCTestCase {
             _ = try await remote.isFeatureEnabled(for: sampleSiteID, feature: .pointOfSale)
             XCTFail("Expected error to be thrown")
         } catch {
-            XCTAssertTrue(error is SiteSettingsRemoteError)
             XCTAssertEqual(error as? SiteSettingsRemoteError, .invalidResponse)
         }
     }

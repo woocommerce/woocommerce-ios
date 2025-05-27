@@ -1,16 +1,8 @@
 import Foundation
 
+/// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
 public enum SiteSettingsFeature {
     case pointOfSale
-}
-
-private extension SiteSettingsFeature {
-    var rawValue: String {
-        switch self {
-        case .pointOfSale:
-            return "point_of_sale"
-        }
-    }
 }
 
 /// SiteSettings: Remote Endpoints
@@ -132,6 +124,14 @@ public class SiteSettingsRemote: Remote {
     }
 }
 
+private extension SiteSettingsFeature {
+    var rawValue: String {
+        switch self {
+        case .pointOfSale:
+            return "point_of_sale"
+        }
+    }
+}
 
 // MARK: - Constants!
 //

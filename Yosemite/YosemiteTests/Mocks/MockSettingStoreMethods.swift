@@ -64,7 +64,7 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
         retrieveTaxBasedOnSettingCalled = true
     }
 
-    func isFeatureEnabled(siteID: Int64, feature: Yosemite.SiteSettingsFeature) async throws -> Bool {
+    func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool {
         switch featureEnabled {
         case .success(let isEnabled):
             return isEnabled

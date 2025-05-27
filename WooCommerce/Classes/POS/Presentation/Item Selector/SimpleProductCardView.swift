@@ -66,6 +66,6 @@ private extension SimpleProductCardView {
                                                     price: "3.00",
                                                     manageStock: false,
                                                     stockQuantity: nil,
-                                                    stockStatusKey: "In stock"))
+                                                    stockStatusKey: "instock"))
 }
 #endif

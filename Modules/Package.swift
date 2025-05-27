@@ -16,12 +16,16 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
-            name: "WPMediaPicker",
-            targets: ["WPMediaPicker"]
-        ),
-        .library(
             name: "TestKit",
             targets: ["TestKit"]
+        ),
+        .library(
+            name: "WooFoundationLite",
+            targets: ["WooFoundationLite"]
+        ),
+        .library(
+            name: "WooFoundation",
+            targets: ["WooFoundation"]
         ),
         .library(
             name: "WordPressShared",
@@ -32,12 +36,8 @@ let package = Package(
             targets: ["WordPressUI", "WordPressUIObjC"]
         ),
         .library(
-            name: "WooFoundationLite",
-            targets: ["WooFoundationLite"]
-        ),
-        .library(
-            name: "WooFoundation",
-            targets: ["WooFoundation"]
+            name: "WPMediaPicker",
+            targets: ["WPMediaPicker"]
         ),
     ],
     dependencies: [
@@ -78,10 +78,6 @@ let package = Package(
             exclude: ["README.md", "Sourcery"] // Relative to sources path
         ),
         .target(
-            name: "WPMediaPicker",
-            resources: [.process("Resources")]
-        ),
-        .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
@@ -112,6 +108,10 @@ let package = Package(
         .target(
             name: "WordPressUI",
             dependencies: [.target(name: "WordPressUIObjC")],
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "WPMediaPicker",
             resources: [.process("Resources")]
         ),
         .testTarget(

@@ -11,6 +11,7 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var retrieveTaxBasedOnSettingCalled = false
 
     var couponsEnabled: Bool = true
+    var featureEnabled: Result<Bool, Error> = .success(true)
 
     func synchronizeGeneralSiteSettings(siteID: Int64,
                                       onCompletion: @escaping (Error?) -> Void) {
@@ -61,5 +62,14 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     func retrieveTaxBasedOnSetting(siteID: Int64,
                                  onCompletion: @escaping (Result<Yosemite.TaxBasedOnSetting, Error>) -> Void) {
         retrieveTaxBasedOnSettingCalled = true
+    }
+
+    func isFeatureEnabled(siteID: Int64, feature: Yosemite.SiteSettingsFeature) async throws -> Bool {
+        switch featureEnabled {
+        case .success(let isEnabled):
+            return isEnabled
+        case .failure(let error):
+            throw error
+        }
     }
 }

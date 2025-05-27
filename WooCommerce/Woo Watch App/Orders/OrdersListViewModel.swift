@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import NetworkingWatchOS
-import WooFoundationWatchOS
+import WooFoundationLite
 
 /// View Model for the OrdersListView
 ///

@@ -1,4 +1,4 @@
-import WooFoundationWatchOS
+import WooFoundationLite
 import NetworkingWatchOS
 
 /// Minimal version of `WCCrashLoggingStack` for the watch app.

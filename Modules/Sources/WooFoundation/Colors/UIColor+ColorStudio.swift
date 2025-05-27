@@ -8,14 +8,16 @@ public extension UIColor {
     ///   - color: an instance of a ColorStudio
     /// - Returns: UIColor. Red in cases of error
     class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
-        let assetName = colorStudio.assetName()
-        let color = UIColor(named: assetName, in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
-
-        guard let unwrappedColor = color else {
-            return .red
-        }
-
-        return unwrappedColor
+        // FIXME: No longer works because the resources are in the other WooFoundation module
+//        let assetName = colorStudio.assetName()
+//        let color = UIColor(named: assetName, in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
+//
+//        guard let unwrappedColor = color else {
+//            return .red
+//        }
+//
+//        return unwrappedColor
+        return .red
     }
     /// Get a UIColor from the Color Studio color palette, adjusted to a given shade
     /// - Parameter color: an instance of a ColorStudio

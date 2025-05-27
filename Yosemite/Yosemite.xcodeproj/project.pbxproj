@@ -290,7 +290,6 @@
 		687F83722C0EBF8900460AB3 /* PointOfSaleItemServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687F83712C0EBF8900460AB3 /* PointOfSaleItemServiceTests.swift */; };
 		6889089F28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */; };
 		6898F3742C0842150039F10A /* PointOfSaleItemServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6898F3732C0842150039F10A /* PointOfSaleItemServiceProtocol.swift */; };
-		689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689D11D42891B9A400F6A83F /* WooFoundation.framework */; };
 		68A70DD22D0BF6F60013B807 /* POSReceiptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A70DD12D0BF6F30013B807 /* POSReceiptService.swift */; };
 		68B681182D925B190098D5CD /* PointOfSaleCouponService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B681172D925B170098D5CD /* PointOfSaleCouponService.swift */; };
 		68BD37B528DB2E9800C2A517 /* CustomerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BD37B428DB2E9800C2A517 /* CustomerStore.swift */; };
@@ -854,7 +853,6 @@
 		687F83712C0EBF8900460AB3 /* PointOfSaleItemServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemServiceTests.swift; sourceTree = "<group>"; };
 		6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		6898F3732C0842150039F10A /* PointOfSaleItemServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemServiceProtocol.swift; sourceTree = "<group>"; };
-		689D11D42891B9A400F6A83F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		68A70DD12D0BF6F30013B807 /* POSReceiptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSReceiptService.swift; sourceTree = "<group>"; };
 		68B681172D925B170098D5CD /* PointOfSaleCouponService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCouponService.swift; sourceTree = "<group>"; };
 		68BD37B428DB2E9800C2A517 /* CustomerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerStore.swift; sourceTree = "<group>"; };
@@ -1121,7 +1119,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
-				689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */,
 				3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */,
 				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
@@ -1966,7 +1963,6 @@
 		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				689D11D42891B9A400F6A83F /* WooFoundation.framework */,
 				D88FDB3D25DD222600CB0DBD /* Hardware.framework */,
 				26FB056925F6CB7600A40B26 /* Fakes.framework */,
 				B5B19DE120E6A45E00899568 /* Networking.framework */,

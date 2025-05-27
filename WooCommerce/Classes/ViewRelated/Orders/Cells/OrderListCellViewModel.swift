@@ -6,11 +6,7 @@ import Yosemite
 import NetworkingWatchOS
 #endif
 
-#if canImport(WooFoundation)
-import WooFoundation
-#elseif canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationLite
 
 
 // MARK: - View Model for individual cells on the Order List screen

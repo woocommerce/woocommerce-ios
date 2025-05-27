@@ -215,14 +215,10 @@ private extension PointOfSaleOrderController {
                     return continuation.resume(returning: false)
                 }
 
-                // Checking for concrete versions to cover dev and beta versions
-                if plugin.version.contains(minimumVersion) {
-                    return continuation.resume(returning: true)
-                }
-
                 // If plugin version is higher than minimum required version, mark as eligible
                 let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
-                                                                    minimumRequired: minimumVersion)
+                                                                    minimumRequired: minimumVersion,
+                                                                    includesDevAndBetaVersions: true)
                 continuation.resume(returning: isSupported)
             }
             stores.dispatch(action)

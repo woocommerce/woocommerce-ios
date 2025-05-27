@@ -41,7 +41,10 @@ private extension PointOfSalePaymentState {
                     .preparingReader,
                     .cardInserted:
                 return false
-            case .idle, .validatingOrderError, .acceptingCard:
+            case .idle,
+                    .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .acceptingCard:
                 return true
             }
         case .cash:

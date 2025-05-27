@@ -78,6 +78,19 @@ struct CartViewHelperTests {
                                              paymentState: .card(.cardInserted)) == true)
     }
 
+    @Test func shouldPreventCartEditing_false_when_card_paymentState_paymentIntentCreationError() async throws {
+        // When
+        let orderLoaded = PointOfSaleOrderState.loaded(PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0))
+
+        // Then
+        #expect(sut.shouldPreventCartEditing(orderState: orderLoaded,
+                                             paymentState: .card(.paymentIntentCreationError)) == false)
+    }
+
     @Test(arguments: zip([0, 1, 2, 3], [nil, "1 item", "2 items", "3 items"]))
     func itemsInCartLabel(_ count: Int, _ expected: String?) async throws {
         // Given

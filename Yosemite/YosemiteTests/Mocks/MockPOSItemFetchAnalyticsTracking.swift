@@ -15,4 +15,3 @@ final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
         spySearchTotalItems = totalItems
     }
 }
-

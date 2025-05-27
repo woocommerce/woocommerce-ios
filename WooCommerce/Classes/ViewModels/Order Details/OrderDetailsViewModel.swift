@@ -701,20 +701,27 @@ extension OrderDetailsViewModel {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return []
         }
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
-                    case .success(let shippingLabels):
-                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
-                        continuation.resume(returning: shippingLabels)
-                    case .failure(let error):
-                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                        if error as? DotcomError == .noRestRoute {
-                            DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                        } else {
-                            DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                        }
-                        continuation.resume(returning: [])
+                case .success(let shippingLabels):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .success,
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    continuation.resume(returning: shippingLabels)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .failed(error: error),
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    if error as? DotcomError == .noRestRoute {
+                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                    } else {
+                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    }
+                    continuation.resume(returning: [])
                 }
             })
         }
@@ -777,12 +784,14 @@ extension OrderDetailsViewModel {
         guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return false
         }
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         return await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
                 if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
                     ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus])
+                                                   withProperties: ["order_status": orderStatus,
+                                                                    "is_revamped_flow": isRevampedFlow])
                 }
                 continuation.resume(returning: isEligible)
             })
@@ -795,11 +804,11 @@ extension OrderDetailsViewModel {
             return false
         }
 
-        guard await !isPluginActive(SitePlugin.SupportedPlugin.LegacyWCShip) else {
+        guard await !isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) else {
             return true
         }
 
-        return await isPluginActive(SitePlugin.SupportedPlugin.WooShipping)
+        return await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping)
     }
 
     /// Checks if the Woo Shipping extension is active, with the minimum version required for its shipping label flow.
@@ -807,7 +816,7 @@ extension OrderDetailsViewModel {
     @MainActor
     func isWooShippingSupported() async -> Bool {
         guard featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation),
-              let plugin = await fetchPlugin(SitePlugin.SupportedPlugin.WooShipping) else {
+              let plugin = await fetchPluginByPath(SitePlugin.SupportedPluginPath.WooShipping) else {
             return false
         }
 
@@ -884,7 +893,7 @@ extension OrderDetailsViewModel {
     ///
     private func isPluginActive(_ pluginNames: [String], completion: @escaping (Bool) -> (Void)) {
         Task { @MainActor in
-            let plugin = await fetchPlugin(pluginNames)
+            let plugin = await fetchPluginByNames(pluginNames)
             completion(plugin?.active == true)
         }
     }
@@ -893,7 +902,7 @@ extension OrderDetailsViewModel {
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
     @MainActor
-    private func fetchPlugin(_ pluginNames: [String]) async -> SystemPlugin? {
+    private func fetchPluginByNames(_ pluginNames: [String]) async -> SystemPlugin? {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins accessed without being in sync.")
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
@@ -902,6 +911,24 @@ extension OrderDetailsViewModel {
 
         return await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: pluginNames, onCompletion: { plugin in
+                continuation.resume(returning: plugin)
+            }))
+        }
+    }
+
+    /// Fetches a plugin from storage, based on the provided plugin path.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
+    ///
+    @MainActor
+    private func fetchPluginByPath(_ path: String) async -> SystemPlugin? {
+        guard arePluginsSynced() else {
+            DDLogError("⚠️ SystemPlugins accessed without being in sync.")
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: order.siteID, pluginPath: path, onCompletion: { plugin in
                 continuation.resume(returning: plugin)
             }))
         }
@@ -943,6 +970,12 @@ private extension OrderDetailsViewModel {
                 continuation.resume(returning: isActive)
             }
         }
+    }
+
+    @MainActor
+    func isPluginActive(pluginPath: String) async -> Bool {
+        let plugin = await fetchPluginByPath(pluginPath)
+        return plugin?.active == true
     }
 }
 

@@ -15,6 +15,14 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     public let productType: ProductType = .simple
     public let bundledItems: [ProductBundleItem] = []
 
+    // Stock
+    public let manageStock: Bool
+    public let stockQuantity: Decimal?
+    public let stockStatusKey: String
+    public var productStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: stockStatusKey)
+    }
+
     public init(id: UUID,
                 name: String,
                 formattedPrice: String,
@@ -22,13 +30,19 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
                 productID: Int64,
                 price: String,
                 productType: ProductType = .simple,
-                bundledItems: [ProductBundleItem] = []) {
+                bundledItems: [ProductBundleItem] = [],
+                manageStock: Bool,
+                stockQuantity: Decimal?,
+                stockStatusKey: String) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
         self.productImageSource = productImageSource
         self.productID = productID
         self.price = price
+        self.manageStock = manageStock
+        self.stockQuantity = stockQuantity
+        self.stockStatusKey = stockStatusKey
     }
 }
 

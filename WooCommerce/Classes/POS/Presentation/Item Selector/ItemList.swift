@@ -222,7 +222,10 @@ private extension ItemListRow {
                     name: "Strong latte 16oz",
                     formattedPrice: "$4.00",
                     productID: 12,
-                    price: "4.00"
+                    price: "4.00",
+                    manageStock: false,
+                    stockQuantity: nil,
+                    stockStatusKey: ""
                 )
             ),
             .variableParentProduct(

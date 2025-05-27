@@ -1,9 +1,11 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class WooShippingAddCustomPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
+    private let analytics: Analytics
 
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
@@ -23,9 +25,11 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.siteID = siteID
+        self.analytics = analytics
         if let selectedPackage {
             fieldValues = [
                 .length: selectedPackage.length,
@@ -121,8 +125,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
         switch result {
         case .success(let success):
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .savingSuccess))
             return .success(success)
         case .failure(let failure):
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .savingFailed, error: failure))
             return .failure(WooShippingAddCustomPackageViewModel.Error.failure(failure))
         }
     }

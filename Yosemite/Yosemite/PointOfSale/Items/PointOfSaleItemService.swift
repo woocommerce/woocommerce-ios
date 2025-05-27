@@ -90,7 +90,10 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                                                            formattedPrice: formatPrice(product.price),
                                                            productImageSource: thumbnailSource,
                                                            productID: product.productID,
-                                                           price: product.price))
+                                                           price: product.price,
+                                                           manageStock: product.manageStock,
+                                                           stockQuantity: product.stockQuantity,
+                                                           stockStatusKey: product.stockStatusKey))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
                         id: UUID(),

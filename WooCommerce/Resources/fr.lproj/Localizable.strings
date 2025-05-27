@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-06 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-05-20 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -297,8 +297,7 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "AJOUTER DES OPTIONS";
 
-/* Address section title in the domain contact info form.
-   Details section title in the Edit Address Form */
+/* Address section title in the domain contact info form. */
 "ADDRESS" = "ADRESSE";
 
 /* Reads as 'AID'. Part of the mandatory data in receipts */
@@ -437,9 +436,6 @@ which should be translated separately and considered part of this sentence. */
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Ajouter une variante";
 
-/* Title for the Add a Different Address switch in the Address form */
-"Add a different shipping address" = "Ajouter une adresse de livraison différente";
-
 /* Title of button to add a domain in domain settings. */
 "Add a domain" = "Ajouter un domaine";
 
@@ -547,9 +543,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "Adresse manquante";
-
-/* Notice text after updating the shipping or billing address */
-"Address successfully updated." = "L’adresse a été mise à jour.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "Adds product to order." = "Ajoute un produit à la commande.";
@@ -879,9 +872,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Azerbaijan" = "Azerbaïdjan";
 
-/* Details section title in the Edit Address Form */
-"BILLING ADDRESS" = "Adresse de facturation";
-
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -949,8 +939,7 @@ which should be translated separately and considered part of this sentence. */
 "Bhutan" = "Bhoutan";
 
 /* Section header title for billing address in billing information
-   Title for the Billing Address section in order customer data
-   Title for the Edit Billing Address Form */
+   Title for the Billing Address section in order customer data */
 "Billing Address" = "Adresse de facturation";
 
 /* Billing Information view Title */
@@ -1972,9 +1961,6 @@ which should be translated separately and considered part of this sentence. */
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
 "Customer" = "Client";
-
-/* Title for the Shipping Address Form for Customer Details */
-"Customer Details" = "Détails du client";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
 "Customer Note" = "Note client";
@@ -5830,9 +5816,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "SESSIONS";
 
-/* Details section title in the Edit Address Form */
-"SHIPPING ADDRESS" = "ADRESSE D’EXPÉDITION";
-
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "UGS";
@@ -6256,7 +6239,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Shipping" = "Expédition";
 
 /* Shipping Address title for customer info section
-   Title for the Edit Shipping Address Form
    Title for the Edit Shipping Address section in order customer data */
 "Shipping Address" = "Adresse de livraison";
 
@@ -8012,12 +7994,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Utilisez une adresse e-mail opérationnelle pour recevoir nos messages.";
-
-/* Title for the Use as Billing Address switch in the Address form */
-"Use as Billing Address" = "Utiliser comme adresse de facturation";
-
-/* Title for the Use as Shipping Address switch in the Address form */
-"Use as Shipping Address" = "Utiliser comme adresse de livraison";
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Utilisez notre outil d’intelligence artificielle pour générer rapidement des descriptions de produits. Il vous suffit de saisir des mots-clés, et nous nous chargeons du reste !";
@@ -9932,6 +9908,21 @@ which should be translated separately and considered part of this sentence. */
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Expiration le %@";
 
+/* Details section title in the Edit Address Form */
+"createOrderAddressFormViewModel.addressSection" = "Adresse";
+
+/* Title for the Edit Billing Address Form */
+"createOrderAddressFormViewModel.billingTitle" = "Adresse de facturation";
+
+/* Title for the Shipping Address Form for Customer Details */
+"createOrderAddressFormViewModel.customerDetailsTitle" = "Détails du client";
+
+/* Title for the Add a Different Address switch in the Address form */
+"createOrderAddressFormViewModel.differentAddressToggleTitle" = "Ajouter une adresse de livraison différente";
+
+/* Title for the Edit Shipping Address Form */
+"createOrderAddressFormViewModel.shippingTitle" = "Adresse de livraison";
+
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Modifier le montant";
 
@@ -10285,6 +10276,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Média sur l’appareil";
+
+/* Title for the Edit Billing Address Form */
+"editOrderAddressFormViewModel.billingTitle" = "Adresse de facturation";
+
+/* Title for the Edit Shipping Address Form */
+"editOrderAddressFormViewModel.shippingTitle" = "Adresse de livraison";
+
+/* Notice text after updating the shipping or billing address */
+"editOrderAddressFormViewModel.success" = "L’adresse a été mise à jour.";
+
+/* Title for the Use as Billing Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsBillingToggle" = "Utiliser comme adresse de facturation";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"editOrderAddressFormViewModel.useAsShippingToggle" = "Utiliser comme adresse de livraison";
 
 /* Button to dismiss the Edit Store List view */
 "editStoreListView.cancelButton" = "Annuler";
@@ -10640,6 +10646,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "J’aime";
+
+/* Button to cancel a payment */
+"inPersonPayments.cardPresent.cardInserted.cancel" = "Annuler";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"inPersonPayments.cardPresent.cardInserted.title" = "Carte insérée";
 
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "Annuler";
@@ -11340,6 +11352,15 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Paiement annulé sur le lecteur";
 
+/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Réessayer d’effectuer le paiement";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.subtitle" = "Carte insérée";
+
+/* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
+"pointOfSale.cardPresent.cardInserted.title" = "Prêt pour le paiement";
+
 /* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
 "pointOfSale.cardPresent.connectReader.button.title" = "Connecter votre lecteur";
 
@@ -11748,9 +11769,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Terminé";
 
-/* Title for the payment method used when collecting cash payment in Point of Sale. */
-"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Payer en personne";
-
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Appuyer sur un produit pour \n l’ajouter au panier";
 
@@ -11884,6 +11902,12 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.title" = "Produits";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
+"pos.itemsearch.before.search.emptyListText" = "Rechercher dans votre boutique";
+
+/* Title for the list of popular products shown before a search term is typed in POS */
+"pos.itemsearch.before.search.popularProducts.title" = "Produits populaires";
+
+/* Text shown when there's nothing to show before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.emptyListText.1" = "Rechercher dans votre boutique";
 
 /* Title for the list of recent searches shown before a search term is typed in POS */
@@ -11894,6 +11918,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Options disponibles";
+
+/* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "Essayez d’ajuster votre terme de recherche : rechercher un nom de code promo partiel peut être utile.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Boostez votre activité en envoyant des remises et des offres spéciales à vos clients.";
@@ -13106,6 +13133,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is verified on the shipping label creation screen */
 "wooShipping.createLabels.addressVerification.verified" = "Adresse vérifiée";
 
+/* Label for the option to add a payment method on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Ajouter un moyen de paiement";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Signature d’un adulte requise";
 
@@ -13123,6 +13153,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the menu to select a paper size on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.paperSize" = "Choisir le format de papier de l’étiquette";
+
+/* Header for payment method section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paymentMethod" = "Moyen de paiement";
 
 /* Label for button to purchase the shipping label on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.purchase" = "Acheter une étiquette";
@@ -13345,6 +13378,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to sort shipping rates by price in the shipping label creation screen. */
 "wooShipping.createLabels.rates.sortBy.price" = "Le moins cher";
+
+/* Notice to display after requesting refund for a shipping label */
+"wooShipping.createLabels.refundNotice" = "Vous avez bien envoyé une demande de remboursement. Vous pouvez acheter une nouvelle étiquette.";
 
 /* Button to retry loading data on the shipping label creation screen */
 "wooShipping.createLabels.retryCTA" = "Réessayer";
@@ -13639,6 +13675,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Expédiez-vous des marchandises ou matières dangereuses ?";
+
+/* Button to dismiss the Request shipping label refund view */
+"wooShippingRefundView.cancelButton" = "Annuler";
+
+/* Description on the Request shipping label refund view. The placeholder is the number of day to process the refund. */
+"wooShippingRefundView.description" = "Demandez un remboursement pour l’étiquette d’expédition non utilisée. Le processus de remboursement de l’étiquette de livraison débutera immédiatement et prend en général %1$d jours ouvrables.";
+
+/* Button to dismiss the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.cancel" = "Annuler";
+
+/* Message on the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.message" = "Nous n’avons pas pu demander le remboursement de votre étiquette. Veuillez réessayer.";
+
+/* Button to retry when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.retry" = "Réessayer";
+
+/* Title of the error alert when requesting refund for a shipping label fails */
+"wooShippingRefundView.errorAlert.title" = "Échec de la demande de remboursement";
+
+/* Note on the Request shipping label refund view */
+"wooShippingRefundView.note" = "Veuillez noter que cette demande de remboursement ne s’applique qu’à l’étiquette d’expédition non utilisée et n’affectera pas la commande proprement dite.";
+
+/* Purchase date label on the Request shipping label refund view. */
+"wooShippingRefundView.purchaseDate" = "Date d’achat :";
+
+/* Refund amount label on the Request shipping label refund view. */
+"wooShippingRefundView.refundAmount" = "Montant éligible au remboursement :";
+
+/* Button to submit refund request the Request shipping label refund view */
+"wooShippingRefundView.submitButton" = "Étiquette de remboursement (%1$@)";
+
+/* title on the Request shipping label refund view */
+"wooShippingRefundView.title" = "Demander le remboursement d’une étiquette d’expédition";
 
 /* Button to move selected items to a shipment in split shipments flow */
 "wooShippingSplitShipments.MoveToShipmentNotice.moveTo" = "Déplacer vers";

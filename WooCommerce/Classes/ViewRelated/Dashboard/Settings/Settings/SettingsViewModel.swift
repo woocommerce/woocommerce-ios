@@ -320,14 +320,8 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            let rows: [Row]
-            #if DEBUG
-            rows = [.deviceSettings, .wormholy]
-            #else
-            rows = [.deviceSettings]
-            #endif
             return Section(title: Localization.otherTitle,
-                           rows: rows,
+                           rows: [.deviceSettings],
                            footerHeight: UITableView.automaticDimension)
         }()
 

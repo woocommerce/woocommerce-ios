@@ -52,7 +52,7 @@ struct PaymentMethodsView: View {
                             Divider()
                         }
 
-                        MethodRow(icon: .priceImage, title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
+                        MethodRow(icon: Image.gridicon(.money), title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
@@ -60,7 +60,11 @@ struct PaymentMethodsView: View {
                         if viewModel.showPayWithCardRow {
                             Divider()
 
-                            MethodRow(icon: .creditCardImage, title: Localization.card, accessibilityID: Accessibility.cardMethod) {
+                            MethodRow(
+                                icon: Image.gridicon(.creditCard),
+                                title: Localization.card,
+                                accessibilityID: Accessibility.cardMethod
+                            ) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
                         }
@@ -68,7 +72,7 @@ struct PaymentMethodsView: View {
                         if viewModel.showPaymentLinkRow {
                             Divider()
 
-                            MethodRow(icon: .linkImage, title: Localization.link, accessibilityID: Accessibility.paymentLink) {
+                            MethodRow(icon: Image.gridicon(.link), title: Localization.link, accessibilityID: Accessibility.paymentLink) {
                                 sharingPaymentLink = true
                                 viewModel.trackCollectByPaymentLink()
                             }

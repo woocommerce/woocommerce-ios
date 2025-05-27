@@ -766,7 +766,6 @@
 		03FBDAA3263AED2F00ACE257 /* CouponListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */; };
 		03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */; };
 		03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAFC263EE4E700ACE257 /* CouponListViewModelTests.swift */; };
-		048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5EFBA3D6E428FD34F5A4171 /* Pods_NotificationExtension.framework */; };
 		093B265527DE8F020026F92D /* UnitInputViewModel+BulkUpdatePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093B265427DE8F020026F92D /* UnitInputViewModel+BulkUpdatePrice.swift */; };
 		093B265727DF05270026F92D /* UnitInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093B265627DF05270026F92D /* UnitInputViewModelTests.swift */; };
 		093B265927DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093B265827DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift */; };
@@ -786,7 +785,6 @@
 		09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA565327C8ACEE00407D40 /* BulkUpdateViewController.swift */; };
 		09EA565627C8ACEE00407D40 /* BulkUpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09EA565427C8ACEE00407D40 /* BulkUpdateViewController.xib */; };
 		09F5DE5D27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F5DE5C27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift */; };
-		174CA86A27D90A6200126524 /* AutomatticAbout in Frameworks */ = {isa = PBXBuildFile; productRef = 174CA86927D90A6200126524 /* AutomatticAbout */; };
 		174CA86C27D90E8900126524 /* WooAboutScreenConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174CA86B27D90E8900126524 /* WooAboutScreenConfiguration.swift */; };
 		174CA86E27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174CA86D27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift */; };
 		200190002C80AEAC002C1E4B /* PointOfSaleItemListFullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20018FFF2C80AEAC002C1E4B /* PointOfSaleItemListFullscreenView.swift */; };
@@ -819,7 +817,6 @@
 		20134CE82D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20134CE72D4D38E000076A80 /* CardPresentPaymentPlugin+SetUpTapToPay.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
 		2023E2AE2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2023E2AD2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift */; };
-		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
 		2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */; };
 		2026ECE92C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026ECE82C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */; };
 		2027F74F2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2027F74E2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift */; };
@@ -949,9 +946,7 @@
 		20FCBCDF2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCDE2CE241810082DCA3 /* PointOfSaleAggregateModelTests.swift */; };
 		20FCBCE12CE24CE70082DCA3 /* MockPOSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCE02CE24CE70082DCA3 /* MockPOSItemProvider.swift */; };
 		20FCBCE32CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FCBCE22CE24F5D0082DCA3 /* MockPointOfSaleAggregateModel.swift */; };
-		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
-		24C5AC7625A53021008FD769 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		24F98C502502AEE200F49B68 /* EventLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C4F2502AEE200F49B68 /* EventLogging.swift */; };
 		2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A63C27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift */; };
 		2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A63E27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift */; };
@@ -991,8 +986,6 @@
 		261E91A329C9882600A5C118 /* SubscriptionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A229C9882600A5C118 /* SubscriptionsViewModelTests.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
-		2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 2621D1F32C81085D00654C4C /* ViewInspector */; };
-		2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */ = {isa = PBXBuildFile; productRef = 2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */; };
 		262418332B8D3630009A3834 /* ApplicationPasswordTutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418322B8D3630009A3834 /* ApplicationPasswordTutorial.swift */; };
 		262418372B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418362B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift */; };
 		262562352C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */; };
@@ -1019,10 +1012,6 @@
 		26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E2D2BFD2F46008E6735 /* OrdersListViewModel.swift */; };
 		26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
 		263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263C4CBF2963784900CA7E05 /* ProductVariationGenerator.swift */; };
-		263E37E12641AD8300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; };
-		263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		263E38462641FF3400260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38452641FF3400260D3B /* Codegen */; };
-		263E38472641FF3400260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38452641FF3400260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */; };
 		263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		263EAF9A2A15D513008C66CB /* PrivacyBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EAF992A15D513008C66CB /* PrivacyBannerViewModel.swift */; };
@@ -1136,10 +1125,6 @@
 		26B233D12A14208800926EAD /* PrivacyBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B233D02A14208800926EAD /* PrivacyBannerPresenter.swift */; };
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
 		26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */; };
-		26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; };
-		26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		26B542432BEAC68B003A55B5 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; };
-		26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B71DB5293FE490004D8052 /* RangedDatePicker.swift */; };
 		26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D32BEECC610052658C /* Environment+Dependencies.swift */; };
 		26B984D62BEECF260052658C /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D52BEECF260052658C /* ConnectView.swift */; };
@@ -1313,33 +1298,30 @@
 		3F1FA84B28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FA84728B60125009E246C /* StoreWidgets.intentdefinition */; };
 		3F1FA84F28B60126009E246C /* StoreWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */; };
-		3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */; };
-		3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */; };
-		3F368D982DCB74490065B48F /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F368D972DCB74490065B48F /* TestKit */; };
+		3F2B4ADC2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */; };
+		3F2B4ADE2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADD2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator */; };
+		3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */; };
+		3F2B4AE22DDC317500E5E49C /* XcodeTarget_NotificationExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE12DDC317500E5E49C /* XcodeTarget_NotificationExtension */; };
+		3F2B4AE42DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE32DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension */; };
+		3F2B4AE62DDC318300E5E49C /* XcodeTarget_UITestsFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */; };
+		3F2B4AE82DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */; };
+		3F2B4AEA2DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */; };
+		3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */; };
+		3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */; };
 		3F50FE4128C8319A00C89201 /* Entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 3F50FE4028C8319A00C89201 /* Entitlements */; };
 		3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F50FE4428CAEC5E00C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
-		3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */; };
-		3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */; };
-		3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */; };
-		3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA323262D63E0570017AE66 /* XCUITestHelpers */; };
 		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
-		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
-		3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF22489267073AE008FFA87 /* ScreenObject */; };
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3FF314E726FC74560012E68E /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF314E626FC74560012E68E /* ScreenObject */; };
 		3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314EF26FC784A0012E68E /* XCTest.framework */; platformFilter = ios; };
 		3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
 		3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
 		3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
-		3FF837132DD326850049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837122DD326850049E028 /* CocoaLumberjackSwift */; };
-		3FF8371A2DD32B8D0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */; };
-		3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */; };
+		3FF861B52DE5823100A6E053 /* XcodeTarget_WooFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -1404,7 +1386,6 @@
 		4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */; };
 		454453C82755171E00464AC5 /* HubMenuCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454453C72755171E00464AC5 /* HubMenuCoordinatorTests.swift */; };
 		454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454453C927566CDE00464AC5 /* HubMenuViewModel.swift */; };
-		45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 45455E312657C3F300BBB0C4 /* Shimmer */; };
 		45455EFA26580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */; };
 		4546E09A271F0942003836F3 /* FilteredOrdersHeaderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4546E098271F0942003836F3 /* FilteredOrdersHeaderBar.swift */; };
 		4546E09B271F0942003836F3 /* FilteredOrdersHeaderBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4546E099271F0942003836F3 /* FilteredOrdersHeaderBar.xib */; };
@@ -1468,7 +1449,6 @@
 		4596854B254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596854A254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift */; };
 		45977EBA2603F632006CDFB8 /* MapsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45977EB92603F632006CDFB8 /* MapsHelper.swift */; };
 		45977EC02604C167006CDFB8 /* PhoneHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45977EBF2604C167006CDFB8 /* PhoneHelper.swift */; };
-		4598298128574688003A9AFE /* Inject in Frameworks */ = {isa = PBXBuildFile; productRef = 4598298028574688003A9AFE /* Inject */; };
 		459DB7D52673721300E2CAD2 /* TopLoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DB7D42673721300E2CAD2 /* TopLoaderView.swift */; };
 		459DB7E2267372ED00E2CAD2 /* TopLoaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 459DB7E1267372ED00E2CAD2 /* TopLoaderView.xib */; };
 		45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A0E4C92566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift */; };
@@ -1594,7 +1574,6 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		581D5052274AA2480089B6AD /* View+AutofocusTextModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */; };
-		632DA865048E7635121D1890 /* Pods_WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5976D2D72C5C0C7DA2D15C33 /* Pods_WordPressAuthenticator.framework */; };
 		6801E4172D0FFF0300F9DF46 /* MockReceiptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6801E4162D0FFF0100F9DF46 /* MockReceiptService.swift */; };
 		680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680BA5992A4C377900F5559D /* UpgradeViewState.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
@@ -1643,6 +1622,8 @@
 		6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */; };
 		6891C3642D364AFE00B5B48C /* CollectCashViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */; };
 		6891C3662D364C1A00B5B48C /* CollectCashViewHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */; };
+		689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F29192DE4557D004DF52B /* POSStockFormatter.swift */; };
+		689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */; };
 		68A345642D029E12002EE324 /* PaymentButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A345632D029E09002EE324 /* PaymentButtons.swift */; };
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */; };
@@ -1799,7 +1780,6 @@
 		80E7E7F32AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E7E7F22AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift */; };
 		80ECB4E229D2A51A00C62EEC /* ProductFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80ECB4E129D2A51A00C62EEC /* ProductFilterScreen.swift */; };
 		80F9176D2A28638C00890A83 /* products_add_new_grouped_2130.json in Resources */ = {isa = PBXBuildFile; fileRef = 80F9176C2A28638C00890A83 /* products_add_new_grouped_2130.json */; };
-		8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */; };
 		8601C29A2B9769C200C59D93 /* FancyAlertViewController+Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8601C2992B9769C200C59D93 /* FancyAlertViewController+Stats.swift */; };
 		86023FAA2B15CAD800A28F07 /* ThemesEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FA92B15CAD800A28F07 /* ThemesEligibilityUseCase.swift */; };
 		86023FAD2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86023FAC2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift */; };
@@ -1839,7 +1819,6 @@
 		86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */; };
 		86F9D3642C897FFE00B1835B /* CustomFieldEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
-		9075D5FFEAEF1E29E3AE0BD9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7E76EDE8E6FA4DFBA931388 /* Pods_WordPressAuthenticatorTests.framework */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
 		934CB123224EAB150005CCB9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CB122224EAB150005CCB9 /* main.swift */; };
 		9379E1A32255365F006A6BE4 /* TestingMode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9379E1A22255365F006A6BE4 /* TestingMode.storyboard */; };
@@ -2660,6 +2639,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */; };
 		DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */; };
 		DE2004602BF7092900660A72 /* ProductStockDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */; };
 		DE2004622BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */; };
@@ -2821,12 +2801,9 @@
 		DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */; };
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
-		DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */; };
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
-		DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = DEA6BCA82BC6A7050017D671 /* DGCharts */; };
-		DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = DEA6BCAB2BC6A7C30017D671 /* Algorithms */; };
 		DEA6BCAF2BC6A9B10017D671 /* StoreStatsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */; };
 		DEA6BCB12BC6AA040017D671 /* StoreStatsChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */; };
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
@@ -3225,7 +3202,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				263E38472641FF3400260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3248,8 +3224,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */,
-				26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */,
-				26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */,
 				269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -3296,7 +3270,6 @@
 			files = (
 				3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 				D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */,
-				263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */,
 				B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */,
 				02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */,
 				B9151B402840EB340036180F /* WooFoundation.framework in Embed Frameworks */,
@@ -4059,8 +4032,6 @@
 		03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponListViewController.xib; sourceTree = "<group>"; };
 		03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModel.swift; sourceTree = "<group>"; };
 		03FBDAFC263EE4E700ACE257 /* CouponListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModelTests.swift; sourceTree = "<group>"; };
-		045342243D39BA6C2856249B /* Pods-NotificationExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NotificationExtension/Pods-NotificationExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.release.xcconfig"; sourceTree = "<group>"; };
 		093B265427DE8F020026F92D /* UnitInputViewModel+BulkUpdatePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnitInputViewModel+BulkUpdatePrice.swift"; sourceTree = "<group>"; };
 		093B265627DF05270026F92D /* UnitInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputViewModelTests.swift; sourceTree = "<group>"; };
 		093B265827DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BulkUpdatePriceViewControllerTests.swift; sourceTree = "<group>"; };
@@ -4187,7 +4158,6 @@
 		2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift; sourceTree = "<group>"; };
 		2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift; sourceTree = "<group>"; };
 		20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleUnsupportedWidthView.swift; sourceTree = "<group>"; };
-		20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.debug.xcconfig"; sourceTree = "<group>"; };
 		209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentMethod.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -4199,7 +4169,6 @@
 		209EE8122DBA95BA0089F3D2 /* POSSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSearchView.swift; sourceTree = "<group>"; };
 		209EE8142DBA96D00089F3D2 /* POSProductSearchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductSearchable.swift; sourceTree = "<group>"; };
 		209EEF8F2C762ED5007969A4 /* POSModalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSModalManager.swift; sourceTree = "<group>"; };
-		209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssetsTests.swift; sourceTree = "<group>"; };
 		20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsFlowPresentingView.swift; sourceTree = "<group>"; };
@@ -4476,8 +4445,6 @@
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StoreWidgetsExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		306EE9B1304588997C72017A /* Pods-WordPressAuthenticator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release.xcconfig"; sourceTree = "<group>"; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -4821,8 +4788,6 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AutofocusTextModifier.swift"; sourceTree = "<group>"; };
-		587C4C6BD125079C16897CE9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release.xcconfig"; sourceTree = "<group>"; };
-		5976D2D72C5C0C7DA2D15C33 /* Pods_WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6801E4162D0FFF0100F9DF46 /* MockReceiptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptService.swift; sourceTree = "<group>"; };
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
@@ -4871,6 +4836,8 @@
 		6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListViewModel.swift; sourceTree = "<group>"; };
 		6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelper.swift; sourceTree = "<group>"; };
 		6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelperTests.swift; sourceTree = "<group>"; };
+		689F29192DE4557D004DF52B /* POSStockFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatter.swift; sourceTree = "<group>"; };
+		689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatterTests.swift; sourceTree = "<group>"; };
 		68A345632D029E09002EE324 /* PaymentButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentButtons.swift; sourceTree = "<group>"; };
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -4909,9 +4876,7 @@
 		68F68A4F2D6730DF00BB9568 /* POSCollectOrderPaymentAnalyticsTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalyticsTracking.swift; sourceTree = "<group>"; };
 		68F68A512D67365900BB9568 /* MockPOSCollectOrderPaymentAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSCollectOrderPaymentAnalyticsTracker.swift; sourceTree = "<group>"; };
 		68F896412D5E4321000B308B /* POSCollectOrderPaymentAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCollectOrderPaymentAnalytics.swift; sourceTree = "<group>"; };
-		6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Woo_Watch_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		72E1A3B02BE650CC82F2DA14 /* Pods-NotificationExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtension.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NotificationExtension/Pods-NotificationExtension.release.xcconfig"; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
 		740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LargeImageTableViewCell.xib; sourceTree = "<group>"; };
 		740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAnimatedButton+Woo.swift"; sourceTree = "<group>"; };
@@ -4953,7 +4918,6 @@
 		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
 		77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+Droppable.swift"; sourceTree = "<group>"; };
 		77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadsEditableData.swift; sourceTree = "<group>"; };
-		7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		7E6A01962725B811001668D5 /* FilterProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		7E6A019E2725CD76001668D5 /* FilterProductCategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModel.swift; sourceTree = "<group>"; };
 		7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
@@ -5069,7 +5033,6 @@
 		86F5FFE12CA302B300C767C4 /* CustomFieldsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModel.swift; sourceTree = "<group>"; };
 		86F5FFE32CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListViewModelTests.swift; sourceTree = "<group>"; };
 		86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorView.swift; sourceTree = "<group>"; };
-		877B43E3EE78E2E9C66C2F8D /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -5438,15 +5401,12 @@
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE4F8422734325C00871344 /* SettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
-		BD723D247190F25416C7BF39 /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
 		C0115DFC277CC19E007293B8 /* OrderDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDataStructs.swift; sourceTree = "<group>"; };
 		C027470F2822673800985EAE /* CustomerDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailsScreen.swift; sourceTree = "<group>"; };
 		C044961228058FE8003B3081 /* AddProductScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductScreen.swift; sourceTree = "<group>"; };
 		C0A37CB7282957EB00E0826D /* orders_3337_add_customer_details.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_3337_add_customer_details.json; sourceTree = "<group>"; };
 		C0CE1F83282AB1590019138E /* countries.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = countries.json; sourceTree = "<group>"; };
-		C5EFBA3D6E428FD34F5A4171 /* Pods_NotificationExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7533D1D2C1E38E0002EBAE7 /* OrderSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchUICommandTests.swift; sourceTree = "<group>"; };
-		CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDataTextFormatter.swift; sourceTree = "<group>"; };
 		CC04918E292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDataTextFormatterTests.swift; sourceTree = "<group>"; };
@@ -5759,8 +5719,6 @@
 		D449C52526DFBBDA00D75B02 /* WhatsNewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewFactory.swift; sourceTree = "<group>"; };
 		D449C52826DFBCCC00D75B02 /* WhatsNewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewHostingController.swift; sourceTree = "<group>"; };
 		D449C52B26E02F2F00D75B02 /* WhatsNewFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewFactoryTests.swift; sourceTree = "<group>"; };
-		D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Woo Watch App.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		D7E76EDE8E6FA4DFBA931388 /* Pods_WordPressAuthenticatorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticatorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCardTests.swift; sourceTree = "<group>"; };
 		D802547726551DB8001B2CC1 /* CardPresentModalDisplayMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessageTests.swift; sourceTree = "<group>"; };
@@ -5882,7 +5840,6 @@
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		DA013F502C65125100D9A391 /* PointOfSaleExitPosAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleExitPosAlertView.swift; sourceTree = "<group>"; };
 		DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFloatingControlView.swift; sourceTree = "<group>"; };
-		DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssets.swift; sourceTree = "<group>"; };
 		DA24152A2D116EA90008F69A /* WooShippingAddPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageViewModelTests.swift; sourceTree = "<group>"; };
 		DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsReadUseCase.swift; sourceTree = "<group>"; };
@@ -5929,6 +5886,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+WooShipping.swift"; sourceTree = "<group>"; };
 		DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE20045F2BF7092900660A72 /* ProductStockDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCard.swift; sourceTree = "<group>"; };
 		DE2004612BF70A6600660A72 /* ProductStockDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockDashboardCardViewModel.swift; sourceTree = "<group>"; };
@@ -6383,12 +6341,10 @@
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+Internal.swift"; sourceTree = "<group>"; };
 		EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModelTests.swift; sourceTree = "<group>"; };
-		F317D86E54C611C83FD97DAB /* Pods-NotificationExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NotificationExtension/Pods-NotificationExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		F93E8E5724087FE10057FF21 /* ProductsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsScreen.swift; sourceTree = "<group>"; };
 		F93E8E5824087FE10057FF21 /* SingleProductScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleProductScreen.swift; sourceTree = "<group>"; };
-		F9865579B72860730C7ECF12 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceScreenshots.swift; sourceTree = "<group>"; };
 		F997170623DBB97500592D8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -6423,7 +6379,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -6464,7 +6420,7 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.swiftlint.yml,
@@ -6478,9 +6434,41 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WooShippingPaymentMethod; sourceTree = "<group>"; };
-		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
-		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
+		2D33E6B02DD1453E000C7198 /* WooShippingPaymentMethod */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WooShippingPaymentMethod;
+			sourceTree = "<group>";
+		};
+		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F09041C2D26A40800D8ACCE /* Exceptions for "WordPressAuthenticator" folder in "WordPressAuthenticator" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticator;
+			sourceTree = "<group>";
+		};
+		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3FD28D5E2D271391002EBB3D /* Exceptions for "WordPressAuthenticatorTests" folder in "WordPressAuthenticatorTests" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = WordPressAuthenticatorTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6490,10 +6478,10 @@
 			files = (
 				2679F0262AAA2A3200AF80C5 /* WooFoundation.framework in Frameworks */,
 				26CA2BC72AAA17A2003B16C2 /* SwiftUI.framework in Frameworks */,
+				3F2B4AE22DDC317500E5E49C /* XcodeTarget_NotificationExtension in Frameworks */,
 				26EE795F2AA795A000857293 /* Networking.framework in Frameworks */,
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
-				048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */,
 				3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6512,10 +6500,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */,
-				26B542432BEAC68B003A55B5 /* Codegen in Frameworks */,
-				26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */,
+				3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */,
 				269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */,
-				3FF8371A2DD32B8D0049E028 /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6523,7 +6509,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				632DA865048E7635121D1890 /* Pods_WordPressAuthenticator.framework in Frameworks */,
+				3F2B4ADE2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6532,7 +6518,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
-				9075D5FFEAEF1E29E3AE0BD9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */,
+				3F2B4ADC2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6540,11 +6526,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F2B4AE42DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension in Frameworks */,
 				260DE20C28CA8F31009ECD7C /* Networking.framework in Frameworks */,
 				3F1FA84328B60125009E246C /* SwiftUI.framework in Frameworks */,
 				26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */,
 				3F1FA84228B60125009E246C /* WidgetKit.framework in Frameworks */,
-				8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */,
 				26D9E54828C10A3B0098DF26 /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6553,8 +6539,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FF314E726FC74560012E68E /* ScreenObject in Frameworks */,
-				3FA323272D63E0570017AE66 /* XCUITestHelpers in Frameworks */,
+				3F2B4AE62DDC318300E5E49C /* XcodeTarget_UITestsFoundation in Frameworks */,
 				3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6563,26 +6548,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */,
-				DEA6BCAC2BC6A7C30017D671 /* Algorithms in Frameworks */,
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
-				3F81114E2DD2A64E0042DDB6 /* AutomatticTracks in Frameworks */,
-				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
-				4598298128574688003A9AFE /* Inject in Frameworks */,
+				3FF861B52DE5823100A6E053 /* XcodeTarget_WooFoundation in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
-				174CA86A27D90A6200126524 /* AutomatticAbout in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
-				3FF837132DD326850049E028 /* CocoaLumberjackSwift in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
-				DEA6BCA92BC6A7050017D671 /* DGCharts in Frameworks */,
-				3F8115072DD2AB2A0042DDB6 /* AutomatticEncryptedLogs in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
+				3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */,
-				202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
-				45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */,
 				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
 				02AB82EC27069D5D008D7334 /* Experiments.framework in Frameworks */,
 			);
@@ -6592,15 +6568,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F368D982DCB74490065B48F /* TestKit in Frameworks */,
-				263E38462641FF3400260D3B /* Codegen in Frameworks */,
-				3F2C8A19285B038800B1A5BB /* BuildkiteTestCollector in Frameworks */,
-				3FF837212DD32F5C0049E028 /* CocoaLumberjackSwift in Frameworks */,
-				2621D1F72C810DB800654C4C /* ViewControllerPresentationSpy in Frameworks */,
-				3F8BACEB2DD309E0002DD6E8 /* AutomatticTracks in Frameworks */,
+				3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */,
 				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
-				2621D1F42C81085D00654C4C /* ViewInspector in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6609,9 +6579,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */,
-				3F2C8A1D285B03A400B1A5BB /* BuildkiteTestCollector in Frameworks */,
-				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
-				3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */,
+				3F2B4AE82DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6620,9 +6588,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */,
-				3F2C8A1B285B039900B1A5BB /* BuildkiteTestCollector in Frameworks */,
-				24C5AC7625A53021008FD769 /* Embassy in Frameworks */,
-				3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */,
+				3F2B4AEA2DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7335,6 +7301,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				689F29192DE4557D004DF52B /* POSStockFormatter.swift */,
 				681BB5FD2D676060008AF8BB /* POSPadding.swift */,
 				681BB5FB2D676043008AF8BB /* POSSpacing.swift */,
 				68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */,
@@ -7477,6 +7444,7 @@
 				208628722D48E476003F45DC /* Payments Onboarding */,
 				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
 				686A71B52DC9E5C10006E835 /* POSItemActionHandlerTests.swift */,
+				689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -10277,6 +10245,7 @@
 				262562342C52A6410075A8CC /* WooAnalyticsEvent+BackgroudUpdates.swift */,
 				86EC6EBC2CD3882900D7D2FE /* WooAnalyticsEvent+CustomFields.swift */,
 				DE87F40D2D30C90300869522 /* WooAnalyticsEvent+FilterHistory.swift */,
+				DE1D5FCA2DD5D6A600565CF9 /* WooAnalyticsEvent+WooShipping.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -10553,13 +10522,8 @@
 				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 				6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */,
 				3F1FA84128B60125009E246C /* WidgetKit.framework */,
-				2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */,
 				260837082AA66E4A0004A12B /* UserNotifications.framework */,
 				2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */,
-				C5EFBA3D6E428FD34F5A4171 /* Pods_NotificationExtension.framework */,
-				6A58DEEBCA91CDE69F439754 /* Pods_Woo_Watch_App.framework */,
-				5976D2D72C5C0C7DA2D15C33 /* Pods_WordPressAuthenticator.framework */,
-				D7E76EDE8E6FA4DFBA931388 /* Pods_WordPressAuthenticatorTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -14371,21 +14335,6 @@
 				8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */,
 				25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */,
 				2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */,
-				DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */,
-				7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */,
-				CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */,
-				045342243D39BA6C2856249B /* Pods-NotificationExtension.debug.xcconfig */,
-				72E1A3B02BE650CC82F2DA14 /* Pods-NotificationExtension.release.xcconfig */,
-				F317D86E54C611C83FD97DAB /* Pods-NotificationExtension.release-alpha.xcconfig */,
-				20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */,
-				07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */,
-				D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */,
-				BD723D247190F25416C7BF39 /* Pods-WordPressAuthenticator.debug.xcconfig */,
-				306EE9B1304588997C72017A /* Pods-WordPressAuthenticator.release.xcconfig */,
-				209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */,
-				F9865579B72860730C7ECF12 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */,
-				587C4C6BD125079C16897CE9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */,
-				877B43E3EE78E2E9C66C2F8D /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -14521,7 +14470,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 260837192AA66E4B0004A12B /* Build configuration list for PBXNativeTarget "NotificationExtension" */;
 			buildPhases = (
-				CDF895564E277E763DB43767 /* [CP] Check Pods Manifest.lock */,
 				260837032AA66E4A0004A12B /* Sources */,
 				260837042AA66E4A0004A12B /* Frameworks */,
 				260837052AA66E4A0004A12B /* Resources */,
@@ -14556,11 +14504,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26F81B272BE433A4009EC58E /* Build configuration list for PBXNativeTarget "Woo Watch App" */;
 			buildPhases = (
-				5B6BDB4C6584622D9C752CDA /* [CP] Check Pods Manifest.lock */,
 				26F81B112BE433A2009EC58E /* Sources */,
 				26F81B122BE433A2009EC58E /* Frameworks */,
 				26F81B132BE433A2009EC58E /* Resources */,
-				3EAFD89A971180F04F849D00 /* [CP] Embed Pods Frameworks */,
 				26B5423A2BEAC35C003A55B5 /* Embed Frameworks */,
 				267A04912C051C5700C91CB4 /* Embed Foundation Extensions */,
 			);
@@ -14571,8 +14517,7 @@
 			);
 			name = "Woo Watch App";
 			packageProductDependencies = (
-				26B542422BEAC68B003A55B5 /* Codegen */,
-				3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */,
+				3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */,
 			);
 			productName = "Woo Watch App";
 			productReference = 26F81B152BE433A2009EC58E /* Woo Watch App.app */;
@@ -14582,7 +14527,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F09041D2D26A40800D8ACCE /* Build configuration list for PBXNativeTarget "WordPressAuthenticator" */;
 			buildPhases = (
-				94EFA24913AA65C20B9D65AD /* [CP] Check Pods Manifest.lock */,
 				3F0903FC2D26A40700D8ACCE /* Headers */,
 				3F0903FD2D26A40700D8ACCE /* Sources */,
 				3F0903FE2D26A40700D8ACCE /* Frameworks */,
@@ -14604,11 +14548,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F09041E2D26A40800D8ACCE /* Build configuration list for PBXNativeTarget "WordPressAuthenticatorTests" */;
 			buildPhases = (
-				723C3ADC40B4376CB0E8B087 /* [CP] Check Pods Manifest.lock */,
 				3F0904042D26A40800D8ACCE /* Sources */,
 				3F0904052D26A40800D8ACCE /* Frameworks */,
 				3F0904062D26A40800D8ACCE /* Resources */,
-				D309CECD5321B4D63DA44BFF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -14627,7 +14569,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3F1FA85428B60126009E246C /* Build configuration list for PBXNativeTarget "StoreWidgetsExtension" */;
 			buildPhases = (
-				5F0CE4E06C2CFA36FC2FD62B /* [CP] Check Pods Manifest.lock */,
 				3F1FA83C28B60125009E246C /* Sources */,
 				3F1FA83D28B60125009E246C /* Frameworks */,
 				3F1FA83E28B60125009E246C /* Resources */,
@@ -14657,8 +14598,7 @@
 			);
 			name = UITestsFoundation;
 			packageProductDependencies = (
-				3FF314E626FC74560012E68E /* ScreenObject */,
-				3FA323262D63E0570017AE66 /* XCUITestHelpers */,
+				3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */,
 			);
 			productName = UITestsFoundation;
 			productReference = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */;
@@ -14675,7 +14615,6 @@
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
-				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				3F1FA85028B60126009E246C /* Embed Foundation Extensions */,
 				26F81B232BE433A4009EC58E /* Embed Watch Content */,
 			);
@@ -14693,17 +14632,8 @@
 			);
 			name = WooCommerce;
 			packageProductDependencies = (
-				263E37E02641AD8300260D3B /* Codegen */,
-				45455E312657C3F300BBB0C4 /* Shimmer */,
-				174CA86927D90A6200126524 /* AutomatticAbout */,
-				4598298028574688003A9AFE /* Inject */,
-				DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */,
-				202496632B0B9E0D00EE527D /* ScrollViewSectionKit */,
-				DEA6BCA82BC6A7050017D671 /* DGCharts */,
-				DEA6BCAB2BC6A7C30017D671 /* Algorithms */,
-				3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */,
-				3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */,
-				3FF837122DD326850049E028 /* CocoaLumberjackSwift */,
+				3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */,
+				3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -14713,7 +14643,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E92049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerceTests" */;
 			buildPhases = (
-				E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */,
+				0032C3723C3443BD59486E37 /* [CP] Check Pods Manifest.lock */,
 				B56DB3D92049BFAA00D4AA8E /* Sources */,
 				B56DB3DA2049BFAA00D4AA8E /* Frameworks */,
 				B56DB3DB2049BFAA00D4AA8E /* Resources */,
@@ -14726,13 +14656,7 @@
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (
-				263E38452641FF3400260D3B /* Codegen */,
-				3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */,
-				2621D1F32C81085D00654C4C /* ViewInspector */,
-				2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */,
-				3F368D972DCB74490065B48F /* TestKit */,
-				3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */,
-				3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */,
+				3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -14754,8 +14678,7 @@
 			);
 			name = WooCommerceUITests;
 			packageProductDependencies = (
-				3FF2247226706AA3008FFA87 /* ScreenObject */,
-				3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */,
+				3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */,
 			);
 			productName = WooCommerceUITests;
 			productReference = CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */;
@@ -14777,9 +14700,7 @@
 			);
 			name = WooCommerceScreenshots;
 			packageProductDependencies = (
-				247CE89B2583402A00F9D9D1 /* Embassy */,
-				3FF22489267073AE008FFA87 /* ScreenObject */,
-				3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */,
+				3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */,
 			);
 			productName = WooCommerceScreenshots;
 			productReference = F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */;
@@ -14883,22 +14804,6 @@
 				nl,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
-			packageReferences = (
-				247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */,
-				45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
-				3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */,
-				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
-				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
-				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
-				DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
-				202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */,
-				DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */,
-				DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
-				2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */,
-				2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */,
-				3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */,
-				3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
-			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -15282,25 +15187,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3EAFD89A971180F04F849D00 /* [CP] Embed Pods Frameworks */ = {
+		0032C3723C3443BD59486E37 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooCommerceTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Woo Watch App/Pods-Woo Watch App-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
@@ -15341,72 +15247,6 @@
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
 		};
-		5B6BDB4C6584622D9C752CDA /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Woo Watch App-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5F0CE4E06C2CFA36FC2FD62B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-StoreWidgetsExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		723C3ADC40B4376CB0E8B087 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WordPressAuthenticatorTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -15419,28 +15259,6 @@
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-WooCommerce-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		94EFA24913AA65C20B9D65AD /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WordPressAuthenticator-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -15465,88 +15283,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
-			showEnvVarsInLog = 0;
-		};
-		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CDF895564E277E763DB43767 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NotificationExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D309CECD5321B4D63DA44BFF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooCommerceTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -16110,6 +15846,7 @@
 				20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
+				689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
@@ -16741,6 +16478,7 @@
 				EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */,
 				02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */,
 				B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */,
+				DE1D5FCB2DD5D6B400565CF9 /* WooAnalyticsEvent+WooShipping.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				CEE482D52B83A9A300FAC8C5 /* AnalyticsCard+UI.swift in Sources */,
@@ -17768,6 +17506,7 @@
 				020EF5EF2A8C94E0009D2169 /* SiteSnapshotTrackerTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
+				689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */,
 				B92932E12AD5A616005B3153 /* AddCustomAmountViewModelTests.swift in Sources */,
 				204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,
@@ -18617,7 +18356,6 @@
 		};
 		260837162AA66E4B0004A12B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 045342243D39BA6C2856249B /* Pods-NotificationExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -18646,7 +18384,6 @@
 		};
 		260837172AA66E4B0004A12B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 72E1A3B02BE650CC82F2DA14 /* Pods-NotificationExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -18674,7 +18411,6 @@
 		};
 		260837182AA66E4B0004A12B /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F317D86E54C611C83FD97DAB /* Pods-NotificationExtension.release-alpha.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -18812,7 +18548,6 @@
 		};
 		26F81B242BE433A4009EC58E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 20929C9DFB2CE5CB264C27EC /* Pods-Woo Watch App.debug.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -18854,7 +18589,6 @@
 		};
 		26F81B252BE433A4009EC58E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 07744AD70D0C97C7BA4F3168 /* Pods-Woo Watch App.release.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -18894,7 +18628,6 @@
 		};
 		26F81B262BE433A4009EC58E /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D79A89004802CF0B21699929 /* Pods-Woo Watch App.release-alpha.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -18934,7 +18667,6 @@
 		};
 		3F0904162D26A40800D8ACCE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD723D247190F25416C7BF39 /* Pods-WordPressAuthenticator.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -18946,7 +18678,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -18980,7 +18712,6 @@
 		};
 		3F0904172D26A40800D8ACCE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 306EE9B1304588997C72017A /* Pods-WordPressAuthenticator.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -18992,7 +18723,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -19024,7 +18755,6 @@
 		};
 		3F0904182D26A40800D8ACCE /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 209FC9C42228DA65BD11D65E /* Pods-WordPressAuthenticator.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -19036,7 +18766,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -19068,7 +18798,6 @@
 		};
 		3F0904192D26A40800D8ACCE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F9865579B72860730C7ECF12 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -19092,7 +18821,6 @@
 		};
 		3F09041A2D26A40800D8ACCE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 587C4C6BD125079C16897CE9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -19114,7 +18842,6 @@
 		};
 		3F09041B2D26A40800D8ACCE /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 877B43E3EE78E2E9C66C2F8D /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -19136,7 +18863,6 @@
 		};
 		3F1FA85128B60126009E246C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -19168,7 +18894,6 @@
 		};
 		3F1FA85228B60126009E246C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7D4CEC625891A6F236907541 /* Pods-StoreWidgetsExtension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -19199,7 +18924,6 @@
 		};
 		3F1FA85328B60126009E246C /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
@@ -19841,252 +19565,50 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/automattic/AutomatticAbout-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.5;
-			};
-		};
-		202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pavolkmet/ScrollViewSectionKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
-		247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/envoy/Embassy";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.1.2;
-			};
-		};
-		2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nalexn/ViewInspector";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.10.0;
-			};
-		};
-		2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jonreid/ViewControllerPresentationSpy";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
-		3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/buildkite/test-collector-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.0;
-			};
-		};
-		3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Automattic/Automattic-Tracks-iOS";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.5.2;
-			};
-		};
-		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Automattic/ScreenObject";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.0;
-			};
-		};
-		3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.8.5;
-			};
-		};
-		45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/krzysztofzablocki/Inject.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.1.1;
-			};
-		};
-		DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielgindi/Charts.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.0;
-			};
-		};
-		DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		174CA86927D90A6200126524 /* AutomatticAbout */ = {
+		3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */;
-			productName = AutomatticAbout;
+			productName = XcodeTarget_WordPressAuthenticatorTests;
 		};
-		202496632B0B9E0D00EE527D /* ScrollViewSectionKit */ = {
+		3F2B4ADD2DDC315800E5E49C /* XcodeTarget_WordPressAuthenticator */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 202496622B0B9E0D00EE527D /* XCRemoteSwiftPackageReference "ScrollViewSectionKit" */;
-			productName = ScrollViewSectionKit;
+			productName = XcodeTarget_WordPressAuthenticator;
 		};
-		247CE89B2583402A00F9D9D1 /* Embassy */ = {
+		3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */;
-			productName = Embassy;
+			productName = "XcodeTarget_Woo Watch App";
 		};
-		2621D1F32C81085D00654C4C /* ViewInspector */ = {
+		3F2B4AE12DDC317500E5E49C /* XcodeTarget_NotificationExtension */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2621D1F22C81085D00654C4C /* XCRemoteSwiftPackageReference "ViewInspector" */;
-			productName = ViewInspector;
+			productName = XcodeTarget_NotificationExtension;
 		};
-		2621D1F62C810DB800654C4C /* ViewControllerPresentationSpy */ = {
+		3F2B4AE32DDC317C00E5E49C /* XcodeTarget_StoreWidgetsExtension */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */;
-			productName = ViewControllerPresentationSpy;
+			productName = XcodeTarget_StoreWidgetsExtension;
 		};
-		263E37E02641AD8300260D3B /* Codegen */ = {
+		3F2B4AE52DDC318300E5E49C /* XcodeTarget_UITestsFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_UITestsFoundation;
 		};
-		263E38452641FF3400260D3B /* Codegen */ = {
+		3F2B4AE72DDC318B00E5E49C /* XcodeTarget_WooCommerceUITests */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_WooCommerceUITests;
 		};
-		26B542422BEAC68B003A55B5 /* Codegen */ = {
+		3F2B4AE92DDC319100E5E49C /* XcodeTarget_WooCommerceScreenshots */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Codegen;
+			productName = XcodeTarget_WooCommerceScreenshots;
 		};
-		3F2C8A18285B038800B1A5BB /* BuildkiteTestCollector */ = {
+		3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
-			productName = BuildkiteTestCollector;
+			productName = XcodeTarget_WooCommerceTests;
 		};
-		3F2C8A1A285B039900B1A5BB /* BuildkiteTestCollector */ = {
+		3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
-			productName = BuildkiteTestCollector;
+			productName = XcodeTarget_WooCommerce;
 		};
-		3F2C8A1C285B03A400B1A5BB /* BuildkiteTestCollector */ = {
+		3FF861B42DE5823100A6E053 /* XcodeTarget_WooFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */;
-			productName = BuildkiteTestCollector;
-		};
-		3F368D972DCB74490065B48F /* TestKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TestKit;
-		};
-		3F81114D2DD2A64E0042DDB6 /* AutomatticTracks */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticTracks;
-		};
-		3F8115062DD2AB2A0042DDB6 /* AutomatticEncryptedLogs */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticEncryptedLogs;
-		};
-		3F8BACEA2DD309E0002DD6E8 /* AutomatticTracks */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3F81114C2DD2A64E0042DDB6 /* XCRemoteSwiftPackageReference "Automattic-Tracks-iOS" */;
-			productName = AutomatticTracks;
-		};
-		3FA323262D63E0570017AE66 /* XCUITestHelpers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
-			productName = XCUITestHelpers;
-		};
-		3FF2247226706AA3008FFA87 /* ScreenObject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
-			productName = ScreenObject;
-		};
-		3FF22489267073AE008FFA87 /* ScreenObject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
-			productName = ScreenObject;
-		};
-		3FF314E626FC74560012E68E /* ScreenObject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
-			productName = ScreenObject;
-		};
-		3FF837122DD326850049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF837192DD32B8D0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		3FF837202DD32F5C0049E028 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3FF837112DD326850049E028 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		45455E312657C3F300BBB0C4 /* Shimmer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
-			productName = Shimmer;
-		};
-		4598298028574688003A9AFE /* Inject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
-			productName = Inject;
-		};
-		DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
-			productName = ConfettiSwiftUI;
-		};
-		DEA6BCA82BC6A7050017D671 /* DGCharts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DEA6BCA72BC6A7050017D671 /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = DGCharts;
-		};
-		DEA6BCAB2BC6A7C30017D671 /* Algorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DEA6BCAA2BC6A7C30017D671 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
-			productName = Algorithms;
+			productName = XcodeTarget_WooFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

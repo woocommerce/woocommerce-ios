@@ -164,7 +164,14 @@ struct POSItemActionHandlerFactoryTests {
 }
 
 private func makeProductItem() -> POSItem {
-    return .simpleProduct(.init(id: UUID(), name: "Test", formattedPrice: "$1.00", productID: 1, price: "1"))
+    return .simpleProduct(.init(id: UUID(),
+                                name: "Test",
+                                formattedPrice: "$1.00",
+                                productID: 1,
+                                price: "1",
+                                manageStock: false,
+                                stockQuantity: nil,
+                                stockStatusKey: ""))
 }
 
 private func makeCouponItem() -> POSItem {

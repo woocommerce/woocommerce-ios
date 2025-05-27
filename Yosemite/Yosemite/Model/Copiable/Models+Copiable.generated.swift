@@ -60,7 +60,10 @@ extension Yosemite.POSSimpleProduct {
         productID: CopiableProp<Int64> = .copy,
         price: CopiableProp<String> = .copy,
         productType: CopiableProp<Networking.ProductType> = .copy,
-        bundledItems: CopiableProp<[Networking.ProductBundleItem]> = .copy
+        bundledItems: CopiableProp<[Networking.ProductBundleItem]> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy
     ) -> Yosemite.POSSimpleProduct {
         let id = id ?? self.id
         let name = name ?? self.name
@@ -70,6 +73,9 @@ extension Yosemite.POSSimpleProduct {
         let price = price ?? self.price
         let productType = productType ?? self.productType
         let bundledItems = bundledItems ?? self.bundledItems
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
 
         return Yosemite.POSSimpleProduct(
             id: id,
@@ -79,7 +85,10 @@ extension Yosemite.POSSimpleProduct {
             productID: productID,
             price: price,
             productType: productType,
-            bundledItems: bundledItems
+            bundledItems: bundledItems,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
         )
     }
 }

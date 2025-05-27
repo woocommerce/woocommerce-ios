@@ -39,6 +39,7 @@ struct WooShippingCreateLabelsView: View {
 
     @State private var showingCustomsForm = false
     @State private var showingSplitShipments = false
+    @State private var showingPaymentMethods = false
 
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
@@ -103,6 +104,12 @@ struct WooShippingCreateLabelsView: View {
                 WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
                     viewModel.updateShipments(updatedShipments)
                     isShipmentDetailsExpanded = false
+                }
+            }
+            .sheet(isPresented: $showingPaymentMethods) {
+                if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                    WooShippingPaymentMethodsView(viewModel: paymentMethodsViewModel)
+                        .presentationDetents([.fraction(0.7), .large])
                 }
             }
         }
@@ -305,9 +312,13 @@ private extension WooShippingCreateLabelsView {
             if isiPhonePortrait {
                 VStack(spacing: Layout.bottomSheetSpacing) {
                     if isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizePortrait)
+                        }
+                        .tint(Color(.primary))
                     }
                     if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
@@ -317,10 +328,14 @@ private extension WooShippingCreateLabelsView {
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
                     if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
-                            .fixedSize(horizontal: false, vertical: true)
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizeLandscape)
+                        }
+                        .tint(Color(.primary))
+                        .fixedSize(horizontal: false, vertical: true)
                         purchaseButton
                     }
                 }
@@ -400,7 +415,7 @@ private extension WooShippingCreateLabelsView {
                 Text(Localization.BottomSheet.orderDetails)
                     .footnoteStyle()
             }
-            AdaptiveStack {
+            HStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
                 Text(viewModel.orderItems.itemsCountLabel)
@@ -408,9 +423,8 @@ private extension WooShippingCreateLabelsView {
                 Spacer()
                 Text(viewModel.orderItems.itemsPriceLabel)
             }
-            .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in
-                AdaptiveStack {
+                HStack {
                     Image(uiImage: .shippingIcon)
                         .frame(width: Layout.iconSize)
                     Text(shippingLine.title)
@@ -419,7 +433,6 @@ private extension WooShippingCreateLabelsView {
                     Spacer()
                     Text(shippingLine.formattedTotal)
                 }
-                .frame(idealHeight: Layout.rowHeight)
             }
         }
     }
@@ -439,7 +452,7 @@ private extension WooShippingCreateLabelsView {
 
     var addPaymentMethodLine: some View {
         Button(action: {
-            /// Trigger payment method selection
+            showingPaymentMethods = true
         }) {
             HStack {
                 Image(systemName: "plus")
@@ -458,7 +471,7 @@ private extension WooShippingCreateLabelsView {
         _ cardLineViewModel: WooShippingPaymentMethodLine.CardPaymentMethodLineViewModel
     ) -> some View {
         Button(action: {
-            /// Trigger payment method selection
+            showingPaymentMethods = true
         }) {
             HStack {
                 Text(cardLineViewModel.title)
@@ -491,12 +504,11 @@ private extension WooShippingCreateLabelsView {
                 shippingRateRow(label: Localization.BottomSheet.total, amount: viewModel.totalCost)
                     .bold()
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
     }
 
     func shippingRateRow(label: String, amount: String?) -> some View {
-        AdaptiveStack {
+        HStack {
             Text(label)
             Spacer()
             Text(amount ?? "$0.00")
@@ -611,6 +623,10 @@ private extension WooShippingCreateLabelsView {
         static let gradientViewWidth: CGFloat = 32
         static let purchasedIconWidth: CGFloat = 16
         static let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
+        static let toggleTextLineLimit = 3
+        static let toggleTextMaxDynamicTypeSizePortrait = DynamicTypeSize.accessibility1
+        static let toggleTextMaxDynamicTypeSizeLandscape = DynamicTypeSize.xxxLarge
     }
 
     enum Localization {

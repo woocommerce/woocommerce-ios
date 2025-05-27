@@ -10,6 +10,7 @@ struct TotalsViewHelper {
                     .cardInserted,
                     .validatingOrder,
                     .validatingOrderError,
+                    .paymentIntentCreationError,
                     .preparingReader:
                 return true
             case .processingPayment,
@@ -34,6 +35,7 @@ struct TotalsViewHelper {
             return true
         case .validatingOrder,
                 .validatingOrderError,
+                .paymentIntentCreationError,
                 .processingPayment,
                 .cardInserted,
                 .paymentError,
@@ -60,6 +62,7 @@ struct TotalsViewHelper {
 
         switch cardState {
         case .validatingOrderError,
+                .paymentIntentCreationError,
              .acceptingCard:
             return true
         default:

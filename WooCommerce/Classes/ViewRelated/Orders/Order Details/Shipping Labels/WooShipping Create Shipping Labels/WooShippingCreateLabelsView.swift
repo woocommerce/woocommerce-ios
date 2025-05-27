@@ -109,7 +109,7 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $showingPaymentMethods) {
                 if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
                     WooShippingPaymentMethodsView(viewModel: paymentMethodsViewModel)
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.fraction(0.7), .large])
                 }
             }
         }

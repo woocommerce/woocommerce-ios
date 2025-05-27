@@ -60,7 +60,7 @@ private extension WooShippingPaymentMethodsView {
         .padding(Layout.EmptyView.contentInsets)
         .background(
             RoundedRectangle(cornerRadius: Layout.EmptyView.corderRadius)
-                .stroke(Color.secondary, style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                .stroke(Color(.border), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
         )
         .padding(.top, Layout.contentSpacing)
     }

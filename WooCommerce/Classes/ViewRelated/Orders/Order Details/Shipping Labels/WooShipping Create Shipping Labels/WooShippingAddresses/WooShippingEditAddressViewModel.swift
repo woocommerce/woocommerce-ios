@@ -5,14 +5,6 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 import Combine
 
-/// Alert model for error alerts in the address editing flow.
-struct AddressErrorAlert: Identifiable {
-    let id = UUID()
-    let title: String
-    let message: String
-    let retryAction: () -> Void
-}
-
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private let siteID: Int64
@@ -182,8 +174,13 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
 
-    /// Current error alert to display, if any.
-    @Published var errorAlert: AddressErrorAlert?
+    /// Current address update error alert state
+    @Published var isShowingAddressErrorAlert = false
+    @Published var addressErrorState: AddressErrorState = .none {
+        didSet {
+            isShowingAddressErrorAlert = addressErrorState != .none
+        }
+    }
 
     /// Closure called when an origin address is done being edited and the changes are confirmed.
     private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
@@ -394,16 +391,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         } catch {
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
 
-            // Show error alert when validation request fails (HTTP error)
-            errorAlert = AddressErrorAlert(
-                title: Localization.AddressValidationError.title,
-                message: Localization.AddressValidationError.message,
-                retryAction: { [weak self] in
-                    Task { @MainActor in
-                        await self?.remotelyValidateAddress()
-                    }
-                }
-            )
+            // Show error alert when validation request fails
+            addressErrorState = .validation
 
             analytics.track(event: .WooShipping.editingAddressStep(
                 type: analyticAddressType,
@@ -462,15 +451,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
 
                 // Show error alert when origin address update fails
-                errorAlert = AddressErrorAlert(
-                    title: Localization.OriginAddressUpdateError.title,
-                    message: Localization.OriginAddressUpdateError.message,
-                    retryAction: { [weak self] in
-                        Task { @MainActor in
-                            await self?.retryOriginAddressUpdate()
-                        }
-                    }
-                )
+                addressErrorState = .updateOrigin
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .origin,
@@ -508,15 +489,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
 
                 // Show error alert when destination address update fails
-                errorAlert = AddressErrorAlert(
-                    title: Localization.DestinationAddressUpdateError.title,
-                    message: Localization.DestinationAddressUpdateError.message,
-                    retryAction: { [weak self] in
-                        Task { @MainActor in
-                            await self?.retryDestinationAddressUpdate()
-                        }
-                    }
-                )
+                addressErrorState = .updateDestination
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
@@ -748,6 +721,42 @@ private extension WooShippingEditAddressViewModel {
                 isLoading = false
             }
             stores.dispatch(action)
+        }
+    }
+}
+
+// MARK: Address update error handling
+extension WooShippingEditAddressViewModel {
+    enum AddressErrorState {
+        case none
+        case validation
+        case updateOrigin
+        case updateDestination
+
+        var title: String {
+            switch self {
+            case .validation:
+                return Localization.AddressValidationError.title
+            case .updateOrigin:
+                return Localization.OriginAddressUpdateError.title
+            case .updateDestination:
+                return Localization.DestinationAddressUpdateError.title
+            case .none:
+                return ""
+            }
+        }
+
+        var message: String {
+            switch self {
+            case .validation:
+                return Localization.AddressValidationError.message
+            case .updateOrigin:
+                return Localization.OriginAddressUpdateError.message
+            case .updateDestination:
+                return Localization.DestinationAddressUpdateError.message
+            case .none:
+                return ""
+            }
         }
     }
 }

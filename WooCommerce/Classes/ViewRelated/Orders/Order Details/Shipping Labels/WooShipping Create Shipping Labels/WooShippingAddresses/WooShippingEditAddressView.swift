@@ -180,16 +180,32 @@ struct WooShippingEditAddressView: View {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
             }
         }
-        .alert(item: $viewModel.errorAlert) { alert in
-            Alert(
-                title: Text(alert.title),
-                message: Text(alert.message),
-                primaryButton: .default(Text(Localization.AlertButtons.retry)) {
-                    alert.retryAction()
-                },
-                secondaryButton: .cancel(Text(Localization.AlertButtons.close))
-            )
-        }
+        .alert(
+            viewModel.addressErrorState.title,
+            isPresented: $viewModel.isShowingAddressErrorAlert,
+            actions: {
+                Button(Localization.AlertButtons.retry) {
+                    Task { @MainActor in
+                        switch viewModel.addressErrorState {
+                        case .none:
+                            return
+                        case .validation:
+                            await viewModel.remotelyValidateAddress()
+                        case .updateOrigin:
+                            await viewModel.retryOriginAddressUpdate()
+                        case .updateDestination:
+                            await viewModel.retryDestinationAddressUpdate()
+                        }
+                    }
+                }
+                Button(
+                    Localization.AlertButtons.close,
+                    role: .cancel
+                ) {}
+            }, message: {
+                Text(viewModel.addressErrorState.message)
+            }
+        )
     }
 
     private struct AddressTextField: View {

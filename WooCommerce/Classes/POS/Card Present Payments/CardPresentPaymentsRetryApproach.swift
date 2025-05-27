@@ -151,7 +151,8 @@ private extension CardReaderServiceUnderlyingError {
                 .forwardingTestModePaymentInLiveMode,
                 .forwardingLiveModePaymentInTestMode,
                 .readerConnectionConfigurationInvalid,
-                .readerTippingParameterInvalid:
+                .readerTippingParameterInvalid,
+                .paymentMethodCollectionTimedOut:
             return .dontRetry
         }
     }

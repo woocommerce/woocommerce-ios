@@ -1120,7 +1120,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
     // MARK: - Error Alert Tests
 
     @MainActor
-    func test_errorAlert_is_nil_initially() {
+    func test_addressErrorState_is_none_initially() {
         // Given & When
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
                                                         id: "",
@@ -1138,11 +1138,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: false)
 
         // Then
-        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.addressErrorState, .none)
     }
 
     @MainActor
-    func test_errorAlert_is_set_when_address_validation_fails_with_network_error() async {
+    func test_addressErrorState_is_set_when_address_validation_fails_with_network_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
@@ -1160,7 +1160,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         showCompanyField: true,
                                                         isVerified: false,
                                                         stores: stores)
-        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.addressErrorState, .none)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .validateAddress(_, _, completion) = action {
@@ -1172,17 +1172,17 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         await viewModel.remotelyValidateAddress()
 
         // Then
-        XCTAssertNotNil(viewModel.errorAlert)
-        XCTAssertEqual(viewModel.errorAlert?.title, "Address Validation Error")
-        XCTAssertEqual(viewModel.errorAlert?.message, "The address you entered could not be verified. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState, .validation)
+        XCTAssertEqual(viewModel.addressErrorState.title, "Address Validation Error")
+        XCTAssertEqual(viewModel.addressErrorState.message, "The address you entered could not be verified. Please try again later.")
     }
 
     @MainActor
-    func test_errorAlert_is_set_when_origin_address_update_fails() async {
+    func test_addressErrorState_is_set_when_origin_address_update_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(address: .fake(), stores: stores)
-        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.addressErrorState, .none)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -1201,15 +1201,18 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         await until {
-            viewModel.errorAlert != nil
+            if case .updateOrigin = viewModel.addressErrorState {
+                return true
+            }
+            return false
         }
 
-        XCTAssertEqual(viewModel.errorAlert?.title, "Origin Address Update Error")
-        XCTAssertEqual(viewModel.errorAlert?.message, "The origin address could not be updated. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState.title, "Origin Address Update Error")
+        XCTAssertEqual(viewModel.addressErrorState.message, "The origin address could not be updated. Please try again later.")
     }
 
     @MainActor
-    func test_errorAlert_is_set_when_destination_address_update_fails() async {
+    func test_addressErrorState_is_set_when_destination_address_update_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(address: .fake(),
@@ -1219,7 +1222,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         originCountryCode: nil,
                                                         originStateCode: nil,
                                                         stores: stores)
-        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.addressErrorState, .none)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -1238,11 +1241,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         await until {
-            viewModel.errorAlert != nil
+            if case .updateDestination = viewModel.addressErrorState {
+                return true
+            }
+            return false
         }
 
-        XCTAssertEqual(viewModel.errorAlert?.title, "Destination Address Update Error")
-        XCTAssertEqual(viewModel.errorAlert?.message, "The destination address could not be updated. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState.title, "Destination Address Update Error")
+        XCTAssertEqual(viewModel.addressErrorState.message, "The destination address could not be updated. Please try again later.")
     }
 
     @MainActor
@@ -1284,11 +1290,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         await until {
-            viewModel.errorAlert != nil && validationCallCount == 1
+            viewModel.addressErrorState == .validation && validationCallCount == 1
         }
 
-        // Simulate retry button tap
-        viewModel.errorAlert?.retryAction()
+        // Simulate retry button tap by calling remotelyValidateAddress again
+        await viewModel.remotelyValidateAddress()
 
         // Then
         await until {
@@ -1304,6 +1310,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         var validationCallCount = 0
         var updateCallCount = 0
+        var savedAddress: WooShippingAddress?
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .validateAddress(_, _, completion):
@@ -1329,15 +1336,21 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         await until {
-            viewModel.errorAlert != nil && updateCallCount == 1
+            if case .updateOrigin(let address) = viewModel.addressErrorState {
+                savedAddress = address
+                return updateCallCount == 1
+            }
+            return false
         }
 
-        // Simulate retry button tap
-        viewModel.errorAlert?.retryAction()
+        // Simulate retry button tap by calling updateConfirmedAddress with the saved address
+        if let address = savedAddress {
+            viewModel.updateConfirmedAddress(address)
+        }
 
         // Then
         await until {
-            validationCallCount == 2
+            updateCallCount == 2
         }
     }
 
@@ -1355,6 +1368,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         var validationCallCount = 0
         var updateCallCount = 0
+        var savedAddress: WooShippingAddress?
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .validateAddress(_, _, completion):
@@ -1380,20 +1394,26 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         await until {
-            viewModel.errorAlert != nil && updateCallCount == 1
+            if case .updateDestination(let address) = viewModel.addressErrorState {
+                savedAddress = address
+                return updateCallCount == 1
+            }
+            return false
         }
 
-        // Simulate retry button tap
-        viewModel.errorAlert?.retryAction()
+        // Simulate retry button tap by calling updateConfirmedAddress with the saved address
+        if let address = savedAddress {
+            viewModel.updateConfirmedAddress(address)
+        }
 
         // Then
         await until {
-            validationCallCount == 2
+            updateCallCount == 2
         }
     }
 
     @MainActor
-    func test_errorAlert_does_not_interfere_with_validation_error_handling() async {
+    func test_addressErrorState_does_not_interfere_with_validation_error_handling() async {
         // Given
         let expectedNameError = "Either Name or Company is required"
         let expectedAddressError = "House number is missing"
@@ -1430,7 +1450,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         // Should handle validation errors normally, not show error alert
-        XCTAssertNil(viewModel.errorAlert)
+        XCTAssertEqual(viewModel.addressErrorState, .none)
         XCTAssertEqual(viewModel.name.errorMessage, expectedNameError)
         XCTAssertEqual(viewModel.address.errorMessage, expectedAddressError)
         XCTAssertEqual(viewModel.statusLabel, expectedGeneralError)

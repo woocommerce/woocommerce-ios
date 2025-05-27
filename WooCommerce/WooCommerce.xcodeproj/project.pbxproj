@@ -1622,7 +1622,7 @@
 		6891C3642D364AFE00B5B48C /* CollectCashViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */; };
 		6891C3662D364C1A00B5B48C /* CollectCashViewHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */; };
 		689F291A2DE4557E004DF52B /* POSStockFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F29192DE4557D004DF52B /* POSStockFormatter.swift */; };
-		689F291C2DE45604004DF52B /* StockFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F291B2DE45604004DF52B /* StockFormatterTests.swift */; };
+		689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */; };
 		68A345642D029E12002EE324 /* PaymentButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A345632D029E09002EE324 /* PaymentButtons.swift */; };
 		68A38DF52B293B030090C263 /* MockProductListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A38DF42B293B030090C263 /* MockProductListViewModel.swift */; };
 		68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */; };
@@ -4835,7 +4835,7 @@
 		6891C3632D364AFB00B5B48C /* CollectCashViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelper.swift; sourceTree = "<group>"; };
 		6891C3652D364C1A00B5B48C /* CollectCashViewHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectCashViewHelperTests.swift; sourceTree = "<group>"; };
 		689F29192DE4557D004DF52B /* POSStockFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatter.swift; sourceTree = "<group>"; };
-		689F291B2DE45604004DF52B /* StockFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockFormatterTests.swift; sourceTree = "<group>"; };
+		689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSStockFormatterTests.swift; sourceTree = "<group>"; };
 		68A345632D029E09002EE324 /* PaymentButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentButtons.swift; sourceTree = "<group>"; };
 		68A38DF42B293B030090C263 /* MockProductListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductListViewModel.swift; sourceTree = "<group>"; };
 		68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -7408,7 +7408,7 @@
 				208628722D48E476003F45DC /* Payments Onboarding */,
 				026A502E2D2F8099002C42C2 /* Infinite Scroll */,
 				686A71B52DC9E5C10006E835 /* POSItemActionHandlerTests.swift */,
-				689F291B2DE45604004DF52B /* StockFormatterTests.swift */,
+				689F291B2DE45604004DF52B /* POSStockFormatterTests.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -17481,7 +17481,7 @@
 				020EF5EF2A8C94E0009D2169 /* SiteSnapshotTrackerTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
-				689F291C2DE45604004DF52B /* StockFormatterTests.swift in Sources */,
+				689F291C2DE45604004DF52B /* POSStockFormatterTests.swift in Sources */,
 				B92932E12AD5A616005B3153 /* AddCustomAmountViewModelTests.swift in Sources */,
 				204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,

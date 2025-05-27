@@ -3,8 +3,8 @@ import Testing
 import struct Yosemite.POSSimpleProduct
 @testable import WooCommerce
 
-struct StockFormatterTests {
-    @Test func test_managestock_when_disabled_and_stockStatusKey_not_set_then_returns_empty_stockLabel() async throws {
+struct POSStockFormatterTests {
+    @Test func test_when_managestock_disabled_and_stockStatusKey_not_set_then_returns_empty_stockLabel() async throws {
         // Given
         let manageStockDisabled: Bool = false
         let product = POSSimpleProduct.fake().copy(manageStock: manageStockDisabled)
@@ -16,7 +16,7 @@ struct StockFormatterTests {
         #expect(stockLabel == "")
     }
 
-    @Test func test_managestock_when_disabled_and_stockStatusKey_instock_then_returns_in_stock_stockLabel() async throws {
+    @Test func test_when_managestock_disabled_and_stockStatusKey_instock_then_returns_in_stock_stockLabel() async throws {
         // Given
         let manageStockDisabled: Bool = false
         let stockStatusKey: String = "instock"
@@ -29,7 +29,7 @@ struct StockFormatterTests {
         #expect(stockLabel == "In stock")
     }
 
-    @Test func test_managestock_when_disabled_and_stockStatusKey_onbackorder_then_returns_on_backorder_stockLabel() async throws {
+    @Test func test_when_managestock_disabled_and_stockStatusKey_onbackorder_then_returns_on_backorder_stockLabel() async throws {
         // Given
         let manageStockDisabled: Bool = false
         let stockStatusKey: String = "onbackorder"
@@ -42,7 +42,7 @@ struct StockFormatterTests {
         #expect(stockLabel == "On back order")
     }
 
-    @Test func test_managestock_when_disabled_and_stockStatusKey_outofstock_then_returns_out_of_stock_stockLabel() async throws {
+    @Test func test_when_managestock_disabled_and_stockStatusKey_outofstock_then_returns_out_of_stock_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = false
         let stockStatusKey: String = "outofstock"
@@ -50,13 +50,13 @@ struct StockFormatterTests {
                                                    stockStatusKey: stockStatusKey)
 
         // When
-        let result = POSStockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(result == "Out of stock")
+        #expect(stockLabel == "Out of stock")
     }
 
-    @Test func test_managestock_when_enabled_and_stockQuantity_not_set_then_returns_productStockStatus_stockLabel() async throws {
+    @Test func test_when_managestock_enabled_and_stockQuantity_not_set_then_returns_productStockStatus_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = true
         let stockStatusKey: String = "instock"
@@ -64,13 +64,13 @@ struct StockFormatterTests {
                                                    stockStatusKey: stockStatusKey)
 
         // When
-        let result = POSStockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(result == "In stock")
+        #expect(stockLabel == "In stock")
     }
 
-    @Test func test_managestock_when_enabled_and_stockQuantity_less_than_zero_then_returns_out_of_stock_stockLabel() async throws {
+    @Test func test_when_managestock_enabled_and_stockQuantity_less_than_zero_then_returns_out_of_stock_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = true
         let stockQuantity: Decimal = -3
@@ -78,13 +78,13 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = POSStockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(result == "Out of stock")
+        #expect(stockLabel == "Out of stock")
     }
 
-    @Test func test_managestock_when_enabled_and_stockQuantity_is_zero_then_returns_out_of_stock_stockLabel() async throws {
+    @Test func test_when_managestock_enabled_and_stockQuantity_is_zero_then_returns_out_of_stock_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = true
         let stockQuantity: Decimal = 0
@@ -92,13 +92,13 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = POSStockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(result == "Out of stock")
+        #expect(stockLabel == "Out of stock")
     }
 
-    @Test func test_managestock_when_enabled_and_stockQuantity_is_positive_then_returns_number_in_stock_stockLabel() async throws {
+    @Test func test_when_managestock_enabled_and_stockQuantity_is_positive_then_returns_number_in_stock_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = true
         let stockQuantity: Decimal = 5
@@ -106,9 +106,9 @@ struct StockFormatterTests {
                                                    stockQuantity: stockQuantity)
 
         // When
-        let result = POSStockFormatter.stockStatusLabel(for: product)
+        let stockLabel = POSStockFormatter.stockStatusLabel(for: product)
 
         // Then
-        #expect(result == "5 in stock")
+        #expect(stockLabel == "5 in stock")
     }
 }

@@ -29,7 +29,7 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
 
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent == 0) // We can't test exact timing
-        #expect(mockAnalytics.spyTotalItems == expectedTotalItems)
+        #expect(mockAnalytics.spySearchTotalItems == expectedTotalItems)
     }
 
     @Test func fetchProducts_does_not_track_analytics_for_subsequent_pages() async throws {
@@ -52,20 +52,5 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent == nil)
         #expect(mockAnalytics.spyTotalItems == nil)
-    }
-}
-
-// MARK: - Mocks
-final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
-    func trackItemsFetchComplete(totalItems: Int) {
-        // no-op
-    }
-    
-    private(set) var spyMillisecondsSinceRequestSent: Int?
-    private(set) var spyTotalItems: Int?
-
-    func trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: Int, totalItems: Int) {
-        spyMillisecondsSinceRequestSent = millisecondsSinceRequestSent
-        spyTotalItems = totalItems
     }
 }

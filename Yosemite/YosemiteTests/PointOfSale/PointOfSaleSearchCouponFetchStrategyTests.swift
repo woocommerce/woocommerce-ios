@@ -127,7 +127,7 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
 
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent != nil)
-        #expect(mockAnalytics.spyTotalItems == 2)
+        #expect(mockAnalytics.spySearchTotalItems == 2)
     }
 
     @Test func fetchCoupons_does_not_track_analytics_for_subsequent_pages() async throws {

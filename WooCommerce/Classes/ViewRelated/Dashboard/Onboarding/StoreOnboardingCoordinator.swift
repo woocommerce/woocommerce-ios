@@ -12,7 +12,6 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     private var storeDetailsCoordinator: StoreOnboardingStoreDetailsCoordinator?
     private var addProductCoordinator: AddProductCoordinator?
-    private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
     private var wooPaySetupCelebrationViewBottomSheetPresenter: BottomSheetPresenter?
@@ -52,8 +51,6 @@ final class StoreOnboardingCoordinator: Coordinator {
             showStoreDetails()
         case .addFirstProduct:
             addProduct()
-        case .customizeDomains:
-            showCustomDomains()
         case .launchStore:
             launchStore(task: task)
         case .woocommercePayments:
@@ -88,19 +85,6 @@ private extension StoreOnboardingCoordinator {
             self?.onTaskCompleted(.addFirstProduct)
         }
         coordinator.start()
-    }
-
-    func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
-                                                    site: site,
-                                                    navigationController: navigationController,
-                                                    onDomainPurchased: { [weak self] in
-            self?.onTaskCompleted(.customizeDomains)
-        })
-        self.domainSettingsCoordinator = coordinator
-        Task { @MainActor in
-            coordinator.start()
-        }
     }
 
     func launchStore(task: StoreOnboardingTask) {

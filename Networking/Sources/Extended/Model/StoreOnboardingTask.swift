@@ -20,7 +20,6 @@ public extension StoreOnboardingTask {
         case storeDetails
         case addFirstProduct
         case launchStore
-        case customizeDomains
         case payments
         case woocommercePayments
         case unsupported(String)
@@ -35,8 +34,6 @@ public extension StoreOnboardingTask {
                 self = .launchStore
             case "products":
                 self = .addFirstProduct
-            case "add_domain":
-                self = .customizeDomains
             case "payments":
                 self = .payments
             case "woocommerce-payments":
@@ -59,8 +56,6 @@ private extension StoreOnboardingTask.TaskType {
             return 2
         case .launchStore:
             return 3
-        case .customizeDomains:
-            return 4
         case .payments:
             return 5
         case .unsupported:

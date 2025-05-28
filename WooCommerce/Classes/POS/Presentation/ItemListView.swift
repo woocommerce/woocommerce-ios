@@ -2,6 +2,8 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
+import Yosemite
+
 @available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -73,8 +75,13 @@ struct ItemListView: View {
     private var shouldShowHeaderItems: Bool {
         !isSearching
     }
+    
+    private var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+    }
 
     @State private var showCouponCreationModal: Bool = false
+    @State private var showCategoryFilterModal: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -118,6 +125,21 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .sheet(isPresented: $showCategoryFilterModal) {
+            // Question: When we filter by category, do we want to find through products in memory? Or search from remote?)
+            // The app does a lookup through local storage in ProductCategoryListViewModel.updateViewModelsArray() via resultController.fetchedObjects
+            VStack {
+                Text("Categories here")
+                ProductCategorySelector(isPresented: $showCategoryFilterModal,
+                                        viewConfig: .init(title: "✨ Categories ✨", doneButtonSingularFormat: "ok", doneButtonPluralFormat: "oks"),
+                                        categoryListConfig: .init(searchEnabled: true,
+                                                                  clearSelectionEnabled: true,
+                                                                  updateEnabled: true),
+                                        viewModel: .init(siteID: siteID,
+                                                         onCategorySelection: { categorySelected in
+                    debugPrint("Selected \(categorySelected)")
+                }))
+            }}
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -241,6 +263,7 @@ private extension ItemListView {
                             )
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
+                            createCategoryButton
                             createCouponButton
                                 .renderedIf(isCouponsFeatureEnabled)
 
@@ -296,6 +319,13 @@ private extension ItemListView {
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
+    @ViewBuilder
+    private var createCategoryButton: some View {
+        POSPageHeaderActionButton(systemName: "tag", action: {
+            showCategoryFilterModal = true
+        })
+    }
+
     @ViewBuilder
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {

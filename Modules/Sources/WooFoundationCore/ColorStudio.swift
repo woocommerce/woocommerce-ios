@@ -1,3 +1,5 @@
+import Foundation
+
 /// Generates the names of the named colors in the ColorPalette.xcasset
 public enum ColorStudioName: String, CustomStringConvertible {
     // MARK: - Base colors
@@ -82,5 +84,10 @@ public struct ColorStudio {
     /// The full name of the color, with required shade value
     public func assetName() -> String {
         return "\(name)\(shade)"
+    }
+
+    /// Use this to access the `Bundle` where `ColorStudio` is located and access the colors from the palette.
+    public static var bundle: Bundle {
+        return .module
     }
 }

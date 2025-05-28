@@ -5,9 +5,6 @@ struct WooShippingPaymentMethodsView: View {
 
     @ObservedObject var viewModel: ShippingLabelPaymentMethodsViewModel
 
-    @State private var selectedMethod: ShippingLabelPaymentMethod?
-    @State private var enablesEmailingReceipt = false
-
     var body: some View {
         ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
             Text(Localization.title)
@@ -37,7 +34,7 @@ struct WooShippingPaymentMethodsView: View {
                     Divider()
                         .padding(.horizontal, -Layout.contentPadding) // hack to cancel the padding set by parent
 
-                    Toggle(isOn: $enablesEmailingReceipt) {
+                    Toggle(isOn: $viewModel.isEmailReceiptsEnabled) {
                         Text(Localization.emailReceipt)
                     }
                     .toggleStyle(.switch)
@@ -46,7 +43,7 @@ struct WooShippingPaymentMethodsView: View {
                         // TODO
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .disabled(selectedMethod == nil)
+                    .disabled(viewModel.isDoneButtonEnabled() == false)
                 }
             }
         }
@@ -95,7 +92,7 @@ private extension WooShippingPaymentMethodsView {
         VStack {
             ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                 Button {
-                    selectedMethod = method
+                    viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
                 } label: {
                     VStack(alignment: .leading) {
                         Text(method.cardLineTitle)
@@ -109,12 +106,12 @@ private extension WooShippingPaymentMethodsView {
                     .contentShape(Rectangle())
                     .background(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .fill(selectedMethod == method ? Layout.selectedBackgroundColor : Color.clear)
+                            .fill(isSelectedMethod(method) ? Layout.selectedBackgroundColor : Color.clear)
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius)
                                     .stroke(
-                                        selectedMethod == method ? Color.accentColor : Color(.border),
-                                        lineWidth: selectedMethod == method ? Layout.selectedBorderWidth : Layout.borderWidth
+                                        isSelectedMethod(method) ? Color.accentColor : Color(.border),
+                                        lineWidth: isSelectedMethod(method) ? Layout.selectedBorderWidth : Layout.borderWidth
                                     )
                             )
                     )
@@ -143,6 +140,10 @@ private extension WooShippingPaymentMethodsView {
             .buttonStyle(.plain)
         }
         .padding(.vertical, Layout.contentPadding)
+    }
+
+    func isSelectedMethod(_ method: ShippingLabelPaymentMethod) -> Bool {
+        method.paymentMethodID == viewModel.selectedPaymentMethodID
     }
 }
 

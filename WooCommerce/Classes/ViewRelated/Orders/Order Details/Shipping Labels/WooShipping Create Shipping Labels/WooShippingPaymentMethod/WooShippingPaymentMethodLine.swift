@@ -25,8 +25,23 @@ enum WooShippingPaymentMethodLine: Equatable {
     }
 }
 
-private extension ShippingLabelPaymentMethod {
+extension ShippingLabelPaymentMethod {
     var cardLineTitle: String {
         return cardType.rawValue.uppercased() + "****" + String(cardDigits.suffix(4))
+    }
+
+    var expiryString: String {
+        guard let expiry else { return "" }
+
+        let expiryString = NSLocalizedString(
+            "shippingLabelPaymentMethod.expiry",
+            value: "Expire %1$@",
+            comment: "Label indicating the expiry date of a credit/debit card. The placeholder is the date. " +
+            "Reads like: Expire 08/26"
+        )
+        let month = expiry.formatted(.dateTime.month(.twoDigits))
+        let year = expiry.formatted(.dateTime.year(.twoDigits))
+        let formatted = "\(month)/\(year)"
+        return String(format: expiryString, formatted)
     }
 }

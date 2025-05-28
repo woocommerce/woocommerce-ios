@@ -6,7 +6,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
     var shippingLabelsOnboardingM1: Bool
-    var isDomainSettingsEnabled: Bool
     var isSupportRequestEnabled: Bool
     var jetpackSetupWithApplicationPassword: Bool
     var betterCustomerSelectionInOrder: Bool
@@ -33,7 +32,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          isShowInboxCTAEnabled: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
-         isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
@@ -97,8 +95,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
             return shippingLabelsOnboardingM1
-        case .domainSettings:
-            return isDomainSettingsEnabled
         case .supportRequests:
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:

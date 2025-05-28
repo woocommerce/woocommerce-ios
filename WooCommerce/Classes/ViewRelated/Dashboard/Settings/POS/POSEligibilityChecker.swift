@@ -8,6 +8,7 @@ import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
+import enum Yosemite.SettingAction
 
 protocol POSEligibilityCheckerProtocol {
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
@@ -25,7 +26,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+        return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
             .filter { [weak self] _ in
                 self?.isEligibleFromSiteChecks ?? false
             }
@@ -53,34 +54,63 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 }
 
 private extension POSEligibilityChecker {
-    var isWooCommerceVersionSupported: AnyPublisher<Bool, Never> {
-        Future<Bool, Never> { [weak self] promise in
-            guard let self else {
-                promise(.success(false))
-                return
-            }
-
-            guard let siteID = stores.sessionManager.defaultStoreID else {
-                DDLogError("⛔️ Default store ID value is nil")
-                promise(.success(false))
+    var isWooCommerceVersionSupported: AnyPublisher<(isSupported: Bool, wcVersion: String?), Never> {
+        Future<(isSupported: Bool, wcVersion: String?), Never> { [weak self] promise in
+            guard let self,
+                  let siteID = self.stores.sessionManager.defaultStoreID else {
+                promise(.success((isSupported: false, wcVersion: nil)))
                 return
             }
 
             let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
 
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-                guard let wcPlugin = wcPlugin, wcPlugin.active else {
-                    promise(.success(false))
-                    return
+                guard let wcPlugin, wcPlugin.active else {
+                    return promise(.success((isSupported: false, wcVersion: nil)))
                 }
 
                 let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                                     minimumRequired: wcPluginMinimumVersion)
-                promise(.success(isSupported))
+                promise(.success((isSupported: isSupported, wcVersion: wcPlugin.version)))
             }
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+
+    var isWooCommerceVersionSupportedAndFeatureSwitchEnabled: AnyPublisher<Bool, Never> {
+        isWooCommerceVersionSupported
+            .flatMap { [weak self] isSupported, wcVersion -> AnyPublisher<Bool, Never> in
+                guard let self,
+                      isSupported,
+                      let wcVersion,
+                      let siteID = self.stores.sessionManager.defaultStoreID else {
+                    return Just(false).eraseToAnyPublisher()
+                }
+
+                // For versions below 10.0.0, the feature is enabled by default.
+                let isFeatureSwitchSupported = VersionHelpers.isVersionSupported(version: wcVersion,
+                                                                                 minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
+                                                                                 includesDevAndBetaVersions: true)
+                if !isFeatureSwitchSupported {
+                    return Just(true).eraseToAnyPublisher()
+                }
+
+                // For versions that support the feature switch, checks if the feature switch is enabled.
+                return Future<Bool, Never> { promise in
+                    let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
+                        switch result {
+                        case .success(let isEnabled):
+                            promise(.success(isEnabled))
+                        case .failure:
+                            promise(.success(false))
+                        }
+                    }
+                    self.stores.dispatch(action)
+                }
+                .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
     }
 
     var isPointOfSaleFeatureFlagEnabled: AnyPublisher<Bool, Never> {
@@ -125,5 +155,6 @@ private extension POSEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "9.6.0-beta"
+        static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
     }
 }

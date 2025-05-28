@@ -40,4 +40,8 @@ public enum SettingAction: Action {
     /// Retrieves the information on what are the taxes based on (shop, billing, or shipping address)
     ///
     case retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: (Result<TaxBasedOnSetting, Error>) -> Void)
+
+    /// Checks if a specific feature is enabled in the site WC settings
+    ///
+    case isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature, onCompletion: (Result<Bool, Error>) -> Void)
 }

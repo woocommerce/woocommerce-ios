@@ -51,6 +51,26 @@ struct VersionHelpersTests {
                 "\(testCase.foundVersion) should \(testCase.meetsMinimum ? "not " : "" )meet minimum \(testCase.requiredMinimumVersion)")
     }
 
+    @Test("Version comparisons with includesDevAndBetaVersions", arguments: [
+        VersionTestCase(foundVersion: "5.0.0-beta1", requiredMinimumVersion: "5.0.0", meetsMinimum: true),
+        VersionTestCase(foundVersion: "5.0.0-dev", requiredMinimumVersion: "5.0.0", meetsMinimum: true),
+        VersionTestCase(foundVersion: "5.0.0-alpha1", requiredMinimumVersion: "5.0.0", meetsMinimum: true),
+        VersionTestCase(foundVersion: "5.0.0-rc1", requiredMinimumVersion: "5.0.0", meetsMinimum: true),
+        VersionTestCase(foundVersion: "5.0.0-beta1", requiredMinimumVersion: "5.1.0", meetsMinimum: false),
+        VersionTestCase(foundVersion: "5.0.0-dev", requiredMinimumVersion: "5.1.0", meetsMinimum: false),
+        VersionTestCase(foundVersion: "5.0.0-beta1", requiredMinimumVersion: "4.9.0", meetsMinimum: true),
+        VersionTestCase(foundVersion: "5.0.0-dev", requiredMinimumVersion: "4.9.0", meetsMinimum: true),
+    ])
+    func compareWithDevAndBetaVersions(testCase: VersionTestCase) {
+        let meetsMinimum = VersionHelpers.isVersionSupported(
+            version: testCase.foundVersion,
+            minimumRequired: testCase.requiredMinimumVersion,
+            includesDevAndBetaVersions: true
+        )
+        #expect(testCase.meetsMinimum == meetsMinimum,
+                "\(testCase.foundVersion) should \(testCase.meetsMinimum ? "not " : "" )meet minimum \(testCase.requiredMinimumVersion)")
+    }
+
     struct VersionTestCase {
         let foundVersion: String
         let requiredMinimumVersion: String

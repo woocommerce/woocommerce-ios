@@ -48,6 +48,15 @@ public class SettingStore: Store {
             methods.enableAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
         case let .retrieveTaxBasedOnSetting(siteID: siteID, onCompletion: onCompletion):
             methods.retrieveTaxBasedOnSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .isFeatureEnabled(siteID: siteID, feature: feature, onCompletion: onCompletion):
+            Task { @MainActor in
+                do {
+                    let isEnabled = try await methods.isFeatureEnabled(siteID: siteID, feature: feature)
+                    onCompletion(.success(isEnabled))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         }
     }
 }

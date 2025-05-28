@@ -1,5 +1,9 @@
 import Foundation
 
+/// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
+public enum SiteSettingsFeature {
+    case pointOfSale
+}
 
 /// SiteSettings: Remote Endpoints
 ///
@@ -90,8 +94,44 @@ public class SiteSettingsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Checks if a specific feature is enabled in the site WC settings.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll check the feature status.
+    ///   - feature: The feature to check.
+    /// - Returns: A boolean indicating if the feature is enabled.
+    /// - Throws: Error if the request fails or the setting cannot be parsed.
+    ///
+    public func isFeatureEnabled(for siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool {
+        let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup + "/woocommerce_feature_\(feature.rawValue)_enabled"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .advanced)
+        let response = try await enqueue(request, mapper: mapper)
+        switch response.value {
+        case "yes":
+            return true
+        case "no":
+            return false
+        default:
+            throw SiteSettingsRemoteError.invalidResponse
+        }
+    }
 }
 
+private extension SiteSettingsFeature {
+    var rawValue: String {
+        switch self {
+        case .pointOfSale:
+            return "point_of_sale"
+        }
+    }
+}
 
 // MARK: - Constants!
 //
@@ -103,4 +143,8 @@ private extension SiteSettingsRemote {
         static let advancedSettingsGroup: String   = "advanced"
         static let valueParameter: String = "value"
     }
+}
+
+public enum SiteSettingsRemoteError: Error {
+    case invalidResponse
 }

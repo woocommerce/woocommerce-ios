@@ -88,6 +88,14 @@ public struct ColorStudio {
 
     /// Use this to access the `Bundle` where `ColorStudio` is located and access the colors from the palette.
     public static var bundle: Bundle {
+#if DEBUG
+        // Workaround for https://forums.swift.org/t/swift-5-3-swiftpm-resources-in-tests-uses-wrong-bundle-path/37051
+        if let testBundlePath = ProcessInfo.processInfo.environment["XCTestBundlePath"],
+           let bundle = Bundle(path: "\(testBundlePath)/Modules_WooFoundationCore.bundle") {
+            return bundle
+        }
+#endif
+
         return .module
     }
 }

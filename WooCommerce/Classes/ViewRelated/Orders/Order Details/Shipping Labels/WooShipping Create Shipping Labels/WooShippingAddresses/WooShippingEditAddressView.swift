@@ -181,18 +181,18 @@ struct WooShippingEditAddressView: View {
             }
         }
         .alert(
-            viewModel.addressErrorState.title,
+            viewModel.addressErrorState?.title ?? "",
             isPresented: $viewModel.isShowingAddressErrorAlert,
             actions: {
                 Button(Localization.AlertButtons.retry) {
                     Task { @MainActor in
                         switch viewModel.addressErrorState {
-                        case .none:
-                            return
                         case .validation:
                             await viewModel.remotelyValidateAddress()
                         case .updateOrigin(let address), .updateDestination(let address):
                             viewModel.updateConfirmedAddress(address)
+                        case nil:
+                            break
                         }
                     }
                 }
@@ -201,7 +201,7 @@ struct WooShippingEditAddressView: View {
                     role: .cancel
                 ) {}
             }, message: {
-                Text(viewModel.addressErrorState.message)
+                Text(viewModel.addressErrorState?.message ?? "")
             }
         )
     }

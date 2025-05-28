@@ -1173,8 +1173,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.addressErrorState, .validation)
-        XCTAssertEqual(viewModel.addressErrorState.title, "Address Validation Error")
-        XCTAssertEqual(viewModel.addressErrorState.message, "The address you entered could not be verified. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState?.title, "Address Validation Error")
+        XCTAssertEqual(viewModel.addressErrorState?.message, "The address you entered could not be verified. Please try again later.")
     }
 
     @MainActor
@@ -1207,8 +1207,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
             return false
         }
 
-        XCTAssertEqual(viewModel.addressErrorState.title, "Origin Address Update Error")
-        XCTAssertEqual(viewModel.addressErrorState.message, "The origin address could not be updated. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState?.title, "Origin Address Update Error")
+        XCTAssertEqual(viewModel.addressErrorState?.message, "The origin address could not be updated. Please try again later.")
     }
 
     @MainActor
@@ -1247,8 +1247,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
             return false
         }
 
-        XCTAssertEqual(viewModel.addressErrorState.title, "Destination Address Update Error")
-        XCTAssertEqual(viewModel.addressErrorState.message, "The destination address could not be updated. Please try again later.")
+        XCTAssertEqual(viewModel.addressErrorState?.title, "Destination Address Update Error")
+        XCTAssertEqual(viewModel.addressErrorState?.message, "The destination address could not be updated. Please try again later.")
     }
 
     @MainActor

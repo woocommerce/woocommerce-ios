@@ -176,9 +176,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Current address update error alert state
     @Published var isShowingAddressErrorAlert = false
-    @Published var addressErrorState: AddressErrorState = .none {
+    private(set) var addressErrorState: AddressErrorState? = nil {
         didSet {
-            isShowingAddressErrorAlert = addressErrorState != .none
+            isShowingAddressErrorAlert = addressErrorState != nil
         }
     }
 
@@ -718,7 +718,6 @@ private extension WooShippingEditAddressViewModel {
 // MARK: Address update error handling
 extension WooShippingEditAddressViewModel {
     enum AddressErrorState: Equatable {
-        case none
         case validation
 
         /// Associated address is used for retrying updating attempt
@@ -733,8 +732,6 @@ extension WooShippingEditAddressViewModel {
                 return Localization.OriginAddressUpdateError.title
             case .updateDestination:
                 return Localization.DestinationAddressUpdateError.title
-            case .none:
-                return ""
             }
         }
 
@@ -746,8 +743,6 @@ extension WooShippingEditAddressViewModel {
                 return Localization.OriginAddressUpdateError.message
             case .updateDestination:
                 return Localization.DestinationAddressUpdateError.message
-            case .none:
-                return ""
             }
         }
     }

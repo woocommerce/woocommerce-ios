@@ -153,8 +153,7 @@ extension MockStorageManager {
     /// Returns the ManagedObjectModel's URL: Pick this up from the Storage bundle. OKAY?
     ///
     var modelURL: URL {
-        let bundle = Bundle(for: CoreDataManager.self)
-        guard let url = bundle.url(forResource: name, withExtension: "momd") else {
+        guard let url = Bundle.storage.url(forResource: name, withExtension: "momd") else {
             fatalError("Missing Model Resource")
         }
 

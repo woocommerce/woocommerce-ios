@@ -10,7 +10,7 @@ final class FileStorageTests: XCTestCase {
     override func setUp() {
         super.setUp()
         subject = PListFileStorage()
-        fileURL = Bundle(for: FileStorageTests.self)
+        fileURL = Bundle.module
             .url(forResource: "shipment-provider", withExtension: "plist")
     }
 

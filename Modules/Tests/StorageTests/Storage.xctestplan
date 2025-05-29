@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "71189D22-B7EB-402F-84D6-E29C38F8A11D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StorageTests",
+        "name" : "StorageTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1962,10 +1962,8 @@
 		B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */; };
 		B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */; };
 		B5C3876421C41B9F006CE970 /* UIApplication+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */; };
-		B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; };
 		B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; };
 		B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E620D189ED0072CB9D /* Yosemite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E420D189EA0072CB9D /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */; };
 		B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5D1AFB320BC445900DB0E8C /* Images.xcassets */; };
 		B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFB720BC510200DB0E8C /* UIImage+Woo.swift */; };
@@ -3242,7 +3240,6 @@
 			files = (
 				3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 				D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */,
-				B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */,
 				B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */,
 				3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 			);
@@ -6474,7 +6471,6 @@
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
-				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 			);

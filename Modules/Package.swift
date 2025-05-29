@@ -28,6 +28,10 @@ let package = Package(
             targets: ["Networking"]
         ),
         .library(
+            name: "Storage",
+            targets: ["Storage"]
+        ),
+        .library(
             name: "TestKit",
             targets: ["TestKit"]
         ),
@@ -119,6 +123,15 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Storage",
+            dependencies: [
+                "Codegen",
+                "WooFoundation"
+            ],
+            exclude: ["Model/MIGRATIONS.md"],
+            resources: [.process("Resources")],
+        ),
+        .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
@@ -176,6 +189,14 @@ let package = Package(
             resources: [.process("Responses")]
         ),
         .testTarget(
+            name: "StorageTests",
+            dependencies: [
+                "TestKit",
+                "Storage"
+            ],
+            resources: [.process("MockData")],
+        ),
+        .testTarget(
             name: "WooFoundationTests",
             dependencies: ["TestKit", .target(name: "WooFoundation")]
         ),
@@ -216,8 +237,6 @@ enum XcodeTargetNames {
     static let hardware = "Hardware"
     static let hardwareTests = "HardwareTests"
     static let notificationExtension = "NotificationExtension"
-    static let storage = "Storage"
-    static let storageTests = "StorageTests"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let uiTestsFoundation = "UITestsFoundation"
     static let wooCommerce = "WooCommerce"
@@ -238,8 +257,6 @@ enum XcodeSupport {
             XcodeTargetNames.hardware,
             XcodeTargetNames.hardwareTests,
             XcodeTargetNames.notificationExtension,
-            XcodeTargetNames.storage,
-            XcodeTargetNames.storageTests,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.uiTestsFoundation,
             XcodeTargetNames.wooCommerce,
@@ -282,14 +299,6 @@ enum XcodeSupport {
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.storage,
-                dependencies: ["Codegen", "WooFoundation"]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.storageTests,
-                dependencies: ["TestKit", XcodeTargetNames.storage.asDependency]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
@@ -403,6 +412,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Networking",
+                    "Storage",
                     "WooFoundation",
                     "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),

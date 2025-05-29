@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1620"
-   version = "1.3">
+   LastUpgradeVersion = "1630"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES">
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -14,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B54CA59820A4BBA500F38CD1"
-               BuildableName = "Storage.framework"
+               BlueprintIdentifier = "Storage"
+               BuildableName = "Storage"
                BlueprintName = "Storage"
-               ReferencedContainer = "container:Storage.xcodeproj">
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,27 +28,12 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B54CA59820A4BBA500F38CD1"
-            BuildableName = "Storage.framework"
-            BlueprintName = "Storage"
-            ReferencedContainer = "container:Storage.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B54CA5A120A4BBA600F38CD1"
-               BuildableName = "StorageTests.xctest"
-               BlueprintName = "StorageTests"
-               ReferencedContainer = "container:Storage.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:Tests/StorageTests/Storage.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -59,15 +45,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B54CA59820A4BBA500F38CD1"
-            BuildableName = "Storage.framework"
-            BlueprintName = "Storage"
-            ReferencedContainer = "container:Storage.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -78,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B54CA59820A4BBA500F38CD1"
-            BuildableName = "Storage.framework"
+            BlueprintIdentifier = "Storage"
+            BuildableName = "Storage"
             BlueprintName = "Storage"
-            ReferencedContainer = "container:Storage.xcodeproj">
+            ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -380,7 +380,6 @@
 		B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */; };
 		B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */; };
 		B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockStorageManager.swift */; };
-		B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DDF20E6A45900899568 /* Storage.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
 		B5BC71DD21139EDD005CF5AA /* Responses in Resources */ = {isa = PBXBuildFile; fileRef = B5BC71DA21139CF2005CF5AA /* Responses */; };
 		B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5BC736420D1A98500B5B6FA /* AccountStore.swift */; };
@@ -1137,7 +1136,6 @@
 			files = (
 				3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */,
 				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
-				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

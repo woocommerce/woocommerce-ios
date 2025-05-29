@@ -336,6 +336,14 @@ private extension ProductFormTableViewDataSource {
             textColor: .accent
         )
         cell.hideSeparator()
+
+        // Configure accessibility for VoiceOver
+        cell.accessibilityTraits = .button
+        cell.accessibilityHint = NSLocalizedString(
+            "productFormTableViewDataSource.promoteWithBlazeAccessibilityHint",
+            value: "Opens Blaze campaign creation flow for this product",
+            comment: "VoiceOver accessibility hint for the Promote with Blaze button"
+        )
     }
 
     func configureSeparator(cell: UITableViewCell) {

@@ -904,6 +904,7 @@
 		20A3AFE32B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */; };
 		20A3AFE52B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */; };
 		20A8C9FC2DE898C5000C3DE7 /* HIDScannerField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */; };
+		20A8C9FF2DE8A742000C3DE7 /* AppInputFocusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */; };
 		20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */; };
 		20ADE9432C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */; };
 		20ADE9462C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */; };
@@ -4168,6 +4169,7 @@
 		20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsFlowPresentingView.swift; sourceTree = "<group>"; };
 		20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPaySettingsFlowPresentingView.swift; sourceTree = "<group>"; };
 		20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIDScannerField.swift; sourceTree = "<group>"; };
+		20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInputFocusState.swift; sourceTree = "<group>"; };
 		20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSErrorXMark.swift; sourceTree = "<group>"; };
 		20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsRetryApproach.swift; sourceTree = "<group>"; };
 		20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentRetryApproachTests.swift; sourceTree = "<group>"; };
@@ -7273,6 +7275,7 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				20A8C9FD2DE8A724000C3DE7 /* Barcode Scanning */,
 				016A77672D9D24A30004FCD6 /* Coupons */,
 				026A50262D2F6BBF002C42C2 /* Infinite Scroll */,
 				029149792D2682DF00F7B3B3 /* Item Selector */,
@@ -7297,7 +7300,6 @@
 				68D8FBD02BFEF9C700477C42 /* TotalsView.swift */,
 				68AF3C3A2D01481A006F1ED2 /* POSReceiptEligibilityBanner.swift */,
 				DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */,
-				20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -8419,6 +8421,15 @@
 				20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		20A8C9FD2DE8A724000C3DE7 /* Barcode Scanning */ = {
+			isa = PBXGroup;
+			children = (
+				20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */,
+				20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */,
+			);
+			path = "Barcode Scanning";
 			sourceTree = "<group>";
 		};
 		20ADE9442C6B361500C91265 /* Card Present Payments */ = {
@@ -17044,6 +17055,7 @@
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				B9D19A442AE7B66B00D944D8 /* CustomAmountRowView.swift in Sources */,
+				20A8C9FF2DE8A742000C3DE7 /* AppInputFocusState.swift in Sources */,
 				EE09DE062C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift in Sources */,
 				03E471C8293A3076001A58AD /* CardPresentModalTapToPayConnectingToReader.swift in Sources */,
 				EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */,

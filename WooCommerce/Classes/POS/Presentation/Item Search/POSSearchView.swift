@@ -101,6 +101,7 @@ struct POSSearchField: View {
         .onAppear {
             isSearchFieldFocused = true
         }
+        .trackInputFocus(_isSearchFieldFocused, as: .search)
     }
 }
 

@@ -5,6 +5,7 @@ import protocol Yosemite.POSSearchHistoryProviding
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
+    @State private var focusState = AppInputFocusState()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -70,6 +71,7 @@ struct PointOfSaleEntryPointView: View {
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
         }
+        .environment(focusState)
         .onDisappear {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()

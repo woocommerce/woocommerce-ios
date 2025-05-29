@@ -2,7 +2,10 @@ import Foundation
 import UIKit
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct HIDScannerField: UIViewRepresentable {
+    @Environment(AppInputFocusState.self) private var inputFocus
+
     class Coordinator: NSObject, UITextFieldDelegate {
         var onScan: (String) -> Void
 
@@ -43,7 +46,20 @@ struct HIDScannerField: UIViewRepresentable {
         return field
     }
 
-    func updateUIView(_ uiView: UITextField, context: Context) {}
+    func updateUIView(_ field: UITextField, context: Context) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let shouldBeFocused = inputFocus.activeInput == .none
+
+            switch (shouldBeFocused, field.isFirstResponder) {
+            case (true, false):
+                field.becomeFirstResponder()
+            case (false, true):
+                field.resignFirstResponder()
+            case (false, false), (true, true):
+                break
+            }
+        }
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(onScan: onScan)

@@ -180,7 +180,7 @@ extension PointOfSaleAggregateModel {
     }
 
     func handleBarcodeScan(_ barcode: String) {
-        DDLogInfo("Barcode scanned: \(barcode)")
+        DDLogInfo("🛒 Barcode scanned: \(barcode)")
     }
 }
 

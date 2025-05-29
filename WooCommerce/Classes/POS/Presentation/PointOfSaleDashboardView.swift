@@ -4,6 +4,7 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(AppInputFocusState.self) private var inputFocus
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -107,6 +108,9 @@ struct PointOfSaleDashboardView: View {
         }
         .sheet(isPresented: $showDocumentation) {
             documentationView
+        }
+        .onChange(of: inputFocus.activeInput) { oldValue, newValue in
+            DDLogInfo("🛒 Active input changed from: \(oldValue) to: \(newValue)")
         }
         .task {
             await posModel.purchasableItemsController.loadItems(base: .root)

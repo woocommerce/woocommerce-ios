@@ -2,6 +2,7 @@ import Foundation
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
+import class Networking.WebhooksRemote
 
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
     var defaultStrategy: PointOfSalePurchasableItemFetchStrategy { get }
@@ -23,6 +24,15 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
         let network = AlamofireNetwork(credentials: credentials)
         self.productsRemote = ProductsRemote(network: network)
         self.variationsRemote = ProductVariationsRemote(network: network)
+
+        let hook = WebhooksRemote(network: network)
+        let payloadURLString = ProcessInfo.processInfo.environment["webhook-payload-url"] ?? ""
+        guard let payloadURL = URL(string: payloadURLString) else {
+            fatalError()
+        }
+        Task {
+            try await hook.createWebhook(for: siteID, topic: "product.updated", deliveryPayloadURL: payloadURL)
+        }
     }
 
     public var defaultStrategy: PointOfSalePurchasableItemFetchStrategy {

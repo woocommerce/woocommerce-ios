@@ -1,10 +1,10 @@
 import Foundation
 
 public class WebhooksRemote: Remote {
-    public func createWebhook(for siteID: Int64, topic: String, url: URL) async throws -> Webhook {
+    public func createWebhook(for siteID: Int64, topic: String, deliveryPayloadURL: URL) async throws -> Webhook {
         let parameters = [
             "topic": "\(topic)",
-            "delivery_url": "\(url.absoluteString)"
+            "delivery_url": "\(deliveryPayloadURL.absoluteString)"
         ]
 
         let request = JetpackRequest(wooApiVersion: .mark3,

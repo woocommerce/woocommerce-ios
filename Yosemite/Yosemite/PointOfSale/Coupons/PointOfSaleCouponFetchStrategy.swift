@@ -72,14 +72,14 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
     private let storage: StorageManagerType
     private let currencySettings: CurrencySettings
     private let searchTerm: String
-    private let analytics: POSSearchAnalyticsTracking
+    private let analytics: POSItemFetchAnalyticsTracking
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
          storage: StorageManagerType,
          couponStoreMethods: CouponStoreMethodsProtocol,
          searchTerm: String,
-         analytics: POSSearchAnalyticsTracking
+         analytics: POSItemFetchAnalyticsTracking
     ) {
         self.siteID = siteID
         self.couponStoreMethods = couponStoreMethods

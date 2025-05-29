@@ -187,9 +187,6 @@ platform :ios do
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
-    # Checks if internal dependencies are on a stable version
-    check_pods_references
-
     UI.important <<-MESSAGE
 
       Code Freeze:
@@ -846,9 +843,6 @@ platform :ios do
   ########################################################################
   desc 'Build Screenshots'
   lane :build_screenshots do
-    # Ensure we're using the latest Pods
-    cocoapods(verbose: true)
-
     # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     xcversion
 
@@ -1205,13 +1199,12 @@ platform :ios do
   #
   desc 'Updates the main `Localizable.strings` file — that will be imported by GlotPress — from code and `Info.plist` files'
   lane :generate_strings_file_for_glotpress do |options|
-    cocoapods
-
     en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')
     ios_generate_strings_file_from_code(
       paths: [
         'WooCommerce/',
-        'Pods/WordPress*/',
+        'Modules/Sources/WordPress*/',
+        'Modules/Sources/WPMediaPicker/',
         'Storage/Storage/',
         'Networking/Networking/',
         'Hardware/Hardware/'
@@ -1553,12 +1546,4 @@ def report_milestone_error(error_title:)
   UI.error(error_message)
 
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
-end
-
-def check_pods_references
-  result = ios_check_beta_deps(lockfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile.lock'))
-
-  style = result[:pods].nil? || result[:pods].empty? ? 'success' : 'warning'
-  message = "### Checking Internal Dependencies are all on a **stable** version\n\n#{result[:message]}"
-  buildkite_annotate(context: 'pods-check', style: style, message: message) if is_ci
 end

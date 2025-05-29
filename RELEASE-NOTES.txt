@@ -9,6 +9,7 @@
 - [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
 - [*] Payments: Added a two-minute timeout when waiting for card payments, to reduce the risk of battery drain or mistaken payments. [https://github.com/woocommerce/woocommerce-ios/pull/15665]
 - [internal] POS: Handle payment intent creation error. [https://github.com/woocommerce/woocommerce-ios/pull/15661]
+- [*] Fixed VoiceOver issues for Blaze campaign flows [https://github.com/woocommerce/woocommerce-ios/pull/15687]
 
 22.4
 -----

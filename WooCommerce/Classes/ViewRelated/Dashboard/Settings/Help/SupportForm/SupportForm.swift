@@ -52,6 +52,7 @@ struct SupportForm: View {
                     Text(Localization.iNeedHelp.uppercased())
                         .footnoteStyle()
                         .padding([.horizontal, .top])
+                        .accessibilityAddTraits(.isHeader)
 
                     // Area List
                     VStack(alignment: .leading, spacing: .zero) {
@@ -77,6 +78,9 @@ struct SupportForm: View {
                             .onTapGesture {
                                 viewModel.selectArea(area)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityAddTraits(viewModel.isAreaSelected(area) ? .isSelected : [])
 
                             Divider()
                                 .padding(.leading)

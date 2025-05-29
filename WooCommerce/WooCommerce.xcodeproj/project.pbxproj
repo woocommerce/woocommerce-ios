@@ -2531,8 +2531,6 @@
 		D88CA758237D1C27005D2F44 /* Ghost+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */; };
 		D88D5A3B230B5D63007B6E01 /* MockAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockAnalyticsProvider.swift */; };
 		D88D5A3D230B5E85007B6E01 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */; };
-		D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; };
-		D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB4425DD223B00CB0DBD /* Hardware.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
 		D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */; };
 		D89C009A25B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */; };
@@ -3239,7 +3237,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
-				D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */,
 				B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */,
 				3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 			);
@@ -6466,7 +6463,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,

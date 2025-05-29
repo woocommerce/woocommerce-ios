@@ -1,4 +1,6 @@
 import CoreGraphics
+import Foundation
+
 /// Models the content of the receipt.
 ///
 public struct ReceiptContent: Codable {

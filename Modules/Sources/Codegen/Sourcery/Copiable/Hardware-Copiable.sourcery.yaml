@@ -1,7 +1,8 @@
-project:
-    file: ../../../../../Hardware/Hardware.xcodeproj
-    target:
-        name: Hardware
+sources:
+    include:
+        - ../../../../../Modules/Sources/Hardware/
 templates:
     - Models+Copiable.swifttemplate
-output: ../../../../../Hardware/Hardware/Model/Copiable/
+output: ../../../../../Modules/Sources/Hardware/Model/Copiable/
+args:
+    moduleName: Hardware

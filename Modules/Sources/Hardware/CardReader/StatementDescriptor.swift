@@ -1,3 +1,5 @@
+import Foundation
+
 /// A property wrapper to return a string where:
 /// - The characters <>"' are replaced.
 /// - The maximum length of the string is 22 characters

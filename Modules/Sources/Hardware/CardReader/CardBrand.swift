@@ -1,4 +1,5 @@
 import Codegen
+import Foundation
 
 /// The various card brands for a card.
 @frozen public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
@@ -34,12 +35,9 @@ import Codegen
 }
 
 extension CardBrand {
-    // The initializer for Bundle only works with class types.
-    // We use this class as a shortcut to find the bundle for the CardBrand enum type
-    private class _Bundle {}
 
     private var iconURL: URL! {
-        Bundle(for: CardBrand._Bundle.self)
+        Bundle.module
             .url(forResource: iconName, withExtension: "svg")
     }
 

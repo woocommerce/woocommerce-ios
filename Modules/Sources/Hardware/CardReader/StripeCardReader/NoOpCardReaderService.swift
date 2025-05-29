@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+
 /// A no-op replacement for the adapter wrapping the Stripe Terminal SDK
 public struct NoOpCardReaderService: CardReaderService {
     // MARK: - Queries

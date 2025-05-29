@@ -61,7 +61,7 @@ final class StoreOnboardingTasksRemoteTests: XCTestCase {
         index += 1
         let task7 = tasks[index]
         XCTAssertTrue(task7.isComplete)
-        XCTAssertEqual(task7.type, .customizeDomains)
+        XCTAssertEqual(task7.type, .unsupported("add_domain"))
 
         index += 1
         let task8 = tasks[index]

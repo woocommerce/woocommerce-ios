@@ -136,7 +136,6 @@
 		26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
 		26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
 		3FA7D9FE2D547EDC00CE5611 /* WooFoundation.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WooFoundation.xcconfig; sourceTree = "<group>"; };
-		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
 		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
 		6874E81328998AD300074A97 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
@@ -146,7 +145,6 @@
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		950236A32D2C1C0A00E2F796 /* WooFoundationBundleClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooFoundationBundleClass.swift; sourceTree = "<group>"; };
-		A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		B95B15CA2B15FA3A00A54044 /* Publishers+KeyboardFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+KeyboardFrame.swift"; sourceTree = "<group>"; };
@@ -167,7 +165,6 @@
 		B9C9C65F283E71F4001B879F /* Double+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
 		B9C9C662283E7296001B879F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -321,7 +318,6 @@
 				264E9E9C2BF4037D009C48FD /* WooFoundationWatchOS */,
 				B9C9C5FB283E6FAB001B879F /* Products */,
 				B9C9C664283E72ED001B879F /* Frameworks */,
-				C8E281DD95DE8EF39194328A /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -404,19 +400,8 @@
 				B9AED55B283E755A002A2668 /* Hardware.framework */,
 				B9AED558283E7553002A2668 /* Yosemite.framework */,
 				B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */,
-				C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */,
-				532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */,
-				A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C8E281DD95DE8EF39194328A /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Pods;
-			path = ../Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

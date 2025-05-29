@@ -125,11 +125,6 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains)),
-                                        showDivider: true,
-                                        isRedacted: false,
-                                        onTap: { _ in })
-
                 StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments)),
                                         showDivider: true,
                                         isRedacted: false,

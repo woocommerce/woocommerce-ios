@@ -184,6 +184,94 @@ final class POSEligibilityCheckerTests: XCTestCase {
         // Then
         XCTAssertTrue(isEligible)
     }
+
+    func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_enabled_then_returns_true() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+
+        // WC version 10.0.0 with POS feature enabled.
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.success(true))
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_disabled_then_returns_false() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+
+        // WC version 10.0.0 with POS feature disabled.
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.success(false))
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_check_fails_then_returns_false() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+
+        // WC version 10.0.0 with POS feature check failing.
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_is_eligible_when_core_version_is_smaller_than_10_0_0_and_POS_feature_disabled_then_returns_true() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+
+        // WC version < 10.0.0 with POS feature disabled.
+        setupWooCommerceVersion("9.9.9")
+        setupPOSFeatureEnabled(.success(false))
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
 }
 
 private extension POSEligibilityCheckerTests {
@@ -204,6 +292,17 @@ private extension POSEligibilityCheckerTests {
             switch action {
             case .fetchSystemPlugin(_, _, let completion):
                 completion(SystemPlugin.fake().copy(name: "WooCommerce", version: version, active: true))
+            default:
+                break
+            }
+        }
+    }
+
+    func setupPOSFeatureEnabled(_ result: Result<Bool, Error>) {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .isFeatureEnabled(_, _, let completion):
+                completion(result)
             default:
                 break
             }

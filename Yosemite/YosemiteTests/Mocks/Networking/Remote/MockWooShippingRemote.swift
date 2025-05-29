@@ -36,6 +36,9 @@ final class MockWooShippingRemote {
     /// The results to return based on the given arguments in `loadAccountSettings`
     private var loadAccountSettingsResults = [ResultKey: Result<WooShippingAccountSettings, Error>]()
 
+    /// The results to return based on the given arguments in `updateAccountSettings`
+    private var updateAccountSettingsResults = [ResultKey: Result<Bool, Error>]()
+
     /// The results to return based on the given arguments in `checkLabelStatus`
     private var checkLabelStatus = [ResultKey: Result<ShippingLabelStatusPollingResponse, Error>]()
 
@@ -99,6 +102,12 @@ final class MockWooShippingRemote {
                                  thenReturn result: Result<WooShippingAccountSettings, Error>) {
         let key = ResultKey(siteID: siteID)
         loadAccountSettingsResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateAccountSettings` is called.
+    func whenUpdateAccountSettings(siteID: Int64, thenReturn result: Result<Bool, Error>) {
+        let key = ResultKey(siteID: siteID)
+        updateAccountSettingsResults[key] = result
     }
 
     /// Set the value passed to the `completion` block if `purchaseShippingLabel` is called.
@@ -258,6 +267,21 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
+        }
+    }
+
+    func updateAccountSettings(siteID: Int64,
+                               settings: ShippingLabelAccountSettings,
+                               completion: @escaping (Result<Bool, any Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let key = ResultKey(siteID: siteID)
+            if let result = self.updateAccountSettingsResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+
         }
     }
 

@@ -1,9 +1,12 @@
 import SwiftUI
 import struct Yosemite.ShippingLabelPaymentMethod
+import struct Yosemite.ShippingLabelAccountSettings
 
 struct WooShippingPaymentMethodsView: View {
 
     @ObservedObject var viewModel: ShippingLabelPaymentMethodsViewModel
+
+    let onAccountSettingsUpdate: (ShippingLabelAccountSettings) -> Void
 
     var body: some View {
         ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
@@ -161,6 +164,7 @@ private extension WooShippingPaymentMethodsView {
     func confirmPaymentMethod() async {
         do {
             let newSettings = try await viewModel.updateWooShippingAccountSettings()
+            onAccountSettingsUpdate(newSettings)
         } catch {
             // Handle error
         }
@@ -237,5 +241,6 @@ private extension WooShippingPaymentMethodsView {
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()))
+    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
+                                  onAccountSettingsUpdate: { _ in })
 }

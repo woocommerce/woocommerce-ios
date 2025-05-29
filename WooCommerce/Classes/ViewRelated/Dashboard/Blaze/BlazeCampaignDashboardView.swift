@@ -153,6 +153,7 @@ private extension BlazeCampaignDashboardView {
                 Image(uiImage: .blaze)
                     .resizable()
                     .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    .accessibilityHidden(true)
                 Text(DashboardCard.CardType.blaze.name)
                     .headlineStyle()
                 Spacer()
@@ -307,6 +308,7 @@ private struct ProductInfoView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 .cornerRadius(Layout.cornerRadius)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 Text(Localization.suggestedProductLabel)

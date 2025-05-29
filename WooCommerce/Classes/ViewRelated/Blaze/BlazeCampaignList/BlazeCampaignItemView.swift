@@ -29,6 +29,7 @@ struct BlazeCampaignItemView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                         .cornerRadius(Layout.cornerRadius)
+                        .accessibilityHidden(true)
                     Spacer()
                 }
 

@@ -91,33 +91,42 @@ struct ItemListView: View {
     }
 
     var content: some View {
-        VStack(spacing: 0) {
-            headerView
+        ZStack {
+            VStack(spacing: 0) {
+                headerView
 
-            TabView(selection: $selectedItemListType) {
-                itemListTabContent(.products(search: false))
-                if isCouponsFeatureEnabled {
-                    itemListTabContent(.coupons(search: false))
+                TabView(selection: $selectedItemListType) {
+                    itemListTabContent(.products(search: false))
+                    if isCouponsFeatureEnabled {
+                        itemListTabContent(.coupons(search: false))
+                    }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.none, value: selectedItemListType)
+                // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
+                .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
-            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+            // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
+            // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
+            .navigationDestination(for: POSItem.self, destination: { item in
+                childListView(parentItem: item)
+            })
+            .background(Color.posSurface)
+            .accessibilityElement(children: .contain)
+            .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
+                Task { @MainActor in
+                    posModel.addToCart(couponItem)
+                    await posModel.couponsController.refreshItems(base: .root)
+                }
+            })
+
+            // Hidden scanner input
+            HIDScannerField { scannedCode in
+                posModel.handleBarcodeScan(scannedCode)
+            }
+            .accessibilityHidden(true)
+            .allowsHitTesting(false)
         }
-        // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
-        // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
-        .navigationDestination(for: POSItem.self, destination: { item in
-            childListView(parentItem: item)
-        })
-        .background(Color.posSurface)
-        .accessibilityElement(children: .contain)
-        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
-            Task { @MainActor in
-                posModel.addToCart(couponItem)
-                await posModel.couponsController.refreshItems(base: .root)
-            }
-        })
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {

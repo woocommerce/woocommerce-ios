@@ -178,6 +178,10 @@ extension PointOfSaleAggregateModel {
     func searchHistory(for itemType: POSItemType) -> [String] {
         return searchHistoryService.searchHistory(for: itemType)
     }
+
+    func handleBarcodeScan(_ barcode: String) {
+        DDLogInfo("Barcode scanned: \(barcode)")
+    }
 }
 
 // MARK: - Track events

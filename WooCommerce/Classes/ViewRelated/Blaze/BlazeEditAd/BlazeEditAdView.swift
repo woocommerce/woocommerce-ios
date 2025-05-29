@@ -90,6 +90,7 @@ private extension BlazeEditAdView {
                                     selectMedia: { source in
                 viewModel.addImage(from: source)
             })
+            .accessibilityLabel(Localization.Accessibility.productImage)
 
             Button(Localization.Image.changeImage) {
                 isShowingMediaPickerSheet = true
@@ -349,6 +350,13 @@ private extension BlazeEditAdView {
             value: "Suggested by AI",
             comment: "Suggested by AI title in the Blaze Edit Ad screen."
         )
+        enum Accessibility {
+            static let productImage = NSLocalizedString(
+                "blazeEditAdView.accessibility.productImage",
+                value: "Product image for campaign",
+                comment: "Accessibility label for the product image in the Edit Image form for blaze campaign"
+            )
+        }
     }
 }
 

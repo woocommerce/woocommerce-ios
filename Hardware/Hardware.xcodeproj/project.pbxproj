@@ -175,14 +175,12 @@
 		03CF78D627DF9BE500523706 /* RefundParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundParameters.swift; sourceTree = "<group>"; };
 		03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RefundParameters+Stripe.swift"; sourceTree = "<group>"; };
 		205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnderlyingError+StripeTests.swift"; sourceTree = "<group>"; };
-		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
 		317975BF274EB1F9004357B1 /* DeclineReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReason.swift; sourceTree = "<group>"; };
 		317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeclineReason+Stripe.swift"; sourceTree = "<group>"; };
 		317975C3274ED591004357B1 /* DeclineReasonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReasonTests.swift; sourceTree = "<group>"; };
 		3FA7D9FD2D547E6D00CE5611 /* Hardware.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Hardware.xcconfig; sourceTree = "<group>"; };
 		55CD4BB3273E617C007686D3 /* ReceiptRendererTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRendererTest.swift; sourceTree = "<group>"; };
-		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B96B536C281A8D6900F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminer.swift; sourceTree = "<group>"; };
 		B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShouldRetryStripeRefundAfterFailureDeterminerTests.swift; sourceTree = "<group>"; };
 		B9C4AB2227FDE133007008B8 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
@@ -270,7 +268,6 @@
 		E1E125AD26EB66B30068A9B0 /* FallibleCancelable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallibleCancelable.swift; sourceTree = "<group>"; };
 		E1E125AF26EB66EA0068A9B0 /* Cancelable+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cancelable+Stripe.swift"; sourceTree = "<group>"; };
 		E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingResult.swift; sourceTree = "<group>"; };
-		E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -542,9 +539,6 @@
 		EF9EE401B2930AC16BD86FE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */,
-				B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */,
-				2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -98,12 +98,14 @@ struct SupportForm: View {
                         Text(Localization.tellUsInfo)
                             .subheadlineStyle()
                     }
+                    .accessibilityElement(children: .combine)
 
                     // Subject Text Field
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.subject)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextField("", text: $viewModel.subject)
                             .bodyStyle()
@@ -113,13 +115,16 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.subject)
                     }
+                    .accessibilityElement(children: .contain)
 
                     // Site Address Text Field
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.siteAddress)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextField("", text: $viewModel.siteAddress)
                             .autocorrectionDisabled(true)
@@ -132,13 +137,16 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.siteAddress)
                     }
+                    .accessibilityElement(children: .contain)
 
                     // Description Text Editor
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.message)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextEditor(text: $viewModel.description)
                             .bodyStyle()
@@ -147,7 +155,9 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.message)
                     }
+                    .accessibilityElement(children: .contain)
                 }
                 .padding()
             }

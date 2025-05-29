@@ -593,8 +593,6 @@
 		02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */; };
 		02DD81FC242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */; };
 		02DE39D92968647100BB31D4 /* DomainSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DE39D82968647100BB31D4 /* DomainSettingsViewModel.swift */; };
-		02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */; };
-		02DE5CAB279F8754007CBEF3 /* Double+RoundingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */; };
 		02DEA23328810B7A0057FC40 /* LoginOnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DEA23228810B7A0057FC40 /* LoginOnboardingScreen.swift */; };
 		02DF174B2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF174A2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift */; };
 		02DFD5042B20486C0048CD70 /* ProductStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFD5032B20486C0048CD70 /* ProductStepper.swift */; };
@@ -3854,8 +3852,6 @@
 		02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSource.swift; sourceTree = "<group>"; };
 		02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WordPressMediaLibraryImagePickerViewController.xib; sourceTree = "<group>"; };
 		02DE39D82968647100BB31D4 /* DomainSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsViewModel.swift; sourceTree = "<group>"; };
-		02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Rounding.swift"; sourceTree = "<group>"; };
-		02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+RoundingTests.swift"; sourceTree = "<group>"; };
 		02DEA23228810B7A0057FC40 /* LoginOnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingScreen.swift; sourceTree = "<group>"; };
 		02DF174A2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+ProductCreationTests.swift"; sourceTree = "<group>"; };
 		02DFD5032B20486C0048CD70 /* ProductStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStepper.swift; sourceTree = "<group>"; };
@@ -11029,7 +11025,6 @@
 				D88100D2257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift */,
 				DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */,
 				DE7842EE26F079A60030C792 /* NumberFormatter+LocalizedTests.swift */,
-				02DE5CAA279F8754007CBEF3 /* Double+RoundingTests.swift */,
 				02645D8927BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift */,
 				B9B6DEF0283F8EB100901FB7 /* SitePluginsURLTests.swift */,
 				0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */,
@@ -12189,7 +12184,6 @@
 				DE7842EC26F061650030C792 /* NumberFormatter+Localized.swift */,
 				DE7842F626F2E9340030C792 /* UIViewController+Connectivity.swift */,
 				DEC51B05276B3F3C009F3DF4 /* Int64+Helpers.swift */,
-				02DE5CA8279F857D007CBEF3 /* Double+Rounding.swift */,
 				02645D8727BA2E820065DC68 /* NSAttributedString+Attributes.swift */,
 				450C6EE9286F4334002DB168 /* SitePlugin+Woo.swift */,
 				B9B6DEEE283F8B9F00901FB7 /* Site+URL.swift */,
@@ -17191,7 +17185,6 @@
 				B90D21762D14269200ED60ED /* WooShippingCustomsForm.swift in Sources */,
 				B6930BDA293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift in Sources */,
 				26F115AF2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift in Sources */,
-				02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */,
 				B9CCE5FC2C8753A000905A91 /* ProductBarcodeScannerProvider.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				EE7E75AC2D84080D00E6FF5B /* WooShippingSplitShipmentsViewModel.swift in Sources */,
@@ -17676,7 +17669,6 @@
 				DE67D46926BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift in Sources */,
 				023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */,
 				AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */,
-				02DE5CAB279F8754007CBEF3 /* Double+RoundingTests.swift in Sources */,
 				AE90475C27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */,

@@ -48,6 +48,12 @@ struct WooShippingPaymentMethodsView: View {
             }
         }
         .padding(.top, Layout.contentPadding)
+        .onAppear {
+            DispatchQueue.main.async {
+                /// clears states from last time.
+                viewModel.resetViewStates()
+            }
+        }
     }
 }
 

@@ -89,6 +89,7 @@ struct BlazeCampaignCreationForm: View {
                 Text(Localization.details)
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
+                    .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
                     VStack(spacing: 0) {
@@ -113,6 +114,7 @@ struct BlazeCampaignCreationForm: View {
                 Text(Localization.audience)
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
+                    .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
                     // Language

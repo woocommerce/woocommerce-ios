@@ -1,3 +1,5 @@
+import Foundation
+
 #if canImport(Networking)
 import Networking
 #elseif canImport(NetworkingWatchOS)

@@ -57,10 +57,14 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     ///
     let fetchPaymentMethodURLPath = "me/purchases/payment-methods"
 
-    init(accountSettings: ShippingLabelAccountSettings) {
+    private let stores: StoresManager
+
+    init(accountSettings: ShippingLabelAccountSettings,
+         stores: StoresManager = ServiceLocator.stores) {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
         self.isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
+        self.stores = stores
     }
 
     func resetViewStates() {
@@ -123,6 +127,24 @@ extension ShippingLabelPaymentMethodsViewModel {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    @MainActor
+    func updateWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
+        isUpdating = true
+        let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
+                                               isEmailReceiptsEnabled: isEmailReceiptsEnabled)
+        defer {
+            isUpdating = false
+        }
+        let success = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.updateAccountSettings(siteID: accountSettings.siteID,
+                                                                    settings: newSettings,
+                                                                    completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        return success ? newSettings : accountSettings
     }
 }
 

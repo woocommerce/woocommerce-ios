@@ -40,9 +40,11 @@ struct WooShippingPaymentMethodsView: View {
                     .toggleStyle(.switch)
 
                     Button(Localization.confirmButton) {
-                        // TODO
+                        Task {
+                            await confirmPaymentMethod()
+                        }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isUpdating))
                     .disabled(viewModel.isDoneButtonEnabled() == false)
                 }
             }
@@ -147,12 +149,25 @@ private extension WooShippingPaymentMethodsView {
         }
         .padding(.vertical, Layout.contentPadding)
     }
+}
 
+// MARK: - Helpers
+private extension WooShippingPaymentMethodsView {
     func isSelectedMethod(_ method: ShippingLabelPaymentMethod) -> Bool {
         method.paymentMethodID == viewModel.selectedPaymentMethodID
     }
+
+    @MainActor
+    func confirmPaymentMethod() async {
+        do {
+            let newSettings = try await viewModel.updateWooShippingAccountSettings()
+        } catch {
+            // Handle error
+        }
+    }
 }
 
+// MARK: - Subtypes
 private extension WooShippingPaymentMethodsView {
     enum Layout {
         static let contentPadding: CGFloat = 16

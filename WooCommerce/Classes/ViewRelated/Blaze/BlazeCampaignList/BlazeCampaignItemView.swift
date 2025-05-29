@@ -51,7 +51,18 @@ struct BlazeCampaignItemView: View {
                 Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
                     .font(.headline)
+                    .accessibilityHidden(true)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(
+                Localization.campaignAccessibilityLabel(
+                    campaignName: campaign.name,
+                    status: campaign.status.displayText
+                )
+            )
+            .accessibilityHint(Localization.campaignAccessibilityHint)
+
 
             // campaign stats
             CollapsibleHStack(horizontalAlignment: .leading,
@@ -125,6 +136,24 @@ private extension BlazeCampaignItemView {
             "blazeCampaignItemView.clickthroughs",
             value: "Click-throughs",
             comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
+        )
+
+        static func campaignAccessibilityLabel(campaignName: String, status: String) -> String {
+            return String(format: blazeCampaignAccessibilityLabelFormat, campaignName, status)
+        }
+
+        private static let blazeCampaignAccessibilityLabelFormat = NSLocalizedString(
+            "blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat",
+            value: "Blaze campaign for %1$@. %2$@",
+            comment: "Accessibility label format for a Blaze campaign card." +
+                " The %1$@ is a placeholder for the campaign name." +
+                " The %2$@ is a placeholder for the campaign status."
+        )
+
+        static let campaignAccessibilityHint = NSLocalizedString(
+            "blazeCampaignItemView.campaignAccessibilityHint",
+            value: "Tap to view campaign details",
+            comment: "Accessibility hint for a Blaze campaign card"
         )
     }
 }

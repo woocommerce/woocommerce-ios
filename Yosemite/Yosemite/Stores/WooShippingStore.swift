@@ -48,6 +48,8 @@ public final class WooShippingStore: Store {
             loadPackages(siteID: siteID, completion: completion)
         case .loadAccountSettings(let siteID, completion: let completion):
             loadAccountSettings(siteID: siteID, completion: completion)
+        case let .updateAccountSettings(siteID, settings, completion):
+            updateAccountSettings(siteID: siteID, settings: settings, completion: completion)
         case let .purchaseShippingLabel(siteID,
                                         orderID,
                                         originAddress,
@@ -157,6 +159,12 @@ private extension WooShippingStore {
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(siteID: siteID, completion: completion)
+    }
+
+    func updateAccountSettings(siteID: Int64,
+                               settings: ShippingLabelAccountSettings,
+                               completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.updateAccountSettings(siteID: siteID, settings: settings, completion: completion)
     }
 
     func purchaseShippingLabel(siteID: Int64,

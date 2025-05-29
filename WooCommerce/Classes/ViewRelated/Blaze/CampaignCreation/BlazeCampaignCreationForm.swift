@@ -371,6 +371,7 @@ private extension BlazeCampaignCreationForm {
 
                     Spacer()
                 }
+                .accessibilityElement(children: .combine)
                 .renderedIf(viewModel.isUsingAISuggestions)
 
                 // Button to edit ad details

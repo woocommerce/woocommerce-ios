@@ -57,9 +57,9 @@ private extension StoreOnboardingTask.TaskType {
         case .launchStore:
             return 3
         case .payments:
-            return 5
+            return 4
         case .unsupported:
-            return 6
+            return 5
         }
     }
 }

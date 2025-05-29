@@ -95,6 +95,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .payments)
     }
 
     @MainActor

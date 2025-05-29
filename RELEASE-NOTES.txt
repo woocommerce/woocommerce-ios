@@ -10,6 +10,7 @@
 - [*] Payments: Added a two-minute timeout when waiting for card payments, to reduce the risk of battery drain or mistaken payments. [https://github.com/woocommerce/woocommerce-ios/pull/15665]
 - [internal] POS: Handle payment intent creation error. [https://github.com/woocommerce/woocommerce-ios/pull/15661]
 - [*] Removed domain purchase from app settings [https://github.com/woocommerce/woocommerce-ios/pull/15680]
+- [*] Removed customize domain onboarding task [https://github.com/woocommerce/woocommerce-ios/pull/15681]
 
 22.4
 -----

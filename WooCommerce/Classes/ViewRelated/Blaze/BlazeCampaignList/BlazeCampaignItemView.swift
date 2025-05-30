@@ -81,6 +81,10 @@ struct BlazeCampaignItemView: View {
                      Text(Image(systemName: "arrow.forward")) +
                      Text(" \(campaign.humanReadableClicks)").font(.title2).fontWeight(.semibold))
                         .foregroundStyle(Color(.text))
+                        .accessibilityLabel(Localization.clickThroughAccessibilityLabel(
+                            impressions: campaign.impressions,
+                            clicks: campaign.clicks
+                        ))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityElement(children: .combine)
@@ -156,6 +160,18 @@ private extension BlazeCampaignItemView {
             "blazeCampaignItemView.campaignAccessibilityHint",
             value: "Tap to view campaign details",
             comment: "Accessibility hint for a Blaze campaign card"
+        )
+
+        static func clickThroughAccessibilityLabel(impressions: Int64, clicks: Int64) -> String {
+            String(format: clickThroughAccessibilityLabelFormat, impressions, clicks)
+        }
+
+        static let clickThroughAccessibilityLabelFormat = NSLocalizedString(
+            "blazeCampaignItemView.clickThroughAccessibilityLabelFormat",
+            value: "%1$d impressions, %2$d clicks",
+            comment: "Accessibility label format for a Blaze campaign's click-through rates. " +
+            "The placeholders are numbers of impressions and clicks. " +
+            "Reads as: '20000 impressions, 200 clicks'"
         )
     }
 }

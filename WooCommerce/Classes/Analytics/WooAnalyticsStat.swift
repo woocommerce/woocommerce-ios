@@ -320,7 +320,6 @@ enum WooAnalyticsStat: String {
     case settingsTapped = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped = "settings_selected_site_tapped"
     case settingsContactSupportTapped = "main_menu_contact_support_tapped"
-    case settingsDomainsTapped = "settings_domains_tapped"
     case settingsTroubleshootConnectionTapped = "settings_troubleshoot_connection_tapped"
 
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
@@ -1278,6 +1277,7 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleLoaded = "loaded"
+    case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"

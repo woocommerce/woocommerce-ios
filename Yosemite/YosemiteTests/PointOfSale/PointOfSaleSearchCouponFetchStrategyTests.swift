@@ -8,12 +8,12 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
     private let storage: MockStorageManager
     private let sampleSiteID: Int64 = 123
     private let searchTerm = "test"
-    private let mockAnalytics: MockPOSSearchAnalyticsTracking
+    private let mockAnalytics: MockPOSItemFetchAnalyticsTracking
 
     init() {
         self.couponStoreMethods = MockCouponStoreMethods()
         self.storage = MockStorageManager()
-        self.mockAnalytics = MockPOSSearchAnalyticsTracking()
+        self.mockAnalytics = MockPOSItemFetchAnalyticsTracking()
         self.sut = .init(
             siteID: sampleSiteID,
             currencySettings: CurrencySettings(),
@@ -127,7 +127,7 @@ struct PointOfSaleSearchCouponFetchStrategyTests {
 
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent != nil)
-        #expect(mockAnalytics.spyTotalItems == 2)
+        #expect(mockAnalytics.spySearchTotalItems == 2)
     }
 
     @Test func fetchCoupons_does_not_track_analytics_for_subsequent_pages() async throws {

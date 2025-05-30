@@ -24,6 +24,7 @@ extension WooAnalyticsEvent {
             static let sourceViewType = "source_type"
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
+            static let totalItems = "total_items"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -163,6 +164,15 @@ extension WooAnalyticsEvent {
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
                                 Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                              ])
+        }
+
+        static func pointOfSaleItemsFetched(itemType: POSItemType,
+                                            totalItems: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleItemsFetched,
+                              properties: [
+                                Key.sourceView: SourceView(itemType: itemType).rawValue,
+                                Key.totalItems: "\(totalItems)"
                               ])
         }
     }

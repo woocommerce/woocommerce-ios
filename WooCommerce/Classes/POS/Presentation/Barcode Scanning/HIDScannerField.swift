@@ -22,14 +22,23 @@ struct HIDScannerFieldRepresentable: UIViewRepresentable {
 
     class Coordinator: NSObject, UITextFieldDelegate {
         var onScan: (String) -> Void
+        private var buffer = ""
 
         init(onScan: @escaping (String) -> Void) {
             self.onScan = onScan
         }
 
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            // Optional: accumulate characters or check for full scan in real-time
-            return true
+            for character in string {
+                if character == "\r" || character == "\n" {
+                    let scanned = buffer
+                    buffer = ""
+                    onScan(scanned)
+                } else {
+                    buffer.append(character)
+                }
+            }
+            return false // don’t insert into textField.text
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {

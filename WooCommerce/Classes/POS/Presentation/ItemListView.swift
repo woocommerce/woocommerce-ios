@@ -120,8 +120,12 @@ struct ItemListView: View {
                 }
             })
 
-            // Hidden scanner input
-            HIDScannerField { scannedCode in
+//            // Hidden scanner input
+//            HIDScannerField { scannedCode in
+//                posModel.handleBarcodeScan(scannedCode)
+//            }
+
+            ScannerInputContainer() { scannedCode in
                 posModel.handleBarcodeScan(scannedCode)
             }
 

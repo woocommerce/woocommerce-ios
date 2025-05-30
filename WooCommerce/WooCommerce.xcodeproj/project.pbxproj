@@ -905,6 +905,7 @@
 		20A3AFE52B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */; };
 		20A8C9FC2DE898C5000C3DE7 /* HIDScannerField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */; };
 		20A8C9FF2DE8A742000C3DE7 /* AppInputFocusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */; };
+		20A8DD452DEA09A9000C3DE7 /* ScannerInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A8DD442DEA09A9000C3DE7 /* ScannerInputContainer.swift */; };
 		20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */; };
 		20ADE9432C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */; };
 		20ADE9462C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */; };
@@ -4170,6 +4171,7 @@
 		20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPaySettingsFlowPresentingView.swift; sourceTree = "<group>"; };
 		20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HIDScannerField.swift; sourceTree = "<group>"; };
 		20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInputFocusState.swift; sourceTree = "<group>"; };
+		20A8DD442DEA09A9000C3DE7 /* ScannerInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerInputContainer.swift; sourceTree = "<group>"; };
 		20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSErrorXMark.swift; sourceTree = "<group>"; };
 		20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsRetryApproach.swift; sourceTree = "<group>"; };
 		20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentRetryApproachTests.swift; sourceTree = "<group>"; };
@@ -8428,6 +8430,7 @@
 			children = (
 				20A8C9FE2DE8A736000C3DE7 /* AppInputFocusState.swift */,
 				20A8C9FB2DE898C5000C3DE7 /* HIDScannerField.swift */,
+				20A8DD442DEA09A9000C3DE7 /* ScannerInputContainer.swift */,
 			);
 			path = "Barcode Scanning";
 			sourceTree = "<group>";
@@ -16665,6 +16668,7 @@
 				26BCA0422C35EDBF000BE96C /* OrderListSyncBackgroundTask.swift in Sources */,
 				E11228BC2707161E004E9F2D /* CardPresentModalUpdateFailed.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
+				20A8DD452DEA09A9000C3DE7 /* ScannerInputContainer.swift in Sources */,
 				4512054F2464741B005D68DE /* ProductVisibility.swift in Sources */,
 				45A4221A24ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift in Sources */,
 				45455EFA26580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift in Sources */,

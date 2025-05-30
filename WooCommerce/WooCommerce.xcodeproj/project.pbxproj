@@ -1193,7 +1193,6 @@
 		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
 		26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */; };
 		26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E33267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift */; };
-		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
@@ -6471,7 +6470,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */,
-				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

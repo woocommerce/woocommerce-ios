@@ -4,7 +4,4 @@
    <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Fakes/Fakes.xcodeproj">
-   </FileRef>
 </Workspace>

@@ -20,6 +20,10 @@ let package = Package(
             targets: ["Experiments"]
         ),
         .library(
+            name: "Fakes",
+            targets: ["Fakes"]
+        ),
+        .library(
             name: "Hardware",
             targets: ["Hardware"]
         ),
@@ -105,6 +109,14 @@ let package = Package(
             name: "Experiments",
             dependencies: [
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+            ]
+        ),
+        .target(
+            name: "Fakes",
+            dependencies: [
+                "Codegen",
+                "Networking",
+                "Yosemite",
             ]
         ),
         .target(
@@ -219,6 +231,7 @@ let package = Package(
             name: "NetworkingTests",
             dependencies: [
                 "Codegen",
+                "Fakes",
                 "Networking",
                 "TestKit",
                 "WooFoundation",
@@ -257,6 +270,7 @@ let package = Package(
             name: "YosemiteTests",
             dependencies: [
                 "Codegen",
+                "Fakes",
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
@@ -284,7 +298,6 @@ let package = Package(
 //   including frameworks with large resources bundled into multiple targets.
 
 enum XcodeTargetNames {
-    static let fakes = "Fakes"
     static let notificationExtension = "NotificationExtension"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let uiTestsFoundation = "UITestsFoundation"
@@ -300,7 +313,6 @@ enum XcodeTargetNames {
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.fakes,
             XcodeTargetNames.notificationExtension,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.uiTestsFoundation,
@@ -316,14 +328,6 @@ enum XcodeSupport {
 
     static var targets: [Target] {
         [
-            .xcodeTarget(
-                XcodeTargetNames.fakes,
-                dependencies: [
-                    "Codegen",
-                    "Networking",
-                    "Yosemite",
-                ]
-            ),
             .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
@@ -393,6 +397,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerceTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "TestKit",
                     "WordPressShared",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),

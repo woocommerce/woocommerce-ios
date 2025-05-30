@@ -136,7 +136,6 @@ enum XcodeTargetNames {
     static let networkingTests = "NetworkingTests"
     static let networkingWatchOS = "NetworkingWatchOS"
     static let notificationExtension = "NotificationExtension"
-    static let sampleReceiptPrinter = "SampleReceiptPrinter"
     static let storage = "Storage"
     static let storageTests = "StorageTests"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
@@ -167,7 +166,6 @@ enum XcodeSupport {
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.networkingWatchOS,
             XcodeTargetNames.notificationExtension,
-            XcodeTargetNames.sampleReceiptPrinter,
             XcodeTargetNames.storage,
             XcodeTargetNames.storageTests,
             XcodeTargetNames.storeWidgetsExtension,
@@ -254,10 +252,6 @@ enum XcodeSupport {
                 dependencies: [
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.sampleReceiptPrinter,
-                dependencies: [XcodeTargetNames.hardware.asDependency]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storage,

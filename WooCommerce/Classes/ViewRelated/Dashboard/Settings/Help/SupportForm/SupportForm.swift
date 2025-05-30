@@ -223,7 +223,7 @@ private extension SupportForm {
         static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
         static let tellUsInfo = NSLocalizedString(
             "supportForm.tellUsInfo.message",
-            value: "Let us know your site address (URL) and tell us as much as you can about the problem, and we will be in touch soon.", // swiftlint:disable:this line_length
+            value: "Let us know your site address (URL) and tell us as much as you can about the problem, and we will be in touch soon.",
             comment: "Message info on the support screen."
         )
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")

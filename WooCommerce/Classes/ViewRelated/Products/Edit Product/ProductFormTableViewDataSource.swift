@@ -348,7 +348,6 @@ private extension ProductFormTableViewDataSource {
         cell.backgroundColor = .listBackground
         cell.hideSeparator()
         cell.configure(height: Constants.settingsHeaderHeight)
-        cell.accessibilityElementsHidden = true
     }
 
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {

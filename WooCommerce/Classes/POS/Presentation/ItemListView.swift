@@ -124,6 +124,14 @@ struct ItemListView: View {
             HIDScannerField { scannedCode in
                 posModel.handleBarcodeScan(scannedCode)
             }
+
+            if let scannedBarcode = posModel.scannedBarcode {
+                Text("\(Image(systemName: "barcode")) \(scannedBarcode)")
+                    .font(POSFontStyle.posHeadingRegular)
+                    .padding(16)
+                    .background(Color.posSurfaceBright)
+                    .cornerRadius(POSCornerRadiusStyle.medium.value)
+            }
         }
     }
 

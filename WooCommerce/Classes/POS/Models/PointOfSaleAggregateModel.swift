@@ -49,6 +49,8 @@ protocol PointOfSaleAggregateModelProtocol {
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
+    private(set) var scannedBarcode: String?
+
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
@@ -181,6 +183,11 @@ extension PointOfSaleAggregateModel {
 
     func handleBarcodeScan(_ barcode: String) {
         DDLogInfo("🛒 Barcode scanned: \(barcode)")
+        scannedBarcode = barcode
+        Task {
+            try? await Task.sleep(for: .seconds(2))
+            scannedBarcode = nil
+        }
     }
 }
 

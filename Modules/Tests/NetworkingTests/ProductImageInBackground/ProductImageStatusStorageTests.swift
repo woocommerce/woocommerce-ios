@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 @testable import Networking
+@testable import NetworkingCore
 
 class ProductImageStatusStorageTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()

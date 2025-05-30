@@ -1,6 +1,7 @@
 import TestKit
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// ProductsRemoteTests

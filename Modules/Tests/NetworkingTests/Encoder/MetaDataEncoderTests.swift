@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 /// Check MetaData encoding to Dictionary
 ///

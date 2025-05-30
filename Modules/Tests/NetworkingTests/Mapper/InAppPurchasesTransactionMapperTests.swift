@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class InAppPurchasesTransactionMapperTests: XCTestCase {
     func test_iap_handled_transaction_is_decoded_from_json_response() throws {

@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class JWTokenMapperTests: XCTestCase {
     func test_it_maps_JWToken_correctly_from_token_response() throws {

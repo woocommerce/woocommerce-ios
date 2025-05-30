@@ -1,6 +1,7 @@
 import XCTest
 import TestKit
 @testable import Networking
+@testable import NetworkingCore
 
 final class DomainRemoteTests: XCTestCase {
     /// Mock network wrapper.

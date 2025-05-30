@@ -223,7 +223,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                       completion: @escaping (Result<Bool, Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.selectedPaymentMethodID: settings.selectedPaymentMethodID,
-            ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled
+            ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled,
+            ParameterKey.enabled: true // This is needed due to the bug WOOSHIP-1410
         ]
         let path = Path.accountSettings
         let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -570,6 +571,7 @@ private extension WooShippingRemote {
         static let fields = "_fields"
         static let selectedPaymentMethodID = "selected_payment_method_id"
         static let emailReceipts = "email_receipts"
+        static let enabled = "enabled"
     }
 }
 

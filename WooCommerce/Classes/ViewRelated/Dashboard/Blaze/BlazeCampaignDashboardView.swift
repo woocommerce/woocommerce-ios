@@ -150,12 +150,14 @@ private extension BlazeCampaignDashboardView {
         VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
             // Title
             HStack {
-                Image(uiImage: .blaze)
-                    .resizable()
-                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                    .accessibilityHidden(true)
-                Text(DashboardCard.CardType.blaze.name)
-                    .headlineStyle()
+                HStack {
+                    Image(uiImage: .blaze)
+                        .resizable()
+                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    Text(DashboardCard.CardType.blaze.name)
+                        .headlineStyle()
+                }
+                .accessibilityElement(children: .combine)
                 Spacer()
                 Menu {
                     Button(Localization.hideBlaze) {

@@ -124,8 +124,6 @@ struct ItemListView: View {
             HIDScannerField { scannedCode in
                 posModel.handleBarcodeScan(scannedCode)
             }
-            .accessibilityHidden(true)
-            .allowsHitTesting(false)
         }
     }
 

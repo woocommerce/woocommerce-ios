@@ -3,7 +3,21 @@ import UIKit
 import SwiftUI
 
 @available(iOS 17.0, *)
-struct HIDScannerField: UIViewRepresentable {
+struct HIDScannerField: View {
+    @Environment(AppInputFocusState.self) private var inputFocus
+    let onScan: (String) -> Void
+
+    var body: some View {
+        if inputFocus.activeInput == .none {
+            HIDScannerFieldRepresentable(onScan: onScan)
+                .accessibilityHidden(true)
+                .allowsHitTesting(false)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+struct HIDScannerFieldRepresentable: UIViewRepresentable {
     @Environment(AppInputFocusState.self) private var inputFocus
 
     class Coordinator: NSObject, UITextFieldDelegate {
@@ -26,7 +40,7 @@ struct HIDScannerField: UIViewRepresentable {
         }
     }
 
-    var onScan: (String) -> Void
+    let onScan: (String) -> Void
 
     func makeUIView(context: Context) -> UITextField {
         let field = UITextField(frame: .zero)
@@ -37,7 +51,7 @@ struct HIDScannerField: UIViewRepresentable {
         field.isHidden = true
         field.isAccessibilityElement = false
 
-        // 🧙‍♂️ Magic line to suppress software keyboard
+        // 🧙‍♂️ Suppress software keyboard when opening POS with no scanner or hardware keyboard attached.
         field.inputView = UIView()
 
         DispatchQueue.main.async {

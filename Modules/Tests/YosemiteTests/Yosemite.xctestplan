@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "CD597C39-4BCB-42B7-ABF2-17E8CFB5E0F8",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "YosemiteTests",
+        "name" : "YosemiteTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -31,16 +31,66 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
-        "identifier" : "B5C9DDFD2087FEC0006B910A",
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WooFoundationTests",
+        "name" : "WooFoundationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "ExperimentsTests",
+        "name" : "ExperimentsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "HardwareTests",
+        "name" : "HardwareTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "NetworkingTests",
+        "name" : "NetworkingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "StorageTests",
+        "name" : "StorageTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "YosemiteTests",
         "name" : "YosemiteTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
-        "identifier" : "D88FDB0725DD216B00CB0DBD",
-        "name" : "HardwareTests"
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WordPressSharedObjCTests",
+        "name" : "WordPressSharedObjCTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WordPressSharedTests",
+        "name" : "WordPressSharedTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
+        "name" : "WordPressAuthenticatorTests"
       }
     },
     {
@@ -64,56 +114,6 @@
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "B56DB3DC2049BFAA00D4AA8E",
         "name" : "WooCommerceTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "NetworkingTests",
-        "name" : "NetworkingTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "StorageTests",
-        "name" : "StorageTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "ExperimentsTests",
-        "name" : "ExperimentsTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "WooFoundationTests",
-        "name" : "WooFoundationTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedTests",
-        "name" : "WordPressSharedTests"
-      }
-    },
-    {
-      "enabled" : false,
-      "target" : {
-        "containerPath" : "container:WooCommerce.xcodeproj",
-        "identifier" : "3F0904072D26A40800D8ACCE",
-        "name" : "WordPressAuthenticatorTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedObjCTests",
-        "name" : "WordPressSharedObjCTests"
       }
     }
   ],

@@ -12,7 +12,6 @@
 		26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2D25F6C8FB00B01F48 /* Fake.swift */; };
-		26EEDC8D26FE1C1C00D5BA0E /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */; };
 		26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */; };
 		26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */; };
 		3F2B4AC22DDC30B200E5E49C /* XcodeTarget_Fakes in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AC12DDC30B200E5E49C /* XcodeTarget_Fakes */; };
@@ -55,7 +54,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2B4AC22DDC30B200E5E49C /* XcodeTarget_Fakes in Frameworks */,
-				26EEDC8D26FE1C1C00D5BA0E /* Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

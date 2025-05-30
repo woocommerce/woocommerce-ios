@@ -1,7 +1,8 @@
-project: 
-    file: ../../../../../Yosemite/Yosemite.xcodeproj
-    target: 
-        name: Yosemite
+sources:
+    include:
+        - ../../../../../Modules/Sources/Yosemite/
 templates:
     - Models+Copiable.swifttemplate
-output: ../../../../../Yosemite/Yosemite/Model/Copiable/
+output: ../../../../../Modules/Sources/Yosemite/Model/Copiable/
+args:
+    moduleName: Yosemite

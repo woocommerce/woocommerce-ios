@@ -131,6 +131,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isTaglineValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.taglineGroup)
     }
 
     var description: some View {
@@ -165,6 +167,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isDescriptionValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.descriptionGroup)
     }
 
     var ctaText: some View {
@@ -199,6 +203,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isCtaTextValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.ctaGroup)
     }
 
     var suggestedByAI: some View {
@@ -417,6 +423,22 @@ private extension BlazeEditAdView {
                 value: "Use the navigation arrows on the right to explore different suggestions.",
                 comment: "Accessibility hint for the suggested by AI text in the Blaze Edit Ad screen."
             )
+            static let taglineGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.taglineGroup",
+                value: "Edit tagline",
+                comment: "Accessibility label for the tagline group in the Blaze Edit Ad screen."
+            )
+            static let descriptionGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.descriptionGroup",
+                value: "Edit description",
+                comment: "Accessibility label for the description group in the Blaze Edit Ad screen."
+            )
+            static let ctaGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.ctaGroup",
+                value: "Edit call to action",
+                comment: "Accessibility label for the call to action group in the Blaze Edit Ad screen."
+            )
+
         }
     }
 }

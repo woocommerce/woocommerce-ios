@@ -69,6 +69,9 @@ private extension BlazeBudgetSettingView {
                        in: viewModel.dailyAmountSliderRange,
                        step: BlazeBudgetSettingViewModel.Constants.dailyAmountSliderStep)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Localization.dailySpend)
+            .accessibilityValue(String(format: Localization.dailySpendValue, Int(viewModel.dailyAmount)))
 
             // Schedule
             VStack(alignment: .leading) {
@@ -213,6 +216,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.dailySpend",
             value: "Daily spend",
             comment: "Title label for the daily spend amount on the Blaze ads campaign budget settings screen."
+        )
+        static let dailySpendValue = NSLocalizedString(
+            "blazeBudgetSettingView.dailySpendValue",
+            value: "$%d",
+            comment: "Value format for the daily spend amount on the Blaze ads campaign budget settings screen."
         )
         static let estimatedImpressions = NSLocalizedString(
             "blazeBudgetSettingView.estimatedTotalImpressions",

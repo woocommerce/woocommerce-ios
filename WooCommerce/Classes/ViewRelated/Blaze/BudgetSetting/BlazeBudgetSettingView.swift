@@ -242,11 +242,6 @@ private extension BlazeBudgetSettingView {
             value: "Update",
             comment: "Button to update the budget on the Blaze budget setting screen"
         )
-        static let impressions = NSLocalizedString(
-            "blazeBudgetSettingView.impressions",
-            value: "Impressions",
-            comment: "Title of the modal to explain Blaze campaign impressions"
-        )
         static let impressionInfo = NSLocalizedString(
             "blazeBudgetSettingView.impressionInfo",
             value: "Impressions reflect the frequency with which your ad appears to potential customers.\n\n" +

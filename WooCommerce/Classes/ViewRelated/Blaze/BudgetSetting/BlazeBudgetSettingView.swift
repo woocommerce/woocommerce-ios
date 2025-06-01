@@ -53,6 +53,7 @@ private extension BlazeBudgetSettingView {
                     .multilineTextAlignment(.center)
                     .subheadlineStyle()
             }
+            .accessibilityElement(children: .combine)
 
             // Daily budget amount details
             VStack(spacing: Layout.dailyBudgetSectionSpacing) {

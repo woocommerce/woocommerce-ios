@@ -1,9 +1,5 @@
 import Foundation
-#if canImport(WooFoundation)
-import WooFoundation
-#elseif canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationCore
 
 protocol CrashLoggingStack: CrashLogger {
     /// Forces the application to crash

@@ -6,6 +6,10 @@ import Yosemite
 import NetworkingWatchOS
 #endif
 
+#if !os(watchOS)
+import UIKit
+#endif
+
 import WooFoundationCore
 
 

@@ -174,6 +174,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Error from remote validation, if any.
     @Published private var remoteValidationError: String?
 
+    /// Current address update error alert state
+    @Published var isShowingAddressErrorAlert = false
+    private(set) var addressErrorState: AddressErrorState? = nil {
+        didSet {
+            isShowingAddressErrorAlert = addressErrorState != nil
+        }
+    }
+
     /// Closure called when an origin address is done being edited and the changes are confirmed.
     private(set) var onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)?
 
@@ -357,13 +365,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                                                       suggestedAddress: validation.normalizedAddress.toWooShippingAddress(),
                                                                       onConfirm: { [weak self] confirmedAddress in
                 guard let self else { return }
-                switch addressType {
-                case .origin:
-                    updateConfirmedOriginAddress(confirmedAddress)
-                case .destination(let orderID):
-                    updateConfirmedDestinationAddress(for: orderID,
-                                                      with: confirmedAddress)
-                }
+                updateConfirmedAddress(confirmedAddress)
             })
         } catch let error as WooShippingAddressValidationError {
             if let nameError = error.nameError {
@@ -381,13 +383,30 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 error: error
             ))
         } catch {
-            // TODO: Display error if validation request fails.
             DDLogError("⛔️ Error validating address for Woo Shipping label: \(error)")
+
+            // Show error alert when validation request fails
+            addressErrorState = .validation
+
             analytics.track(event: .WooShipping.editingAddressStep(
                 type: analyticAddressType,
                 state: .validationFailed,
                 error: error
             ))
+        }
+    }
+
+    /// Update confirmed address remotely.
+    @MainActor
+    func updateConfirmedAddress(_ address: WooShippingAddress) {
+        switch addressType {
+        case .origin:
+            updateConfirmedOriginAddress(address)
+        case .destination(let orderID):
+            updateConfirmedDestinationAddress(
+                for: orderID,
+                with: address
+            )
         }
     }
 
@@ -398,7 +417,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
 
         // Merge the provided (normalized) address with the edited address fields.
-        let address = WooShippingOriginAddress(id: id,
+        let originAddress = WooShippingOriginAddress(id: id,
                                                company: address.company,
                                                address1: address.address1,
                                                address2: address.address2,
@@ -415,12 +434,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
         Task { @MainActor in
             do {
-                let updatedOriginAddress = try await updateOriginAddress(with: address)
+                let updatedOriginAddress = try await updateOriginAddress(with: originAddress)
                 onOriginAddressEdited?(updatedOriginAddress)
                 analytics.track(event: .WooShipping.editingAddressStep(type: .origin, state: .confirmed))
             } catch {
-                // TODO: Display error if origin address update fails.
                 DDLogError("⛔️ Error updating origin address for Woo Shipping label: \(error)")
+
+                // Show error alert when origin address update fails
+                addressErrorState = .updateOrigin(address)
+
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .origin,
                     state: .confirmed,
@@ -434,7 +456,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     private func updateConfirmedDestinationAddress(for orderID: Int64,
                                                    with address: WooShippingAddress) {
         // Merge the provided (normalized) address with the edited address fields.
-        let address = WooShippingDestinationAddress(company: address.company,
+        let destinationAddress = WooShippingDestinationAddress(company: address.company,
                                                     address1: address.address1,
                                                     address2: address.address2,
                                                     city: address.city,
@@ -450,12 +472,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         Task { @MainActor in
             do {
                 let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
-                                                                                   with: address)
+                                                                                   with: destinationAddress)
                 onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
                 analytics.track(event: .WooShipping.editingAddressStep(type: .destination, state: .confirmed))
             } catch {
-                // TODO: Display error if destination address update fails.
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
+
+                // Show error alert when destination address update fails
+                addressErrorState = .updateDestination(address)
+
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
                     state: .confirmed,
@@ -690,6 +715,39 @@ private extension WooShippingEditAddressViewModel {
     }
 }
 
+// MARK: Address update error handling
+extension WooShippingEditAddressViewModel {
+    enum AddressErrorState: Equatable {
+        case validation
+
+        /// Associated address is used for retrying updating attempt
+        case updateOrigin(WooShippingAddress)
+        case updateDestination(WooShippingAddress)
+
+        var title: String {
+            switch self {
+            case .validation:
+                return Localization.AddressValidationError.title
+            case .updateOrigin:
+                return Localization.OriginAddressUpdateError.title
+            case .updateDestination:
+                return Localization.DestinationAddressUpdateError.title
+            }
+        }
+
+        var message: String {
+            switch self {
+            case .validation:
+                return Localization.AddressValidationError.message
+            case .updateOrigin:
+                return Localization.OriginAddressUpdateError.message
+            case .updateDestination:
+                return Localization.DestinationAddressUpdateError.message
+            }
+        }
+    }
+}
+
 // MARK: Constants
 private extension WooShippingEditAddressViewModel {
     enum Constants {
@@ -760,6 +818,48 @@ private extension WooShippingEditAddressViewModel {
             static let missingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.missingInformation",
                                                               value: "Missing information",
                                                               comment: "Label when the address is missing information in the Woo Shipping label creation flow")
+        }
+
+        enum AddressValidationError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.addressValidationError.title",
+                value: "Address Validation Error",
+                comment: "Title for the address validation error alert in the Woo Shipping label creation flow"
+            )
+
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.addressValidationError.message",
+                value: "The address you entered could not be verified. Please try again later.",
+                comment: "Message for the address validation error alert in the Woo Shipping label creation flow"
+            )
+        }
+
+        enum OriginAddressUpdateError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.originAddressUpdateError.title",
+                value: "Origin Address Update Error",
+                comment: "Title for the origin address update error alert in the Woo Shipping label creation flow"
+            )
+
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.originAddressUpdateError.message",
+                value: "The origin address could not be updated. Please try again later.",
+                comment: "Message for the origin address update error alert in the Woo Shipping label creation flow"
+            )
+        }
+
+        enum DestinationAddressUpdateError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.title",
+                value: "Destination Address Update Error",
+                comment: "Title for the destination address update error alert in the Woo Shipping label creation flow"
+            )
+
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.message",
+                value: "The destination address could not be updated. Please try again later.",
+                comment: "Message for the destination address update error alert in the Woo Shipping label creation flow"
+            )
         }
     }
 }

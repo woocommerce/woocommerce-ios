@@ -20,18 +20,18 @@ final class StoreOnboardingCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_starting_with_customDomains_task_presents_DomainSettingsHostingController() throws {
+    func test_starting_with_storeDetails_task_presents_AuthenticatedWebViewController() throws {
         // Given
         let coordinator = StoreOnboardingCoordinator(navigationController: navigationController, site: .fake(), onTaskCompleted: { _ in }, reloadTasks: {})
 
         // When
-        coordinator.start(task: .init(isComplete: true, type: .customizeDomains))
+        coordinator.start(task: .init(isComplete: true, type: .storeDetails))
         waitUntil {
             coordinator.navigationController.presentedViewController != nil
         }
 
         // Then
         let presentedNavigationController = try XCTUnwrap(coordinator.navigationController.presentedViewController as? WooNavigationController)
-        assertThat(presentedNavigationController.topViewController, isAnInstanceOf: DomainSettingsHostingController.self)
+        assertThat(presentedNavigationController.topViewController, isAnInstanceOf: AuthenticatedWebViewController.self)
     }
 }

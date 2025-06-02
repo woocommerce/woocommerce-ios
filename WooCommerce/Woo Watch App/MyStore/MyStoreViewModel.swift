@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import NetworkingWatchOS
-import WooFoundationWatchOS
+import WooFoundationCore
 
 /// View Model for the MyStoreView
 ///

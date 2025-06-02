@@ -8,6 +8,6 @@ public extension Color {
     /// - Returns: Color. Red in cases of error
     static func withColorStudio(name: ColorStudioName, shade: ColorStudioShade) -> Color {
         let assetName = ColorStudio(name: name, shade: shade).assetName()
-        return Color(assetName, bundle: Bundle(for: WooFoundationBundleClass.self))
+        return Color(assetName, bundle: .module)
     }
 }

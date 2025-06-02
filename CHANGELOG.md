@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.5
+In this update we’ve fixed blurry payment icons, optimized image handling, improved accessibility, added a card payment timeout, and removed domain purchase features for a cleaner experience. We've also added new improvements to email receipts for POS (available from WooCommerce 10.0.0)
+
 ## 22.4
 With this version of the Woo app, you'll be able to see receipts for failed transactions, and enter addresses more easily in order creation. On iPad, we've improved POS search by adding coupon search, and you'll see your most popular products before you search. We've also fixed a crash when reloading order details after a refund on the web.
 

@@ -27,6 +27,7 @@ final class DiscountTypeBottomSheetListSelectorCommand: BottomSheetListSelectorC
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetIcon,
                                                                     imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0,
                                                                     isSelected: isSelected(model: model)
         )

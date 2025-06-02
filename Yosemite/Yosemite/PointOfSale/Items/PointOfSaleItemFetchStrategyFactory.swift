@@ -4,10 +4,10 @@ import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
 
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
-    var defaultStrategy: PointOfSalePurchasableItemFetchStrategy { get }
+    func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 
     func searchStrategy(searchTerm: String,
-                        analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
+                        analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 
     func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy
 }
@@ -25,13 +25,14 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
         self.variationsRemote = ProductVariationsRemote(network: network)
     }
 
-    public var defaultStrategy: PointOfSalePurchasableItemFetchStrategy {
+    public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSaleDefaultPurchasableItemFetchStrategy(siteID: siteID,
                                                        productsRemote: productsRemote,
-                                                       variationsRemote: variationsRemote)
+                                                       variationsRemote: variationsRemote,
+                                                       analytics: analytics)
     }
     public func searchStrategy(searchTerm: String,
-                               analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
+                               analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSaleSearchPurchasableItemFetchStrategy(siteID: siteID,
                                                       searchTerm: searchTerm,
                                                       productsRemote: productsRemote,
@@ -54,12 +55,12 @@ public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetc
         self.fixedStrategy = fixedStrategy
     }
 
-    public var defaultStrategy: PointOfSalePurchasableItemFetchStrategy {
+    public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
 
     public func searchStrategy(searchTerm: String,
-                               analytics: POSSearchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
+                               analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
 

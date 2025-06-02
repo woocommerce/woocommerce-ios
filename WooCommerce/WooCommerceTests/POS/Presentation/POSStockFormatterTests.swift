@@ -98,9 +98,7 @@ struct POSStockFormatterTests {
         #expect(stockLabel == "Out of stock")
     }
 
-    // Disabled temporarily due to failure to code freeze 22.5
-    // Context: p1748609128918879?thread_ts=1748592083.887729&cid=CC7L49W13-slack-CC7L49W13
-    @Test(.disabled()) func test_when_managestock_enabled_and_stockQuantity_is_positive_then_returns_number_in_stock_stockLabel() async throws {
+    @Test func test_when_managestock_enabled_and_stockQuantity_is_positive_then_returns_number_in_stock_stockLabel() async throws {
         // Given
         let manageStockEnabled: Bool = true
         let stockQuantity: Decimal = 5

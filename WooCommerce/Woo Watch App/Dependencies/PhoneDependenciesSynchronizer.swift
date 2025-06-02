@@ -2,7 +2,7 @@ import Foundation
 import WatchConnectivity
 import KeychainAccess
 import NetworkingWatchOS
-import WooFoundationWatchOS
+import WooFoundationCore
 
 /// Type that receives and stores the necessary dependencies from the phone session.
 ///

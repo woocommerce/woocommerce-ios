@@ -16,12 +16,16 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
-            name: "WPMediaPicker",
-            targets: ["WPMediaPicker"]
-        ),
-        .library(
             name: "TestKit",
             targets: ["TestKit"]
+        ),
+        .library(
+            name: "WooFoundation",
+            targets: ["WooFoundation"]
+        ),
+        .library(
+            name: "WooFoundationCore",
+            targets: ["WooFoundationCore"]
         ),
         .library(
             name: "WordPressShared",
@@ -30,6 +34,10 @@ let package = Package(
         .library(
             name: "WordPressUI",
             targets: ["WordPressUI", "WordPressUIObjC"]
+        ),
+        .library(
+            name: "WPMediaPicker",
+            targets: ["WPMediaPicker"]
         ),
     ],
     dependencies: [
@@ -70,15 +78,19 @@ let package = Package(
             exclude: ["README.md", "Sourcery"] // Relative to sources path
         ),
         .target(
-            name: "WPMediaPicker",
-            resources: [.process("Resources")]
-        ),
-        .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
         .target(
-            name: "WordPressSharedObjC",
+            name: "WooFoundation",
+            dependencies: ["WooFoundationCore"]
+        ),
+        .target(
+            name: "WooFoundationCore",
+            dependencies: [
+                "Codegen",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+            ],
             resources: [.process("Resources")]
         ),
         .target(
@@ -88,11 +100,23 @@ let package = Package(
             ],
             resources: [.process("Resources")]
         ),
+        .target(
+            name: "WordPressSharedObjC",
+            resources: [.process("Resources")]
+        ),
         .target(name: "WordPressUIObjC"),
         .target(
             name: "WordPressUI",
             dependencies: [.target(name: "WordPressUIObjC")],
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "WPMediaPicker",
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "WooFoundationTests",
+            dependencies: ["TestKit", .target(name: "WooFoundation")]
         ),
         .testTarget(
             name: "WordPressUITests",
@@ -145,9 +169,6 @@ enum XcodeTargetNames {
     static let wooCommerceTests = "WooCommerceTests"
     static let wooCommerceUITests = "WooCommerceUITests"
     static let wooCommerceWatchApp = "Woo Watch App"
-    static let wooFoundation = "WooFoundation"
-    static let wooFoundationTests = "WooFoundationTests"
-    static let wooFoundationWatchOS = "WooFoundationWatchOS"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
     static let yosemite = "Yosemite"
@@ -175,9 +196,6 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceTests,
             XcodeTargetNames.wooCommerceUITests,
             XcodeTargetNames.wooCommerceWatchApp,
-            XcodeTargetNames.wooFoundation,
-            XcodeTargetNames.wooFoundationTests,
-            XcodeTargetNames.wooFoundationWatchOS,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
             XcodeTargetNames.yosemite,
@@ -220,12 +238,12 @@ enum XcodeSupport {
                 XcodeTargetNames.networking,
                 dependencies: [
                     "Codegen",
+                    "WooFoundation",
                     "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
-                    XcodeTargetNames.wooFoundation.asDependency
                 ]
             ),
             .xcodeTarget(
@@ -233,6 +251,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    "WooFoundation",
                     "WordPressShared",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     XcodeTargetNames.networking.asDependency
@@ -250,12 +269,13 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
+                    "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storage,
-                dependencies: ["Codegen", XcodeTargetNames.wooFoundation.asDependency]
+                dependencies: ["Codegen", "WooFoundation"]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storageTests,
@@ -264,6 +284,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
                 dependencies: [
+                    "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
@@ -278,6 +299,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    "WooFoundation",
                     "WordPressShared",
                     "WordPressUI",
                     "WPMediaPicker",
@@ -333,27 +355,10 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
+                    "WooFoundationCore",
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "Sentry", package: "sentry-cocoa"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.wooFoundation,
-                dependencies: [
-                    "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.wooFoundationTests,
-                dependencies: ["TestKit", XcodeTargetNames.wooFoundation.asDependency]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.wooFoundationWatchOS,
-                dependencies: [
-                    "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
                 ]
             ),
             .xcodeTarget(
@@ -382,6 +387,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
+                    "WooFoundation",
                     "WordPressShared",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
@@ -396,6 +402,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "TestKit",
+                    "WooFoundation",
                     "WordPressShared",
                     XcodeTargetNames.yosemite.asDependency
                 ]

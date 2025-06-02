@@ -175,7 +175,6 @@
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
 		B9B8B5052AA0D7F500B36811 /* TaxRate+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */; };
 		B9B8B5062AA0D7F500B36811 /* TaxRate+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */; };
-		B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EFC27628903F7C00667217 /* WooFoundation.framework */; };
 		BAB373762796327000837B4A /* OrderTaxLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */; };
 		BAB373772796327000837B4A /* OrderTaxLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */; };
 		CC24A4EE29ED43D60009D6DA /* ProductSubscription+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24A4EC29ED43D60009D6DA /* ProductSubscription+CoreDataClass.swift */; };
@@ -486,7 +485,6 @@
 		B9B8B5022AA0D52B00B36811 /* Model 95.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 95.xcdatamodel"; sourceTree = "<group>"; };
 		B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B9EFC27628903F7C00667217 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB373732796310100837B4A /* Model 61.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 61.xcdatamodel"; sourceTree = "<group>"; };
 		BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -686,7 +684,6 @@
 			files = (
 				3F2B4AD42DDC312600E5E49C /* XcodeTarget_Storage in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
-				B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,7 +913,6 @@
 		B54CA5B320A4BC0200F38CD1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B9EFC27628903F7C00667217 /* WooFoundation.framework */,
 				B54CA5B420A4BC0300F38CD1 /* CoreData.framework */,
 			);
 			name = Frameworks;

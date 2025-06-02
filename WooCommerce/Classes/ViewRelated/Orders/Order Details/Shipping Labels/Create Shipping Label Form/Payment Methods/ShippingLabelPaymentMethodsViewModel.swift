@@ -176,7 +176,8 @@ extension ShippingLabelPaymentMethodsViewModel {
                                             selectedPaymentMethodID: 11743265,
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,
-                                            lastSelectedPackageID: "small_flat_box")
+                                            lastSelectedPackageID: "small_flat_box",
+                                            addPaymentMethodURL: nil)
     }
 
     static func samplePaymentMethods() -> [ShippingLabelPaymentMethod] {

@@ -12,14 +12,26 @@ struct BlazeConfirmPaymentView: View {
     @State private var showingAddPaymentWebView: Bool = false
     @State private var isShowingSupport = false
 
-    private let agreementText: NSAttributedString = {
+    /// Computed property to ensure the attributed string is recreated with current accessibility font settings
+    /// when dynamic type size changes, rather than being fixed at initialization time.
+    private var agreementText: NSAttributedString {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
 
+        // Cap the font size to prevent the footer from becoming too large
+        let baseFont = UIFont.preferredFont(forTextStyle: .caption1)
+        let cappedFont = baseFont.pointSize > Layout.maxAgreementTextFontSize ?
+            UIFont.preferredFont(
+                forTextStyle: .caption1,
+                compatibleWith: UITraitCollection(
+                    preferredContentSizeCategory: .accessibilityMedium
+                )
+            ) : baseFont
+
         let mutableAttributedText = NSMutableAttributedString(
             string: content,
-            attributes: [.font: UIFont.caption1,
+            attributes: [.font: cappedFont,
                          .foregroundColor: UIColor.secondaryLabel,
                          .paragraphStyle: paragraph]
         )
@@ -31,7 +43,7 @@ struct BlazeConfirmPaymentView: View {
         mutableAttributedText.setAsLink(textToFind: Localization.learnMore,
                                         linkURL: Constants.learnMoreLink)
         return mutableAttributedText
-    }()
+    }
 
     init(viewModel: BlazeConfirmPaymentViewModel) {
         self.viewModel = viewModel
@@ -250,6 +262,7 @@ private extension BlazeConfirmPaymentView {
     enum Layout {
         static let contentPadding: CGFloat = 16
         static let cardIconWidth: CGFloat = 35
+        static let maxAgreementTextFontSize: CGFloat = 20
     }
 
     enum Constants {

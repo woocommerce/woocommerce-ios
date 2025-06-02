@@ -1,4 +1,6 @@
+import Foundation
 import protocol Storage.StorageType
+import UIKit
 import Yosemite
 
 protocol PushNotificationBackgroundSynchronizerProtocol {

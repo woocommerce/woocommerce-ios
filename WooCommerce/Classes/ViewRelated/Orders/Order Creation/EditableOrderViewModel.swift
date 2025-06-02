@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import UIKit
 import WooFoundation
 import enum Networking.DotcomError
 

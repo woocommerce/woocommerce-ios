@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 
 /// The type of product form: adding a new one or editing an existing one.

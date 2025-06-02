@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Represents an editable data model based on `ProductVariation`.

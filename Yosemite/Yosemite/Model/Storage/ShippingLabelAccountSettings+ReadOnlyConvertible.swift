@@ -36,6 +36,7 @@ extension Storage.ShippingLabelAccountSettings: ReadOnlyConvertible {
                                             selectedPaymentMethodID: selectedPaymentMethodID,
                                             isEmailReceiptsEnabled: isEmailReceiptsEnabled,
                                             paperSize: .init(rawValue: paperSize ?? ""),
-                                            lastSelectedPackageID: lastSelectedPackageID ?? "")
+                                            lastSelectedPackageID: lastSelectedPackageID ?? "",
+                                            addPaymentMethodURL: nil)
     }
 }

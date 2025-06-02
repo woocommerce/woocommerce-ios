@@ -278,7 +278,6 @@
 		68F48B1128E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */; };
 		68F48B1328E3E5750045C15B /* wc-analytics-customers.json in Resources */ = {isa = PBXBuildFile; fileRef = 68F48B1228E3E5750045C15B /* wc-analytics-customers.json */; };
 		68FBA53C2C290A5F0067B377 /* products-load-all-type-simple.json in Resources */ = {isa = PBXBuildFile; fileRef = 68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */; };
-		68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FBC5B728928C8C00A05461 /* WooFoundation.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteStatsRemoteTests.swift */; };
 		740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */ = {isa = PBXBuildFile; fileRef = 740211DE2193985A002248DA /* comment-moderate-spam.json */; };
@@ -1014,7 +1013,6 @@
 		68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCAnalyticsCustomerMapperTests.swift; sourceTree = "<group>"; };
 		68F48B1228E3E5750045C15B /* wc-analytics-customers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wc-analytics-customers.json"; sourceTree = "<group>"; };
 		68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-type-simple.json"; sourceTree = "<group>"; };
-		68FBC5B728928C8C00A05461 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteStatsRemoteTests.swift; sourceTree = "<group>"; };
 		740211DE2193985A002248DA /* comment-moderate-spam.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "comment-moderate-spam.json"; sourceTree = "<group>"; };
@@ -2108,7 +2106,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */,
 				3F2B4AD22DDC310600E5E49C /* XcodeTarget_Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2147,7 +2144,6 @@
 		35C45CCE73A311BE252F6BF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				68FBC5B728928C8C00A05461 /* WooFoundation.framework */,
 				26FB056B25F6CB9100A40B26 /* Fakes.framework */,
 			);
 			name = Frameworks;

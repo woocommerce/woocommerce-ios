@@ -1,5 +1,5 @@
 import SwiftUI
-import class WooFoundationWatchOS.CurrencySettings
+import class WooFoundationCore.CurrencySettings
 
 /// Environment dependencies setup
 ///

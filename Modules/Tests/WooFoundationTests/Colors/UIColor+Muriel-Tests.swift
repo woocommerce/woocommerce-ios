@@ -96,7 +96,7 @@ final class UIColor_Muriel_Tests: XCTestCase {
     ///
     private func colorAssetObtainedMatchesMuriel(_ murielColor: ColorStudio) -> Bool {
         let color = UIColor.withColorStudio(murielColor)
-        let assetColor = UIColor(named: murielColor.assetName(), in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
+        let assetColor = UIColor(named: murielColor.assetName(), in: ColorStudio.bundle, compatibleWith: nil)
 
         return color == assetColor
     }
@@ -109,7 +109,7 @@ final class UIColor_Muriel_Tests: XCTestCase {
         return allShades.map {
             let colorStudio = ColorStudio(name: name, shade: $0)
             let color = UIColor.withColorStudio(colorStudio)
-            let assetColor = UIColor(named: colorStudio.assetName(), in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
+            let assetColor = UIColor(named: colorStudio.assetName(), in: ColorStudio.bundle, compatibleWith: nil)
 
             return color == assetColor
         }.reduce(true, { $0 && $1 })

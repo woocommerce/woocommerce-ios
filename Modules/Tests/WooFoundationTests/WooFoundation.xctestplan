@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C154BB9C-6749-4565-A60B-310A468D2877",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WooFoundationTests",
+        "name" : "WooFoundationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

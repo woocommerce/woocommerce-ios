@@ -180,6 +180,30 @@ struct WooShippingEditAddressView: View {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
             }
         }
+        .alert(
+            viewModel.addressErrorState?.title ?? "",
+            isPresented: $viewModel.isShowingAddressErrorAlert,
+            actions: {
+                Button(Localization.AlertButtons.retry) {
+                    Task { @MainActor in
+                        switch viewModel.addressErrorState {
+                        case .validation:
+                            await viewModel.remotelyValidateAddress()
+                        case .updateOrigin(let address), .updateDestination(let address):
+                            viewModel.updateConfirmedAddress(address)
+                        case nil:
+                            break
+                        }
+                    }
+                }
+                Button(
+                    Localization.AlertButtons.close,
+                    role: .cancel
+                ) {}
+            }, message: {
+                Text(viewModel.addressErrorState?.message ?? "")
+            }
+        )
     }
 
     private struct AddressTextField: View {
@@ -416,6 +440,20 @@ private extension WooShippingEditAddressView {
             static let addMissingInformation = NSLocalizedString("wooShipping.createLabels.editAddress.addMissingInformation",
                                                                  value: "Add Missing Information",
                                                                  comment: "Button label indicating the address is missing information for a Woo Shipping label")
+        }
+
+        enum AlertButtons {
+            static let retry = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.alert.retry",
+                value: "Retry",
+                comment: "Button label indicating the user wants to retry an action"
+            )
+
+            static let close = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.alert.close",
+                value: "Close",
+                comment: "Button label indicating the user wants to close an alert"
+            )
         }
     }
 }

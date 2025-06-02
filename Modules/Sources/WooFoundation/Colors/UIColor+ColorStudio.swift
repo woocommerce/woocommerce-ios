@@ -9,7 +9,7 @@ public extension UIColor {
     /// - Returns: UIColor. Red in cases of error
     class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
         let assetName = colorStudio.assetName()
-        let color = UIColor(named: assetName, in: Bundle(for: WooFoundationBundleClass.self), compatibleWith: nil)
+        let color = UIColor(named: assetName, in: ColorStudio.bundle, compatibleWith: nil)
 
         guard let unwrappedColor = color else {
             return .red

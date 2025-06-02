@@ -1,8 +1,8 @@
-project:
-    file: ../../../../../Networking/Networking.xcodeproj
-    target:
-        name: Networking
+sources:
+    include:
+        - ../../../../../Networking/Sources
 templates:
     - Fakes.swifttemplate
 output: ../../../../../Fakes/Fakes/Networking.generated.swift
-
+args:
+    moduleName: Networking

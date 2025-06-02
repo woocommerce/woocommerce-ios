@@ -1939,7 +1939,7 @@ extension Networking.PaymentGateway {
         title: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         enabled: CopiableProp<Bool> = .copy,
-        features: CopiableProp<[PaymentGateway.Feature]> = .copy,
+        features: CopiableProp<[Feature]> = .copy,
         instructions: NullableCopiableProp<String> = .copy
     ) -> Networking.PaymentGateway {
         let siteID = siteID ?? self.siteID
@@ -4245,7 +4245,7 @@ extension Networking.WooShippingAddress {
 extension Networking.WooShippingConfig {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        shipments: CopiableProp<WooShippingShipments> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy,
         shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
     ) -> Networking.WooShippingConfig {
         let siteID = siteID ?? self.siteID
@@ -4506,7 +4506,7 @@ extension Networking.WooShippingShipmentItem {
 extension Networking.WooShippingUpdateShipment {
     public func copy(
         shipmentIdsToUpdate: CopiableProp<[String]> = .copy,
-        shipments: CopiableProp<WooShippingShipments> = .copy
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy
     ) -> Networking.WooShippingUpdateShipment {
         let shipmentIdsToUpdate = shipmentIdsToUpdate ?? self.shipmentIdsToUpdate
         let shipments = shipments ?? self.shipments
@@ -4520,7 +4520,7 @@ extension Networking.WooShippingUpdateShipment {
 
 extension Networking.WooShippingUpdateShipmentResponse {
     public func copy(
-        shipments: CopiableProp<WooShippingShipments> = .copy
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy
     ) -> Networking.WooShippingUpdateShipmentResponse {
         let shipments = shipments ?? self.shipments
 

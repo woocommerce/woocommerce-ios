@@ -182,8 +182,14 @@ let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
         )
     }
 
+    // When passing an Xcode project with synchronized folders or a source from a Swift package, globalName will not include the module name.
+    var name = type.globalName
+    if let moduleName = argument["moduleName"] as? String {
+        name = "\(moduleName).\(name)"
+    }
+
     return CopiableSpec(
-        name: type.globalName,
+        name: name,
         accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
         properties: propSpecs
     )

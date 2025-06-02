@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType

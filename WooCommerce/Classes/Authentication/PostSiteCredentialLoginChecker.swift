@@ -1,3 +1,4 @@
+import UIKit
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
 import protocol WooFoundation.Analytics

@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import UIKit
 import Experiments
 import Yosemite
 import class AutomatticTracks.CrashLogging

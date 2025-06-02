@@ -53,6 +53,12 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         accountSettings.canEditSettings
     }
 
+    /// Retrieves URL to add payment method from account settings.
+    /// If none exists, returns the default URL.
+    var addPaymentMethodURL: URL {
+        accountSettings.addPaymentMethodURL ?? WooConstants.URLs.addPaymentMethodWCShip.asURL()
+    }
+
     /// The URL path that will trigger the exit from the webview for adding a new payment method
     ///
     let fetchPaymentMethodURLPath = "me/purchases/payment-methods"
@@ -145,6 +151,23 @@ extension ShippingLabelPaymentMethodsViewModel {
             }))
         }
         return success ? newSettings : accountSettings
+    }
+
+    @MainActor
+    @discardableResult
+    func syncWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
+        isUpdating = true
+        defer {
+            isUpdating = false
+        }
+        let settings = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.loadAccountSettings(siteID: accountSettings.siteID, completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        let updatedSettings = settings.accountSettings
+        self.accountSettings = updatedSettings
+        return updatedSettings
     }
 }
 

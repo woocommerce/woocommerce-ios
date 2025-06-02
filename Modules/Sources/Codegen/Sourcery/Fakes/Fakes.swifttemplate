@@ -53,7 +53,13 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 
     /// If we are generating for an `Enum`, return with `.value` for content 
     if let enumType = type as? Enum, let firstEnumCase = enumType.cases.first {
-        return FakeableSpec(name: enumType.globalName, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
+        var name = enumType.globalName
+        // When passing an Xcode project with synchronized folders or a source from a Swift package, globalName will not include the module name.
+        if let moduleName = argument["moduleName"] as? String {
+            name = "\(moduleName).\(name)"
+        }
+
+        return FakeableSpec(name: name, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
     }
 
     /// Make sure we have at least one non throwable-initializer to work with.
@@ -69,7 +75,13 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
         )
     }
 
-    return FakeableSpec(name: type.globalName, accessLevelWithSpacePostfix: accessLevel, content: .initializer(propSpecs))
+    // When passing an Xcode project with synchronized folders or a source from a Swift package, globalName will not include the module name.
+    var name = type.globalName
+    if let moduleName = argument["moduleName"] as? String {
+        name = "\(moduleName).\(name)"
+    }
+
+    return FakeableSpec(name: name, accessLevelWithSpacePostfix: accessLevel, content: .initializer(propSpecs))
 }
 -%>
 <%#

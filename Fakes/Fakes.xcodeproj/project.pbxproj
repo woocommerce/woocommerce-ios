@@ -17,6 +17,7 @@
 		26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */; };
 		26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */; };
 		3F2B4AC22DDC30B200E5E49C /* XcodeTarget_Fakes in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AC12DDC30B200E5E49C /* XcodeTarget_Fakes */; };
+		3F37E1232DEEAC7200D8BF2B /* WooFoundationCore.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F37E1222DEEAC7200D8BF2B /* WooFoundationCore.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,7 @@
 		26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Networking.generated.swift; sourceTree = "<group>"; };
 		26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Yosemite.generated.swift; sourceTree = "<group>"; };
+		3F37E1222DEEAC7200D8BF2B /* WooFoundationCore.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooFoundationCore.generated.swift; sourceTree = "<group>"; };
 		3FA7DA002D547F2600CE5611 /* Fakes.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Fakes.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,6 +97,7 @@
 				26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */,
 				26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */,
 				20AD34D02B0CD9AF00F38F44 /* WooFoundation.generated.swift */,
+				3F37E1222DEEAC7200D8BF2B /* WooFoundationCore.generated.swift */,
 				26106B3B25FA4F5F0000DF30 /* Products */,
 				26CA6D2425F6C87800B01F48 /* Fakes.h */,
 				26CA6D2525F6C87800B01F48 /* Info.plist */,
@@ -200,6 +203,7 @@
 				26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */,
 				02B5147E2825532A00750B71 /* Hardware.generated.swift in Sources */,
 				26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */,
+				3F37E1232DEEAC7200D8BF2B /* WooFoundationCore.generated.swift in Sources */,
 				20AD34D12B0CD9AF00F38F44 /* WooFoundation.generated.swift in Sources */,
 				26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */,
 				26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */,

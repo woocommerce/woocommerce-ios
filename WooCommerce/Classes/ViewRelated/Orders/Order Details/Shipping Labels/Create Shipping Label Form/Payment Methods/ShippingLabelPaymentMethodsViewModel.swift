@@ -20,7 +20,13 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     /// List of payment methods available to choose from
     ///
     var paymentMethods: [ShippingLabelPaymentMethod] {
-        accountSettings.paymentMethods
+        /// sort methods to display the selected one on the top
+        accountSettings.paymentMethods.sorted { lhs, rhs in
+            if lhs.paymentMethodID == accountSettings.selectedPaymentMethodID {
+                return true
+            }
+            return false
+        }
     }
 
     var storeOwnerUsername: String {

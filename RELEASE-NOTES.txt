@@ -3,7 +3,7 @@
 
 22.6
 -----
-
+- [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
 
 22.5
 -----

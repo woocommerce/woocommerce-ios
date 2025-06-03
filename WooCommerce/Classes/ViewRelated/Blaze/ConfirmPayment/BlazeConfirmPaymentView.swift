@@ -7,6 +7,7 @@ struct BlazeConfirmPaymentView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var externalURL: URL?
     @State private var showingAddPaymentWebView: Bool = false
@@ -19,19 +20,9 @@ struct BlazeConfirmPaymentView: View {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
 
-        // Cap the font size to prevent the footer from becoming too large
-        let baseFont = UIFont.preferredFont(forTextStyle: .caption1)
-        let cappedFont = baseFont.pointSize > Layout.maxAgreementTextFontSize ?
-            UIFont.preferredFont(
-                forTextStyle: .caption1,
-                compatibleWith: UITraitCollection(
-                    preferredContentSizeCategory: .accessibilityMedium
-                )
-            ) : baseFont
-
         let mutableAttributedText = NSMutableAttributedString(
             string: content,
-            attributes: [.font: cappedFont,
+            attributes: [.font: UIFont.caption1,
                          .foregroundColor: UIColor.secondaryLabel,
                          .paragraphStyle: paragraph]
         )
@@ -72,7 +63,11 @@ struct BlazeConfirmPaymentView: View {
                         .padding(.horizontal, Layout.contentPadding)
                 }
 
-                Divider()
+                if sizeCategory.isAccessibilityCategory {
+                    footerView
+                } else {
+                    Divider()
+                }
             }
             .padding(.vertical, Layout.contentPadding)
         }
@@ -86,7 +81,9 @@ struct BlazeConfirmPaymentView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            footerView
+            if !sizeCategory.isAccessibilityCategory {
+                footerView
+            }
         }
         .task {
             await viewModel.updatePaymentInfo()
@@ -262,7 +259,6 @@ private extension BlazeConfirmPaymentView {
     enum Layout {
         static let contentPadding: CGFloat = 16
         static let cardIconWidth: CGFloat = 35
-        static let maxAgreementTextFontSize: CGFloat = 20
     }
 
     enum Constants {

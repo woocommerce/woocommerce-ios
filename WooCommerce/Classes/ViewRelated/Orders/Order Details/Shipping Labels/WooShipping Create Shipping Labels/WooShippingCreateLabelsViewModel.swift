@@ -278,6 +278,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shipments = shipments
     }
 
+    func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {
+        self.paymentMethod = accountSettings.paymentMethods.first(where: { $0.paymentMethodID == accountSettings.selectedPaymentMethodID })
+        self.paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+    }
+
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async {

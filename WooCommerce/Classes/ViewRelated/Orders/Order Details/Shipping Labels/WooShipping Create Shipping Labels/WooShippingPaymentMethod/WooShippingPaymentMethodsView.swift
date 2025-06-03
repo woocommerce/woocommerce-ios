@@ -1,9 +1,14 @@
 import SwiftUI
 import struct Yosemite.ShippingLabelPaymentMethod
+import struct Yosemite.ShippingLabelAccountSettings
 
 struct WooShippingPaymentMethodsView: View {
 
     @ObservedObject var viewModel: ShippingLabelPaymentMethodsViewModel
+
+    let onAccountSettingsUpdate: (ShippingLabelAccountSettings) -> Void
+
+    @State private var failedToUpdateSettings = false
 
     var body: some View {
         ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
@@ -40,9 +45,11 @@ struct WooShippingPaymentMethodsView: View {
                     .toggleStyle(.switch)
 
                     Button(Localization.confirmButton) {
-                        // TODO
+                        Task {
+                            await confirmPaymentMethod()
+                        }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isUpdating))
                     .disabled(viewModel.isDoneButtonEnabled() == false)
                 }
             }
@@ -53,6 +60,14 @@ struct WooShippingPaymentMethodsView: View {
                 /// clears states from last time.
                 viewModel.resetViewStates()
             }
+        }
+        .alert(Localization.ConfirmError.title, isPresented: $failedToUpdateSettings) {
+            Button(Localization.ConfirmError.retry) {
+                Task {
+                    await confirmPaymentMethod()
+                }
+            }
+            Button(Localization.ConfirmError.cancel, role: .cancel) {}
         }
     }
 }
@@ -147,12 +162,27 @@ private extension WooShippingPaymentMethodsView {
         }
         .padding(.vertical, Layout.contentPadding)
     }
+}
 
+// MARK: - Helpers
+private extension WooShippingPaymentMethodsView {
     func isSelectedMethod(_ method: ShippingLabelPaymentMethod) -> Bool {
         method.paymentMethodID == viewModel.selectedPaymentMethodID
     }
+
+    @MainActor
+    func confirmPaymentMethod() async {
+        do {
+            let newSettings = try await viewModel.updateWooShippingAccountSettings()
+            onAccountSettingsUpdate(newSettings)
+        } catch {
+            DDLogError("⛔️ Error saving account settings: \(error)")
+            failedToUpdateSettings = true
+        }
+    }
 }
 
+// MARK: - Subtypes
 private extension WooShippingPaymentMethodsView {
     enum Layout {
         static let contentPadding: CGFloat = 16
@@ -218,9 +248,28 @@ private extension WooShippingPaymentMethodsView {
             value: "Use this card",
             comment: "Button to confirm a credit/debit for purchasing a shipping label"
         )
+
+        enum ConfirmError {
+            static let title = NSLocalizedString(
+                "wooShippingPaymentMethodsView.confirmError.title",
+                value: "Unable to confirm the payment method",
+                comment: "Title of the error alert when confirming a payment method for purchasing shipping label fails"
+            )
+            static let retry = NSLocalizedString(
+                "wooShippingPaymentMethodsView.confirmError.retry",
+                value: "Retry",
+                comment: "Button to retry on the error alert when confirming a payment method for purchasing shipping label fails"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShippingPaymentMethodsView.confirmError.cancel",
+                value: "Cancel",
+                comment: "Button to dismiss the error alert when confirming a payment method for purchasing shipping label fails"
+            )
+        }
     }
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()))
+    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
+                                  onAccountSettingsUpdate: { _ in })
 }

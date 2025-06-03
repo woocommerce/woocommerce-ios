@@ -26,6 +26,9 @@ public protocol WooShippingRemoteProtocol {
                       completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void)
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void)
+    func updateAccountSettings(siteID: Int64,
+                               settings: ShippingLabelAccountSettings,
+                               completion: @escaping (Result<Bool, Error>) -> Void)
     func purchaseShippingLabel(siteID: Int64,
                                orderID: Int64,
                                originAddress: WooShippingAddress,
@@ -207,6 +210,30 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 
         let mapper = WooShippingAccountSettingsMapper(siteID: siteID)
 
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Updates account-level settings for a store.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - settings: The shipping label account settings to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    public func updateAccountSettings(siteID: Int64,
+                                      settings: ShippingLabelAccountSettings,
+                                      completion: @escaping (Result<Bool, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.selectedPaymentMethodID: settings.selectedPaymentMethodID,
+            ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled,
+            ParameterKey.enabled: true // This is needed due to the bug WOOSHIP-1410
+        ]
+        let path = Path.accountSettings
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SuccessDataResultMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 
@@ -542,6 +569,9 @@ private extension WooShippingRemote {
         static let address = "address"
         static let isVerified = "isVerified"
         static let fields = "_fields"
+        static let selectedPaymentMethodID = "selected_payment_method_id"
+        static let emailReceipts = "email_receipts"
+        static let enabled = "enabled"
     }
 }
 

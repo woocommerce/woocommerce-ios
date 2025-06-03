@@ -249,14 +249,53 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(successResponse.accountSettings.lastSelectedPackageID, "")
     }
 
+    func test_updateAccountSettings_sends_correct_values_and_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_success")
+
+        // When
+        let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: 123,
+                                                                isEmailReceiptsEnabled: false)
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let paymentMethodID = try XCTUnwrap(request.parameters["selected_payment_method_id"] as? Int64)
+        let isEmailReceiptsEnabled = try XCTUnwrap(request.parameters["email_receipts"] as? Bool)
+        XCTAssertEqual(paymentMethodID, 123)
+        XCTAssertFalse(isEmailReceiptsEnabled)
+        XCTAssertTrue(try result.get())
+    }
+
     func test_loadAccountSettings_returns_error_on_failure() throws {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
 
         // When
-        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
-            remote.loadAccountSettings(siteID: self.sampleSiteID) { result in
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateAccountSettings(siteID: self.sampleSiteID, settings: .fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_updateAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateAccountSettings(siteID: self.sampleSiteID, settings: .fake()) { result in
                 promise(result)
             }
         }

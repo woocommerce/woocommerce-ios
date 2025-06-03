@@ -84,7 +84,7 @@ private extension WooShippingPaymentMethodsView {
     var paymentMethodsNotEditableView: some View {
         HStack(alignment: .top) {
             Image(systemName: "info.circle")
-                .foregroundStyle(Color(uiColor: .withColorStudio(.orange, shade: .shade30)))
+                .foregroundStyle(Color(uiColor: .warning))
             Text(String.localizedStringWithFormat(Localization.paymentMethodsNotEditableNote,
                                                   viewModel.storeOwnerDisplayName,
                                                   viewModel.storeOwnerUsername))
@@ -93,7 +93,7 @@ private extension WooShippingPaymentMethodsView {
         .font(.subheadline)
         .padding(Layout.contentPadding)
         .background(
-            Color(uiColor: .withColorStudio(.orange, shade: .shade5))
+            Color(uiColor: .warningBackground)
                 .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         )
         .accessibilityElement(children: .combine)
@@ -105,6 +105,7 @@ private extension WooShippingPaymentMethodsView {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.EmptyView.imageSize, height: Layout.EmptyView.imageSize)
+                .accessibilityHidden(true)
 
             VStack(spacing: Layout.EmptyView.textSpacing) {
                 Text(Localization.EmptyView.title)
@@ -113,8 +114,10 @@ private extension WooShippingPaymentMethodsView {
                 Text(Localization.EmptyView.subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
+            .accessibilityElement(children: .combine)
 
             Button {
                 // TODO
@@ -132,6 +135,7 @@ private extension WooShippingPaymentMethodsView {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), style: StrokeStyle(dash: [4, 4]))
         )
+        .padding(.vertical, Layout.contentSpacing)
     }
 
     var paymentMethodList: some View {

@@ -161,7 +161,7 @@ private extension BlazeBudgetSettingView {
                     .bodyStyle()
                     .padding(Layout.contentPadding)
             }
-            .navigationTitle(Localization.title)
+            .navigationTitle(Localization.impressions)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -242,6 +242,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.update",
             value: "Update",
             comment: "Button to update the budget on the Blaze budget setting screen"
+        )
+        static let impressions = NSLocalizedString(
+            "blazeBudgetSettingView.impressions",
+            value: "Impressions",
+            comment: "Title of the modal to explain Blaze campaign impressions"
         )
         static let impressionInfo = NSLocalizedString(
             "blazeBudgetSettingView.impressionInfo",

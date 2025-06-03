@@ -11,9 +11,6 @@ final class ProductImagesHeaderViewModel {
     /// Whether we should scroll to the beginning of the collection view.
     let shouldScrollToStart: Bool
 
-    // Fixed width/height of collection view cell
-    static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
-
     // Base size for accessibility scaling
     private static let baseCellSize: CGFloat = 128.0
 

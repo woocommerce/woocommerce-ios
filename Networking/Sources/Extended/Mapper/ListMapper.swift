@@ -9,7 +9,7 @@ struct ListMapper<Output: Decodable>: Mapper {
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into [Product].
+    /// (Attempts) to convert a dictionary into [Output].
     ///
     func map(response: Data) throws -> [Output] {
         let decoder = JSONDecoder()

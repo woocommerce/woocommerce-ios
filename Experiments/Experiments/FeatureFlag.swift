@@ -232,4 +232,8 @@ public enum FeatureFlag: Int {
     /// Enables sending POS specific email receipts for eligible stores
     ///
     case pointOfSaleReceipts
+
+    /// Enables displaying POS as a tab in the tab bar
+    ///
+    case pointOfSaleAsATab
 }

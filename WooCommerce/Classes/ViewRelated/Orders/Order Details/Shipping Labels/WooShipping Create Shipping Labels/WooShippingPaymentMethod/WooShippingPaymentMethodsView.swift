@@ -17,11 +17,18 @@ struct WooShippingPaymentMethodsView: View {
                 .bold()
 
             Text(Localization.subtitle)
+                .padding(.bottom, Layout.contentPadding)
+
+            if viewModel.canEditPaymentMethod == false {
+                paymentMethodsNotEditableView
+            }
 
             if viewModel.paymentMethods.isEmpty {
                 emptyView
+                    .disabled(viewModel.canEditPaymentMethod == false)
             } else {
                 paymentMethodList
+                    .disabled(viewModel.canEditPaymentMethod == false)
             }
 
             HStack(alignment: .top) {
@@ -31,6 +38,7 @@ struct WooShippingPaymentMethodsView: View {
             }
             .font(.footnote)
             .foregroundStyle(Color.primary)
+            .accessibilityElement(children: .combine)
 
             Spacer()
 
@@ -73,6 +81,24 @@ struct WooShippingPaymentMethodsView: View {
 }
 
 private extension WooShippingPaymentMethodsView {
+    var paymentMethodsNotEditableView: some View {
+        HStack(alignment: .top) {
+            Image(systemName: "info.circle")
+                .foregroundStyle(Color(uiColor: .withColorStudio(.orange, shade: .shade30)))
+            Text(String.localizedStringWithFormat(Localization.paymentMethodsNotEditableNote,
+                                                  viewModel.storeOwnerDisplayName,
+                                                  viewModel.storeOwnerUsername))
+                .multilineTextAlignment(.leading)
+        }
+        .font(.subheadline)
+        .padding(Layout.contentPadding)
+        .background(
+            Color(uiColor: .withColorStudio(.orange, shade: .shade5))
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+        )
+        .accessibilityElement(children: .combine)
+    }
+
     var emptyView: some View {
         VStack(spacing: Layout.EmptyView.contentSpacing) {
             Image(uiImage: .creditCardIllustration)
@@ -106,7 +132,6 @@ private extension WooShippingPaymentMethodsView {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), style: StrokeStyle(dash: [4, 4]))
         )
-        .padding(.top, Layout.contentSpacing)
     }
 
     var paymentMethodList: some View {
@@ -160,7 +185,7 @@ private extension WooShippingPaymentMethodsView {
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, Layout.contentPadding)
+        .padding(.vertical, Layout.contentSpacing)
     }
 }
 
@@ -214,6 +239,13 @@ private extension WooShippingPaymentMethodsView {
             "wooShippingPaymentMethodsView.subtitle",
             value: "Choose a payment method.",
             comment: "Subtitle of the payment method sheet in the Shipping Label purchase flow"
+        )
+        static let paymentMethodsNotEditableNote = NSLocalizedString(
+            "wooShippingPaymentMethodsView.paymentMethodsNotEditableNote",
+            value: "Only the site owner can manage the shipping label payment methods. " +
+            "Please contact store owner %1$@ (%2$@) to manage payment methods",
+            comment: "Note for users without permission to manage payment methods for shipping label purchase. " +
+            "The placeholders are the store owner name and username respectively."
         )
         enum EmptyView {
             static let title = NSLocalizedString(

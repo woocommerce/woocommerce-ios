@@ -306,6 +306,35 @@ private extension WooShippingPaymentMethodsView {
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
-                                  onAccountSettingsUpdate: { _ in })
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(withPermissions: false)),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: false,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: true,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
 }

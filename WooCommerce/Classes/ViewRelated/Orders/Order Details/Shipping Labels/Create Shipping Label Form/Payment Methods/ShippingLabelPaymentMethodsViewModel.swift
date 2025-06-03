@@ -63,6 +63,11 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         self.isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
     }
 
+    func resetViewStates() {
+        selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
+        isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
+    }
+
     func didSelectPaymentMethod(withID paymentMethodID: Int64) {
         selectedPaymentMethodID = paymentMethodID
     }

@@ -89,6 +89,9 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 // Template
 // --------------------------------------------------------------------------------
 -%>
+<% if specsToGenerate.isEmpty { -%>
+// Currently empty because none of the given sources conforms to GeneratedFakeable
+<% } else { -%>
 import Yosemite
 import Networking
 import Hardware
@@ -110,4 +113,5 @@ extension <%= spec.name -%> {
 <% } -%>
     }
 }
+<% } -%>
 <% } -%>

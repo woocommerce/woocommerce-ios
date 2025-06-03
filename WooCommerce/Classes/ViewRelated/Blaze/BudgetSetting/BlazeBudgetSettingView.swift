@@ -94,7 +94,7 @@ private extension BlazeBudgetSettingView {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Estimated impressions
+            // Estimated impressions - grouped for accessibility
             VStack(alignment: .leading) {
                 Button {
                     showingImpressionInfo = true
@@ -106,12 +106,15 @@ private extension BlazeBudgetSettingView {
                     .font(.subheadline)
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
                 .renderedIf(viewModel.forecastedImpressionState != .failure)
 
                 forecastedImpressionsView
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
+            .accessibilityLabel(viewModel.impressionsSectionAccessibilityLabel)
         }
     }
 
@@ -120,7 +123,7 @@ private extension BlazeBudgetSettingView {
         switch viewModel.forecastedImpressionState {
         case .loading:
             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-        case .result(let formattedResult):
+        case .result(let formattedResult, _, _):
             Text(formattedResult)
                 .fontWeight(.semibold)
                 .tertiaryTitleStyle()

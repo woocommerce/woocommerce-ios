@@ -33,12 +33,15 @@ struct WooShippingPaymentMethodsView: View {
 
             HStack(alignment: .top) {
                 Image(systemName: "info.circle")
-                Text(String(format: Localization.note, viewModel.storeOwnerUsername))
+                Text(String.localizedStringWithFormat(Localization.note,
+                                                      viewModel.storeOwnerDisplayName,
+                                                      viewModel.storeOwnerUsername))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .font(.footnote)
             .foregroundStyle(Color.primary)
             .accessibilityElement(children: .combine)
+            .padding(.top, Layout.contentSpacing)
 
             Spacer()
 
@@ -269,10 +272,11 @@ private extension WooShippingPaymentMethodsView {
             )
         }
         static let note = NSLocalizedString(
-            "wooShippingPaymentMethodsView.note",
-            value: "Credit cards are retrieved from the following WordPress.com account: @%1$@.",
+            "wooShippingPaymentMethodsView.noteWithUsername",
+            value: "Credit cards are retrieved from the following WordPress.com account: %1$@ <@%2$@>.",
             comment: "Note of the payment method sheet in the Shipping Label purchase flow. " +
-            "Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder."
+            "Placeholders are the name and username of an associated WordPress account. " +
+            "Please keep the `@` in front of the second placeholder."
         )
         static let emailReceipt = NSLocalizedString(
             "wooShippingPaymentMethodsView.emailReceipt",

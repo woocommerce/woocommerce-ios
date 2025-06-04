@@ -5,6 +5,9 @@ import protocol Networking.ProductVariationsRemoteProtocol
 public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation>
+    // TODO:
+    // Fetch products by tags
+    // Fetch products by categories
 }
 
 extension PointOfSalePurchasableItemFetchStrategy {

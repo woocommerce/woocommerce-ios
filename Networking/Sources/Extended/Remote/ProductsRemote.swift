@@ -95,6 +95,12 @@ public protocol ProductsRemoteProtocol {
                                            productTypes: [ProductType],
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct>
+    
+    // Tags & categories:
+    func fetchAllTags(for siteID: Int64) async throws -> [ProductTag]
+    func fetchAllCategories(for siteID: Int64) async throws -> [ProductCategory]
+    func searchProductsByTagsforPointOfSale(for siteID: Int64, tags: [ProductTag]) async throws -> PagedItems<POSProduct>
+    func searchProductsByCategoriesforPointOfSale(for siteID: Int64, categories: [ProductCategory]) async throws -> PagedItems<POSProduct>
 }
 
 extension ProductsRemoteProtocol {
@@ -145,7 +151,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
-    
+
     func loadProductsByCategory(for siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
         let path = Path.products
         let parameters: [String: String] = [:]
@@ -201,7 +207,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
             ParameterKey.productType: productType?.rawValue ?? "",
-            ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
+            ParameterKey.category: filterProductCategoryParameterValue(from: productCategory),
             ParameterKey.include: stringOfProductIDs,
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
@@ -417,7 +423,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
             ParameterKey.productType: productType?.rawValue ?? "",
-            ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
+            ParameterKey.category: filterProductCategoryParameterValue(from: productCategory),
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
@@ -476,6 +482,37 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ProductListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    // Fetch all tags for given site
+    public func fetchAllTags(for siteID: Int64) async throws -> [ProductTag] {
+        // TODO: Request & mapping
+        let tag1 = ProductTag(siteID: siteID,
+                              tagID: 1,
+                              name: "some name",
+                              slug: "some-name")
+        let tag2 = ProductTag(siteID: siteID,
+                              tagID: 1,
+                              name: "some name 2",
+                              slug: "some-name-2")
+        return [tag1, tag2]
+    }
+
+    // Fetch all categories for given site
+    public func fetchAllCategories(for siteID: Int64) async throws -> [ProductCategory] {
+        []
+    }
+
+    // Fetch all products with specific tags, for a given site. Returns POSProducts
+    public func searchProductsByTagsforPointOfSale(for siteID: Int64,
+                                                   tags: [ProductTag]) async throws -> PagedItems<POSProduct> {
+        .init(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    // Fetch all products with specific categories, for a given site. Returns POSProducts
+    public func searchProductsByCategoriesforPointOfSale(for siteID: Int64,
+                                                         categories: [ProductCategory]) async throws -> PagedItems<POSProduct> {
+        .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
     /// Retrieves a product SKU if available.
@@ -761,7 +798,7 @@ private extension ProductsRemote {
 private extension ProductsRemote {
     /// Returns the category Id in string format, or empty string if the product category is nil
     ///
-    func filterProductCategoryParemeterValue(from productCategory: ProductCategory?) -> String {
+    func filterProductCategoryParameterValue(from productCategory: ProductCategory?) -> String {
         guard let productCategory = productCategory else {
             return ""
         }

@@ -20,6 +20,8 @@ import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import Combine
 
+import Yosemite
+
 // MARK: - PreviewProvider helpers
 //
 struct POSProductPreview: POSOrderableItem, Equatable {
@@ -81,6 +83,10 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 
 @available(iOS 17.0, *)
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
+    func fetchAllTags() async throws -> [Yosemite.ProductTag] {
+        []
+    }
+    
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
@@ -94,6 +100,10 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 
 @available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
+    func fetchAllTags() async throws -> [Yosemite.ProductTag] {
+        []
+    }
+    
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))

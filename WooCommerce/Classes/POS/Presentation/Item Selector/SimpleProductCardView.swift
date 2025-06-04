@@ -39,6 +39,7 @@ struct SimpleProductCardView: View {
                         .foregroundStyle(Constants.detailColor)
                         .font(Constants.itemDetailFont)
 
+                    // If we want to display categories in the product cards, this should be part of the models
                     Text("🔖 Some category")
                         .foregroundStyle(Constants.detailColor)
                         .font(Constants.itemDetailFont)

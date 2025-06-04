@@ -6,6 +6,8 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
+import Yosemite
+
 @available(iOS 17.0, *)
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
@@ -15,6 +17,10 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
+    func fetchAllTags() async throws -> [Yosemite.ProductTag] {
+        []
+    }
+
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
                                                                                     itemStates: [:]))

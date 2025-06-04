@@ -15,10 +15,9 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
-    
-    @State var allTags: [ProductTag] = [] // All tags
+
+    @State var allTags: [String] = []
     @State var selectedTags: [ProductTag] = [] // Selected tags in current instance, we use them to filter products we'll be fetching
-    @State var allTagsString: [String] = []
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
         PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
@@ -135,13 +134,16 @@ struct ItemListView: View {
             VStack {
                 Text("Tags here:")
                 // We should be able to select multiple from here, before call it done, which triggers the product remote with these
-                Text(allTagsString.description)
+                Text(allTags.description)
+                
                 Button(action: {
                     fetchAllTags()
                 }, label: { Text("Fetch all tags")})
+                
                 Button(action: {
                     fetchProductByTagID()
                 }, label: { Text("Get products by tag ID = 27 ")})
+                
                 Button(action: {
                     // Dimiss the modal, set loading state for product cards, update view state with products that match category/tags selected
                     showTagFilterModal = false
@@ -234,24 +236,11 @@ struct ItemListView: View {
     }
 
     func fetchAllTags() {
-        let baseGetAllTagsURL = ProcessInfo.processInfo.environment["FETCH_ALL_TAGS_URL"] ?? ""
-        Task {
-            guard let url = URL(string: baseGetAllTagsURL) else { return }
-
-            do {
-                let (data, response) = try await URLSession.shared.data(from: url)
-                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
-                    if let jsonString = String(data: data, encoding: .utf8) {
-                        print("✅ Response: \(jsonString)")
-                        allTagsString = jsonString.components(separatedBy: ",")
-                    }
-                } else {
-                    print("❌ Server error: \(response)")
-                }
-                callbackToUpdateItemListView()
-            } catch {
-                print("❌ Request failed: \(error)")
-            }
+        Task { @MainActor in
+            let tags = try await posModel.purchasableItemsController.fetchAllTags()
+            allTags = tags.map { $0.name }
+            //
+            //callbackToUpdateItemListView()
         }
     }
 

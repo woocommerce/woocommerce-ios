@@ -10,6 +10,8 @@ import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
 
+import Yosemite
+import Networking
 
 @available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
@@ -21,6 +23,9 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
+
+    ///
+    func fetchAllTags() async throws -> [ProductTag]
 }
 
 @available(iOS 17.0, *)
@@ -50,6 +55,19 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         self.itemsViewState = initialState
         self.paginationTracker = .init()
         self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy(analytics: POSItemFetchAnalytics(itemType: .product))
+    }
+
+    func fetchAllTags() async throws -> [ProductTag] {
+        // Remotes are hidden behind the fetch strategy object,
+        // Q: Should we use this for the functions that return products type?
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        let network = AlamofireNetwork(credentials: credentials)
+        let remote = ProductsRemote(network: network)
+
+        let tags = try await remote.fetchAllTags(for: siteID)
+
+        return tags
     }
 
     @MainActor

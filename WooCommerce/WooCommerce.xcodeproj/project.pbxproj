@@ -651,6 +651,8 @@
 		02F67FF525806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F67FF425806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift */; };
 		02F6800325807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800225807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift */; };
 		02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800825807CD300C3BAD2 /* GridStackView.swift */; };
+		02F6FA862DEEDAD9007B8845 /* POSTabCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6FA852DEEDACD007B8845 /* POSTabCoordinator.swift */; };
+		02F6FA882DEEDC79007B8845 /* POSTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6FA872DEEDC79007B8845 /* POSTabView.swift */; };
 		02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */; };
 		02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */; };
 		02FCA5542B54FC8C0097BFB8 /* CardPresentPaymentOnboardingState+Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FCA5532B54FC8C0097BFB8 /* CardPresentPaymentOnboardingState+Analytics.swift */; };
@@ -3901,6 +3903,8 @@
 		02F67FF425806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelTrackingURLGeneratorTests.swift; sourceTree = "<group>"; };
 		02F6800225807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeOptionListView.swift; sourceTree = "<group>"; };
 		02F6800825807CD300C3BAD2 /* GridStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridStackView.swift; sourceTree = "<group>"; };
+		02F6FA852DEEDACD007B8845 /* POSTabCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTabCoordinator.swift; sourceTree = "<group>"; };
+		02F6FA872DEEDC79007B8845 /* POSTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTabView.swift; sourceTree = "<group>"; };
 		02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsBanner.swift; sourceTree = "<group>"; };
 		02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageTextScanner.swift; sourceTree = "<group>"; };
 		02FCA5532B54FC8C0097BFB8 /* CardPresentPaymentOnboardingState+Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardPresentPaymentOnboardingState+Analytics.swift"; sourceTree = "<group>"; };
@@ -6610,8 +6614,10 @@
 		0202B6932387ACE000F3EBE0 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
+				02F6FA852DEEDACD007B8845 /* POSTabCoordinator.swift */,
 				0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */,
 				0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */,
+				02F6FA872DEEDC79007B8845 /* POSTabView.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -15744,6 +15750,7 @@
 				EE2A57D729E399CC009F61E1 /* CaseIterable+Helpers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
 				02CE43022768CBF60006EAEF /* ProducBarcodeScannerCoordinator.swift in Sources */,
+				02F6FA862DEEDAD9007B8845 /* POSTabCoordinator.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
@@ -16963,6 +16970,7 @@
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
 				B958640A2A657F44002C4C6E /* EnhancedCouponListView.swift in Sources */,
 				B9E4364E287589E200883CFA /* BadgeView.swift in Sources */,
+				02F6FA882DEEDC79007B8845 /* POSTabView.swift in Sources */,
 				CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */,
 				026826C12BF59E410036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift in Sources */,
 				DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */,

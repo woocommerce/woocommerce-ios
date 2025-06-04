@@ -12,6 +12,8 @@ extension WooTab {
             return 2
         case .hubMenu:
             return 3
+        case .pointOfSale:
+            return 4
         }
     }
 }

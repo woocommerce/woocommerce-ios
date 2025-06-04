@@ -218,15 +218,15 @@ private extension MainTabViewModel {
     /// Listens for changes on the menu badge display logic and updates it depending on them
     ///
     func synchronizeShouldShowBadgeOnHubMenuTabLogic() {
-        Publishers.CombineLatest($shouldShowNewFeatureBadgeOnHubMenuTab, $shouldShowReviewsBadgeOnHubMenuTab)
-            .sink { [weak self] shouldDisplayNewFeatureBadge, shouldDisplayReviewsBadge in
-                if shouldDisplayNewFeatureBadge {
-                    self?.onMenuBadgeShouldBeDisplayed?(.primary)
-                } else if shouldDisplayReviewsBadge {
-                    self?.onMenuBadgeShouldBeDisplayed?(.secondary)
-                } else {
-                    self?.onMenuBadgeShouldBeHidden?()
-                }
-            }.store(in: &cancellables)
+//        Publishers.CombineLatest($shouldShowNewFeatureBadgeOnHubMenuTab, $shouldShowReviewsBadgeOnHubMenuTab)
+//            .sink { [weak self] shouldDisplayNewFeatureBadge, shouldDisplayReviewsBadge in
+//                if shouldDisplayNewFeatureBadge {
+//                    self?.onMenuBadgeShouldBeDisplayed?(.primary)
+//                } else if shouldDisplayReviewsBadge {
+//                    self?.onMenuBadgeShouldBeDisplayed?(.secondary)
+//                } else {
+//                    self?.onMenuBadgeShouldBeHidden?()
+//                }
+//            }.store(in: &cancellables)
     }
 }

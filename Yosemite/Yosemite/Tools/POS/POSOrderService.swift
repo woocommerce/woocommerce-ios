@@ -114,7 +114,7 @@ private extension POSOrderService {
     enum Localization {
         static let cashPaymentMethodTitle = NSLocalizedString(
             "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle",
-            value: "Pay in Person",
+            value: "Cash",
             comment: "Title for the payment method used when collecting cash payment in Point of Sale."
         )
     }

@@ -25,6 +25,10 @@ enum WooTab {
     /// Hub Menu Tab
     ///
     case hubMenu
+
+    /// Point of Sale Tab
+    ///
+    case pointOfSale
 }
 
 extension WooTab {
@@ -32,14 +36,15 @@ extension WooTab {
     ///
     /// - Parameters:
     ///   - visibleIndex: the index of visible tabs on the tab bar
-    init(visibleIndex: Int) {
-        let tabs = WooTab.visibleTabs()
+    init(visibleIndex: Int, isPOSTabVisible: Bool) {
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
         self = tabs[visibleIndex]
     }
 
     /// Returns the visible tab index.
-    func visibleIndex() -> Int {
-        let tabs = WooTab.visibleTabs()
+    /// TODO-jc: refactor dynamic tab order
+    func visibleIndex(isPOSTabVisible: Bool) -> Int {
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
         guard let tabIndex = tabs.firstIndex(where: { $0 == self }) else {
             assertionFailure("Trying to get the visible tab index for tab \(self) while the visible tabs are: \(tabs)")
             return 0
@@ -48,8 +53,12 @@ extension WooTab {
     }
 
     // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
-    private static func visibleTabs() -> [WooTab] {
-        [.myStore, .orders, .products, .hubMenu]
+    private static func visibleTabs(isPOSTabVisible: Bool) -> [WooTab] {
+        if isPOSTabVisible {
+            return [.myStore, .orders, .products, .pointOfSale, .hubMenu]
+        } else {
+            return [.myStore, .orders, .products, .hubMenu]
+        }
     }
 }
 
@@ -97,9 +106,11 @@ final class MainTabBarController: UITabBarController {
     /// remove when .splitViewInProductsTab is removed.
     private let productsNavigationController = WooTabNavigationController()
 
-    private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuContainerController = TabContainerController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
+
+    private let posContainerController = TabContainerController()
+    private var posTabCoordinator: POSTabCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
     private let featureFlagService: FeatureFlagService
@@ -107,8 +118,12 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
+    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    private var cardPresentPaymentsOnboardingSubscription: AnyCancellable?
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
+
+    private var isPOSTabVisible: Bool = false
 
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
@@ -121,6 +136,7 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         super.init(coder: coder)
     }
 
@@ -129,11 +145,13 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
+        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         super.init(coder: coder)
     }
 
     deinit {
         cancellableSiteID?.cancel()
+        cardPresentPaymentsOnboardingSubscription?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -141,6 +159,8 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+
+        delegate = self
 
         fixTabBarTraitCollectionOnIpadForiOS18()
 
@@ -170,11 +190,11 @@ final class MainTabBarController: UITabBarController {
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
+        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
                 return
         }
-        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex)
+        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex, isPOSTabVisible: isPOSTabVisible)
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
@@ -204,7 +224,7 @@ final class MainTabBarController: UITabBarController {
     func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
             guard let self else { return }
-            selectedIndex = tab.visibleIndex()
+            selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
             guard let selectedViewController else {
                 return
             }
@@ -258,6 +278,25 @@ final class MainTabBarController: UITabBarController {
     }
 }
 
+extension MainTabBarController: UITabBarControllerDelegate {
+    @available(iOS 18.0, *)
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelectTab tab: UITab) -> Bool {
+        // not called
+        guard let selectedIndex = tabBarController.tabs.firstIndex(of: tab) else {
+            return false
+        }
+        let selectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible)
+        return selectedTab != .pointOfSale
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        let isSelectingPOSTab = viewController == posContainerController
+        if isSelectingPOSTab {
+            posTabCoordinator?.onTabSelected()
+        }
+        return !isSelectingPOSTab
+    }
+}
 
 // MARK: - UIViewControllerTransitioningDelegate
 //
@@ -302,6 +341,7 @@ private extension MainTabBarController {
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
+        case .pointOfSale:
             break
         }
     }
@@ -320,6 +360,8 @@ private extension MainTabBarController {
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
+            break
+        case .pointOfSale:
             break
         }
     }
@@ -600,17 +642,34 @@ extension MainTabBarController: DeepLinkNavigator {
 //
 private extension MainTabBarController {
     func configureTabViewControllers() {
-        viewControllers = {
-            var controllers = [UIViewController]()
-
-            let tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
-            tabs.forEach { tab in
-                let tabIndex = tab.visibleIndex()
-                let tabViewController = rootTabViewController(tab: tab)
-                controllers.insert(tabViewController, at: tabIndex)
+        // Start observing the card present payments onboarding state
+        cardPresentPaymentsOnboardingSubscription = cardPresentPaymentsOnboardingUseCase.statePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.updateTabViewControllers(state: state)
             }
-            return controllers
-        }()
+    }
+
+    private func updateTabViewControllers(state: CardPresentPaymentOnboardingState) {
+        var controllers = [UIViewController]()
+        var tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
+
+        // Add POS tab if the state is not loading or countryNotSupported
+        switch state {
+        case .loading, .countryNotSupported:
+            isPOSTabVisible = false
+        default:
+            isPOSTabVisible = true
+            tabs.insert(.pointOfSale, at: 3)
+        }
+
+        tabs.forEach { tab in
+            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+            let tabViewController = rootTabViewController(tab: tab)
+            controllers.insert(tabViewController, at: tabIndex)
+        }
+
+        viewControllers = controllers
     }
 
     func rootTabViewController(tab: WooTab) -> UIViewController {
@@ -623,6 +682,8 @@ private extension MainTabBarController {
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
             case .hubMenu:
                 return hubMenuContainerController
+            case .pointOfSale:
+                return posContainerController
         }
     }
 
@@ -664,10 +725,15 @@ private extension MainTabBarController {
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
+        // Configure POS tab coordinator once per logged in session potentially with multiple sites.
+        if posTabCoordinator == nil {
+            posTabCoordinator = POSTabCoordinator(siteID: siteID, tabContainerController: posContainerController)
+        }
+
         viewModel.loadHubMenuTabBadge()
 
         // Set dashboard to be the default tab.
-        selectedIndex = WooTab.myStore.visibleIndex()
+        selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
@@ -709,7 +775,7 @@ private extension MainTabBarController {
 
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
-        let tabIndex = tab.visibleIndex()
+        let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
         let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
 
         self.notificationsBadge.updateBadge(with: input)
@@ -720,22 +786,22 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
-            guard let self = self else {
-                return
-            }
-
-            let tab = WooTab.orders
-            let tabIndex = tab.visibleIndex()
-
-            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
-                return
-            }
-
-            orderTab.badgeValue = countReadableString
-        }
-
-        viewModel.startObservingOrdersCount()
+//        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
+//            guard let self = self else {
+//                return
+//            }
+//
+//            let tab = WooTab.orders
+//            let tabIndex = tab.visibleIndex()
+//
+//            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
+//                return
+//            }
+//
+//            orderTab.badgeValue = countReadableString
+//        }
+//
+//        viewModel.startObservingOrdersCount()
     }
 }
 

@@ -13,6 +13,8 @@ struct WooShippingPaymentMethodsView: View {
     @State private var showingAddPaymentWebView = false
     @State private var notice: Notice?
 
+    private let analytics = ServiceLocator.analytics
+
     var body: some View {
         ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
             Text(Localization.title)
@@ -74,6 +76,7 @@ struct WooShippingPaymentMethodsView: View {
                 /// clears states from last time.
                 viewModel.resetViewStates()
             }
+            analytics.track(event: .WooShipping.paymentStep(state: .started))
         }
         .alert(Localization.confirmErrorTitle, isPresented: $failedToUpdateSettings) {
             Button(Localization.retry) {
@@ -139,6 +142,7 @@ private extension WooShippingPaymentMethodsView {
 
             Button {
                 showingAddPaymentWebView = true
+                analytics.track(event: .WooShipping.paymentStep(state: .addPaymentMethodButtonTapped))
             } label: {
                 if viewModel.isReloading {
                     ProgressView().progressViewStyle(.circular)
@@ -193,6 +197,7 @@ private extension WooShippingPaymentMethodsView {
 
             Button {
                 showingAddPaymentWebView = true
+                analytics.track(event: .WooShipping.paymentStep(state: .addPaymentMethodButtonTapped))
             } label: {
                 HStack(spacing: Layout.contentPadding) {
                     if viewModel.isReloading {
@@ -252,6 +257,7 @@ private extension WooShippingPaymentMethodsView {
     func confirmPaymentMethod() async {
         do {
             let newSettings = try await viewModel.updateWooShippingAccountSettings()
+            analytics.track(event: .WooShipping.paymentStep(state: .paymentMethodSelected))
             onAccountSettingsUpdate(newSettings)
         } catch {
             DDLogError("⛔️ Error saving account settings: \(error)")
@@ -263,12 +269,18 @@ private extension WooShippingPaymentMethodsView {
     func refreshPaymentMethods() async {
         do {
             let newSettings = try await viewModel.syncWooShippingAccountSettings()
+            guard newSettings.paymentMethods != viewModel.paymentMethods else {
+                return
+            }
+
+            notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
+            analytics.track(event: .WooShipping.paymentStep(state: .paymentMethodAdded))
+
             if newSettings.paymentMethods.count == 1 && viewModel.paymentMethods.isEmpty {
                 /// When the first method is added, the backend chooses it as the default method automatically.
                 onAccountSettingsUpdate(newSettings)
-            } else if newSettings.paymentMethods != viewModel.paymentMethods {
+            } else {
                 viewModel.updateSettings(newSettings)
-                notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
             }
         } catch {
             DDLogError("⛔️ Error refreshing account settings: \(error)")

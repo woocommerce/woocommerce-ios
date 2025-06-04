@@ -329,7 +329,7 @@ private extension BlazeCampaignCreationForm {
                 if viewModel.isLoadingAISuggestions ||
                     viewModel.ctaText.isNotEmpty {
                     Text(viewModel.isLoadingAISuggestions ? "CTA placeholder" : viewModel.ctaText)
-                        .font(.system(size: Constants.ctaButtonFontSize))
+                        .font(.caption)
                         .foregroundColor(Constants.backgroundViewColor)
                         .padding(Layout.ctaButtonPadding)
                         .background(Constants.ctaButtonColor)
@@ -477,8 +477,6 @@ private extension BlazeCampaignCreationForm {
         static let ctaButtonColor = Color(red: 0, green: 0.219, blue: 1)
 
         static let ctaButtonTextColor = Color.white
-
-        static let ctaButtonFontSize: CGFloat = 13
 
         static let supportTag = "origin:blaze-native-campaign-creation"
     }

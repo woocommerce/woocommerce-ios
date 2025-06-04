@@ -51,7 +51,12 @@ struct BlazeScheduleSettingView: View {
                                displayedComponents: [.date]) {
                         EmptyView()
                     }
-                               .datePickerStyle(.compact)
+                    .if(sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.graphical)
+                    }
+                    .if(!sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.compact)
+                    }
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isButton)

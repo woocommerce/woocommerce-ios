@@ -82,6 +82,7 @@ struct ItemListView: View {
 
     @State private var showCouponCreationModal: Bool = false
     @State private var showCategoryFilterModal: Bool = false
+    @State private var showTagFilterModal: Bool = false
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -125,6 +126,12 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .sheet(isPresented: $showTagFilterModal) {
+            VStack {
+                Text("Tags here")
+                Text("TODO")
+            }
+        }
         .sheet(isPresented: $showCategoryFilterModal) {
             // Question: When we filter by category, do we want to find through products in memory? Or search from remote?)
             // The app does a lookup through local storage in ProductCategoryListViewModel.updateViewModelsArray() via resultController.fetchedObjects
@@ -264,6 +271,7 @@ private extension ItemListView {
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
                             createCategoryButton
+                            createTagButton
                             createCouponButton
                                 .renderedIf(isCouponsFeatureEnabled)
 
@@ -321,8 +329,15 @@ private extension ItemListView {
 private extension ItemListView {
     @ViewBuilder
     private var createCategoryButton: some View {
-        POSPageHeaderActionButton(systemName: "tag", action: {
+        POSPageHeaderActionButton(systemName: "folder", action: {
             showCategoryFilterModal = true
+        })
+    }
+
+    @ViewBuilder
+    private var createTagButton: some View {
+        POSPageHeaderActionButton(systemName: "tag", action: {
+            showTagFilterModal = true
         })
     }
 

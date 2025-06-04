@@ -9,6 +9,7 @@ struct WooShippingPaymentMethodsView: View {
     let onAccountSettingsUpdate: (ShippingLabelAccountSettings) -> Void
 
     @State private var failedToUpdateSettings = false
+    @State private var failedToReloadSettings = false
 
     @State private var showingAddPaymentWebView = false
     @State private var notice: Notice?
@@ -86,7 +87,7 @@ struct WooShippingPaymentMethodsView: View {
             }
             Button(Localization.cancel, role: .cancel) {}
         }
-        .alert(Localization.refreshErrorTitle, isPresented: $failedToUpdateSettings) {
+        .alert(Localization.refreshErrorTitle, isPresented: $failedToReloadSettings) {
             Button(Localization.retry) {
                 Task {
                     await refreshPaymentMethods()
@@ -284,6 +285,7 @@ private extension WooShippingPaymentMethodsView {
             }
         } catch {
             DDLogError("⛔️ Error refreshing account settings: \(error)")
+            failedToReloadSettings = true
         }
     }
 }

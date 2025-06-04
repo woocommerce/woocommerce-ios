@@ -53,6 +53,19 @@ struct BlazeScheduleSettingView: View {
                     }
                                .datePickerStyle(.compact)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityHint(Localization.startDateAccessibilityHint)
+                .accessibilityLabel(
+                    String(
+                        format: Localization.startDateAccessibilityLabel,
+                        DateFormatter.localizedString(
+                            from: startDate,
+                            dateStyle: .medium,
+                            timeStyle: .none
+                        )
+                    )
+                )
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.
                 Toggle(Localization.specifyDuration, isOn: $hasEndDate)
@@ -148,6 +161,16 @@ private extension BlazeScheduleSettingView {
             "blazeScheduleSettingView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the Blaze schedule setting screen"
+        )
+        static let startDateAccessibilityLabel = NSLocalizedString(
+            "blazeScheduleSettingView.startDateAccessibilityLabel",
+            value: "Campaign start date is %@",
+            comment: "Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date."
+        )
+        static let startDateAccessibilityHint = NSLocalizedString(
+            "blazeScheduleSettingView.startDateAccessibilityHint",
+            value: "Double tap to edit the campaign start date",
+            comment: "Accessibility hint for the start date picker on the Blaze campaign duration setting screen"
         )
     }
 }

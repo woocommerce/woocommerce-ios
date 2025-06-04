@@ -296,10 +296,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeDetailsImage)
     }
 
-    func test_customizeDomainsImagee_is_not_nil() {
-        XCTAssertNotNil(UIImage.customizeDomainsImage)
-    }
-
     func test_getPaidImage_is_not_nil() {
         XCTAssertNotNil(UIImage.getPaidImage)
     }
@@ -819,6 +815,10 @@ final class IconsTests: XCTestCase {
 
     func test_productIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.productIcon)
+    }
+
+    func test_creditCardIllustration_is_not_nil() {
+        XCTAssertNotNil(UIImage.creditCardIllustration)
     }
 
     func test_cardReaderLocationImage_is_not_nil() {

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 /// View to display the available shipping services (carriers and rates) with the Woo Shipping extension.

@@ -150,11 +150,14 @@ private extension BlazeCampaignDashboardView {
         VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
             // Title
             HStack {
-                Image(uiImage: .blaze)
-                    .resizable()
-                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                Text(DashboardCard.CardType.blaze.name)
-                    .headlineStyle()
+                HStack {
+                    Image(uiImage: .blaze)
+                        .resizable()
+                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    Text(DashboardCard.CardType.blaze.name)
+                        .headlineStyle()
+                }
+                .accessibilityElement(children: .combine)
                 Spacer()
                 Menu {
                     Button(Localization.hideBlaze) {
@@ -307,6 +310,7 @@ private struct ProductInfoView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 .cornerRadius(Layout.cornerRadius)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 Text(Localization.suggestedProductLabel)

@@ -1,11 +1,22 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.6
+-----
+- [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
+
 22.5
 -----
 - [*] Payments: payment method icons on the payment methods screen no longer appear blurry. [https://github.com/woocommerce/woocommerce-ios/pull/15659]
+- [*] POS: for WooCommerce version 10.0.0 and higher (betas available in June), a new check for POS feature switch value (in wp-admin WooCommerce Settings > Advanced > Features) was added for the POS entry point. [https://github.com/woocommerce/woocommerce-ios/pull/15662]
+- [*] POS: for WooCommerce version 10.0.0 and higher (betas available in June) and stores eligible for POS, sending email from the payment success screen sends out POS specific email receipts with product unit price, additional cash/card payment details, and customizable store details from POS settings in wp-admin WooCommerce Settings > Point of Sale. [https://github.com/woocommerce/woocommerce-ios/pull/15674]
 - [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
+- [*] Payments: Added a two-minute timeout when waiting for card payments, to reduce the risk of battery drain or mistaken payments. [https://github.com/woocommerce/woocommerce-ios/pull/15665]
 - [internal] POS: Handle payment intent creation error. [https://github.com/woocommerce/woocommerce-ios/pull/15661]
+- [*] Fixed VoiceOver issues for Blaze campaign flows [https://github.com/woocommerce/woocommerce-ios/pull/15687]
+- [*] Fixed accessibility issues on the Product details screen [https://github.com/woocommerce/woocommerce-ios/pull/15686]
+- [*] Removed domain purchase from app settings [https://github.com/woocommerce/woocommerce-ios/pull/15680]
+- [*] Removed customize domain onboarding task [https://github.com/woocommerce/woocommerce-ios/pull/15681]
 
 22.4
 -----

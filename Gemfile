@@ -6,8 +6,6 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 4.1'
 end
 
-gem 'cocoapods', '~> 1.14'
-gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'danger-dangermattic', '~> 1.2'
 gem 'dotenv'
 # 2.217.0 includes a fix for Xcode 15 test results parsing in CI

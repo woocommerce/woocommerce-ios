@@ -44,10 +44,8 @@
 		0270C0A427069B8900FC799F /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
 		0270C0A627069BA500FC799F /* BuildConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildConfiguration.swift; sourceTree = "<group>"; };
 		02AB82EE27069D93008D7334 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F8B84182DD2FEC2002DD6E8 /* Experiments.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Experiments.xctestplan; sourceTree = "<group>"; };
 		3FA7D9FB2D547E1700CE5611 /* Experiments.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Experiments.xcconfig; sourceTree = "<group>"; };
-		AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExperimentsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC53FB47275E426900C4CA4F /* ABTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTest.swift; sourceTree = "<group>"; };
 		EE2EDFDE29879331004E702B /* ABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABTestVariationProvider.swift; sourceTree = "<group>"; };
 		EEC8C0EC298A92F10047B4CB /* CachedABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedABTestVariationProvider.swift; sourceTree = "<group>"; };
@@ -83,7 +81,6 @@
 				0270C08327069A8900FC799F /* Experiments */,
 				0270C08E27069A8900FC799F /* ExperimentsTests */,
 				0270C08227069A8900FC799F /* Products */,
-				4E1989AAB68578443A38332F /* Pods */,
 				6F0EE5A69BC4E0719C6AE8AC /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -126,19 +123,9 @@
 			path = ExperimentsTests;
 			sourceTree = "<group>";
 		};
-		4E1989AAB68578443A38332F /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Pods;
-			path = ../Pods;
-			sourceTree = "<group>";
-		};
 		6F0EE5A69BC4E0719C6AE8AC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				33CEC0C5283FD4C9EF8C6A3C /* Pods_Experiments.framework */,
-				AAC7C082DD376957B4676401 /* Pods_ExperimentsTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

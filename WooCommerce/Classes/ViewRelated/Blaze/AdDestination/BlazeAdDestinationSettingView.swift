@@ -126,6 +126,9 @@ struct BlazeAdDestinationSettingView: View {
                     .padding(.bottom, Layout.contentVerticalSpacing)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAddTraits(type == viewModel.selectedDestinationType ? .isSelected : [])
         .onTapGesture {
             viewModel.setDestinationType(as: type)
         }

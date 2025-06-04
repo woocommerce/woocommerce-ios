@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Describes a data model that contains necessary properties for rendering a product form (`ProductFormViewController`).

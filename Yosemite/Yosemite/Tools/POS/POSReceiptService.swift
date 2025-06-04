@@ -33,13 +33,13 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
                 try await receiptsRemote.sendReceipt(siteID: siteID, orderID: order.orderID)
             }
         } catch {
-            throw POSReceiptServiceError.sendReceiptFailed
+            throw POSReceiptServiceError.sendReceiptFailed(underlyingError: error as NSError)
         }
     }
 }
 
 public extension POSReceiptService {
     enum POSReceiptServiceError: Error {
-        case sendReceiptFailed
+        case sendReceiptFailed(underlyingError: NSError)
     }
 }

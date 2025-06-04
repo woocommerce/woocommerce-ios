@@ -17,7 +17,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         defaultFetchStrategy = PointOfSaleDefaultPurchasableItemFetchStrategy(
             siteID: siteID,
             productsRemote: ProductsRemote(network: network),
-            variationsRemote: ProductVariationsRemote(network: network))
+            variationsRemote: ProductVariationsRemote(network: network),
+            analytics: MockPOSItemFetchAnalyticsTracking())
         itemProvider = PointOfSaleItemService(currencySettings: currencySettings)
     }
 

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Storage
 import protocol WooFoundation.WooAnalyticsEventPropertyType
 

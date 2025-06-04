@@ -31,10 +31,16 @@ public enum WooShippingAction: Action {
     case loadPackages(siteID: Int64,
                       completion: (Result<WooShippingPackagesResponse, Error>) -> Void)
 
-    /// Fetch list of packages.
+    /// Load account settings
     ///
     case loadAccountSettings(siteID: Int64,
                              completion: (Result<WooShippingAccountSettings, Error>) -> Void)
+
+    /// Update account settings
+    ///
+    case updateAccountSettings(siteID: Int64,
+                               settings: ShippingLabelAccountSettings,
+                               completion: (Result<Bool, Error>) -> Void)
 
     /// Purchase a shipping label.
     ///

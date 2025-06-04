@@ -4,9 +4,7 @@ import Networking
 import NetworkingWatchOS
 #endif
 
-#if canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationCore
 
 /// Orchestrator class that fetches today store stats data.
 ///

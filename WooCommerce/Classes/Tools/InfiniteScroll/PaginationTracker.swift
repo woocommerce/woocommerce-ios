@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Delegate of `PaginationTracker` that implements syncing per page number and size.

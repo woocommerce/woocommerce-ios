@@ -51,14 +51,17 @@ private extension ProductReviewsTableViewCell {
 
     func configureImageView() {
         contentImageView.contentMode = .center
+        contentImageView.accessibilityElementsHidden = true
     }
 
     func configureLabels() {
         titleLabel.applyBodyStyle()
         titleLabel.textColor = .text
+        titleLabel.numberOfLines = 0
 
         reviewsLabel.applySubheadlineStyle()
         reviewsLabel.textColor = .textSubtle
+        reviewsLabel.numberOfLines = 0
     }
 
     func configureStarView() {

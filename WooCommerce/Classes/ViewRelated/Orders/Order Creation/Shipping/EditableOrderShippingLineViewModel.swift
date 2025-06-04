@@ -1,3 +1,4 @@
+import Foundation
 import WooFoundation
 import Yosemite
 import protocol Experiments.FeatureFlagService

@@ -5,12 +5,16 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
 
+public protocol PointOfSaleBarcodeScanServiceProtocol {
+    func getItem(barcode: String) async throws -> POSItem
+}
+
 public enum PointOfSaleBarcodeScanError: Error, Equatable {
     case unknown
 }
 
 /// Service for handling barcode scanning in Point of Sale
-public final class PointOfSaleBarcodeScanService {
+public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
     private let currencyFormatter: CurrencyFormatter
     private let siteID: Int64

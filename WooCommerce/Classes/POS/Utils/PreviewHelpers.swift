@@ -18,6 +18,7 @@ import struct Yosemite.POSProduct
 import struct Yosemite.ProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
+import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -146,30 +147,9 @@ final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
 
 private var mockItems: [POSItem] {
     return [
-        .simpleProduct(POSSimpleProduct(id: UUID(),
-                                        name: "Product 1",
-                                        formattedPrice: "$1.00",
-                                        productID: 1,
-                                        price: "1.00",
-                                        manageStock: false,
-                                        stockQuantity: nil,
-                                        stockStatusKey: "")),
-        .simpleProduct(POSSimpleProduct(id: UUID(),
-                                        name: "Product 2",
-                                        formattedPrice: "$2.00",
-                                        productID: 2,
-                                        price: "2.00",
-                                        manageStock: false,
-                                        stockQuantity: nil,
-                                        stockStatusKey: "")),
-        .simpleProduct(POSSimpleProduct(id: UUID(),
-                                        name: "Product 3",
-                                        formattedPrice: "$3.00",
-                                        productID: 3,
-                                        price: "3.00",
-                                        manageStock: false,
-                                        stockQuantity: nil,
-                                        stockStatusKey: "")),
+        mockSimpleProductItem(id: 1, price: "1.00"),
+        mockSimpleProductItem(id: 2, price: "2.00"),
+        mockSimpleProductItem(id: 3, price: "3.00"),
         .variableParentProduct(
             .init(
                 id: .init(),
@@ -178,15 +158,19 @@ private var mockItems: [POSItem] {
                 productID: 5
             )
         ),
-        .simpleProduct(POSSimpleProduct(id: UUID(),
-                                        name: "Product 4",
-                                        formattedPrice: "$4.00",
-                                        productID: 4,
-                                        price: "4.00",
-                                        manageStock: false,
-                                        stockQuantity: nil,
-                                        stockStatusKey: ""))
+        mockSimpleProductItem(id: 4, price: "4.00")
     ]
+}
+
+private func mockSimpleProductItem(id: Int, price: String) -> POSItem {
+    .simpleProduct(POSSimpleProduct(id: UUID(),
+                                    name: "Product \(id)",
+                                    formattedPrice: "$\(price)",
+                                    productID: Int64(id),
+                                    price: price,
+                                    manageStock: false,
+                                    stockQuantity: nil,
+                                    stockStatusKey: ""))
 }
 
 private var mockVariationItems: [POSItem] {
@@ -242,6 +226,13 @@ struct POSPreviewHelpers {
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController
         )
+    }
+}
+
+// MARK: - Barcode Scan Service
+final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
+    func getItem(barcode: String) async throws -> POSItem {
+        return mockSimpleProductItem(id: 5, price: "35.50")
     }
 }
 

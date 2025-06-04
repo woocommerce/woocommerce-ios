@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Contains editable properties of a product model in the inventory settings.

@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import Combine
 import enum Networking.DotcomError

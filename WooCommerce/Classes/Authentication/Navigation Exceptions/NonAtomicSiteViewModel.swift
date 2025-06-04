@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 /// Configuration and actions for an ULErrorViewController, modelling

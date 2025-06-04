@@ -440,6 +440,11 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
+    func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+        return POSProduct.fake().copy(siteID: siteID,
+                                      globalUniqueID: globalUniqueID)
+    }
+
     func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,

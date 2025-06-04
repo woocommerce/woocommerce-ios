@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 
 /// Enables the user to select multiple products from a paginated list.

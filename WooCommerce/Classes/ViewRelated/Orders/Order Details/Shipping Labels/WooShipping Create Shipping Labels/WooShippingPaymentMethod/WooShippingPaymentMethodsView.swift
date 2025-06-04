@@ -20,20 +20,31 @@ struct WooShippingPaymentMethodsView: View {
                 .bold()
 
             Text(Localization.subtitle)
+                .padding(.bottom, Layout.contentPadding)
+
+            if viewModel.canEditPaymentMethod == false {
+                paymentMethodsNotEditableView
+            }
 
             if viewModel.paymentMethods.isEmpty {
                 emptyView
+                    .disabled(viewModel.canEditPaymentMethod == false)
             } else {
                 paymentMethodList
+                    .disabled(viewModel.canEditPaymentMethod == false)
             }
 
             HStack(alignment: .top) {
                 Image(systemName: "info.circle")
-                Text(String(format: Localization.note, viewModel.storeOwnerUsername))
+                Text(String.localizedStringWithFormat(Localization.note,
+                                                      viewModel.storeOwnerDisplayName,
+                                                      viewModel.storeOwnerUsername))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .font(.footnote)
             .foregroundStyle(Color.primary)
+            .accessibilityElement(children: .combine)
+            .padding(.top, Layout.contentSpacing)
 
             Spacer()
 
@@ -88,12 +99,31 @@ struct WooShippingPaymentMethodsView: View {
 }
 
 private extension WooShippingPaymentMethodsView {
+    var paymentMethodsNotEditableView: some View {
+        HStack(alignment: .top) {
+            Image(systemName: "info.circle")
+                .foregroundStyle(Color(uiColor: .warning))
+            Text(String.localizedStringWithFormat(Localization.paymentMethodsNotEditableNote,
+                                                  viewModel.storeOwnerDisplayName,
+                                                  viewModel.storeOwnerUsername))
+                .multilineTextAlignment(.leading)
+        }
+        .font(.subheadline)
+        .padding(Layout.contentPadding)
+        .background(
+            Color(uiColor: .warningBackground)
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+        )
+        .accessibilityElement(children: .combine)
+    }
+
     var emptyView: some View {
         VStack(spacing: Layout.EmptyView.contentSpacing) {
             Image(uiImage: .creditCardIllustration)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.EmptyView.imageSize, height: Layout.EmptyView.imageSize)
+                .accessibilityHidden(true)
 
             VStack(spacing: Layout.EmptyView.textSpacing) {
                 Text(Localization.EmptyView.title)
@@ -102,8 +132,10 @@ private extension WooShippingPaymentMethodsView {
                 Text(Localization.EmptyView.subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
+            .accessibilityElement(children: .combine)
 
             Button {
                 showingAddPaymentWebView = true
@@ -125,7 +157,7 @@ private extension WooShippingPaymentMethodsView {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), style: StrokeStyle(dash: [4, 4]))
         )
-        .padding(.top, Layout.contentSpacing)
+        .padding(.vertical, Layout.contentSpacing)
     }
 
     var paymentMethodList: some View {
@@ -183,7 +215,7 @@ private extension WooShippingPaymentMethodsView {
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, Layout.contentPadding)
+        .padding(.vertical, Layout.contentSpacing)
     }
 
     var webview: some View {
@@ -277,6 +309,13 @@ private extension WooShippingPaymentMethodsView {
             value: "Choose a payment method.",
             comment: "Subtitle of the payment method sheet in the Shipping Label purchase flow"
         )
+        static let paymentMethodsNotEditableNote = NSLocalizedString(
+            "wooShippingPaymentMethodsView.paymentMethodsNotEditableNote",
+            value: "Only the site owner can manage the shipping label payment methods. " +
+            "Please contact store owner %1$@ (%2$@) to manage payment methods",
+            comment: "Note for users without permission to manage payment methods for shipping label purchase. " +
+            "The placeholders are the store owner name and username respectively."
+        )
         enum EmptyView {
             static let title = NSLocalizedString(
                 "wooShippingPaymentMethodsView.emptyView.title",
@@ -295,10 +334,11 @@ private extension WooShippingPaymentMethodsView {
             )
         }
         static let note = NSLocalizedString(
-            "wooShippingPaymentMethodsView.note",
-            value: "Credit cards are retrieved from the following WordPress.com account: @%1$@.",
+            "wooShippingPaymentMethodsView.noteWithUsername",
+            value: "Credit cards are retrieved from the following WordPress.com account: %1$@ <@%2$@>.",
             comment: "Note of the payment method sheet in the Shipping Label purchase flow. " +
-            "Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder."
+            "Placeholders are the name and username of an associated WordPress account. " +
+            "Please keep the `@` in front of the second placeholder."
         )
         static let emailReceipt = NSLocalizedString(
             "wooShippingPaymentMethodsView.emailReceipt",
@@ -353,6 +393,35 @@ private extension WooShippingPaymentMethodsView {
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
-                                  onAccountSettingsUpdate: { _ in })
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(withPermissions: false)),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: false,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: true,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
 }

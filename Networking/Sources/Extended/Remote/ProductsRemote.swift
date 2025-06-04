@@ -95,6 +95,9 @@ public protocol ProductsRemoteProtocol {
                                            productTypes: [ProductType],
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct>
+
+    func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+                                                   globalUniqueID: String) async throws -> POSProduct
 }
 
 extension ProductsRemoteProtocol {
@@ -325,6 +328,34 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             for: siteID,
             pageNumber: pageNumber,
             parameters: parameters)
+    }
+
+    /// Fetches a single product or variation by its global unique identifier for Point of Sale.
+    /// This method is optimized for barcode scanning, returning only the first matching product.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch the product.
+    ///     - globalUniqueID: The global unique identifier (e.g. barcode) to search for.
+    /// - Returns: A POSProduct if found
+    /// - Throws: Error if the product is not found or if there's a network error
+    ///
+    public func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+                                                       globalUniqueID: String) async throws -> POSProduct {
+        let parameters = [
+            ParameterKey.globalUniqueID: globalUniqueID,
+            ParameterKey.page: "1",
+            ParameterKey.perPage: "1",
+            ParameterKey.contextKey: Default.context,
+            ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
+        ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
+        let mapper = ListMapper<POSProduct>(siteID: siteID)
+
+        guard let product = try await enqueue(request, mapper: mapper).first else {
+            throw NetworkError.notFound()
+        }
+        return product
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

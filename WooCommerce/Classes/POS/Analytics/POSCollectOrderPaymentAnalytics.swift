@@ -1,3 +1,4 @@
+import Foundation
 import protocol WooFoundation.Analytics
 import Yosemite
 

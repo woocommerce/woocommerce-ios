@@ -6,9 +6,13 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
-    /// Indicates if the view model is updating the remote account settings or fetching remote account settings
+    /// Indicates if the view model is updating the remote account settings
     ///
-    @Published var isUpdating: Bool = false
+    @Published private(set) var isUpdating = false
+
+    /// Indicates if the view model is fetching remote account settings
+    ///
+    @Published private(set) var isReloading: Bool = false
 
     /// Shipping Label account settings from the remote API
     ///
@@ -76,6 +80,11 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     func resetViewStates() {
         selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
         isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
+    }
+
+    func updateSettings(_ settings: ShippingLabelAccountSettings) {
+        accountSettings = settings
+        selectedPaymentMethodID = settings.selectedPaymentMethodID
     }
 
     func didSelectPaymentMethod(withID paymentMethodID: Int64) {
@@ -156,19 +165,16 @@ extension ShippingLabelPaymentMethodsViewModel {
     @MainActor
     @discardableResult
     func syncWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
-        isUpdating = true
+        isReloading = true
         defer {
-            isUpdating = false
+            isReloading = false
         }
         let settings = try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(WooShippingAction.loadAccountSettings(siteID: accountSettings.siteID, completion: { result in
                 continuation.resume(with: result)
             }))
         }
-        let updatedSettings = settings.accountSettings
-        self.accountSettings = updatedSettings
-        self.selectedPaymentMethodID = updatedSettings.selectedPaymentMethodID
-        return updatedSettings
+        return settings.accountSettings
     }
 }
 

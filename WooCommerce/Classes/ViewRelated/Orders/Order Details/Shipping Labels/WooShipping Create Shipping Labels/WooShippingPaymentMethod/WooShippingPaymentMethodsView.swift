@@ -108,7 +108,7 @@ private extension WooShippingPaymentMethodsView {
             Button {
                 showingAddPaymentWebView = true
             } label: {
-                if viewModel.isUpdating {
+                if viewModel.isReloading {
                     ProgressView().progressViewStyle(.circular)
                 } else {
                     Label {
@@ -162,24 +162,24 @@ private extension WooShippingPaymentMethodsView {
             Button {
                 showingAddPaymentWebView = true
             } label: {
-                if viewModel.isUpdating {
-                    ProgressView().progressViewStyle(.circular)
-                } else {
-                    HStack(spacing: Layout.contentPadding) {
+                HStack(spacing: Layout.contentPadding) {
+                    if viewModel.isReloading {
+                        ProgressView().progressViewStyle(.circular)
+                    } else {
                         Image(systemName: "plus")
                             .foregroundStyle(Color.accentColor)
                         Text(Localization.EmptyView.actionButton)
                     }
-                    .font(.subheadline)
-                    .bold()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(Layout.contentPadding)
-                    .contentShape(Rectangle())
-                    .background(
-                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .stroke(Color(.border))
-                    )
                 }
+                .font(.subheadline)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: viewModel.isReloading ? .center : .leading)
+                .padding(Layout.contentPadding)
+                .contentShape(Rectangle())
+                .background(
+                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                        .stroke(Color(.border))
+                )
             }
             .buttonStyle(.plain)
         }
@@ -231,10 +231,12 @@ private extension WooShippingPaymentMethodsView {
     func refreshPaymentMethods() async {
         do {
             let newSettings = try await viewModel.syncWooShippingAccountSettings()
-            notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
-            if newSettings.paymentMethods.count == 1 {
+            if newSettings.paymentMethods.count == 1 && viewModel.paymentMethods.isEmpty {
                 /// When the first method is added, the backend chooses it as the default method automatically.
                 onAccountSettingsUpdate(newSettings)
+            } else if newSettings.paymentMethods != viewModel.paymentMethods {
+                viewModel.updateSettings(newSettings)
+                notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
             }
         } catch {
             DDLogError("⛔️ Error refreshing account settings: \(error)")

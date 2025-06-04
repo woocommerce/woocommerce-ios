@@ -29,6 +29,7 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
         XCTAssertEqual(settings.storeOwnerUsername, "admin")
         XCTAssertEqual(settings.storeOwnerWpcomEmail, "example@example.com")
         XCTAssertEqual(settings.storeOwnerWpcomUsername, "apiexamples")
+        XCTAssertEqual(settings.addPaymentMethodURL, URL(string: "https://wordpress.com/me/purchases/add-credit-card"))
     }
 
     /// Verifies that the Shipping Label Account Settings are parsed correctly.
@@ -51,6 +52,7 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
         XCTAssertEqual(settings.storeOwnerUsername, "admin")
         XCTAssertEqual(settings.storeOwnerWpcomEmail, "example@example.com")
         XCTAssertEqual(settings.storeOwnerWpcomUsername, "apiexamples")
+        XCTAssertEqual(settings.addPaymentMethodURL, URL(string: "https://wordpress.com/me/purchases/add-credit-card"))
     }
 
     /// Verifies that the Shipping Label Account Settings without any payment methods are parsed correctly.
@@ -73,6 +75,7 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
         XCTAssertEqual(settings.storeOwnerUsername, "admin")
         XCTAssertEqual(settings.storeOwnerWpcomEmail, "example@example.com")
         XCTAssertEqual(settings.storeOwnerWpcomUsername, "apiexamples")
+        XCTAssertEqual(settings.addPaymentMethodURL, URL(string: "https://wordpress.com/me/purchases/add-credit-card"))
     }
 
 }

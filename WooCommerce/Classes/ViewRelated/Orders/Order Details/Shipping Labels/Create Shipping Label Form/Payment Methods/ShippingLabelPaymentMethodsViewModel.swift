@@ -169,7 +169,6 @@ extension ShippingLabelPaymentMethodsViewModel {
     }
 
     @MainActor
-    @discardableResult
     func syncWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
         isReloading = true
         defer {

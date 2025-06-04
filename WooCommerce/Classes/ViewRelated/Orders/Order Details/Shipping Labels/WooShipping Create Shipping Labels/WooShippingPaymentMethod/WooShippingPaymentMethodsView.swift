@@ -10,7 +10,7 @@ struct WooShippingPaymentMethodsView: View {
 
     @State private var failedToUpdateSettings = false
 
-    @State private var showingAddPaymentWebView: Bool = false
+    @State private var showingAddPaymentWebView = false
     @State private var notice: Notice?
 
     var body: some View {
@@ -380,7 +380,7 @@ private extension WooShippingPaymentMethodsView {
             )
             static let webViewTitle = NSLocalizedString(
                 "wooShippingPaymentMethodsView.addPaymentMethod.webViewTitle",
-                value: "Payment method",
+                value: "Add payment method",
                 comment: "Title of the web view to add payment method for shipping label purchase"
             )
             static let doneButton = NSLocalizedString(

@@ -28,6 +28,7 @@
                 "expiry": "2030-12-31"
             }
         ],
+        "add_payment_method_url": "https://wordpress.com/me/purchases/add-credit-card",
         "warnings": {
             "payment_methods": false
         }

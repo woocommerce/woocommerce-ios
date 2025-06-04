@@ -108,10 +108,14 @@ private extension WooShippingPaymentMethodsView {
             Button {
                 showingAddPaymentWebView = true
             } label: {
-                Label {
-                    Text(Localization.EmptyView.actionButton)
-                } icon: {
-                    Image(uiImage: .externalImage)
+                if viewModel.isUpdating {
+                    ProgressView().progressViewStyle(.circular)
+                } else {
+                    Label {
+                        Text(Localization.EmptyView.actionButton)
+                    } icon: {
+                        Image(uiImage: .externalImage)
+                    }
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -158,20 +162,24 @@ private extension WooShippingPaymentMethodsView {
             Button {
                 showingAddPaymentWebView = true
             } label: {
-                HStack(spacing: Layout.contentPadding) {
-                    Image(systemName: "plus")
-                        .foregroundStyle(Color.accentColor)
-                    Text(Localization.EmptyView.actionButton)
+                if viewModel.isUpdating {
+                    ProgressView().progressViewStyle(.circular)
+                } else {
+                    HStack(spacing: Layout.contentPadding) {
+                        Image(systemName: "plus")
+                            .foregroundStyle(Color.accentColor)
+                        Text(Localization.EmptyView.actionButton)
+                    }
+                    .font(.subheadline)
+                    .bold()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(Layout.contentPadding)
+                    .contentShape(Rectangle())
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .stroke(Color(.border))
+                    )
                 }
-                .font(.subheadline)
-                .bold()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(Layout.contentPadding)
-                .contentShape(Rectangle())
-                .background(
-                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                        .stroke(Color(.border))
-                )
             }
             .buttonStyle(.plain)
         }

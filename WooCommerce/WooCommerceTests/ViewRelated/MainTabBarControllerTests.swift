@@ -120,14 +120,14 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewControllersBeforeSiteChange.count, viewControllersAfterSiteChange.count)
-        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.myStore.visibleIndex()],
-                          viewControllersAfterSiteChange[WooTab.myStore.visibleIndex()])
-        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.orders.visibleIndex()],
-                          viewControllersAfterSiteChange[WooTab.orders.visibleIndex()])
-        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.products.visibleIndex()],
-                          viewControllersAfterSiteChange[WooTab.products.visibleIndex()])
-        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.hubMenu.visibleIndex()],
-                          viewControllersAfterSiteChange[WooTab.hubMenu.visibleIndex()])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.myStore.visibleIndex(isPOSTabVisible: false)],
+                          viewControllersAfterSiteChange[WooTab.myStore.visibleIndex(isPOSTabVisible: false)])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.orders.visibleIndex(isPOSTabVisible: false)],
+                          viewControllersAfterSiteChange[WooTab.orders.visibleIndex(isPOSTabVisible: false)])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.products.visibleIndex(isPOSTabVisible: false)],
+                          viewControllersAfterSiteChange[WooTab.products.visibleIndex(isPOSTabVisible: false)])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.hubMenu.visibleIndex(isPOSTabVisible: false)],
+                          viewControllersAfterSiteChange[WooTab.hubMenu.visibleIndex(isPOSTabVisible: false)])
     }
 
     func test_tab_view_controllers_stay_the_same_after_updating_to_the_same_site() throws {
@@ -172,8 +172,8 @@ final class MainTabBarControllerTests: XCTestCase {
         let selectedTabIndexAfterSiteChange = tabBarController.selectedIndex
 
         // Assert
-        XCTAssertEqual(selectedTabIndexBeforeSiteChange, WooTab.products.visibleIndex())
-        XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex())
+        XCTAssertEqual(selectedTabIndexBeforeSiteChange, WooTab.products.visibleIndex(isPOSTabVisible: false))
+        XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex(isPOSTabVisible: false))
     }
 
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
@@ -232,7 +232,7 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         waitUntil {
-            tabBarController.selectedIndex == WooTab.hubMenu.visibleIndex()
+            tabBarController.selectedIndex == WooTab.hubMenu.visibleIndex(isPOSTabVisible: false)
         }
     }
 
@@ -466,7 +466,7 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(tabBarController.selectedIndex, WooTab.products.visibleIndex())
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.products.visibleIndex(isPOSTabVisible: false))
         XCTAssertEqual(tabBarController.selectedViewController, navigationController)
     }
 
@@ -491,7 +491,7 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex())
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex(isPOSTabVisible: false))
         let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
         let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
@@ -537,7 +537,7 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex())
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.orders.visibleIndex(isPOSTabVisible: false))
         let tabContainerController = try XCTUnwrap(tabBarController.selectedViewController as? TabContainerController)
         let ordersSplitViewWrapper = try XCTUnwrap(tabContainerController.wrappedController as? OrdersSplitViewWrapperController)
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
@@ -578,7 +578,7 @@ private extension MainTabBarController {
 
     func tabRootViewController(tab: WooTab) -> UIViewController? {
         // swiftlint:disable:next empty_enum_arguments
-        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex()] else {
+        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex(isPOSTabVisible: false)] else {
             XCTFail("Unexpected access to root controller at tab: \(tab)")
             return nil
         }
@@ -586,7 +586,7 @@ private extension MainTabBarController {
     }
 
     func tabContainerController(tab: WooTab) -> UIViewController? {
-        guard let viewController = viewControllers?[tab.visibleIndex()] else {
+        guard let viewController = viewControllers?[tab.visibleIndex(isPOSTabVisible: false)] else {
             XCTFail("Unexpected access to container controller at tab: \(tab)")
             return nil
         }

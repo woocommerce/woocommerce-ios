@@ -27,22 +27,7 @@ final class POSTabCoordinator {
 
     private var posEligibilitySubscription: AnyCancellable?
 
-    @Published private(set) var eligibilityState: POSEligibilityState = .loading
-
-    enum POSEligibilityState: Equatable {
-        case ineligible(reason: POSIneligibleReason)
-        case eligible
-        case loading
-
-        enum POSIneligibleReason: Equatable {
-            case notTablet
-            case unsupportediOSVersion
-            case unsupportedWooCommerceVersion
-            case unsupportedCountryOrCurrency
-            case featureFlagDisabled
-            case unknown
-        }
-    }
+    @Published private(set) var eligibilityState: POSEligibilityState?
 
     private func posItemFetchStrategyFactory(siteID: Int64) -> PointOfSaleItemFetchStrategyFactory {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
@@ -74,7 +59,7 @@ final class POSTabCoordinator {
     init(siteID: Int64,
          tabContainerController: TabContainerController,
          storesManager: StoresManager = ServiceLocator.stores,
-         posEligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker()) {
+         posEligibilityChecker: POSEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.posEligibilityChecker = posEligibilityChecker
@@ -85,6 +70,15 @@ final class POSTabCoordinator {
         tabContainerController.wrappedController = POSTabViewController()
     }
 
+    convenience init(siteID: Int64,
+         tabContainerController: TabContainerController,
+         storesManager: StoresManager = ServiceLocator.stores) {
+        self.init(siteID: siteID,
+                  tabContainerController: tabContainerController,
+                  storesManager: storesManager,
+                  posEligibilityChecker: POSEligibilityChecker(siteID: siteID))
+    }
+
     deinit {
         posEligibilitySubscription?.cancel()
     }
@@ -93,27 +87,9 @@ final class POSTabCoordinator {
     ///
     func observePOSEligibility() {
         posEligibilitySubscription = posEligibilityChecker.isEligible
-            .map { [weak self] isEligible -> POSEligibilityState in
-                guard let self else { return .loading }
-
-                // Check device type first
-                if UIDevice.current.userInterfaceIdiom != .pad {
-                    return .ineligible(reason: .notTablet)
-                }
-
-                // Check iOS version
-                if #unavailable(iOS 17.0) {
-                    return .ineligible(reason: .unsupportediOSVersion)
-                }
-
-                // If eligible, return eligible state
-                if isEligible {
-                    return .eligible
-                }
-
-                return .ineligible(reason: .unsupportedWooCommerceVersion)
+            .sink { [weak self] state in
+                self?.eligibilityState = state
             }
-            .assign(to: \.eligibilityState, on: self)
     }
 
     func onTabSelected() {

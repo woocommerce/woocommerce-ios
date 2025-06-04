@@ -118,8 +118,8 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
-    private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
-    private var cardPresentPaymentsOnboardingSubscription: AnyCancellable?
+    private var posEligibilityChecker: POSEligibilityCheckerProtocol?
+    private var posEligibilitySubscription: AnyCancellable?
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -136,7 +136,6 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
-        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         super.init(coder: coder)
     }
 
@@ -145,13 +144,12 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
-        self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         super.init(coder: coder)
     }
 
     deinit {
         cancellableSiteID?.cancel()
-        cardPresentPaymentsOnboardingSubscription?.cancel()
+        posEligibilitySubscription?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -164,7 +162,8 @@ final class MainTabBarController: UITabBarController {
 
         fixTabBarTraitCollectionOnIpadForiOS18()
 
-        configureTabViewControllers()
+        // TODO-jc: update initial state to hide POS tab by default
+        updateTabViewControllers(state: .ineligible(reason: .notTablet))
         observeSiteIDForViewControllers()
         observeProductImageUploadStatusUpdates()
 
@@ -641,27 +640,32 @@ extension MainTabBarController: DeepLinkNavigator {
 // MARK: - Site ID observation for updating tab view controllers
 //
 private extension MainTabBarController {
-    func configureTabViewControllers() {
-        // Start observing the card present payments onboarding state
-        cardPresentPaymentsOnboardingSubscription = cardPresentPaymentsOnboardingUseCase.statePublisher
+    func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
+        // Start observing the POS eligibility state
+        posEligibilityChecker = POSEligibilityChecker(siteID: siteID)
+        posEligibilitySubscription = posEligibilityChecker?.isEligible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.updateTabViewControllers(state: state)
             }
     }
 
-    private func updateTabViewControllers(state: CardPresentPaymentOnboardingState) {
+    private func updateTabViewControllers(state: POSEligibilityState) {
         var controllers = [UIViewController]()
         var tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
 
-        // Add POS tab if the state is not loading or countryNotSupported
+        // Add POS tab if the state is eligible
+        let isPOSTabVisible: Bool
         switch state {
-        case .loading, .countryNotSupported:
-            isPOSTabVisible = false
-        default:
+        case .eligible:
             isPOSTabVisible = true
+        case let .ineligible(reason):
+            isPOSTabVisible = reason != .unsupportedCountryOrCurrency
+        }
+        if isPOSTabVisible {
             tabs.insert(.pointOfSale, at: 3)
         }
+        self.isPOSTabVisible = isPOSTabVisible
 
         tabs.forEach { tab in
             let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
@@ -734,6 +738,8 @@ private extension MainTabBarController {
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+
+        observePOSEligibilityForPOSTabVisibility(siteID: siteID)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

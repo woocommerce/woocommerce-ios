@@ -148,13 +148,22 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleItems_uses_mapper_correctly() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        let mockProduct = POSProduct.fake().copy(
+            productID: 123,
+            name: "Test Product",
+            price: "10.00",
+            manageStock: true,
+            stockQuantity: 5,
+            stockStatusKey: "instock"
+        )
+        mockFetchStrategy.mockPagedProducts = PagedItems(items: [mockProduct], hasMorePages: false, totalItems: 1)
 
         // When
         _ = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: mockFetchStrategy)
 
         // Then
         XCTAssertTrue(mockItemMapper.mapProductsToPOSItemsCalled)
+        XCTAssertEqual(mockItemMapper.mockProducts, [mockProduct])
     }
 
     func test_providePointOfSaleVariationItems_returns_variations_with_non_downloadable_filter_when_load_succeeds() async throws {
@@ -410,6 +419,41 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedItems.items.count, 0)
         XCTAssertTrue(mockItemMapper.mapProductsToPOSItemsCalled)
         XCTAssertEqual(mockItemMapper.mockProducts.count, 0)
+    }
+
+    func test_providePointOfSaleVariationItems_passes_correct_data_to_mapper() async throws {
+        // Given
+        let parentProductID: Int64 = 123
+        let parentProduct = POSVariableParentProduct(
+            id: UUID(),
+            name: "Test Variable Product",
+            productImageSource: nil,
+            productID: parentProductID,
+            allAttributes: []
+        )
+
+        let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
+        let mockVariation = ProductVariation.fake().copy(
+            productID: parentProductID,
+            productVariationID: 456,
+            price: "20.00",
+            manageStock: true,
+            stockQuantity: 10,
+            stockStatus: .inStock
+        )
+        mockFetchStrategy.mockPagedVariations = PagedItems(items: [mockVariation], hasMorePages: false, totalItems: 1)
+
+        // When
+        _ = try await itemProvider.providePointOfSaleVariationItems(
+            for: parentProduct,
+            pageNumber: 1,
+            fetchStrategy: mockFetchStrategy
+        )
+
+        // Then
+        XCTAssertTrue(mockItemMapper.mapVariationsToPOSItemsCalled)
+        XCTAssertEqual(mockItemMapper.mockVariations, [mockVariation])
+        XCTAssertEqual(mockItemMapper.mockParentProduct, parentProduct)
     }
 }
 

@@ -109,6 +109,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleBarcodeScanningi1:
             return false
+        case .showPointOfSaleBarcodeSimulator:
+            // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

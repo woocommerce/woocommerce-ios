@@ -51,7 +51,12 @@ struct BlazeScheduleSettingView: View {
                                displayedComponents: [.date]) {
                         EmptyView()
                     }
-                               .datePickerStyle(.compact)
+                    .if(sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.graphical)
+                    }
+                    .if(!sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.compact)
+                    }
                 }
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.

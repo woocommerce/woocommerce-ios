@@ -45,29 +45,52 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
-            .map { [weak self] wooCommerceState, featureFlagState -> POSEligibilityState in
-                guard let self else {
-                    return .ineligible(reason: .unsupportedWooCommerceVersion)
-                }
+        return Publishers.CombineLatest3(
+            isWooCommerceVersionSupportedAndFeatureSwitchEnabled,
+            isPointOfSaleFeatureFlagEnabled,
+            siteSettingsEligibilityPublisher
+        )
+        .map { wooCommerceState, featureFlagState, isSiteSettingsEligible -> POSEligibilityState in
+            if !isSiteSettingsEligible {
+                return .ineligible(reason: .unsupportedCountryOrCurrency)
+            }
 
-                if !isEligibleFromSiteChecks {
-                    return .ineligible(reason: .unsupportedCountryOrCurrency)
-                }
-
-                switch wooCommerceState {
-                case .unsupported(let reason):
+            switch wooCommerceState {
+            case .unsupported(let reason):
+                return .ineligible(reason: reason)
+            case .supported:
+                switch featureFlagState {
+                case .disabled(let reason):
                     return .ineligible(reason: reason)
-                case .supported:
-                    switch featureFlagState {
-                    case .disabled(let reason):
-                        return .ineligible(reason: reason)
-                    case .enabled:
-                        return .eligible
-                    }
+                case .enabled:
+                    return .eligible
                 }
             }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private var siteSettingsEligibilityPublisher: AnyPublisher<Bool, Never> {
+        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed)
+            .map { [weak self] _ -> Bool in
+                guard let self else { return false }
+                return isEligibleFromSiteChecks
+            }
+            .prepend(isEligibleFromSiteChecks) // Include initial value
             .eraseToAnyPublisher()
+    }
+
+    private var isEligibleFromSiteChecks: Bool {
+        // Conditions that can change if site settings are synced during the lifetime.
+        let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
+        let currency = currencySettings.currencyCode
+        switch (countryCode, currency) {
+        case (.US, .USD),
+            (.GB, .GBP):
+            return true
+        default:
+            return false
+        }
     }
 
     private let siteID: Int64
@@ -112,7 +135,7 @@ private extension POSEligibilityChecker {
 
             let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
 
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: self.siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 guard let wcPlugin, wcPlugin.active else {
                     return promise(.success((isSupported: false, wcVersion: nil)))
                 }
@@ -184,19 +207,6 @@ private extension POSEligibilityChecker {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
-    }
-
-    var isEligibleFromSiteChecks: Bool {
-        // Conditions that can change if site settings are synced during the lifetime.
-        let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
-        let currency = currencySettings.currencyCode
-        switch (countryCode, currency) {
-            case (.US, .USD),
-                (.GB, .GBP):
-                return true
-            default:
-                return false
-        }
     }
 }
 

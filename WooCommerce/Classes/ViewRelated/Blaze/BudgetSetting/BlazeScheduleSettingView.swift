@@ -43,6 +43,7 @@ struct BlazeScheduleSettingView: View {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(Localization.startDate)
                         .bodyStyle()
+                        .accessibilityHidden(true)
 
                     Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
 
@@ -58,8 +59,6 @@ struct BlazeScheduleSettingView: View {
                         view.datePickerStyle(.compact)
                     }
                 }
-                .accessibilityElement(children: .combine)
-                .accessibilityAddTraits(.isButton)
                 .accessibilityHint(Localization.startDateAccessibilityHint)
                 .accessibilityLabel(
                     String(
@@ -71,6 +70,18 @@ struct BlazeScheduleSettingView: View {
                         )
                     )
                 )
+                // Apply accessibility grouping only for non-accessibility size categories.
+                // For accessibility size categories, we use .graphical date picker style which is embedded
+                // directly in the view and maintains its native "date picker" traits. For standard size
+                // categories, we use .compact date picker style which acts as a popover, so we group the
+                // elements with .combine and add .isButton trait to make the entire section actionable.
+                // Applying .combine to the graphical date picker would override its native accessibility
+                // traits and degrade the user experience.
+                .if(!sizeCategory.isAccessibilityCategory) { view in
+                    view
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.isButton)
+                }
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.
                 Toggle(Localization.specifyDuration, isOn: $hasEndDate)

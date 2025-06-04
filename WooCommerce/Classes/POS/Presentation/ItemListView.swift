@@ -389,6 +389,7 @@ private extension ItemListView {
                         } else {
                             createCategoryButton
                             createTagButton
+                            restoreInitialStateButton
                             createCouponButton
                                 .renderedIf(isCouponsFeatureEnabled)
 
@@ -456,6 +457,17 @@ private extension ItemListView {
         POSPageHeaderActionButton(systemName: "tag", action: {
             showTagFilterModal = true
         })
+    }
+
+    @ViewBuilder
+    private var restoreInitialStateButton: some View {
+        // Clears filters
+        POSPageHeaderActionButton(systemName: "clear", action: {
+            Task { @MainActor in
+                await posModel.purchasableItemsController.refreshItems(base: .root)
+            }
+        })
+        .foregroundColor(.red)
     }
 
     @ViewBuilder

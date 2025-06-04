@@ -213,7 +213,8 @@ struct POSPreviewHelpers {
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
-        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController()
+        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             itemsController: itemsController,
@@ -224,7 +225,8 @@ struct POSPreviewHelpers {
             orderController: orderController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
-            popularPurchasableItemsController: popularItemsController
+            popularPurchasableItemsController: popularItemsController,
+            barcodeScanService: barcodeScanService
         )
     }
 }

@@ -63,7 +63,8 @@ struct HubMenu: View {
                             searchHistoryService: POSSearchHistoryService(siteID: viewModel.siteID),
                             popularPurchasableItemsController: PointOfSaleItemsController(
                                 itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
-                                itemFetchStrategyFactory: viewModel.posPopularItemFetchStrategyFactory))
+                                itemFetchStrategyFactory: viewModel.posPopularItemFetchStrategyFactory),
+                            barcodeScanService: viewModel.barcodeScanService)
                     } else {
                         // TODO: When we have a singleton for the card payment service, this should not be required.
                         Text("Error creating card payment service")

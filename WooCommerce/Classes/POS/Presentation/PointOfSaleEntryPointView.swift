@@ -1,5 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
+import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
@@ -17,6 +18,7 @@ struct PointOfSaleEntryPointView: View {
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
+    private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -27,7 +29,8 @@ struct PointOfSaleEntryPointView: View {
          orderController: PointOfSaleOrderControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
-         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol) {
+         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -39,6 +42,7 @@ struct PointOfSaleEntryPointView: View {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
+        self.barcodeScanService = barcodeScanService
     }
 
     var body: some View {
@@ -63,7 +67,8 @@ struct PointOfSaleEntryPointView: View {
                 orderController: orderController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
-                popularPurchasableItemsController: popularPurchasableItemsController)
+                popularPurchasableItemsController: popularPurchasableItemsController,
+                barcodeScanService: barcodeScanService)
         }
         .environmentObject(posModalManager)
         .injectKeyboardObserver()
@@ -90,7 +95,8 @@ struct PointOfSaleEntryPointView: View {
                               orderController: PointOfSalePreviewOrderController(),
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
-                              popularPurchasableItemsController: PointOfSalePreviewItemsController())
+                              popularPurchasableItemsController: PointOfSalePreviewItemsController(),
+                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
 }
 
 #endif

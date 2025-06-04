@@ -91,6 +91,9 @@ struct BlazeScheduleSettingView: View {
                            in: dayCountSliderRange,
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Localization.duration)
+                .accessibilityValue(durationTextFormatter(duration).string)
                 .renderedIf(hasEndDate)
 
                 Spacer()

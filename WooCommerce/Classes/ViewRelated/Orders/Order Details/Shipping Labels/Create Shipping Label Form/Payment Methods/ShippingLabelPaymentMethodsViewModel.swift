@@ -167,6 +167,7 @@ extension ShippingLabelPaymentMethodsViewModel {
         }
         let updatedSettings = settings.accountSettings
         self.accountSettings = updatedSettings
+        self.selectedPaymentMethodID = updatedSettings.selectedPaymentMethodID
         return updatedSettings
     }
 }

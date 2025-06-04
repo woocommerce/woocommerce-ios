@@ -230,8 +230,12 @@ private extension WooShippingPaymentMethodsView {
     @MainActor
     func refreshPaymentMethods() async {
         do {
-            try await viewModel.syncWooShippingAccountSettings()
+            let newSettings = try await viewModel.syncWooShippingAccountSettings()
             notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
+            if newSettings.paymentMethods.count == 1 {
+                /// When the first method is added, the backend chooses it as the default method automatically.
+                onAccountSettingsUpdate(newSettings)
+            }
         } catch {
             DDLogError("⛔️ Error refreshing account settings: \(error)")
         }

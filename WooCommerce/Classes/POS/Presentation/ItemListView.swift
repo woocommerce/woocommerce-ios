@@ -43,8 +43,8 @@ struct ItemListView: View {
         _isSearching.wrappedValue
     }
 
-    @State private var searchTask: Task<Void, Never>?
-    @State private var didFinishSearch = true
+    @State private var searchTask: Task<Void, Never>? // unused
+    @State private var didFinishSearch = true // unused
 
     private var isCouponsFeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
@@ -206,6 +206,21 @@ struct ItemListView: View {
         }
     }
 
+    func callbackToUpdateItemListView() {
+        // Some sort of callback to apply the item view state state for category/tag filter
+        let dummyProductMatch = POSSimpleProduct(id: UUID(),
+                                                 name: "match product",
+                                                 formattedPrice: "10",
+                                                 productID: 123,
+                                                 price: "10",
+                                                 manageStock: false,
+                                                 stockQuantity: nil,
+                                                 stockStatusKey: "instock")
+        let dummyItemMatch = POSItem.simpleProduct(dummyProductMatch)
+
+        posModel.purchasableItemsController.itemsViewState.itemsStack.root = .loaded([dummyItemMatch], hasMoreItems: true)
+    }
+
     func fetchAllTags() {
         let baseGetAllTagsURL = ProcessInfo.processInfo.environment["FETCH_ALL_TAGS_URL"] ?? ""
         Task {
@@ -220,6 +235,8 @@ struct ItemListView: View {
                 } else {
                     print("❌ Server error: \(response)")
                 }
+                
+                callbackToUpdateItemListView()
             } catch {
                 print("❌ Request failed: \(error)")
             }
@@ -251,6 +268,7 @@ struct ItemListView: View {
                 } else {
                     print("❌ Server error: \(response)")
                 }
+                callbackToUpdateItemListView()
             } catch {
                 print("❌ Request failed: \(error)")
             }

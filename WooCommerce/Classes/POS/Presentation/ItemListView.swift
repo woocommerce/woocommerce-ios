@@ -3,6 +3,7 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 import Yosemite
+import Networking
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -143,8 +144,51 @@ struct ItemListView: View {
                                                                   clearSelectionEnabled: true,
                                                                   updateEnabled: true),
                                         viewModel: .init(siteID: siteID,
-                                                         onCategorySelection: { categorySelected in
-                    debugPrint("Selected \(categorySelected)")
+                                                         onCategorySelection: { selectedCategories in
+                    let categoryIDs = selectedCategories.map { $0.categoryID } // ...
+
+                    let hardcodedCategory = ProductCategory(categoryID: 28, siteID: siteID, parentID: 28, name: "Homewares", slug: "homewares")
+                    // on categorie(s) selection we either filter products we have in memory by that category
+                    // or we fetch those products from remote
+
+                    // We'll need a new remote, the existing one uses categories/tags only for filtering the remote response
+                    let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+                    let network = AlamofireNetwork(credentials: credentials)
+                    let remote = ProductsRemote(network: network)
+
+                    let baseCategoriesURL = ProcessInfo.processInfo.environment["FETCH_PRODUCTS_BY_CATEGORIES_URL"] ?? ""
+                    let baseTagsURL = ProcessInfo.processInfo.environment["FETCH_PRODUCTS_BY_TAGS_URL"] ?? ""
+                    
+                    // TODO: State while is loading results
+                    // isSearching = true
+
+                    Task {
+                        guard let url = URL(string: baseCategoriesURL) else { return }
+
+                        do {
+                            let (data, response) = try await URLSession.shared.data(from: url)
+                            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                                if let jsonString = String(data: data, encoding: .utf8) {
+                                    print("✅ Response: \(jsonString)")
+                                    
+                                    // We get some Product back here, which we'll need to map to POSProducts at some point
+                                    let product1 = POSSimpleProduct(id: UUID(),
+                                                                    name: "match product",
+                                                                    formattedPrice: "10",
+                                                                    productID: 123,
+                                                                    price: "10",
+                                                                    manageStock: false,
+                                                                    stockQuantity: nil,
+                                                                    stockStatusKey: "instock")
+                                    
+                                }
+                            } else {
+                                print("❌ Server error: \(response)")
+                            }
+                        } catch {
+                            print("❌ Request failed: \(error)")
+                        }
+                    }
                 }))
             }}
     }

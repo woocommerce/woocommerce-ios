@@ -152,6 +152,7 @@ final class ProductCategoryListViewModel {
         onReloadNeeded?()
     }
 
+    // Existing implementation relies in searching through categories we already have in storage.
     func findCategory(with id: Int64) -> ProductCategory? {
         resultController.fetchedObjects.first(where: { $0.categoryID == id })
     }

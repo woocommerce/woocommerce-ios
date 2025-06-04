@@ -145,6 +145,15 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+    
+    func loadProductsByCategory(for siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
+        let path = Path.products
+        let parameters: [String: String] = [:]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
+        let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 
     /// Retrieves all of the `Products` available.
     ///
@@ -157,6 +166,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - stockStatus: Optional stock status filtering. Default to nil (no filtering).
     ///     - productStatus: Optional product status filtering. Default to nil (no filtering).
     ///     - productType: Optional product type filtering. Default to nil (no filtering).
+    ///     - productCategory: Filters products found by category.
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
     ///     - productIDs: a list of product IDs to be included in the results. All products will be fetched if empty.

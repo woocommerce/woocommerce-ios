@@ -40,6 +40,7 @@ final class ProductCategorySelectorViewModel: ObservableObject {
     /// Triggered when selection is done.
     ///
     func submitSelection() {
+        //
         onCategorySelection(listViewModel.selectedCategories)
     }
 }

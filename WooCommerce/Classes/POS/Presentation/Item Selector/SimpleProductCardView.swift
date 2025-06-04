@@ -34,9 +34,15 @@ struct SimpleProductCardView: View {
                     .font(Constants.itemTitleFont)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(product.formattedPrice)
-                    .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
+                HStack {
+                    Text(product.formattedPrice)
+                        .foregroundStyle(Constants.detailColor)
+                        .font(Constants.itemDetailFont)
+
+                    Text("🔖 Some category")
+                        .foregroundStyle(Constants.detailColor)
+                        .font(Constants.itemDetailFont)
+                }
 
                 Text(POSStockFormatter.stockStatusLabel(for: product))
                     .foregroundStyle(Constants.detailColor)

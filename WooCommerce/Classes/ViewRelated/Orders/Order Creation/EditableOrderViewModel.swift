@@ -1621,7 +1621,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
+                        self.customAmountsSectionViewModel.showAddCustomAmount = true
                     })
                 }
             }

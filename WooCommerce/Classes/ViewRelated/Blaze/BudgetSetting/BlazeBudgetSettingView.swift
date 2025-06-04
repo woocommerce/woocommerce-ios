@@ -111,7 +111,7 @@ private extension BlazeBudgetSettingView {
                 forecastedImpressionsView
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .ignore)
+            .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
             .accessibilityLabel(viewModel.impressionsSectionAccessibilityLabel)

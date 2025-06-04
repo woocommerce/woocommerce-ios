@@ -1029,7 +1029,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
-            customAmountsSectionViewModel.showAddCustomAmount = true
+            customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
 
@@ -1621,7 +1621,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.customAmountsSectionViewModel.showAddCustomAmount = true
+                        self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }
             }

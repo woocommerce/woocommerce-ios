@@ -93,6 +93,9 @@ private extension BlazeBudgetSettingView {
                 .tertiaryTitleStyle()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(Localization.scheduleAccessibilityHint)
 
             // Estimated impressions - grouped for accessibility
             VStack(alignment: .leading) {
@@ -273,6 +276,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.estimatedImpressionsAccessibilityHint",
             value: "Tap for more information about estimated impressions",
             comment: "Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen"
+        )
+        static let scheduleAccessibilityHint = NSLocalizedString(
+            "blazeBudgetSettingView.scheduleAccessibilityHint",
+            value: "Opens campaign schedule settings",
+            comment: "Accessibility hint for the schedule section on the Blaze budget setting screen"
         )
     }
 }

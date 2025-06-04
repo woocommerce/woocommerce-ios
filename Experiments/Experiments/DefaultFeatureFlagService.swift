@@ -107,6 +107,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productImageOptimizedHandling:
             return true
+        case .pointOfSaleBarcodeScanningi1:
+            return false
         default:
             return true
         }

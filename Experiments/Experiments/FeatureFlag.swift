@@ -228,4 +228,8 @@ public enum FeatureFlag: Int {
     /// Enables sending POS specific email receipts for eligible stores
     ///
     case pointOfSaleReceipts
+
+    /// Enables barcode scanning with an external scanner in POS
+    ///
+    case pointOfSaleBarcodeScanningi1
 }

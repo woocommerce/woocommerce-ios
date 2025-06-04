@@ -130,7 +130,12 @@ struct ItemListView: View {
         .sheet(isPresented: $showTagFilterModal) {
             VStack {
                 Text("Tags here")
-                Text("TODO")
+                Button(action: {
+                    fetchAllTags()
+                }, label: { Text("Fetch all tags")})
+                Button(action: {
+                    fetchProductByTagID()
+                }, label: { Text("Get products by tag ID = 27 ")})
             }
         }
         .sheet(isPresented: $showCategoryFilterModal) {
@@ -157,7 +162,6 @@ struct ItemListView: View {
                     let remote = ProductsRemote(network: network)
 
                     let baseCategoriesURL = ProcessInfo.processInfo.environment["FETCH_PRODUCTS_BY_CATEGORIES_URL"] ?? ""
-                    let baseTagsURL = ProcessInfo.processInfo.environment["FETCH_PRODUCTS_BY_TAGS_URL"] ?? ""
                     
                     // TODO: State while is loading results
                     // isSearching = true
@@ -199,6 +203,57 @@ struct ItemListView: View {
             return posModel.purchasableItemsSearchController
         case .coupons:
             return posModel.couponsSearchController
+        }
+    }
+
+    func fetchAllTags() {
+        let baseGetAllTagsURL = ProcessInfo.processInfo.environment["FETCH_ALL_TAGS_URL"] ?? ""
+        Task {
+            guard let url = URL(string: baseGetAllTagsURL) else { return }
+
+            do {
+                let (data, response) = try await URLSession.shared.data(from: url)
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("✅ Response: \(jsonString)")
+                    }
+                } else {
+                    print("❌ Server error: \(response)")
+                }
+            } catch {
+                print("❌ Request failed: \(error)")
+            }
+        }
+    }
+
+    func fetchProductByTagID() {
+        let baseTagsURL = ProcessInfo.processInfo.environment["FETCH_PRODUCTS_BY_TAGS_URL"] ?? ""
+        Task {
+            guard let url = URL(string: baseTagsURL) else { return }
+
+            do {
+                let (data, response) = try await URLSession.shared.data(from: url)
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("✅ Response: \(jsonString)")
+                        
+                        // We get some Product back here, which we'll need to map to POSProducts at some point
+                        let product1 = POSSimpleProduct(id: UUID(),
+                                                        name: "match product",
+                                                        formattedPrice: "10",
+                                                        productID: 123,
+                                                        price: "10",
+                                                        manageStock: false,
+                                                        stockQuantity: nil,
+                                                        stockStatusKey: "instock")
+                        
+                    }
+                } else {
+                    print("❌ Server error: \(response)")
+                }
+            } catch {
+                print("❌ Request failed: \(error)")
+            }
         }
     }
 

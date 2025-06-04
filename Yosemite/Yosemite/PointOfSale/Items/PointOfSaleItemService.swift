@@ -14,11 +14,11 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 ///
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
-    private let itemMapper: PointOfSaleItemMapper
+    private let itemMapper: PointOfSaleItemMapperProtocol
 
-    public init(currencySettings: CurrencySettings) {
+    public init(currencySettings: CurrencySettings, itemMapper: PointOfSaleItemMapperProtocol? = nil) {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.itemMapper = PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,

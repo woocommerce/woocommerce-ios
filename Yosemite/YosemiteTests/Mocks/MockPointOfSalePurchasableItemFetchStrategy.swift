@@ -5,10 +5,17 @@ import Foundation
 final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     var fetchProductsCalled = false
     var spyFetchProductsPageNumber: Int?
+    var mockPagedProducts: PagedItems<POSProduct>?
+    var mockPagedVariations: PagedItems<ProductVariation>?
+    var mockError: Error?
+
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         fetchProductsCalled = true
         spyFetchProductsPageNumber = pageNumber
-        return .init(items: [], hasMorePages: false, totalItems: nil)
+        if let error = mockError {
+            throw error
+        }
+        return mockPagedProducts ?? .init(items: [], hasMorePages: false, totalItems: nil)
     }
 
     var fetchVariationsCalled = false
@@ -18,6 +25,9 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
         fetchVariationsCalled = true
         spyFetchVariationsParentProductID = parentProductID
         spyFetchVariationsPageNumber = pageNumber
-        return .init(items: [], hasMorePages: false, totalItems: nil)
+        if let error = mockError {
+            throw error
+        }
+        return mockPagedVariations ?? .init(items: [], hasMorePages: false, totalItems: nil)
     }
 }

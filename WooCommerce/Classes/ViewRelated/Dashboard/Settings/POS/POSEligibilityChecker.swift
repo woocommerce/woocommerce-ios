@@ -14,6 +14,7 @@ enum POSIneligibleReason: Equatable {
     case notTablet
     case unsupportedIOSVersion
     case unsupportedWooCommerceVersion
+    case featureSwitchDisabled
     case featureSwitchSyncFailure
     case featureFlagDisabled
     case unsupportedCountryOrCurrency
@@ -149,7 +150,7 @@ private extension POSEligibilityChecker {
                     let action = SettingAction.isFeatureEnabled(siteID: self.siteID, feature: .pointOfSale) { result in
                         switch result {
                         case .success(let isEnabled):
-                            promise(.success(isEnabled ? .supported : .unsupported(reason: .featureSwitchSyncFailure)))
+                            promise(.success(isEnabled ? .supported : .unsupported(reason: .featureSwitchDisabled)))
                         case .failure:
                             promise(.success(.unsupported(reason: .featureSwitchSyncFailure)))
                         }

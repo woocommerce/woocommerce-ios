@@ -18,6 +18,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     private let productsRemote: ProductsRemoteProtocol
     private let currencyFormatter: CurrencyFormatter
     private let siteID: Int64
+    private let itemMapper: PointOfSaleItemMapper
 
     init (siteID: Int64,
           productsRemote: ProductsRemoteProtocol,
@@ -25,6 +26,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
         self.siteID = siteID
         self.productsRemote = productsRemote
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.itemMapper = PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
     }
 
     public convenience init(siteID: Int64,
@@ -43,24 +45,13 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
         do {
             let product = try await productsRemote.fetchPOSProductByGlobalUniqueIdentifier(for: siteID, globalUniqueID: barcode)
 
-            guard product.productType == .simple else {
+            let items = itemMapper.mapProductsToPOSItems(products: [product])
+
+            guard let item = items.first else {
                 throw PointOfSaleBarcodeScanError.unknown
             }
 
-            // Convert POSProduct to POSSimpleProduct
-            let simpleProduct = POSSimpleProduct(
-                id: UUID(),
-                name: product.name,
-                formattedPrice: currencyFormatter.formatAmount(product.price) ?? "",
-                productImageSource: product.images.first?.src,
-                productID: product.productID,
-                price: product.price,
-                manageStock: product.manageStock,
-                stockQuantity: product.stockQuantity,
-                stockStatusKey: product.stockStatusKey
-            )
-
-            return .simpleProduct(simpleProduct)
+            return item
         } catch {
             throw PointOfSaleBarcodeScanError.unknown
         }

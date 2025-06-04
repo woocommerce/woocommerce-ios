@@ -14,9 +14,11 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 ///
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     private let currencyFormatter: CurrencyFormatter
+    private let itemMapper: PointOfSaleItemMapper
 
     public init(currencySettings: CurrencySettings) {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.itemMapper = PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,
@@ -34,7 +36,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            return .init(items: mapProductsToPOSItems(products: products),
+            return .init(items: itemMapper.mapProductsToPOSItems(products: products),
                          hasMorePages: pagedProducts.hasMorePages,
                          totalItems: pagedProducts.totalItems)
         } catch AFError.explicitlyCancelled {
@@ -52,22 +54,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             // Remove this when WC version 9.7 has significant adoption in POS stores.
                 .filter { !$0.downloadable }
             return .init(
-                items: variations.compactMap({ variation in
-                    let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
-                        for: variation,
-                        from: parentProduct.allAttributes,
-                        separator: ", "
-                    )
-                    return POSItem
-                        .variation(.init(id: UUID(),
-                                         name: variationName,
-                                         formattedPrice: formatPrice(variation.price),
-                                         price: variation.price,
-                                         productImageSource: variation.image?.src,
-                                         productID: variation.productID,
-                                         variationID: variation.productVariationID,
-                                         parentProductName: parentProduct.name))
-                }),
+                items: itemMapper.mapVariationsToPOSItems(variations: variations, parentProduct: parentProduct),
                 hasMorePages: pagedVariations.hasMorePages,
                 totalItems: pagedVariations.totalItems
             )
@@ -75,11 +62,19 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             throw PointOfSaleItemServiceError.requestCancelled
         }
     }
+}
 
-    // Maps result to POSItem, and populate the output with:
-    // - Formatted price based on store's currency settings.
-    // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {
+/// Maps products and variations to POSItems, and populates the output with:
+/// - Formatted price based on store's currency settings.
+/// - Product thumbnail, if any.
+final class PointOfSaleItemMapper {
+    private let currencyFormatter: CurrencyFormatter
+
+    init(currencyFormatter: CurrencyFormatter) {
+        self.currencyFormatter = currencyFormatter
+    }
+
+    func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {
         return products.compactMap { product in
             let thumbnailSource = product.images.first?.src
 
@@ -105,6 +100,25 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                 default:
                     return nil
             }
+        }
+    }
+
+    func mapVariationsToPOSItems(variations: [ProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
+        return variations.compactMap { variation in
+            let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
+                for: variation,
+                from: parentProduct.allAttributes,
+                separator: ", "
+            )
+            return POSItem
+                .variation(.init(id: UUID(),
+                                 name: variationName,
+                                 formattedPrice: formatPrice(variation.price),
+                                 price: variation.price,
+                                 productImageSource: variation.image?.src,
+                                 productID: variation.productID,
+                                 variationID: variation.productVariationID,
+                                 parentProductName: parentProduct.name))
         }
     }
 

@@ -1,7 +1,6 @@
 import Foundation
 import class WooFoundation.CurrencyFormatter
 
-/// Protocol defining the mapping functionality for Point of Sale items
 public protocol PointOfSaleItemMapperProtocol {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem]
     func mapVariationsToPOSItems(variations: [ProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem]

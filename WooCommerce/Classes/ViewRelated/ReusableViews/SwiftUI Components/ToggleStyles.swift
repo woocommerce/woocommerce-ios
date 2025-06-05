@@ -6,7 +6,8 @@ struct CheckboxToggleStyle: ToggleStyle {
             configuration.isOn.toggle()
         }, label: {
             HStack(alignment: .firstTextBaseline) {
-                Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+                Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
+                    .foregroundStyle(configuration.isOn ? Color.accentColor : Color.primary)
                 configuration.label
             }
         })

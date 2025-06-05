@@ -85,8 +85,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .favoriteProducts:
             return true
-        case .productGlobalUniqueIdentifierSupport:
-            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:
@@ -109,6 +107,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productImageOptimizedHandling:
             return true
+        case .pointOfSaleBarcodeScanningi1:
+            return false
+        case .showPointOfSaleBarcodeSimulator:
+            // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

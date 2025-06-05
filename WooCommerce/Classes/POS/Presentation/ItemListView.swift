@@ -55,6 +55,14 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchCouponsInPOS)
     }
 
+    private var isBarcodeScani1FeatureEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
+    }
+
+    private var isBarcodeScanSimulatorEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
+    }
+
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
         let itemListState = itemListState(selectedItemListType)
@@ -75,6 +83,9 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
+
+    @State private var barcodeScanSimulatorIsPresented: Bool = false
+    @State private var barcodeScanSimulatorText: String = ""
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -244,6 +255,9 @@ private extension ItemListView {
                             createCouponButton
                                 .renderedIf(isCouponsFeatureEnabled)
 
+                            simulatedScanButton
+                                .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
+
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                                 setSearch(true)
@@ -256,6 +270,9 @@ private extension ItemListView {
                     }
                 }
             })
+
+            barcodeScanSimulator
+                .renderedIf(barcodeScanSimulatorIsPresented)
         }
         .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
@@ -304,6 +321,31 @@ private extension ItemListView {
         }
         .renderedIf(isAddingCouponAllowed)
         .transition(.opacity.combined(with: .scale))
+    }
+
+    @ViewBuilder
+    private var simulatedScanButton: some View {
+        POSPageHeaderActionButton(systemName: "barcode") {
+            barcodeScanSimulatorIsPresented.toggle()
+        }
+        .transition(.opacity.combined(with: .scale))
+    }
+
+    @ViewBuilder
+    private var barcodeScanSimulator: some View {
+        HStack {
+            TextField(text: $barcodeScanSimulatorText) {
+                Text("Barcode value")
+            }
+
+            Button {
+                posModel.barcodeScanned(barcodeScanSimulatorText)
+            } label: {
+                Text("Scan!")
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+        }
+        .padding([.bottom, .horizontal], 16)
     }
 
     @ViewBuilder

@@ -839,6 +839,7 @@
 		204CB8102C10BB88000C9773 /* CardPresentPaymentPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */; };
 		204D1D602C5A3DA10064A6BE /* PointOfSaleReaderConnectionModalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204D1D5F2C5A3DA10064A6BE /* PointOfSaleReaderConnectionModalLayout.swift */; };
 		204D1D622C5A50840064A6BE /* POSModalViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204D1D612C5A50840064A6BE /* POSModalViewModifier.swift */; };
+		2050D2662DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2050D2652DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift */; };
 		205B7EB92C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EB82C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift */; };
 		205B7EBB2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EBA2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift */; };
 		205B7EBD2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EBC2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift */; };
@@ -4092,6 +4093,7 @@
 		204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentPreviewService.swift; sourceTree = "<group>"; };
 		204D1D5F2C5A3DA10064A6BE /* PointOfSaleReaderConnectionModalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleReaderConnectionModalLayout.swift; sourceTree = "<group>"; };
 		204D1D612C5A50840064A6BE /* POSModalViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSModalViewModifier.swift; sourceTree = "<group>"; };
+		2050D2652DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleBarcodeScanService.swift; sourceTree = "<group>"; };
 		205B7EB82C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift; sourceTree = "<group>"; };
 		205B7EBA2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift; sourceTree = "<group>"; };
 		205B7EBC2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift; sourceTree = "<group>"; };
@@ -7804,6 +7806,7 @@
 			children = (
 				01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */,
 				686A71B72DC9EB6D0006E835 /* MockPOSSearchHistoryService.swift */,
+				2050D2652DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift */,
 				01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */,
 				68503C352DA53E0800C07909 /* MockPointOfSaleCouponsController.swift */,
 				02CD3BFD2C35D04C00E575C4 /* MockCardPresentPaymentService.swift */,
@@ -17549,6 +17552,7 @@
 				77307809251EA07100178696 /* ProductDownloadSettingsViewModelTests.swift in Sources */,
 				02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */,
 				02DFD5082B205AEF0048CD70 /* ProductStepperViewModelTests.swift in Sources */,
+				2050D2662DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift in Sources */,
 				CCE785C829C1E8280003977F /* BundledProductsListViewModelTests.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				262EB5B3298D66FE009DCC36 /* SupportDataSourcesTests.swift in Sources */,

@@ -77,12 +77,10 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Action
-        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              isDescriptionAIEnabled: true,
-                                                              featureFlagService: featureFlagService)
+                                                              isDescriptionAIEnabled: true)
 
         // Assert
         guard case let .settings(rows) = tableViewModel.sections[1] else {

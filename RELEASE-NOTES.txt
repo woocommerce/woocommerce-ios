@@ -4,6 +4,7 @@
 22.6
 -----
 - [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
+- [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
 
 22.5
 -----

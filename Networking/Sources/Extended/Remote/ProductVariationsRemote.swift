@@ -90,6 +90,10 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: POSConstants.variationsPerPage)
+        // N.B. POS is only available for WC 9.6 and later.
+        // `parent_id` was added in WC 8.3, so we don't need to pass the parent product ID to the decoder.
+        // https://github.com/woocommerce/woocommerce/pull/40606
+        // This isn't safe to do in the endpoints for the main app, as older sites won't have `parent_id`.
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
 
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)

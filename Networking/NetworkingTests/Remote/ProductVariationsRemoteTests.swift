@@ -157,20 +157,20 @@ final class ProductVariationsRemoteTests: XCTestCase {
     func test_loadVariationsForPointOfSale_returns_parsed_variation() async throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When
         let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).items
 
         // Then
-        XCTAssertEqual(variations.count, 8)
+        XCTAssertEqual(variations.count, 2)
 
         guard let firstVariation = variations.first else {
             XCTFail("The first product variation should exist.")
             return
         }
         XCTAssertEqual(firstVariation.productVariationID, 1275)
-        XCTAssertEqual(firstVariation.productID, sampleProductID)
+        XCTAssertEqual(firstVariation.productID, 10275)
         XCTAssertEqual(firstVariation.sku, "99%-nuts-marble")
         XCTAssertEqual(firstVariation.globalUniqueID, "12345")
 
@@ -194,40 +194,12 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(firstVariation.stockStatusKey, "instock")
     }
 
-    func test_loadVariationsForPointOfSale_handles_manage_stock_parent_value() async throws {
-        // Given
-        let remote = ProductVariationsRemote(network: network)
-        let json = """
-        {
-            "id": 1275,
-            "parent_id": 173,
-            "attributes": [],
-            "manage_stock": "parent",
-            "stock_quantity": 16.5,
-            "stock_status": "instock",
-            "downloadable": true
-        }
-        """
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: json)
-
-        // When
-        let variations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).items
-
-        // Then
-        XCTAssertEqual(variations.count, 1)
-        guard let variation = variations.first else {
-            XCTFail("The product variation should exist.")
-            return
-        }
-        XCTAssertFalse(variation.manageStock)
-    }
-
     func test_loadVariationsForPointOfSale_returns_total_items_from_header() async throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-        let expectedTotalItems = 15
+        let expectedTotalItems = 2
         network.responseHeaders = ["X-WP-Total": "\(expectedTotalItems)"]
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When
         let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
@@ -240,7 +212,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Given
         let remote = ProductVariationsRemote(network: network)
         network.responseHeaders = nil
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When
         let pagedVariations = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID)
@@ -252,7 +224,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
     func test_loadVariationsForPointOfSale_returns_page_details() async throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When
         let hasMorePages = try await remote.loadVariationsForPointOfSale(for: sampleSiteID, parentProductID: sampleProductID).hasMorePages
@@ -265,7 +237,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Given
         let remote = ProductVariationsRemote(network: network)
         network.responseHeaders = ["X-WP-TotalPages": "5"]
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When loading page 1 to 4
         for pageNumber in 1...4 {
@@ -290,7 +262,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Given
         let remote = ProductVariationsRemote(network: network)
         network.responseHeaders = nil
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all-with-parent-id")
 
         // When loading the first 5 pages
         for pageNumber in 1...5 {

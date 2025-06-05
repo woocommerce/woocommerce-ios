@@ -1,6 +1,5 @@
 import Foundation
 import enum Alamofire.AFError
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import struct Networking.PagedItems
 
@@ -13,12 +12,10 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 /// Product provider for the Point of Sale feature
 ///
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    private let currencyFormatter: CurrencyFormatter
     private let itemMapper: PointOfSaleItemMapperProtocol
 
     public init(currencySettings: CurrencySettings, itemMapper: PointOfSaleItemMapperProtocol? = nil) {
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,

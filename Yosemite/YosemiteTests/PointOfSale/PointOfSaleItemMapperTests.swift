@@ -8,7 +8,7 @@ struct PointOfSaleItemMapperTests {
 
     init() {
         currencySettings = CurrencySettings()
-        sut = PointOfSaleItemMapper(currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+        sut = PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
     @Test func mapProductsToPOSItems_returns_simple_product_when_given_simple_product() {

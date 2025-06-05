@@ -16,7 +16,6 @@ public enum PointOfSaleBarcodeScanError: Error, Equatable {
 /// Service for handling barcode scanning in Point of Sale
 public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
-    private let currencyFormatter: CurrencyFormatter
     private let siteID: Int64
     private let itemMapper: PointOfSaleItemMapper
 
@@ -25,8 +24,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
           currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.productsRemote = productsRemote
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.itemMapper = PointOfSaleItemMapper(currencyFormatter: currencyFormatter)
+        self.itemMapper = PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
     public convenience init(siteID: Int64,

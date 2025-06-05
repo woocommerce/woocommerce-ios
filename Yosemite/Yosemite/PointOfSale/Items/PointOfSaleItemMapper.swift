@@ -1,4 +1,5 @@
 import Foundation
+import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
 public protocol PointOfSaleItemMapperProtocol {
@@ -12,8 +13,8 @@ public protocol PointOfSaleItemMapperProtocol {
 final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     private let currencyFormatter: CurrencyFormatter
 
-    init(currencyFormatter: CurrencyFormatter) {
-        self.currencyFormatter = currencyFormatter
+    init(currencySettings: CurrencySettings) {
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {

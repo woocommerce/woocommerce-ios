@@ -39,8 +39,8 @@ extension WooAnalyticsEvent {
 
         enum PaymentStep: String {
             case started
-            case paymentMethodButtonTapped = "payment_method_button_tapped"
-            case paymentMethodTapped = "payment_method_tapped"
+            case addPaymentMethodButtonTapped = "add_payment_method_button_tapped"
+            case paymentMethodAdded = "payment_method_added"
             case paymentMethodSelected = "payment_method_selected"
         }
 

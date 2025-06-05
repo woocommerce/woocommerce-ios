@@ -2895,6 +2895,7 @@
 		DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */; };
 		DEFD6E61264990FB00E51E0D /* PluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */; };
 		DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */; };
+		DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -6126,6 +6127,7 @@
 		DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Themes.swift"; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsView.swift; sourceTree = "<group>"; };
+		DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleStyles.swift; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -9595,6 +9597,7 @@
 				E15FC74026BC1CED00CF83E6 /* AttributedText.swift */,
 				E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */,
 				E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */,
+				DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */,
 				DE19BB0B26C2688B00AB70D9 /* SingleSelectionList.swift */,
 				DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */,
 				CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */,
@@ -15375,6 +15378,7 @@
 				B5DB01B52114AB2D00A4F797 /* WooCrashLoggingStack.swift in Sources */,
 				205B7EBF2C19FBCA00D14A36 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel.swift in Sources */,
 				027ADB6E2D1BF5E3009608DB /* ParentProductCardView.swift in Sources */,
+				DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */,
 				26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
 				CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */,

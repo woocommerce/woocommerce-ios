@@ -22,30 +22,35 @@ struct UPSTermsView: View {
                 Text(Localization.shippingFrom)
                     .headlineStyle()
                 Text(originAddress)
+                    .foregroundStyle(Color.primary)
                     .subheadlineStyle()
                 Divider()
             }
+            .accessibilityElement(children: .combine)
 
             Text(Localization.message)
 
-            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            VStack(alignment: .leading, spacing: Layout.contentPadding) {
                 Toggle(isOn: $isTOSAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox1,
                                          linkText: Localization.termsOfService,
                                          link: Links.termsOfService))
                 }
+                .toggleStyle(CheckboxToggleStyle())
 
                 Toggle(isOn: $isProhibitedItemsAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox2,
                                          linkText: Localization.prohibitedItems,
                                          link: Links.prohibitedItems))
                 }
+                .toggleStyle(CheckboxToggleStyle())
 
                 Toggle(isOn: $isTechnologyAgreementAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox3,
                                          linkText: Localization.technologyAgreement,
                                          link: Links.techAgreement))
                 }
+                .toggleStyle(CheckboxToggleStyle())
             }
 
             Spacer()

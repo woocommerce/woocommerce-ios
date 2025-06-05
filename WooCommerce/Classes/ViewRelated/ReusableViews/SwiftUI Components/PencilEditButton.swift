@@ -15,9 +15,6 @@ struct PencilEditButton: View {
 
     var body: some View {
         Button(action: action) {
-            // Using the gridicon for pencilImage rather than the pencil SFSymbol resolves the issue,
-            // however we have 50/50 cases where we're using one or the other across the app.
-            // Waiting from design input in WOOMOB-516
             Image(uiImage: .pencilImage)
                 .resizable()
                 .frame(width: size * scale,

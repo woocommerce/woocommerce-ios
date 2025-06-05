@@ -29,13 +29,8 @@ struct ShippingLineRowView: View {
             Text(viewModel.shippingAmount)
                 .bodyStyle()
 
-            Button {
+            PencilEditButton() {
                 viewModel.editShippingLine()
-            } label: {
-                Image(systemName: "pencil")
-                    .resizable()
-                    .frame(width: Layout.editIconImageSize * scale,
-                           height: Layout.editIconImageSize * scale)
             }
             .tint(Color(.primary))
             .accessibilityLabel(Localization.editButtonAccessibilityLabel)

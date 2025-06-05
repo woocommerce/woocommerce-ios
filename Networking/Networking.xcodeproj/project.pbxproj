@@ -1746,6 +1746,7 @@
 				Extended/Model/PaymentGateway.swift,
 				Extended/Model/PaymentGatewayAccount.swift,
 				Extended/Model/POSProduct.swift,
+				Extended/Model/POSProductVariation.swift,
 				Extended/Model/Post.swift,
 				Extended/Model/Product/AIProduct.swift,
 				Extended/Model/Product/CreateProductVariation.swift,

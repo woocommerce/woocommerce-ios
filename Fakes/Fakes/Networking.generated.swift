@@ -1161,6 +1161,29 @@ extension Networking.POSProduct {
         )
     }
 }
+extension Networking.POSProductVariation {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.POSProductVariation {
+        .init(
+            siteID: .fake(),
+            productID: .fake(),
+            productVariationID: .fake(),
+            attributes: .fake(),
+            image: .fake(),
+            sku: .fake(),
+            globalUniqueID: .fake(),
+            price: .fake(),
+            regularPrice: .fake(),
+            salePrice: .fake(),
+            onSale: .fake(),
+            downloadable: .fake(),
+            manageStock: .fake(),
+            stockQuantity: .fake(),
+            stockStatusKey: .fake()
+        )
+    }
+}
 extension Networking.PaymentGateway {
     /// Returns a "ready to use" type filled with fake values.
     ///

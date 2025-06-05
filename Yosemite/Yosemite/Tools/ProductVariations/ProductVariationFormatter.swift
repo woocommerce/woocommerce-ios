@@ -1,5 +1,13 @@
 import Foundation
 
+public protocol ProductVariationFormattable {
+    var attributes: [ProductVariationAttribute] { get }
+}
+
+// MARK: - Model Conformance
+extension ProductVariation: ProductVariationFormattable {}
+extension POSProductVariation: ProductVariationFormattable {}
+
 /// Helper to format product variation details, such as variation name or attributes.
 ///
 public struct ProductVariationFormatter {
@@ -11,7 +19,7 @@ public struct ProductVariationFormatter {
     ///   - allAttributes: A list of attributes from the parent `Product`
     ///   - separator: The string to use to separate attributes used to make up the name. Default `" - "`
     ///
-    public func generateName(for variation: ProductVariation,
+    public func generateName(for variation: ProductVariationFormattable,
                              from allAttributes: [ProductAttribute],
                              separator: String = " - ") -> String {
         let variationAttributes = generateAttributes(for: variation, from: allAttributes)
@@ -24,7 +32,7 @@ public struct ProductVariationFormatter {
     ///   - allAttributes: A list of attributes from the parent `Product`
     ///   - separator: The string to use to separate attributes used to make up the name. Default `" - "`
     ///
-    public func generateNameWithAttributeNames(for variation: ProductVariation,
+    public func generateNameWithAttributeNames(for variation: ProductVariationFormattable,
                                                from allAttributes: [ProductAttribute],
                                                separator: String = " - ") -> String {
         let variationAttributes = generateAttributes(for: variation, from: allAttributes)
@@ -36,7 +44,7 @@ public struct ProductVariationFormatter {
     ///   - variation: The product variation whose attributes are being generated
     ///   - allAttributes: A list of attributes from the parent `Product`
     ///
-    public func generateAttributes(for variation: ProductVariation, from allAttributes: [ProductAttribute]) -> [VariationAttributeViewModel] {
+    public func generateAttributes(for variation: ProductVariationFormattable, from allAttributes: [ProductAttribute]) -> [VariationAttributeViewModel] {
         return allAttributes
             .sorted(by: { (lhs, rhs) -> Bool in
                 lhs.position < rhs.position

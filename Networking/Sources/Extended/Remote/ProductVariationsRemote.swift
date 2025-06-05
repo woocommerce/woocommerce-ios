@@ -14,7 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int) async throws -> PagedItems<ProductVariation>
+                                      pageNumber: Int) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -78,7 +78,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<ProductVariation> {
+                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -86,10 +86,11 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                status: .published,
                                                orderBy: .menuOrder,
                                                order: .ascending,
+                                               fields: POSProductVariation.requestFields,
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: POSConstants.variationsPerPage)
-        let mapper = ProductVariationListMapper(siteID: siteID, productID: parentProductID)
+        let mapper = ListMapper<POSProductVariation>(siteID: siteID)
 
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -113,16 +114,19 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           status: ProductStatus? = nil,
                                           orderBy: OrderByField? = nil,
                                           order: OrderDirection? = nil,
+                                          fields: [String] = [],
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
+        let stringOfRequiredFields = fields.joined(separator: ",")
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.downloadable: downloadable.map { String($0) },
             ParameterKey.contextKey: context ?? Default.context,
+            ParameterKey.fields: fields.isEmpty ? nil : stringOfRequiredFields,
             ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs,
             ParameterKey.status: status?.rawValue,
             ParameterKey.orderBy: orderBy?.rawValue,
@@ -346,6 +350,7 @@ public extension ProductVariationsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
+        static let fields: String     = "_fields"
         static let image: String = "image"
         static let include: String    = "include"
         static let downloadable: String = "downloadable"

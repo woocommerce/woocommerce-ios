@@ -326,7 +326,6 @@ private extension ItemListView {
     @ViewBuilder
     private var simulatedScanButton: some View {
         POSPageHeaderActionButton(systemName: "barcode") {
-            ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
             barcodeScanSimulatorIsPresented.toggle()
         }
         .transition(.opacity.combined(with: .scale))

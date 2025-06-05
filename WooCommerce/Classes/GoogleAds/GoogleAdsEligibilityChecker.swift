@@ -46,10 +46,10 @@ private extension DefaultGoogleAdsEligibilityChecker {
     @MainActor
     func fetchPluginFromRemote(siteID: Int64) async -> SystemPlugin? {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
+            stores.dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
                 switch result {
-                case .success(let info):
-                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                case .success(let systemPlugins):
+                    let plugin = systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
                     continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)

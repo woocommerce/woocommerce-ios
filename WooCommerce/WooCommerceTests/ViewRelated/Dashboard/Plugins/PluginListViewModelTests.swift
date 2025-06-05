@@ -33,7 +33,7 @@ class PluginListViewModelTests: XCTestCase {
         var triggeredSiteID: Int64?
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case .synchronizeSystemInformation(let siteID, _):
+            case .synchronizeSystemPlugins(let siteID, _):
                 triggeredSiteID = siteID
             default:
                 break
@@ -53,8 +53,8 @@ class PluginListViewModelTests: XCTestCase {
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case .synchronizeSystemInformation(_, let completion):
-                completion(.success(.fake()))
+            case .synchronizeSystemPlugins(_, let completion):
+                completion(.success([]))
             default:
                 break
             }
@@ -77,7 +77,7 @@ class PluginListViewModelTests: XCTestCase {
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case .synchronizeSystemInformation(_, let completion):
+            case .synchronizeSystemPlugins(_, let completion):
                 completion(.failure(MockPluginError.mockError))
             default:
                 break

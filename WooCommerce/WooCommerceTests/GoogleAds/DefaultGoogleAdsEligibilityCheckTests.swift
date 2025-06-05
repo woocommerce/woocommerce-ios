@@ -106,9 +106,8 @@ private extension DefaultGoogleAdsEligibilityCheckerTests {
                       adsConnection: GoogleAdsConnection? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case let .synchronizeSystemInformation(_, onCompletion):
-                let systemInfo = SystemInformation.fake().copy(systemPlugins: syncedPlugins)
-                onCompletion(.success(systemInfo))
+            case let .synchronizeSystemPlugins(_, onCompletion):
+                onCompletion(.success(syncedPlugins))
             default:
                 break
             }

@@ -251,9 +251,8 @@ private extension BlazeEligibilityCheckerTests {
     func mockPluginFetch(remotePlugin: SystemPlugin? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case let .synchronizeSystemInformation(_, onCompletion):
-                let info = SystemInformation.fake().copy(systemPlugins: [remotePlugin].compactMap({ $0 }))
-                onCompletion(.success(info))
+            case let .synchronizeSystemPlugins(_, onCompletion):
+                onCompletion(.success([remotePlugin].compactMap({ $0 })))
             default:
                 break
             }

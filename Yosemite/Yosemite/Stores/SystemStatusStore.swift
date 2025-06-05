@@ -29,6 +29,8 @@ public final class SystemStatusStore: Store {
         switch action {
         case .synchronizeSystemInformation(let siteID, let onCompletion):
             synchronizeSystemInformation(siteID: siteID, completionHandler: onCompletion)
+        case .synchronizeSystemPlugins(siteID: let siteID, onCompletion: let onCompletion):
+            synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
             fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
         case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
@@ -47,17 +49,42 @@ public final class SystemStatusStore: Store {
 //
 private extension SystemStatusStore {
     func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping (Result<SystemInformation, Error>) -> Void) {
-        remote.loadSystemInformation(for: siteID) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let systemInformation):
-                self.updateStoreID(siteID: siteID, readonlySystemInformation: systemInformation)
-                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] in
-                    guard let self else { return }
+        Task { @MainActor in
+            do {
+                let systemInformation = try await remote.loadSystemInformation(for: siteID)
+                updateStoreID(siteID: siteID, readonlySystemInformation: systemInformation)
+                upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] in
+                    guard let self else {
+                        return completionHandler(.success(.init(storeID: nil, systemPlugins: [])))
+                    }
                     let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
-                    completionHandler(.success(.init(storeID: systemInformation.environment?.storeID, systemPlugins: systemPlugins)))
+                    completionHandler(
+                        .success(
+                            .init(
+                                storeID: systemInformation.environment?.storeID,
+                                systemPlugins: systemPlugins
+                            )
+                        )
+                    )
                 }
-            case .failure(let error):
+            } catch {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+
+    func synchronizeSystemPlugins(siteID: Int64, completionHandler: @escaping (Result<[SystemPlugin], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let systemPlugins = try await remote.loadSystemPlugins(for: siteID)
+                upsertSystemPluginsInBackground(siteID: siteID, systemPlugins: systemPlugins) { [weak self] in
+                    guard let self else {
+                        return completionHandler(.success([]))
+                    }
+                    let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+                    completionHandler(.success(systemPlugins))
+                }
+            } catch {
                 completionHandler(.failure(error))
             }
         }
@@ -79,7 +106,18 @@ private extension SystemStatusStore {
                                          readonlySystemInformation: SystemStatus,
                                          completionHandler: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            self?.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: storage)
+            self?.upsertSystemPlugins(siteID: siteID, activePlugins: readonlySystemInformation.plugins.activePlugins, inactivePlugins: readonlySystemInformation.plugins.inactivePlugins, in: storage)
+        }, completion: completionHandler, on: .main)
+    }
+
+    /// Updates or inserts Readonly system information in background.
+    /// Triggers `completionHandler` on main thread.
+    ///
+    func upsertSystemPluginsInBackground(siteID: Int64,
+                                         systemPlugins: SystemPlugins,
+                                         completionHandler: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertSystemPlugins(siteID: siteID, activePlugins: systemPlugins.activePlugins, inactivePlugins: systemPlugins.inactivePlugins, in: storage)
         }, completion: completionHandler, on: .main)
     }
 
@@ -93,17 +131,17 @@ private extension SystemStatusStore {
     /// Updates or inserts Readonly sistem plugins from the read only system information in specified storage.
     /// Also removes stale plugins that no longer exist in remote plugin list.
     ///
-    func upsertSystemPlugins(siteID: Int64, readonlySystemInformation: SystemStatus, in storage: StorageType) {
+    func upsertSystemPlugins(siteID: Int64, activePlugins: [SystemPlugin], inactivePlugins: [SystemPlugin], in storage: StorageType) {
         /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
         /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins
         /// and here we apply the correct value for active (or not)
         ///
         let readonlySystemPlugins: [SystemPlugin] = {
-            let activePlugins = readonlySystemInformation.activePlugins.map {
+            let activePlugins = activePlugins.map {
                 $0.copy(active: true)
             }
 
-            let inactivePlugins = readonlySystemInformation.inactivePlugins.map {
+            let inactivePlugins = inactivePlugins.map {
                 $0.copy(active: false)
             }
 

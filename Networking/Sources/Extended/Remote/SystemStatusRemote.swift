@@ -11,11 +11,10 @@ public class SystemStatusRemote: Remote {
     ///   - Inactive Plugins
     ///
     /// - Parameters:
-    ///   - siteID: Site for which we'll fetch the system plugins.
+    ///   - siteID: Site for which we'll fetch the system information.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadSystemInformation(for siteID: Int64,
-                                      completion: @escaping (Result<SystemStatus, Error>) -> Void) {
+    public func loadSystemInformation(for siteID: Int64) async throws -> SystemStatus {
         let path = Constants.systemStatusPath
         let parameters = [
             ParameterKeys.fields: [ParameterValues.environment, ParameterValues.activePlugins, ParameterValues.inactivePlugins]
@@ -27,8 +26,31 @@ public class SystemStatusRemote: Remote {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = SystemStatusMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
 
-        enqueue(request, mapper: mapper, completion: completion)
+    /// Retrieves information from the system status that belongs to the current site.
+    /// Currently fetching:
+    ///   - Active Plugins
+    ///   - Inactive Plugins
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the system plugins.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadSystemPlugins(for siteID: Int64) async throws -> SystemPlugins {
+        let path = Constants.systemStatusPath
+        let parameters = [
+            ParameterKeys.fields: [ParameterValues.activePlugins, ParameterValues.inactivePlugins]
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SystemPluginsMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Fetch details about system status for a given site.

@@ -6,15 +6,15 @@ public final class MockSystemStatusService: SystemStatusServiceProtocol {
 
     public var didCallSynchronizeSystemInformation = false
     public var spySynchronizeSystemInformationSiteID: Int64? = nil
-    public var onSynchronizeSystemInformationThenReturn: SystemInformation? = nil
+    public var onSynchronizeSystemInformationThenReturn: [SystemPlugin]?
     public var onSynchronizeSystemInformationThenThrow: Error? = nil
-    public func synchronizeSystemInformation(siteID: Int64) async throws -> SystemInformation {
+    public func synchronizeSystemInformation(siteID: Int64) async throws -> [SystemPlugin] {
         didCallSynchronizeSystemInformation = true
         spySynchronizeSystemInformationSiteID = siteID
         if let shouldThrow = onSynchronizeSystemInformationThenThrow {
             throw shouldThrow
         } else {
-            return onSynchronizeSystemInformationThenReturn ?? .fake()
+            return onSynchronizeSystemInformationThenReturn ?? []
         }
     }
 

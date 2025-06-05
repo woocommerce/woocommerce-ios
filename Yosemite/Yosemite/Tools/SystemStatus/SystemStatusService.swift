@@ -1,7 +1,8 @@
 import Foundation
 
 public protocol SystemStatusServiceProtocol {
-    func synchronizeSystemInformation(siteID: Int64) async throws -> SystemInformation
+    // TODO: rename to `synchronizeSystemPlugins`
+    func synchronizeSystemInformation(siteID: Int64) async throws -> [SystemPlugin]
     func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String) async -> SystemPlugin?
 }
 
@@ -13,9 +14,9 @@ public struct SystemStatusService: SystemStatusServiceProtocol {
     }
 
     @MainActor
-    public func synchronizeSystemInformation(siteID: Int64) async throws -> SystemInformation {
+    public func synchronizeSystemInformation(siteID: Int64) async throws -> [SystemPlugin] {
         try await withCheckedThrowingContinuation { continuation in
-            let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

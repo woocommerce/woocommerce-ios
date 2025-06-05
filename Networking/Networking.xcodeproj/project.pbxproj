@@ -116,7 +116,6 @@
 		03F6A7E829FAC49F00C10106 /* just-in-time-message-list-without-nonessential-keys.json in Resources */ = {isa = PBXBuildFile; fileRef = 03F6A7E729FAC49F00C10106 /* just-in-time-message-list-without-nonessential-keys.json */; };
 		077F39D826A58EB600ABEADC /* systemStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 077F39D726A58EB600ABEADC /* systemStatus.json */; };
 		077F39DA26A58ED700ABEADC /* SystemStatusRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */; };
-		077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */; };
 		09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */; };
 		204CBD2B2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */; };
 		207D816C2D4A30A30097012E /* products-load-simple-products-empty-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */; };
@@ -851,7 +850,6 @@
 		03F6A7E729FAC49F00C10106 /* just-in-time-message-list-without-nonessential-keys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "just-in-time-message-list-without-nonessential-keys.json"; sourceTree = "<group>"; };
 		077F39D726A58EB600ABEADC /* systemStatus.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = systemStatus.json; sourceTree = "<group>"; };
 		077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemoteTests.swift; sourceTree = "<group>"; };
-		077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapperTests.swift; sourceTree = "<group>"; };
 		09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-update.json"; sourceTree = "<group>"; };
 		204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error-site-credentials.json"; sourceTree = "<group>"; };
 		207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-simple-products-empty-price.json"; sourceTree = "<group>"; };
@@ -1679,7 +1677,7 @@
 				Extended/Mapper/SubscriptionListMapper.swift,
 				Extended/Mapper/SubscriptionMapper.swift,
 				Extended/Mapper/SuccessDataResultMapper.swift,
-				Extended/Mapper/SystemPluginMapper.swift,
+				Extended/Mapper/SystemPluginsMapper.swift,
 				Extended/Mapper/SystemStatusMapper.swift,
 				Extended/Mapper/SystemStatusReportMapper.swift,
 				Extended/Mapper/TaxClassListMapper.swift,
@@ -1864,6 +1862,7 @@
 				Extended/Model/Subscription.swift,
 				Extended/Model/SubscriptionStatus.swift,
 				Extended/Model/SystemPlugin.swift,
+				Extended/Model/SystemPlugins.swift,
 				Extended/Model/SystemStatus.swift,
 				"Extended/Model/SystemStatusDetails/SystemStatusReport+Database.swift",
 				"Extended/Model/SystemStatusDetails/SystemStatusReport+DropinMustUsePlugin.swift",
@@ -2833,7 +2832,6 @@
 				DE2E8EAA2954170D002E4B14 /* WordPressSiteMapperTests.swift */,
 				DE78DE4B2B2AED4C002E58DE /* WordPressPageMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
-				077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */,
 				DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */,
 				029149712D2641DD00F7B3B3 /* SystemStatusReportMapperTests.swift */,
 				2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */,
@@ -3823,7 +3821,6 @@
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,
 				DE4D23C629B6F94F003A4B5D /* AnnouncementsRemoteTests.swift in Sources */,
 				EE2C09BE29AF23AD009396F9 /* StoreOnboardingTasksRemoteTests.swift in Sources */,
-				077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */,
 				4599FC6624A633A10056157A /* ProductTagsRemoteTests.swift in Sources */,
 				DE97C3922861B8E20042E973 /* CouponEncoderTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,

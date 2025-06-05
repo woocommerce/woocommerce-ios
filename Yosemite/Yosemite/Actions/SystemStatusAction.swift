@@ -8,6 +8,10 @@ public enum SystemStatusAction: Action {
     ///
     case synchronizeSystemInformation(siteID: Int64, onCompletion: (Result<SystemInformation, Error>) -> Void)
 
+    /// Synchronize store active/inactive plugins from the system status for a site given its ID.
+    ///
+    case synchronizeSystemPlugins(siteID: Int64, onCompletion: (Result<[SystemPlugin], Error>) -> Void)
+
     /// Fetch an specific systemPlugin by siteID and name
     ///
     case fetchSystemPlugin(siteID: Int64, systemPluginName: String, onCompletion: (SystemPlugin?) -> Void)

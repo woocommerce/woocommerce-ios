@@ -14,8 +14,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:Experiments.xcodeproj",
-        "identifier" : "0270C08927069A8900FC799F",
+        "containerPath" : "container:",
+        "identifier" : "ExperimentsTests",
         "name" : "ExperimentsTests"
       }
     }

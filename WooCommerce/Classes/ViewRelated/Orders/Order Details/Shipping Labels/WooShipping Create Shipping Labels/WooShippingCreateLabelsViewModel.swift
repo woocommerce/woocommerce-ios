@@ -3,6 +3,7 @@ import Yosemite
 import WooFoundation
 import Combine
 import struct Networking.WooShippingAccountSettings
+import enum Networking.DotcomError
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
@@ -293,6 +294,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         do {
             try await currentShipmentDetailsViewModel.purchaseLabel()
+        } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
+            // TODO: show error
         } catch {
             labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
                                               message: Localization.LabelPurchaseError.message,
@@ -627,6 +630,9 @@ private extension WooShippingCreateLabelsViewModel {
 }
 
 private extension WooShippingCreateLabelsViewModel {
+    enum Constants {
+        static let missingUPSDAPTermsOfServiceAcceptance = "missing_upsdap_terms_of_service_acceptance"
+    }
     enum Localization {
         enum OriginAddressStatus {
             static let unverified = NSLocalizedString(

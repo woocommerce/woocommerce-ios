@@ -98,6 +98,8 @@ public protocol ProductsRemoteProtocol {
 
     func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                    globalUniqueID: String) async throws -> POSProduct
+
+    func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
 }
 
 extension ProductsRemoteProtocol {
@@ -356,6 +358,29 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             throw NetworkError.notFound()
         }
         return product
+    }
+
+    /// Fetches a single product or variation by its ID for Point of Sale.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch the product.
+    ///     - productID: The ID of the product to fetch.
+    /// - Returns: A POSProduct if found
+    /// - Throws: Error if the product is not found or if there's a network error
+    ///
+    public func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+        let parameters = [
+            ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
+        ]
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
+        let mapper = SingleItemMapper<POSProduct>(siteID: siteID)
+
+        do {
+            return try await enqueue(request, mapper: mapper)
+        } catch {
+            throw NetworkError.notFound()
+        }
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

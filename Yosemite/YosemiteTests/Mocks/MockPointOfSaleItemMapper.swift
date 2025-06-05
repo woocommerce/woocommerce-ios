@@ -5,7 +5,7 @@ final class MockPointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     var mapProductsToPOSItemsCalled = false
     var mapVariationsToPOSItemsCalled = false
     var mockProducts: [POSProduct] = []
-    var mockVariations: [ProductVariation] = []
+    var mockVariations: [POSProductVariation] = []
     var mockParentProduct: POSVariableParentProduct?
     var mockMappedProducts: [POSItem] = []
     var mockMappedVariations: [POSItem] = []
@@ -16,7 +16,7 @@ final class MockPointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
         return mockMappedProducts
     }
 
-    func mapVariationsToPOSItems(variations: [ProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
+    func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
         mapVariationsToPOSItemsCalled = true
         mockVariations = variations
         mockParentProduct = parentProduct

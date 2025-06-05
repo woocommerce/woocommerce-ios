@@ -184,7 +184,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         )
 
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        let mockVariation = ProductVariation.fake().copy(
+        let mockVariation = POSProductVariation.fake().copy(
             productID: parentProductID,
             productVariationID: 1274,
             image: .fake().copy(src: "https://example.com/variation.jpg"),
@@ -297,7 +297,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         )
 
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [ProductVariation.fake()],
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [POSProductVariation.fake()],
                                                                           hasMorePages: false,
                                                                           totalItems: 1))
 
@@ -371,7 +371,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleVariationItems_returns_expected_items() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [ProductVariation.fake()],
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [POSProductVariation.fake()],
                                                                           hasMorePages: false,
                                                                           totalItems: 1))
 
@@ -447,13 +447,13 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         )
 
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        let mockVariation = ProductVariation.fake().copy(
+        let mockVariation = POSProductVariation.fake().copy(
             productID: parentProductID,
             productVariationID: 456,
             price: "20.00",
             manageStock: true,
             stockQuantity: 10,
-            stockStatus: .inStock
+            stockStatusKey: "instock"
         )
         mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [mockVariation],
                                                                           hasMorePages: false,

@@ -6,7 +6,7 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
     var fetchProductsCalled = false
     var spyFetchProductsPageNumber: Int?
     var mockPagedProductsResult: Result<PagedItems<POSProduct>, Error>?
-    var mockPagedVariationsResult: Result<PagedItems<ProductVariation>, Error>?
+    var mockPagedVariationsResult: Result<PagedItems<POSProductVariation>, Error>?
 
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         fetchProductsCalled = true
@@ -24,7 +24,7 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
     var fetchVariationsCalled = false
     var spyFetchVariationsParentProductID: Int64?
     var spyFetchVariationsPageNumber: Int?
-    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         fetchVariationsCalled = true
         spyFetchVariationsParentProductID = parentProductID
         spyFetchVariationsPageNumber = pageNumber
@@ -34,7 +34,7 @@ final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableI
         case .failure(let error):
             throw error
         case .none:
-            return PagedItems<ProductVariation>(items: [], hasMorePages: false, totalItems: nil)
+            return PagedItems<POSProductVariation>(items: [], hasMorePages: false, totalItems: nil)
         }
     }
 }

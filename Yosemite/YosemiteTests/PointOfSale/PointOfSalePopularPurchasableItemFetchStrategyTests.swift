@@ -63,8 +63,8 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
         // Given
         let parentProductID: Int64 = 1
         let variations = [
-            ProductVariation.fake().copy(siteID: siteID, productID: parentProductID, productVariationID: 1),
-            ProductVariation.fake().copy(siteID: siteID, productID: parentProductID, productVariationID: 2)
+            POSProductVariation.fake().copy(siteID: siteID, productID: parentProductID, productVariationID: 1),
+            POSProductVariation.fake().copy(siteID: siteID, productID: parentProductID, productVariationID: 2)
         ]
         variationsRemote.whenLoadingVariationsForPointOfSale(siteID: siteID, parentProductID: parentProductID, thenReturn: .success(variations))
 

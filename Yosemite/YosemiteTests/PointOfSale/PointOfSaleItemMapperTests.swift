@@ -11,6 +11,84 @@ struct PointOfSaleItemMapperTests {
         sut = PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
+    // MARK: - Test Data Factory Methods
+
+    private static func createSimpleProduct1() -> POSProduct {
+        POSProduct.fake().copy(
+            productID: 123,
+            name: "Simple Product 1",
+            productTypeKey: "simple",
+            price: "10.00",
+            images: [.fake().copy(src: "https://example.com/image1.jpg")],
+            manageStock: true,
+            stockQuantity: 10,
+            stockStatusKey: "instock"
+        )
+    }
+
+    private static func createSimpleProduct2() -> POSProduct {
+        POSProduct.fake().copy(
+            productID: 124,
+            name: "Simple Product 2",
+            productTypeKey: "simple",
+            price: "20.00",
+            images: [.fake().copy(src: "https://example.com/image2.jpg")],
+            manageStock: true,
+            stockQuantity: 5,
+            stockStatusKey: "instock"
+        )
+    }
+
+    private static func createVariableProduct1() -> POSProduct {
+        POSProduct.fake().copy(
+            productID: 125,
+            name: "Variable Product 1",
+            productTypeKey: "variable",
+            images: [.fake().copy(src: "https://example.com/image3.jpg")],
+            attributes: [ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red", "Blue"])]
+        )
+    }
+
+    private static func createVariableProduct2() -> POSProduct {
+        POSProduct.fake().copy(
+            productID: 126,
+            name: "Variable Product 2",
+            productTypeKey: "variable",
+            images: [.fake().copy(src: "https://example.com/image4.jpg")],
+            attributes: [ProductAttribute.fake().copy(name: "Size", variation: true, options: ["S", "M", "L"])]
+        )
+    }
+
+    private static func createParentProduct() -> POSVariableParentProduct {
+        POSVariableParentProduct(
+            id: UUID(),
+            name: "Parent Product",
+            productImageSource: nil,
+            productID: 125,
+            allAttributes: [ProductAttribute.fake().copy(name: "Color", options: ["Red", "Blue"])]
+        )
+    }
+
+    private static func createVariation1() -> ProductVariation {
+        ProductVariation.fake().copy(
+            productID: 125,
+            productVariationID: 456,
+            attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Red")],
+            image: .fake().copy(src: "https://example.com/variation1.jpg"),
+            price: "15.00"
+        )
+    }
+
+    private static func createVariation2() -> ProductVariation {
+        ProductVariation.fake().copy(
+            productID: 125,
+            productVariationID: 457,
+            attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Blue")],
+            image: .fake().copy(src: "https://example.com/variation2.jpg"),
+            price: "20.00"
+        )
+    }
+
     @Test func mapProductsToPOSItems_returns_simple_product_when_given_simple_product() {
         // Given
         let product = POSProduct.fake().copy(productID: 123,
@@ -298,5 +376,69 @@ struct PointOfSaleItemMapperTests {
         #expect(secondVariation.price == "20.00")
         #expect(secondVariation.productVariationID == 457)
         #expect(secondVariation.productImageSource == "https://example.com/variation2.jpg")
+    }
+
+    @Test("Map products to POS items with different combinations",
+          arguments: [[createSimpleProduct1(), createVariableProduct1()]])
+    func mapProductsToPOSItemsWithCombinations(products: [POSProduct]) {
+        // When
+        let items = sut.mapProductsToPOSItems(products: products)
+
+        // Then
+        #expect(items.count == products.count)
+
+        // Verify each product is mapped correctly
+        for (index, product) in products.enumerated() {
+            switch product.productTypeKey {
+            case "simple":
+                guard case let .simpleProduct(mappedProduct) = items[index] else {
+                    Issue.record("Expected simple product at index \(index), but got \(String(describing: items[index]))")
+                    return
+                }
+                #expect(mappedProduct.name == product.name)
+                #expect(mappedProduct.price == product.price)
+                #expect(mappedProduct.productID == product.productID)
+                #expect(mappedProduct.productImageSource == product.images.first?.src)
+
+            case "variable":
+                guard case let .variableParentProduct(mappedProduct) = items[index] else {
+                    Issue.record("Expected variable product at index \(index), but got \(String(describing: items[index]))")
+                    return
+                }
+                #expect(mappedProduct.name == product.name)
+                #expect(mappedProduct.productID == product.productID)
+                #expect(mappedProduct.productImageSource == product.images.first?.src)
+
+            default:
+                Issue.record("Unexpected product type: \(product.productTypeKey)")
+                return
+            }
+        }
+    }
+
+    @Test("Map variations to POS items with different counts",
+          arguments: [([createVariation1(), createVariation2()], createParentProduct())])
+    func mapVariationsToPOSItemsWithCount(
+        variations: [ProductVariation],
+        parentProduct: POSVariableParentProduct
+    ) {
+        // When
+        let items = sut.mapVariationsToPOSItems(variations: variations, parentProduct: parentProduct)
+
+        // Then
+        #expect(items.count == variations.count)
+
+        // Verify each variation is mapped correctly
+        for (index, variation) in variations.enumerated() {
+            guard case let .variation(mappedVariation) = items[index] else {
+                Issue.record("Expected variation at index \(index), but got \(String(describing: items[index]))")
+                return
+            }
+            #expect(mappedVariation.name == "Color: \(variation.attributes.first?.option ?? "")")
+            #expect(mappedVariation.price == variation.price)
+            #expect(mappedVariation.productVariationID == variation.productVariationID)
+            #expect(mappedVariation.productImageSource == variation.image?.src)
+            #expect(mappedVariation.parentProductName == parentProduct.name)
+        }
     }
 }

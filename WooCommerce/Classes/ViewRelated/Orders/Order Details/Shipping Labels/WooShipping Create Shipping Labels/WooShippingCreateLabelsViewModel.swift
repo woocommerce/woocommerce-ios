@@ -187,6 +187,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
+    @Published var shouldShowUPSTermsAndConditions = false
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          selectedShippingLabel: ShippingLabel? = nil,
@@ -295,7 +297,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         do {
             try await currentShipmentDetailsViewModel.purchaseLabel()
         } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
-            // TODO: show error
+            shouldShowUPSTermsAndConditions = true
         } catch {
             labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
                                               message: Localization.LabelPurchaseError.message,

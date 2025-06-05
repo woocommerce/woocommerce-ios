@@ -61,6 +61,7 @@ struct UPSTermsView: View {
                           !isProhibitedItemsAccepted ||
                           !isTechnologyAgreementAccepted)
         }
+        .padding(.top, Layout.contentPadding)
     }
 }
 

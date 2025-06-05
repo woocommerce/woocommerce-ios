@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0270C08027069A8900FC799F"
-               BuildableName = "Experiments.framework"
+               BlueprintIdentifier = "Experiments"
+               BuildableName = "Experiments"
                BlueprintName = "Experiments"
-               ReferencedContainer = "container:Experiments.xcodeproj">
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,7 +30,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:ExperimentsTests/Experiments.xctestplan"
+            reference = "container:Tests/ExperimentsTests/Experiments.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -55,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0270C08027069A8900FC799F"
-            BuildableName = "Experiments.framework"
+            BlueprintIdentifier = "Experiments"
+            BuildableName = "Experiments"
             BlueprintName = "Experiments"
-            ReferencedContainer = "container:Experiments.xcodeproj">
+            ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

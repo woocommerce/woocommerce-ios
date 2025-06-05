@@ -3150,13 +3150,13 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_addCustomAmount_toggles_showAddCustomAmount_to_true_when_order_is_new() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showCustomAmountView)
 
         // When
         viewModel.addCustomAmount()
 
         // Then
-        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showCustomAmountView)
     }
 
     func test_init_with_initialItem_which_is_a_parent_product_shows_notice() {

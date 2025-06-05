@@ -16,6 +16,10 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
+            name: "Experiments",
+            targets: ["Experiments"]
+        ),
+        .library(
             name: "TestKit",
             targets: ["TestKit"]
         ),
@@ -78,6 +82,12 @@ let package = Package(
             exclude: ["README.md", "Sourcery"] // Relative to sources path
         ),
         .target(
+            name: "Experiments",
+            dependencies: [
+                .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+            ]
+        ),
+        .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"]
         ),
@@ -113,6 +123,13 @@ let package = Package(
         .target(
             name: "WPMediaPicker",
             resources: [.process("Resources")]
+        ),
+        .testTarget(
+            name: "ExperimentsTests",
+            dependencies: [
+                "Experiments",
+                .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+            ]
         ),
         .testTarget(
             name: "WooFoundationTests",
@@ -151,8 +168,6 @@ let package = Package(
 //   including frameworks with large resources bundled into multiple targets.
 
 enum XcodeTargetNames {
-    static let experiments = "Experiments"
-    static let experimentsTests = "ExperimentsTests"
     static let fakes = "Fakes"
     static let hardware = "Hardware"
     static let hardwareTests = "HardwareTests"
@@ -178,8 +193,6 @@ enum XcodeTargetNames {
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.experiments,
-            XcodeTargetNames.experimentsTests,
             XcodeTargetNames.fakes,
             XcodeTargetNames.hardware,
             XcodeTargetNames.hardwareTests,
@@ -205,19 +218,6 @@ enum XcodeSupport {
 
     static var targets: [Target] {
         [
-            .xcodeTarget(
-                XcodeTargetNames.experiments,
-                dependencies: [
-                    .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.experimentsTests,
-                dependencies: [
-                    .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
-                    XcodeTargetNames.experiments.asDependency
-                ]
-            ),
             .xcodeTarget(
                 XcodeTargetNames.fakes,
                 dependencies: ["Codegen"]
@@ -284,6 +284,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
                 dependencies: [
+                    "Experiments",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
@@ -299,6 +300,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    "Experiments",
                     "WooFoundation",
                     "WordPressShared",
                     "WordPressUI",

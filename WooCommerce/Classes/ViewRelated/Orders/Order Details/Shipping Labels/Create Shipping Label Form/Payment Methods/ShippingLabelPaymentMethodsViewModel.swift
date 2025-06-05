@@ -20,7 +20,13 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     /// List of payment methods available to choose from
     ///
     var paymentMethods: [ShippingLabelPaymentMethod] {
-        accountSettings.paymentMethods
+        /// sort methods to display the selected one on the top
+        accountSettings.paymentMethods.sorted { lhs, rhs in
+            if lhs.paymentMethodID == accountSettings.selectedPaymentMethodID {
+                return true
+            }
+            return false
+        }
     }
 
     var storeOwnerUsername: String {
@@ -164,7 +170,8 @@ extension ShippingLabelPaymentMethodsViewModel {
 
     static let samplePaymentMethodID: Int64 = 11743265
 
-    static func sampleAccountSettings(withPermissions: Bool = true) -> ShippingLabelAccountSettings {
+    static func sampleAccountSettings(withPermissions: Bool = true,
+                                      hasPaymentMethods: Bool = true) -> ShippingLabelAccountSettings {
         return ShippingLabelAccountSettings(siteID: 1234,
                                             canManagePayments: withPermissions,
                                             canEditSettings: withPermissions,
@@ -172,7 +179,7 @@ extension ShippingLabelPaymentMethodsViewModel {
                                             storeOwnerUsername: "admin",
                                             storeOwnerWpcomUsername: "username",
                                             storeOwnerWpcomEmail: "user@example.com",
-                                            paymentMethods: samplePaymentMethods(),
+                                            paymentMethods: hasPaymentMethods ? samplePaymentMethods() : [],
                                             selectedPaymentMethodID: 11743265,
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,

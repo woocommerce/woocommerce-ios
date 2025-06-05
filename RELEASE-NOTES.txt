@@ -4,6 +4,7 @@
 22.6
 -----
 - [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
+- [*] Orders: Updated edit icons design to be consistent: [https://github.com/woocommerce/woocommerce-ios/pull/15685]
 
 22.5
 -----

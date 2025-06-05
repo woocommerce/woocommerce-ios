@@ -1,7 +1,8 @@
-project: 
-    file: ../../../../../Networking/Networking.xcodeproj
-    target: 
-        name: Networking
+sources:
+    include:
+        - ../../../../../Networking/Sources
 templates:
     - Models+Copiable.swifttemplate
-output: ../../../../../Networking/Networking/Model/Copiable/
+output: ../../../../../Networking/Sources/Extended/Model/Copiable/
+args:
+    moduleName: Networking

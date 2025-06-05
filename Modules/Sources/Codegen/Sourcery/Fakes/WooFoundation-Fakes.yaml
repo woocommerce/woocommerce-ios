@@ -1,7 +1,17 @@
-project:
-    file: ../../../../../WooFoundation/WooFoundation.xcodeproj
-    target:
-        name: WooFoundation
-templates:
-    - Fakes.swifttemplate
-output: ../../../../../Fakes/Fakes/WooFoundation.generated.swift
+configurations:
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundation
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Fakes/Fakes/WooFoundation.generated.swift
+      args:
+          moduleName: WooFoundation
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundationCore
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Fakes/Fakes/WooFoundationCore.generated.swift
+      args:
+          moduleName: WooFoundationCore

@@ -1,6 +1,5 @@
 import Foundation
 import enum Alamofire.AFError
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import struct Networking.PagedItems
 
@@ -13,10 +12,10 @@ public enum PointOfSaleItemServiceError: Error, Equatable {
 /// Product provider for the Point of Sale feature
 ///
 public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
-    private let currencyFormatter: CurrencyFormatter
+    private let itemMapper: PointOfSaleItemMapperProtocol
 
-    public init(currencySettings: CurrencySettings) {
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+    public init(currencySettings: CurrencySettings, itemMapper: PointOfSaleItemMapperProtocol? = nil) {
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
     /// Provides a list of products for the Point of Sale, by fetching simple products using the fetch strategy, applying any eligibility criteria,
@@ -34,7 +33,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            return .init(items: mapProductsToPOSItems(products: products),
+            return .init(items: itemMapper.mapProductsToPOSItems(products: products),
                          hasMorePages: pagedProducts.hasMorePages,
                          totalItems: pagedProducts.totalItems)
         } catch AFError.explicitlyCancelled {
@@ -52,64 +51,12 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             // Remove this when WC version 9.7 has significant adoption in POS stores.
                 .filter { !$0.downloadable }
             return .init(
-                items: variations.compactMap({ variation in
-                    let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
-                        for: variation,
-                        from: parentProduct.allAttributes,
-                        separator: ", "
-                    )
-                    return POSItem
-                        .variation(.init(id: UUID(),
-                                         name: variationName,
-                                         formattedPrice: formatPrice(variation.price),
-                                         price: variation.price,
-                                         productImageSource: variation.image?.src,
-                                         productID: variation.productID,
-                                         variationID: variation.productVariationID,
-                                         parentProductName: parentProduct.name))
-                }),
+                items: itemMapper.mapVariationsToPOSItems(variations: variations, parentProduct: parentProduct),
                 hasMorePages: pagedVariations.hasMorePages,
                 totalItems: pagedVariations.totalItems
             )
         } catch AFError.explicitlyCancelled {
             throw PointOfSaleItemServiceError.requestCancelled
         }
-    }
-
-    // Maps result to POSItem, and populate the output with:
-    // - Formatted price based on store's currency settings.
-    // - Product thumbnail, if any.
-    private func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem] {
-        return products.compactMap { product in
-            let thumbnailSource = product.images.first?.src
-
-            switch product.productType {
-                case .simple:
-                    return .simpleProduct(POSSimpleProduct(id: UUID(),
-                                                           name: product.name,
-                                                           formattedPrice: formatPrice(product.price),
-                                                           productImageSource: thumbnailSource,
-                                                           productID: product.productID,
-                                                           price: product.price,
-                                                           manageStock: product.manageStock,
-                                                           stockQuantity: product.stockQuantity,
-                                                           stockStatusKey: product.stockStatusKey))
-                case .variable:
-                    return .variableParentProduct(POSVariableParentProduct(
-                        id: UUID(),
-                        name: product.name,
-                        productImageSource: thumbnailSource,
-                        productID: product.productID,
-                        allAttributes: product.attributesForVariations
-                    ))
-                default:
-                    return nil
-            }
-        }
-    }
-
-    private func formatPrice(_ price: String) -> String {
-        let zeroOrPlaceholder = currencyFormatter.formatAmount("0") ?? "-"
-        return currencyFormatter.formatAmount(price) ?? zeroOrPlaceholder
     }
 }

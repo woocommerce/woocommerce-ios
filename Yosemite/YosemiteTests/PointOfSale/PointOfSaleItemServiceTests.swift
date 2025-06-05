@@ -26,7 +26,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         // Given
         let expectedError = PointOfSaleItemServiceError.requestFailed
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockError = expectedError
+        mockFetchStrategy.mockPagedProductsResult = .failure(expectedError)
 
         // When
         do {
@@ -41,7 +41,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_of_products_then_returns_empty_items_and_no_next_page() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
         // When
         let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 2, fetchStrategy: mockFetchStrategy)
@@ -54,7 +54,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
         mockItemMapper.mockMappedProducts = []
 
         // When
@@ -74,7 +74,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             name: "Dymo LabelWriter 4XL",
             price: "216"
         )
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [mockProduct], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [mockProduct],
+                                                                        hasMorePages: false,
+                                                                        totalItems: 1))
 
         let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
             id: UUID(),
@@ -110,7 +112,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             POSProduct.fake().copy(name: "Private Hoodie", productTypeKey: "simple"),
             POSProduct.fake().copy(name: "Hoodie with Zipper without price", productTypeKey: "simple")
         ]
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: mockProducts, hasMorePages: false, totalItems: mockProducts.count)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: mockProducts,
+                                                                        hasMorePages: false,
+                                                                        totalItems: mockProducts.count))
 
         let mockMappedProducts = mockProducts.map { product in
             POSItem.simpleProduct(POSSimpleProduct(
@@ -156,7 +160,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             stockQuantity: 5,
             stockStatusKey: "instock"
         )
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [mockProduct], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [mockProduct],
+                                                                        hasMorePages: false,
+                                                                        totalItems: 1))
 
         // When
         _ = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: mockFetchStrategy)
@@ -185,7 +191,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             price: "",
             downloadable: false
         )
-        mockFetchStrategy.mockPagedVariations = PagedItems(items: [mockVariation], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [mockVariation],
+                                                                          hasMorePages: false,
+                                                                          totalItems: 1))
 
         let expectedVariation = POSItem.variation(POSVariation(
             id: UUID(),
@@ -236,7 +244,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         )
 
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedVariations = PagedItems(items: [], hasMorePages: true, totalItems: 0)
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [], hasMorePages: true, totalItems: 0))
         mockItemMapper.mockMappedVariations = []
 
         // When
@@ -256,7 +264,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         let parentProductID: Int64 = 123
         let expectedError = PointOfSaleItemServiceError.requestFailed
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockError = expectedError
+        mockFetchStrategy.mockPagedVariationsResult = .failure(expectedError)
 
         // When
         do {
@@ -289,7 +297,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         )
 
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedVariations = PagedItems(items: [ProductVariation.fake()], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [ProductVariation.fake()],
+                                                                          hasMorePages: false,
+                                                                          totalItems: 1))
 
         let expectedVariation = POSItem.variation(POSVariation(
             id: UUID(),
@@ -332,7 +342,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleSimpleProductItems_returns_expected_items() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [POSProduct.fake()], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [POSProduct.fake()],
+                                                                        hasMorePages: false,
+                                                                        totalItems: 1))
 
         let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
             id: UUID(),
@@ -359,7 +371,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleVariationItems_returns_expected_items() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedVariations = PagedItems(items: [ProductVariation.fake()], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [ProductVariation.fake()],
+                                                                          hasMorePages: false,
+                                                                          totalItems: 1))
 
         let expectedItem = POSItem.variation(POSVariation(
             id: UUID(),
@@ -393,7 +407,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleItems_handles_fetch_error() async {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockError = TestError.expectedError
+        mockFetchStrategy.mockPagedProductsResult = .failure(TestError.expectedError)
 
         // When/Then
         do {
@@ -409,7 +423,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     func test_providePointOfSaleItems_handles_empty_results() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        mockFetchStrategy.mockPagedProducts = PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        mockFetchStrategy.mockPagedProductsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
         mockItemMapper.mockMappedProducts = []
 
         // When
@@ -441,7 +455,9 @@ final class PointOfSaleItemServiceTests: XCTestCase {
             stockQuantity: 10,
             stockStatus: .inStock
         )
-        mockFetchStrategy.mockPagedVariations = PagedItems(items: [mockVariation], hasMorePages: false, totalItems: 1)
+        mockFetchStrategy.mockPagedVariationsResult = .success(PagedItems(items: [mockVariation],
+                                                                          hasMorePages: false,
+                                                                          totalItems: 1))
 
         // When
         _ = try await itemProvider.providePointOfSaleVariationItems(

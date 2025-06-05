@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 /// Represents the product types available when creating or editing products.

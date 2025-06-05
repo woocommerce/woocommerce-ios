@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Async/await version of `PaginationTracker`, consider renaming `PaginationTracker` as deprecated and this class to `PaginationTracker`.

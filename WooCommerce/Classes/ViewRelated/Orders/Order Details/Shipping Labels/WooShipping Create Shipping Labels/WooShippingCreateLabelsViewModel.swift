@@ -182,7 +182,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
     @Published private var paymentMethod: ShippingLabelPaymentMethod?
-    @Published var paymentMethodLine: WooShippingPaymentMethodLine?
+    @Published private(set) var paymentMethodLine: WooShippingPaymentMethodLine?
+
+    private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
@@ -276,6 +278,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.shipments = shipments
     }
 
+    func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {
+        self.paymentMethod = accountSettings.paymentMethods.first(where: { $0.paymentMethodID == accountSettings.selectedPaymentMethodID })
+        self.paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+    }
+
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async {
@@ -363,6 +370,9 @@ private extension WooShippingCreateLabelsViewModel {
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
 
+        if let accountSettings = settings?.accountSettings {
+            paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+        }
         setupPaymentMethod(accountSettings: settings?.accountSettings)
     }
 

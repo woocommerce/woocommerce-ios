@@ -49,7 +49,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         self.itemFetchStrategyFactory = itemFetchStrategyFactory
         self.itemsViewState = initialState
         self.paginationTracker = .init()
-        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy
+        self.fetchStrategy = itemFetchStrategyFactory.defaultStrategy(analytics: POSItemFetchAnalytics(itemType: .product))
     }
 
     @MainActor
@@ -66,7 +66,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
-                                                                analytics: POSSearchAnalytics(itemType: .product))
+                                                                analytics: POSItemFetchAnalytics(itemType: .product))
         setSearchingState(base: baseItem)
         await loadFirstPage(base: baseItem)
     }

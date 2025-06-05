@@ -1015,6 +1015,50 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: - `updateAccountSettings`
+
+    func test_updateAccountSettings_returns_true_on_success() throws {
+        // Given
+        let sampleOrderID: Int64 = 134
+        let remote = MockWooShippingRemote()
+
+        remote.whenUpdateAccountSettings(siteID: sampleOrderID, thenReturn: .success(true))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = WooShippingAction.updateAccountSettings(siteID: sampleOrderID, settings: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result.get()))
+    }
+
+    func test_updateAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let sampleOrderID: Int64 = 134
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+
+        remote.whenUpdateAccountSettings(siteID: sampleOrderID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = WooShippingAction.updateAccountSettings(siteID: sampleOrderID, settings: .fake()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

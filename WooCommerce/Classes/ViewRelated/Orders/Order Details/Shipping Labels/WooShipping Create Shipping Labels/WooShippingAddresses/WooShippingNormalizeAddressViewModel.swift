@@ -1,3 +1,5 @@
+import Combine
+import Foundation
 import Yosemite
 
 final class WooShippingNormalizeAddressViewModel: ObservableObject, Identifiable {

@@ -1014,7 +1014,8 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
         switch underlyingError {
         case .notConnectedToReader,
                 .commandNotAllowedDuringCall,
-                .featureNotAvailableWithConnectedReader:
+                .featureNotAvailableWithConnectedReader,
+                .paymentMethodCollectionTimedOut:
             return false
         default:
             return true

@@ -52,6 +52,7 @@ struct SupportForm: View {
                     Text(Localization.iNeedHelp.uppercased())
                         .footnoteStyle()
                         .padding([.horizontal, .top])
+                        .accessibilityAddTraits(.isHeader)
 
                     // Area List
                     VStack(alignment: .leading, spacing: .zero) {
@@ -77,6 +78,9 @@ struct SupportForm: View {
                             .onTapGesture {
                                 viewModel.selectArea(area)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityAddTraits(viewModel.isAreaSelected(area) ? .isSelected : [])
 
                             Divider()
                                 .padding(.leading)
@@ -94,12 +98,14 @@ struct SupportForm: View {
                         Text(Localization.tellUsInfo)
                             .subheadlineStyle()
                     }
+                    .accessibilityElement(children: .combine)
 
                     // Subject Text Field
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.subject)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextField("", text: $viewModel.subject)
                             .bodyStyle()
@@ -109,13 +115,16 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.subject)
                     }
+                    .accessibilityElement(children: .contain)
 
                     // Site Address Text Field
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.siteAddress)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextField("", text: $viewModel.siteAddress)
                             .autocorrectionDisabled(true)
@@ -128,13 +137,16 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.siteAddress)
                     }
+                    .accessibilityElement(children: .contain)
 
                     // Description Text Editor
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.message)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .accessibilityHidden(true)
 
                         TextEditor(text: $viewModel.description)
                             .bodyStyle()
@@ -143,7 +155,9 @@ struct SupportForm: View {
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
                             .cornerRadius(Layout.cornerRadius)
+                            .accessibilityLabel(Localization.message)
                     }
+                    .accessibilityElement(children: .contain)
                 }
                 .padding()
             }
@@ -207,9 +221,11 @@ private extension SupportForm {
         static let title = NSLocalizedString("Contact Support", comment: "Title of the view for contacting support.")
         static let iNeedHelp = NSLocalizedString("I need help with", comment: "Text on the support form to refer to what area the user has problem with.")
         static let letsGetItSorted = NSLocalizedString("Let’s get this sorted", comment: "Title to let the user know what do we want on the support screen.")
-        static let tellUsInfo = NSLocalizedString(["Let us know your site address (URL) and tell us as much as you can about the problem,",
-                                                  " and we will be in touch soon."].joined(),
-                                                  comment: "Message info on the support screen.")
+        static let tellUsInfo = NSLocalizedString(
+            "supportForm.tellUsInfo.message",
+            value: "Let us know your site address (URL) and tell us as much as you can about the problem, and we will be in touch soon.",
+            comment: "Message info on the support screen."
+        )
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let siteAddress = NSLocalizedString("Site Address", comment: "Site Address title on the support form")
         static let message = NSLocalizedString("Message", comment: "Message on the support form")

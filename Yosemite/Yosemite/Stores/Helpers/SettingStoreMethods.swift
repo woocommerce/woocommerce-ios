@@ -14,6 +14,7 @@ internal protocol SettingStoreMethodsProtocol {
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
     func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void)
+    func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
 }
 
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
@@ -154,6 +155,12 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Checks if a specific feature is enabled in the site WC settings.
+    ///
+    func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool {
+        try await siteSettingsRemote.isFeatureEnabled(for: siteID, feature: feature)
     }
 }
 

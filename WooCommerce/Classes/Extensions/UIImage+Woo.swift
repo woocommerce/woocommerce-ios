@@ -541,12 +541,6 @@ extension UIImage {
         UIImage(named: "icon-launch-store")!
     }
 
-    /// Customize domain image
-    ///
-    static var customizeDomainsImage: UIImage {
-        UIImage(named: "icon-customize-domain")!
-    }
-
     /// Get paid image
     ///
     static var getPaidImage: UIImage {
@@ -1350,6 +1344,10 @@ extension UIImage {
 
     static var productIcon: UIImage {
         UIImage(imageLiteralResourceName: "icon-product").withRenderingMode(.alwaysTemplate)
+    }
+
+    static var creditCardIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "credit-card")
     }
 
     static var appPasswordTutorialImage: UIImage {

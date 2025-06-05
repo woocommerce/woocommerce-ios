@@ -175,7 +175,6 @@
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
 		B9B8B5052AA0D7F500B36811 /* TaxRate+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */; };
 		B9B8B5062AA0D7F500B36811 /* TaxRate+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */; };
-		B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9EFC27628903F7C00667217 /* WooFoundation.framework */; };
 		BAB373762796327000837B4A /* OrderTaxLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */; };
 		BAB373772796327000837B4A /* OrderTaxLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */; };
 		CC24A4EE29ED43D60009D6DA /* ProductSubscription+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24A4EC29ED43D60009D6DA /* ProductSubscription+CoreDataClass.swift */; };
@@ -382,7 +381,6 @@
 		45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOfACountry+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataClass.swift"; sourceTree = "<group>"; };
-		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStep.swift"; sourceTree = "<group>"; };
 		5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStepTests.swift"; sourceTree = "<group>"; };
 		572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteEntityObjectsMigrationPolicy.swift; sourceTree = "<group>"; };
@@ -487,7 +485,6 @@
 		B9B8B5022AA0D52B00B36811 /* Model 95.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 95.xcdatamodel"; sourceTree = "<group>"; };
 		B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B9EFC27628903F7C00667217 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB373732796310100837B4A /* Model 61.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 61.xcdatamodel"; sourceTree = "<group>"; };
 		BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		BAB373752796327000837B4A /* OrderTaxLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -662,7 +659,6 @@
 		DED91DE82AD66AA600CDCC53 /* Model 100.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 100.xcdatamodel"; sourceTree = "<group>"; };
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorageTests.swift; sourceTree = "<group>"; };
 		E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
@@ -688,7 +684,6 @@
 			files = (
 				3F2B4AD42DDC312600E5E49C /* XcodeTarget_Storage in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
-				B9EFC27728903F7C00667217 /* WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,13 +743,6 @@
 				E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */,
 			);
 			path = AppSettings;
-			sourceTree = "<group>";
-		};
-		4DD3D0BDDE216A90FC1335D7 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		572B40E225A540BA00DB20E0 /* Migration Policies */ = {
@@ -879,7 +867,6 @@
 				B54CA5A620A4BBA600F38CD1 /* StorageTests */,
 				B54CA59A20A4BBA500F38CD1 /* Products */,
 				B54CA5B320A4BC0200F38CD1 /* Frameworks */,
-				4DD3D0BDDE216A90FC1335D7 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -926,10 +913,7 @@
 		B54CA5B320A4BC0200F38CD1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B9EFC27628903F7C00667217 /* WooFoundation.framework */,
 				B54CA5B420A4BC0300F38CD1 /* CoreData.framework */,
-				DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */,
-				47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

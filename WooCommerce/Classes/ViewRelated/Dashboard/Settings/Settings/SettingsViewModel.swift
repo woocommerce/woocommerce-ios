@@ -208,12 +208,6 @@ private extension SettingsViewModel {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if featureFlagService.isFeatureFlagEnabled(.domainSettings)
-                && stores.sessionManager.defaultSite?.isWordPressComStore == true
-                && stores.sessionManager.defaultRoles.contains(.administrator) {
-                rows.append(.domain)
-            }
-
             if stores.isAuthenticated,
                stores.isAuthenticatedWithoutWPCom == false,
                stores.sessionManager.defaultSite?.isWordPressComStore == false {

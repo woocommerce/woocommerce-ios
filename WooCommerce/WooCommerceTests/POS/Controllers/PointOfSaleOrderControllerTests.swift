@@ -195,11 +195,14 @@ struct PointOfSaleOrderControllerTests {
         let email = "test@example.com"
 
         // When
-        try await sut.sendReceipt(recipientEmail: email)
-
-        // Then
-        #expect(!mockOrderService.updateOrderWasCalled)
-        #expect(mockReceiptService.sendReceiptWasCalled == nil)
+        do {
+            try await sut.sendReceipt(recipientEmail: email)
+        } catch {
+            // Then
+            #expect(error as? PointOfSaleOrderController.PointOfSaleOrderControllerError == .noOrder)
+            #expect(!mockOrderService.updateOrderWasCalled)
+            #expect(mockReceiptService.sendReceiptWasCalled == nil)
+        }
     }
 
     @available(iOS 17.0, *)
@@ -569,6 +572,7 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
+    @MainActor
     struct AnalyticsTests {
         private let analytics: WooAnalytics
         private let analyticsProvider = MockAnalyticsProvider()
@@ -640,6 +644,87 @@ struct PointOfSaleOrderControllerTests {
 
             // Then
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let sut = PointOfSaleOrderController(orderService: orderService,
+                                                 receiptService: receiptService,
+                                                 stores: mockStores,
+                                                 analytics: analytics)
+            let order = Order.fake()
+            orderService.orderToReturn = order
+
+            // We need an existing order before we can send a receipt
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
+                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: "10.0.0-dev", active: true)
+                    onCompletion(plugin)
+                }
+            }
+
+            // When
+            try await sut.sendReceipt(recipientEmail: "test@example.com")
+
+            // Then
+            let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_success" }))
+            #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == true)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
+            // Given
+            let sut = PointOfSaleOrderController(orderService: orderService,
+                                                 receiptService: receiptService,
+                                                 analytics: analytics)
+
+            // When
+            do {
+                try await sut.sendReceipt(recipientEmail: "test@example.com")
+            } catch {
+                // Then
+                let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_failed" }))
+                #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] == nil)
+            }
+        }
+
+        @available(iOS 17.0, *)
+        @Test func sendReceipt_tracks_failure_with_eligible_for_pos_receipt() async throws {
+            // Given
+            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let sut = PointOfSaleOrderController(orderService: orderService,
+                                                 receiptService: receiptService,
+                                                 stores: mockStores,
+                                                 analytics: analytics)
+
+            receiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))
+
+            let order = Order.fake()
+            orderService.orderToReturn = order
+
+            // We need an existing order before we can send a receipt
+            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+
+            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
+                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: "10.0.0-dev", active: true)
+                    onCompletion(plugin)
+                }
+            }
+
+            // When
+            do {
+                try await sut.sendReceipt(recipientEmail: "test@example.com")
+            } catch {
+                // Then
+                let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_failed" }))
+                #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == true)
+                #expect(analyticsProvider.receivedProperties[indexOfEvent]["error_description"] as? String != nil)
+            }
         }
     }
 

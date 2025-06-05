@@ -31,7 +31,7 @@ FIREBASE_TESTERS_GROUP = 'woocommerce-ios---prototype-builds'
 
 BUILDKITE_RELEASE_PIPELINE = 'release-builds.yml'
 IOS_LOCALES = %w[ar-SA de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
-SIMULATOR_VERSION = '18.4' # For screenshots
+SIMULATOR_VERSION = '18.5' # For screenshots
 SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 16 Plus',
@@ -150,6 +150,14 @@ def get_required_env(key)
 end
 
 before_all do |lane|
+  # Various actions run 'xcodebuild -showBuildSettings ...' which can at times fail, possibly due to networking and SPM resolution.
+  # See for example this failure https://buildkite.com/automattic/woocommerce-ios/builds/30183#01972179-91dd-4cda-961e-88fa62a8c64f/861-940
+  #
+  # Bumping the interval Fastlane waits for xcodebuild to provide output before retrying seems to be an effective workaround.
+  #
+  # See also https://github.com/fastlane/fastlane/issues/20919
+  ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '120'
+
   # Skip these checks/steps for test lane (not needed for testing)
   next if lane == :test_without_building
 
@@ -186,9 +194,6 @@ platform :ios do
 
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-
-    # Checks if internal dependencies are on a stable version
-    check_pods_references
 
     UI.important <<-MESSAGE
 
@@ -846,9 +851,6 @@ platform :ios do
   ########################################################################
   desc 'Build Screenshots'
   lane :build_screenshots do
-    # Ensure we're using the latest Pods
-    cocoapods(verbose: true)
-
     # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     xcversion
 
@@ -1205,13 +1207,12 @@ platform :ios do
   #
   desc 'Updates the main `Localizable.strings` file — that will be imported by GlotPress — from code and `Info.plist` files'
   lane :generate_strings_file_for_glotpress do |options|
-    cocoapods
-
     en_lproj_path = File.join(RESOURCES_FOLDER, 'en.lproj')
     ios_generate_strings_file_from_code(
       paths: [
         'WooCommerce/',
-        'Pods/WordPress*/',
+        'Modules/Sources/WordPress*/',
+        'Modules/Sources/WPMediaPicker/',
         'Storage/Storage/',
         'Networking/Networking/',
         'Hardware/Hardware/'
@@ -1553,12 +1554,4 @@ def report_milestone_error(error_title:)
   UI.error(error_message)
 
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
-end
-
-def check_pods_references
-  result = ios_check_beta_deps(lockfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile.lock'))
-
-  style = result[:pods].nil? || result[:pods].empty? ? 'success' : 'warning'
-  message = "### Checking Internal Dependencies are all on a **stable** version\n\n#{result[:message]}"
-  buildkite_annotate(context: 'pods-check', style: style, message: message) if is_ci
 end

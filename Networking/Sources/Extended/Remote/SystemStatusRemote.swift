@@ -17,7 +17,7 @@ public class SystemStatusRemote: Remote {
     public func loadSystemInformation(for siteID: Int64) async throws -> SystemStatus {
         let path = Constants.systemStatusPath
         let parameters = [
-            ParameterKeys.fields: [ParameterValues.environment, ParameterValues.activePlugins, ParameterValues.inactivePlugins]
+            ParameterKeys.fields: [ParameterValues.environment, ParameterValues.activePlugins, ParameterValues.inactivePlugins, ParameterValues.settings]
         ]
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -84,6 +84,7 @@ private extension SystemStatusRemote {
         static let activePlugins: String = "active_plugins"
         static let inactivePlugins: String = "inactive_plugins"
         static let environment: String = "environment"
+        static let settings: String = "settings"
     }
 
     enum ParameterKeys {

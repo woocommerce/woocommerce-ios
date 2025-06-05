@@ -6,18 +6,24 @@ import enum WooFoundation.CountryCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
+import struct Yosemite.SiteInformation
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
+import enum Yosemite.SiteSettingsFeature
 import enum Yosemite.SettingAction
 
 enum POSIneligibleReason: Equatable {
     case notTablet
     case unsupportedIOSVersion
     case unsupportedWooCommerceVersion
+    case systemInformationNotAvailable
+    case wooCommercePluginNotFound
     case featureSwitchDisabled
     case featureSwitchSyncFailure
     case featureFlagDisabled
-    case unsupportedCountryOrCurrency
+    case unsupportedCountry
+    case unsupportedCurrency
+    case selfDeallocated
 }
 
 enum POSEligibilityState: Equatable {
@@ -45,51 +51,83 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest3(
-            isWooCommerceVersionSupportedAndFeatureSwitchEnabled,
+        return Publishers.CombineLatest(
             isPointOfSaleFeatureFlagEnabled,
-            siteSettingsEligibilityPublisher
+            siteEligibilityPublisher
         )
-        .map { wooCommerceState, featureFlagState, isSiteSettingsEligible -> POSEligibilityState in
-            if !isSiteSettingsEligible {
-                return .ineligible(reason: .unsupportedCountryOrCurrency)
+        .map { featureFlagState, siteEligibility -> POSEligibilityState in
+            switch siteEligibility {
+            case .eligible:
+                break
+            case .ineligible(let reason):
+                return .ineligible(reason: reason)
             }
 
-            switch wooCommerceState {
-            case .unsupported(let reason):
+            switch featureFlagState {
+            case .disabled(let reason):
                 return .ineligible(reason: reason)
-            case .supported:
-                switch featureFlagState {
-                case .disabled(let reason):
-                    return .ineligible(reason: reason)
-                case .enabled:
-                    return .eligible
-                }
+            case .enabled:
+                return .eligible
             }
         }
         .eraseToAnyPublisher()
     }
 
-    private var siteSettingsEligibilityPublisher: AnyPublisher<Bool, Never> {
-        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed)
-            .map { [weak self] _ -> Bool in
-                guard let self else { return false }
-                return isEligibleFromSiteChecks
+    private var siteEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
+        stores.siteInformation
+            .map { [weak self] siteInformation -> POSEligibilityState in
+                guard let self else { return .ineligible(reason: .selfDeallocated) }
+                return isEligibleFromSiteChecks(siteInformation: siteInformation)
             }
-            .prepend(isEligibleFromSiteChecks) // Include initial value
             .eraseToAnyPublisher()
     }
 
-    private var isEligibleFromSiteChecks: Bool {
+    private func isEligibleFromSiteChecks(siteInformation: SiteInformation?) -> POSEligibilityState {
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
         let currency = currencySettings.currencyCode
-        switch (countryCode, currency) {
-        case (.US, .USD),
-            (.GB, .GBP):
-            return true
+
+        // Checks country first.
+        switch countryCode {
+        case .US, .GB:
+            break
         default:
-            return false
+            return .ineligible(reason: .unsupportedCountry)
+        }
+
+        // Then checks currency.
+        switch currency {
+        case .USD, .GBP:
+            break
+        default:
+            return .ineligible(reason: .unsupportedCurrency)
+        }
+
+        guard let siteInformation, siteInformation.siteID == siteID else {
+            return .ineligible(reason: .systemInformationNotAvailable)
+        }
+
+        guard let wcPlugin = siteInformation.systemInformation?.systemPlugins.first(where: { $0.name == Constants.wcPluginName && $0.active }) else {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
+
+        guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                minimumRequired: Constants.wcPluginMinimumVersion) else {
+            return .ineligible(reason: .unsupportedWooCommerceVersion)
+        }
+
+        if VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                             minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
+                                             includesDevAndBetaVersions: true) {
+            // For versions that support the feature switch, checks if the feature switch is enabled.
+            guard let enabledFeatures = siteInformation.systemInformation?.enabledFeatures,
+                  enabledFeatures.contains(SiteSettingsFeature.pointOfSale.rawValue) else {
+                return .ineligible(reason: .featureSwitchDisabled)
+            }
+            return .eligible
+        } else {
+            // For versions below 10.0.0, the feature is enabled by default.
+            return .eligible
         }
     }
 
@@ -116,73 +154,9 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 }
 
 private extension POSEligibilityChecker {
-    enum WooCommerceVersionSupportState {
-        case supported
-        case unsupported(reason: POSIneligibleReason)
-    }
-
     enum FeatureFlagState {
         case enabled
         case disabled(reason: POSIneligibleReason)
-    }
-
-    var isWooCommerceVersionSupported: AnyPublisher<(isSupported: Bool, wcVersion: String?), Never> {
-        Future<(isSupported: Bool, wcVersion: String?), Never> { [weak self] promise in
-            guard let self else {
-                promise(.success((isSupported: false, wcVersion: nil)))
-                return
-            }
-
-            let wcPluginMinimumVersion = Constants.wcPluginMinimumVersion
-
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: self.siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-                guard let wcPlugin, wcPlugin.active else {
-                    return promise(.success((isSupported: false, wcVersion: nil)))
-                }
-
-                let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                    minimumRequired: wcPluginMinimumVersion)
-                promise(.success((isSupported: isSupported, wcVersion: wcPlugin.version)))
-            }
-            self.stores.dispatch(action)
-        }
-        .eraseToAnyPublisher()
-    }
-
-    var isWooCommerceVersionSupportedAndFeatureSwitchEnabled: AnyPublisher<WooCommerceVersionSupportState, Never> {
-        isWooCommerceVersionSupported
-            .flatMap { [weak self] isSupported, wcVersion -> AnyPublisher<WooCommerceVersionSupportState, Never> in
-                guard let self,
-                      isSupported,
-                      let wcVersion else {
-                    return Just(.unsupported(reason: .unsupportedWooCommerceVersion))
-                        .eraseToAnyPublisher()
-                }
-
-                // For versions below 10.0.0, the feature is enabled by default.
-                let isFeatureSwitchSupported = VersionHelpers.isVersionSupported(version: wcVersion,
-                                                                                 minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
-                                                                                 includesDevAndBetaVersions: true)
-                if !isFeatureSwitchSupported {
-                    return Just(.supported)
-                        .eraseToAnyPublisher()
-                }
-
-                // For versions that support the feature switch, checks if the feature switch is enabled.
-                return Future<WooCommerceVersionSupportState, Never> { promise in
-                    let action = SettingAction.isFeatureEnabled(siteID: self.siteID, feature: .pointOfSale) { result in
-                        switch result {
-                        case .success(let isEnabled):
-                            promise(.success(isEnabled ? .supported : .unsupported(reason: .featureSwitchDisabled)))
-                        case .failure:
-                            promise(.success(.unsupported(reason: .featureSwitchSyncFailure)))
-                        }
-                    }
-                    self.stores.dispatch(action)
-                }
-                .eraseToAnyPublisher()
-            }
-            .eraseToAnyPublisher()
     }
 
     var isPointOfSaleFeatureFlagEnabled: AnyPublisher<FeatureFlagState, Never> {

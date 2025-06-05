@@ -62,7 +62,8 @@ private extension SystemStatusStore {
                         .success(
                             .init(
                                 storeID: systemInformation.environment?.storeID,
-                                systemPlugins: systemPlugins
+                                systemPlugins: systemPlugins,
+                                enabledFeatures: systemInformation.settings?.enabledFeatures
                             )
                         )
                     )

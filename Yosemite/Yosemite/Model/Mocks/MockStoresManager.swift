@@ -107,6 +107,14 @@ public class MockStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
+    public var siteInformation: AnyPublisher<SiteInformation?, Never> {
+        siteID.compactMap { siteID in
+            guard let siteID else { return nil }
+            return .init(siteID: siteID, systemInformation: nil)
+        }
+        .eraseToAnyPublisher()
+    }
+
     public func dispatch(_ action: Action) {
         // We can choose which actions we want to handle and how we respond.
         switch action {

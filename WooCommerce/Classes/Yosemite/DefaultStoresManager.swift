@@ -45,6 +45,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    /// Site system information from `system_status` endpoint.
+    ///
+    private let siteInformationSubject = CurrentValueSubject<SiteInformation?, Never>(nil)
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -120,6 +124,12 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
+    /// Observable site system information.
+    ///
+    var siteInformation: AnyPublisher<SiteInformation?, Never> {
+        siteInformationSubject.eraseToAnyPublisher()
+    }
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
@@ -139,7 +149,9 @@ class DefaultStoresManager: StoresManager {
     func initializeAfterDependenciesAreInitialized() {
         fullyDeauthenticateIfNeeded()
         restoreSessionAccountIfPossible()
-        restoreSessionSiteIfPossible()
+        Task { @MainActor in
+            await restoreSessionSiteIfPossible()
+        }
     }
 
 
@@ -283,10 +295,12 @@ class DefaultStoresManager: StoresManager {
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.latestBackgroundOrderSyncDate] = nil
         DashboardTimestampStore.resetStore()
-        restoreSessionSiteIfPossible()
-        ServiceLocator.pushNotesManager.reloadBadgeCount()
+        Task { @MainActor in
+            await restoreSessionSiteIfPossible()
+            ServiceLocator.pushNotesManager.reloadBadgeCount()
 
-        NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
+            NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
+        }
     }
 
     /// Updates the default site only in cases where a site's properties are updated (e.g. after installing & activating Jetpack-the-plugin).
@@ -414,7 +428,8 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the settings for the specified site, if possible.
     ///
-    func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
+    @MainActor
+    func synchronizeSettings(with siteID: Int64) async throws {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -454,13 +469,16 @@ private extension DefaultStoresManager {
             dispatch(sitePlanAction)
         }
 
-        group.notify(queue: .main) {
-            if errors.isEmpty {
-                DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
-            } else {
-                DDLogError("⛔️ Site settings sync had \(errors.count) error(s) for siteID \(siteID): \(errors)")
+        try await withCheckedThrowingContinuation { continuation in
+            group.notify(queue: .main) {
+                if errors.isEmpty {
+                    DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
+                    continuation.resume(returning: ())
+                } else {
+                    DDLogError("⛔️ Site settings sync had \(errors.count) error(s) for siteID \(siteID): \(errors)")
+                    continuation.resume(throwing: StoresManagerError.missingDefaultSite)
+                }
             }
-            onCompletion()
         }
     }
 
@@ -640,7 +658,8 @@ private extension DefaultStoresManager {
 
     /// Loads the Default Site into the current Session, if possible.
     ///
-    func restoreSessionSiteIfPossible() {
+    @MainActor
+    func restoreSessionSiteIfPossible() async {
         guard let siteID = sessionManager.defaultStoreID else {
             return
         }
@@ -652,10 +671,12 @@ private extension DefaultStoresManager {
             restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
-        synchronizeSettings(with: siteID) {
-            ServiceLocator.selectedSiteSettings.refresh()
-            ServiceLocator.shippingSettingsService.update(siteID: siteID)
-        }
+        
+        // Starts all async operations concurrently.
+        async let settingsSync: () = synchronizeSettings(with: siteID)
+        async let orderStatuses = retrieveOrderStatus(with: siteID)
+        async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
+
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
         synchronizeSitePlugins(siteID: siteID)
@@ -663,12 +684,19 @@ private extension DefaultStoresManager {
 
         sendTelemetryIfNeeded(siteID: siteID)
 
-        Task { @MainActor in
-            // Order statuses and system plugins syncing are required outside of snapshot tracking.
-            async let orderStatuses = retrieveOrderStatus(with: siteID)
-            async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
+        do {
+            try await settingsSync
+            ServiceLocator.selectedSiteSettings.refresh()
+            ServiceLocator.shippingSettingsService.update(siteID: siteID)
 
-            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
+            // Wait for remaining async operations
+            trackSnapshotIfNeeded(siteID: siteID,
+                                  orderStatuses: await orderStatuses,
+                                  systemPlugins: await systemInformation?.systemPlugins)
+
+            siteInformationSubject.send(SiteInformation(siteID: siteID, systemInformation: await systemInformation))
+        } catch {
+            // TODO-jc: handle site settings errors
         }
     }
 

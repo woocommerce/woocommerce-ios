@@ -660,7 +660,7 @@ private extension MainTabBarController {
         case .eligible:
             isPOSTabVisible = true
         case let .ineligible(reason):
-            isPOSTabVisible = reason != .unsupportedCountryOrCurrency
+            isPOSTabVisible = !(reason == .notTablet || reason == .unsupportedCountry || reason == .featureFlagDisabled)
         }
         if isPOSTabVisible {
             tabs.insert(.pointOfSale, at: 3)

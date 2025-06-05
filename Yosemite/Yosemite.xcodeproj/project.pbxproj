@@ -112,6 +112,7 @@
 		02F2722D292F18BF00C36419 /* PaymentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */; };
 		02F2722F292F18FD00C36419 /* MockPaymentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */; };
 		02F6AAAC270556A4002425D0 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */; };
+		02F6FA8A2DF08272007B8845 /* SiteInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6FA892DF08272007B8845 /* SiteInformation.swift */; };
 		02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054523D983F30058E6E7 /* MediaFileManager.swift */; };
 		02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054623D983F30058E6E7 /* MediaImageExporter.swift */; };
 		02FF054F23D983F30058E6E7 /* FileManager+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054723D983F30058E6E7 /* FileManager+URL.swift */; };
@@ -678,6 +679,7 @@
 		02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentStoreTests.swift; sourceTree = "<group>"; };
 		02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentRemote.swift; sourceTree = "<group>"; };
 		02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
+		02F6FA892DF08272007B8845 /* SiteInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteInformation.swift; sourceTree = "<group>"; };
 		02FF054523D983F30058E6E7 /* MediaFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFileManager.swift; sourceTree = "<group>"; };
 		02FF054623D983F30058E6E7 /* MediaImageExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaImageExporter.swift; sourceTree = "<group>"; };
 		02FF054723D983F30058E6E7 /* FileManager+URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+URL.swift"; sourceTree = "<group>"; };
@@ -1780,6 +1782,7 @@
 				0232372722F7DA5500715FAB /* Enums */,
 				B52E0036211A44FE00700FDE /* ReadOnly */,
 				B52E0035211A44F800700FDE /* Storage */,
+				02F6FA892DF08272007B8845 /* SiteInformation.swift */,
 				264D2C822B0B19F200FD2C05 /* SystemInformation.swift */,
 				03EB998F2907B97800F06A39 /* JustInTimeMessage.swift */,
 				209AD3CD2AC1A9C200825D76 /* WooPaymentsPayoutsOverview.swift */,
@@ -2444,6 +2447,7 @@
 				D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */,
 				B9AECD442851D95600E78584 /* TotalRefundedCalculationUseCase.swift in Sources */,
 				86DAA7982CD9E31E002AE55E /* MockPaymentActionHandler.swift in Sources */,
+				02F6FA8A2DF08272007B8845 /* SiteInformation.swift in Sources */,
 				031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */,
 				CC379B1429C8B593009747B4 /* ProductCompositeComponent+ReadOnlyConvertible.swift in Sources */,
 				5758EB3024DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift in Sources */,

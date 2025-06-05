@@ -25,6 +25,9 @@ extension Storage.ShippingLabelAccountSettings: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.ShippingLabelAccountSettings {
         let paymentMethodItems = paymentMethods?.map { $0.toReadOnly() } ?? []
 
+        /// Since account settings are not persisted for the new shipping label flow,
+        /// the conversion for the new property `addPaymentMethodURL` is ignored.
+        /// This avoids the complication of unnecessary Core Data migration for the new property.
         return ShippingLabelAccountSettings(siteID: siteID,
                                             canManagePayments: canManagePayments,
                                             canEditSettings: canEditSettings,
@@ -36,6 +39,7 @@ extension Storage.ShippingLabelAccountSettings: ReadOnlyConvertible {
                                             selectedPaymentMethodID: selectedPaymentMethodID,
                                             isEmailReceiptsEnabled: isEmailReceiptsEnabled,
                                             paperSize: .init(rawValue: paperSize ?? ""),
-                                            lastSelectedPackageID: lastSelectedPackageID ?? "")
+                                            lastSelectedPackageID: lastSelectedPackageID ?? "",
+                                            addPaymentMethodURL: nil)
     }
 }

@@ -120,6 +120,13 @@ final class HubMenuViewModel: ObservableObject {
                                         storage: storage)
     }()
 
+    private(set) lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
+        PointOfSaleBarcodeScanService(
+            siteID: siteID,
+            credentials: credentials,
+            currencySettings: ServiceLocator.currencySettings)
+    }()
+
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false

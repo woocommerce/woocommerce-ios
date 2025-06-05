@@ -121,6 +121,7 @@
 		204CBD2B2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */; };
 		207D816C2D4A30A30097012E /* products-load-simple-products-empty-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */; };
 		20887FAB2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */; };
+		20A8E9302DEF4EC9000C3DE7 /* pos-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 20A8E92F2DEF4EC9000C3DE7 /* pos-products.json */; };
 		20B8B37D2D96B6920025734D /* ListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B8B37C2D96B6920025734D /* ListMapperTests.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
 		20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */; };
@@ -856,6 +857,7 @@
 		204CBD2A2D43BDBB006FF89A /* wcpay-charge-error-site-credentials.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-charge-error-site-credentials.json"; sourceTree = "<group>"; };
 		207D816B2D4A30A30097012E /* products-load-simple-products-empty-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-simple-products-empty-price.json"; sourceTree = "<group>"; };
 		20887FAA2D9AA55700F7AE03 /* POSProductsNetworkingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductsNetworkingTests.swift; sourceTree = "<group>"; };
+		20A8E92F2DEF4EC9000C3DE7 /* pos-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "pos-products.json"; sourceTree = "<group>"; };
 		20B8B37C2D96B6920025734D /* ListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMapperTests.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
 		20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all-no-default-currency.json"; sourceTree = "<group>"; };
@@ -2565,6 +2567,7 @@
 				EE57C141297FCCA700BC31E7 /* product-shipping-classes-load-all-without-data.json */,
 				EE57C142297FCCA700BC31E7 /* product-shipping-classes-load-one-without-data.json */,
 				457FC68B2382B2FD00B41B02 /* product-update.json */,
+				20A8E92F2DEF4EC9000C3DE7 /* pos-products.json */,
 				AEA056E3296DBA6E00948D52 /* products-batch-update.json */,
 				45152818257A84A60076B03C /* product-attributes-all.json */,
 				EE57C124297EB4E300BC31E7 /* product-attributes-all-without-data.json */,
@@ -3515,6 +3518,7 @@
 				DE42F95D2966CB6A00D514C2 /* order-notes-without-data.json in Resources */,
 				31723C892787A299007F1405 /* stripe-connection-token.json in Resources */,
 				DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */,
+				20A8E9302DEF4EC9000C3DE7 /* pos-products.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,
 				CEB9BF352BB190960007978A /* product-bundle-stats-without-data.json in Resources */,

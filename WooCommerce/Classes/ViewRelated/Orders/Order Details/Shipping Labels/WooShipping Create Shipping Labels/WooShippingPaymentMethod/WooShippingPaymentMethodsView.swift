@@ -9,6 +9,12 @@ struct WooShippingPaymentMethodsView: View {
     let onAccountSettingsUpdate: (ShippingLabelAccountSettings) -> Void
 
     @State private var failedToUpdateSettings = false
+    @State private var failedToReloadSettings = false
+
+    @State private var showingAddPaymentWebView = false
+    @State private var notice: Notice?
+
+    private let analytics = ServiceLocator.analytics
 
     var body: some View {
         ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.contentSpacing) {
@@ -17,20 +23,31 @@ struct WooShippingPaymentMethodsView: View {
                 .bold()
 
             Text(Localization.subtitle)
+                .padding(.bottom, Layout.contentPadding)
+
+            if viewModel.canEditPaymentMethod == false {
+                paymentMethodsNotEditableView
+            }
 
             if viewModel.paymentMethods.isEmpty {
                 emptyView
+                    .disabled(viewModel.canEditPaymentMethod == false)
             } else {
                 paymentMethodList
+                    .disabled(viewModel.canEditPaymentMethod == false)
             }
 
             HStack(alignment: .top) {
                 Image(systemName: "info.circle")
-                Text(String(format: Localization.note, viewModel.storeOwnerUsername))
+                Text(String.localizedStringWithFormat(Localization.note,
+                                                      viewModel.storeOwnerDisplayName,
+                                                      viewModel.storeOwnerUsername))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .font(.footnote)
             .foregroundStyle(Color.primary)
+            .accessibilityElement(children: .combine)
+            .padding(.top, Layout.contentSpacing)
 
             Spacer()
 
@@ -60,25 +77,57 @@ struct WooShippingPaymentMethodsView: View {
                 /// clears states from last time.
                 viewModel.resetViewStates()
             }
+            analytics.track(event: .WooShipping.paymentStep(state: .started))
         }
-        .alert(Localization.ConfirmError.title, isPresented: $failedToUpdateSettings) {
-            Button(Localization.ConfirmError.retry) {
+        .alert(Localization.confirmErrorTitle, isPresented: $failedToUpdateSettings) {
+            Button(Localization.retry) {
                 Task {
                     await confirmPaymentMethod()
                 }
             }
-            Button(Localization.ConfirmError.cancel, role: .cancel) {}
+            Button(Localization.cancel, role: .cancel) {}
         }
+        .alert(Localization.refreshErrorTitle, isPresented: $failedToReloadSettings) {
+            Button(Localization.retry) {
+                Task {
+                    await refreshPaymentMethods()
+                }
+            }
+            Button(Localization.cancel, role: .cancel) {}
+        }
+        .sheet(isPresented: $showingAddPaymentWebView, content: {
+            webview
+        })
+        .notice($notice)
     }
 }
 
 private extension WooShippingPaymentMethodsView {
+    var paymentMethodsNotEditableView: some View {
+        HStack(alignment: .top) {
+            Image(systemName: "info.circle")
+                .foregroundStyle(Color(uiColor: .warning))
+            Text(String.localizedStringWithFormat(Localization.paymentMethodsNotEditableNote,
+                                                  viewModel.storeOwnerDisplayName,
+                                                  viewModel.storeOwnerUsername))
+                .multilineTextAlignment(.leading)
+        }
+        .font(.subheadline)
+        .padding(Layout.contentPadding)
+        .background(
+            Color(uiColor: .warningBackground)
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+        )
+        .accessibilityElement(children: .combine)
+    }
+
     var emptyView: some View {
         VStack(spacing: Layout.EmptyView.contentSpacing) {
             Image(uiImage: .creditCardIllustration)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.EmptyView.imageSize, height: Layout.EmptyView.imageSize)
+                .accessibilityHidden(true)
 
             VStack(spacing: Layout.EmptyView.textSpacing) {
                 Text(Localization.EmptyView.title)
@@ -87,16 +136,23 @@ private extension WooShippingPaymentMethodsView {
                 Text(Localization.EmptyView.subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
+            .accessibilityElement(children: .combine)
 
             Button {
-                // TODO
+                showingAddPaymentWebView = true
+                analytics.track(event: .WooShipping.paymentStep(state: .addPaymentMethodButtonTapped))
             } label: {
-                Label {
-                    Text(Localization.EmptyView.actionButton)
-                } icon: {
-                    Image(uiImage: .externalImage)
+                if viewModel.isReloading {
+                    ProgressView().progressViewStyle(.circular)
+                } else {
+                    Label {
+                        Text(Localization.EmptyView.actionButton)
+                    } icon: {
+                        Image(uiImage: .externalImage)
+                    }
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -106,7 +162,7 @@ private extension WooShippingPaymentMethodsView {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), style: StrokeStyle(dash: [4, 4]))
         )
-        .padding(.top, Layout.contentSpacing)
+        .padding(.vertical, Layout.contentSpacing)
     }
 
     var paymentMethodList: some View {
@@ -141,16 +197,21 @@ private extension WooShippingPaymentMethodsView {
             .buttonStyle(.plain)
 
             Button {
-                // TODO
+                showingAddPaymentWebView = true
+                analytics.track(event: .WooShipping.paymentStep(state: .addPaymentMethodButtonTapped))
             } label: {
                 HStack(spacing: Layout.contentPadding) {
-                    Image(systemName: "plus")
-                        .foregroundStyle(Color.accentColor)
-                    Text(Localization.EmptyView.actionButton)
+                    if viewModel.isReloading {
+                        ProgressView().progressViewStyle(.circular)
+                    } else {
+                        Image(systemName: "plus")
+                            .foregroundStyle(Color.accentColor)
+                        Text(Localization.EmptyView.actionButton)
+                    }
                 }
                 .font(.subheadline)
                 .bold()
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: viewModel.isReloading ? .center : .leading)
                 .padding(Layout.contentPadding)
                 .contentShape(Rectangle())
                 .background(
@@ -160,7 +221,30 @@ private extension WooShippingPaymentMethodsView {
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, Layout.contentPadding)
+        .padding(.vertical, Layout.contentSpacing)
+    }
+
+    var webview: some View {
+        NavigationView {
+            AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
+                                 url: viewModel.addPaymentMethodURL,
+                                 urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) { _ in
+                showingAddPaymentWebView = false
+                Task {
+                    await refreshPaymentMethods()
+                }
+            }
+            .navigationTitle(Localization.AddPaymentMethod.webViewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.AddPaymentMethod.doneButton) {
+                        showingAddPaymentWebView = false
+                    }
+                }
+            }
+        }
+        .wooNavigationBarStyle()
     }
 }
 
@@ -174,10 +258,34 @@ private extension WooShippingPaymentMethodsView {
     func confirmPaymentMethod() async {
         do {
             let newSettings = try await viewModel.updateWooShippingAccountSettings()
+            analytics.track(event: .WooShipping.paymentStep(state: .paymentMethodSelected))
             onAccountSettingsUpdate(newSettings)
         } catch {
             DDLogError("⛔️ Error saving account settings: \(error)")
             failedToUpdateSettings = true
+        }
+    }
+
+    @MainActor
+    func refreshPaymentMethods() async {
+        do {
+            let newSettings = try await viewModel.syncWooShippingAccountSettings()
+            guard newSettings.paymentMethods != viewModel.paymentMethods else {
+                return
+            }
+
+            notice = Notice(title: Localization.AddPaymentMethod.methodAddedNotice, feedbackType: .success)
+            analytics.track(event: .WooShipping.paymentStep(state: .paymentMethodAdded))
+
+            if newSettings.paymentMethods.count == 1 && viewModel.paymentMethods.isEmpty {
+                /// When the first method is added, the backend chooses it as the default method automatically.
+                onAccountSettingsUpdate(newSettings)
+            } else {
+                viewModel.updateSettings(newSettings)
+            }
+        } catch {
+            DDLogError("⛔️ Error refreshing account settings: \(error)")
+            failedToReloadSettings = true
         }
     }
 }
@@ -215,6 +323,13 @@ private extension WooShippingPaymentMethodsView {
             value: "Choose a payment method.",
             comment: "Subtitle of the payment method sheet in the Shipping Label purchase flow"
         )
+        static let paymentMethodsNotEditableNote = NSLocalizedString(
+            "wooShippingPaymentMethodsView.paymentMethodsNotEditableNote",
+            value: "Only the site owner can manage the shipping label payment methods. " +
+            "Please contact store owner %1$@ (%2$@) to manage payment methods",
+            comment: "Note for users without permission to manage payment methods for shipping label purchase. " +
+            "The placeholders are the store owner name and username respectively."
+        )
         enum EmptyView {
             static let title = NSLocalizedString(
                 "wooShippingPaymentMethodsView.emptyView.title",
@@ -233,10 +348,11 @@ private extension WooShippingPaymentMethodsView {
             )
         }
         static let note = NSLocalizedString(
-            "wooShippingPaymentMethodsView.note",
-            value: "Credit cards are retrieved from the following WordPress.com account: @%1$@.",
+            "wooShippingPaymentMethodsView.noteWithUsername",
+            value: "Credit cards are retrieved from the following WordPress.com account: %1$@ <@%2$@>.",
             comment: "Note of the payment method sheet in the Shipping Label purchase flow. " +
-            "Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder."
+            "Placeholders are the name and username of an associated WordPress account. " +
+            "Please keep the `@` in front of the second placeholder."
         )
         static let emailReceipt = NSLocalizedString(
             "wooShippingPaymentMethodsView.emailReceipt",
@@ -249,27 +365,77 @@ private extension WooShippingPaymentMethodsView {
             comment: "Button to confirm a credit/debit for purchasing a shipping label"
         )
 
-        enum ConfirmError {
-            static let title = NSLocalizedString(
-                "wooShippingPaymentMethodsView.confirmError.title",
-                value: "Unable to confirm the payment method",
-                comment: "Title of the error alert when confirming a payment method for purchasing shipping label fails"
+        static let confirmErrorTitle = NSLocalizedString(
+            "wooShippingPaymentMethodsView.confirmErrorTitle",
+            value: "Unable to confirm the payment method",
+            comment: "Title of the error alert when confirming a payment method for purchasing shipping label fails"
+        )
+        static let refreshErrorTitle = NSLocalizedString(
+            "wooShippingPaymentMethodsView.refreshErrorTitle",
+            value: "Unable to refresh your payment methods",
+            comment: "Title of the error alert when refresh payment methods for purchasing shipping label fails"
+        )
+        static let retry = NSLocalizedString(
+            "wooShippingPaymentMethodsView.confirmError.retry",
+            value: "Retry",
+            comment: "Button to retry an action on the shipping label payment method sheet"
+        )
+        static let cancel = NSLocalizedString(
+            "wooShippingPaymentMethodsView.confirmError.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss an error alert on the shipping label payment method sheet"
+        )
+
+        enum AddPaymentMethod {
+            static let methodAddedNotice = NSLocalizedString(
+                "wooShippingPaymentMethodsView.addPaymentMethod.methodAddedNotice",
+                value: "Payment method added",
+                comment: "Notice displayed after adding a new payment method for shipping label purchase"
             )
-            static let retry = NSLocalizedString(
-                "wooShippingPaymentMethodsView.confirmError.retry",
-                value: "Retry",
-                comment: "Button to retry on the error alert when confirming a payment method for purchasing shipping label fails"
+            static let webViewTitle = NSLocalizedString(
+                "wooShippingPaymentMethodsView.addPaymentMethod.webViewTitle",
+                value: "Add payment method",
+                comment: "Title of the web view to add payment method for shipping label purchase"
             )
-            static let cancel = NSLocalizedString(
-                "wooShippingPaymentMethodsView.confirmError.cancel",
-                value: "Cancel",
-                comment: "Button to dismiss the error alert when confirming a payment method for purchasing shipping label fails"
+            static let doneButton = NSLocalizedString(
+                "wooShippingPaymentMethodsView.addPaymentMethod.doneButton",
+                value: "Done",
+                comment: "Button to dismiss the web view to add payment method for shipping label purchase"
             )
         }
     }
 }
 
 #Preview {
-    WooShippingPaymentMethodsView(viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
-                                  onAccountSettingsUpdate: { _ in })
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings()),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(withPermissions: false)),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: false,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
+}
+
+#Preview {
+    WooShippingPaymentMethodsView(
+        viewModel: .init(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(
+            withPermissions: true,
+            hasPaymentMethods: false
+        )),
+        onAccountSettingsUpdate: { _ in }
+    )
 }

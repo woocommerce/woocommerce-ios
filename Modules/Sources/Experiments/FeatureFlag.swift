@@ -185,10 +185,6 @@ public enum FeatureFlag: Int {
     ///
     case favoriteProducts
 
-    /// Enables support for the new product global unique identifier
-    ///
-    case productGlobalUniqueIdentifierSupport
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker
@@ -232,4 +228,12 @@ public enum FeatureFlag: Int {
     /// Enables sending POS specific email receipts for eligible stores
     ///
     case pointOfSaleReceipts
+
+    /// Enables barcode scanning with an external scanner in POS
+    ///
+    case pointOfSaleBarcodeScanningi1
+
+    /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
+    ///
+    case showPointOfSaleBarcodeSimulator
 }

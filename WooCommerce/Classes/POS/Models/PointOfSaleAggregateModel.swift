@@ -11,6 +11,7 @@ import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
+import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -32,6 +33,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
     var cart: Cart { get }
+    func barcodeScanned(_ barcode: String)
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart(types: [CartItemType])
@@ -74,6 +76,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
+    private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -103,6 +106,7 @@ protocol PointOfSaleAggregateModelProtocol {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -115,6 +119,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
         self.popularPurchasableItemsController = popularPurchasableItemsController
+        self.barcodeScanService = barcodeScanService
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -165,6 +170,17 @@ extension PointOfSaleAggregateModel {
         orderStage = .building
         paymentState = .card(.idle)
         cardPresentPaymentInlineMessage = nil
+    }
+}
+
+// MARK: - Barcode Scanning
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func barcodeScanned(_ barcode: String) {
+        Task {
+            let item = try await barcodeScanService.getItem(barcode: barcode)
+            addToCart(item)
+        }
     }
 }
 

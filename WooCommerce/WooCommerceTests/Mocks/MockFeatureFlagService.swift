@@ -20,7 +20,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var revampedShippingLabelCreation: Bool
     var viewEditCustomFieldsInProductsAndOrders: Bool
     var favoriteProducts: Bool
-    var isProductGlobalUniqueIdentifierSupported: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
@@ -46,7 +45,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          revampedShippingLabelCreation: Bool = false,
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false,
-         isProductGlobalUniqueIdentifierSupported: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
@@ -70,7 +68,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
-        self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
@@ -122,8 +119,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return viewEditCustomFieldsInProductsAndOrders
         case .favoriteProducts:
             return favoriteProducts
-        case .productGlobalUniqueIdentifierSupport:
-            return isProductGlobalUniqueIdentifierSupported
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

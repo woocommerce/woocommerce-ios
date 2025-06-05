@@ -43,6 +43,9 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable, Genera
     /// Uses the `id` for predefined packages or `name` for custom packages.
     public let lastSelectedPackageID: String
 
+    /// URL to open the web view for adding new payment methods
+    public let addPaymentMethodURL: URL?
+
     public init(siteID: Int64,
                 canManagePayments: Bool,
                 canEditSettings: Bool,
@@ -54,7 +57,8 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable, Genera
                 selectedPaymentMethodID: Int64,
                 isEmailReceiptsEnabled: Bool,
                 paperSize: ShippingLabelPaperSize,
-                lastSelectedPackageID: String) {
+                lastSelectedPackageID: String,
+                addPaymentMethodURL: URL?) {
         self.siteID = siteID
         self.canManagePayments = canManagePayments
         self.canEditSettings = canEditSettings
@@ -67,6 +71,7 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable, Genera
         self.isEmailReceiptsEnabled = isEmailReceiptsEnabled
         self.paperSize = paperSize
         self.lastSelectedPackageID = lastSelectedPackageID
+        self.addPaymentMethodURL = addPaymentMethodURL
     }
 }
 
@@ -86,6 +91,11 @@ extension ShippingLabelAccountSettings: Decodable {
         let storeOwnerWpcomUsername = try formMetaContainer.decode(String.self, forKey: .storeOwnerWpcomUsername)
         let storeOwnerWpcomEmail = try formMetaContainer.decode(String.self, forKey: .storeOwnerWpcomEmail)
         let paymentMethods = try formMetaContainer.decodeIfPresent([ShippingLabelPaymentMethod].self, forKey: .paymentMethods) ?? []
+
+        var addPaymentMethodURL: URL?
+        if let addPaymentMethodURLString = try formMetaContainer.decodeIfPresent(String.self, forKey: .addPaymentMethodURL) {
+            addPaymentMethodURL = URL(string: addPaymentMethodURLString)
+        }
 
         let formDataContainer = try container.nestedContainer(keyedBy: FormDataKeys.self, forKey: .formData)
         let selectedPaymentMethodID = try formDataContainer.decode(Int64.self, forKey: .selectedPaymentMethodID)
@@ -107,7 +117,8 @@ extension ShippingLabelAccountSettings: Decodable {
                   selectedPaymentMethodID: selectedPaymentMethodID,
                   isEmailReceiptsEnabled: isEmailReceiptsEnabled,
                   paperSize: paperSize,
-                  lastSelectedPackageID: lastSelectedPackageID)
+                  lastSelectedPackageID: lastSelectedPackageID,
+                  addPaymentMethodURL: addPaymentMethodURL)
     }
 }
 
@@ -134,6 +145,7 @@ private extension ShippingLabelAccountSettings {
         case storeOwnerWpcomUsername = "master_user_wpcom_login"
         case storeOwnerWpcomEmail = "master_user_email"
         case paymentMethods = "payment_methods"
+        case addPaymentMethodURL = "add_payment_method_url"
     }
 
     private enum UserMetaKeys: String, CodingKey {

@@ -2894,6 +2894,7 @@
 		DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */; };
 		DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */; };
 		DEFD6E61264990FB00E51E0D /* PluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */; };
+		DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -6124,6 +6125,7 @@
 		DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Themes.swift"; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModelTests.swift; sourceTree = "<group>"; };
+		DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsView.swift; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -12561,6 +12563,7 @@
 				CE7FE6922D13249D000F9475 /* WooShippingAddresses */,
 				CEAEB7582CD0F96800C3E117 /* WooShipping Post-Purchase */,
 				CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */,
+				DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */,
 				CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */,
 				CE49C4742CBEC84C00EA5C84 /* WooShipping_ShippingLineViewModel.swift */,
 			);
@@ -15836,6 +15839,7 @@
 				03E471DC29424EC9001A58AD /* CardPresentModalTapToPaySuccessWithoutEmail.swift in Sources */,
 				45C91CFE25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */,
 				B90DDF7C2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift in Sources */,
 				DE61979328A20C17005E4362 /* StorePickerViewModel.swift in Sources */,
 				DEB387A32C36474F0025256E /* GoogleAdsDashboardCard.swift in Sources */,

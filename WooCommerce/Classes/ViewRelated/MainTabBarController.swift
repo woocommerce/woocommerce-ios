@@ -118,7 +118,7 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
-    private var posEligibilityChecker: POSEligibilityCheckerProtocol?
+    private var posEligibilityChecker: POSTabEligibilityCheckerProtocol?
     private var posEligibilitySubscription: AnyCancellable?
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
@@ -644,7 +644,7 @@ private extension MainTabBarController {
         // Hides POS tab by default.
         updateTabViewControllers(isPOSTabVisible: false)
         // Starts observing the POS eligibility state.
-        posEligibilityChecker = POSEligibilityChecker(siteID: siteID)
+        posEligibilityChecker = POSTabEligibilityChecker(siteID: siteID)
         posEligibilitySubscription = posEligibilityChecker?.isEligible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in

@@ -647,6 +647,7 @@
 		02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */; };
 		02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */; };
 		02F5F80E246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F5F80D246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift */; };
+		02F613442DF2C1C8007B8845 /* POSTabEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F613432DF2C1C4007B8845 /* POSTabEligibilityChecker.swift */; };
 		02F67FEE25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F67FED25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift */; };
 		02F67FF525806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F67FF425806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift */; };
 		02F6800325807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800225807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift */; };
@@ -3899,6 +3900,7 @@
 		02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAndTitleAndTextTableViewCell.swift; sourceTree = "<group>"; };
 		02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageAndTitleAndTextTableViewCell.xib; sourceTree = "<group>"; };
 		02F5F80D246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterProductListViewModel+numberOfActiveFiltersTests.swift"; sourceTree = "<group>"; };
+		02F613432DF2C1C4007B8845 /* POSTabEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTabEligibilityChecker.swift; sourceTree = "<group>"; };
 		02F67FED25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelTrackingURLGenerator.swift; sourceTree = "<group>"; };
 		02F67FF425806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelTrackingURLGeneratorTests.swift; sourceTree = "<group>"; };
 		02F6800225807C9B00C3BAD2 /* ShippingLabelPaperSizeOptionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeOptionListView.swift; sourceTree = "<group>"; };
@@ -7924,6 +7926,7 @@
 		02E4A0842BFB1D1F006D4F87 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				02F613432DF2C1C4007B8845 /* POSTabEligibilityChecker.swift */,
 				02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */,
 			);
 			path = POS;
@@ -17203,6 +17206,7 @@
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				DE57462F2B43EB0B0034B10D /* BlazeCampaignCreationForm.swift in Sources */,
 				CCFC50592743E021001E505F /* EditableOrderViewModel.swift in Sources */,
+				02F613442DF2C1C8007B8845 /* POSTabEligibilityChecker.swift in Sources */,
 				CCFBBCF429C4B8AF0081B595 /* ComponentsList.swift in Sources */,
 				2004E2C62C076D4500D62521 /* CardPresentPaymentResult.swift in Sources */,
 				6881CCC42A5EE6BF00AEDE36 /* WooPlanCardView.swift in Sources */,

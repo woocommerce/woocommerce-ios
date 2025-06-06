@@ -192,12 +192,6 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
 
-            // Payment Methods
-            WooAnalyticsStat.paymentsFlowCompleted,
-            WooAnalyticsStat.paymentsFlowCanceled,
-            WooAnalyticsStat.paymentsFlowFailed,
-            WooAnalyticsStat.paymentsFlowCollect,
-
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
             WooAnalyticsStat.couponCreationSuccess,

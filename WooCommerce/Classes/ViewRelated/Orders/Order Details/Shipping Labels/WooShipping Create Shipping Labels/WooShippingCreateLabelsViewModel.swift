@@ -189,6 +189,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var shouldShowUPSTermsAndConditions = false
 
+    var upsTermsViewModel: UPSTermsViewModel? {
+        guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
+            return nil
+        }
+        return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
+    }
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          selectedShippingLabel: ShippingLabel? = nil,

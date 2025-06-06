@@ -3,12 +3,9 @@ import SwiftUI
 /// View for reviewing UPS Terms and Conditions.
 struct UPSTermsView: View {
 
-    let originAddress: String
-    let onConfirmation: () -> Void
+    @ObservedObject var viewModel: UPSTermsViewModel
 
-    @State private var isTOSAccepted = false
-    @State private var isProhibitedItemsAccepted = false
-    @State private var isTechnologyAgreementAccepted = false
+    let onConfirmation: () -> Void
 
     var body: some View {
         ScrollableVStack(alignment: .leading,
@@ -21,7 +18,7 @@ struct UPSTermsView: View {
             VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 Text(Localization.shippingFrom)
                     .headlineStyle()
-                Text(originAddress)
+                Text(viewModel.displayedOriginAddress)
                     .foregroundStyle(Color.primary)
                     .subheadlineStyle()
                 Divider()
@@ -31,21 +28,21 @@ struct UPSTermsView: View {
             Text(Localization.message)
 
             VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                Toggle(isOn: $isTOSAccepted) {
+                Toggle(isOn: $viewModel.isTOSAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox1,
                                          linkText: Localization.termsOfService,
                                          link: Links.termsOfService))
                 }
                 .toggleStyle(CheckboxToggleStyle())
 
-                Toggle(isOn: $isProhibitedItemsAccepted) {
+                Toggle(isOn: $viewModel.isProhibitedItemsAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox2,
                                          linkText: Localization.prohibitedItems,
                                          link: Links.prohibitedItems))
                 }
                 .toggleStyle(CheckboxToggleStyle())
 
-                Toggle(isOn: $isTechnologyAgreementAccepted) {
+                Toggle(isOn: $viewModel.isTechnologyAgreementAccepted) {
                     Text(checkboxContent(mainContent: Localization.checkbox3,
                                          linkText: Localization.technologyAgreement,
                                          link: Links.techAgreement))
@@ -57,9 +54,7 @@ struct UPSTermsView: View {
 
             Button(Localization.confirmButton, action: onConfirmation)
                 .buttonStyle(PrimaryButtonStyle())
-                .disabled(!isTOSAccepted ||
-                          !isProhibitedItemsAccepted ||
-                          !isTechnologyAgreementAccepted)
+                .disabled(!viewModel.shouldEnableConfirmButton)
         }
         .padding(.top, Layout.contentPadding)
     }
@@ -163,6 +158,15 @@ private extension UPSTermsView {
 }
 
 #Preview {
-    UPSTermsView(originAddress: "3028 24TH ST, SAN FRANCISCO, CA 94110-4129, US",
+    UPSTermsView(viewModel: UPSTermsViewModel(siteID: 123,
+                                              originAddress: .init(company: "A8C",
+                                                                   name: "John Doe",
+                                                                   phone: "09381734543",
+                                                                   country: "US",
+                                                                   state: "New York",
+                                                                   address1: "1 E 35th St",
+                                                                   address2: "",
+                                                                   city: "New York",
+                                                                   postcode: "10028")),
                  onConfirmation: {})
 }

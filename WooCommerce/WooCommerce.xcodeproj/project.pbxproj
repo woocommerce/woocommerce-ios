@@ -2896,6 +2896,7 @@
 		DEFD6E61264990FB00E51E0D /* PluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */; };
 		DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */; };
 		DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */; };
+		DEFE13C82DF2A359005B3D39 /* UPSTermsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -6128,6 +6129,7 @@
 		DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsView.swift; sourceTree = "<group>"; };
 		DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleStyles.swift; sourceTree = "<group>"; };
+		DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsViewModel.swift; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -12566,7 +12568,7 @@
 				CE7FE6922D13249D000F9475 /* WooShippingAddresses */,
 				CEAEB7582CD0F96800C3E117 /* WooShipping Post-Purchase */,
 				CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */,
-				DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */,
+				DEFE13C62DF2A34A005B3D39 /* UPSTOS */,
 				CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */,
 				CE49C4742CBEC84C00EA5C84 /* WooShipping_ShippingLineViewModel.swift */,
 			);
@@ -13796,6 +13798,15 @@
 				68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */,
 			);
 			path = Plugins;
+			sourceTree = "<group>";
+		};
+		DEFE13C62DF2A34A005B3D39 /* UPSTOS */ = {
+			isa = PBXGroup;
+			children = (
+				DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */,
+				DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */,
+			);
+			path = UPSTOS;
 			sourceTree = "<group>";
 		};
 		E10459C427BBC20C00C1DCBA /* In-Person Payments */ = {
@@ -17088,6 +17099,7 @@
 				EEADF622281A40CB001B40F1 /* ShippingValueLocalizer.swift in Sources */,
 				26D86B692C50110600435411 /* TopPerformersCardDataSyncUseCase.swift in Sources */,
 				262C922126F1370000011F92 /* StorePickerError.swift in Sources */,
+				DEFE13C82DF2A359005B3D39 /* UPSTermsViewModel.swift in Sources */,
 				4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */,
 				20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */,
 				95B6C60C2D9DA5E900E1A661 /* WPComMagicLinkRequestView.swift in Sources */,

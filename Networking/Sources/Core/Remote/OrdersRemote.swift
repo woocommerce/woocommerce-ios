@@ -86,9 +86,10 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the Order.
     ///     - orderID: Identifier of the Order.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The requested Order.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (Order?, Error?) -> Void) {
+    public func loadOrder(for siteID: Int64, orderID: Int64) async throws -> Order {
         let parameters = [
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
@@ -102,7 +103,7 @@ public class OrdersRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves the notes for a specific `Order`
@@ -110,9 +111,10 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the Order.
     ///     - orderID: Identifier of the Order.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of order notes.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadOrderNotes(for siteID: Int64, orderID: Int64, completion: @escaping ([OrderNote]?, Error?) -> Void) {
+    public func loadOrderNotes(for siteID: Int64, orderID: Int64) async throws -> [OrderNote] {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -122,7 +124,7 @@ public class OrdersRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = OrderNotesMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `Orders` available.
@@ -132,13 +134,13 @@ public class OrdersRemote: Remote {
     ///     - keyword: Search string that should be matched by the orders.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of orders matching the search criteria.
+    /// - Throws: Error if the request fails.
     ///
     public func searchOrders(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int = Defaults.pageNumber,
-                             pageSize: Int = Defaults.pageSize,
-                             completion: @escaping ([Order]?, Error?) -> Void) {
+                             pageSize: Int = Defaults.pageSize) async throws -> [Order] {
         let parameters = [
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),
@@ -156,7 +158,7 @@ public class OrdersRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Creates an order using the specified fields of a given order
@@ -242,10 +244,11 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the Order.
     ///     - orderID: Identifier of the Order to be updated.
-    ///     - status: New Status to be set.
-    ///     - completion: Closure to be executed upon completion.
+    ///     - statusKey: New Status to be set.
+    /// - Returns: The updated Order.
+    /// - Throws: Error if the request fails.
     ///
-    public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum, completion: @escaping (Order?, Error?) -> Void) {
+    public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) async throws -> Order {
         let path = "\(Constants.ordersPath)/" + String(orderID)
         let parameters = [ParameterKeys.statusKey: statusKey.rawValue]
         let mapper = OrderMapper(siteID: siteID)
@@ -256,7 +259,7 @@ public class OrdersRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Updates the specified fields of a given order.
@@ -267,14 +270,14 @@ public class OrdersRemote: Remote {
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - cashPaymentChangeDueAmount: Optional change due amount from cash payment.
     ///     - fields: Fields from the order to be updated.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The updated Order.
+    /// - Throws: Error if the request fails.
     ///
     public func updateOrder(from siteID: Int64,
                             order: Order,
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
-                            fields: [UpdateOrderField],
-                            completion: @escaping (Result<Order, Error>) -> Void) {
+                            fields: [UpdateOrderField]) async throws -> Order {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
             let mapper = OrderMapper(siteID: siteID)
@@ -331,9 +334,9 @@ public class OrdersRemote: Remote {
                                          path: path,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            enqueue(request, mapper: mapper, completion: completion)
+            return try await enqueue(request, mapper: mapper)
         } catch {
-            completion(.failure(error))
+            throw error
         }
     }
 
@@ -345,9 +348,10 @@ public class OrdersRemote: Remote {
     ///     - isCustomerNote: if true, the note will be shown to customers and they will be notified.
     ///                       if false, the note will be for admin reference only. Default is false.
     ///     - note: The note to be posted.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The created OrderNote.
+    /// - Throws: Error if the request fails.
     ///
-    public func addOrderNote(for siteID: Int64, orderID: Int64, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
+    public func addOrderNote(for siteID: Int64, orderID: Int64, isCustomerNote: Bool, with note: String) async throws -> OrderNote {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
         let parameters = [ParameterKeys.note: note,
                           ParameterKeys.customerNote: String(isCustomerNote),
@@ -360,7 +364,7 @@ public class OrdersRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Deletes the given order.
@@ -425,16 +429,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func updatePOSOrder(siteID: Int64, order: Order, cashPaymentChangeDueAmount: String? = nil, fields: [UpdateOrderField]) async throws -> Order {
-        return try await withCheckedThrowingContinuation { continuation in
-            updateOrder(from: siteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: fields) { result in
-                switch result {
-                case let .success(order):
-                    continuation.resume(returning: order)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        return try await updateOrder(from: siteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: fields)
     }
 }
 

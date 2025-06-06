@@ -10,11 +10,10 @@ public class TaxRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote tax classes.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of tax classes.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadAllTaxClasses(for siteID: Int64,
-                                completion: @escaping ([TaxClass]?, Error?) -> Void) {
-
+    public func loadAllTaxClasses(for siteID: Int64) async throws -> [TaxClass] {
         let path = Path.taxes + "/classes"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -24,7 +23,7 @@ public class TaxRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = TaxClassListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `Tax Classes` available.

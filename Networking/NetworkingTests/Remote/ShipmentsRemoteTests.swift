@@ -29,75 +29,66 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Verifies that `loadShipmentTrackings` properly parses the sample response.
     ///
-    func testLoadShipmentTrackingsProperlyReturnsParsedShipmentTrackings() {
+    func testLoadShipmentTrackingsProperlyReturnsParsedShipmentTrackings() async throws {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_multiple")
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(shipmentTrackings)
-            XCTAssertEqual(shipmentTrackings?.count, 4)
-            expectation.fulfill()
-        })
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let shipmentTrackings = try await remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID)
+
+        // Then
+        XCTAssertEqual(shipmentTrackings.count, 4)
     }
 
     /// Verifies that `loadShipmentTrackings` properly relays generic Networking Layer errors.
     ///
-    func testLoadShipmentTrackingsProperlyRelaysNetworkingErrors() {
+    func testLoadShipmentTrackingsProperlyRelaysNetworkingErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information contains errors")
 
-        remote.loadShipmentTrackings(for: sampleSiteID,
-                                     orderID: sampleOrderID,
-                                     completion: { (shipmentTrackings, error) in
-            XCTAssertNil(shipmentTrackings)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
-        })
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
+        }
     }
 
     /// Verifies that `loadShipmentTrackings` properly relays HTTP 404 errors.
     ///
-    func testLoadShipmentTrackingsProperlyRelays404Errors() {
+    func testLoadShipmentTrackingsProperlyRelays404Errors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information contains errors")
-
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
-            XCTAssertNil(shipmentTrackings)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
-        })
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
+        }
     }
 
     /// Verifies that `loadShipmentTrackings` correctly returns a Dotcom Error whenever `rest_no_route`
     /// is returned because the shipment tracking extension is not installed.
     ///
-    func testLoadShipmentTrackingsProperlyRelaysPluginNotInstalledErrors() {
+    func testLoadShipmentTrackingsProperlyRelaysPluginNotInstalledErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
-            XCTAssertNil(shipmentTrackings)
-            XCTAssertNotNil(error)
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
-            }
-            XCTAssertTrue(dotComError == .noRestRoute)
-            expectation.fulfill()
-        })
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch let error as DotcomError {
+            XCTAssertTrue(error == .noRestRoute)
+        } catch {
+            XCTFail("Expected DotcomError.noRestRoute")
+        }
     }
 
     // MARK: - createShipmentTracking
@@ -105,93 +96,82 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Verifies that `createShipmentTracking` properly parses the sample response.
     ///
-    func testCreateShipmentTrackingProperlyReturnsParsedShipmentTracking() {
+    func testCreateShipmentTrackingProperlyReturnsParsedShipmentTracking() async throws {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information")
-
-        let orderID = sampleOrderID
-        let siteID = sampleSiteID
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new")
-        remote.createShipmentTracking(for: siteID,
-                                      orderID: orderID,
-                                      trackingProvider: "Some provider",
-                                      dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(shipmentTracking)
-            XCTAssertEqual(shipmentTracking?.orderID, orderID)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let tracking = try await remote.createShipmentTracking(for: sampleSiteID,
+                                                             orderID: sampleOrderID,
+                                                             trackingProvider: "Some provider",
+                                                             dateShipped: "2019-04-01",
+                                                             trackingNumber: "1111")
+
+        // Then
+        XCTAssertEqual(tracking.orderID, sampleOrderID)
     }
 
     /// Verifies that `createShipmentTracking` properly relays generic Networking Layer errors.
     ///
-    func testCreateShipmentTrackingProperlyRelaysNetworkingErrors() {
+    func testCreateShipmentTrackingProperlyRelaysNetworkingErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        remote.createShipmentTracking(for: sampleSiteID,
-                                      orderID: sampleOrderID,
-                                      trackingProvider: "Some provider",
-                                      dateShipped: "2019-04-01",
-                                      trackingNumber: "11111") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTracking(for: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "Some provider",
+                                                      dateShipped: "2019-04-01",
+                                                      trackingNumber: "11111")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `createhipmentTracking` properly relays HTTP 404 errors.
     ///
-    func testCreateShipmentTrackingProperlyRelays404Errors() {
+    func testCreateShipmentTrackingProperlyRelays404Errors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
-
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
-        remote.createShipmentTracking(for: sampleSiteID,
-                                      orderID: sampleOrderID,
-                                      trackingProvider: "Some provider",
-                                      dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTracking(for: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "Some provider",
+                                                      dateShipped: "2019-04-01",
+                                                      trackingNumber: "1111")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `createShipmentTracking` correctly returns a Dotcom Error whenever `rest_no_route`
     /// is returned because the shipment tracking extension is not installed.
     ///
-    func testCreateShipmentTrackingProperlyRelaysPluginNotInstalledErrors() {
+    func testCreateShipmentTrackingProperlyRelaysPluginNotInstalledErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.createShipmentTracking(for: sampleSiteID,
-                                      orderID: sampleOrderID,
-                                      trackingProvider: "some tracking provider",
-                                      dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
-            }
-            XCTAssertTrue(dotComError == .noRestRoute)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTracking(for: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      trackingProvider: "some tracking provider",
+                                                      dateShipped: "2019-04-01",
+                                                      trackingNumber: "1111")
+            XCTFail("Expected error to be thrown")
+        } catch let error as DotcomError {
+            XCTAssertTrue(error == .noRestRoute)
+        } catch {
+            XCTFail("Expected DotcomError.noRestRoute")
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - createShipmentTrackingWithCustomProvider
@@ -199,97 +179,86 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Verifies that `createShipmentTrackingWithCustomProvider` properly parses the sample response.
     ///
-    func testCreateShipmentTrackingWithCustomProviderProperlyReturnsParsedShipmentTracking() {
+    func testCreateShipmentTrackingWithCustomProviderProperlyReturnsParsedShipmentTracking() async throws {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information")
-
-        let orderID = sampleOrderID
-        let siteID = sampleSiteID
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_new_custom_provider")
-        remote.createShipmentTrackingWithCustomProvider(for: siteID,
-                                                        orderID: orderID,
-                                                        trackingProvider: "Some provider",
-                                                        trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "12345") { (shipmentTracking, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(shipmentTracking)
-            XCTAssertEqual(shipmentTracking?.orderID, orderID)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let tracking = try await remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                                               orderID: sampleOrderID,
+                                                                               trackingProvider: "Some provider",
+                                                                               trackingNumber: "1111",
+                                                                               trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                                               dateShipped: "12345")
+
+        // Then
+        XCTAssertEqual(tracking.orderID, sampleOrderID)
     }
 
     /// Verifies that `createShipmentTracking` properly relays generic Networking Layer errors.
     ///
-    func testCreateShipmentTrackingWithCustomProviderProperlyRelaysNetworkingErrors() {
+    func testCreateShipmentTrackingWithCustomProviderProperlyRelaysNetworkingErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
 
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
-                                                        orderID: sampleOrderID,
-                                                        trackingProvider: "Some provider",
-                                                        trackingNumber: "11111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "12345") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                                        orderID: sampleOrderID,
+                                                                        trackingProvider: "Some provider",
+                                                                        trackingNumber: "11111",
+                                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                                        dateShipped: "12345")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `createShipmentTrackingWithCustomProvider` properly relays HTTP 404 errors.
     ///
-    func testCreateShipmentTrackingWithCustomProviderProperlyRelays404Errors() {
+    func testCreateShipmentTrackingWithCustomProviderProperlyRelays404Errors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
-
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
-                                                        orderID: sampleOrderID,
-                                                        trackingProvider: "Some provider",
-                                                        trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "1234") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                                        orderID: sampleOrderID,
+                                                                        trackingProvider: "Some provider",
+                                                                        trackingNumber: "1111",
+                                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                                        dateShipped: "1234")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `createShipmentTrackingWithCustomProvider` correctly returns a Dotcom Error whenever `rest_no_route`
     /// is returned because the shipment tracking extension is not installed.
     ///
-    func testCreateShipmentTrackingWithCustomProviderProperlyRelaysPluginNotInstalledErrors() {
+    func testCreateShipmentTrackingWithCustomProviderProperlyRelaysPluginNotInstalledErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
-                                                        orderID: sampleOrderID,
-                                                        trackingProvider: "some tracking provider",
-                                                        trackingNumber: "1111",
-                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "1234") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
-            }
-            XCTAssertTrue(dotComError == .noRestRoute)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.createShipmentTrackingWithCustomProvider(for: sampleSiteID,
+                                                                        orderID: sampleOrderID,
+                                                                        trackingProvider: "some tracking provider",
+                                                                        trackingNumber: "1111",
+                                                                        trackingURL: "https://somewhere.online.net.com?q=%1$s",
+                                                                        dateShipped: "1234")
+            XCTFail("Expected error to be thrown")
+        } catch let error as DotcomError {
+            XCTAssertTrue(error == .noRestRoute)
+        } catch {
+            XCTFail("Expected DotcomError.noRestRoute")
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - deleteShipmentTracking
@@ -297,79 +266,68 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Verifies that `deleteShipmentTracking` properly parses the sample response.
     ///
-    func testDeleteShipmentTrackingProperlyReturnsParsedShipmentTracking() {
+    func testDeleteShipmentTrackingProperlyReturnsParsedShipmentTracking() async throws {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Delete shipment tracking information")
-
-        let orderID = sampleOrderID
-        let siteID = sampleSiteID
         let trackingID = "trackingID"
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment_tracking_delete")
-        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { shipmentTracking, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(shipmentTracking)
-            XCTAssertEqual(shipmentTracking?.orderID, orderID)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // When
+        let tracking = try await remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID)
+
+        // Then
+        XCTAssertEqual(tracking.orderID, sampleOrderID)
     }
 
     /// Verifies that `deleteShipmentTracking` properly relays networking errors.
     ///
-    func testDeleteShipmentTrackingProperlyRelaysNetworkingErrors() {
+    func testDeleteShipmentTrackingProperlyRelaysNetworkingErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Delete shipment tracking information contains errors")
 
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "trackingID") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "trackingID")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `deleteShipmentTracking` properly relays HTTP 404 errors.
     ///
-    func testDeleteShipmentTrackingProperlyRelays404Errors() {
+    func testDeleteShipmentTrackingProperlyRelays404Errors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Create shipment tracking information contains errors")
-
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "1111") { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "1111")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `deleteShipmentTracking` correctly returns a Dotcom Error whenever `rest_no_route`
     /// is returned because the shipment tracking extension is not installed.
     ///
-    func testDeleteShipmentTrackingProperlyRelaysPluginNotInstalledErrors() {
+    func testDeleteShipmentTrackingProperlyRelaysPluginNotInstalledErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         let trackingID = "trackingID"
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment_tracking_plugin_not_active")
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID) { (shipmentTracking, error) in
-            XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
-            }
-            XCTAssertTrue(dotComError == .noRestRoute)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID)
+            XCTFail("Expected error to be thrown")
+        } catch let error as DotcomError {
+            XCTAssertTrue(error == .noRestRoute)
+        } catch {
+            XCTFail("Expected DotcomError.noRestRoute")
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - loadShipmentTrackingProviderGroups
@@ -377,73 +335,65 @@ final class ShipmentsRemoteTests: XCTestCase {
 
     /// Verifies that `loadShipmentTrackingProviderGroups` properly parses the sample response.
     ///
-    func testLoadShipmentTrackingProviderGroupsReturnsParsedData() {
+    func testLoadShipmentTrackingProviderGroupsReturnsParsedData() async throws {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking providers information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_providers")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(groups)
-            XCTAssertEqual(groups?.count, 19)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let groups = try await remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID)
+
+        // Then
+        XCTAssertEqual(groups.count, 19)
     }
 
     /// Verifies that `loadShipmentTrackingProviderGroups` properly parses the sample response.
     ///
-    func testLoadShipmentTrackingProviderGroupsProperlyRelaysNetworkingErrors() {
+    func testLoadShipmentTrackingProviderGroupsProperlyRelaysNetworkingErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
-            XCTAssertNil(shipmentTrackingGroups)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `loadShipmentTrackingProviderGroups` properly relays HTTP 404 errors.
     ///
-    func testLoadShipmentTrackingProviderGroupsProperlyRelays404Errors() {
+    func testLoadShipmentTrackingProviderGroupsProperlyRelays404Errors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
-
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound())
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
-            XCTAssertNil(shipmentTrackingGroups)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `loadShipmentTrackingProviderGroups` correctly returns a Dotcom Error whenever `rest_no_route`
     /// is returned because the shipment tracking extension is not installed.
     ///
-    func testLoadShipmentTrackingProviderGroupsProperlyRelaysPluginNotInstalledErrors() {
+    func testLoadShipmentTrackingProviderGroupsProperlyRelaysPluginNotInstalledErrors() async {
+        // Given
         let remote = ShipmentsRemote(network: network)
-        let expectation = self.expectation(description: "Load shipment tracking information")
-
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
-            XCTAssertNil(shipmentTrackingGroups)
-            XCTAssertNotNil(error)
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
-            }
-            XCTAssertTrue(dotComError == .noRestRoute)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID)
+            XCTFail("Expected error to be thrown")
+        } catch let error as DotcomError {
+            XCTAssertTrue(error == .noRestRoute)
+        } catch {
+            XCTFail("Expected DotcomError.noRestRoute")
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

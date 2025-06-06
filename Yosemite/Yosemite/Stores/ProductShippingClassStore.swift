@@ -66,15 +66,14 @@ private extension ProductShippingClassStore {
     /// Retrieves the `ProductShippingClass` associated with a given `Product`.
     ///
     func retrieveProductShippingClass(siteID: Int64, remoteID: Int64, onCompletion: @escaping (ProductShippingClass?, Error?) -> Void) {
-        remote.loadOne(for: siteID, remoteID: remoteID) { [weak self] (model, error) in
-            guard let model = model else {
+        Task {
+            do {
+                let model = try await remote.loadOne(for: siteID, remoteID: remoteID)
+//                await upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: [model],
+//                                                                         siteID: siteID)
+                onCompletion(model, nil)
+            } catch {
                 onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: [model],
-                                                                     siteID: siteID) {
-                                                        onCompletion(model, nil)
             }
         }
     }

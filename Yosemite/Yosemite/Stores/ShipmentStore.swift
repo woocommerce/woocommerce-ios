@@ -76,31 +76,38 @@ public class ShipmentStore: Store {
 private extension ShipmentStore {
 
     func synchronizeShipmentTrackingData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadShipmentTrackings(for: siteID, orderID: orderID) { [weak self] (shipmentTrackingData, error) in
-            guard let readOnlyShipmentTrackingData = shipmentTrackingData else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertShipmentTrackingDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingData: readOnlyShipmentTrackingData) {
-                onCompletion(nil)
+        Task {
+            do {
+                let shipmentTrackingData = try await remote.loadShipmentTrackings(for: siteID, orderID: orderID)
+//                await upsertShipmentTrackingDataInBackground(siteID: siteID, orderID: orderID, readOnlyShipmentTrackingData: shipmentTrackingData) {
+//                    await MainActor.run {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }
 
     func syncronizeShipmentTrackingProviderGroupsData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups, error) in
-            guard let readOnlyShipmentTrackingProviderGroups = groups else {
-                onCompletion(error)
-                return
+        Task {
+            do {
+                let groups = try await remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID)
+//                await upsertTrackingProviderDataInBackground(siteID: siteID,
+//                                                           orderID: orderID,
+//                                                           readOnlyShipmentTrackingProviderGroups: groups) {
+//                    await MainActor.run {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
-
-            self?.upsertTrackingProviderDataInBackground(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 readOnlyShipmentTrackingProviderGroups: readOnlyShipmentTrackingProviderGroups,
-                                                                 onCompletion: {
-                onCompletion(nil)
-            })
         }
     }
 }
@@ -173,21 +180,25 @@ extension ShipmentStore {
                      trackingNumber: String,
                      dateShipped: String,
                      onCompletion: @escaping (Error?) -> Void) {
-        remote.createShipmentTracking(for: siteID,
-                                      orderID: orderID,
-                                      trackingProvider: providerName,
-                                      dateShipped: dateShipped,
-                                      trackingNumber: trackingNumber) { [weak self] (tracking, error) in
-                                        guard let newTracking = tracking else {
-                                            onCompletion(error)
-                                            return
-                                        }
-
-                                        self?.addStoredShipment(siteID: siteID,
-                                                                orderID: orderID,
-                                                                readOnlyTracking: newTracking) {
-                                            onCompletion(nil)
-                                        }
+        Task {
+            do {
+                let tracking = try await remote.createShipmentTracking(for: siteID,
+                                                                      orderID: orderID,
+                                                                      trackingProvider: providerName,
+                                                                      dateShipped: dateShipped,
+                                                                      trackingNumber: trackingNumber)
+//                await addStoredShipment(siteID: siteID,
+//                                      orderID: orderID,
+//                                      readOnlyTracking: tracking) {
+//                    await MainActor.run {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
+            }
         }
     }
 
@@ -198,23 +209,27 @@ extension ShipmentStore {
                            trackingURL: String,
                            dateShipped: String,
                            onCompletion: @escaping (Error?) -> Void) {
-        remote.createShipmentTrackingWithCustomProvider(for: siteID,
-                                                        orderID: orderID,
-                                                        trackingProvider: trackingProvider,
-                                                        trackingNumber: trackingNumber,
-                                                        trackingURL: trackingURL,
-                                                        dateShipped: dateShipped) { [weak self] (tracking, error) in
-            guard let newTracking = tracking else {
-                onCompletion(error)
-                return
-            }
-
-            self?.addCustomStoredShipment(siteID: siteID,
-                                          orderID: orderID,
-                                          trackingProvider: trackingProvider,
-                                          trackingURL: trackingURL,
-                                          readOnlyTracking: newTracking) {
-                onCompletion(nil)
+        Task {
+            do {
+                let tracking = try await remote.createShipmentTrackingWithCustomProvider(for: siteID,
+                                                                                        orderID: orderID,
+                                                                                        trackingProvider: trackingProvider,
+                                                                                        trackingNumber: trackingNumber,
+                                                                                        trackingURL: trackingURL,
+                                                                                        dateShipped: dateShipped)
+//                await addCustomStoredShipment(siteID: siteID,
+//                                            orderID: orderID,
+//                                            trackingProvider: trackingProvider,
+//                                            trackingURL: trackingURL,
+//                                            readOnlyTracking: tracking) {
+//                    await MainActor.run {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }
@@ -223,14 +238,18 @@ extension ShipmentStore {
                         orderID: Int64,
                         trackingID: String,
                         onCompletion: @escaping (Error?) -> Void) {
-        remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
-            guard let _ = tracking else {
-                onCompletion(error)
-                return
-            }
-
-            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID) {
-                onCompletion(nil)
+        Task {
+            do {
+                _ = try await remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID)
+//                await deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID) {
+//                    await MainActor.run {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }

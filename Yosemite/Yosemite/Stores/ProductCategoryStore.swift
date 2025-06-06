@@ -91,17 +91,21 @@ private extension ProductCategoryStore {
     /// Synchronizes product categories associated with a given Site ID.
     ///
     func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
-        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
-            guard let productCategories = productCategories else {
-                onCompletion(nil, error)
-                return
-            }
-
-            let deleteUnusedCategories = pageNumber == Default.firstPageNumber
-            self?.upsertStoredProductCategoriesInBackground(productCategories,
-                                                            siteID: siteID,
-                                                            shouldDeleteUnusedCategories: deleteUnusedCategories) {
-                onCompletion(productCategories, nil)
+        Task {
+            do {
+                let productCategories = try await remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize)
+                let deleteUnusedCategories = pageNumber == Default.firstPageNumber
+                await MainActor.run {
+                    self.upsertStoredProductCategoriesInBackground(productCategories,
+                                                                siteID: siteID,
+                                                                shouldDeleteUnusedCategories: deleteUnusedCategories) {
+                        onCompletion(productCategories, nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
             }
         }
     }

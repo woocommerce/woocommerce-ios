@@ -113,14 +113,18 @@ private extension OrderStore {
     /// Searches all of the orders that contain a given Keyword.
     ///
     func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
-            guard let orders = orders else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertSearchResultsInBackground(for: siteID, keyword: keyword, readOnlyOrders: orders) {
-                onCompletion(nil)
+        Task {
+            do {
+                let orders = try await remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+//                await MainActor.run {
+//                    self.updateLocalOrders(with: orders) {
+//                        onCompletion(nil)
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }
@@ -240,7 +244,7 @@ private extension OrderStore {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
         let storage = storageManager.viewStorage
         guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
-            return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+            return loadOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
 
         Task {
@@ -251,7 +255,7 @@ private extension OrderStore {
             // Otherwise, fetch the updated order from remote.
             await MainActor.run {
                 guard dateModified == storedOrder.dateModified else {
-                    return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+                    return loadOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
                 }
                 onCompletion(storedOrder, nil)
             }
@@ -259,7 +263,7 @@ private extension OrderStore {
     }
 
     func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        loadOrderFromRemote(siteID: siteID, orderID: orderID) { order, error in
+        loadOrder(siteID: siteID, orderID: orderID) { order, error in
             if let error {
                 onCompletion(.failure(error))
             } else if let order {
@@ -270,23 +274,24 @@ private extension OrderStore {
         }
     }
 
-    /// Loads a specific order associated with a given Site ID from remote.
+    /// Retrieves a specific `Order`
     ///
-    private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
-        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
-            guard let order = order else {
-                if case NetworkError.notFound? = error {
-                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
-                        onCompletion(nil, error)
-                    }
-                } else {
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order.
+    ///     - onCompletion: Closure to be executed upon completion.
+    ///
+    func loadOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+        Task {
+            do {
+                let order = try await remote.loadOrder(for: siteID, orderID: orderID)
+                await MainActor.run {
+                    onCompletion(order, nil)
+                }
+            } catch {
+                await MainActor.run {
                     onCompletion(nil, error)
                 }
-                return
-            }
-
-            self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
-                onCompletion(order, nil)
             }
         }
     }
@@ -382,17 +387,20 @@ private extension OrderStore {
             guard let self else {
                 return onCompletion(UpdateOrderStatusError.undefinedState)
             }
-            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
-                guard let error else {
-                    if let order {
-                        self?.upsertStoredOrder(readOnlyOrder: order)
+            Task {
+                do {
+                    let order = try await self.remote.updateOrder(from: siteID, orderID: orderID, statusKey: status)
+                    await MainActor.run {
+                        self.upsertStoredOrder(readOnlyOrder: order)
+                        onCompletion(nil)
                     }
-                    return onCompletion(nil)
-                }
-
-                /// Revert Optimistic Update
-                self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: previousStatus) { _ in
-                    onCompletion(error)
+                } catch {
+                    /// Revert Optimistic Update
+                    await MainActor.run {
+                        self.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: previousStatus) { _ in
+                            onCompletion(error)
+                        }
+                    }
                 }
             }
         }
@@ -428,8 +436,17 @@ private extension OrderStore {
             }
         }()
 
-        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
-            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
+        Task {
+            do {
+                let updatedOrder = try await remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields)
+                await MainActor.run {
+                    handleCreateOrUpdateOrderResult(.success(updatedOrder), giftCard: giftCard, onCompletion: onCompletion)
+                }
+            } catch {
+                await MainActor.run {
+                    handleCreateOrUpdateOrderResult(.failure(error), giftCard: giftCard, onCompletion: onCompletion)
+                }
+            }
         }
     }
 
@@ -441,24 +458,28 @@ private extension OrderStore {
         // Optimistically update the stored order.
         let backupOrder = upsertStoredOrder(readOnlyOrder: order)
 
-        remote.updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { [weak self] result in
-            guard case .failure = result else {
-                onCompletion(.success(order))
-                return
-            }
-
-            /// Revert optimistic update.
-            ///
-            /// If the backup order is equal to the given order means that the order
-            /// didn't exist locally. So, we have to delete the stored order as workaround.
-            /// Otherwise, we have to revert the updated fields.
-            if order == backupOrder {
-                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
-                    onCompletion(result)
+        Task {
+            do {
+                let updatedOrder = try await remote.updateOrder(from: siteID, order: order, giftCard: nil, fields: fields)
+                await MainActor.run {
+                    onCompletion(.success(updatedOrder))
                 }
-            } else {
-                self?.upsertStoredOrder(readOnlyOrder: backupOrder)
-                onCompletion(result)
+            } catch {
+                await MainActor.run {
+                    /// Revert optimistic update.
+                    ///
+                    /// If the backup order is equal to the given order means that the order
+                    /// didn't exist locally. So, we have to delete the stored order as workaround.
+                    /// Otherwise, we have to revert the updated fields.
+                    if order == backupOrder {
+                        self.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                            onCompletion(.failure(error))
+                        }
+                    } else {
+                        self.upsertStoredOrder(readOnlyOrder: backupOrder)
+                        onCompletion(.failure(error))
+                    }
+                }
             }
         }
     }

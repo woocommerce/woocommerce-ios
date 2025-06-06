@@ -13,22 +13,22 @@ public class TopEarnersStatsRemote: Remote {
     ///   - unit: Defines the granularity of the stats we are fetching (one of 'day', 'week', 'month', or 'year')
     ///   - latestDateToInclude: The latest date to include in the results (see Note below)
     ///   - limit: Maximum number of `unit`s to fetch
-    ///   - completion: Closure to be executed upon completion.
+    /// - Returns: The top earner stats.
+    /// - Throws: Error if the request fails.
     ///
     /// Note: `latestDateToInclude` string must be formatted appropriately given the `unit` param. See: `DateFormatter.Stats` extension for some helper funcs.
     ///
     public func loadTopEarnersStats(for siteID: Int64,
                                     unit: StatGranularity,
                                     latestDateToInclude: String,
-                                    limit: Int,
-                                    completion: @escaping (TopEarnerStats?, Error?) -> Void) {
+                                    limit: Int) async throws -> TopEarnerStats {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.topEarnersStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: latestDateToInclude,
                           ParameterKeys.limit: String(limit)]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = TopEarnerStatsMapper(siteID: siteID)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

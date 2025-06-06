@@ -101,21 +101,11 @@ struct MarkOrderAsReadUseCase {
                 return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
             }
 
-            let updatedStatus: Result<Int64, Error> = await withCheckedContinuation { continuation in
-                notesRemote.updateReadStatus(noteIDs: [noteID], read: true) { error in
-                    if let error {
-                        continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
-                    } else {
-                        continuation.resume(returning: .success(noteID))
-                    }
-                }
-            }
-
-            switch updatedStatus {
-            case .success(let noteID):
+            do {
+                try await notesRemote.updateReadStatus(noteIDs: [noteID], read: true)
                 return .success(noteID)
-            case .failure(let error):
-                return .failure(error)
+            } catch {
+                return .failure(MarkOrderAsReadUseCase.Error.failure(error))
             }
         case .failure(let error):
             return .failure(error)

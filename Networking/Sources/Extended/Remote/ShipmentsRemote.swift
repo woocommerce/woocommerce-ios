@@ -10,9 +10,10 @@ public final class ShipmentsRemote: Remote {
     /// - Parameters:
     ///   - siteID: Site which hosts the Order
     ///   - orderID: Identifier of the Order
-    ///   - completion: Closure to be executed upon completion
+    /// - Returns: Array of shipment tracking information.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadShipmentTrackings(for siteID: Int64, orderID: Int64, completion: @escaping ([ShipmentTracking]?, Error?) -> Void) {
+    public func loadShipmentTrackings(for siteID: Int64, orderID: Int64) async throws -> [ShipmentTracking] {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         // 2019-2-15 — We are using the v2 endpoint here because this endpoint does not support v3 yet
@@ -24,7 +25,7 @@ public final class ShipmentsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = ShipmentTrackingListMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Creates a new shipment tracking for a given order.
@@ -34,14 +35,14 @@ public final class ShipmentsRemote: Remote {
     ///   - orderID: Identifier of the Order
     ///   - trackingProvider: The name of the tracking provider
     ///   - trackingNumber: The tracking number
-    ///   - completion: Closure to be executed upon completion
+    /// - Returns: The created shipment tracking.
+    /// - Throws: Error if the request fails.
     ///
     public func createShipmentTracking(for siteID: Int64,
                                        orderID: Int64,
                                        trackingProvider: String,
                                        dateShipped: String,
-                                       trackingNumber: String,
-                                       completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+                                       trackingNumber: String) async throws -> ShipmentTracking {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,
@@ -56,7 +57,7 @@ public final class ShipmentsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Creates a new shipment tracking with a custom provider for a given order.
@@ -67,15 +68,15 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingProvider: The name of the tracking provider
     ///   - trackingNumber: The tracking number
     ///   - trackingLink: The custom url offered by this provider to track shipments
-    ///   - completion: Closure to be executed upon completion
+    /// - Returns: The created shipment tracking.
+    /// - Throws: Error if the request fails.
     ///
     public func createShipmentTrackingWithCustomProvider(for siteID: Int64,
                                                          orderID: Int64,
                                                          trackingProvider: String,
                                                          trackingNumber: String,
                                                          trackingURL: String,
-                                                         dateShipped: String,
-                                                         completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+                                                         dateShipped: String) async throws -> ShipmentTracking {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         let parameters = [ParameterKeys.trackingNumber: trackingNumber,
@@ -91,7 +92,7 @@ public final class ShipmentsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Deletes a shipment tracking.
@@ -100,9 +101,10 @@ public final class ShipmentsRemote: Remote {
     ///   - siteID: Site which hosts the Order
     ///   - orderID: Identifier of the Order
     ///   - trackingID: The tracking identifier
-    ///   - completion: Closure to be executed upon completion
+    /// - Returns: The deleted shipment tracking.
+    /// - Throws: Error if the request fails.
     ///
-    public func deleteShipmentTracking(for siteID: Int64, orderID: Int64, trackingID: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func deleteShipmentTracking(for siteID: Int64, orderID: Int64, trackingID: String) async throws -> ShipmentTracking {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/" + trackingID
 
         let request = JetpackRequest(wooApiVersion: .mark2,
@@ -113,12 +115,11 @@ public final class ShipmentsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     public func loadShipmentTrackingProviderGroups(for siteID: Int64,
-                                                   orderID: Int64,
-                                                   completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
+                                                   orderID: Int64) async throws -> [ShipmentTrackingProviderGroup] {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2,
@@ -129,7 +130,7 @@ public final class ShipmentsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = ShipmentTrackingProviderListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

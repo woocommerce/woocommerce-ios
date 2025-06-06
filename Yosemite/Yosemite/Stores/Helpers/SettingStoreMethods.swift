@@ -33,14 +33,18 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
-                onCompletion(nil)
+        Task {
+            do {
+                let settings = try await siteSettingsRemote.loadGeneralSettings(for: siteID)
+                await MainActor.run {
+                    self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                        onCompletion(nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }
@@ -48,14 +52,18 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
-            guard let settings = settings else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
-                onCompletion(nil)
+        Task {
+            do {
+                let settings = try await siteSettingsRemote.loadProductSettings(for: siteID)
+                await MainActor.run {
+                    self.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+                        onCompletion(nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }

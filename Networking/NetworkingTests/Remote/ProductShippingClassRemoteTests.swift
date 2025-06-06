@@ -69,40 +69,37 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
     // MARK: - Load One Product Shipping Class tests
 
-    /// Verifies that loadOne properly parses the `product-shipping-classes-load-one` sample response.
+    /// Verifies that loadOne properly parses the sample response.
     ///
-    func testLoadOneProductShippingClassProperlyReturnsParsedData() {
+    func test_load_one_product_shipping_class_properly_returns_parsed_data() async throws {
+        // Given
         let remote = ProductShippingClassRemote(network: network)
-        let expectation = self.expectation(description: "Load One Product Shipping Class")
+        let remoteID: Int64 = 123
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(remoteID)", filename: "shipping-class")
 
-        let remoteID = Int64(94)
-        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(remoteID)", filename: "product-shipping-classes-load-one")
+        // When
+        let shippingClass = try await remote.loadOne(for: sampleSiteID, remoteID: remoteID)
 
-        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { productShippingClass, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(productShippingClass)
-            XCTAssertEqual(productShippingClass, self.sampleProductShippingClass(remoteID: remoteID))
-
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNotNil(shippingClass)
+        XCTAssertEqual(shippingClass.shippingClassID, remoteID)
     }
 
     /// Verifies that loadOne properly relays Networking Layer errors.
     ///
-    func testLoadOneProductShippingClassProperlyRelaysNetwokingErrors() {
+    func test_load_one_product_shipping_class_properly_relays_networking_errors() async {
+        // Given
         let remote = ProductShippingClassRemote(network: network)
-        let expectation = self.expectation(description: "Load One Product Shipping Class returns error")
+        let remoteID: Int64 = 123
 
-        let remoteID = Int64(96987515)
-        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { (productShippingClass, error) in
-            XCTAssertNil(productShippingClass)
+        // When
+        do {
+            _ = try await remote.loadOne(for: sampleSiteID, remoteID: remoteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
             XCTAssertNotNil(error)
-            expectation.fulfill()
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
 }

@@ -99,17 +99,6 @@ final class OrderNotificationDataService {
 
         /// Load notification from a remote source.
         ///
-        return try await withCheckedThrowingContinuation { continuation in
-            ordersRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
-                switch (order, error) {
-                case (let order?, nil):
-                    continuation.resume(returning: order)
-                case (_, let error?):
-                    continuation.resume(throwing: Error.network(error))
-                default:
-                    continuation.resume(throwing: Error.unknown)
-                }
-            }
-        }
+        return try await ordersRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID))
     }
 }

@@ -183,19 +183,24 @@ private extension ProductReviewStore {
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
-        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { [weak self] (productReview, error) in
-            guard let self, let productReview else {
-                onCompletion(nil, error)
-                return
-            }
-
-            storageManager.performAndSave({ storage in
-                if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
-                    existingStorageProductReview.update(with: productReview)
+        Task {
+            do {
+                let productReview = try await remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue)
+                
+                await MainActor.run {
+                    storageManager.performAndSave({ storage in
+                        if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
+                            existingStorageProductReview.update(with: productReview)
+                        }
+                    }, completion: {
+                        onCompletion(productReview.status, nil)
+                    }, on: .main)
                 }
-            }, completion: {
-                onCompletion(productReview.status, nil)
-            }, on: .main)
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
+            }
         }
     }
 }

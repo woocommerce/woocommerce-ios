@@ -23,68 +23,70 @@ final class SiteSettingsRemoteTests: XCTestCase {
 
     /// Verifies that loadGeneralSettings properly parses the sample response.
     ///
-    func testLoadGeneralSettingsProperlyReturnsParsedSettings() {
+    func test_loadGeneralSettings_properly_returns_parsed_settings() async throws {
+        // Given
         let remote = SiteSettingsRemote(network: network)
-        let expectation = self.expectation(description: "Load site settings")
-
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(siteSettings)
-            XCTAssertEqual(siteSettings?.count, 20)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let settings = try await remote.loadGeneralSettings(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(settings.count, 2)
+        XCTAssertEqual(settings[0].settingID, "woocommerce_store_address")
+        XCTAssertEqual(settings[0].value, "60 29th Street #343")
     }
 
     /// Verifies that loadGeneralSettings properly relays Networking Layer errors.
     ///
-    func testLoadGeneralSettingsProperlyRelaysNetwokingErrors() {
+    func test_loadGeneralSettings_properly_relays_networking_errors() async {
+        // Given
         let remote = SiteSettingsRemote(network: network)
-        let expectation = self.expectation(description: "Load site settings contains errors")
+        network.simulateError(requestUrlSuffix: "settings/general", error: NetworkError.timeout())
 
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
-            XCTAssertNil(siteSettings)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        do {
+            _ = try await remote.loadGeneralSettings(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertTrue(error is NetworkError)
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - Load product settings tests
 
     /// Verifies that `loadProductSettings` properly parses the sample response.
     ///
-    func testLoadProductSettingsProperlyReturnsParsedSettings() {
+    func test_loadProductSettings_properly_returns_parsed_settings() async throws {
+        // Given
         let remote = SiteSettingsRemote(network: network)
-        let expectation = self.expectation(description: "Load product settings")
+        network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-products")
 
-        network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(siteSettings)
-            XCTAssertEqual(siteSettings?.count, 23)
-            expectation.fulfill()
-        }
+        // When
+        let settings = try await remote.loadProductSettings(for: sampleSiteID)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertEqual(settings.count, 2)
+        XCTAssertEqual(settings[0].settingID, "woocommerce_weight_unit")
+        XCTAssertEqual(settings[0].value, "kg")
     }
 
     /// Verifies that `loadProductSettings` properly relays Networking Layer errors.
     ///
-    func testLoadProductSettingsProperlyRelaysNetwokingErrors() {
+    func test_loadProductSettings_properly_relays_networking_errors() async {
+        // Given
         let remote = SiteSettingsRemote(network: network)
-        let expectation = self.expectation(description: "Load product settings contains errors")
+        network.simulateError(requestUrlSuffix: "settings/products", error: NetworkError.timeout())
 
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
-            XCTAssertNil(siteSettings)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        do {
+            _ = try await remote.loadProductSettings(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertTrue(error is NetworkError)
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - Load single setting tests

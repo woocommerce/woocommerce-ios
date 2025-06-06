@@ -29,37 +29,33 @@ class SitePostsRemoteTests: XCTestCase {
 
     /// Verifies that 'loadSitePost' properly parses the successful response
     ///
-    func testLoadSitePostProperlyReturnsParsedPost() {
+    func test_load_site_post_properly_returns_parsed_post() async throws {
+        // Given
         let remote = SitePostsRemote(network: network)
-        let expectation = self.expectation(description: "Load site post")
-
         let postID: Int64 = 7
-
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post")
-        remote.loadSitePost(for: sampleSiteID, postID: postID) {[weak self] (sitePost, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(sitePost)
-            XCTAssertEqual(sitePost?.siteID, self?.sampleSiteID)
-            XCTAssertEqual(sitePost?.password, "woooooooo!")
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let sitePost = try await remote.loadSitePost(for: sampleSiteID, postID: postID)
+
+        // Then
+        XCTAssertEqual(sitePost.siteID, sampleSiteID)
+        XCTAssertEqual(sitePost.password, "woooooooo!")
     }
 
     /// Verifies that 'loadSitePost' properly relays Networking Layer errors.
     ///
-    func testLoadSitePostRelaysNetwokingErrors() {
+    func test_load_site_post_relays_networking_errors() async {
+        // Given
         let remote = SitePostsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for a site post result")
 
-        remote.loadSitePost(for: sampleSiteID, postID: 7) { (sitePost, error) in
-            XCTAssertNil(sitePost)
+        // When/Then
+        do {
+            _ = try await remote.loadSitePost(for: sampleSiteID, postID: 7)
+            XCTFail("Expected error to be thrown")
+        } catch {
             XCTAssertNotNil(error)
-            expectation.fulfill()
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     // MARK: - Update Site Post tests

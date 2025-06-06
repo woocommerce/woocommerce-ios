@@ -27,49 +27,36 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProductCategories properly parses the `categories-all` sample response.
     ///
-    func test_loadAllProductCategories_properly_then_it_returns_parsed_product_categories() {
+    func test_loadAllProductCategories_properly_then_it_returns_parsed_product_categories() async throws {
         // Given
         let remote = ProductCategoriesRemote(network: network)
-
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
 
         // When
-        let result: (categories: [ProductCategory]?, error: Error?) = waitFor { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
-            remote.loadAllProductCategories(for: self.sampleSiteID) { categories, error in
-                promise((categories, error))
-            }
-        }
+        let categories = try await remote.loadAllProductCategories(for: sampleSiteID)
 
         // Then
-        XCTAssertNil(result.error)
-        XCTAssertNotNil(result.categories)
-        XCTAssertEqual(result.categories?.count, 2)
+        XCTAssertEqual(categories.count, 2)
+        XCTAssertEqual(categories.first?.categoryID, 104)
+        XCTAssertEqual(categories.first?.name, "Dress")
+        XCTAssertEqual(categories.first?.parentID, 0)
     }
 
     /// Verifies that loadAllProductCategories properly relays Networking Layer errors.
     ///
-    func test_loadAllProductCategories_properly_then_it_relays_networking_errors() {
+    func test_loadAllProductCategories_properly_then_it_relays_networking_errors() async {
         // Given
         let remote = ProductCategoriesRemote(network: network)
+        network.simulateError(requestUrlSuffix: "products/categories", error: NetworkError.timeout())
 
         // When
-        let result: (categories: [ProductCategory]?, error: Error?) = waitFor { [weak self] promise in
-            guard let self = self else {
-                return
-            }
-
-            remote.loadAllProductCategories(for: self.sampleSiteID) { categories, error in
-                promise((categories, error))
-            }
+        do {
+            _ = try await remote.loadAllProductCategories(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertTrue(error is NetworkError)
         }
-
-        // Then
-        XCTAssertNil(result.categories)
-        XCTAssertNotNil(result.error)
     }
 
     // MARK: - Create a product category tests

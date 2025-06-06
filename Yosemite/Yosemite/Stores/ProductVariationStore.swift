@@ -99,27 +99,23 @@ private extension ProductVariationStore {
                                       pageNumber: Int,
                                       pageSize: Int,
                                       onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.loadAllProductVariations(for: siteID,
-                                        productID: productID,
-                                        variationIDs: variationIDs,
-                                        context: nil,
-                                        pageNumber: pageNumber,
-                                        pageSize: pageSize) { [weak self] (productVariations, error) in
-            guard let productVariations = productVariations else {
-                onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
-                return
-            }
+        Task {
+            let productVariations = try await remote.loadAllProductVariations(for: siteID,
+                                                                              productID: productID,
+                                                                              variationIDs: variationIDs,
+                                                                              context: nil,
+                                                                              pageNumber: pageNumber,
+                                                                              pageSize: pageSize)
 
             let shouldDeleteAll = pageNumber == Default.firstPageNumber
-            self?.productVariationStorageManager.upsertStoredProductVariationsInBackground(
-                readOnlyProductVariations: productVariations,
-                siteID: siteID,
-                productID: productID,
-                shouldDeleteAllStoredVariations: shouldDeleteAll
-            ) {
-                let couldBeMoreVariationsToFetch = productVariations.count == pageSize
-                onCompletion(.success(couldBeMoreVariationsToFetch))
-            }
+//            await productVariationStorageManager.upsertStoredProductVariationsInBackground(
+//                readOnlyProductVariations: productVariations,
+//                siteID: siteID,
+//                productID: productID,
+//                shouldDeleteAllStoredVariations: shouldDeleteAll
+//            )
+//
+//            return productVariations.count == pageSize
         }
     }
 

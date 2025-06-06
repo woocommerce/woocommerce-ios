@@ -84,9 +84,10 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
     ///     - siteID: Site which hosts the ProductReview.
     ///     - reviewID: Identifier of the ProductReview.
     ///     - statusKey: The new status
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The updated ProductReview.
+    /// - Throws: Error if the request fails.
     ///
-    public func updateProductReviewStatus(for siteID: Int64, reviewID: Int64, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
+    public func updateProductReviewStatus(for siteID: Int64, reviewID: Int64, statusKey: String) async throws -> ProductReview {
         let path = "\(Path.reviews)/\(reviewID)"
         let parameters = [ParameterKey.status: statusKey]
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -97,7 +98,7 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
                                      availableAsRESTRequest: true)
         let mapper = ProductReviewMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

@@ -12,13 +12,13 @@ public class DevicesRemote: Remote {
     ///     - applicationId: App ID.
     ///     - applicationVersion: App Version.
     ///     - defaultStoreID: Active Store ID.
-    ///     - completion: Closure to be executed on completion.
+    /// - Returns: The registered device.
+    /// - Throws: Error if the request fails.
     ///
     public func registerDevice(device: APNSDevice,
                                applicationId: String,
                                applicationVersion: String,
-                               defaultStoreID: Int64,
-                               completion: @escaping (DotcomDevice?, Error?) -> Void) {
+                               defaultStoreID: Int64) async throws -> DotcomDevice {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,
@@ -37,9 +37,7 @@ public class DevicesRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.register, parameters: parameters)
         let mapper = DotcomDeviceMapper()
 
-        enqueue(request, mapper: mapper) { (device, error) in
-            completion(device, error)
-        }
+        return try await enqueue(request, mapper: mapper)
     }
 
 
@@ -47,20 +45,16 @@ public class DevicesRemote: Remote {
     ///
     /// - Parameters:
     ///     - deviceId: Identifier of the device to be removed.
-    ///     - completion: Closure to be executed on completion.
+    /// - Throws: Error if the request fails.
     ///
-    public func unregisterDevice(deviceId: String, completion: @escaping (Error?) -> Void) {
+    public func unregisterDevice(deviceId: String) async throws {
         let path = String(format: Paths.delete, deviceId)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
-            guard success == true else {
-                completion(error ?? DotcomError.empty)
-                return
-            }
-
-            completion(nil)
+        let success = try await enqueue(request, mapper: mapper)
+        guard success == true else {
+            throw DotcomError.empty
         }
     }
 }

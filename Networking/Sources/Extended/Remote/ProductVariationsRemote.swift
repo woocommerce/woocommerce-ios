@@ -10,8 +10,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   variationIDs: [Int64],
                                   context: String?,
                                   pageNumber: Int,
-                                  pageSize: Int,
-                                  completion: @escaping ([ProductVariation]?, Error?) -> Void)
+                                  pageSize: Int) async throws -> [ProductVariation]
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<ProductVariation>
@@ -41,7 +40,7 @@ public protocol ProductVariationsRemoteProtocol {
 ///
 public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
-    /// Retrieves all of the `ProductVariation`s available.
+    /// Loads all product variations for a given product.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote product variations.
@@ -51,15 +50,15 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of product variations to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of product variations.
+    /// - Throws: Error if the request fails.
     ///
     public func loadAllProductVariations(for siteID: Int64,
                                          productID: Int64,
                                          variationIDs: [Int64],
                                          context: String? = nil,
                                          pageNumber: Int = Default.pageNumber,
-                                         pageSize: Int = Default.pageSize,
-                                         completion: @escaping ([ProductVariation]?, Error?) -> Void) {
+                                         pageSize: Int = Default.pageSize) async throws -> [ProductVariation] {
         let request = productVariationsRequest(for: siteID,
                                                productID: productID,
                                                variationIDs: variationIDs,
@@ -67,7 +66,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                pageNumber: pageNumber,
                                                pageSize: pageSize)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `ProductVariation`s available in POS.

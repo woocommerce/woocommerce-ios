@@ -12,15 +12,16 @@ public class SitePostsRemote: Remote {
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the post.
     ///   - postID: Id of the post that we want to fetch.
-    ///   - completion: Closure to be executed upon completion.
+    /// - Returns: The requested post.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (Post?, Error?) -> Void) {
+    public func loadSitePost(for siteID: Int64, postID: Int64) async throws -> Post {
         let path = String(format: "sites/%d/posts/%d", siteID, postID)
         let parameters = ["fields": "site_ID,password"]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = PostMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Update a post from WP.com

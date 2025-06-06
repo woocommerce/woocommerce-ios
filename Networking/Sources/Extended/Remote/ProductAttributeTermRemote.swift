@@ -32,14 +32,7 @@ public final class ProductAttributeTermRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = ProductAttributeTermListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper) { terms, error in
-            if let error = error {
-                return completion(.failure(error))
-            }
-            if let terms = terms {
-                return completion(.success(terms))
-            }
-        }
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Create a new `ProductAttributeTerm`.

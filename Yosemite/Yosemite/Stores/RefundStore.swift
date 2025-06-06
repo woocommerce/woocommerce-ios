@@ -50,14 +50,18 @@ private extension RefundStore {
     /// Creates a new Refund.
     ///
     func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
-        remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
-            guard let refund = refund else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
-                onCompletion(refund, nil)
+        Task {
+            do {
+                let refund = try await remote.createRefund(for: siteID, by: orderID, refund: refund)
+                await MainActor.run {
+                    self.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
+                        onCompletion(refund, nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
             }
         }
     }
@@ -65,20 +69,26 @@ private extension RefundStore {
     /// Retrieves a single Refund by ID.
     ///
     func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
-        remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
-            guard let refund = refund else {
-                if case NetworkError.notFound? = error {
-                    self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
-                        onCompletion(nil, error)
+        Task {
+            do {
+                let refund = try await remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID)
+                await MainActor.run {
+                    self.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
+                        onCompletion(refund, nil)
+                    }
+                }
+            } catch {
+                if case NetworkError.notFound = error {
+                    await MainActor.run {
+                        self.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
+                            onCompletion(nil, error)
+                        }
                     }
                 } else {
-                    onCompletion(nil, error)
+                    await MainActor.run {
+                        onCompletion(nil, error)
+                    }
                 }
-                return
-            }
-
-            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
-                onCompletion(refund, nil)
             }
         }
     }
@@ -120,16 +130,21 @@ private extension RefundStore {
         }
 
         // Request any refunds that don't exist in storage.
-        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] (refunds, error) in
-            guard let refunds else {
-                return onCompletion(error)
-            }
-
-            self?.upsertStoredRefundsInBackground(siteID: siteID,
-                                                  orderID: orderID,
-                                                  readOnlyRefunds: refunds,
-                                                  staleRefundIDs: staleRefundIDs) {
-                onCompletion(nil)
+        Task {
+            do {
+                let refunds = try await remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs)
+                await MainActor.run {
+                    self.upsertStoredRefundsInBackground(siteID: siteID,
+                                                      orderID: orderID,
+                                                      readOnlyRefunds: refunds,
+                                                      staleRefundIDs: staleRefundIDs) {
+                        onCompletion(nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }
@@ -137,14 +152,18 @@ private extension RefundStore {
     /// Synchronizes the refunds associated with a given orderID
     ///
     func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
-            guard let refunds = refunds else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: refunds) {
-                onCompletion(nil)
+        Task {
+            do {
+                let refunds = try await remote.loadAllRefunds(for: siteID, by: orderID)
+                await MainActor.run {
+                    self.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: refunds) {
+                        onCompletion(nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
             }
         }
     }

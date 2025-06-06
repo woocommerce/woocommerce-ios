@@ -43,14 +43,18 @@ private extension OrderNoteStore {
     /// Retrieves the order notes associated with the provided Site ID & Order ID (if any!).
     ///
     func retrieveOrderNotes(siteID: Int64, orderID: Int64, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
-        remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: orderNotes, orderID: orderID, siteID: siteID) {
-                onCompletion(orderNotes, nil)
+        Task {
+            do {
+                let notes = try await remote.loadOrderNotes(for: siteID, orderID: orderID)
+                await MainActor.run {
+                    self.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: notes, orderID: orderID, siteID: siteID) {
+                        onCompletion(notes, nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
             }
         }
     }
@@ -58,14 +62,18 @@ private extension OrderNoteStore {
     /// Adds a single order note and associates it with the provided siteID and orderID.
     ///
     func addOrderNote(siteID: Int64, orderID: Int64, isCustomerNote: Bool, note: String, onCompletion: @escaping (OrderNote?, Error?) -> Void) {
-        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNote, error) in
-            guard let note = orderNote else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [note], orderID: orderID, siteID: siteID) {
-                onCompletion(note, nil)
+        Task {
+            do {
+                let orderNote = try await remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note)
+                await MainActor.run {
+                    self.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [orderNote], orderID: orderID, siteID: siteID) {
+                        onCompletion(orderNote, nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
             }
         }
     }

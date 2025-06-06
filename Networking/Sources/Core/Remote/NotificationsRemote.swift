@@ -6,6 +6,7 @@ import Foundation
 ///
 public protocol NotificationsRemoteProtocol {
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void)
+    func loadHashes(noteIDs: [Int64]?, pageSize: Int?) async throws -> [NoteHash]
 }
 
 /// Notifications: Remote Endpoints
@@ -32,13 +33,14 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
     /// - Parameters:
     ///     - noteIDs: Identifiers of notifications to retrieve.
     ///     - pageSize: Number of hashes to retrieve.
-    ///     - completion: callback to be executed on completion.
+    /// - Returns: Array of note hashes
+    /// - Throws: Error if the request fails
     ///
-    public func loadHashes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
+    public func loadHashes(noteIDs: [Int64]? = nil, pageSize: Int? = nil) async throws -> [NoteHash] {
         let request = requestForNotifications(fields: .hashes, noteIDs: noteIDs, pageSize: pageSize)
         let mapper = NoteHashListMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
 
@@ -47,9 +49,9 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
     /// - Parameters:
     ///     - notificationID: The ID of the Notification to be updated.
     ///     - read: The new Read Status to be set.
-    ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
+    /// - Throws: Error if the request fails
     ///
-    public func updateReadStatus(noteIDs: [Int64], read: Bool, completion: @escaping (Error?) -> Void) {
+    public func updateReadStatus(noteIDs: [Int64], read: Bool) async throws {
         // Note: Isn't the API wonderful?
         //
         let booleanFromPlanetMars = read ? Constants.readAsInteger : Constants.unreadAsInteger
@@ -72,13 +74,8 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
-            guard success == true else {
-                completion(error ?? DotcomError.empty)
-                return
-            }
-
-            completion(nil)
+        guard try await enqueue(request, mapper: mapper) else {
+            throw DotcomError.empty
         }
     }
 
@@ -87,9 +84,9 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - timestamp: Timestamp of the last seen notification.
-    ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
+    /// - Throws: Error if the request fails
     ///
-    public func updateLastSeen(_ timestamp: String, completion: @escaping (Error?) -> Void) {
+    public func updateLastSeen(_ timestamp: String) async throws {
         let parameters = [
             ParameterKeys.time: timestamp
         ]
@@ -97,13 +94,8 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.seen, parameters: parameters)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
-            guard success == true else {
-                completion(error ?? DotcomError.empty)
-                return
-            }
-
-            completion(nil)
+        guard try await enqueue(request, mapper: mapper) else {
+            throw DotcomError.empty
         }
     }
 }

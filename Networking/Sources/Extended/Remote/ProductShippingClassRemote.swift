@@ -42,9 +42,10 @@ public class ProductShippingClassRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the ProductShippingClass.
     ///     - remoteID: Identifier of the ProductShippingClass on the server.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The requested ProductShippingClass.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadOne(for siteID: Int64, remoteID: Int64, completion: @escaping (ProductShippingClass?, Error?) -> Void) {
+    public func loadOne(for siteID: Int64, remoteID: Int64) async throws -> ProductShippingClass {
         let path = "\(Path.models)/\(remoteID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -54,7 +55,7 @@ public class ProductShippingClassRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = ProductShippingClassMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

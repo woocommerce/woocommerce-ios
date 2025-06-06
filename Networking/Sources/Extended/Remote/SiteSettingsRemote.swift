@@ -13,9 +13,10 @@ public class SiteSettingsRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the general settings.
-    ///   - completion: Closure to be executed upon completion.
+    /// - Returns: Array of general site settings.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadGeneralSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
+    public func loadGeneralSettings(for siteID: Int64) async throws -> [SiteSetting] {
         let path = Constants.siteSettingsPath + Constants.generalSettingsGroup
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -24,17 +25,17 @@ public class SiteSettingsRemote: Remote {
                                      parameters: nil,
                                      availableAsRESTRequest: true)
         let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.general)
-
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the product `SiteSetting`s for a given site.
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the product settings.
-    ///   - completion: Closure to be executed upon completion.
+    /// - Returns: Array of product site settings.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadProductSettings(for siteID: Int64, completion: @escaping ([SiteSetting]?, Error?) -> Void) {
+    public func loadProductSettings(for siteID: Int64) async throws -> [SiteSetting] {
         let path = Constants.siteSettingsPath + Constants.productSettingsGroup
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -43,8 +44,7 @@ public class SiteSettingsRemote: Remote {
                                      parameters: nil,
                                      availableAsRESTRequest: true)
         let mapper = SiteSettingsMapper(siteID: siteID, settingsGroup: SiteSettingGroup.product)
-
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieve detail for a single setting for a given site

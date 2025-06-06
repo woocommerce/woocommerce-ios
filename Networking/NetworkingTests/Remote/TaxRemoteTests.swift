@@ -23,48 +23,41 @@ final class TaxRemoteTests: XCTestCase {
 
     /// Verifies that loadAllTaxClasses properly parses the `taxes-classes` sample response.
     ///
-    func testLoadAllTaxClassesProperlyReturnsParsedData() {
+    func test_load_all_tax_classes_properly_returns_parsed_data() async throws {
+        // Given
         let remote = TaxRemote(network: network)
-        let expectation = self.expectation(description: "Load All Tax Classes")
-
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
 
-        remote.loadAllTaxClasses(for: sampleSiteID) { [weak self] (taxClasses, error) in
-            guard let self = self else {
-                expectation.fulfill()
-                return
-            }
-            XCTAssertNil(error)
-            XCTAssertNotNil(taxClasses)
-            XCTAssertEqual(taxClasses?.count, 3)
+        // When
+        let taxClasses = try await remote.loadAllTaxClasses(for: sampleSiteID)
 
-            // Validates on Tax Class with slug "standard"
-            let expectedSlug = "standard"
-            guard let expectedTaxClass = taxClasses?.first(where: { $0.slug == expectedSlug }) else {
-                XCTFail("Tax Class with slug \(expectedSlug) should exist")
-                return
-            }
-            XCTAssertEqual(expectedTaxClass.siteID, self.sampleSiteID)
-            XCTAssertEqual(expectedTaxClass.name, "Standard Rate")
-            expectation.fulfill()
+        // Then
+        XCTAssertEqual(taxClasses.count, 3)
+
+        // Validates on Tax Class with slug "standard"
+        let expectedSlug = "standard"
+        guard let expectedTaxClass = taxClasses.first(where: { $0.slug == expectedSlug }) else {
+            XCTFail("Tax Class with slug \(expectedSlug) should exist")
+            return
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(expectedTaxClass.siteID, sampleSiteID)
+        XCTAssertEqual(expectedTaxClass.name, "Standard Rate")
     }
 
     /// Verifies that loadAllTaxClasses properly relays Networking Layer errors.
     ///
-    func testLoadAllTaxClassesProperlyRelaysNetwokingErrors() {
+    func test_load_all_tax_classes_properly_relays_networking_errors() async {
+        // Given
         let remote = TaxRemote(network: network)
-        let expectation = self.expectation(description: "Load All Tax Classes returns error")
 
-        remote.loadAllTaxClasses(for: sampleSiteID) { (taxClasses, error) in
-            XCTAssertNil(taxClasses)
+        // When
+        do {
+            _ = try await remote.loadAllTaxClasses(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
             XCTAssertNotNil(error)
-            expectation.fulfill()
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_retrieveTaxRates_then_returns_parsed_data() throws {

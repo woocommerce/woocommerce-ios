@@ -74,48 +74,77 @@ private extension NotificationStore {
                         applicationVersion: String,
                         defaultStoreID: Int64,
                         onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
-        devicesRemote.registerDevice(device: device,
-                              applicationId: applicationId,
-                              applicationVersion: applicationVersion,
-                              defaultStoreID: defaultStoreID,
-                              completion: onCompletion)
+        Task {
+            do {
+                let device = try await devicesRemote.registerDevice(device: device,
+                                                                  applicationId: applicationId,
+                                                                  applicationVersion: applicationVersion,
+                                                                  defaultStoreID: defaultStoreID)
+                await MainActor.run {
+                    onCompletion(device, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
+            }
+        }
     }
 
     /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
     ///
     func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
-        devicesRemote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
+        Task {
+            do {
+                try await devicesRemote.unregisterDevice(deviceId: deviceId)
+                await MainActor.run {
+                    onCompletion(nil)
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
+            }
+        }
     }
-
 
     /// Retrieves the latest notifications (if any!).
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
-        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
-            guard let hashes = hashes else {
-                onCompletion(error)
-                return
-            }
+        Task {
+            do {
+                let hashes = try await remote.loadHashes(pageSize: Constants.maximumPageSize)
 
-            self?.deleteLocalMissingNotes(from: hashes) { [weak self] outdatedIDs in
-
-                guard outdatedIDs.isEmpty == false else {
-                    onCompletion(nil)
-                    return
-                }
-
-                self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
-                    guard let self = self else {
-                        return
-                    }
-                    switch result {
-                    case .failure(let error):
-                        onCompletion(error)
-                    case .success(let notes):
-                        self.updateLocalNotes(with: notes) {
-                            onCompletion(nil)
-                        }
-                    }
+//                deleteLocalMissingNotes(from: hashes) { [weak self] outdatedIDs in
+//                    guard let self else { return }
+//                    guard outdatedIDs.isEmpty == false else {
+//                        await MainActor.run {
+//                            onCompletion(nil)
+//                        }
+//                        return
+//                    }
+//
+//                    remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
+//                        guard let self = self else {
+//                            return
+//                        }
+//                        switch result {
+//                        case .failure(let error):
+//                            Task { @MainActor in
+//                                onCompletion(error)
+//                            }
+//                        case .success(let notes):
+//                            self.updateLocalNotes(with: notes) {
+//                                Task { @MainActor in
+//                                    onCompletion(nil)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
                 }
             }
         }
@@ -148,8 +177,17 @@ private extension NotificationStore {
     /// Updates the last seen notification
     ///
     func updateLastSeen(timestamp: String, onCompletion: @escaping (Error?) -> Void) {
-        remote.updateLastSeen(timestamp) { (error) in
-            onCompletion(error)
+        Task {
+            do {
+                try await remote.updateLastSeen(timestamp)
+                await MainActor.run {
+                    onCompletion(nil)
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(error)
+                }
+            }
         }
     }
 
@@ -160,20 +198,19 @@ private extension NotificationStore {
         /// Optimistically Update
         ///
         updateLocalNoteReadStatus(for: noteIDs, read: read) { [weak self] in
-
-            /// On error we'll just mark the Note for Refresh
-            ///
-            self?.remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
-                guard let self else {
-                    return onCompletion(error)
-                }
-
-                if let error {
-                    invalidateCache(for: noteIDs) {
-                        onCompletion(error)
+            Task {
+                do {
+                    guard let self else { return }
+                    try await self.remote.updateReadStatus(noteIDs: noteIDs, read: read)
+                    await MainActor.run {
+                        onCompletion(nil)
                     }
-                } else {
-                    onCompletion(nil)
+                } catch {
+                    await MainActor.run {
+                        self?.invalidateCache(for: noteIDs) {
+                            onCompletion(error)
+                        }
+                    }
                 }
             }
         }

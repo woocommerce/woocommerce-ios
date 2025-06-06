@@ -23,33 +23,36 @@ class TopEarnerStatsRemoteTests: XCTestCase {
 
     /// Verifies that loadTopEarnersStats properly returns the `topEarnerStats` response.
     ///
-    func testLoadTopEarnerStatsProperlyReturnsParsedStats() {
+    func test_loadTopEarnersStats_properly_returns_parsed_topEarnerStats() async throws {
+        // Given
         let remote = TopEarnersStatsRemote(network: network)
-        let expectation = self.expectation(description: "Load top earner stats")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners", filename: "topEarnerStats")
 
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-year")
-        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { (topEarnerStats, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(topEarnerStats)
-            XCTAssertEqual(topEarnerStats?.items?.count, 4)
-            expectation.fulfill()
-        }
+        // When
+        let topEarnerStats = try await remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNotNil(topEarnerStats)
+        XCTAssertEqual(topEarnerStats.items.count, 2)
+        XCTAssertEqual(topEarnerStats.items[0].productID, 205)
+        XCTAssertEqual(topEarnerStats.items[0].quantity, 1)
+        XCTAssertEqual(topEarnerStats.items[0].total, 31.20)
     }
 
     /// Verifies that loadTopEarnersStats properly relays Networking Layer errors.
     ///
-    func testLoadTopEarnerStatsProperlyRelaysNetwokingErrors() {
+    func test_loadTopEarnersStats_properly_relays_networking_errors() async {
+        // Given
         let remote = TopEarnersStatsRemote(network: network)
-        let expectation = self.expectation(description: "Load top earner stats contains errors")
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners", error: NetworkError.timeout())
 
-        remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5) { (topEarnerStats, error) in
-            XCTAssertNil(topEarnerStats)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        do {
+            _ = try await remote.loadTopEarnersStats(for: sampleSiteID, unit: .year, latestDateToInclude: "2018", limit: 5)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertTrue(error is NetworkError)
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

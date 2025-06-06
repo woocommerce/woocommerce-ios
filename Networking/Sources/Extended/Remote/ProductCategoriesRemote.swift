@@ -3,8 +3,7 @@ import Foundation
 public protocol ProductCategoriesRemoteProtocol {
     func loadAllProductCategories(for siteID: Int64,
                                   pageNumber: Int,
-                                  pageSize: Int,
-                                  completion: @escaping ([ProductCategory]?, Error?) -> Void)
+                                  pageSize: Int) async throws -> [ProductCategory]
 
     func loadProductCategory(with categoryID: Int64,
                              siteID: Int64,
@@ -38,12 +37,12 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
     ///     - siteID: Site for which we'll fetch remote products categories.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of categories to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of product categories.
+    /// - Throws: Error if the request fails.
     ///
     public func loadAllProductCategories(for siteID: Int64,
                                          pageNumber: Int = Default.pageNumber,
-                                         pageSize: Int = Default.pageSize,
-                                         completion: @escaping ([ProductCategory]?, Error?) -> Void) {
+                                         pageSize: Int = Default.pageSize) async throws -> [ProductCategory] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
@@ -58,7 +57,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
                                      availableAsRESTRequest: true)
         let mapper = ProductCategoryListMapper(siteID: siteID, responseType: .load)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Loads a remote `ProductCategory`

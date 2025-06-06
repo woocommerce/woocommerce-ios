@@ -20,37 +20,32 @@ final class DevicesRemoteTests: XCTestCase {
 
     /// Verifies that registerDevice parses a "Success" Backend Response.
     ///
-    func test_registerDevice_successfully_parses_deviceID() {
+    func test_registerDevice_successfully_parses_deviceID() async throws {
+        // Given
         let remote = DevicesRemote(network: network)
-        let expectation = self.expectation(description: "Register Device")
-
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "device-settings")
 
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+        // When
+        let settings = try await remote.registerDevice(device: Parameters.appleDevice,
+                                                     applicationId: Parameters.applicationId,
+                                                     applicationVersion: Parameters.applicationVersion,
+                                                     defaultStoreID: Parameters.defaultStoreID)
 
-            XCTAssertNil(error)
-            XCTAssertNotNil(settings)
-            XCTAssertEqual(settings?.deviceID, "12345678")
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertEqual(settings.deviceID, "12345678")
     }
 
     /// Verifies that registerDevice sets the `selected_blog_id` parameter to empty string.
     ///
-    func test_registerDevice_sets_selected_blog_id_to_empty_string() throws {
+    func test_registerDevice_sets_selected_blog_id_to_empty_string() async throws {
         // Given
         let remote = DevicesRemote(network: network)
 
         // When
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (_, _) in }
+        _ = try await remote.registerDevice(device: Parameters.appleDevice,
+                                          applicationId: Parameters.applicationId,
+                                          applicationVersion: Parameters.applicationVersion,
+                                          defaultStoreID: Parameters.defaultStoreID)
 
         // Then
         let queryParameters = try XCTUnwrap(network.queryParameters)
@@ -60,55 +55,48 @@ final class DevicesRemoteTests: XCTestCase {
 
     /// Verifies that registerDevice parses a "Failure" Backend Response.
     ///
-    func test_registerDevice_parses_general_failure_response() {
+    func test_registerDevice_parses_general_failure_response() async {
+        // Given
         let remote = DevicesRemote(network: network)
-        let expectation = self.expectation(description: "Register Device")
-
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "generic_error")
 
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
-
-            XCTAssertNotNil(error)
-            XCTAssertNil(settings)
-            expectation.fulfill()
+        // When/Then
+        do {
+            _ = try await remote.registerDevice(device: Parameters.appleDevice,
+                                              applicationId: Parameters.applicationId,
+                                              applicationVersion: Parameters.applicationVersion,
+                                              defaultStoreID: Parameters.defaultStoreID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that unregisterDevice parses a "Success" Backend Response.
     ///
-    func test_unregisterDevice_parses_success_response() {
+    func test_unregisterDevice_parses_success_response() async throws {
+        // Given
         let remote = DevicesRemote(network: network)
-        let expectation = self.expectation(description: "Unregister Device")
-
         network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_success")
 
-        remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
-            XCTAssertNil(error)
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When/Then
+        try await remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID)
     }
 
     /// Verifies that unregisterDevice parses a "Failure" Backend Response.
     ///
-    func test_unregisterDevice_parses_failure_response() {
+    func test_unregisterDevice_parses_failure_response() async {
+        // Given
         let remote = DevicesRemote(network: network)
-        let expectation = self.expectation(description: "Unregister Device")
-
         network.simulateResponse(requestUrlSuffix: "/delete", filename: "generic_error")
 
-        remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID) { error in
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When/Then
+        do {
+            try await remote.unregisterDevice(deviceId: Parameters.dotcomDeviceID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Success
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 

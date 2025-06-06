@@ -57,14 +57,18 @@ private extension TaxStore {
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
-        remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
-            guard let taxClasses = taxClasses else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                onCompletion(taxClasses, nil)
+        Task {
+            do {
+                let taxClasses = try await remote.loadAllTaxClasses(for: siteID)
+                await MainActor.run {
+                    self.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
+                        onCompletion(taxClasses, nil)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
             }
         }
     }
@@ -84,15 +88,19 @@ private extension TaxStore {
             return
         }
         else {
-            remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
-                guard let taxClasses = taxClasses else {
-                    onCompletion(nil, error)
-                    return
-                }
-
-                self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                    let taxClass = taxClasses.first(where: { $0.slug == taxClassRequestable.taxClass } )
-                    onCompletion(taxClass, nil)
+            Task {
+                do {
+                    let taxClasses = try await remote.loadAllTaxClasses(for: taxClassRequestable.siteID)
+                    await MainActor.run {
+                        self.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
+                            let taxClass = taxClasses.first(where: { $0.slug == taxClassRequestable.taxClass } )
+                            onCompletion(taxClass, nil)
+                        }
+                    }
+                } catch {
+                    await MainActor.run {
+                        onCompletion(nil, error)
+                    }
                 }
             }
         }

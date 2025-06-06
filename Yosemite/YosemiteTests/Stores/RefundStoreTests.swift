@@ -508,6 +508,187 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
         XCTAssertNil(retrieveError)
     }
+
+    func test_retrieve_refunds_effectively_persists_retrieved_refunds() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve refunds")
+        let refundIDs: [Int64] = [sampleRefundID]
+        let refunds = [sampleRefund()]
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", filename: "refunds-all")
+
+        // When
+        var resultError: Error?
+        store.retrieveRefunds(siteID: sampleSiteID, orderID: sampleOrderID, refundIDs: refundIDs, deleteStaleRefunds: false) { error in
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultError)
+        let storedRefunds = viewStorage.loadRefunds(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedRefunds.count, refunds.count)
+        XCTAssertEqual(storedRefunds.first?.refundID, refunds.first?.refundID)
+    }
+
+    func test_retrieve_refunds_effectively_persists_refund_fields_and_related_objects() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve refunds")
+        let refundIDs: [Int64] = [sampleRefundID]
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", filename: "refunds-all")
+
+        // When
+        var resultError: Error?
+        store.retrieveRefunds(siteID: sampleSiteID, orderID: sampleOrderID, refundIDs: refundIDs, deleteStaleRefunds: false) { error in
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultError)
+        let storedRefund = viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertNotNil(storedRefund)
+        XCTAssertEqual(storedRefund?.refundID, sampleRefundID)
+        XCTAssertEqual(storedRefund?.amount, "18.00")
+        XCTAssertEqual(storedRefund?.reason, "Testing mark 2 for refunded products screen!")
+        XCTAssertEqual(storedRefund?.items?.count, 1)
+        XCTAssertEqual(storedRefund?.shippingLines?.count, 1)
+    }
+
+    func test_retrieve_refunds_returns_error_upon_response_error() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve refunds")
+        let refundIDs: [Int64] = [sampleRefundID]
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", error: NetworkError.notFound)
+
+        // When
+        var resultError: Error?
+        store.retrieveRefunds(siteID: sampleSiteID, orderID: sampleOrderID, refundIDs: refundIDs, deleteStaleRefunds: false) { error in
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNotNil(resultError)
+        XCTAssertEqual(resultError as? NetworkError, .notFound)
+    }
+
+    func test_retrieve_single_refund_returns_expected_fields() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve single refund")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", filename: "refund-single")
+
+        // When
+        var resultRefund: Networking.Refund?
+        var resultError: Error?
+        store.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { refund, error in
+            resultRefund = refund
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultError)
+        XCTAssertNotNil(resultRefund)
+        XCTAssertEqual(resultRefund?.refundID, sampleRefundID)
+        XCTAssertEqual(resultRefund?.amount, "18.00")
+        XCTAssertEqual(resultRefund?.reason, "Testing mark 2 for refunded products screen!")
+    }
+
+    func test_retrieve_single_refund_effectively_persists_refund_fields_and_related_objects() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve single refund")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", filename: "refund-single")
+
+        // When
+        var resultError: Error?
+        store.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { _, error in
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultError)
+        let storedRefund = viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertNotNil(storedRefund)
+        XCTAssertEqual(storedRefund?.refundID, sampleRefundID)
+        XCTAssertEqual(storedRefund?.amount, "18.00")
+        XCTAssertEqual(storedRefund?.reason, "Testing mark 2 for refunded products screen!")
+        XCTAssertEqual(storedRefund?.items?.count, 1)
+        XCTAssertEqual(storedRefund?.shippingLines?.count, 1)
+    }
+
+    func test_retrieve_single_refund_returns_error_upon_response_error() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve single refund")
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound)
+
+        // When
+        var resultRefund: Networking.Refund?
+        var resultError: Error?
+        store.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { refund, error in
+            resultRefund = refund
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultRefund)
+        XCTAssertNotNil(resultError)
+        XCTAssertEqual(resultError as? NetworkError, .notFound)
+    }
+
+    func test_retrieve_single_refund_returns_error_upon_empty_response() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve single refund")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", filename: "refund-single-without-data")
+
+        // When
+        var resultRefund: Networking.Refund?
+        var resultError: Error?
+        store.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { refund, error in
+            resultRefund = refund
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultRefund)
+        XCTAssertNotNil(resultError)
+    }
+
+    func test_retrieve_single_refund_resulting_in_status_code_404_causes_the_stored_refund_to_get_deleted() async throws {
+        // Given
+        let expectation = self.expectation(description: "Retrieve single refund")
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound)
+
+        // Insert a refund into storage
+        let refund = sampleRefund()
+        store.upsertStoredRefund(readOnlyRefund: refund, in: viewStorage)
+        XCTAssertNotNil(viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID))
+
+        // When
+        var resultRefund: Networking.Refund?
+        var resultError: Error?
+        store.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { refund, error in
+            resultRefund = refund
+            resultError = error
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultRefund)
+        XCTAssertNotNil(resultError)
+        XCTAssertEqual(resultError as? NetworkError, .notFound)
+        XCTAssertNil(viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID))
+    }
 }
 
 

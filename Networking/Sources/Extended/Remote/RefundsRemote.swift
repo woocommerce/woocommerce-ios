@@ -5,23 +5,23 @@ import Foundation
 ///
 public final class RefundsRemote: Remote {
 
-    /// Retrieves all `Refunds` available for a specific `orderID`.
+    /// Retrieves all of the `Refund`s available for a given Order ID.
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll fetch remote order refunds.
-    ///     - orderID: Unique identifier for the order we're searching for.
+    ///     - siteID: Site for which we'll fetch remote refunds.
+    ///     - orderID: Order for which we'll fetch remote refunds.
     ///     - context: view or edit. Scope under which the request is made;
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
-    ///     - pageSize: Number of Refunds to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    ///     - pageSize: Number of models to be retrieved per page.
+    /// - Returns: Array of refunds.
+    /// - Throws: Error if the request fails.
     ///
     public func loadAllRefunds(for siteID: Int64,
                                by orderID: Int64,
                                context: String = Default.context,
                                pageNumber: Int = Default.pageNumber,
-                               pageSize: Int = Default.pageSize,
-                               completion: @escaping ([Refund]?, Error?) -> Void) {
+                               pageSize: Int = Default.pageSize) async throws -> [Refund] {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -36,7 +36,7 @@ public final class RefundsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = RefundListMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a specific list of `Refund`s by `refundID`.
@@ -48,9 +48,10 @@ public final class RefundsRemote: Remote {
     ///     - siteID: We are fetching remote refunds for this site.
     ///     - orderID: We are fetching remote refunds for this order.
     ///     - refundIDs: The array of refund IDs that are requested.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of refunds.
+    /// - Throws: Error if the request fails.
     ///
-    public func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64], completion: @escaping ([Refund]?, Error?) -> Void) {
+    public func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
         let stringOfRefundIDs = refundIDs.sortedUniqueIntToString()
         let parameters = [ ParameterKey.include: stringOfRefundIDs ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
@@ -62,7 +63,7 @@ public final class RefundsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = RefundListMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a single refund by refundID and orderID.
@@ -71,12 +72,12 @@ public final class RefundsRemote: Remote {
     ///     - siteID: Site for which we'll fetch remote order refunds.
     ///     - orderID: Unique identifier for the order we're searching for.
     ///     - refundID: Unique identifier for the refund we're searching for.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The requested refund.
+    /// - Throws: Error if the request fails.
     ///
     public func loadRefund(siteID: Int64,
                            orderID: Int64,
-                           refundID: Int64,
-                           completion: @escaping (Refund?, Error?) -> Void) {
+                           refundID: Int64) async throws -> Refund {
         let path = Path.orders + "/" + String(orderID) + "/" + Path.refunds + "/" + String(refundID)
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
@@ -86,7 +87,7 @@ public final class RefundsRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Create a refund by `orderID`.
@@ -95,12 +96,12 @@ public final class RefundsRemote: Remote {
     ///     - siteID: Site for which we'll send a refund.
     ///     - orderID: Unique identifier for the order we're sending a refund for.
     ///     - refund: The Refund model used to create the custom entity for the request.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: The created refund.
+    /// - Throws: Error if the request fails.
     ///
     public func createRefund(for siteID: Int64,
                              by orderID: Int64,
-                             refund: Refund,
-                             completion: @escaping (Refund?, Error?) -> Void) {
+                             refund: Refund) async throws -> Refund {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
@@ -114,10 +115,10 @@ public final class RefundsRemote: Remote {
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
 
-            enqueue(request, mapper: mapper, completion: completion)
+            return try await enqueue(request, mapper: mapper)
         } catch {
-            completion(nil, error)
             DDLogError("Unable to serialize data for refunds: \(error)")
+            throw error
         }
     }
 

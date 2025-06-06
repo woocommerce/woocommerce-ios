@@ -65,17 +65,43 @@ private extension CommentStore {
         moderateComment(siteID: siteID, commentID: commentID, status: newStatus, onCompletion: onCompletion)
     }
 
+    /// Moderates a comment with the specified status.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the comment.
+    ///     - commentID: Identifier of the comment to be moderated.
+    ///     - status: New status to be set.
+    ///     - onCompletion: Closure to be executed upon completion.
+    ///
     func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
-        remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { (updatedStatus, error) in
-            onCompletion(updatedStatus, error)
+        Task {
+            do {
+                let updatedStatus = try await remote.moderateComment(siteID: siteID, commentID: commentID, status: status)
+                await MainActor.run {
+                    onCompletion(updatedStatus, nil)
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(nil, error)
+                }
+            }
         }
     }
 
     /// Creates a comment as a reply to another comment (including product reviews).
     ///
     func replyToComment(siteID: Int64, commentID: Int64, productID: Int64, content: String, onCompletion: @escaping (Result<CommentStatus, Error>) -> Void) {
-        remote.replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content) { result in
-            onCompletion(result)
+        Task {
+            do {
+                let status = try await remote.replyToComment(siteID: siteID, commentID: commentID, productID: productID, content: content)
+                await MainActor.run {
+                    onCompletion(.success(status))
+                }
+            } catch {
+                await MainActor.run {
+                    onCompletion(.failure(error))
+                }
+            }
         }
     }
 }

@@ -38,15 +38,16 @@ public enum CommentStatus: String {
 ///
 public class CommentRemote: Remote {
 
-    /// Moderate a comment
+    /// Moderates a comment with the specified status.
     ///
     /// - Parameters:
-    ///   - siteID: site ID which contains the comment
-    ///   - commentID: ID of the comment to moderate
-    ///   - status: New status for comment
-    ///   - completion: callback to be executed on completion
+    ///     - siteID: Site which hosts the comment.
+    ///     - commentID: Identifier of the comment to be moderated.
+    ///     - status: New status to be set.
+    /// - Returns: The updated comment status.
+    /// - Throws: Error if the request fails.
     ///
-    public func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, completion: @escaping (CommentStatus?, Error?) -> Void) {
+    public func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus) async throws -> CommentStatus {
         let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID)
         let parameters = [
             ParameterKeys.status: status.rawValue,
@@ -54,7 +55,7 @@ public class CommentRemote: Remote {
         ]
         let mapper = CommentResultMapper()
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Reply to a comment (including product reviews)
@@ -64,13 +65,13 @@ public class CommentRemote: Remote {
     ///    - commentID: ID of the comment to reply to
     ///    - productID: ID of the product that the comment is associated to
     ///    - content: the text of the comment reply
-    ///    - completion: callback to be executed on completion
+    /// - Returns: The updated comment status
+    /// - Throws: Error if the request fails
     ///
     public func replyToComment(siteID: Int64,
-                               commentID: Int64,
-                               productID: Int64,
-                               content: String,
-                               completion: @escaping (Result<CommentStatus, Error>) -> Void) {
+                             commentID: Int64,
+                             productID: Int64,
+                             content: String) async throws -> CommentStatus {
         let path = "sites/\(siteID)/\(Paths.comments)"
         let parameters: [String: Any] = [
             ParameterKeys.content: content,
@@ -78,16 +79,12 @@ public class CommentRemote: Remote {
             ParameterKeys.post: productID
         ]
         let mapper = CommentResultMapper()
-        do {
-            let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
-                                            method: .post,
-                                            path: path,
-                                            parameters: parameters,
-                                            availableAsRESTRequest: true)
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                      method: .post,
+                                      path: path,
+                                      parameters: parameters,
+                                      availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

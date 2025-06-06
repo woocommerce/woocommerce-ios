@@ -376,11 +376,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = SingleItemMapper<POSProduct>(siteID: siteID)
 
-        do {
-            return try await enqueue(request, mapper: mapper)
-        } catch {
-            throw NetworkError.notFound()
-        }
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.

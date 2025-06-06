@@ -360,7 +360,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         return product
     }
 
-    /// Fetches a single product or variation by its ID for Point of Sale.
+    /// Fetches a single product by its ID for Point of Sale.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch the product.

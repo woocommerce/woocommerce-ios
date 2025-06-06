@@ -428,8 +428,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the settings for the specified site, if possible.
     ///
-    @MainActor
-    func synchronizeSettings(with siteID: Int64) async throws {
+    func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -469,16 +468,13 @@ private extension DefaultStoresManager {
             dispatch(sitePlanAction)
         }
 
-        try await withCheckedThrowingContinuation { continuation in
-            group.notify(queue: .main) {
-                if errors.isEmpty {
-                    DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
-                    continuation.resume(returning: ())
-                } else {
-                    DDLogError("⛔️ Site settings sync had \(errors.count) error(s) for siteID \(siteID): \(errors)")
-                    continuation.resume(throwing: StoresManagerError.missingDefaultSite)
-                }
+        group.notify(queue: .main) {
+            if errors.isEmpty {
+                DDLogInfo("🎛 Site settings sync completed for siteID \(siteID)")
+            } else {
+                DDLogError("⛔️ Site settings sync had \(errors.count) error(s) for siteID \(siteID): \(errors)")
             }
+            onCompletion()
         }
     }
 
@@ -671,9 +667,12 @@ private extension DefaultStoresManager {
             restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
+        synchronizeSettings(with: siteID) {
+            ServiceLocator.selectedSiteSettings.refresh()
+            ServiceLocator.shippingSettingsService.update(siteID: siteID)
+        }
         
-        // Starts all async operations concurrently.
-        async let settingsSync: () = synchronizeSettings(with: siteID)
+        // Starts async operations concurrently.
         async let orderStatuses = retrieveOrderStatus(with: siteID)
         async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
 
@@ -684,20 +683,11 @@ private extension DefaultStoresManager {
 
         sendTelemetryIfNeeded(siteID: siteID)
 
-        do {
-            try await settingsSync
-            ServiceLocator.selectedSiteSettings.refresh()
-            ServiceLocator.shippingSettingsService.update(siteID: siteID)
+        trackSnapshotIfNeeded(siteID: siteID,
+                              orderStatuses: await orderStatuses,
+                              systemPlugins: await systemInformation?.systemPlugins)
 
-            // Wait for remaining async operations
-            trackSnapshotIfNeeded(siteID: siteID,
-                                  orderStatuses: await orderStatuses,
-                                  systemPlugins: await systemInformation?.systemPlugins)
-
-            siteInformationSubject.send(SiteInformation(siteID: siteID, systemInformation: await systemInformation))
-        } catch {
-            // TODO-jc: handle site settings errors
-        }
+        siteInformationSubject.send(SiteInformation(siteID: siteID, systemInformation: await systemInformation))
     }
 
     /// Load the site with the specified URL into the session if possible.

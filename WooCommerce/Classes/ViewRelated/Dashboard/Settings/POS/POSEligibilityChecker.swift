@@ -51,12 +51,13 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(
+        return Publishers.CombineLatest3(
             isPointOfSaleFeatureFlagEnabled,
-            siteEligibilityPublisher
+            siteEligibilityPublisher,
+            siteSettingsEligibilityPublisher
         )
-        .map { featureFlagState, siteEligibility -> POSEligibilityState in
-            switch siteEligibility {
+        .map { featureFlagState, siteEligibility, siteSettingsEligibility -> POSEligibilityState in
+            switch siteSettingsEligibility {
             case .eligible:
                 break
             case .ineligible(let reason):
@@ -67,13 +68,43 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
             case .disabled(let reason):
                 return .ineligible(reason: reason)
             case .enabled:
+                break
+            }
+
+            switch siteEligibility {
+            case .eligible:
                 return .eligible
+            case .ineligible(let reason):
+                return .ineligible(reason: reason)
             }
         }
         .eraseToAnyPublisher()
     }
 
-    private var siteEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
+    private let siteID: Int64
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
+    private let siteSettings: SelectedSiteSettings
+    private let currencySettings: CurrencySettings
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+
+    init(siteID: Int64,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.siteID = siteID
+        self.userInterfaceIdiom = userInterfaceIdiom
+        self.siteSettings = siteSettings
+        self.currencySettings = currencySettings
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+    }
+}
+
+private extension POSEligibilityChecker {
+    var siteEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
         stores.siteInformation
             .map { [weak self] siteInformation -> POSEligibilityState in
                 guard let self else { return .ineligible(reason: .selfDeallocated) }
@@ -82,7 +113,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
             .eraseToAnyPublisher()
     }
 
-    private func isEligibleFromSiteChecks(siteInformation: SiteInformation?) -> POSEligibilityState {
+    func isEligibleFromSiteChecks(siteInformation: SiteInformation?) -> POSEligibilityState {
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
         let currency = currencySettings.currencyCode
@@ -130,26 +161,38 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
             return .eligible
         }
     }
+}
 
-    private let siteID: Int64
-    private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let siteSettings: SelectedSiteSettings
-    private let currencySettings: CurrencySettings
-    private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
+private extension POSEligibilityChecker {
+    private var siteSettingsEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
+        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed)
+            .map { [weak self] _ -> POSEligibilityState in
+                guard let self else { return .ineligible(reason: .selfDeallocated) }
+                return isEligibleFromSiteSettingsChecks()
+            }
+            .eraseToAnyPublisher()
+    }
 
-    init(siteID: Int64,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.siteID = siteID
-        self.userInterfaceIdiom = userInterfaceIdiom
-        self.siteSettings = siteSettings
-        self.currencySettings = currencySettings
-        self.stores = stores
-        self.featureFlagService = featureFlagService
+    func isEligibleFromSiteSettingsChecks() -> POSEligibilityState {
+        // Conditions that can change if site settings are synced during the lifetime.
+        let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
+        let currency = currencySettings.currencyCode
+
+        // Checks country first.
+        switch countryCode {
+        case .US, .GB:
+            break
+        default:
+            return .ineligible(reason: .unsupportedCountry)
+        }
+
+        // Then checks currency.
+        switch currency {
+        case .USD, .GBP:
+            return .eligible
+        default:
+            return .ineligible(reason: .unsupportedCurrency)
+        }
     }
 }
 

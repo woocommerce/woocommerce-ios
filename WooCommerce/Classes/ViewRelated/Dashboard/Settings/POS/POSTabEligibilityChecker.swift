@@ -20,7 +20,6 @@ enum POSIneligibleReason: Equatable {
     case wooCommercePluginNotFound
     case featureSwitchDisabled
     case featureSwitchSyncFailure
-    case featureFlagDisabled
     case unsupportedCountry
     case unsupportedCurrency
     case selfDeallocated
@@ -51,7 +50,7 @@ final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol {
             siteSettingsCountryEligibilityPublisher
         )
         .map { featureFlagState, isCountryEligible -> Bool in
-            return isCountryEligible && featureFlagState == .enabled
+            return isCountryEligible && featureFlagState
         }
         .eraseToAnyPublisher()
     }
@@ -62,24 +61,16 @@ final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest3(
-            isPointOfSaleFeatureFlagEnabled,
+        return Publishers.CombineLatest(
             siteEligibilityPublisher,
             siteSettingsEligibilityPublisher
         )
-        .map { featureFlagState, siteEligibility, siteSettingsEligibility -> POSEligibilityState in
+        .map { siteEligibility, siteSettingsEligibility -> POSEligibilityState in
             switch siteSettingsEligibility {
             case .eligible:
                 break
             case .ineligible(let reason):
                 return .ineligible(reason: reason)
-            }
-
-            switch featureFlagState {
-            case .disabled(let reason):
-                return .ineligible(reason: reason)
-            case .enabled:
-                break
             }
 
             switch siteEligibility {
@@ -228,28 +219,22 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
-    enum FeatureFlagState: Equatable {
-        case enabled
-        case disabled(reason: POSIneligibleReason)
-    }
-
-    var isPointOfSaleFeatureFlagEnabled: AnyPublisher<FeatureFlagState, Never> {
+    var isPointOfSaleFeatureFlagEnabled: AnyPublisher<Bool, Never> {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        Future<FeatureFlagState, Never> { [weak self] promise in
+        Future<Bool, Never> { [weak self] promise in
             guard let self else {
-                promise(.success(.disabled(reason: .featureFlagDisabled)))
-                return
+                return promise(.success(false))
             }
             let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false, completion: { result in
                 switch result {
                 case true:
                     // The site is whitelisted
-                    return promise(.success(.enabled))
+                    return promise(.success(true))
                 case false:
                     // When the site is not whitelisted, check the local feature flag configuration
                     let localFeatureFlag = self.featureFlagService.isFeatureFlagEnabled(.pointOfSale)
-                    return promise(.success(localFeatureFlag ? .enabled : .disabled(reason: .featureFlagDisabled)))
+                    return promise(.success(localFeatureFlag))
                 }
             })
             self.stores.dispatch(action)

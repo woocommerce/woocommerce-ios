@@ -1,9 +1,10 @@
+import Codegen
 import Foundation
 
 
 // MARK: - MetaContainer: Simple API to query the "Notification Meta" Collection.
 //
-public struct MetaContainer {
+public struct MetaContainer: GeneratedFakeable {
 
     /// The actual Meta Payload.
     ///

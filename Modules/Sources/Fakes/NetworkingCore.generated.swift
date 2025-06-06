@@ -45,6 +45,15 @@ extension NetworkingCore.DotcomError {
         .empty
     }
 }
+extension NetworkingCore.MetaContainer {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.MetaContainer {
+        .init(
+            payload: .fake()
+        )
+    }
+}
 extension NetworkingCore.MetaData {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -83,6 +92,13 @@ extension NetworkingCore.Note {
             metaAsData: .fake(),
             meta: .fake()
         )
+    }
+}
+extension NetworkingCore.Note.Kind {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.Note.Kind {
+        .automattcher
     }
 }
 extension NetworkingCore.NoteBlock {
@@ -126,6 +142,13 @@ extension NetworkingCore.NoteRange {
             userID: .fake(),
             value: .fake()
         )
+    }
+}
+extension NetworkingCore.NoteRange.Kind {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.NoteRange.Kind {
+        .user
     }
 }
 extension NetworkingCore.Order {

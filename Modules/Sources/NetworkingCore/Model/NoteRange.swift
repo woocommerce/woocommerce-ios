@@ -160,7 +160,7 @@ extension NoteRange {
 
     /// Known Range Types.
     ///
-    public enum Kind: String {
+    public enum Kind: String, GeneratedFakeable {
         case user
         case post
         case comment

@@ -28,22 +28,6 @@ public struct NoteBlock: Equatable, GeneratedFakeable, GeneratedCopiable {
     /// Raw Type, expressed as a string.
     ///
     public let type: String?
-
-    public init(
-        media: [NoteMedia],
-        ranges: [NoteRange],
-        text: String?,
-        actions: [String: Bool],
-        meta: MetaContainer,
-        type: String?
-    ) {
-        self.media = media
-        self.ranges = ranges
-        self.text = text
-        self.actions = actions
-        self.meta = meta
-        self.type = type
-    }
 }
 
 extension NoteBlock {

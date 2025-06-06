@@ -264,7 +264,7 @@ extension Note {
 
     /// Known Notification Kinds
     ///
-    public enum Kind: String {
+    public enum Kind: String, GeneratedFakeable {
         case automattcher
         case comment
         case commentLike = "comment_like"

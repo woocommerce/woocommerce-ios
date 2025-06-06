@@ -70,6 +70,8 @@ struct UPSTermsView: View {
                 }
             }
             Button(Localization.cancel, role: .cancel) {}
+        } message: {
+            Text(Localization.errorMessage)
         }
 
     }
@@ -187,6 +189,11 @@ private extension UPSTermsView {
         static let errorTitle = NSLocalizedString(
             "upsTermsView.errorTitle",
             value: "Error confirming acceptance",
+            comment: "Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails"
+        )
+        static let errorMessage = NSLocalizedString(
+            "upsTermsView.errorMessage",
+            value: "An unexpected error occurred when confirming your acceptance. Please try again.",
             comment: "Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails"
         )
         static let retry = NSLocalizedString(

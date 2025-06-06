@@ -15,19 +15,19 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hrV-V9-BdB">
-                    <rect key="frame" x="16" y="14" width="343" height="45"/>
+                    <rect key="frame" x="20" y="8" width="335" height="51"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Uce-kq-wOt">
-                            <rect key="frame" x="0.0" y="0.0" width="269" height="45"/>
+                            <rect key="frame" x="0.0" y="0.0" width="261" height="51"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r3U-zo-uYF">
-                                    <rect key="frame" x="0.0" y="0.0" width="269" height="20.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="261" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rLu-fm-bTC" userLabel="Last Updated Label">
-                                    <rect key="frame" x="0.0" y="24.5" width="269" height="20.5"/>
+                                    <rect key="frame" x="0.0" y="24.5" width="261" height="26.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -35,7 +35,7 @@
                             </subviews>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3R4-Zy-CEM">
-                            <rect key="frame" x="289" y="0.0" width="54" height="45"/>
+                            <rect key="frame" x="281" y="0.0" width="54" height="51"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" id="HKe-ba-c7Z"/>
                             </constraints>
@@ -51,10 +51,10 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="iLp-Xv-4wn"/>
             <constraints>
-                <constraint firstAttribute="bottomMargin" secondItem="hrV-V9-BdB" secondAttribute="bottom" id="17F-Tz-u3i"/>
-                <constraint firstAttribute="topMargin" secondItem="hrV-V9-BdB" secondAttribute="top" id="72O-3b-e5w"/>
-                <constraint firstItem="hrV-V9-BdB" firstAttribute="leading" secondItem="iLp-Xv-4wn" secondAttribute="leading" constant="16" id="F6e-Nm-Kc4"/>
-                <constraint firstItem="hrV-V9-BdB" firstAttribute="trailing" secondItem="iLp-Xv-4wn" secondAttribute="trailing" constant="-16" id="c5H-jX-XYc"/>
+                <constraint firstAttribute="bottom" secondItem="hrV-V9-BdB" secondAttribute="bottom" constant="8" id="17F-Tz-u3i"/>
+                <constraint firstItem="hrV-V9-BdB" firstAttribute="leading" secondItem="iLp-Xv-4wn" secondAttribute="leading" constant="20" id="F6e-Nm-Kc4"/>
+                <constraint firstItem="hrV-V9-BdB" firstAttribute="trailing" secondItem="iLp-Xv-4wn" secondAttribute="trailing" constant="-20" id="c5H-jX-XYc"/>
+                <constraint firstItem="hrV-V9-BdB" firstAttribute="top" secondItem="eDg-Zp-eCF" secondAttribute="top" constant="8" id="eUg-Ei-6y2"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>

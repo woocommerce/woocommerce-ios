@@ -2897,6 +2897,7 @@
 		DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */; };
 		DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */; };
 		DEFE13C82DF2A359005B3D39 /* UPSTermsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */; };
+		DEFE1B242DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE1B232DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -6130,6 +6131,7 @@
 		DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsView.swift; sourceTree = "<group>"; };
 		DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleStyles.swift; sourceTree = "<group>"; };
 		DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsViewModel.swift; sourceTree = "<group>"; };
+		DEFE1B232DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsViewModelTests.swift; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -12604,6 +12606,7 @@
 				CE56C01D2D2431C000EBDE24 /* WooShippingOriginAddressListViewModelTests.swift */,
 				CE5A9BBC2D315E0500FBADDF /* WooShippingEditAddressViewModelTests.swift */,
 				CE755F742D4A6BF3002539F6 /* WooShippingNormalizeAddressViewModelTests.swift */,
+				DEFE1B232DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift */,
 			);
 			path = "WooShipping Create Shipping Labels";
 			sourceTree = "<group>";
@@ -17632,6 +17635,7 @@
 				01A3093C2DAE768600B672F6 /* MockPointOfSaleCouponService.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */,
+				DEFE1B242DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */,
 				4535EE82281BE726004212B4 /* CouponCodeInputFormatterTests.swift in Sources */,

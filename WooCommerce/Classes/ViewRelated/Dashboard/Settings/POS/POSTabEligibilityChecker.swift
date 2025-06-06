@@ -32,20 +32,31 @@ enum POSEligibilityState: Equatable {
 }
 
 protocol POSTabEligibilityCheckerProtocol {
+    var isTabVisible: AnyPublisher<Bool, Never> { get }
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
     var isEligible: AnyPublisher<POSEligibilityState, Never> { get }
 }
 
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
 final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol {
-    var isEligible: AnyPublisher<POSEligibilityState, Never> {
-        // Conditions that are fixed for its lifetime.
+    var isTabVisible: AnyPublisher<Bool, Never> {
         let isTablet = userInterfaceIdiom == .pad
         guard isTablet else {
-            return Just(.ineligible(reason: .notTablet))
+            return Just(false)
                 .eraseToAnyPublisher()
         }
 
+        return Publishers.CombineLatest(
+            isPointOfSaleFeatureFlagEnabled,
+            siteSettingsCountryEligibilityPublisher
+        )
+        .map { featureFlagState, isCountryEligible -> Bool in
+            return isCountryEligible && featureFlagState == .enabled
+        }
+        .eraseToAnyPublisher()
+    }
+
+    var isEligible: AnyPublisher<POSEligibilityState, Never> {
         guard #available(iOS 17.0, *) else {
             return Just(.ineligible(reason: .unsupportedIOSVersion))
                 .eraseToAnyPublisher()
@@ -164,6 +175,26 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
+    private var siteSettingsCountryEligibilityPublisher: AnyPublisher<Bool, Never> {
+        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed, object: siteSettings)
+            .map { [weak self] _ -> Bool in
+                guard let self else { return false }
+                // Conditions that can change if site settings are synced during the lifetime.
+                let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
+
+                // Checks country first.
+                switch countryCode {
+                case .US, .GB:
+                    return true
+                default:
+                    return false
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
+private extension POSTabEligibilityChecker {
     private var siteSettingsEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
         NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed)
             .map { [weak self] _ -> POSEligibilityState in
@@ -197,7 +228,7 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
-    enum FeatureFlagState {
+    enum FeatureFlagState: Equatable {
         case enabled
         case disabled(reason: POSIneligibleReason)
     }

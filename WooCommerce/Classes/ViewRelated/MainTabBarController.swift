@@ -645,24 +645,11 @@ private extension MainTabBarController {
         updateTabViewControllers(isPOSTabVisible: false)
         // Starts observing the POS eligibility state.
         posEligibilityChecker = POSTabEligibilityChecker(siteID: siteID)
-        posEligibilitySubscription = posEligibilityChecker?.isEligible
+        posEligibilitySubscription = posEligibilityChecker?.isTabVisible
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                self?.updateTabViewControllers(state: state)
+            .sink { [weak self] isPOSTabVisible in
+                self?.updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             }
-    }
-
-    private func updateTabViewControllers(state: POSEligibilityState) {
-
-        // Add POS tab if the state is eligible
-        let isPOSTabVisible: Bool
-        switch state {
-        case .eligible:
-            isPOSTabVisible = true
-        case let .ineligible(reason):
-            isPOSTabVisible = !(reason == .notTablet || reason == .unsupportedCountry || reason == .featureFlagDisabled)
-        }
-        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
     }
 
     private func updateTabViewControllers(isPOSTabVisible: Bool) {

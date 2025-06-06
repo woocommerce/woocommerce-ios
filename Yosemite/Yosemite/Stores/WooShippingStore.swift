@@ -89,6 +89,8 @@ public final class WooShippingStore: Store {
                            completion: completion)
         case let .refundShippingLabel(shippingLabel, completion):
             refundShippingLabel(shippingLabel: shippingLabel, completion: completion)
+        case let .acceptUPSTermsOfService(siteID, originAddress, completion):
+            acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
         }
     }
 }
@@ -238,6 +240,12 @@ private extension WooShippingStore {
                 completion(.failure(error))
             }
         }
+    }
+
+    func acceptUPSTermsOfService(siteID: Int64,
+                                 originAddress: WooShippingAddress,
+                                 completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
     }
 }
 

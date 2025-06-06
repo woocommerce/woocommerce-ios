@@ -1059,6 +1059,50 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: - `acceptUPSTermsOfService`
+
+    func test_acceptUPSTermsOfService_returns_true_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let originAddress = WooShippingAddress.fake()
+
+        remote.whenAcceptingUPSTOS(siteID: sampleSiteID, originAddress: originAddress, thenReturn: .success(true))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = WooShippingAction.acceptUPSTermsOfService(siteID: self.sampleSiteID, originAddress: originAddress) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result.get()))
+    }
+
+    func test_acceptUPSTermsOfService_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let originAddress = WooShippingAddress.fake()
+        let expectedError = NetworkError.notFound()
+
+        remote.whenAcceptingUPSTOS(siteID: sampleSiteID, originAddress: originAddress, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = WooShippingAction.acceptUPSTermsOfService(siteID: self.sampleSiteID, originAddress: originAddress) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension WooShippingStoreTests {

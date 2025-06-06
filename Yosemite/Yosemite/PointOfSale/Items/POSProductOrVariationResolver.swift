@@ -4,12 +4,13 @@ import class WooFoundation.CurrencySettings
 
 struct POSProductOrVariationResolver {
     private let productsRemote: ProductsRemoteProtocol
-    private let itemMapper: PointOfSaleItemMapper
+    private let itemMapper: PointOfSaleItemMapperProtocol
 
     init (productsRemote: ProductsRemoteProtocol,
-          currencySettings: CurrencySettings) {
+          currencySettings: CurrencySettings,
+          itemMapper: PointOfSaleItemMapperProtocol? = nil) {
         self.productsRemote = productsRemote
-        self.itemMapper = PointOfSaleItemMapper(currencySettings: currencySettings)
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
     func itemForProductOrVariation(_ productOrVariation: POSProduct) async throws -> POSItem {

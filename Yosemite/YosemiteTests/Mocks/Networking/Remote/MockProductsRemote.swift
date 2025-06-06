@@ -76,6 +76,14 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `loadPopularProductsForPointOfSale`
     private var posPopularProductsResultsBySiteID = [Int64: Result<PagedItems<POSProduct>, Error>]()
 
+    private var posProductLoadingResults = [ResultKey: Result<POSProduct, Error>]()
+
+    /// The number of times that `fetchPOSProduct()` was invoked.
+    private(set) var invocationCountOfFetchPOSProduct: Int = 0
+
+    /// List of product IDs requested for `fetchPOSProduct`
+    private(set) var requestedProductIDsForFetchingPOSProduct: [Int64] = []
+
     /// Set the value passed to the `completion` block if `addProduct()` is called.
     ///
     func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
@@ -167,6 +175,11 @@ final class MockProductsRemote {
     ///
     func whenLoadingPopularProductsForPointOfSale(siteID: Int64, thenReturn result: Result<PagedItems<POSProduct>, Error>) {
         posPopularProductsResultsBySiteID[siteID] = result
+    }
+
+    func whenLoadingProductForPointOfSale(siteID: Int64, productID: Int64, thenReturn result: Result<POSProduct, Error>) {
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        posProductLoadingResults[key] = result
     }
 }
 
@@ -456,6 +469,22 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         switch result {
         case let .success(pagedProducts):
             return pagedProducts
+        case let .failure(error):
+            throw error
+        }
+    }
+
+    func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+        invocationCountOfFetchPOSProduct += 1
+        requestedProductIDsForFetchingPOSProduct.append(productID)
+
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        guard let result = posProductLoadingResults[key] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(product):
+            return product
         case let .failure(error):
             throw error
         }

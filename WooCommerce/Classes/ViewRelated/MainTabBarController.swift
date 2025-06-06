@@ -162,8 +162,8 @@ final class MainTabBarController: UITabBarController {
 
         fixTabBarTraitCollectionOnIpadForiOS18()
 
-        // TODO-jc: update initial state to hide POS tab by default
-        updateTabViewControllers(state: .ineligible(reason: .notTablet))
+        // POS tab is hidden by default.
+        updateTabViewControllers(isPOSTabVisible: false)
         observeSiteIDForViewControllers()
         observeProductImageUploadStatusUpdates()
 
@@ -641,7 +641,9 @@ extension MainTabBarController: DeepLinkNavigator {
 //
 private extension MainTabBarController {
     func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
-        // Start observing the POS eligibility state
+        // Hides POS tab by default.
+        updateTabViewControllers(isPOSTabVisible: false)
+        // Starts observing the POS eligibility state.
         posEligibilityChecker = POSEligibilityChecker(siteID: siteID)
         posEligibilitySubscription = posEligibilityChecker?.isEligible
             .receive(on: DispatchQueue.main)
@@ -651,8 +653,6 @@ private extension MainTabBarController {
     }
 
     private func updateTabViewControllers(state: POSEligibilityState) {
-        var controllers = [UIViewController]()
-        var tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
 
         // Add POS tab if the state is eligible
         let isPOSTabVisible: Bool
@@ -662,11 +662,17 @@ private extension MainTabBarController {
         case let .ineligible(reason):
             isPOSTabVisible = !(reason == .notTablet || reason == .unsupportedCountry || reason == .featureFlagDisabled)
         }
+        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
+    }
+
+    private func updateTabViewControllers(isPOSTabVisible: Bool) {
+        var tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
         if isPOSTabVisible {
             tabs.insert(.pointOfSale, at: 3)
         }
         self.isPOSTabVisible = isPOSTabVisible
 
+        var controllers = [UIViewController]()
         tabs.forEach { tab in
             let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
             let tabViewController = rootTabViewController(tab: tab)

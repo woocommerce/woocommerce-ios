@@ -19,6 +19,7 @@ public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
         printController.delegate = self
 
         let renderer = ReceiptRenderer(content: content)
+        renderer.configureFormatterForPrinting()
         printController.printPageRenderer = renderer
 
         printController.present(animated: true) { (controller, completed, error) in

@@ -644,7 +644,6 @@ private extension MainTabBarController {
         // Hides POS tab by default.
         updateTabViewControllers(isPOSTabVisible: false)
         // Starts observing the POS eligibility state.
-        posEligibilityChecker = POSTabEligibilityChecker(siteID: siteID)
         posEligibilitySubscription = posEligibilityChecker?.isTabVisible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isPOSTabVisible in
@@ -723,9 +722,13 @@ private extension MainTabBarController {
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
         // Configure POS tab coordinator once per logged in session potentially with multiple sites.
-        if posTabCoordinator == nil {
-            posTabCoordinator = POSTabCoordinator(siteID: siteID, tabContainerController: posContainerController)
-        }
+        let posEligibilityChecker = POSTabEligibilityChecker(siteID: siteID)
+        self.posEligibilityChecker = posEligibilityChecker
+        posTabCoordinator = POSTabCoordinator(
+            siteID: siteID,
+            tabContainerController: posContainerController,
+            posEligibilityChecker: posEligibilityChecker
+        )
 
         viewModel.loadHubMenuTabBadge()
 

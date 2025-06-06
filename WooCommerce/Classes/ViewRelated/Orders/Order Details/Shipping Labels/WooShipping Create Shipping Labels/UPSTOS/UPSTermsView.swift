@@ -7,6 +7,8 @@ struct UPSTermsView: View {
 
     let onConfirmation: () -> Void
 
+    @State private var didFailToConfirmAcceptance = false
+
     var body: some View {
         ScrollableVStack(alignment: .leading,
                          padding: Layout.contentPadding,
@@ -52,11 +54,24 @@ struct UPSTermsView: View {
 
             Spacer()
 
-            Button(Localization.confirmButton, action: onConfirmation)
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(!viewModel.shouldEnableConfirmButton)
+            Button(Localization.confirmButton, action: {
+                Task { @MainActor in
+                    await confirmAcceptance()
+                }
+            })
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isConfirming))
+            .disabled(!viewModel.shouldEnableConfirmButton)
         }
         .padding(.top, Layout.contentPadding)
+        .alert(Localization.errorTitle, isPresented: $didFailToConfirmAcceptance) {
+            Button(Localization.retry) {
+                Task { @MainActor in
+                    await confirmAcceptance()
+                }
+            }
+            Button(Localization.cancel, role: .cancel) {}
+        }
+
     }
 }
 
@@ -78,6 +93,21 @@ private extension UPSTermsView {
             attributedText[range].mergeAttributes(linkContainer)
         }
         return attributedText
+    }
+
+    @MainActor
+    func confirmAcceptance() async {
+        do {
+            let result = try await viewModel.confirmAcceptance()
+            if result {
+                onConfirmation()
+            } else {
+                didFailToConfirmAcceptance = true
+            }
+        } catch {
+            DDLogError("⛔️ Error accepting UPS terms of service \(error)")
+            didFailToConfirmAcceptance = true
+        }
     }
 }
 
@@ -153,6 +183,21 @@ private extension UPSTermsView {
             "upsTermsView.confirmButton",
             value: "Confirm and continue",
             comment: "Button to confirm all agreements on the UPS Terms and Conditions view"
+        )
+        static let errorTitle = NSLocalizedString(
+            "upsTermsView.errorTitle",
+            value: "Error confirming acceptance",
+            comment: "Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails"
+        )
+        static let retry = NSLocalizedString(
+            "upsTermsView.retry",
+            value: "Retry",
+            comment: "Button to retry confirming all agreements on the UPS Terms and Conditions view fails"
+        )
+        static let cancel = NSLocalizedString(
+            "upsTermsView.cancel",
+            value: "Cancel",
+            comment: "Button to cancel confirming all agreements on the UPS Terms and Conditions view fails"
         )
     }
 }

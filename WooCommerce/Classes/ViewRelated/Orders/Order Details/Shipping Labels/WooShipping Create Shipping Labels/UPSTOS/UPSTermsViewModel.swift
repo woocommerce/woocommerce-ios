@@ -7,6 +7,8 @@ final class UPSTermsViewModel: ObservableObject {
     @Published var isProhibitedItemsAccepted = false
     @Published var isTechnologyAgreementAccepted = false
 
+    @Published private(set) var isConfirming = false
+
     var displayedOriginAddress: String {
         originAddress.formattedPostalAddress ?? ""
     }
@@ -25,5 +27,18 @@ final class UPSTermsViewModel: ObservableObject {
         self.siteID = siteID
         self.originAddress = originAddress
         self.stores = stores
+    }
+
+    @MainActor
+    func confirmAcceptance() async throws -> Bool {
+        isConfirming = true
+        defer {
+            isConfirming = false
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }

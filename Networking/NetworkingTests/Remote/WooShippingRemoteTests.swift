@@ -808,7 +808,7 @@ final class WooShippingRemoteTests: XCTestCase {
     func test_acceptUPSTermsOfService_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "carrier-strategy/upsdap", filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: "carrier-strategy/upsdap", filename: "generic_success_data")
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in

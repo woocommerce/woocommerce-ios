@@ -552,7 +552,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: path,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            let mapper = SuccessResultMapper()
+            let mapper = SuccessDataResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

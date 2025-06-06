@@ -154,9 +154,6 @@ private extension TracksProvider {
             WooAnalyticsStat.orderCreationFailed,
 
             // Card Reader Connection
-            WooAnalyticsStat.cardReaderSelectTypeShown,
-            WooAnalyticsStat.cardReaderSelectTypeTapToPayTapped,
-            WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,

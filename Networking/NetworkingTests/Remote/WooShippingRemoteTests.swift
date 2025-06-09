@@ -127,7 +127,7 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 
-    func test_loadLabelRates_parses_success_response() throws {
+    func test_loadLabelRates_sends_correct_params_and_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/rate", filename: "wooshipping-get-label-rates-success")
@@ -145,6 +145,10 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
+        XCTAssertEqual(featuresParam, ["upsdap"])
+
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)
     }
@@ -169,7 +173,7 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
-    func test_loadPackages_parses_success_response() throws {
+    func test_loadPackages_sends_correct_params_and_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "packages", filename: "wooshipping-get-packages-success")
@@ -183,6 +187,10 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
+        XCTAssertEqual(featuresParam, ["upsdap"])
+
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.savedPredefinedPackages.count, 2)
         XCTAssertEqual(successResponse.savedPredefinedPackages.first?.package.groupId, "pri_flat_boxes")
@@ -787,6 +795,44 @@ final class WooShippingRemoteTests: XCTestCase {
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: self.sampleOrderID,
                                        shippingLabelID: labelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    // MARK: Accept UPS TOS
+
+    func test_acceptUPSTermsOfService_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "carrier-strategy/upsdap", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.acceptUPSTermsOfService(siteID: self.sampleSiteID,
+                                           originAddress: WooShippingAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let success = try XCTUnwrap(result.get())
+        XCTAssertTrue(success)
+    }
+
+    func test_acceptUPSTermsOfService_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        let expectedError = NetworkError.timeout(response: nil)
+        network.simulateError(requestUrlSuffix: "carrier-strategy/upsdap", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.acceptUPSTermsOfService(siteID: self.sampleSiteID,
+                                           originAddress: WooShippingAddress.fake()) { result in
                 promise(result)
             }
         }

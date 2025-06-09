@@ -98,6 +98,23 @@ extension Cart {
         }
     }
 
+    mutating func addLoadingItem() -> UUID {
+        let id = UUID()
+        let loadingItem = PurchasableItem.loading(id: id)
+        purchasableItems.insert(loadingItem, at: purchasableItems.startIndex)
+        return id
+    }
+
+    mutating func updateLoadingItem(id: UUID, with posItem: POSItem) {
+        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
+
+        if let productItem = createPurchasableItem(id: id, from: posItem) {
+            purchasableItems[index] = productItem
+        } else {
+            purchasableItems.remove(at: index)
+        }
+    }
+
     var isEmpty: Bool {
         purchasableItems.isEmpty && coupons.isEmpty
     }

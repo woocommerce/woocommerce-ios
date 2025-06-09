@@ -180,15 +180,27 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
+    /// After accepting UPS TOS, the selected UPS package/rate need to be reloaded with user data.
+    /// We need to reload the package list and update the selected package with the one with the same ID.
+    /// Similarly, we need to reload the shipping rates and updated the selected rate with the one with the same service ID.
+    /// When the backend supports this reloading, we can remove this extra step.
+    /// Ref: pe5sF9-4kN-p2/#ups-tos-flow
+    ///
     @MainActor
     func refreshPackagesAndShippingRates() async throws {
         guard let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
-            throw WooShippingPurchaseError.failedToRefreshSelectedPackage
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
         }
         self.selectedPackage = updatedPackage
 
-        guard let finalPackage = currentPackage, let shippingService, let selectedRate else {
-            throw WooShippingPurchaseError.failedToRefreshSelectedRate
+        let finalPackage = buildSelectedPackage(updatedPackage,
+                                                weight: Double(shipmentWeight) ?? 0,
+                                                shipmentID: shipment.id,
+                                                hazmatCategory: hazmatCategory,
+                                                customsForm: customsForm)
+
+        guard let shippingService, let selectedRate else {
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
         }
         try await withCheckedThrowingContinuation { continuation in
             shippingService.loadLabelRates(for: finalPackage) { result in
@@ -196,7 +208,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             }
         }
         guard let updatedRate = shippingService.refreshSelectedRate(from: selectedRate) else {
-            throw WooShippingPurchaseError.failedToRefreshSelectedRate
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
         }
         self.selectedRate = updatedRate
     }

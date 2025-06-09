@@ -121,7 +121,7 @@ struct WooShippingCreateLabelsView: View {
                     UPSTermsView(viewModel: termsViewModel) {
                         viewModel.shouldShowUPSTermsAndConditions = false
                         Task { @MainActor in
-                            await viewModel.retryPurchaseAfterAcceptingUPSTerms()
+                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
                         }
                     }
                     .presentationDetents([.fraction(0.8), .large])
@@ -538,7 +538,7 @@ private extension WooShippingCreateLabelsView {
     var purchaseButton: some View {
         Button {
             Task {
-                await viewModel.purchaseLabel()
+                await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
             }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))

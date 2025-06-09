@@ -293,28 +293,16 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
     }
 
-    @MainActor
-    func retryPurchaseAfterAcceptingUPSTerms() async {
-        isPurchasingLabel = true
-        defer {
-            isPurchasingLabel = false
-        }
-        do {
-            try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
-            await purchaseLabel()
-        } catch {
-            DDLogError("⛔️ Error refreshing data for purchasing label: \(error)")
-            // TODO: show notice for error refetching?
-        }
-    }
-
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
-    func purchaseLabel() async {
+    func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
 
         do {
+            if shouldRefreshPackageAndRate {
+                try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
+            }
             try await currentShipmentDetailsViewModel.purchaseLabel()
         } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
@@ -324,7 +312,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                               feedbackType: .error,
                                               actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
                 Task {
-                    await self?.purchaseLabel()
+                    await self?.purchaseLabel(shouldRefreshPackageAndRate: shouldRefreshPackageAndRate)
                 }
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")
@@ -748,9 +736,4 @@ private extension Address {
                                   city: city,
                                   postcode: postcode)
     }
-}
-
-enum WooShippingPurchaseError: Error {
-    case failedToRefreshSelectedPackage
-    case failedToRefreshSelectedRate
 }

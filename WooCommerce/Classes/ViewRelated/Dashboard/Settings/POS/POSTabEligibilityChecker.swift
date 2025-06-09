@@ -30,14 +30,16 @@ enum POSEligibilityState: Equatable {
     case ineligible(reason: POSIneligibleReason)
 }
 
-protocol POSTabEligibilityCheckerProtocol {
-    var isTabVisible: AnyPublisher<Bool, Never> { get }
-    /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
+protocol POSEntryPointEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<POSEligibilityState, Never> { get }
 }
 
+protocol POSTabEligibilityCheckerProtocol {
+    var isTabVisible: AnyPublisher<Bool, Never> { get }
+}
+
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
-final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol {
+final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol, POSEntryPointEligibilityCheckerProtocol {
     var isTabVisible: AnyPublisher<Bool, Never> {
         let isTablet = userInterfaceIdiom == .pad
         guard isTablet else {

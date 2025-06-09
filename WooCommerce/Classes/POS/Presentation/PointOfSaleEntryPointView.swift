@@ -4,11 +4,11 @@ import protocol Yosemite.POSSearchHistoryProviding
 
 @available(iOS 17.0, *)
 @Observable final class PointOfSaleEntryPointController {
-    private let posEligibilityChecker: POSTabEligibilityCheckerProtocol
+    private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
     private(set) var eligibilityState: POSEligibilityState?
     private var eligibilitySubscription: AnyCancellable?
 
-    init(eligibilityChecker: POSTabEligibilityCheckerProtocol) {
+    init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.posEligibilityChecker = eligibilityChecker
 
         eligibilitySubscription = posEligibilityChecker.isEligible
@@ -47,7 +47,7 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         posEligibilityChecker: POSTabEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController

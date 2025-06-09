@@ -22,7 +22,7 @@ final class POSTabCoordinator {
     private let siteID: Int64
     private let tabContainerController: TabContainerController
     private let storesManager: StoresManager
-    private let posEligibilityChecker: POSTabEligibilityCheckerProtocol
+    private let posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol
     private let credentials: Credentials?
 
     private var posEligibilitySubscription: AnyCancellable?
@@ -57,7 +57,7 @@ final class POSTabCoordinator {
     init(siteID: Int64,
          tabContainerController: TabContainerController,
          storesManager: StoresManager = ServiceLocator.stores,
-         posEligibilityChecker: POSTabEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.posEligibilityChecker = posEligibilityChecker

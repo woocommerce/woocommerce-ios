@@ -802,6 +802,44 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    // MARK: Accept UPS TOS
+
+    func test_acceptUPSTermsOfService_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "carrier-strategy/upsdap", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.acceptUPSTermsOfService(siteID: self.sampleSiteID,
+                                           originAddress: WooShippingAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let success = try XCTUnwrap(result.get())
+        XCTAssertTrue(success)
+    }
+
+    func test_acceptUPSTermsOfService_returns_error_on_failure() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        let expectedError = NetworkError.timeout(response: nil)
+        network.simulateError(requestUrlSuffix: "carrier-strategy/upsdap", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.acceptUPSTermsOfService(siteID: self.sampleSiteID,
+                                           originAddress: WooShippingAddress.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension WooShippingRemoteTests {

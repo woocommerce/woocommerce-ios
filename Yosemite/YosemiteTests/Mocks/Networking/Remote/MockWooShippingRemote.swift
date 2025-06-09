@@ -18,6 +18,11 @@ final class MockWooShippingRemote {
         let shippingLabelID: Int64
     }
 
+    private struct AcceptUPSTOSKey: Hashable {
+        let siteID: Int64
+        let originAddress: WooShippingAddress
+    }
+
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [ResultKey: Result<WooShippingCreatePackageResponse, Error>]()
 
@@ -68,6 +73,9 @@ final class MockWooShippingRemote {
 
     /// The results to return based on the given arguments in `refundShippingLabel`
     private var refundShippingLabel = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
+
+    /// The results to return for `acceptUPSTermsOfService`
+    private var acceptUPSTermsOfService = [AcceptUPSTOSKey: Result<Bool, Error>]()
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCreatePackage(siteID: Int64,
@@ -187,6 +195,14 @@ final class MockWooShippingRemote {
                                     thenReturn result: Result<ShippingLabelRefund, Error>) {
         let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
         refundShippingLabel[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `acceptUPSTermsOfService` is called
+    func whenAcceptingUPSTOS(siteID: Int64,
+                             originAddress: WooShippingAddress,
+                             thenReturn result: Result<Bool, Error>) {
+        let key = AcceptUPSTOSKey(siteID: siteID, originAddress: originAddress)
+        acceptUPSTermsOfService[key] = result
     }
 }
 
@@ -452,6 +468,20 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             guard let self else { return }
             let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
             if let result = self.refundShippingLabel[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func acceptUPSTermsOfService(siteID: Int64,
+                                 originAddress: WooShippingAddress,
+                                 completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let key = AcceptUPSTOSKey(siteID: siteID, originAddress: originAddress)
+            if let result = self.acceptUPSTermsOfService[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

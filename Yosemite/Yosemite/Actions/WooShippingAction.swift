@@ -110,4 +110,9 @@ public enum WooShippingAction: Action {
     case refundShippingLabel(shippingLabel: ShippingLabel,
                              completion: (Result<ShippingLabel, Error>) -> Void)
 
+    /// Accept UPS TOS for an origin address
+    case acceptUPSTermsOfService(siteID: Int64,
+                                 originAddress: WooShippingAddress,
+                                 completion: (Result<Bool, Error>) -> Void)
+
 }

@@ -115,6 +115,43 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
+        @Test func addLoadingItem_adds_loading_item_to_cart() async throws {
+            // Given
+            var cart = Cart()
+            try #require(cart.purchasableItems.isEmpty)
+
+            // When
+            let id = cart.addLoadingItem()
+
+            // Then
+            #expect(cart.purchasableItems.count == 1)
+            let item = try #require(cart.purchasableItems.first)
+            #expect(item.id == id)
+            guard case .loading = item.state else {
+                throw CartTestError.unexpectedItemStateInCart
+            }
+        }
+
+        @available(iOS 17.0, *)
+        @Test func updateLoadingItem_updates_loading_item_with_simple_product() async throws {
+            // Given
+            var cart = Cart()
+            let id = cart.addLoadingItem()
+            let purchasableItem = makePurchasableItem(name: "Test Product")
+
+            // When
+            cart.updateLoadingItem(id: id, with: purchasableItem)
+
+            // Then
+            #expect(cart.purchasableItems.count == 1)
+            let item = try #require(cart.purchasableItems.first)
+            guard case .loaded(let loadedItem) = item.state else {
+                throw CartTestError.unexpectedItemStateInCart
+            }
+            #expect(loadedItem.name == "Test Product")
+        }
+
+        @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),

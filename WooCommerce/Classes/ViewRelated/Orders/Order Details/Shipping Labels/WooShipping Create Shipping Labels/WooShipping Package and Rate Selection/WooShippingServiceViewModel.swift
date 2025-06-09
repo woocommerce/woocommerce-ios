@@ -135,6 +135,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                     let error = Error.noRatesAvailable(isHAZMAT: isHAZMAT)
                     updateLoadingState(to: .error(error))
                     analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                    onLoadingCompletion(.failure(error))
                     return
                 }
 

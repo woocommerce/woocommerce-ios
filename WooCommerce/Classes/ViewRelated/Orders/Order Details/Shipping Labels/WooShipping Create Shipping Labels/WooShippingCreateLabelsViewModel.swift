@@ -3,6 +3,7 @@ import Yosemite
 import WooFoundation
 import Combine
 import struct Networking.WooShippingAccountSettings
+import enum Networking.DotcomError
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
@@ -186,6 +187,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
+    @Published var shouldShowUPSTermsAndConditions = false
+
+    var upsTermsViewModel: UPSTermsViewModel? {
+        guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
+            return nil
+        }
+        return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
+    }
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          selectedShippingLabel: ShippingLabel? = nil,
@@ -293,6 +303,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
         do {
             try await currentShipmentDetailsViewModel.purchaseLabel()
+        } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
+            shouldShowUPSTermsAndConditions = true
         } catch {
             labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
                                               message: Localization.LabelPurchaseError.message,
@@ -627,6 +639,9 @@ private extension WooShippingCreateLabelsViewModel {
 }
 
 private extension WooShippingCreateLabelsViewModel {
+    enum Constants {
+        static let missingUPSDAPTermsOfServiceAcceptance = "missing_upsdap_terms_of_service_acceptance"
+    }
     enum Localization {
         enum OriginAddressStatus {
             static let unverified = NSLocalizedString(

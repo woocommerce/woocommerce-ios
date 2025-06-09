@@ -158,7 +158,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.orderID: orderID,
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
-                ParameterKey.packages: try packages.map { try $0.toDictionary() }
+                ParameterKey.packages: try packages.map { try $0.toDictionary() },
+                ParameterKey.featuresSupported: [Values.upsdap]
             ]
             let path = Path.rates
             let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -183,11 +184,15 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func loadPackages(siteID: Int64,
                              completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
         do {
+            let parameters: [String: Any] = [
+                ParameterKey.featuresSupported: [Values.upsdap]
+            ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .get,
                                          siteID: siteID,
                                          path: path,
+                                         parameters: parameters,
                                          availableAsRESTRequest: true)
 
             let mapper = WooShippingPackagesMapper(siteID: siteID)
@@ -572,6 +577,11 @@ private extension WooShippingRemote {
         static let selectedPaymentMethodID = "selected_payment_method_id"
         static let emailReceipts = "email_receipts"
         static let enabled = "enabled"
+        static let featuresSupported = "features_supported_by_client"
+    }
+
+    enum Values {
+        static let upsdap = "upsdap"
     }
 }
 

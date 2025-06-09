@@ -2893,6 +2893,9 @@
 		DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */; };
 		DEFC9BE22B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */; };
 		DEFD6E61264990FB00E51E0D /* PluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */; };
+		DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */; };
+		DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */; };
+		DEFE13C82DF2A359005B3D39 /* UPSTermsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */; };
 		E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */; };
 		E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1068057285C787100668B46 /* BetaFeaturesTests.swift */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -6123,6 +6126,9 @@
 		DEFB3010289904E300A620B3 /* WooSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModel.swift; sourceTree = "<group>"; };
 		DEFC9BE12B2FF62C00138B05 /* WooAnalyticsEvent+Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Themes.swift"; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* PluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModelTests.swift; sourceTree = "<group>"; };
+		DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsView.swift; sourceTree = "<group>"; };
+		DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleStyles.swift; sourceTree = "<group>"; };
+		DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UPSTermsViewModel.swift; sourceTree = "<group>"; };
 		E10459C527BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentConfigurationLoader.swift; sourceTree = "<group>"; };
 		E1068057285C787100668B46 /* BetaFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesTests.swift; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -9593,6 +9599,7 @@
 				E15FC74026BC1CED00CF83E6 /* AttributedText.swift */,
 				E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */,
 				E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */,
+				DEFE13C42DF15F36005B3D39 /* ToggleStyles.swift */,
 				DE19BB0B26C2688B00AB70D9 /* SingleSelectionList.swift */,
 				DE7E5E7E2B4BC52C002E28D2 /* MultiSelectionList.swift */,
 				CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */,
@@ -12560,6 +12567,7 @@
 				CE7FE6922D13249D000F9475 /* WooShippingAddresses */,
 				CEAEB7582CD0F96800C3E117 /* WooShipping Post-Purchase */,
 				CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */,
+				DEFE13C62DF2A34A005B3D39 /* UPSTOS */,
 				CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */,
 				CE49C4742CBEC84C00EA5C84 /* WooShipping_ShippingLineViewModel.swift */,
 			);
@@ -13789,6 +13797,15 @@
 				68A5221A2BA1804900A6A584 /* PluginDetailsViewModelTests.swift */,
 			);
 			path = Plugins;
+			sourceTree = "<group>";
+		};
+		DEFE13C62DF2A34A005B3D39 /* UPSTOS */ = {
+			isa = PBXGroup;
+			children = (
+				DEFE13C72DF2A354005B3D39 /* UPSTermsViewModel.swift */,
+				DEFE13C22DF1553E005B3D39 /* UPSTermsView.swift */,
+			);
+			path = UPSTOS;
 			sourceTree = "<group>";
 		};
 		E10459C427BBC20C00C1DCBA /* In-Person Payments */ = {
@@ -15371,6 +15388,7 @@
 				B5DB01B52114AB2D00A4F797 /* WooCrashLoggingStack.swift in Sources */,
 				205B7EBF2C19FBCA00D14A36 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel.swift in Sources */,
 				027ADB6E2D1BF5E3009608DB /* ParentProductCardView.swift in Sources */,
+				DEFE13C52DF15F55005B3D39 /* ToggleStyles.swift in Sources */,
 				26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
 				CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */,
@@ -15835,6 +15853,7 @@
 				03E471DC29424EC9001A58AD /* CardPresentModalTapToPaySuccessWithoutEmail.swift in Sources */,
 				45C91CFE25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				DEFE13C32DF1553E005B3D39 /* UPSTermsView.swift in Sources */,
 				B90DDF7C2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift in Sources */,
 				DE61979328A20C17005E4362 /* StorePickerViewModel.swift in Sources */,
 				DEB387A32C36474F0025256E /* GoogleAdsDashboardCard.swift in Sources */,
@@ -17079,6 +17098,7 @@
 				EEADF622281A40CB001B40F1 /* ShippingValueLocalizer.swift in Sources */,
 				26D86B692C50110600435411 /* TopPerformersCardDataSyncUseCase.swift in Sources */,
 				262C922126F1370000011F92 /* StorePickerError.swift in Sources */,
+				DEFE13C82DF2A359005B3D39 /* UPSTermsViewModel.swift in Sources */,
 				4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */,
 				20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */,
 				95B6C60C2D9DA5E900E1A661 /* WPComMagicLinkRequestView.swift in Sources */,

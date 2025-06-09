@@ -79,18 +79,22 @@ extension Cart {
 
 extension Cart {
     mutating func add(_ posItem: POSItem) {
-        switch posItem {
-        case .simpleProduct(let simpleProduct):
-            let productItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
-            purchasableItems.insert(productItem, at: purchasableItems.startIndex)
-        case .variation(let variation):
-            let productItem = Cart.PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
-            purchasableItems.insert(productItem, at: purchasableItems.startIndex)
-        case .variableParentProduct:
-            return
-        case .coupon(let coupon):
+        if let purchasableItem = createPurchasableItem(id: UUID(), from: posItem) {
+            purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)
+        } else if case .coupon(let coupon) = posItem {
             let couponItem = Cart.CouponItem(id: coupon.id, code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
+        }
+    }
+
+    private func createPurchasableItem(id: UUID, from posItem: POSItem) -> Cart.PurchasableItem? {
+        switch posItem {
+        case .simpleProduct(let simpleProduct):
+            return PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
+        case .variation(let variation):
+            return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+        case .variableParentProduct, .coupon:
+            return nil
         }
     }
 

@@ -27,8 +27,6 @@ final class POSTabCoordinator {
 
     private var posEligibilitySubscription: AnyCancellable?
 
-    @Published private(set) var eligibilityState: POSEligibilityState?
-
     private func posItemFetchStrategyFactory(siteID: Int64) -> PointOfSaleItemFetchStrategyFactory {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
     }
@@ -66,76 +64,66 @@ final class POSTabCoordinator {
         self.tabContainerController = tabContainerController
         self.credentials = storesManager.sessionManager.defaultCredentials
 
-        observePOSEligibility()
         tabContainerController.wrappedController = POSTabViewController()
-    }
-
-    convenience init(siteID: Int64,
-         tabContainerController: TabContainerController,
-         storesManager: StoresManager = ServiceLocator.stores) {
-        self.init(siteID: siteID,
-                  tabContainerController: tabContainerController,
-                  storesManager: storesManager,
-                  posEligibilityChecker: POSTabEligibilityChecker(siteID: siteID))
     }
 
     deinit {
         posEligibilitySubscription?.cancel()
     }
 
-    /// Used to reload the Hub menu screen when selected site changes
-    ///
-    func observePOSEligibility() {
-        posEligibilitySubscription = posEligibilityChecker.isEligible
-            .sink { [weak self] state in
-                self?.eligibilityState = state
-            }
-    }
-
     func onTabSelected() {
-        if case .eligible = eligibilityState {
-            Task { @MainActor [weak self] in
-                guard let self else { return }
-                let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
-                let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-                if let receiptService = POSReceiptService(siteID: siteID,
-                                                          credentials: credentials),
-                   let orderService = POSOrderService(siteID: siteID,
+        presentPOSView()
+    }
+}
+
+private extension POSTabCoordinator {
+    func presentPOSView() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
+            let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+            if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
-                   #available(iOS 17.0, *) {
-                    let posItemFetchStrategyFactory = posItemFetchStrategyFactory(siteID: siteID)
-                    let posView = PointOfSaleEntryPointView(
-                        itemsController: PointOfSaleItemsController(
-                            itemProvider: PointOfSaleItemService(
-                                currencySettings: ServiceLocator.currencySettings),
-                            itemFetchStrategyFactory: posItemFetchStrategyFactory),
-                        purchasableItemsSearchController: PointOfSaleItemsController(
-                            itemProvider: PointOfSaleItemService(
-                                currencySettings: ServiceLocator.currencySettings),
-                            itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                            initialState: .init(containerState: .content,
-                                                itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
-                        couponsController: PointOfSaleCouponsController(itemProvider: posCouponProvider(siteID: siteID),
-                                                                        fetchStrategyFactory: posCouponFetchStrategyFactory(siteID: siteID)),
-                        couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider(siteID: siteID),
-                                                                              fetchStrategyFactory: posCouponFetchStrategyFactory(siteID: siteID)),
-                        onPointOfSaleModeActiveStateChange: { isEnabled in
-                            //                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                        },
-                        cardPresentPaymentService: cardPresentPaymentService,
-                        orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                    receiptService: receiptService),
-                        collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-                        searchHistoryService: POSSearchHistoryService(siteID: siteID),
-                        popularPurchasableItemsController: PointOfSaleItemsController(
-                            itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
-                            itemFetchStrategyFactory: posPopularItemFetchStrategyFactory(siteID: siteID, posItemFetchStrategyFactory: posItemFetchStrategyFactory))
-                    )
-                    let hostingController = UIHostingController(rootView: posView)
-                    hostingController.modalPresentationStyle = .fullScreen
-                    tabContainerController.wrappedController?.present(hostingController, animated: true)
-                }
+               let orderService = POSOrderService(siteID: siteID,
+                                                  credentials: credentials),
+               #available(iOS 17.0, *) {
+                let posItemFetchStrategyFactory = posItemFetchStrategyFactory(siteID: siteID)
+                let posView = PointOfSaleEntryPointView(
+                    itemsController: PointOfSaleItemsController(
+                        itemProvider: PointOfSaleItemService(
+                            currencySettings: ServiceLocator.currencySettings),
+                        itemFetchStrategyFactory: posItemFetchStrategyFactory),
+                    purchasableItemsSearchController: PointOfSaleItemsController(
+                        itemProvider: PointOfSaleItemService(
+                            currencySettings: ServiceLocator.currencySettings),
+                        itemFetchStrategyFactory: posItemFetchStrategyFactory,
+                        initialState: .init(containerState: .content,
+                                            itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
+                    couponsController: PointOfSaleCouponsController(itemProvider: posCouponProvider(siteID: siteID),
+                                                                    fetchStrategyFactory: posCouponFetchStrategyFactory(siteID: siteID)),
+                    couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider(siteID: siteID),
+                                                                          fetchStrategyFactory: posCouponFetchStrategyFactory(siteID: siteID)),
+                    onPointOfSaleModeActiveStateChange: { isEnabled in
+                        //                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                    },
+                    cardPresentPaymentService: cardPresentPaymentService,
+                    orderController: PointOfSaleOrderController(orderService: orderService,
+                                                                receiptService: receiptService),
+                    collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+                    searchHistoryService: POSSearchHistoryService(siteID: siteID),
+                    popularPurchasableItemsController: PointOfSaleItemsController(
+                        itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
+                        itemFetchStrategyFactory: posPopularItemFetchStrategyFactory(
+                            siteID: siteID,
+                            posItemFetchStrategyFactory: posItemFetchStrategyFactory
+                        )
+                    ),
+                    posEligibilityChecker: posEligibilityChecker
+                )
+                let hostingController = UIHostingController(rootView: posView)
+                hostingController.modalPresentationStyle = .fullScreen
+                tabContainerController.wrappedController?.present(hostingController, animated: true)
             }
         }
     }

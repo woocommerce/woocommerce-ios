@@ -61,26 +61,24 @@ final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(
-            siteEligibilityPublisher,
-            siteSettingsEligibilityPublisher
-        )
-        .map { siteEligibility, siteSettingsEligibility -> POSEligibilityState in
-            switch siteSettingsEligibility {
-            case .eligible:
-                break
-            case .ineligible(let reason):
-                return .ineligible(reason: reason)
-            }
+        return siteEligibilityPublisher
+            .map { [weak self] siteEligibility -> POSEligibilityState in
+                guard let self else { return .ineligible(reason: .selfDeallocated) }
+                switch isEligibleFromSiteSettingsChecks() {
+                case .eligible:
+                    break
+                case .ineligible(let reason):
+                    return .ineligible(reason: reason)
+                }
 
-            switch siteEligibility {
-            case .eligible:
-                return .eligible
-            case .ineligible(let reason):
-                return .ineligible(reason: reason)
+                switch siteEligibility {
+                case .eligible:
+                    return .eligible
+                case .ineligible(let reason):
+                    return .ineligible(reason: reason)
+                }
             }
-        }
-        .eraseToAnyPublisher()
+            .eraseToAnyPublisher()
     }
 
     private let siteID: Int64
@@ -166,7 +164,7 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
-    private var siteSettingsCountryEligibilityPublisher: AnyPublisher<Bool, Never> {
+    var siteSettingsCountryEligibilityPublisher: AnyPublisher<Bool, Never> {
         NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed, object: siteSettings)
             .map { [weak self] _ -> Bool in
                 guard let self else { return false }
@@ -186,7 +184,7 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
-    private var siteSettingsEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
+    var siteSettingsEligibilityPublisher: AnyPublisher<POSEligibilityState, Never> {
         NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed)
             .map { [weak self] _ -> POSEligibilityState in
                 guard let self else { return .ineligible(reason: .selfDeallocated) }

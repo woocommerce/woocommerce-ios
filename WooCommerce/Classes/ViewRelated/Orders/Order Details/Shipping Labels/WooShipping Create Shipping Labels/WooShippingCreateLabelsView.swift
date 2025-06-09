@@ -116,6 +116,14 @@ struct WooShippingCreateLabelsView: View {
                     .presentationDetents([.fraction(0.7), .large])
                 }
             }
+            .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
+                if let termsViewModel = viewModel.upsTermsViewModel {
+                    UPSTermsView(viewModel: termsViewModel) {
+                        // TODO: reload rates
+                    }
+                    .presentationDetents([.fraction(0.8), .large])
+                }
+            }
         }
     }
 }

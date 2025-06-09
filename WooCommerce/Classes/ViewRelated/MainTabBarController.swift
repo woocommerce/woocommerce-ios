@@ -168,7 +168,6 @@ final class MainTabBarController: UITabBarController {
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
-        viewModel.loadHubMenuTabBadge()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -647,7 +646,9 @@ private extension MainTabBarController {
         posEligibilitySubscription = posEligibilityChecker?.isTabVisible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isPOSTabVisible in
-                self?.updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
+                guard let self else { return }
+                updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
+                viewModel.loadHubMenuTabBadge()
             }
     }
 
@@ -727,8 +728,6 @@ private extension MainTabBarController {
             viewControllerToPresent: self,
             posEligibilityChecker: posEligibilityChecker
         )
-
-        viewModel.loadHubMenuTabBadge()
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)

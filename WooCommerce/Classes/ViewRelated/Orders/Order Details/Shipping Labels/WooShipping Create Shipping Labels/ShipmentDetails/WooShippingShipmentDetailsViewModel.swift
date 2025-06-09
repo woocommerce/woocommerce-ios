@@ -180,6 +180,27 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
+    @MainActor
+    func refreshPackagesAndShippingRates() async throws {
+        guard let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+            throw WooShippingPurchaseError.failedToRefreshSelectedPackage
+        }
+        self.selectedPackage = updatedPackage
+
+        guard let finalPackage = currentPackage, let shippingService, let selectedRate else {
+            throw WooShippingPurchaseError.failedToRefreshSelectedRate
+        }
+        try await withCheckedThrowingContinuation { continuation in
+            shippingService.loadLabelRates(for: finalPackage) { result in
+                continuation.resume(with: result)
+            }
+        }
+        guard let updatedRate = shippingService.refreshSelectedRate(from: selectedRate) else {
+            throw WooShippingPurchaseError.failedToRefreshSelectedRate
+        }
+        self.selectedRate = updatedRate
+    }
+
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async throws {
@@ -363,6 +384,35 @@ private extension WooShippingShipmentDetailsViewModel {
             return rate - baseRate
         }()
         return (name, currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description)
+    }
+
+    @MainActor
+    func refreshSelectedPackage(from oldPackage: WooShippingPackageDataRepresentable) async throws -> WooShippingPackageDataRepresentable? {
+        let packages = try await withCheckedThrowingContinuation { continuation in
+            let loadPackagesAction = WooShippingAction.loadPackages(siteID: order.siteID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(loadPackagesAction)
+        }
+        let customSavedPackages = packages.customPackages.map { $0.toPackageData() }
+        let predefinedSavedPackages = packages.savedPredefinedPackages.map { $0.toPackageData() }
+        let carrierPackages = packages.allPredefinedOptions.compactMap { $0.toCarrierPackages() }
+
+        if let foundPackage = (customSavedPackages + predefinedSavedPackages).first(where: { $0.id == oldPackage.id }) {
+            return foundPackage
+        }
+
+        var foundCarrierPackage: WooShippingPackageDataRepresentable?
+        outerLoop: for carrierPackage in carrierPackages {
+            let packageGroups = carrierPackage.packageGroups
+            for group in packageGroups {
+                if let foundPackage = group.packages.first(where: { $0.id == oldPackage.id }) {
+                    foundCarrierPackage = foundPackage
+                    break outerLoop
+                }
+            }
+        }
+        return foundCarrierPackage
     }
 }
 

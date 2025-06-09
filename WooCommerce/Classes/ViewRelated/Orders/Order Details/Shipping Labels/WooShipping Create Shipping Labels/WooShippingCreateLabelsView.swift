@@ -119,7 +119,10 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
                     UPSTermsView(viewModel: termsViewModel) {
-                        // TODO: reload rates
+                        viewModel.shouldShowUPSTermsAndConditions = false
+                        Task { @MainActor in
+                            await viewModel.retryPurchaseAfterAcceptingUPSTerms()
+                        }
                     }
                     .presentationDetents([.fraction(0.8), .large])
                 }

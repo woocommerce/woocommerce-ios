@@ -79,8 +79,30 @@ final class WooShippingServiceViewModel: ObservableObject {
         analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
     }
 
+    func refreshSelectedRate(from oldRate: WooShippingSelectedRate) -> WooShippingSelectedRate? {
+        let updatedStandardRate = standardRates.first(where: {
+            $0.serviceID == oldRate.rate.serviceID
+        })
+        let updatedSignatureRate = signatureRates.first(where: {
+            $0.serviceID == oldRate.signatureRate?.serviceID
+        })
+        let updatedAdultSignatureRate = adultSignatureRates.first(where: {
+            $0.serviceID == oldRate.adultSignatureRate?.serviceID
+        })
+        guard let updatedStandardRate else {
+            return nil
+        }
+        let newSelectedRate = WooShippingSelectedRate(rate: updatedStandardRate,
+                                                      signatureRate: updatedSignatureRate,
+                                                      adultSignatureRate: updatedAdultSignatureRate)
+        self.selectedRate = newSelectedRate
+        generateServiceTabs()
+        return newSelectedRate
+    }
+
     /// Retrieves shipping label rates for this shipment from remote.
-    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected,
+                        onLoadingCompletion: @escaping (Result<Void, Swift.Error>) -> Void = { _ in }) {
         // Store the selected package for retrying if error occurs
         self.selectedPackage = selectedPackage
 
@@ -121,10 +143,12 @@ final class WooShippingServiceViewModel: ObservableObject {
                 adultSignatureRates = rates.adultSignatureRequired
                 updateLoadingState(to: .loaded)
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingSuccess))
+                onLoadingCompletion(.success(()))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
                 updateLoadingState(to: .error(Error.failedLoadingLabelRates))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                onLoadingCompletion(.failure(error))
             }
         }
         stores.dispatch(action)

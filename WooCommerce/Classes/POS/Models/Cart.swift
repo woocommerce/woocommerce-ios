@@ -29,6 +29,15 @@ extension Cart {
         enum ItemState {
             case loaded(POSOrderableItem)
             case loading
+
+            var isLoading: Bool {
+                switch self {
+                case .loading:
+                    return true
+                default:
+                    return false
+                }
+            }
         }
 
         init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState) {

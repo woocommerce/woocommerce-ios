@@ -25,10 +25,12 @@ struct ItemRowView: View {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
+                    .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemSubtitleFont)
+                        .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
                 }
 
                 switch cartItem.state {
@@ -36,13 +38,17 @@ struct ItemRowView: View {
                     Text(item.formattedPrice)
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemPriceFont)
-                default:
-                    EmptyView()
+                case .loading:
+                    Text("$0.00")
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                        .redacted(reason: .placeholder)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
             .accessibilityElement(children: .combine)
+            .shimmering(active: cartItem.state.isLoading)
 
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
@@ -68,8 +74,13 @@ struct ItemRowView: View {
                                  imageSize: dimension,
                                  scale: 1)
                 .frame(width: dimension, height: dimension)
-            default:
-                EmptyView()
+            case .loading:
+                POSItemImageView(imageSource: nil,
+                                 imageSize: dimension,
+                                 scale: 1)
+                .frame(width: dimension, height: dimension)
+                .redacted(reason: .placeholder)
+                .shimmering()
             }
         }
     }

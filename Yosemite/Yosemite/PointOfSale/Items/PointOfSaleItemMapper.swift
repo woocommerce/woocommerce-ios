@@ -4,7 +4,7 @@ import class WooFoundation.CurrencyFormatter
 
 public protocol PointOfSaleItemMapperProtocol {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem]
-    func mapVariationsToPOSItems(variations: [ProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem]
+    func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem]
 }
 
 /// Maps products and variations to POSItems, and populates the output with:
@@ -46,7 +46,7 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
         }
     }
 
-    func mapVariationsToPOSItems(variations: [ProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
+    func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem] {
         return variations.compactMap { variation in
             let variationName = ProductVariationFormatter().generateNameWithAttributeNames(
                 for: variation,

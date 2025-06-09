@@ -31,7 +31,7 @@ final class MockProductVariationsRemote {
     private var productVariationDeleteResults = [ResultKey: Result<ProductVariation, Error>]()
 
     /// The results to return based on the given arguments in `loadVariationsForPointOfSale`
-    private var variationsForPointOfSaleResults = [ResultKey: Result<[ProductVariation], Error>]()
+    private var variationsForPointOfSaleResults = [ResultKey: Result<[POSProductVariation], Error>]()
 
     /// Set the value passed to the `completion` block if `createProductVariation()` is called.
     ///
@@ -81,7 +81,7 @@ final class MockProductVariationsRemote {
 
     /// Set the value to return if `loadVariationsForPointOfSale()` is called.
     ///
-    func whenLoadingVariationsForPointOfSale(siteID: Int64, parentProductID: Int64, thenReturn result: Result<[ProductVariation], Error>) {
+    func whenLoadingVariationsForPointOfSale(siteID: Int64, parentProductID: Int64, thenReturn result: Result<[POSProductVariation], Error>) {
         let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
         variationsForPointOfSaleResults[key] = result
     }
@@ -100,7 +100,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
-    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    func loadVariationsForPointOfSale(for siteID: Int64, parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])
         guard let result = variationsForPointOfSaleResults[key] else {
             throw NetworkError.notFound()

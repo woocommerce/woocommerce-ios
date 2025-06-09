@@ -90,6 +90,7 @@ public typealias PaymentGateway = Networking.PaymentGateway
 public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
 public typealias POSProduct = Networking.POSProduct
+public typealias POSProductVariation = Networking.POSProductVariation
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption
 public typealias ProductBackordersSetting = Networking.ProductBackordersSetting

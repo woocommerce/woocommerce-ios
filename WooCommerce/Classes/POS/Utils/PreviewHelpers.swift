@@ -15,7 +15,7 @@ import struct Yosemite.ProductBundleItem
 import struct Yosemite.OrderItem
 import protocol Yosemite.PointOfSalePurchasableItemFetchStrategy
 import struct Yosemite.POSProduct
-import struct Yosemite.ProductVariation
+import struct Yosemite.POSProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
@@ -75,7 +75,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
         return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 
-    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         return .init(items: [], hasMorePages: true, totalItems: nil)
     }
 }

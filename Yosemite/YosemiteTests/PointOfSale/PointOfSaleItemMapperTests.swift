@@ -87,7 +87,7 @@ struct PointOfSaleItemMapperTests {
             ([], createParentProduct())
           ])
     func mapVariationsToPOSItemsWithCount(
-        variations: [ProductVariation],
+        variations: [POSProductVariation],
         parentProduct: POSVariableParentProduct
     ) {
         // When
@@ -193,8 +193,8 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariation1() -> ProductVariation {
-        ProductVariation.fake().copy(
+    private static func createVariation1() -> POSProductVariation {
+        POSProductVariation.fake().copy(
             productID: 125,
             productVariationID: 456,
             attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Red")],
@@ -203,8 +203,8 @@ struct PointOfSaleItemMapperTests {
         )
     }
 
-    private static func createVariation2() -> ProductVariation {
-        ProductVariation.fake().copy(
+    private static func createVariation2() -> POSProductVariation {
+        POSProductVariation.fake().copy(
             productID: 125,
             productVariationID: 457,
             attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Blue")],

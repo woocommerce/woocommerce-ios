@@ -1890,6 +1890,8 @@ extension Networking.POSProduct {
         regularPrice: NullableCopiableProp<String> = .copy,
         salePrice: NullableCopiableProp<String> = .copy,
         onSale: CopiableProp<Bool> = .copy,
+        downloadable: CopiableProp<Bool> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
         attributes: CopiableProp<[ProductAttribute]> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
@@ -1906,6 +1908,8 @@ extension Networking.POSProduct {
         let regularPrice = regularPrice ?? self.regularPrice
         let salePrice = salePrice ?? self.salePrice
         let onSale = onSale ?? self.onSale
+        let downloadable = downloadable ?? self.downloadable
+        let parentID = parentID ?? self.parentID
         let images = images ?? self.images
         let attributes = attributes ?? self.attributes
         let manageStock = manageStock ?? self.manageStock
@@ -1923,6 +1927,8 @@ extension Networking.POSProduct {
             regularPrice: regularPrice,
             salePrice: salePrice,
             onSale: onSale,
+            downloadable: downloadable,
+            parentID: parentID,
             images: images,
             attributes: attributes,
             manageStock: manageStock,

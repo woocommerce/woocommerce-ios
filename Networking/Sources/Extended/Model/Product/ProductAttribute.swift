@@ -93,6 +93,23 @@ public extension ProductAttribute {
     var isGlobal: Bool {
         !isLocal
     }
+
+    /// This is intended for use for converting variations-as-products to variations.
+    /// This inverts the assumption made when we decoded `option` as `options = [option]`
+    ///
+    func toProductVariationAttribute() throws -> ProductVariationAttribute {
+        guard options.count == 1,
+              let option = options.first else {
+            throw ProductAttributeError.notFromAVariationAsAProduct
+        }
+        return ProductVariationAttribute(id: attributeID,
+                                         name: name,
+                                         option: option)
+    }
+
+    enum ProductAttributeError: Error {
+        case notFromAVariationAsAProduct
+    }
 }
 
 /// Defines all the ProductAttribute CodingKeys.

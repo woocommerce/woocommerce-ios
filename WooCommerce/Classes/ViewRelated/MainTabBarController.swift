@@ -53,7 +53,7 @@ extension WooTab {
     }
 
     // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
-    private static func visibleTabs(isPOSTabVisible: Bool) -> [WooTab] {
+    static func visibleTabs(isPOSTabVisible: Bool) -> [WooTab] {
         if isPOSTabVisible {
             return [.myStore, .orders, .products, .pointOfSale, .hubMenu]
         } else {
@@ -652,10 +652,7 @@ private extension MainTabBarController {
     }
 
     private func updateTabViewControllers(isPOSTabVisible: Bool) {
-        var tabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
-        if isPOSTabVisible {
-            tabs.insert(.pointOfSale, at: 3)
-        }
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
         self.isPOSTabVisible = isPOSTabVisible
 
         var controllers = [UIViewController]()

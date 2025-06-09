@@ -115,6 +115,10 @@ extension Cart {
         }
     }
 
+    mutating func removeItem(id: UUID) {
+        purchasableItems.removeAll(where: { $0.id == id })
+    }
+
     var isEmpty: Bool {
         purchasableItems.isEmpty && coupons.isEmpty
     }

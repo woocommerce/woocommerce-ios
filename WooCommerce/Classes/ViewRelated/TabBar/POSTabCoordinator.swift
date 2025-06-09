@@ -21,6 +21,7 @@ final class POSTabViewController: UIViewController {
 final class POSTabCoordinator {
     private let siteID: Int64
     private let tabContainerController: TabContainerController
+    private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
     private let posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol
     private let credentials: Credentials?
@@ -56,12 +57,14 @@ final class POSTabCoordinator {
 
     init(siteID: Int64,
          tabContainerController: TabContainerController,
+         viewControllerToPresent: UIViewController,
          storesManager: StoresManager = ServiceLocator.stores,
          posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.posEligibilityChecker = posEligibilityChecker
         self.tabContainerController = tabContainerController
+        self.viewControllerToPresent = viewControllerToPresent
         self.credentials = storesManager.sessionManager.defaultCredentials
 
         tabContainerController.wrappedController = POSTabViewController()
@@ -123,7 +126,7 @@ private extension POSTabCoordinator {
                 )
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen
-                tabContainerController.wrappedController?.present(hostingController, animated: true)
+                viewControllerToPresent.present(hostingController, animated: true)
             }
         }
     }

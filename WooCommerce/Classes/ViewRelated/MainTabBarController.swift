@@ -727,6 +727,7 @@ private extension MainTabBarController {
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
+            viewControllerToPresent: self,
             posEligibilityChecker: posEligibilityChecker
         )
 

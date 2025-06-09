@@ -789,22 +789,22 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-//        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
-//            guard let self = self else {
-//                return
-//            }
-//
-//            let tab = WooTab.orders
-//            let tabIndex = tab.visibleIndex()
-//
-//            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
-//                return
-//            }
-//
-//            orderTab.badgeValue = countReadableString
-//        }
-//
-//        viewModel.startObservingOrdersCount()
+        viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
+            guard let self = self else {
+                return
+            }
+
+            let tab = WooTab.orders
+            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+
+            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
+                return
+            }
+
+            orderTab.badgeValue = countReadableString
+        }
+
+        viewModel.startObservingOrdersCount()
     }
 }
 

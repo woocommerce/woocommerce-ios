@@ -221,9 +221,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var canConfirmDetails: Bool {
-        tagline.isNotEmpty && description.isNotEmpty
+        tagline.isNotEmpty && description.isNotEmpty && isToSAccepted
     }
 
+    @Published var isToSAccepted = false
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
@@ -269,7 +270,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             targetUrn: targetUrn,
                             type: Constants.campaignType,
                             objective: campaignObjective?.id,
-                            ctaText: ctaText)
+                            ctaText: ctaText,
+                            acceptedTOS: true)
     }
 
     private let locale: Locale

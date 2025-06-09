@@ -65,6 +65,7 @@ struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.sizeCategory) var sizeCategory
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var isShowingCampaignObjectivePicker = false
@@ -156,6 +157,12 @@ struct BlazeCampaignCreationForm: View {
                     .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
+
+                // Embed TOS checkbox for accessibility font sizes in scrollview
+                if sizeCategory.isAccessibilityCategory {
+                    tosCheckboxToggle
+                        .padding(.top, Layout.contentPadding)
+                }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
@@ -164,14 +171,23 @@ struct BlazeCampaignCreationForm: View {
             VStack(spacing: 0) {
                 Divider()
 
-                Button {
-                    viewModel.didTapConfirmDetails()
-                } label: {
-                    Text(Localization.confirmDetails)
+                VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                    // Present TOS checkbox in footer for non-accessibility font sizes
+                    if !sizeCategory.isAccessibilityCategory {
+                        tosCheckboxToggle
+                            .padding(.horizontal, Layout.contentPadding)
+                    }
+
+                    Button {
+                        viewModel.didTapConfirmDetails()
+                    } label: {
+                        Text(Localization.confirmDetails)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.horizontal, Layout.contentPadding)
+                    .disabled(!viewModel.canConfirmDetails)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentPadding)
-                .disabled(!viewModel.canConfirmDetails)
+                .padding(.vertical, Layout.contentPadding)
             }
             .background(Constants.backgroundViewColor)
         }
@@ -264,6 +280,15 @@ struct BlazeCampaignCreationForm: View {
                 EmptyView()
             }
         }
+    }
+
+    private var tosCheckboxToggle: some View {
+        Toggle(isOn: $viewModel.isToSAccepted) {
+            Text(viewModel.tosCheckboxText)
+                .bodyStyle()
+                .multilineTextAlignment(.leading)
+        }
+        .toggleStyle(CheckboxToggleStyle())
     }
 }
 

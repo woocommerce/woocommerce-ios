@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-20 14:54:04+0000 */
+/* Translation-Revision-Date: 2025-06-03 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -352,8 +352,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
    Add tracking screen - button title to add a tracking
+   Remove asset from media picker list
    Text for the add button in the discounts details screen */
 "Add" = "הוספה";
+
+/* Action for Media Picker to indicate selection of media. The argument in the string represents the number of elements (as numeric digits) selected */
+"Add %@" = "להוסיף %@";
 
 /* Title on empty state button when the product has no attributes and variations */
 "Add Attributes" = "להוסיף מאפיינים";
@@ -577,6 +581,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Albania" = "אלבניה";
 
+/* Description of albums in the photo libraries */
+"Albums" = "אלבומים";
+
 /* Country option for a site address. */
 "Algeria" = "אלג'יריה";
 
@@ -602,9 +609,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the notice when there were no variations to generate */
 "All variations are already generated." = "כל הסוגים כבר נוצרו.";
 
-/* Display label for the product's inventory backorders setting option */
-"Allow" = "לאפשר";
-
 /* Title of alert that links to settings for camera access. */
 "Allow camera access" = "לאפשר גישה למצלמה";
 
@@ -614,9 +618,6 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics toggle description in the privacy screen.
    Description for the analytics toggle in the privacy banner */
 "Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "אנחנו זקוקים לאישורך כדי לבצע אופטימיזציה של ביצועים על ידי איסוף מידע לגבי האופן שבו משתמשים יוצרים אינטראקציה עם האפליקציות שלנו למכשירים ניידים.";
-
-/* Display label for the product's inventory backorders setting option */
-"Allow, but notify customer" = "לאפשר אך להודיע ללקוח";
 
 /* Title for the allowed email row in coupon usage restrictions screen.
    Title for the Allowed Emails screen */
@@ -683,9 +684,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "הערה אופציונלית לשלוח ללקוחות לאחר הרכישה";
-
-/* Error message when an order already exists in the backend for a given receipt */
-"An order already exists for this receipt" = "כבר קיימת הזמנה עבור הקבלה הזו";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "אירעה שגיאה לא מזוהה.";
@@ -758,8 +756,7 @@ which should be translated separately and considered part of this sentence. */
 /* Approve a comment */
 "Approve" = "אישור";
 
-/* Display label for the review's approved status
-   Unapprove a comment */
+/* Unapprove a comment */
 "Approved" = "מאושר";
 
 /* Approves a comment. Spoken Hint. */
@@ -822,6 +819,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "המאפיינים נוספו!";
+
+/* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
+"Audio, %@" = "אודיו, %@";
 
 /* Country option for a site address. */
 "Australia" = "אוסטרליה";
@@ -972,9 +972,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "בונייר, סנט אוסטטיוס וסאבא";
 
-/* Display label for bookable product type. */
-"Bookable" = "ניתן להזמנה";
-
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "לשפר את שיעור המכירה עם מבצעים מיוחדים";
 
@@ -1017,9 +1014,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "עדכון מספר פריטים במקביל";
-
-/* Display label for bundle product type. */
-"Bundle" = "חבילה";
 
 /* Title for the bundled products screen */
 "Bundled Products" = "מוצרים בחבילות";
@@ -1075,6 +1069,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cambodia" = "קמבודיה";
+
+/* Accessibility label for the camera tile in the collection view */
+"Camera" = "מצלמה";
 
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "כדי לסרוק SKU יש לאפשר הרשאות מצלמה עליך לאפשר את הרשאות המצלמה מהגדרות המכשיר";
@@ -1537,9 +1534,6 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "יצירת הערה חדשה להזמנה.";
 
-/* Display label for composite product type. */
-"Composite" = "הרכב";
-
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "ההגדרה עודכנה";
 
@@ -1766,6 +1760,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "לא ניתן לסגור את החשבון באופן אוטומטי";
 
+/* Message to show while media data source is finding the number of items available. */
+"Counting media items..." = "סופר פריטי מדיה...";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1980,9 +1977,6 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "הלקוחות צריכים להזין את הקוד הזה כדי להשתמש בקופון.";
 
-/* Title of the store onboarding task to customize the store domain. */
-"Customize your domain" = "להתאים אישית את הדומיין שלך";
-
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "מכס";
@@ -2125,6 +2119,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
+   Action to show on alert when view asset fails.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
@@ -2171,9 +2166,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Djibouti" = "ג'יבוטי";
 
-/* Display label for the product's inventory backorders setting option */
-"Do not allow" = "לא לאפשר";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "האם ברצונך להוסיף את 'לשלם באופן אישי' אל תהליך התשלום בקופה באתר?";
 
@@ -2183,11 +2175,16 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "האם ברצונך להעביר מוצר זה לפח?";
 
+/* Accessibility label for other media items in the media collection view. The parameter is the creation date of the document. */
+"Document, %@" = "מסמך, ‎%@";
+
+/* Accessibility label for other media items in the media collection view. The parameter is the filename file. */
+"Document: %@" = "מסמכים: ‎%@";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "מסמכים";
 
-/* Navigates to domain settings screen.
-   Navigation bar title of the domain settings screen. */
+/* Navigation bar title of the domain settings screen. */
 "Domains" = "דומיינים";
 
 /* Country option for a site address. */
@@ -2246,33 +2243,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "אין לך מושג כיצד להדפיס באמצעות המכשיר הנייד שלך?";
 
-/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "שגיאת Dotcom: ‏[%1$@] %2$@";
-
-/* WordPress.com error thrown when the the request REST API url is invalid. */
-"Dotcom Invalid REST Route" = "שגיאת Dotcom עקב נתיב REST לא תקף";
-
-/* WordPress.com Missing Token */
-"Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
-
-/* WordPress.com error thrown when the user has no permission to view site stats. */
-"Dotcom No Stats Permission" = "הרשאה להשבתת הנתונים הסטטיסטיים של Dotcom";
-
-/* WordPress.com Request Failure */
-"Dotcom Request Failed" = "הבקשה של Dotcom נכשלה";
-
-/* WordPress.com error thrown when a requested resource does not exist remotely. */
-"Dotcom Resource does not exist" = "המשאב של Dotcom לא קיים";
-
-/* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "התגובה של Dotcom ריקה";
-
-/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
-"Dotcom Stats Module Disabled" = "מודול הנתונים הסטטיסטיים של Dotcom הושבת";
-
-/* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "האסימון Dotcom לא תקף";
-
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "יש להקיש פעמיים כדי להתעלם";
 
@@ -2310,9 +2280,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Downloadable Files row on Product main screen
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "קבצים שניתנים להורדה";
-
-/* Display label for the product's draft status */
-"Draft" = "טיוטה";
 
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "להגביר מכירות בחנות שלך בעזרת Blaze";
@@ -2772,9 +2739,6 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales." = "כדאי לראות איך אפשר להגדיל את המכירות בחנות שלך";
 
-/* Display label for affiliate product type. */
-"External\/Affiliate" = "חיצוני\/ממומן";
-
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "מחיקת הקופון נכשלה. יש לנסות שוב.";
 
@@ -3131,9 +3095,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
 "Group of: %@" = "קבוצה של: %@";
 
-/* Display label for grouped product type. */
-"Grouped" = "בקבוצה";
-
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "מוצרים מקובצים";
 
@@ -3174,8 +3135,7 @@ which should be translated separately and considered part of this sentence. */
 /* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
 "HS Tariff Number must be 6 digits long" = "המספר HS Tariff Number חייב להיות בן 6 ספרות";
 
-/* Accessibility label for HTML button on formatting toolbar.
-   HTML Attachment Label */
+/* Accessibility label for HTML button on formatting toolbar. */
 "HTML" = "HTML";
 
 /* Post HTML content */
@@ -3183,9 +3143,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Haiti" = "האיטי";
-
-/* Subtitle of the store onboarding task to customize the store domain. */
-"Have a custom URL to host your store." = "כתובת URL מותאמת אישית לאחסון החנות שלך.";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "יש לוודא שפרטי הכניסה לחנות זמינים לך.";
@@ -3258,8 +3215,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "היי! זה קישור להורדת האפליקציה של WooCommerce. זו אפליקציה נהדרת לדעתי ואולי תמצא חן גם בעיניך.";
 
-/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Display label for the product's catalog visibility */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks). */
 "Hidden" = "מוסתר";
 
 /* Title of the Hide store setup list button in the action sheet. */
@@ -3331,6 +3287,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "If your data still isn’t loading, contact our support team for assistance." = "אם הנתונים עדיין לא נטענים, יש ליצור קשר עם צוות התמיכה שלנו לסיוע.";
 
+/* Accessibility label for image thumbnails in the media collection view. The parameter is the creation date of the image. */
+"Image, %@" = "תמונה, %@";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "מידע חשוב";
 
@@ -3341,7 +3300,6 @@ which should be translated separately and considered part of this sentence. */
 "In progress" = "בתהליך";
 
 /* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "במלאי";
 
@@ -3452,9 +3410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of installing Jetpack plugin step
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "מתקין את Jetpack";
-
-/* Display label for the product's inventory stock status */
-"Insufficient stock" = "מלאי לא מספיק";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "ביטוח (%1$@)";
@@ -3620,9 +3575,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Jersey" = "ג'רזי";
 
-/* WordPress.com error thrown when Jetpack is not connected. */
-"Jetpack Not Connected" = "השירות של Jetpack לא מחובר";
-
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "הגדרת Jetpack‎";
 
@@ -3712,9 +3664,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Latvia" = "לטביה";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "להשיק את איתור הבאגים של Wormholy";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "להשיק את החנות שלך";
 
@@ -3774,9 +3723,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Lesotho" = "לסוטו";
-
-/* Message info on the support screen. */
-"Let us know your site address (URL) and tell us as much as you can about the problem," = "אנחנו מבקשים לדעת את כתובת האתר שלך (כתובת ה-URL) וכמה שיותר פרטים לגבי הבעיה,";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "מכתב (8.5 x‏ 11 אינץ')";
@@ -4087,6 +4033,16 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Mayotte" = "מאיוט";
 
+/* Title for alert when access to media capture is not granted */
+"Media Capture" = "צילום מדיה";
+
+/* Title for alert when a generic error happened when loading media
+   Title for alert when access to the media library is not granted by the user */
+"Media Library" = "ספריית מדיה";
+
+/* Alert title when there is issues loading an asset to preview. */
+"Media preview failed." = "תצוגה מקדימה של פריט מדיה נכשלה.";
+
 /* Title of the Menu tab */
 "Menu" = "תפריט";
 
@@ -4269,21 +4225,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Netherlands" = "הולנד";
 
-/* Error message when session cookie has expired. */
-"NetworkError.invalidCookieNonce" = "מצטערים , תוקף ההפעלה פג. נא להתחבר מחדש.";
-
-/* Error message when the URL is invalid. */
-"NetworkError.invalidURL" = "מצטערים, כתובת ה-URL לא תקפה. נא לנסות שוב.";
-
-/* Error message when we receive not found error */
-"NetworkError.notFound" = "מצטערים, לא הצלחנו לאתר את מה שחיפשת. נא לנסות שוב. תשובה: %1$@";
-
-/* Error message when a request times out. */
-"NetworkError.timeout" = "מצטערים, עיבוד הבקשה נמשך זמן רב מדי. נא לנסות שוב מאוחר יותר. תשובה: %1$@";
-
-/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
-"NetworkError.unacceptableStatusCode" = "מצטערים, בעיה בשרת. נא לנסות שוב מאוחר יותר. (קוד שגיאה: ⁦%1$d⁩). תשובה: %2$@";
-
 /* Display label when a subscription never expires. */
 "Never expire" = "ללא פקיעת תוקף";
 
@@ -4454,8 +4395,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "No variations to generate" = "אין סוגים שניתן ליצור";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
-   Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option
    Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4494,6 +4433,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of order note section in the receipt, commonly used for Quick Orders. */
 "Notes" = "פתקים";
 
+/* Default message for empty media picker */
+"Nothing to show" = "אין מה לראות כאן";
+
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "לאחר הוספת המאפיינים, באפשרותך ליצור את הסוג הראשון שלך!";
 
@@ -4503,6 +4445,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss expired WPCom plan alert
    Button to dismiss the error alert on the site credential login screen
+   Confirmation of action
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
    Dismiss button on the alert when there is an error requesting shipping label document for printing
@@ -4541,8 +4484,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the subscription status type */
 "On Hold" = "בהמתנה";
 
-/* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status */
 "On back order" = "בהזמנה חוזרת";
 
 /* Helper text above photo list in Product images screen */
@@ -4566,7 +4508,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Open Map" = "לפתוח את המפה";
 
 /* Button title to open device settings in an action sheet
-   Button title to open device settings in an alert */
+   Button title to open device settings in an alert
+   Go to the settings app */
 "Open Settings" = "פתיחת הגדרות";
 
 /* Label for the description of openening a link using a new window */
@@ -4747,8 +4690,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "אתרים אחרים";
 
-/* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status */
 "Out of stock" = "לא במלאי";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -4835,9 +4777,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Account creation error when the password is invalid. */
 "Password must be at least 6 characters." = "הסיסמה חייבת להיות עם שישה תווים לפחות.";
 
-/* Paste without Formatting Menu Item */
-"Paste without Formatting" = "הדבקה בלי העיצוב";
-
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "לשלם באמצעות כרטיס או עם אמצעי תשלום נתמך אחר";
@@ -4890,8 +4829,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for payments setup from onboarding. */
 "Payments" = "תשלומים";
 
-/* Display label for the review's pending status
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Pending" = "ממתין לאישור";
 
 /* Display label for the subscription status type */
@@ -4899,9 +4837,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "ביקורת ממתינה לאישור";
-
-/* Display label for the product's pending status */
-"Pending review" = "תצוגה מקדימה בהמתנה";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "אחוזי הנחה";
@@ -5212,6 +5147,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the store onboarding > launch store screen. */
 "Preview" = "תצוגה מקדימה";
 
+/* Action for Media Picker to preview the selected media items. The argument in the string represents the number of elements (as numeric digits) selected */
+"Preview %@" = "תצוגה מקדימה של %@";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "החזר כספי בוצע בעבר";
 
@@ -5290,8 +5228,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Privacy settings screen title */
 "Privacy Settings" = "הגדרות פרטיות";
 
-/* Display label for the product's private status
-   One of the possible options in Product Visibility */
+/* One of the possible options in Product Visibility */
 "Private" = "פרטי";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -5435,9 +5372,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the store onboarding task to launch the store. */
 "Publish your site to the world anytime you want!" = "להשיק את האתר שלך לעולם מתי שנוח לך!";
-
-/* Display label for the product's published status */
-"Published" = "פורסם";
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "מפרסם את המוצר שלך...";
@@ -5626,7 +5560,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "הזכירו לי מאוחר יותר";
 
-/* Confirm button on the alert when the user taps to delete a Product image
+/* Add asset to media picker list
+   Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
    Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "הסרה";
@@ -5995,9 +5930,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Search Products */
 "Search products" = "חיפוש מוצרים";
 
-/* Display label for the product's catalog visibility */
-"Search results only" = "תוצאות חיפוש בלבד";
-
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "להציג חנויות מחוברות";
@@ -6071,6 +6003,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "יש לבחור פריטים";
+
+/* Accessibility hint for actions when displaying media items. */
+"Select media." = "יש לבחור מדיה.";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "בחירת סגנון פסקה";
@@ -6276,15 +6211,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "תוויות המשלוח נרכשו!";
 
-/* Display label for the product's tax status setting option */
-"Shipping only" = "משלוח בלבד";
-
-/* Display label for the product's catalog visibility */
-"Shop and search results" = "חנות ותוצאות חיפוש";
-
-/* Display label for the product's catalog visibility */
-"Shop only" = "חנות בלבד";
-
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
@@ -6353,9 +6279,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "מחובר בתור @%1$@";
-
-/* Display label for simple product type. */
-"Simple" = "פשוט";
 
 /* Country option for a site address. */
 "Singapore" = "סינגפור";
@@ -6524,8 +6447,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Spain" = "ספרד";
 
-/* Display label for the review's spam status
-   Verb, spam a comment */
+/* Verb, spam a comment */
 "Spam" = "תגובת זבל";
 
 /* Option to select the Spark email app when logging in with magic links */
@@ -6607,9 +6529,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "לשלוח בקשת תמיכה";
-
-/* Display label for simple subscription product type. */
-"Subscription" = "מינוי";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "סטטוס מינוי";
@@ -6860,10 +6779,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "מצב מס";
-
-/* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
-"Taxable" = "חייב במיסים";
 
 /* Line description for tax charged on the whole cart. Only shown when non-zero
    Taxes label for payment view */
@@ -7193,6 +7108,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "הייתה בעיה בתקשורת עם האתר הזה.";
 
+/* Explaining to the user there was an generic error accesing media. */
+"There was a problem when trying to access your media. Please try again later." = "אירעה בעיה בניסיון לגשת למדיה שלך. יש לנסות שוב מאוחר יותר.";
+
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
 
@@ -7264,6 +7182,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "השנה";
 
+/* No comment provided by engineer. */
+"This app needs permission to access the Camera to capture new media, please change the privacy settings if you wish to allow this." = "אפליקציה זו זקוקה להרשאה כדי לגשת למצלמה ולצלם מדיה חדשה, יש לשנות את הגדרות הפרטיות אם ברצונך לאפשר זאת.";
+
+/* Explaining to the user why the app needs access to the device media library. */
+"This app needs permission to access your device media library in order to add photos and\/or video to your posts. Please change the privacy settings if you wish to allow this." = "אפליקציה זו זקוקה להרשאה כדי לגשת לספריית המדיה במכשיר שלך ולהוסיף תמונות ו\/או סרטוני וידאו לפוסטים שלך. יש לשנות את הגדרות הפרטיות אם ברצונך לאפשר זאת.";
+
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "כדי להשתמש באפליקציה זו, יש להתקין את WooCommerce 3.5 בשרת שלך, אחרת האפליקציה לא תעבוד בצורה תקינה. כדאי לבצע עדכון בהקדם האפשרי כדי להמשיך להשתמש באפליקציה זו.";
 
@@ -7311,9 +7235,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "המוצר נמחק ולא ניתן עוד להציג אותו";
-
-/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
-"This receipt's transaction type is not expected from the app [%1$@]" = "סוג העסקה של הקבלה הזאת לא צפוי להתקבל מהאפליקציה [%1$@]";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "הגדרה זו קובעת על אילו מעמודי החנות תופיע רשימת מוצרים.";
@@ -7464,8 +7385,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "מספר מעקב %@";
 
-/* Display label for the review's trash status
-   Move a comment to the trash */
+/* Move a comment to the trash */
 "Trash" = "פח";
 
 /* Plan name for an expired free trial */
@@ -7838,8 +7758,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "United States Virgin Islands" = "איי הבתולה של ארצות הברית";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review
-   Unknown Tag Name */
+   Unknown product name, displayed in a review */
 "Unknown" = "לא ידוע";
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
@@ -7850,6 +7769,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Fallback country option for a site address. */
 "Unknown country" = "ארץ לא ידועה";
+
+/* Label to use when creation date from media asset is not know. */
+"Unknown creation date" = "תאריך יצירה לא ידוע";
 
 /* No comment provided by engineer. */
 "Unknown error" = "שגיאה לא ידועה";
@@ -7869,14 +7791,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "רשימה לא ממוספרת";
 
-/* Display label for the review's unspam status */
-"Unspam" = "ביטול הסימון כתגובת זבל";
-
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
 "Unsupported %1$@ version" = "גרסת %1$@ לא נתמכת";
-
-/* Display label for the review's untrash status */
-"Untrash" = "ביטול ההעברה לפח";
 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Up to date" = "הכול מעודכן";
@@ -8030,12 +7946,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Vanuatu" = "ונאוטו";
 
-/* Display label for variable product type. */
-"Variable" = "משתנה";
-
-/* Display label for variable subscription product type. */
-"Variable Subscription" = "מינוי עם סוגים";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "סוג #%1$@";
 
@@ -8076,6 +7986,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "גרסה: %1$@";
+
+/* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
+"Video, %@" = "וידאו, %@";
 
 /* Country option for a site address. */
 "Vietnam" = "וייטנאם";
@@ -8428,9 +8341,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
-/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"WordPress API Error: [%1$@] %2$@" = "שגיאה של WordPress API‏: [%1$@] %2$@";
-
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
@@ -8584,6 +8494,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* First instruction on the Woo payments setup instructions screen. */
 "Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "ההודעות של WooPayments יישלחו אל האימייל של חשבונך ב-WordPress.com. רוצה ליצור חשבון חדש? ניתן למצוא כאן פרטים נוספים.";
 
+/* Explaining to the user why the app needs access to the device media library. */
+"Your app is not authorized to access media library due to active restrictions such as parental controls. Please check your parental control settings in this device." = "לאפליקציה שלך אין הרשאות גישה לספריית המדיה עקב הגבלות פעילות, כגון בקרת הורים. יש לבדוק את ההגדרות של בקרת ההורים במכשיר זה.";
+
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "עליך לעדכן את התוכנה של קורא הכרטיסים שלך כדי לגבות תשלומים. הביטול יחסום את החיבור של קורא הכרטיסים.";
 
@@ -8693,9 +8606,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Zimbabwe" = "זימבבואה";
-
-/* Comment Attachment Label */
-"[COMMENT]" = "[תגובה]";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "ביטול";
@@ -8897,6 +8807,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "להתחבר עם חשבון אחר";
+
+/* Label displayed on audio media items. */
+"audio" = "אודיו";
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
@@ -9112,6 +9025,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to try again on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.tryAgain" = "יש לנסות שוב";
 
+/* Accessibility label for the call to action button in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.callToActionButton" = "כפתור 'קריאה לפעולה': %@";
+
+/* Accessibility label for the campaign description in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignDescription" = "תיאור הקמפיין: %@";
+
+/* Accessibility label for the campaign preview container in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignPreview" = "תצוגה מקדימה של הקמפיין";
+
+/* Accessibility hint for the campaign preview container in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignPreviewHint" = "האפשרות מציגה איך הפרסומת של הקמפיין ב-Blaze תופיע אצל הלקוחות";
+
+/* Accessibility label for the campaign tagline in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignTagline" = "תיאור הקמפיין: %@";
+
+/* Accessibility label for the default call to action button in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.defaultCallToAction" = "כפתור 'קריאה לפעולה' שבברירת מחדל";
+
+/* Accessibility label for the product image in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.productImage" = "תמונת המוצר לקמפיין";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "היעד של הפרסומת";
 
@@ -9231,6 +9165,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "מגדילים את הנראות ומאיצים את מכירת המוצרים.";
+
+/* Accessibility label format for a Blaze campaign card. The %1$@ is a placeholder for the campaign name. The %2$@ is a placeholder for the campaign status. */
+"blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat" = "קמפיינים של Blaze עבור %1$@.‏ %2$@";
+
+/* Accessibility hint for a Blaze campaign card */
+"blazeCampaignItemView.campaignAccessibilityHint" = "להקיש כדי להציג את פרטי הקמפיין";
+
+/* Accessibility label format for a Blaze campaign's click-through rates. The placeholders are numbers of impressions and clicks. Reads as: '20000 impressions, 200 clicks' */
+"blazeCampaignItemView.clickThroughAccessibilityLabelFormat" = "⁦%1$d⁩ צפיות, ⁦%2$d⁩ קליקים";
 
 /* Title label for the total impressions and clicks of a Blaze ads campaign */
 "blazeCampaignItemView.clickthroughs" = "קליקים";
@@ -9381,6 +9324,39 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze campaign intro view */
 "blazeCreateCampaignIntroView.title" = "בדרך זו מיליונים יראו את המוצרים שלך";
+
+/* Accessibility label for the call to action group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.ctaGroup" = "לערוך את הקריאה לפעולה";
+
+/* Accessibility label for the description group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.descriptionGroup" = "לערוך את התיאור";
+
+/* Accessibility label for the next suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.nextSuggestion" = "ההמלצה הבאה";
+
+/* Accessibility hint for the next suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.nextSuggestionHint" = "אפשר להשתמש בכפתור הזה כדי לעבור להמלצה הבאה";
+
+/* Accessibility label for the previous suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.previousSuggestion" = "ההמלצה הקודמת";
+
+/* Accessibility hint for the previous suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.previousSuggestionHint" = "אפשר להשתמש בכפתור הזה כדי לעבור להמלצה הקודמת";
+
+/* Accessibility label for the product image in the Edit Image form for blaze campaign */
+"blazeEditAdView.accessibility.productImage" = "תמונת המוצר לקמפיין";
+
+/* Accessibility hint for the suggested by AI text in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestedByAIHint" = "אפשר להשתמש בחצי הניווט שמימין כדי לעיין בהמלצות השונות.";
+
+/* Accessibility label for the suggested by AI text in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestedByAILabel" = "התוכן הזה הומלץ על ידי בינה מלאכותית";
+
+/* Accessibility label for the suggestion navigation controls in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestionNavigation" = "ניווט בין הצעות";
+
+/* Accessibility label for the tagline group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.taglineGroup" = "לערוך את תיאור האתר";
 
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "ביטול";
@@ -10581,6 +10557,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN מקוון לא נתמך במצב לא מקוון. יש לנסות לגבות את התשלום שוב עם כרטיס שונה.";
 
+/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
+"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "לא הוצג כרטיס במגבלת הזמן שהוגדרה.";
+
 /* Error message when the reader connection configuration is invalid. */
 "hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "תצורת החיבור של קורא הכרטיסים לא תקינה.";
 
@@ -10637,6 +10616,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the hub menu Google Ads button */
 "hubMenuViewModel.googleAdsDescription" = "לעודד מכירות ולהגדיל את התעבורה עם Google Ads";
+
+/* Label displayed on image media items. */
+"image" = "תמונה";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "אפשר לשפר";
@@ -11009,6 +10991,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when saving notification settings succeeds. */
 "notificationSettingsViewModel.successNotice" = "ההגדרות נשמרו!";
 
+/* Word separating the current index from the total amount. I.e.: 7 of 9 */
+"of" = "מתוך";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "יש לבחור סוג ספציפי.";
 
@@ -11247,30 +11232,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "מיסים";
 
-/* Display label for auto-draft order status. */
-"orderStatusEnum.localizedName.autoDraft" = "טיוטה";
-
-/* Display label for cancelled order status. */
-"orderStatusEnum.localizedName.cancelled" = "בוטלה";
-
-/* Display label for completed order status. */
-"orderStatusEnum.localizedName.completed" = "הושלמה";
-
-/* Display label for failed order status. */
-"orderStatusEnum.localizedName.failed" = "נכשלה";
-
-/* Display label for on hold order status. */
-"orderStatusEnum.localizedName.onHold" = "בהשהיה";
-
-/* Display label for pending order status. */
-"orderStatusEnum.localizedName.pending" = "בהמתנה לתשלום";
-
-/* Display label for processing order status. */
-"orderStatusEnum.localizedName.processing" = "בטיפול";
-
-/* Display label for refunded order status. */
-"orderStatusEnum.localizedName.refunded" = "הוחזר";
-
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11279,6 +11240,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
+
+/* Label displayed on media items that are not video, image, or audio. */
+"other" = "אחר";
 
 /* Title of button which removes selected package photo. */
 "packagePhotoView.removePhoto" = "להסיר את התמונה";
@@ -11725,7 +11689,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.orderSync.couponsError.editOrder" = "עריכת הזמנה";
 
 /* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle" = "לא הצלחנו להחיל את הקופון";
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "אין אפשרות להחיל את הקופון";
 
 /* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.couponsError.removeCoupon" = "להסיר קופון";
@@ -11802,86 +11766,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
 
-/* Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.. */
-"pos.itemList.enablingCouponsErrorRetry" = "לנסות שוב";
-
-/* Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorSubtitle" = "רוצה לנסות שוב?";
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
 
 /* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle" = "שגיאה בהפעלת הקופונים";
-
-/* Text for the button appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageButtonTitle" = "יש לנסות שוב";
-
-/* Text appearing on the coupon list screen as subtitle when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageSubtitle" = "אירעה שגיאה בעת הטעינה של הקופונים.";
+"pos.itemList.enablingCouponsErrorTitle.2" = "אין אפשרות להפעיל את הקופונים";
 
 /* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle" = "הטעינה של קופונים נוספים נכשלה";
-
-/* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsButtonTitle" = "לנסות שוב";
-
-/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "יש לנסות שוב";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageSubtitle" = "אירעה שגיאה בעת הטעינה של המוצרים.";
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "אין אפשרות לטעון קופונים נוספים";
 
 /* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle" = "הטעינה של פריטים נוספים נכשלה";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadProductsSubtitle" = "רוצה לנסות שוב?";
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "אין אפשרות לטעון מוצרים נוספים";
 
 /* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle" = "שגיאה בטעינת המוצרים";
-
-/* Text for the button appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsButtonTitle" = "לנסות שוב";
-
-/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "יש לנסות שוב";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "אירעה שגיאה בעת הטעינה של הסוגים.";
+"pos.itemList.failedToLoadProductsTitle.2" = "אין אפשרות לטעון את המוצרים";
 
 /* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle" = "הטעינה של פריטים נוספים נכשלה";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsSubtitle" = "רוצה לנסות שוב?";
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "אין אפשרות לטעון סוגים נוספים";
 
 /* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle" = "שגיאה בטעינת הסוגים";
-
-/* Text for the button appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsButtonTitle" = "לנסות שוב";
-
-/* Subtitle appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsSubtitle" = "רוצה לנסות שוב?";
+"pos.itemList.failedToLoadVariationsTitle.2" = "אין אפשרות לטעון את הסוגים";
 
 /* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle" = "שגיאה ברענון הקופונים";
+"pos.itemList.failedToRefreshCouponsTitle.2" = "אין אפשרות לרענן את הקופונים";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "יש לנסות שוב.";
 
 /* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction" = "להפעיל";
+"pos.itemList.loadingCouponsDisabledAction.2" = "להפעיל את הקופונים";
 
 /* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle" = "יש להפעיל את השימוש בקודי קופון בחנות שלך.";
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "יש להפעיל קודי קופון בחנות שלך כדי להתחיל ליצור אותם ללקוחות.";
 
 /* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle" = "שגיאה בטעינת הקופונים";
-
-/* Text of the button appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorRetry" = "לנסות שוב";
-
-/* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle2" = "רוצה לנסות שוב?";
+"pos.itemList.loadingCouponsDisabledTitle.2" = "להתחיל לקבל קופונים";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle" = "שגיאה בטעינת הקופונים";
+"pos.itemList.loadingCouponsErrorTitle.2" = "אין אפשרות להעלות את הקופונים";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "לנסות שוב";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "מוצרים";
@@ -11920,10 +11845,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "אפשרויות זמינות";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "כדאי לשנות את מונח החיפוש – אפשר לנסות לחפש חלק משם הקופון.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "לא הצלחנו למצוא מוצרים עם השם הזה – כדאי לשנות את מונח החיפוש.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "אפשר לקדם את העסק באמצעות שליחה של מבצעים מיוחדים והנחות ללקוחות.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "קופונים יכולים לעזור לך לקדם את העסק. האם ברצונך ליצור אתר כעת?";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "לא נמצאו קופונים";
@@ -11935,16 +11860,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "לא ניתן לחפש בשמות סוגים, ולכן יש להשתמש בשם מוצר האב.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "כדאי לשנות את מונח החיפוש – אפשר לנסות לחפש חלק משם המוצר.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "לא הצלחנו למצוא מוצרים תואמים – כדאי לשנות את מונח החיפוש.";
 
 /* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "לא נמצאו מוצרים.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "לא נמצאו מוצרים";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "האפשרות POS נתמכת כרגע במוצרים פשוטים ובמוצרים עם סוגים בלבד.";
 
 /* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "לא נמצאו מוצרים נתמכים.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "לא נמצאו מוצרים נתמכים";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולערוך את המוצר הזה ללשונית 'מוצרים'.";
@@ -11953,7 +11878,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "האפשרות POS נתמכת רק בסוגים מופעלים שלא ניתנים להורדה.";
 
 /* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "לא נמצאו סוגים נתמכים.";
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "לא נמצאו סוגים נתמכים";
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "ליצור קופון";
@@ -11978,6 +11903,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "למה המוצרים שלי לא מופיעים?";
+
+/* Label to be displayed in the product's card when out of stock
+   Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.outofstock" = "לא במלאי";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "הזמנה חדשה";
@@ -12197,6 +12126,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "כל %1$@";
+
+/* Accessibility hint for product description on Product form screen */
+"productFormTableViewDataSource.accessibility.descriptionHint" = "להקיש כדי להציג פרטים נוספים או לערוך את תיאור המוצר";
+
+/* VoiceOver accessibility hint for the Promote with Blaze button */
+"productFormTableViewDataSource.promoteWithBlazeAccessibilityHint" = "האפשרות פותחת את תהליך היצירה של קמפיין Blaze עבור המוצר הזה";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "לקדם עם Blaze";
@@ -12704,6 +12639,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the alert after the support request is created. */
 "supportForm.supportRequestSentMessage" = "בקשת התמיכה הגיעה בשלום אל תיבת הדואר שלנו. אנחנו נשלח מענה באימייל בהקדם האפשרי.";
 
+/* Message info on the support screen. */
+"supportForm.tellUsInfo.message" = "אנחנו מבקשים לדעת את כתובת האתר שלך (כתובת ה-URL) וכמה שיותר פרטים לגבי הבעיה. לאחר שליחת הבקשה, ניצור קשר בהקדם.";
+
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "מצטערים, אין לנו אפשרות ליצור בקשות תמיכה כרגע. יש לנסות שוב מאוחר יותר.";
 
@@ -12943,6 +12881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "להציג פרטי המוצר";
+
+/* Label displayed on video media items. */
+"video" = "וידאו";
 
 /* Title of the button to dismiss the view package photo screen. */
 "viewPackagePhoto.done" = "בוצע";
@@ -13193,6 +13134,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the address field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.address" = "כתובת";
 
+/* Button label indicating the user wants to close an alert */
+"wooShipping.createLabels.editAddress.alert.close" = "לסגור";
+
+/* Button label indicating the user wants to retry an action */
+"wooShipping.createLabels.editAddress.alert.retry" = "לנסות שוב";
+
 /* Button to cancel editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.cancel" = "ביטול";
 
@@ -13244,17 +13191,35 @@ which should be translated separately and considered part of this sentence. */
 /* Validation message when the address field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.address" = "יש לספק כתובת תקינה.";
 
+/* Message for the address validation error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.addressValidationError.message" = "לא ניתן היה לאמת את הכתובת שהזנת. יש לנסות שוב מאוחר יותר.";
+
+/* Title for the address validation error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.addressValidationError.title" = "שגיאת אימות של הכתובת";
+
 /* Validation message when the city field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.city" = "יש לספק עיר תקינה.";
 
 /* Validation message when the country field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.country" = "יש לבחור ארץ.";
 
+/* Message for the destination address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.message" = "לא ניתן היה לעדכן את כתובת היעד. יש לנסות שוב מאוחר יותר.";
+
+/* Title for the destination address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.title" = "שגיאה בעדכון כתובת היעד";
+
 /* Validation message when the email field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.email" = "יש להזין כתובת אימייל תקפה.";
 
 /* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.nameOrCompany" = "יש להזין שם או שם חברה תקין.";
+
+/* Message for the origin address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.originAddressUpdateError.message" = "לא ניתן היה לעדכן את כתובת המוצא. יש לנסות שוב מאוחר יותר.";
+
+/* Title for the origin address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.originAddressUpdateError.title" = "שגיאה בעדכון כתובת המוצא";
 
 /* Validation message when the phone field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.phone" = "יש להזין מספר טלפון תקין.";
@@ -13675,6 +13640,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "המשלוח שלך כולל סחורות מסוכנות או חומרים מסוכנים?";
+
+/* Action button on the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.actionButton" = "כרטיס אשראי או כרטיס חיוב חדשים";
+
+/* Subtitle of the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.subtitle" = "יש להוסיף אמצעי תשלום כדי לרכוש תווית משלוח";
+
+/* Title of the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.title" = "להוסיף אמצעי תשלום";
+
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder. */
+"wooShippingPaymentMethodsView.note" = "כרטיסי אשראי מתקבלים מהחשבון הבא של WordPress.com:‏ @%1$@.";
+
+/* Subtitle of the payment method sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.subtitle" = "יש לבחור אמצעי תשלום.";
+
+/* Title of the payment method sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.title" = "אמצעי תשלום";
 
 /* Button to dismiss the Request shipping label refund view */
 "wooShippingRefundView.cancelButton" = "ביטול";

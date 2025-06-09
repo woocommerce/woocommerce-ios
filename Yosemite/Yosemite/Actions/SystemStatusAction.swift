@@ -27,4 +27,8 @@ public enum SystemStatusAction: Action {
     /// Fetch system status report for a site given its ID
     ///
     case fetchSystemStatusReport(siteID: Int64, onCompletion: (Result<SystemStatusReport, Error>) -> Void)
+
+    /// Synchronize store information from the system status for a site given its ID.
+    ///
+    case fetchSystemInformationForPOSEligibility(siteID: Int64, onCompletion: (Result<POSEligibilitySystemInformation, Error>) -> Void)
 }

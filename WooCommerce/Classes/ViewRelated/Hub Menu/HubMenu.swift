@@ -6,6 +6,10 @@ import Combine
 
 /// For a use case where the POS entry point is already eligible.
 final class POSEntryPointAlreadyEligibleChecker: POSEntryPointEligibilityCheckerProtocol {
+    func refreshEligibility() async throws -> AnyPublisher<POSEligibilityState, Never> {
+        Just<POSEligibilityState>(.eligible).eraseToAnyPublisher()
+    }
+
     var isEligible: AnyPublisher<POSEligibilityState, Never> {
         Just<POSEligibilityState>(.eligible).eraseToAnyPublisher()
     }

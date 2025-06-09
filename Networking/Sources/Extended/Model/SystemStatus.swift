@@ -51,8 +51,12 @@ public extension SystemStatus {
         /// Available in WooCommerce version 9.9.0 and later. Thus the property is optional.
         public let enabledFeatures: [String]?
 
+        // TODO-jc: remove after having a separate model for POS eligibility system status
+        public let currency: String
+
         enum CodingKeys: String, CodingKey {
             case enabledFeatures = "enabled_features"
+            case currency
         }
     }
 }

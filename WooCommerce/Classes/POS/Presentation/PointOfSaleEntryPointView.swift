@@ -17,7 +17,11 @@ import protocol Yosemite.POSSearchHistoryProviding
             }
     }
 
-    func refreshEligibility() {
+    func refreshEligibility() async throws {
+        eligibilitySubscription = try await posEligibilityChecker.refreshEligibility()
+            .sink { [weak self] eligibilityState in
+                self?.eligibilityState = eligibilityState
+            }
     }
 }
 
@@ -79,7 +83,7 @@ struct PointOfSaleEntryPointView: View {
                 }
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
-                    pointOfSaleEntryPointController.refreshEligibility()
+                    try await pointOfSaleEntryPointController.refreshEligibility()
                 })
             }
         }

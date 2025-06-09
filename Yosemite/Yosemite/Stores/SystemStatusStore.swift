@@ -2,6 +2,8 @@ import Foundation
 import Networking
 import Storage
 
+import enum WooFoundation.CurrencyCode
+
 /// Implements `SystemStatusActions` actions
 ///
 public final class SystemStatusStore: Store {
@@ -41,6 +43,8 @@ public final class SystemStatusStore: Store {
                                       onCompletion: onCompletion)
         case .fetchSystemStatusReport(let siteID, let onCompletion):
             fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
+        case .fetchSystemInformationForPOSEligibility(siteID: let siteID, onCompletion: let onCompletion):
+            fetchSystemInformationForPOSEligibility(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -94,6 +98,28 @@ private extension SystemStatusStore {
     func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping (Result<SystemStatusReport, Error>) -> Void) {
         remote.fetchSystemStatusReport(for: siteID, completion: completionHandler)
     }
+
+    func fetchSystemInformationForPOSEligibility(siteID: Int64, onCompletion: @escaping (Result<POSEligibilitySystemInformation, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let systemStatus = try await remote.loadSystemInformationForPOSEligibility(for: siteID)
+                guard let currencyCode = CurrencyCode(caseInsensitiveRawValue: systemStatus.settings?.currency ?? "") else {
+                    return onCompletion(.failure(SystemStatusForPOSEligibilityError.currencyUnavailable))
+                }
+                onCompletion(
+                    .success(POSEligibilitySystemInformation(activePlugins: systemStatus.plugins.activePlugins,
+                                                             enabledFeatures: systemStatus.settings?.enabledFeatures,
+                                                             currencyCode: currencyCode))
+                )
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
+enum SystemStatusForPOSEligibilityError: Error {
+    case currencyUnavailable
 }
 
 // MARK: - Storage

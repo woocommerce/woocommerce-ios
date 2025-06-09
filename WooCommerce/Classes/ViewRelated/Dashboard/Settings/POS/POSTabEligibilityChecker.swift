@@ -7,10 +7,13 @@ import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import struct Yosemite.SiteInformation
+import struct Yosemite.SystemPlugin
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SiteSettingsFeature
 import enum Yosemite.SettingAction
+import enum WooFoundation.CountryCode
+import enum WooFoundation.CurrencyCode
 
 enum POSIneligibleReason: Equatable {
     case notTablet
@@ -32,6 +35,7 @@ enum POSEligibilityState: Equatable {
 
 protocol POSEntryPointEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<POSEligibilityState, Never> { get }
+    func refreshEligibility() async throws -> AnyPublisher<POSEligibilityState, Never>
 }
 
 protocol POSTabEligibilityCheckerProtocol {
@@ -40,6 +44,36 @@ protocol POSTabEligibilityCheckerProtocol {
 
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
 final class POSTabEligibilityChecker: POSTabEligibilityCheckerProtocol, POSEntryPointEligibilityCheckerProtocol {
+    @MainActor
+    func refreshEligibility() async throws -> AnyPublisher<POSEligibilityState, Never> {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(
+                SystemStatusAction.fetchSystemInformationForPOSEligibility(siteID: siteID) { [weak self] result in
+                    guard let self else {
+                        return continuation.resume(returning: Just(.ineligible(reason: .selfDeallocated)).eraseToAnyPublisher())
+                    }
+                    switch result {
+                    case let .success(systemInformation):
+                        // TODO-jc: cache this in memory since system_status request does not update site settings in storage
+                        let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
+                        switch isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: systemInformation.currencyCode) {
+                        case .eligible:
+                            break
+                        case .ineligible(let reason):
+                            return continuation.resume(returning: Just(.ineligible(reason: reason)).eraseToAnyPublisher())
+                        }
+                        let eligibilityState = isEligibleFromPluginChecks(
+                            systemPlugins: systemInformation.activePlugins,
+                            enabledFeatures: systemInformation.enabledFeatures
+                        )
+                        continuation.resume(returning: Just(eligibilityState).eraseToAnyPublisher())
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
+    }
+
     var isTabVisible: AnyPublisher<Bool, Never> {
         let isTablet = userInterfaceIdiom == .pad
         guard isTablet else {
@@ -120,6 +154,22 @@ private extension POSTabEligibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
         let currency = currencySettings.currencyCode
 
+        switch isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currency) {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
+
+        guard let siteInformation, siteInformation.siteID == siteID else {
+            return .ineligible(reason: .systemInformationNotAvailable)
+        }
+
+        return isEligibleFromPluginChecks(systemPlugins: siteInformation.systemInformation?.systemPlugins ?? [],
+                                          enabledFeatures: siteInformation.systemInformation?.enabledFeatures)
+    }
+
+    func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {
         // Checks country first.
         switch countryCode {
         case .US, .GB:
@@ -129,18 +179,16 @@ private extension POSTabEligibilityChecker {
         }
 
         // Then checks currency.
-        switch currency {
+        switch currencyCode {
         case .USD, .GBP:
-            break
+            return .eligible
         default:
             return .ineligible(reason: .unsupportedCurrency)
         }
+    }
 
-        guard let siteInformation, siteInformation.siteID == siteID else {
-            return .ineligible(reason: .systemInformationNotAvailable)
-        }
-
-        guard let wcPlugin = siteInformation.systemInformation?.systemPlugins.first(where: { $0.name == Constants.wcPluginName && $0.active }) else {
+    func isEligibleFromPluginChecks(systemPlugins: [SystemPlugin], enabledFeatures: [String]?) -> POSEligibilityState {
+        guard let wcPlugin = systemPlugins.first(where: { $0.name == Constants.wcPluginName && $0.active }) else {
             return .ineligible(reason: .wooCommercePluginNotFound)
         }
 
@@ -153,7 +201,7 @@ private extension POSTabEligibilityChecker {
                                              minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
                                              includesDevAndBetaVersions: true) {
             // For versions that support the feature switch, checks if the feature switch is enabled.
-            guard let enabledFeatures = siteInformation.systemInformation?.enabledFeatures,
+            guard let enabledFeatures,
                   enabledFeatures.contains(SiteSettingsFeature.pointOfSale.rawValue) else {
                 return .ineligible(reason: .featureSwitchDisabled)
             }

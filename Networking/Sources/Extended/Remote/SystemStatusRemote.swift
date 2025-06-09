@@ -53,6 +53,31 @@ public class SystemStatusRemote: Remote {
         return try await enqueue(request, mapper: mapper)
     }
 
+    /// Retrieves information from the system status that belongs to the current site.
+    /// Currently fetching:
+    ///   - Active Plugins
+    ///   - Settings
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the system information.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func loadSystemInformationForPOSEligibility(for siteID: Int64) async throws -> SystemStatus {
+        let path = Constants.systemStatusPath
+        let parameters = [
+            // TODO-jc: remove ParameterValues.environment and ParameterValues.inactivePlugins once we have a separate mapper
+            ParameterKeys.fields: [ParameterValues.environment, ParameterValues.activePlugins, ParameterValues.inactivePlugins, ParameterValues.settings]
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SystemStatusMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Fetch details about system status for a given site.
     ///
     /// - Parameters:

@@ -2,8 +2,9 @@ import SwiftUI
 
 struct POSIneligibleView: View {
     let reason: POSIneligibleReason
-    let onRefresh: () -> Void
+    let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
+    @State private var isLoading: Bool = false
 
     var body: some View {
         VStack(spacing: POSSpacing.large) {
@@ -31,10 +32,22 @@ struct POSIneligibleView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.posOnSurface)
 
-                Button(action: onRefresh) {
+                Button {
+                    Task { @MainActor in
+                        do {
+                            isLoading = true
+                            try await onRefresh()
+                            isLoading = false
+                        } catch {
+                            // TODO-jc: handle error if needed, e.g., show an error message
+                            print("Error refreshing eligibility: \(error)")
+                            isLoading = false
+                        }
+                    }
+                } label: {
                     Text(Localization.refreshEligibility)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
             }
 
             Spacer()

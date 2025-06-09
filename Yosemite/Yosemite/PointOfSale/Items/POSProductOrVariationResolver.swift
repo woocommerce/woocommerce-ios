@@ -38,7 +38,7 @@ struct POSProductOrVariationResolver {
             throw PointOfSaleBarcodeScanError.noParentProductForVariation
         }
 
-        let parentProduct = try await productsRemote.fetchPOSProduct(for: variation.siteID,
+        let parentProduct = try await productsRemote.loadPOSProduct(for: variation.siteID,
                                                                      productID: variation.productID)
         let mappedProducts = itemMapper.mapProductsToPOSItems(products: [parentProduct])
 

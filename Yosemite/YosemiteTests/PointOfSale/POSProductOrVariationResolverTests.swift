@@ -89,7 +89,7 @@ struct POSProductOrVariationResolverTests {
         let result = try await sut.itemForProductOrVariation(variation)
 
         // Then
-        #expect(mockProductsRemote.invocationCountOfFetchPOSProduct == 1)
+        #expect(mockProductsRemote.invocationCountOfLoadPOSProduct == 1)
         #expect(mockProductsRemote.requestedProductIDsForFetchingPOSProduct.contains(variation.parentID))
 
         #expect(mockItemMapper.mapVariationsToPOSItemsCalled)

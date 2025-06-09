@@ -263,14 +263,14 @@ struct POSProductsNetworkingTests {
         #expect(pagedProducts.totalItems == nil)
     }
 
-    @Test func fetchPOSProductByGlobalUniqueIdentifier_returns_single_product() async throws {
+    @Test func loadPOSProductByGlobalUniqueIdentifier_returns_single_product() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let globalUniqueID = "123456789"
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
-        let product = try await remote.fetchPOSProductByGlobalUniqueIdentifier(for: sampleSiteID, globalUniqueID: globalUniqueID)
+        let product = try await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID, globalUniqueID: globalUniqueID)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)

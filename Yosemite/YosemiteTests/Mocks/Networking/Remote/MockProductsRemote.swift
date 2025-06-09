@@ -78,10 +78,10 @@ final class MockProductsRemote {
 
     private var posProductLoadingResults = [ResultKey: Result<POSProduct, Error>]()
 
-    /// The number of times that `fetchPOSProduct()` was invoked.
-    private(set) var invocationCountOfFetchPOSProduct: Int = 0
+    /// The number of times that `loadPOSProduct()` was invoked.
+    private(set) var invocationCountOfLoadPOSProduct: Int = 0
 
-    /// List of product IDs requested for `fetchPOSProduct`
+    /// List of product IDs requested for `loadPOSProduct`
     private(set) var requestedProductIDsForFetchingPOSProduct: [Int64] = []
 
     /// Set the value passed to the `completion` block if `addProduct()` is called.
@@ -453,9 +453,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
-        return POSProduct.fake().copy(siteID: siteID,
-                                      globalUniqueID: globalUniqueID)
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+            return POSProduct.fake().copy(siteID: siteID,
+                                          globalUniqueID: globalUniqueID)
     }
 
     func loadPopularProductsForPointOfSale(for siteID: Int64,
@@ -474,8 +474,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
-        invocationCountOfFetchPOSProduct += 1
+    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+        invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 
         let key = ResultKey(siteID: siteID, productIDs: [productID])

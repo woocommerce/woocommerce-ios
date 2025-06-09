@@ -43,7 +43,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws -> POSItem {
         do {
-            let productOrVariation = try await productsRemote.fetchPOSProductByGlobalUniqueIdentifier(for: siteID,
+            let productOrVariation = try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
                                                                                                       globalUniqueID: barcode)
             return try await itemResolver.itemForProductOrVariation(productOrVariation)
         } catch {

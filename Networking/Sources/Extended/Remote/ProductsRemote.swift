@@ -96,10 +96,10 @@ public protocol ProductsRemoteProtocol {
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct>
 
-    func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                    globalUniqueID: String) async throws -> POSProduct
 
-    func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
+    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct
 }
 
 extension ProductsRemoteProtocol {
@@ -341,7 +341,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Returns: A POSProduct if found
     /// - Throws: Error if the product is not found or if there's a network error
     ///
-    public func fetchPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
+    public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                        globalUniqueID: String) async throws -> POSProduct {
         let parameters = [
             ParameterKey.globalUniqueID: globalUniqueID,
@@ -368,7 +368,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Returns: A POSProduct if found
     /// - Throws: Error if the product is not found or if there's a network error
     ///
-    public func fetchPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
         let parameters = [
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]

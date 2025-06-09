@@ -20,11 +20,42 @@ enum CartItemType: CaseIterable {
 extension Cart {
     struct PurchasableItem: CartItem {
         let id: UUID
-        let item: POSOrderableItem
         let title: String
         let subtitle: String?
         let quantity: Int
         let type: CartItemType = .purchasableItem
+        let state: ItemState
+
+        enum ItemState {
+            case loaded(POSOrderableItem)
+            case loading
+        }
+
+        init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState) {
+            self.id = id
+            self.title = title
+            self.subtitle = subtitle
+            self.quantity = quantity
+            self.state = state
+        }
+
+        init(id: UUID, item: POSOrderableItem, title: String, subtitle: String?, quantity: Int) {
+            self.id = id
+            self.title = title
+            self.subtitle = subtitle
+            self.quantity = quantity
+            self.state = .loaded(item)
+        }
+
+        static func loading(id: UUID) -> PurchasableItem {
+            PurchasableItem(
+                id: id,
+                title: "Loading...",
+                subtitle: nil,
+                quantity: 1,
+                state: .loading
+            )
+        }
     }
 
     struct CouponItem: CartItem {

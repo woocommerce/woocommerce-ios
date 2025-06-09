@@ -158,7 +158,13 @@ struct PointOfSaleAggregateModelTests {
             items.forEach(sut.addToCart(_:))
 
             // Then
-            #expect(sut.cart.purchasableItems.map(\.item.id) == items.reversed().map(\.id))
+            let cartItemIDs = try sut.cart.purchasableItems.map { purchasableItem in
+                guard case let .loaded(item) = purchasableItem.state else {
+                    throw CartTestError.unexpectedItemStateInCart
+                }
+                return item.id
+            }
+            #expect(cartItemIDs == items.reversed().map(\.id))
         }
 
         @available(iOS 17.0, *)
@@ -248,6 +254,10 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.cart.purchasableItems.count == 2)
             #expect(sut.cart.coupons.count == 0)
+        }
+
+        enum CartTestError: Error {
+            case unexpectedItemStateInCart
         }
     }
 

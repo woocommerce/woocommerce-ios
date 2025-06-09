@@ -30,9 +30,15 @@ struct ItemRowView: View {
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemSubtitleFont)
                 }
-                Text(cartItem.item.formattedPrice)
-                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                    .font(Constants.itemPriceFont)
+
+                switch cartItem.state {
+                case .loaded(let item):
+                    Text(item.formattedPrice)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                default:
+                    EmptyView()
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
@@ -56,10 +62,15 @@ struct ItemRowView: View {
         if !showProductImage {
             EmptyView()
         } else {
-            POSItemImageView(imageSource: cartItem.item.productImageSource,
-                             imageSize: dimension,
-                             scale: 1)
-            .frame(width: dimension, height: dimension)
+            switch cartItem.state {
+            case .loaded(let item):
+                POSItemImageView(imageSource: item.productImageSource,
+                                 imageSize: dimension,
+                                 scale: 1)
+                .frame(width: dimension, height: dimension)
+            default:
+                EmptyView()
+            }
         }
     }
 }
@@ -96,6 +107,12 @@ private extension ItemRowView {
                                                title: "Item Title",
                                                subtitle: nil,
                                                quantity: 2),
+                onItemRemoveTapped: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
                 onItemRemoveTapped: { })
 }
 #endif

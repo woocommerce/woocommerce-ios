@@ -16,6 +16,9 @@ import protocol Yosemite.POSSearchHistoryProviding
                 self?.eligibilityState = eligibilityState
             }
     }
+
+    func refreshEligibility() {
+    }
 }
 
 @available(iOS 17.0, *)
@@ -75,8 +78,9 @@ struct PointOfSaleEntryPointView: View {
                     PointOfSaleLoadingView()
                 }
             case .ineligible(let reason):
-                // TODO-jc: add CTA to refresh and exit
-                Text("\(reason)")
+                POSIneligibleView(reason: reason, onRefresh: {
+                    pointOfSaleEntryPointController.refreshEligibility()
+                })
             }
         }
         .task {

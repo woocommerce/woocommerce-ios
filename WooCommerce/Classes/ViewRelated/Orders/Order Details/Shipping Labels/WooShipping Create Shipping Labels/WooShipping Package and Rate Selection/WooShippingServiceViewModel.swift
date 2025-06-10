@@ -107,10 +107,12 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.selectedPackage = selectedPackage
 
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
+            onLoadingCompletion(.failure(Error.missingDestinationAddress))
             return updateLoadingState(to: .error(Error.missingDestinationAddress))
         }
 
         guard selectedPackage.weight > 0 else {
+            onLoadingCompletion(.failure(Error.missingShipmentWeight))
             return updateLoadingState(to: .error(Error.missingShipmentWeight))
         }
 
@@ -149,7 +151,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
                 updateLoadingState(to: .error(Error.failedLoadingLabelRates))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
-                onLoadingCompletion(.failure(error))
+                onLoadingCompletion(.failure(Error.failedLoadingLabelRates))
             }
         }
         stores.dispatch(action)

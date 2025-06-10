@@ -650,7 +650,7 @@ private extension MainTabBarController {
                 viewModel.loadHubMenuTabBadge()
             }
     }
-    
+
     func updateTabViewControllers(isPOSTabVisible: Bool) {
         var controllers = [UIViewController]()
         let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
@@ -662,7 +662,7 @@ private extension MainTabBarController {
         viewControllers = controllers
         self.isPOSTabVisible = isPOSTabVisible
     }
-    
+
     func rootTabViewController(tab: WooTab) -> UIViewController {
         switch tab {
             case .myStore:

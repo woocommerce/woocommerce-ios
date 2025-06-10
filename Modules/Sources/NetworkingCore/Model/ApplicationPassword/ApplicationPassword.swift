@@ -1,7 +1,3 @@
-//#if canImport(WordPressShared)
-//import WordPressShared
-//#endif
-
 public struct ApplicationPassword: Codable, Equatable {
     /// WordPress org username that the application password belongs to
     ///

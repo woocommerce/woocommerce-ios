@@ -158,39 +158,26 @@ struct BlazeCampaignCreationForm: View {
                     .overlay { roundedRectangleBorder }
                 }
 
-                // Embed TOS checkbox for accessibility font sizes in scrollview
-                if sizeCategory.isAccessibilityCategory {
-                    tosCheckboxToggle
-                        .padding(.top, Layout.contentPadding)
+                VStack(spacing: 0) {
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                        tosCheckboxToggle
+
+                        Button {
+                            viewModel.didTapConfirmDetails()
+                        } label: {
+                            Text(Localization.confirmDetails)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .disabled(!viewModel.canConfirmDetails)
+                    }
+                    .padding(.vertical, Layout.contentPadding)
                 }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
         .background(Constants.backgroundViewColor)
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 0) {
-                Divider()
-
-                VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                    // Present TOS checkbox in footer for non-accessibility font sizes
-                    if !sizeCategory.isAccessibilityCategory {
-                        tosCheckboxToggle
-                            .padding(.horizontal, Layout.contentPadding)
-                    }
-
-                    Button {
-                        viewModel.didTapConfirmDetails()
-                    } label: {
-                        Text(Localization.confirmDetails)
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.horizontal, Layout.contentPadding)
-                    .disabled(!viewModel.canConfirmDetails)
-                }
-                .padding(.vertical, Layout.contentPadding)
-            }
-            .background(Constants.backgroundViewColor)
-        }
         .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

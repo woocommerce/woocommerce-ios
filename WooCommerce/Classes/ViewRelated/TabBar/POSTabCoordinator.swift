@@ -23,7 +23,7 @@ final class POSTabCoordinator {
     private let tabContainerController: TabContainerController
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
-    private let posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let credentials: Credentials?
 
     private var posEligibilitySubscription: AnyCancellable?
@@ -59,7 +59,7 @@ final class POSTabCoordinator {
          tabContainerController: TabContainerController,
          viewControllerToPresent: UIViewController,
          storesManager: StoresManager = ServiceLocator.stores,
-         posEligibilityChecker: POSTabEligibilityCheckerProtocol & POSEntryPointEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.posEligibilityChecker = posEligibilityChecker
@@ -121,8 +121,7 @@ private extension POSTabCoordinator {
                             siteID: siteID,
                             posItemFetchStrategyFactory: posItemFetchStrategyFactory
                         )
-                    ),
-                    posEligibilityChecker: posEligibilityChecker
+                    )
                 )
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen

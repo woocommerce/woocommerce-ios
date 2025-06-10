@@ -118,7 +118,7 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
-    private var posEligibilityChecker: POSTabEligibilityCheckerProtocol?
+    private var posEligibilityChecker: POSEligibilityChecker?
     private var posEligibilitySubscription: AnyCancellable?
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
@@ -643,7 +643,7 @@ private extension MainTabBarController {
         // Hides POS tab by default.
         updateTabViewControllers(isPOSTabVisible: false)
         // Starts observing the POS eligibility state.
-        posEligibilitySubscription = posEligibilityChecker?.isTabVisible
+        posEligibilitySubscription = posEligibilityChecker?.isEligible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isPOSTabVisible in
                 guard let self else { return }
@@ -712,15 +712,8 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
-        if hubMenuTabCoordinator == nil {
-            let hubTabCoordinator = createHubMenuTabCoordinator()
-            self.hubMenuTabCoordinator = hubTabCoordinator
-        }
-        hubMenuTabCoordinator?.activate(siteID: siteID)
-
         // Configure POS tab coordinator once per logged in session potentially with multiple sites.
-        let posEligibilityChecker = POSTabEligibilityChecker(siteID: siteID)
+        let posEligibilityChecker = POSEligibilityChecker(siteID: siteID)
         self.posEligibilityChecker = posEligibilityChecker
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
@@ -728,6 +721,13 @@ private extension MainTabBarController {
             viewControllerToPresent: self,
             posEligibilityChecker: posEligibilityChecker
         )
+
+        // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
+        if hubMenuTabCoordinator == nil {
+            let hubTabCoordinator = createHubMenuTabCoordinator()
+            self.hubMenuTabCoordinator = hubTabCoordinator
+        }
+        hubMenuTabCoordinator?.activate(siteID: siteID, posEligibilityChecker: posEligibilityChecker)
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)

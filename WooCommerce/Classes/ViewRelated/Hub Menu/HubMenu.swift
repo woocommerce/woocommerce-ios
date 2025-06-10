@@ -76,8 +76,7 @@ struct HubMenu: View {
                             searchHistoryService: POSSearchHistoryService(siteID: viewModel.siteID),
                             popularPurchasableItemsController: PointOfSaleItemsController(
                                 itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
-                                itemFetchStrategyFactory: viewModel.posPopularItemFetchStrategyFactory),
-                            posEligibilityChecker: POSEntryPointAlreadyEligibleChecker()
+                                itemFetchStrategyFactory: viewModel.posPopularItemFetchStrategyFactory)
                         )
                     } else {
                         // TODO: When we have a singleton for the card payment service, this should not be required.

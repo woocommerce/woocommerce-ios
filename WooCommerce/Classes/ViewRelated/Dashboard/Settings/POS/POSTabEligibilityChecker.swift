@@ -12,7 +12,6 @@ import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SiteSettingsFeature
 import enum Yosemite.SettingAction
-import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 
 enum POSIneligibleReason: Equatable {

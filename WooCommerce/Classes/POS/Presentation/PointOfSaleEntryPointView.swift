@@ -1,37 +1,11 @@
-import Combine
 import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
-
-@available(iOS 17.0, *)
-@Observable final class PointOfSaleEntryPointController {
-    private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
-    private(set) var eligibilityState: POSEligibilityState?
-    private var eligibilitySubscription: AnyCancellable?
-
-    init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
-        self.posEligibilityChecker = eligibilityChecker
-
-        eligibilitySubscription = posEligibilityChecker.isEligible
-            .sink { [weak self] eligibilityState in
-                self?.eligibilityState = eligibilityState
-            }
-    }
-
-    func refreshEligibility() async throws {
-        eligibilitySubscription = try await posEligibilityChecker.refreshEligibility()
-            .sink { [weak self] eligibilityState in
-                self?.eligibilityState = eligibilityState
-            }
-    }
-}
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
-    @State private var pointOfSaleEntryPointController: PointOfSaleEntryPointController
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -53,8 +27,7 @@ struct PointOfSaleEntryPointView: View {
          orderController: PointOfSaleOrderControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
-         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -66,25 +39,15 @@ struct PointOfSaleEntryPointView: View {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
-        self.pointOfSaleEntryPointController = PointOfSaleEntryPointController(eligibilityChecker: posEligibilityChecker)
     }
 
     var body: some View {
         Group {
-            switch pointOfSaleEntryPointController.eligibilityState {
-            case .none:
+            if let posModel = posModel {
+                PointOfSaleDashboardView()
+                    .environment(posModel)
+            } else {
                 PointOfSaleLoadingView()
-            case .eligible:
-                if let posModel = posModel {
-                    PointOfSaleDashboardView()
-                        .environment(posModel)
-                } else {
-                    PointOfSaleLoadingView()
-                }
-            case .ineligible(let reason):
-                POSIneligibleView(reason: reason, onRefresh: {
-                    try await pointOfSaleEntryPointController.refreshEligibility()
-                })
             }
         }
         .task {
@@ -116,18 +79,18 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-//@available(iOS 17.0, *)
-//#Preview {
-//    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
-//                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-//                              couponsController: PointOfSalePreviewCouponsController(),
-//                              couponsSearchController: PointOfSalePreviewCouponsController(),
-//                              onPointOfSaleModeActiveStateChange: { _ in },
-//                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-//                              orderController: PointOfSalePreviewOrderController(),
-//                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-//                              searchHistoryService: PointOfSalePreviewHistoryService(),
-//                              popularPurchasableItemsController: PointOfSalePreviewItemsController())
-//}
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
+                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
+                              couponsController: PointOfSalePreviewCouponsController(),
+                              couponsSearchController: PointOfSalePreviewCouponsController(),
+                              onPointOfSaleModeActiveStateChange: { _ in },
+                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                              orderController: PointOfSalePreviewOrderController(),
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              searchHistoryService: PointOfSalePreviewHistoryService(),
+                              popularPurchasableItemsController: PointOfSalePreviewItemsController())
+}
 
 #endif

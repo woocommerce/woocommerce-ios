@@ -639,6 +639,12 @@ extension MainTabBarController: DeepLinkNavigator {
 //
 private extension MainTabBarController {
     func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) else {
+            updateTabViewControllers(isPOSTabVisible: false)
+            viewModel.loadHubMenuTabBadge()
+            return
+        }
+
         // Hides POS tab initially.
         updateTabViewControllers(isPOSTabVisible: false)
         // Starts observing the POS eligibility state.

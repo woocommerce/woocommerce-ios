@@ -399,6 +399,39 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 }
 
+// MARK: TOS checkbox
+extension BlazeCampaignCreationFormViewModel {
+    var tosCheckboxAttributedText: AttributedString {
+        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+
+        let firstLine = String.localizedStringWithFormat(Localization.tosCheckboxFirstLine, weeklyAmount, formattedStartDate)
+
+        let secondLineWithLink = AttributedString.withEmbeddedLink(
+            mainContent: Localization.tosCheckboxSecondLine,
+            linkText: Localization.campaignDetailsLinkText,
+            link: Links.stopAnAdCampaign // TODO: Replace with actual campaign details URL
+        )
+
+        // Create the first line as AttributedString with bold formatting
+        let firstLineElements = BoldableTextParser().parseBoldableElements(string: firstLine)
+        var firstLineAttributed = AttributedString()
+        for element in firstLineElements {
+            var elementText = AttributedString(element.content)
+            elementText.font = .body
+            elementText.foregroundColor = .init(.text)
+            if element.isBold {
+                elementText.font = .body.bold()
+            }
+            firstLineAttributed += elementText
+        }
+
+        return firstLineAttributed +
+        AttributedString(" ") +
+        secondLineWithLink
+    }
+}
+
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
     @MainActor
@@ -495,17 +528,6 @@ private extension BlazeCampaignCreationFormViewModel {
                 plural: String(format: Localization.budgetMultipleDays, amount, duration, formattedStartDate)
             )
         }
-        updateTosCheckboxText()
-    }
-
-    func updateTosCheckboxText() {
-        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
-        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
-
-        let firstLine = String.localizedStringWithFormat(Localization.tosCheckboxFirstLine, weeklyAmount, formattedStartDate)
-        let secondLine = String.localizedStringWithFormat(Localization.tosCheckboxSecondLine, Localization.campaignDetailsLinkText)
-
-        tosCheckboxText = firstLine + "\n" + secondLine
     }
 
     func updateTargetLanguagesText() {
@@ -579,6 +601,9 @@ private extension BlazeCampaignCreationFormViewModel {
         static let oneDayInSeconds: Double = 86400
         static let targetUrnFormat = "urn:wpcom:post:%d:%d"
         static let defaultCurrency = "USD"
+    }
+    enum Links {
+        static let stopAnAdCampaign = "https://wordpress.com/support/promote-a-post/manage-your-blaze-ad-campaign/#stop-an-ad-campaign"
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

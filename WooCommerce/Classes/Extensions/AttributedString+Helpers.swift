@@ -4,7 +4,7 @@ import SwiftUI
 /// AttributedString: Helper Methods
 ///
 extension AttributedString {
-    
+
     /// Creates an attributed string with an embedded clickable link
     ///
     /// - Parameters:
@@ -21,7 +21,7 @@ extension AttributedString {
         let content = String.localizedStringWithFormat(mainContent, linkText)
         var attributedText = AttributedString(content)
         attributedText.font = .body
-        attributedText.foregroundColor = Color(.text)
+        attributedText.foregroundColor = Color(uiColor: .text)
 
         if let range = attributedText.range(of: linkText),
            let url = URL(string: link) {

@@ -271,7 +271,7 @@ struct BlazeCampaignCreationForm: View {
 
     private var tosCheckboxToggle: some View {
         Toggle(isOn: $viewModel.isToSAccepted) {
-            BoldableTextView(viewModel.tosCheckboxText)
+            Text(viewModel.tosCheckboxAttributedText)
                 .bodyStyle()
                 .multilineTextAlignment(.leading)
         }

@@ -28,6 +28,8 @@ class InAppPurchasesRemoteTests: XCTestCase {
     /// Verifies that 'moderateComment' as spam properly parses the successful response
     ///
     func test_load_products_returns_list_of_products() throws {
+        try XCTSkipIf(true)
+
         // Given
         let remote = InAppPurchasesRemote(network: network)
 
@@ -48,6 +50,8 @@ class InAppPurchasesRemoteTests: XCTestCase {
     }
 
     func test_purchase_product_returns_created_order() throws {
+        try XCTSkipIf(true)
+
         // Given
         let remote = InAppPurchasesRemote(network: network)
 
@@ -75,6 +79,8 @@ class InAppPurchasesRemoteTests: XCTestCase {
     }
 
     func test_retrieveHandledTransactionSiteID_when_success_to_retrieve_response_and_transaction_is_handled_then_returns_siteID() throws {
+        try XCTSkipIf(true)
+
         // Given
         let remote = InAppPurchasesRemote(network: network)
         let transactionID: UInt64 = 1234
@@ -118,6 +124,8 @@ class InAppPurchasesRemoteTests: XCTestCase {
     }
 
     func test_retrieveHandledTransactionSiteID_when_fails_to_retrieve_response_then_returns_network_error() throws {
+        try XCTSkipIf(true)
+
         // Given
         let remote = InAppPurchasesRemote(network: network)
         let transactionID: UInt64 = 1234

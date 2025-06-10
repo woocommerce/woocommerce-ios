@@ -26,6 +26,7 @@ struct GhostItemCardView: View {
             placeholders
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
                 .shimmering()
+                .accessibilityLabel(Localization.loadingItemAccessibilityLabel)
 
             Spacer()
 
@@ -63,6 +64,13 @@ fileprivate typealias Constants = PointOfSaleItemListCardConstants
 
 fileprivate enum Layout {
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
+}
+
+fileprivate enum Localization {
+    static let loadingItemAccessibilityLabel = NSLocalizedString(
+        "pointOfSale.itemListCard.loadingItemAccessibilityLabel",
+        value: "Loading",
+        comment: "Loading item accessibility label in POS")
 }
 
 struct GhostItemCardViewConfiguration {

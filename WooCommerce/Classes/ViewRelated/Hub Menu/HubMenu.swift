@@ -444,19 +444,19 @@ private extension HubMenu {
     }
 }
 
-struct HubMenu_Previews: PreviewProvider {
-    static var previews: some View {
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
-            .environment(\.colorScheme, .light)
-
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
-            .environment(\.colorScheme, .dark)
-
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
-            .previewLayout(.fixed(width: 312, height: 528))
-            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
-            .previewLayout(.fixed(width: 1024, height: 768))
-    }
-}
+//struct HubMenu_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+//            .environment(\.colorScheme, .light)
+//
+//        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+//            .environment(\.colorScheme, .dark)
+//
+//        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+//            .previewLayout(.fixed(width: 312, height: 528))
+//            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+//
+//        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+//            .previewLayout(.fixed(width: 1024, height: 768))
+//    }
+//}

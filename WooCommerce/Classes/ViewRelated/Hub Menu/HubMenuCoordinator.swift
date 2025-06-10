@@ -58,9 +58,10 @@ final class HubMenuCoordinator {
 
     /// Used to reload the Hub menu screen when selected site changes
     ///
-    func activate(siteID: Int64) {
+    func activate(siteID: Int64, posEligibilityChecker: POSEligibilityCheckerProtocol) {
         hubMenuController = HubMenuViewController(siteID: siteID,
-                                                  tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+                                                  tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
+                                                  posEligibilityChecker: posEligibilityChecker)
         if let hubMenuController = hubMenuController {
             let navigationController = UINavigationController(rootViewController: hubMenuController)
             tabContainerController.wrappedController = navigationController

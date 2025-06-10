@@ -54,7 +54,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    
+
     private var hasWaitedForSiteSettingsNotification: Bool = false
 
     init(siteID: Int64,

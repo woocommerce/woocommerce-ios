@@ -159,7 +159,8 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         posEligibilityChecker: POSEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -171,10 +172,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(siteID: siteID,
-                                                           siteSettings: ServiceLocator.selectedSiteSettings,
-                                                           currencySettings: ServiceLocator.currencySettings,
-                                                           featureFlagService: featureFlagService)
+        self.posEligibilityChecker = posEligibilityChecker
         self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()

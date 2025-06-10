@@ -727,7 +727,7 @@ private extension MainTabBarController {
             let hubTabCoordinator = createHubMenuTabCoordinator()
             self.hubMenuTabCoordinator = hubTabCoordinator
         }
-        hubMenuTabCoordinator?.activate(siteID: siteID)
+        hubMenuTabCoordinator?.activate(siteID: siteID, posEligibilityChecker: posEligibilityChecker)
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)

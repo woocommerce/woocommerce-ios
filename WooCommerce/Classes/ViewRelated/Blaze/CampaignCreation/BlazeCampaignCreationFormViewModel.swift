@@ -499,7 +499,9 @@ private extension BlazeCampaignCreationFormViewModel {
     }
 
     func updateTosCheckboxText() {
-        tosCheckboxText = String.localizedStringWithFormat(Localization.tosCheckbox, dailyBudget)
+        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+        tosCheckboxText = String.localizedStringWithFormat(Localization.tosCheckbox, weeklyAmount, formattedStartDate)
     }
 
     func updateTargetLanguagesText() {
@@ -616,8 +618,10 @@ private extension BlazeCampaignCreationFormViewModel {
         )
         static let tosCheckbox = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.tosCheckbox",
-            value: "I understand that this will create a subscription of $%.0f that will be billed daily once the campaign starts.",
-            comment: "Checkbox text for accepting terms of service for the Blaze campaign subscription billing. %.0f is the daily budget amount"
+            value: "I agree to a recurring **weekly charge of $%1$.0f** starting **%2$@**, which will continue until I cancel. " +
+            "I understand I can cancel anytime from the campaign details screen to stop future charges.",
+            comment: "Checkbox text for accepting terms of service for the Blaze campaign subscription billing. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
         )
     }
 }

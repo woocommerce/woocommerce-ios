@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 import SwiftUI
 import Yosemite
+import class WooFoundation.CurrencySettings
+import protocol Storage.StorageManagerType
 
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
@@ -24,6 +26,9 @@ final class POSTabCoordinator {
     private let storesManager: StoresManager
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let credentials: Credentials?
+    private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
+    private let pushNotesManager: PushNotesManager
 
     private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
@@ -35,33 +40,31 @@ final class POSTabCoordinator {
 
     private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
-                                              currencySettings: ServiceLocator.currencySettings,
+                                              currencySettings: currencySettings,
                                               credentials: credentials,
-                                              // TODO: DI
-                                              storage: ServiceLocator.storageManager)
+                                              storage: storageManager)
     }()
 
     private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
-        let storage = ServiceLocator.storageManager
-        let currencySettings = ServiceLocator.currencySettings
-
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,
-                                        storage: storage)
+                                        storage: storageManager)
     }()
 
     private(set) lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
         PointOfSaleBarcodeScanService(siteID: siteID,
                                       credentials: credentials,
-                                      // TODO: DI
-                                      currencySettings: ServiceLocator.currencySettings)
+                                      currencySettings: currencySettings)
     }()
 
     init(siteID: Int64,
          tabContainerController: TabContainerController,
          viewControllerToPresent: UIViewController,
          storesManager: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          posEligibilityChecker: POSEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
@@ -69,6 +72,9 @@ final class POSTabCoordinator {
         self.tabContainerController = tabContainerController
         self.viewControllerToPresent = viewControllerToPresent
         self.credentials = storesManager.sessionManager.defaultCredentials
+        self.storageManager = storageManager
+        self.currencySettings = currencySettings
+        self.pushNotesManager = pushNotesManager
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -93,11 +99,11 @@ private extension POSTabCoordinator {
                 let posView = PointOfSaleEntryPointView(
                     itemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
-                            currencySettings: ServiceLocator.currencySettings),
+                            currencySettings: currencySettings),
                         itemFetchStrategyFactory: posItemFetchStrategyFactory),
                     purchasableItemsSearchController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
-                            currencySettings: ServiceLocator.currencySettings),
+                            currencySettings: currencySettings),
                         itemFetchStrategyFactory: posItemFetchStrategyFactory,
                         initialState: .init(containerState: .content,
                                             itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:]))),
@@ -114,7 +120,7 @@ private extension POSTabCoordinator {
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(
-                        itemProvider: PointOfSaleItemService(currencySettings: ServiceLocator.currencySettings),
+                        itemProvider: PointOfSaleItemService(currencySettings: currencySettings),
                         itemFetchStrategyFactory: posPopularItemFetchStrategyFactory
                     ),
                     barcodeScanService: barcodeScanService
@@ -136,9 +142,9 @@ private extension POSTabCoordinator {
     /// Disables foreground in-app notifications when Point of Sale is active.
     func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
         if isPointOfSaleActive {
-            ServiceLocator.pushNotesManager.disableInAppNotifications()
+            pushNotesManager.disableInAppNotifications()
         } else {
-            ServiceLocator.pushNotesManager.enableInAppNotifications()
+            pushNotesManager.enableInAppNotifications()
         }
     }
 

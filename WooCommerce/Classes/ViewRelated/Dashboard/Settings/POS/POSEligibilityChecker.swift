@@ -26,12 +26,26 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
-            .filter { [weak self] _ in
-                self?.isEligibleFromSiteChecks ?? false
-            }
-            .map { $0 && $1 }
-            .eraseToAnyPublisher()
+        if hasWaitedForSiteSettingsNotification {
+            return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
+                .filter { [weak self] _ in
+                    self?.isEligibleFromSiteSettings() ?? false
+                }
+                .map { $0 && $1 }
+                .eraseToAnyPublisher()
+        } else {
+            return Publishers
+                .CombineLatest3(
+                    isWooCommerceVersionSupportedAndFeatureSwitchEnabled,
+                    isPointOfSaleFeatureFlagEnabled,
+                    initialSiteSettingsEligibilityPublisher
+                        .handleEvents(receiveOutput: { [weak self] _ in
+                            self?.hasWaitedForSiteSettingsNotification = true
+                        })
+                )
+                .map { $0 && $1 && $2 }
+                .eraseToAnyPublisher()
+        }
     }
 
     private let siteID: Int64
@@ -40,6 +54,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    
+    private var hasWaitedForSiteSettingsNotification: Bool = false
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -140,12 +156,23 @@ private extension POSEligibilityChecker {
         }
         .eraseToAnyPublisher()
     }
+}
 
-    var isEligibleFromSiteChecks: Bool {
-        // Conditions that can change if site settings are synced during the lifetime.
+private extension POSEligibilityChecker {
+    // Site settings are refreshed async during site initialization, `siteSettings` from `ServiceLocator` could be outdated until the notification.
+    var initialSiteSettingsEligibilityPublisher: AnyPublisher<Bool, Never> {
+        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed, object: siteSettings)
+            .map { [weak self] _ -> Bool in
+                guard let self else { return false }
+                return isEligibleFromSiteSettings()
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func isEligibleFromSiteSettings() -> Bool {
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
-        let currency = currencySettings.currencyCode
-        switch (countryCode, currency) {
+        let currencyCode = currencySettings.currencyCode
+        switch (countryCode, currencyCode) {
             case (.US, .USD),
                 (.GB, .GBP):
                 return true

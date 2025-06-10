@@ -44,6 +44,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
         let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
         }) else {
@@ -54,29 +55,34 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // Action
-        let siteID: Int64 = 134
-        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(storeID: 134)
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabRootViewController(tab: .myStore),
+        assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: false),
                    isAnInstanceOf: DashboardViewHostingController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .orders),
+        assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .products),
+        assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
                    isAnInstanceOf: ProductsViewController.self)
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_returns_expected_values() throws {
-        // Arrange
+    func test_tab_view_controllers_include_pos_tab_when_pos_is_eligible() throws {
+        // Given
         let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        mockPOSEligibilityChecker.isEligibleValue = true
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
-            return MainTabBarController(coder: coder, featureFlagService: featureFlagService)
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
             return
         }
@@ -84,22 +90,130 @@ final class MainTabBarControllerTests: XCTestCase {
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
 
-        // Action
+        // When
+        stores.updateDefaultStore(storeID: 134)
+
+        // Then
+        waitUntil {
+            tabBarController.viewControllers?.count == 5
+        }
+        assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: true),
+                   isAnInstanceOf: DashboardViewHostingController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: true),
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: true),
+                   isAnInstanceOf: ProductsViewController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .pointOfSale, isPOSTabVisible: true),
+                   isAnInstanceOf: POSTabViewController.self)
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: true) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
+    }
+
+    func test_tab_view_controllers_exclude_pos_tab_when_pos_is_not_eligible() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        mockPOSEligibilityChecker.isEligibleValue = false
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        stores.updateDefaultStore(storeID: 134)
+
+        // Then
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
+        assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: false),
+                   isAnInstanceOf: DashboardViewHostingController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
+                   isAnInstanceOf: ProductsViewController.self)
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
+    }
+
+    func test_tab_view_controllers_exclude_pos_tab_when_feature_flag_is_disabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
+
+        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        mockPOSEligibilityChecker.isEligibleValue = true
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
         let siteID: Int64 = 134
         stores.updateDefaultStore(storeID: siteID)
 
-        // Assert
+        // Then
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabRootViewController(tab: .myStore),
+        assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: false),
                    isAnInstanceOf: DashboardViewHostingController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .orders),
+        assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .products),
+        assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
                    isAnInstanceOf: ProductsViewController.self)
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
+    }
+
+    func test_tab_view_controllers_do_not_change_when_pos_eligibility_changes() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        mockPOSEligibilityChecker.isEligibleValue = false
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        stores.updateDefaultStore(storeID: 134)
+
+        // Then initial state
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
+
+        // When - change POS eligibility
+        mockPOSEligibilityChecker.isEligibleValue = true
+
+        // Then tabs remain the same
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
     }
 
     func test_tab_root_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
@@ -211,7 +325,7 @@ final class MainTabBarControllerTests: XCTestCase {
             }
         }
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
 
         // Action
@@ -351,7 +465,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products))
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products, isPOSTabVisible: false))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -393,7 +507,7 @@ final class MainTabBarControllerTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         notice.actionHandler?()
 
-        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products))
+        let productsNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .products, isPOSTabVisible: false))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -435,7 +549,7 @@ final class MainTabBarControllerTests: XCTestCase {
         notice.actionHandler?()
 
         let productsNavigationController = try XCTUnwrap(tabBarController
-                    .tabContainerController(tab: .products))
+                    .tabContainerController(tab: .products, isPOSTabVisible: false))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -576,20 +690,30 @@ private extension MainTabBarController {
         return rootViewControllers
     }
 
-    func tabRootViewController(tab: WooTab) -> UIViewController? {
+    func tabRootViewController(tab: WooTab, isPOSTabVisible: Bool) -> UIViewController? {
         // swiftlint:disable:next empty_enum_arguments
-        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex(isPOSTabVisible: false)] else {
+        guard let viewController = tabRootViewControllers[safe: tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)] else {
             XCTFail("Unexpected access to root controller at tab: \(tab)")
             return nil
         }
         return viewController
     }
 
-    func tabContainerController(tab: WooTab) -> UIViewController? {
-        guard let viewController = viewControllers?[tab.visibleIndex(isPOSTabVisible: false)] else {
+    func tabContainerController(tab: WooTab, isPOSTabVisible: Bool) -> UIViewController? {
+        guard let viewController = viewControllers?[tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)] else {
             XCTFail("Unexpected access to container controller at tab: \(tab)")
             return nil
         }
         return viewController
+    }
+}
+
+// MARK: - MockPOSEligibilityChecker
+
+private final class MockPOSEligibilityChecker: POSEligibilityCheckerProtocol {
+    var isEligibleValue: Bool = false
+
+    var isEligible: AnyPublisher<Bool, Never> {
+        Just(isEligibleValue).eraseToAnyPublisher()
     }
 }

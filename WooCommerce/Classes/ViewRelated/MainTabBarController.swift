@@ -122,10 +122,11 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
+    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEligibilityCheckerProtocol)
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
-    private var posEligibilityChecker: POSEligibilityChecker?
+    private var posEligibilityChecker: POSEligibilityCheckerProtocol?
     private var posEligibilitySubscription: AnyCancellable?
 
     private var isPOSTabVisible: Bool = false
@@ -136,11 +137,15 @@ final class MainTabBarController: UITabBarController {
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-          analytics: Analytics = ServiceLocator.analytics) {
+          analytics: Analytics = ServiceLocator.analytics,
+          posEligibilityCheckerFactory: ((Int64) -> POSEligibilityCheckerProtocol)? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
+        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
+            POSEligibilityChecker(siteID: siteID)
+        }
         super.init(coder: coder)
     }
 
@@ -149,6 +154,9 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
+        self.posEligibilityCheckerFactory = { siteID in
+            POSEligibilityChecker(siteID: siteID)
+        }
         super.init(coder: coder)
     }
 
@@ -716,7 +724,7 @@ private extension MainTabBarController {
         }
 
         // Configures POS tab coordinator once per logged in site session.
-        let posEligibilityChecker = POSEligibilityChecker(siteID: siteID)
+        let posEligibilityChecker = posEligibilityCheckerFactory(siteID)
         self.posEligibilityChecker = posEligibilityChecker
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,

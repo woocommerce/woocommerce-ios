@@ -187,6 +187,7 @@ private extension WooShippingCreateLabelsView {
                     })
                 }
                 WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
+                    .disabled(viewModel.isPurchasingLabel)
             }
             .padding(Layout.contentSpacing)
         }

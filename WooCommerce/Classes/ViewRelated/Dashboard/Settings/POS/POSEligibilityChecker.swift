@@ -34,17 +34,20 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
             .eraseToAnyPublisher()
     }
 
+    private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
-    init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+    init(siteID: Int64,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
@@ -56,8 +59,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 private extension POSEligibilityChecker {
     var isWooCommerceVersionSupported: AnyPublisher<(isSupported: Bool, wcVersion: String?), Never> {
         Future<(isSupported: Bool, wcVersion: String?), Never> { [weak self] promise in
-            guard let self,
-                  let siteID = self.stores.sessionManager.defaultStoreID else {
+            guard let self else {
                 promise(.success((isSupported: false, wcVersion: nil)))
                 return
             }
@@ -83,8 +85,7 @@ private extension POSEligibilityChecker {
             .flatMap { [weak self] isSupported, wcVersion -> AnyPublisher<Bool, Never> in
                 guard let self,
                       isSupported,
-                      let wcVersion,
-                      let siteID = self.stores.sessionManager.defaultStoreID else {
+                      let wcVersion else {
                     return Just(false).eraseToAnyPublisher()
                 }
 

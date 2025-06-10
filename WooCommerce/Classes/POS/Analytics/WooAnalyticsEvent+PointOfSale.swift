@@ -244,9 +244,13 @@ extension WooAnalyticsEvent.PointOfSale {
         case variation
 
         init?(cartItem: Cart.PurchasableItem) {
-            if cartItem.item is POSSimpleProduct {
+            guard case let .loaded(item) = cartItem.state else {
+                return nil
+            }
+
+            if item is POSSimpleProduct {
                 self = .simple
-            } else if cartItem.item is POSVariation {
+            } else if item is POSVariation {
                 self = .variation
             } else {
                 return nil

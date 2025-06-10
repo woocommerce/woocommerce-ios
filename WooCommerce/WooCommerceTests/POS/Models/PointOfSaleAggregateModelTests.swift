@@ -115,6 +115,43 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @available(iOS 17.0, *)
+        @Test func addLoadingItem_adds_loading_item_to_cart() async throws {
+            // Given
+            var cart = Cart()
+            try #require(cart.purchasableItems.isEmpty)
+
+            // When
+            let id = cart.addLoadingItem()
+
+            // Then
+            #expect(cart.purchasableItems.count == 1)
+            let item = try #require(cart.purchasableItems.first)
+            #expect(item.id == id)
+            guard case .loading = item.state else {
+                throw CartTestError.unexpectedItemStateInCart
+            }
+        }
+
+        @available(iOS 17.0, *)
+        @Test func updateLoadingItem_updates_loading_item_with_simple_product() async throws {
+            // Given
+            var cart = Cart()
+            let id = cart.addLoadingItem()
+            let purchasableItem = makePurchasableItem(name: "Test Product")
+
+            // When
+            cart.updateLoadingItem(id: id, with: purchasableItem)
+
+            // Then
+            #expect(cart.purchasableItems.count == 1)
+            let item = try #require(cart.purchasableItems.first)
+            guard case .loaded(let loadedItem) = item.state else {
+                throw CartTestError.unexpectedItemStateInCart
+            }
+            #expect(loadedItem.name == "Test Product")
+        }
+
+        @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
             let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
@@ -158,7 +195,13 @@ struct PointOfSaleAggregateModelTests {
             items.forEach(sut.addToCart(_:))
 
             // Then
-            #expect(sut.cart.purchasableItems.map(\.item.id) == items.reversed().map(\.id))
+            let cartItemIDs = try sut.cart.purchasableItems.map { purchasableItem in
+                guard case let .loaded(item) = purchasableItem.state else {
+                    throw CartTestError.unexpectedItemStateInCart
+                }
+                return item.id
+            }
+            #expect(cartItemIDs == items.reversed().map(\.id))
         }
 
         @available(iOS 17.0, *)
@@ -248,6 +291,10 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.cart.purchasableItems.count == 2)
             #expect(sut.cart.coupons.count == 0)
+        }
+
+        enum CartTestError: Error {
+            case unexpectedItemStateInCart
         }
     }
 

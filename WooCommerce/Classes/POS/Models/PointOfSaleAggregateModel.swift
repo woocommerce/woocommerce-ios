@@ -178,8 +178,13 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
         Task {
-            let item = try await barcodeScanService.getItem(barcode: barcode)
-            addToCart(item)
+            let placeholderItemID = cart.addLoadingItem()
+            do {
+                let item = try await barcodeScanService.getItem(barcode: barcode)
+                cart.updateLoadingItem(id: placeholderItemID, with: item)
+            } catch {
+                cart.removeItem(id: placeholderItemID)
+            }
         }
     }
 }

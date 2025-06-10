@@ -28,7 +28,7 @@ struct CartViewHelper {
         return cart.purchasableItems.isNotEmpty
     }
 
-    func hasLoadingItems(cart: Cart) -> Bool {
+    func hasUnresolvedItems(cart: Cart) -> Bool {
         cart.purchasableItems.contains { item in
             if case .loading = item.state {
                 return true

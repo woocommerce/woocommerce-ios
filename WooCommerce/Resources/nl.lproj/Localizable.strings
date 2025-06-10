@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-05-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-06-04 14:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -352,8 +352,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
    Add tracking screen - button title to add a tracking
+   Remove asset from media picker list
    Text for the add button in the discounts details screen */
 "Add" = "Voeg toe";
+
+/* Action for Media Picker to indicate selection of media. The argument in the string represents the number of elements (as numeric digits) selected */
+"Add %@" = "%@ toevoegen";
 
 /* Title on empty state button when the product has no attributes and variations */
 "Add Attributes" = "Eigenschappen toevoegen";
@@ -577,6 +581,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Albania" = "Albanië";
 
+/* Description of albums in the photo libraries */
+"Albums" = "Albums";
+
 /* Country option for a site address. */
 "Algeria" = "Algerije";
 
@@ -602,9 +609,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the notice when there were no variations to generate */
 "All variations are already generated." = "Alle variaties zijn al gegenereerd.";
 
-/* Display label for the product's inventory backorders setting option */
-"Allow" = "Toestaan";
-
 /* Title of alert that links to settings for camera access. */
 "Allow camera access" = "Camera-toegang toestaan";
 
@@ -614,9 +618,6 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics toggle description in the privacy screen.
    Description for the analytics toggle in the privacy banner */
 "Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Sta ons toe prestaties te optimaliseren door informatie te verzamelen over hoe gebruikers zich gedragen op onze mobiele apps.";
-
-/* Display label for the product's inventory backorders setting option */
-"Allow, but notify customer" = "Toestaan, maar melden bij klant";
 
 /* Title for the allowed email row in coupon usage restrictions screen.
    Title for the Allowed Emails screen */
@@ -683,9 +684,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
-
-/* Error message when an order already exists in the backend for a given receipt */
-"An order already exists for this receipt" = "Er bestaat al een bestelling voor deze bon";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Er is een onbekende fout opgetreden.";
@@ -758,8 +756,7 @@ which should be translated separately and considered part of this sentence. */
 /* Approve a comment */
 "Approve" = "Goedkeuren";
 
-/* Display label for the review's approved status
-   Unapprove a comment */
+/* Unapprove a comment */
 "Approved" = "Goedgekeurd";
 
 /* Approves a comment. Spoken Hint. */
@@ -822,6 +819,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary text for the generate first variation screen */
 "Attributes added!" = "Eigenschappen toegevoegd!";
+
+/* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
+"Audio, %@" = "Audio, %@";
 
 /* Country option for a site address. */
 "Australia" = "Australië";
@@ -969,9 +969,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Caribisch Nederland";
 
-/* Display label for bookable product type. */
-"Bookable" = "Boekbaar";
-
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Geef je verkopen een boost met speciale aanbiedingen";
 
@@ -1014,9 +1011,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Bulkupdate";
-
-/* Display label for bundle product type. */
-"Bundle" = "Bundel";
 
 /* Title for the bundled products screen */
 "Bundled Products" = "Gebundelde producten";
@@ -1072,6 +1066,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cambodia" = "Cambodja";
+
+/* Accessibility label for the camera tile in the collection view */
+"Camera" = "Camera";
 
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Toegang tot de camera is vereist voor SKU-scannen. Schakel cameramachtigingen in je apparaatinstellingen in.";
@@ -1531,9 +1528,6 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Hiermee wordt een nieuw bericht van bestelling opgesteld.";
 
-/* Display label for composite product type. */
-"Composite" = "Samengesteld product";
-
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configuratie bijgewerkt";
 
@@ -1760,6 +1754,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "Kon account niet automatisch sluiten";
 
+/* Message to show while media data source is finding the number of items available. */
+"Counting media items..." = "Media-items tellen...";
+
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
@@ -1974,9 +1971,6 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Klanten moeten deze code invoeren om de coupon te gebruiken.";
 
-/* Title of the store onboarding task to customize the store domain. */
-"Customize your domain" = "Je domein aanpassen";
-
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Douane";
@@ -2119,6 +2113,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
+   Action to show on alert when view asset fails.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
@@ -2165,9 +2160,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Djibouti" = "Djibouti";
 
-/* Display label for the product's inventory backorders setting option */
-"Do not allow" = "Niet toestaan";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "Wil je Fysiek betalen toevoegen aan online betalen?";
 
@@ -2177,11 +2169,16 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Wil je dit product naar de prullenbak verplaatsen?";
 
+/* Accessibility label for other media items in the media collection view. The parameter is the creation date of the document. */
+"Document, %@" = "Document, %@";
+
+/* Accessibility label for other media items in the media collection view. The parameter is the filename file. */
+"Document: %@" = "Document: %@";
+
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documenten";
 
-/* Navigates to domain settings screen.
-   Navigation bar title of the domain settings screen. */
+/* Navigation bar title of the domain settings screen. */
 "Domains" = "Domeinen";
 
 /* Country option for a site address. */
@@ -2240,33 +2237,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "Weet je niet hoe je moet printen vanaf je mobiele apparaat?";
 
-/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom-fout: [%1$@] %2$@";
-
-/* WordPress.com error thrown when the the request REST API url is invalid. */
-"Dotcom Invalid REST Route" = "Dotcom ongeldige REST-route";
-
-/* WordPress.com Missing Token */
-"Dotcom Missing Token" = "Dotcom-token ontbreekt";
-
-/* WordPress.com error thrown when the user has no permission to view site stats. */
-"Dotcom No Stats Permission" = "Geen toestemming voor Dotcomstatistieken";
-
-/* WordPress.com Request Failure */
-"Dotcom Request Failed" = "Dotcom-verzoek mislukt";
-
-/* WordPress.com error thrown when a requested resource does not exist remotely. */
-"Dotcom Resource does not exist" = "Dotcom Gegevensbron bestaat niet";
-
-/* WordPress.com Error thrown when the response body is empty */
-"Dotcom Response Empty" = "Dotcom-reactie leeg";
-
-/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
-"Dotcom Stats Module Disabled" = "De module Dotcomstatistieken is uitgeschakeld";
-
-/* WordPress.com Invalid Token */
-"Dotcom Token Invalid" = "Dotcom-token ongeldig";
-
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Dubbel klikken om te negeren";
 
@@ -2304,9 +2274,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Downloadable Files row on Product main screen
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Downloadbare bestanden";
-
-/* Display label for the product's draft status */
-"Draft" = "Concept";
 
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Boost je verkoopcijfers met Blaze";
@@ -2766,9 +2733,6 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales." = "Bekijk hoe je de verkoop van je winkel kunt verhogen";
 
-/* Display label for affiliate product type. */
-"External\/Affiliate" = "Extern\/affiliate";
-
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Verwijderen van coupon mislukt. Probeer het nog eens.";
 
@@ -3125,9 +3089,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
 "Group of: %@" = "Aantal stuks: %@";
 
-/* Display label for grouped product type. */
-"Grouped" = "Gegroepeerd";
-
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Gegroepeerd product";
 
@@ -3168,8 +3129,7 @@ which should be translated separately and considered part of this sentence. */
 /* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
 "HS Tariff Number must be 6 digits long" = "HS Tariff-nummer moet uit 6 tekens bestaan";
 
-/* Accessibility label for HTML button on formatting toolbar.
-   HTML Attachment Label */
+/* Accessibility label for HTML button on formatting toolbar. */
 "HTML" = "HTML";
 
 /* Post HTML content */
@@ -3177,9 +3137,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Haiti" = "Haïti";
-
-/* Subtitle of the store onboarding task to customize the store domain. */
-"Have a custom URL to host your store." = "Host je winkel met een aangepaste URL.";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Houd je inloggegevens van je winkel bij de hand.";
@@ -3252,8 +3209,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hallo! Alsjeblieft, een downloadlink voor de WooCommerce-app. Ik vind hem geweldig en ik dacht, jij vast ook.";
 
-/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Display label for the product's catalog visibility */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks). */
 "Hidden" = "Verborgen";
 
 /* Title of the Hide store setup list button in the action sheet. */
@@ -3325,6 +3281,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when there are no connection issues in the connectivity tool screen */
 "If your data still isn’t loading, contact our support team for assistance." = "Als je gegevens nog steeds niet worden geladen, neem dan contact op met ons ondersteuningsteam voor hulp.";
 
+/* Accessibility label for image thumbnails in the media collection view. The parameter is the creation date of the image. */
+"Image, %@" = "Afbeelding, %@";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Belangrijke informatie";
 
@@ -3335,7 +3294,6 @@ which should be translated separately and considered part of this sentence. */
 "In progress" = "Bezig";
 
 /* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Op voorraad";
 
@@ -3446,9 +3404,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of installing Jetpack plugin step
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Jetpack installeren";
-
-/* Display label for the product's inventory stock status */
-"Insufficient stock" = "Onvoldoende voorraad";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Verzekering (%1$@)";
@@ -3614,9 +3569,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Jersey" = "Jersey";
 
-/* WordPress.com error thrown when Jetpack is not connected. */
-"Jetpack Not Connected" = "Jetpack niet verbonden";
-
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack-configuratie";
 
@@ -3706,9 +3658,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Latvia" = "Letland";
 
-/* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy Debug" = "Wormholy-debug starten";
-
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Lanceer je winkel";
 
@@ -3768,9 +3717,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
-
-/* Message info on the support screen. */
-"Let us know your site address (URL) and tell us as much as you can about the problem," = "Vertel ons je siteadres (URL) en zoveel mogelijk over het probleem,";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Brief (8,5 x 11 inch)";
@@ -4081,6 +4027,16 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
+/* Title for alert when access to media capture is not granted */
+"Media Capture" = "Mediaregistratie";
+
+/* Title for alert when a generic error happened when loading media
+   Title for alert when access to the media library is not granted by the user */
+"Media Library" = "Mediabibliotheek";
+
+/* Alert title when there is issues loading an asset to preview. */
+"Media preview failed." = "Voorvertoning media mislukt.";
+
 /* Title of the Menu tab */
 "Menu" = "Menu";
 
@@ -4263,21 +4219,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Netherlands" = "Nederland";
 
-/* Error message when session cookie has expired. */
-"NetworkError.invalidCookieNonce" = "Je sessie is verlopen. Graag opnieuw inloggen.";
-
-/* Error message when the URL is invalid. */
-"NetworkError.invalidURL" = "Sorry, the URL is not valid. Probeer het opnieuw.";
-
-/* Error message when we receive not found error */
-"NetworkError.notFound" = "Kun je niet vinden wat je zoekt? Probeer het opnieuw. Antwoord: %1$@";
-
-/* Error message when a request times out. */
-"NetworkError.timeout" = "Sorry, the request took too long to process. Probeer later opnieuw. Antwoord: %1$@";
-
-/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
-"NetworkError.unacceptableStatusCode" = "Sorry, er was een probleem met de server. Probeer later opnieuw. (Foutcode: %1$d) Antwoord: %2$@";
-
 /* Display label when a subscription never expires. */
 "Never expire" = "Verlopen nooit";
 
@@ -4448,8 +4389,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "No variations to generate" = "Geen variaties om te genereren";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
-   Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option
    Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
@@ -4488,6 +4427,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of order note section in the receipt, commonly used for Quick Orders. */
 "Notes" = "Notities";
 
+/* Default message for empty media picker */
+"Nothing to show" = "Niets te tonen";
+
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nu je eigenschappen hebt toegevoegd, kun je je eerste variatie aanmaken!";
 
@@ -4497,6 +4439,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss expired WPCom plan alert
    Button to dismiss the error alert on the site credential login screen
+   Confirmation of action
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
    Dismiss button on the alert when there is an error requesting shipping label document for printing
@@ -4535,8 +4478,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the subscription status type */
 "On Hold" = "In de wacht";
 
-/* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status */
 "On back order" = "Wordt nabesteld";
 
 /* Helper text above photo list in Product images screen */
@@ -4560,7 +4502,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Open Map" = "Kaart openen";
 
 /* Button title to open device settings in an action sheet
-   Button title to open device settings in an alert */
+   Button title to open device settings in an alert
+   Go to the settings app */
 "Open Settings" = "Open Instellingen";
 
 /* Label for the description of openening a link using a new window */
@@ -4741,8 +4684,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Andere sites";
 
-/* Display label for the bundle item's inventory stock status
-   Display label for the product's inventory stock status */
+/* Display label for the bundle item's inventory stock status */
 "Out of stock" = "Niet op voorraad";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -4829,9 +4771,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Account creation error when the password is invalid. */
 "Password must be at least 6 characters." = "Wachtwoord moet bestaan uit ten minste 6 tekens.";
 
-/* Paste without Formatting Menu Item */
-"Paste without Formatting" = "Plakken zonder formatteren";
-
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Met een kaart of andere geaccepteerde betaalmethode betalen";
@@ -4884,8 +4823,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Betalingen";
 
-/* Display label for the review's pending status
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Pending" = "In afwachting";
 
 /* Display label for the subscription status type */
@@ -4893,9 +4831,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Wachtend op review";
-
-/* Display label for the product's pending status */
-"Pending review" = "Beoordeling in behandeling";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuele korting";
@@ -5206,6 +5141,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the store onboarding > launch store screen. */
 "Preview" = "Voorbeeld";
 
+/* Action for Media Picker to preview the selected media items. The argument in the string represents the number of elements (as numeric digits) selected */
+"Preview %@" = "Voorbeeld %@";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Eerder terugbetaald";
 
@@ -5284,8 +5222,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Privacy settings screen title */
 "Privacy Settings" = "Privacy instellingen";
 
-/* Display label for the product's private status
-   One of the possible options in Product Visibility */
+/* One of the possible options in Product Visibility */
 "Private" = "Privé";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -5429,9 +5366,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the store onboarding task to launch the store. */
 "Publish your site to the world anytime you want!" = "Publiceer je site voor iedereen, wanneer je maar wilt!";
-
-/* Display label for the product's published status */
-"Published" = "Gepubliceerd";
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Bezig met publiceren van je product...";
@@ -5620,7 +5554,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Herinner mij hier later aan";
 
-/* Confirm button on the alert when the user taps to delete a Product image
+/* Add asset to media picker list
+   Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
    Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "Verwijderen";
@@ -5989,9 +5924,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Search Products */
 "Search products" = "Zoeken naar producten";
 
-/* Display label for the product's catalog visibility */
-"Search results only" = "Alleen zoekresultaten";
-
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "Aangesloten winkels bekijken";
@@ -6065,6 +5997,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Selecteer items";
+
+/* Accessibility hint for actions when displaying media items. */
+"Select media." = "Media selecteren.";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Alineastijl selecteren";
@@ -6270,15 +6205,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "Verzendlabels aangeschaft!";
 
-/* Display label for the product's tax status setting option */
-"Shipping only" = "Alleen verzenden";
-
-/* Display label for the product's catalog visibility */
-"Shop and search results" = "Winkel en zoekresultaten";
-
-/* Display label for the product's catalog visibility */
-"Shop only" = "Alleen winkel";
-
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
@@ -6347,9 +6273,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Aangemeld als @%1$@";
-
-/* Display label for simple product type. */
-"Simple" = "Simpel";
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
@@ -6518,8 +6441,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Spain" = "Spanje";
 
-/* Display label for the review's spam status
-   Verb, spam a comment */
+/* Verb, spam a comment */
 "Spam" = "Spam";
 
 /* Option to select the Spark email app when logging in with magic links */
@@ -6601,9 +6523,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Ondersteuningsverzoek indienen";
-
-/* Display label for simple subscription product type. */
-"Subscription" = "Abonnement";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "Abonnementstatus";
@@ -6854,10 +6773,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Status belasting";
-
-/* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
-"Taxable" = "Belastbaar";
 
 /* Line description for tax charged on the whole cart. Only shown when non-zero
    Taxes label for payment view */
@@ -7187,6 +7102,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Er is een probleem opgetreden bij het communiceren met de site.";
 
+/* Explaining to the user there was an generic error accesing media. */
+"There was a problem when trying to access your media. Please try again later." = "Er is een probleem opgetreden bij het openen van je media. Probeer het later opnieuw.";
+
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Er is een fout opgetreden tijdens het communiceren met je site.";
 
@@ -7258,6 +7176,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tab selector title that shows the statistics for this year */
 "This Year" = "Dit jaar";
 
+/* No comment provided by engineer. */
+"This app needs permission to access the Camera to capture new media, please change the privacy settings if you wish to allow this." = "Deze app heeft toestemming nodig om de camera te openen voor het registreren van nieuwe media; wijzig de privacyinstellingen als je dit wilt toestaan.";
+
+/* Explaining to the user why the app needs access to the device media library. */
+"This app needs permission to access your device media library in order to add photos and\/or video to your posts. Please change the privacy settings if you wish to allow this." = "Deze app heeft toestemming nodig om je apparaatmediabibliotheek te kunnen openen voor het toevoegen van foto's en\/of video's aan je berichten. Wijzig de privacyinstellingen als je dit wilt toestaan.";
+
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Voor deze app moet WooCommerce 3.5 op je server zijn geïnstalleerd. Zonder deze versie zal de app niet goed werken. Werk WooCommerce zo snel mogelijk bij om deze app te blijven gebruiken.";
 
@@ -7305,9 +7229,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "Dit product is verwijderd en is niet meer zichtbaar";
-
-/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
-"This receipt's transaction type is not expected from the app [%1$@]" = "Het transactietype van deze factuur wordt niet door de app [%1$@] verwacht";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Deze instelling bepaalt op welke winkelpagina's producten worden vermeld.";
@@ -7458,8 +7379,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Volgnummer %@";
 
-/* Display label for the review's trash status
-   Move a comment to the trash */
+/* Move a comment to the trash */
 "Trash" = "Prullenbak";
 
 /* Plan name for an expired free trial */
@@ -7832,8 +7752,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "United States Virgin Islands" = "Amerikaanse Maagdeneilanden";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review
-   Unknown Tag Name */
+   Unknown product name, displayed in a review */
 "Unknown" = "Onbekend";
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
@@ -7844,6 +7763,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Fallback country option for a site address. */
 "Unknown country" = "Onbekend land";
+
+/* Label to use when creation date from media asset is not know. */
+"Unknown creation date" = "Onbekende aanmaakdatum";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Onbekende fout";
@@ -7863,14 +7785,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Ongeordende lijst";
 
-/* Display label for the review's unspam status */
-"Unspam" = "Geen spam";
-
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
 "Unsupported %1$@ version" = "Niet-ondersteunde %1$@ versie";
-
-/* Display label for the review's untrash status */
-"Untrash" = "Uit prullenbak";
 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Up to date" = "Bijgewerkt";
@@ -8024,12 +7940,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Vanuatu" = "Vanuatu";
 
-/* Display label for variable product type. */
-"Variable" = "Variabele";
-
-/* Display label for variable subscription product type. */
-"Variable Subscription" = "Variabel abonnement";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variatie #%1$@";
 
@@ -8070,6 +7980,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versie: %1$@";
+
+/* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
+"Video, %@" = "Video, %@";
 
 /* Country option for a site address. */
 "Vietnam" = "Vietnam";
@@ -8422,9 +8335,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
-/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"WordPress API Error: [%1$@] %2$@" = "WordPress API-fout: [%1$@] %2$@";
-
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
@@ -8578,6 +8488,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* First instruction on the Woo payments setup instructions screen. */
 "Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "Je WooPayments-meldingen worden verzonden naar het e-mailadres van je WordPress.com-account. Heb je liever dat we het naar een nieuw account sturen? Meer informatie vind je hier.";
 
+/* Explaining to the user why the app needs access to the device media library. */
+"Your app is not authorized to access media library due to active restrictions such as parental controls. Please check your parental control settings in this device." = "Je app is niet geautoriseerd om de mediabibliotheek te benaderen vanwege actieve restricties zoals ouderlijk toezicht. Controleer je instellingen voor ouderlijk toezicht op dit apparaat.";
+
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "De software van je kaartlezer moet worden bijgewerkt om betalingen te innen. Door te annuleren wordt de verbinding van je lezer geblokkeerd.";
 
@@ -8687,9 +8600,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Zimbabwe" = "Zimbabwe";
-
-/* Comment Attachment Label */
-"[COMMENT]" = "[REACTIE]";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Annuleren";
@@ -8891,6 +8801,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "Inloggen met een ander account";
+
+/* Label displayed on audio media items. */
+"audio" = "audio";
 
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Begin je een nieuwe winkel?";
@@ -9106,6 +9019,27 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button to try again on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.tryAgain" = "Probeer opnieuw";
 
+/* Accessibility label for the call to action button in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.callToActionButton" = "Call-to-action-knop: %@";
+
+/* Accessibility label for the campaign description in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignDescription" = "Campagnebeschrijving: %@";
+
+/* Accessibility label for the campaign preview container in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignPreview" = "Campagnevoorbeeld";
+
+/* Accessibility hint for the campaign preview container in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignPreviewHint" = "Toont hoe de advertentie van je Blaze-campagne eruitziet voor klanten";
+
+/* Accessibility label for the campaign tagline in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.campaignTagline" = "Campagneslogan: %@";
+
+/* Accessibility label for the default call to action button in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.defaultCallToAction" = "Standaard call-to-action-knop";
+
+/* Accessibility label for the product image in the Blaze campaign creation form */
+"blazeCampaignCreationForm.accessibility.productImage" = "Productafbeelding voor campagne";
+
 /* Title of the Ad destination field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination" = "Advertentiebestemming";
 
@@ -9225,6 +9159,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Verhoog je zichtbaarheid en verkoop snel je producten.";
+
+/* Accessibility label format for a Blaze campaign card. The %1$@ is a placeholder for the campaign name. The %2$@ is a placeholder for the campaign status. */
+"blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat" = "Blaze-campagnes voor %1$@. %2$@";
+
+/* Accessibility hint for a Blaze campaign card */
+"blazeCampaignItemView.campaignAccessibilityHint" = "Tik om campagnedetails te bekijken";
+
+/* Accessibility label format for a Blaze campaign's click-through rates. The placeholders are numbers of impressions and clicks. Reads as: '20000 impressions, 200 clicks' */
+"blazeCampaignItemView.clickThroughAccessibilityLabelFormat" = "%1$d weergaven, %2$d clicks";
 
 /* Title label for the total impressions and clicks of a Blaze ads campaign */
 "blazeCampaignItemView.clickthroughs" = "Doorklikken";
@@ -9375,6 +9318,39 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the Blaze campaign intro view */
 "blazeCreateCampaignIntroView.title" = "Zorg dat je producten door miljoenen mensen worden gezien";
+
+/* Accessibility label for the call to action group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.ctaGroup" = "Call to action bewerken";
+
+/* Accessibility label for the description group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.descriptionGroup" = "Beschrijving bewerken";
+
+/* Accessibility label for the next suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.nextSuggestion" = "Volgende suggestie";
+
+/* Accessibility hint for the next suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.nextSuggestionHint" = "Gebruik deze knop om naar de volgende suggestie te gaan";
+
+/* Accessibility label for the previous suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.previousSuggestion" = "Vorige suggestie";
+
+/* Accessibility hint for the previous suggestion button in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.previousSuggestionHint" = "Gebruik deze knop om naar de vorige suggestie te gaan";
+
+/* Accessibility label for the product image in the Edit Image form for blaze campaign */
+"blazeEditAdView.accessibility.productImage" = "Productafbeelding voor campagne";
+
+/* Accessibility hint for the suggested by AI text in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestedByAIHint" = "Gebruik de navigatiepijlen aan de rechterkant om verschillende suggesties te verkennen.";
+
+/* Accessibility label for the suggested by AI text in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestedByAILabel" = "Deze content is voorgesteld door AI";
+
+/* Accessibility label for the suggestion navigation controls in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.suggestionNavigation" = "Suggestie navigatie";
+
+/* Accessibility label for the tagline group in the Blaze Edit Ad screen. */
+"blazeEditAdView.accessibility.taglineGroup" = "Slogan bewerken";
 
 /* Cancel button in the Blaze Edit Ad screen. */
 "blazeEditAdView.cancel" = "Annuleren";
@@ -10575,6 +10551,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "Online pincode wordt niet ondersteund in de offline-modus. Probeer de betaling opnieuw met een andere kaart.";
 
+/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
+"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "Er is geen kaart binnen de tijdslimiet gepresenteerd.";
+
 /* Error message when the reader connection configuration is invalid. */
 "hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "De verbindingsconfiguratie van de lezer is ongeldig.";
 
@@ -10631,6 +10610,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the hub menu Google Ads button */
 "hubMenuViewModel.googleAdsDescription" = "Verkoop meer en genereer meer verkeer met Google Ads";
+
+/* Label displayed on image media items. */
+"image" = "afbeelding";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Kan beter";
@@ -11003,6 +10985,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice displayed when saving notification settings succeeds. */
 "notificationSettingsViewModel.successNotice" = "Instellingen opgeslagen!";
 
+/* Word separating the current index from the total amount. I.e.: 7 of 9 */
+"of" = "van";
+
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Selecteer een bepaalde variatie.";
 
@@ -11241,30 +11226,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Belastingen";
 
-/* Display label for auto-draft order status. */
-"orderStatusEnum.localizedName.autoDraft" = "Concept";
-
-/* Display label for cancelled order status. */
-"orderStatusEnum.localizedName.cancelled" = "Geannuleerd";
-
-/* Display label for completed order status. */
-"orderStatusEnum.localizedName.completed" = "Voltooid";
-
-/* Display label for failed order status. */
-"orderStatusEnum.localizedName.failed" = "Mislukt";
-
-/* Display label for on hold order status. */
-"orderStatusEnum.localizedName.onHold" = "In de wacht";
-
-/* Display label for pending order status. */
-"orderStatusEnum.localizedName.pending" = "Betaling in behandeling";
-
-/* Display label for processing order status. */
-"orderStatusEnum.localizedName.processing" = "Bezig met verwerken";
-
-/* Display label for refunded order status. */
-"orderStatusEnum.localizedName.refunded" = "Terugbetaald";
-
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11273,6 +11234,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
+
+/* Label displayed on media items that are not video, image, or audio. */
+"other" = "andere";
 
 /* Title of button which removes selected package photo. */
 "packagePhotoView.removePhoto" = "Foto verwijderen";
@@ -11719,7 +11683,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.orderSync.couponsError.editOrder" = "Bestelling bewerken";
 
 /* Title of the error when failing to validate coupons and calculate order totals */
-"pointOfSale.orderSync.couponsError.errorTitle" = "Kon coupon niet toepassen";
+"pointOfSale.orderSync.couponsError.errorTitle.2" = "Coupon kan niet worden toegepast";
 
 /* Button title to remove a single coupon and retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.couponsError.removeCoupon" = "Coupon verwijderen";
@@ -11796,86 +11760,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
 
-/* Text of the button appearing on the coupon list screen when there's an error enabling coupons setting in the store.. */
-"pos.itemList.enablingCouponsErrorRetry" = "Opnieuw proberen";
-
-/* Subtitle appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorSubtitle" = "Nog een keer proberen?";
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
 
 /* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
-"pos.itemList.enablingCouponsErrorTitle" = "Fout bij inschakelen coupons";
-
-/* Text for the button appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageButtonTitle" = "Opnieuw proberen";
-
-/* Text appearing on the coupon list screen as subtitle when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageSubtitle" = "Er is een fout opgetreden tijdens het laden.";
+"pos.itemList.enablingCouponsErrorTitle.2" = "Coupons kunnen niet worden ingeschakeld";
 
 /* Text appearing on the coupon list screen when there's an error loading a page of coupons after the first. Shown inline with the previously loaded coupons above. */
-"pos.itemList.failedToLoadCouponsNextPageTitle" = "Meer coupons laden mislukt";
-
-/* Text for the button appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsButtonTitle" = "Opnieuw proberen";
-
-/* Text for the button appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageButtonTitle" = "Opnieuw proberen";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageSubtitle" = "Er is een fout opgetreden tijdens het laden van producten.";
+"pos.itemList.failedToLoadCouponsNextPageTitle.2" = "Meer coupons kunnen niet worden geladen";
 
 /* Text appearing on the item list screen when there's an error loading a page of products after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadProductsNextPageTitle" = "Meer items laden mislukt";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading products. */
-"pos.itemList.failedToLoadProductsSubtitle" = "Nog een keer proberen?";
+"pos.itemList.failedToLoadProductsNextPageTitle.2" = "Meer producten kunnen niet worden laden";
 
 /* Text appearing on the item list screen when there's an error loading products. */
-"pos.itemList.failedToLoadProductsTitle" = "Fout bij laden van producten";
-
-/* Text for the button appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsButtonTitle" = "Opnieuw proberen";
-
-/* Text for the button appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageButtonTitle" = "Opnieuw proberen";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageSubtitle" = "Er is een fout opgetreden tijdens het laden van variaties.";
+"pos.itemList.failedToLoadProductsTitle.2" = "Producten kunnen niet worden geladen";
 
 /* Text appearing on the item list screen when there's an error loading a page of variations after the first. Shown inline with the previously loaded items above. */
-"pos.itemList.failedToLoadVariationsNextPageTitle" = "Meer items laden mislukt";
-
-/* Text appearing on the item list screen as subtitle when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsSubtitle" = "Nog een keertje proberen?";
+"pos.itemList.failedToLoadVariationsNextPageTitle.2" = "Meer variaties kunnen niet worden geladen";
 
 /* Text appearing on the item list screen when there's an error loading variations. */
-"pos.itemList.failedToLoadVariationsTitle" = "Fout bij laden van variaties";
-
-/* Text for the button appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsButtonTitle" = "Opnieuw proberen";
-
-/* Subtitle appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsSubtitle" = "Nog een keer proberen?";
+"pos.itemList.failedToLoadVariationsTitle.2" = "Variaties kunnen niet worden geladen";
 
 /* Title appearing on the coupon list screen when there's an error refreshing coupons. */
-"pos.itemList.failedToRefreshCouponsTitle" = "Fout bij vernieuwen coupons";
+"pos.itemList.failedToRefreshCouponsTitle.2" = "Coupons kunnen niet worden vernieuwd";
+
+/* Generic subtitle appearing on error screens when there's an error. */
+"pos.itemList.genericErrorSubtitle" = "Probeer het opnieuw.";
 
 /* Text of the button appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledAction" = "Inschakelen";
+"pos.itemList.loadingCouponsDisabledAction.2" = "Coupons inschakelen";
 
 /* Subtitle appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledSubtitle" = "Schakel het gebruik van couponcodes in je winkel in.";
+"pos.itemList.loadingCouponsDisabledSubtitle.2" = "Schakel couponcodes in je winkel in om ze aan te maken voor je klanten.";
 
 /* Title appearing on the coupon list screen when coupons are disabled. */
-"pos.itemList.loadingCouponsDisabledTitle" = "Fout bij laden coupons";
-
-/* Text of the button appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorRetry" = "Opnieuw proberen";
-
-/* Subtitle appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorSubtitle2" = "Nog een keer proberen?";
+"pos.itemList.loadingCouponsDisabledTitle.2" = "Begin met het accepteren van coupons";
 
 /* Title appearing on the coupon list screen when there's an error loading coupons. */
-"pos.itemList.loadingCouponsErrorTitle" = "Fout bij laden coupons";
+"pos.itemList.loadingCouponsErrorTitle.2" = "Coupons kunnen niet worden geladen";
+
+/* Generic text for retry buttons appearing on error screens. */
+"pos.itemList.retryButtonTitle" = "Opnieuw proberen";
 
 /* Title at the top of the Point of Sale item list full screen. */
 "pos.itemListFullscreen.title" = "Producten";
@@ -11914,10 +11839,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.parentProductCard.optionsAvailable" = "Beschikbare opties";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle" = "Probeer je zoekterm aan te passen. Als je naar een deel van een couponnaam zoekt, kan dat helpen.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.2" = "We konden geen coupons met deze naam vinden. Probeer je zoekterm aan te passen.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
-"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle" = "Geef je bedrijf een boost door klanten speciale aanbiedingen en kortingen te geven.";
+"pos.pointOfSaleItemListEmptyView.emptyCouponsSubtitle.2" = "Coupons kunnen effectief zijn voor je bedrijf. Wil je er een maken?";
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Geen coupons gevonden";
@@ -11929,16 +11854,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSearchHint" = "Variatienamen kunnen niet worden doorzocht, dus gebruik de bovenliggende productnaam.";
 
 /* Subtitle text suggesting to modify search terms when no products are found in the POS product search. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle" = "Probeer je zoekterm aan te passen. Als je naar een deel van een productnaam zoekt, kan dat helpen.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchSubtitle.2" = "We konden geen overeenkomende producten vinden. Probeer je zoekterm aan te passen.";
 
 /* Text appearing on screen when a POS product search returns no results. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle" = "Geen producten gevonden.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsSearchTitle.2" = "Geen producten gevonden";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle.1" = "POS ondersteunt momenteel alleen simpele en variabele producten.";
 
 /* Text appearing on screen when there are no products to load. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.1" = "Geen ondersteunde producten gevonden.";
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle.2" = "Geen ondersteunde producten gevonden";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductHint" = "Om er een toe te voegen, verlaat je POS en bewerk je dit product in het tabblad Producten.";
@@ -11947,7 +11872,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.pointOfSaleItemListEmptyView.emptyVariableParentProductSubtitle" = "POS ondersteunt alleen ingeschakelde, niet-downloadbare variaties.";
 
 /* Text appearing on screen when there are no variations to load. */
-"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle" = "Geen ondersteunde variaties gevonden.";
+"pos.pointOfSaleItemListEmptyView.emptyVariableParentProductTitle.2" = "Geen ondersteunde variaties gevonden";
 
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Coupon aanmaken";
@@ -11972,6 +11897,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Waarom kan ik mijn producten niet zien?";
+
+/* Label to be displayed in the product's card when out of stock
+   Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.outofstock" = "Niet op voorraad";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "Nieuwe bestelling";
@@ -12191,6 +12120,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "elke %1$@";
+
+/* Accessibility hint for product description on Product form screen */
+"productFormTableViewDataSource.accessibility.descriptionHint" = "Tik om meer te bekijken of productomschrijving te bewerken";
+
+/* VoiceOver accessibility hint for the Promote with Blaze button */
+"productFormTableViewDataSource.promoteWithBlazeAccessibilityHint" = "Opent de aanmaakflow voor Blaze-campagnes voor dit product";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promoten met Blaze";
@@ -12698,6 +12633,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the alert after the support request is created. */
 "supportForm.supportRequestSentMessage" = "Je ondersteuningsverzoek is in goede orde bij ons aangekomen. We zullen zo snel mogelijk via e-mail reageren.";
 
+/* Message info on the support screen. */
+"supportForm.tellUsInfo.message" = "Geef ons je siteadres (URL) en zoveel mogelijk informatie over het probleem, dan nemen wij spoedig contact met je op.";
+
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
 
@@ -12937,6 +12875,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Productgegevens bekijken";
+
+/* Label displayed on video media items. */
+"video" = "video";
 
 /* Title of the button to dismiss the view package photo screen. */
 "viewPackagePhoto.done" = "Gereed";
@@ -13187,6 +13128,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the address field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.address" = "Adres";
 
+/* Button label indicating the user wants to close an alert */
+"wooShipping.createLabels.editAddress.alert.close" = "Sluiten";
+
+/* Button label indicating the user wants to retry an action */
+"wooShipping.createLabels.editAddress.alert.retry" = "Opnieuw proberen";
+
 /* Button to cancel editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.cancel" = "Annuleren";
 
@@ -13238,17 +13185,35 @@ which should be translated separately and considered part of this sentence. */
 /* Validation message when the address field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.address" = "Voer een geldig adres in.";
 
+/* Message for the address validation error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.addressValidationError.message" = "Het adres dat je hebt ingevoerd kan niet worden geverifieerd. Probeer het later opnieuw.";
+
+/* Title for the address validation error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.addressValidationError.title" = "Fout bij adresvalidatie";
+
 /* Validation message when the city field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.city" = "Voer een geldige plaats in.";
 
 /* Validation message when the country field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.country" = "Selecteer een land.";
 
+/* Message for the destination address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.message" = "Het adres van de bestemming kon niet worden bijgewerkt. Probeer het later opnieuw.";
+
+/* Title for the destination address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.destinationAddressUpdateError.title" = "Fout bij bijwerken adres bestemming";
+
 /* Validation message when the email field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.email" = "Voeg een geldig e-mailadres in.";
 
 /* Validation message when the name and company fields are empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.nameOrCompany" = "Voer een geldige naam of bedrijfsnaam in.";
+
+/* Message for the origin address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.originAddressUpdateError.message" = "Het adres van de afzender kon niet worden bijgewerkt. Probeer het later opnieuw.";
+
+/* Title for the origin address update error alert in the Woo Shipping label creation flow */
+"wooShipping.createLabels.editAddress.validation.originAddressUpdateError.title" = "Fout bij bijwerken adres afzender";
 
 /* Validation message when the phone field is empty in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.validation.phone" = "Voer een geldig telefoonnummer in.";
@@ -13666,6 +13631,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Ben je van plan om gevaarlijke goederen of materialen te verzenden?";
+
+/* Action button on the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.actionButton" = "Nieuwe creditcard of betaalpas";
+
+/* Subtitle of the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.subtitle" = "Voeg een betaalmethode toe om een verzendlabel aan te schaffen";
+
+/* Title of the payment method empty sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.emptyView.title" = "Betalingsmethode toevoegen";
+
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder. */
+"wooShippingPaymentMethodsView.note" = "Creditcards worden opgehaald uit het volgende WordPress.com-account: @%1$@.";
+
+/* Subtitle of the payment method sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.subtitle" = "Kies een nieuwe betaalmethode.";
+
+/* Title of the payment method sheet in the Shipping Label purchase flow */
+"wooShippingPaymentMethodsView.title" = "Betaalmethode";
 
 /* Button to dismiss the Request shipping label refund view */
 "wooShippingRefundView.cancelButton" = "Annuleren";

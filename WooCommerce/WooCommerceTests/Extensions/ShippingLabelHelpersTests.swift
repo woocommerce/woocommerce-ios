@@ -13,7 +13,7 @@ struct ShippingLabelHelpersTests {
     }
 
     @Test(arguments: [
-        WooShippingCarrier.ups,
+        WooShippingCarrier.upsdap,
         WooShippingCarrier.usps,
         WooShippingCarrier.dhlEcommerce,
         WooShippingCarrier.dhlEcommerceAsia

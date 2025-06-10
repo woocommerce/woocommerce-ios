@@ -1,7 +1,6 @@
 import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import class Networking.ProductsRemote
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
 
@@ -11,20 +10,23 @@ public protocol PointOfSaleBarcodeScanServiceProtocol {
 
 public enum PointOfSaleBarcodeScanError: Error, Equatable {
     case unknown
+    case noParentProductForVariation
+    case variationCouldNotBeConverted
 }
 
 /// Service for handling barcode scanning in Point of Sale
 public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
     private let siteID: Int64
-    private let itemMapper: PointOfSaleItemMapper
+    private let itemResolver: POSProductOrVariationResolver
 
     init (siteID: Int64,
           productsRemote: ProductsRemoteProtocol,
           currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.productsRemote = productsRemote
-        self.itemMapper = PointOfSaleItemMapper(currencySettings: currencySettings)
+        self.itemResolver = POSProductOrVariationResolver(productsRemote: productsRemote,
+                                                          currencySettings: currencySettings)
     }
 
     public convenience init(siteID: Int64,
@@ -41,15 +43,9 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     /// - Returns: A POSItem if found, or throws an error
     public func getItem(barcode: String) async throws -> POSItem {
         do {
-            let product = try await productsRemote.fetchPOSProductByGlobalUniqueIdentifier(for: siteID, globalUniqueID: barcode)
-
-            let items = itemMapper.mapProductsToPOSItems(products: [product])
-
-            guard let item = items.first else {
-                throw PointOfSaleBarcodeScanError.unknown
-            }
-
-            return item
+            let productOrVariation = try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
+                                                                                                      globalUniqueID: barcode)
+            return try await itemResolver.itemForProductOrVariation(productOrVariation)
         } catch {
             throw PointOfSaleBarcodeScanError.unknown
         }

@@ -8,6 +8,7 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBOutlet private weak var mainLabel: UILabel!
     @IBOutlet private weak var lastUpdatedLabel: UILabel!
     @IBOutlet private weak var filterButton: UIButton!
+    @IBOutlet weak var headerBarLayoutStackView: UIStackView!
 
     private let bottomBorder = CALayer()
 
@@ -26,6 +27,7 @@ final class FilteredOrdersHeaderBar: UIView {
         configureLabels()
         configureButtons()
         configureBackground()
+        updateStackViewAxis(for: traitCollection)
     }
 
     override func layoutSubviews() {
@@ -48,6 +50,28 @@ final class FilteredOrdersHeaderBar: UIView {
         onAction?()
     }
 
+}
+// MARK: - Dynamic type support
+/// The `Last updated: time` tends to get truncated at larger text sizes by the filter button.
+/// Laying out the overall stack view vertically avoids this with accessibility sizes.
+extension FilteredOrdersHeaderBar {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard let previousTraitCollection,
+              traitCollection.preferredContentSizeCategory != previousTraitCollection.preferredContentSizeCategory else {
+            return
+        }
+        updateStackViewAxis(for: traitCollection)
+    }
+
+    private func updateStackViewAxis(for traitCollection: UITraitCollection) {
+        if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
+            headerBarLayoutStackView.axis = .vertical
+        } else {
+            headerBarLayoutStackView.axis = .horizontal
+        }
+    }
 }
 
 // MARK: - Setup

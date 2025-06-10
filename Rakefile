@@ -120,7 +120,7 @@ end
 desc 'Run all code generation tasks'
 task :generate do
   # See note in BuildTools/.sourcery.yml for why we call without arguments
-  run_package_plugin(cmd: 'sourcery-command')
+  run_package_plugin(cmd: 'sourcery-command --disableCache')
 end
 
 def fold(label)

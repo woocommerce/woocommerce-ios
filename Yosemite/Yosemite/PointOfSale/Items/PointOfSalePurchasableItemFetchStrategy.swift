@@ -4,7 +4,7 @@ import protocol Networking.ProductVariationsRemoteProtocol
 
 public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
-    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation>
+    func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 }
 
 extension PointOfSalePurchasableItemFetchStrategy {
@@ -40,7 +40,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         return pagedProducts
     }
 
-    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,
@@ -83,7 +83,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         return pagedProducts
     }
 
-    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,
@@ -118,7 +118,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         return modifiedItems
     }
 
-    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<ProductVariation> {
+    public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         try await variationsRemote
             .loadVariationsForPointOfSale(for: siteID,
                                           parentProductID: parentProductID,

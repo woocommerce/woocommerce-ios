@@ -1890,6 +1890,8 @@ extension Networking.POSProduct {
         regularPrice: NullableCopiableProp<String> = .copy,
         salePrice: NullableCopiableProp<String> = .copy,
         onSale: CopiableProp<Bool> = .copy,
+        downloadable: CopiableProp<Bool> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
         attributes: CopiableProp<[ProductAttribute]> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
@@ -1906,6 +1908,8 @@ extension Networking.POSProduct {
         let regularPrice = regularPrice ?? self.regularPrice
         let salePrice = salePrice ?? self.salePrice
         let onSale = onSale ?? self.onSale
+        let downloadable = downloadable ?? self.downloadable
+        let parentID = parentID ?? self.parentID
         let images = images ?? self.images
         let attributes = attributes ?? self.attributes
         let manageStock = manageStock ?? self.manageStock
@@ -1923,8 +1927,64 @@ extension Networking.POSProduct {
             regularPrice: regularPrice,
             salePrice: salePrice,
             onSale: onSale,
+            downloadable: downloadable,
+            parentID: parentID,
             images: images,
             attributes: attributes,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
+        )
+    }
+}
+
+extension Networking.POSProductVariation {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        productVariationID: CopiableProp<Int64> = .copy,
+        attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        image: NullableCopiableProp<ProductImage> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        globalUniqueID: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        regularPrice: NullableCopiableProp<String> = .copy,
+        salePrice: NullableCopiableProp<String> = .copy,
+        onSale: CopiableProp<Bool> = .copy,
+        downloadable: CopiableProp<Bool> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy
+    ) -> Networking.POSProductVariation {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let productVariationID = productVariationID ?? self.productVariationID
+        let attributes = attributes ?? self.attributes
+        let image = image ?? self.image
+        let sku = sku ?? self.sku
+        let globalUniqueID = globalUniqueID ?? self.globalUniqueID
+        let price = price ?? self.price
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let onSale = onSale ?? self.onSale
+        let downloadable = downloadable ?? self.downloadable
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+
+        return Networking.POSProductVariation(
+            siteID: siteID,
+            productID: productID,
+            productVariationID: productVariationID,
+            attributes: attributes,
+            image: image,
+            sku: sku,
+            globalUniqueID: globalUniqueID,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey
@@ -1939,7 +1999,7 @@ extension Networking.PaymentGateway {
         title: CopiableProp<String> = .copy,
         description: CopiableProp<String> = .copy,
         enabled: CopiableProp<Bool> = .copy,
-        features: CopiableProp<[PaymentGateway.Feature]> = .copy,
+        features: CopiableProp<[Feature]> = .copy,
         instructions: NullableCopiableProp<String> = .copy
     ) -> Networking.PaymentGateway {
         let siteID = siteID ?? self.siteID
@@ -3113,7 +3173,7 @@ extension Networking.ShippingLabelAccountSettings {
         isEmailReceiptsEnabled: CopiableProp<Bool> = .copy,
         paperSize: CopiableProp<ShippingLabelPaperSize> = .copy,
         lastSelectedPackageID: CopiableProp<String> = .copy,
-        addPaymentMethodURL: CopiableProp<URL> = .copy
+        addPaymentMethodURL: NullableCopiableProp<URL> = .copy
     ) -> Networking.ShippingLabelAccountSettings {
         let siteID = siteID ?? self.siteID
         let canManagePayments = canManagePayments ?? self.canManagePayments
@@ -4248,7 +4308,7 @@ extension Networking.WooShippingAddress {
 extension Networking.WooShippingConfig {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        shipments: CopiableProp<WooShippingShipments> = .copy,
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy,
         shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
     ) -> Networking.WooShippingConfig {
         let siteID = siteID ?? self.siteID
@@ -4509,7 +4569,7 @@ extension Networking.WooShippingShipmentItem {
 extension Networking.WooShippingUpdateShipment {
     public func copy(
         shipmentIdsToUpdate: CopiableProp<[String]> = .copy,
-        shipments: CopiableProp<WooShippingShipments> = .copy
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy
     ) -> Networking.WooShippingUpdateShipment {
         let shipmentIdsToUpdate = shipmentIdsToUpdate ?? self.shipmentIdsToUpdate
         let shipments = shipments ?? self.shipments
@@ -4523,7 +4583,7 @@ extension Networking.WooShippingUpdateShipment {
 
 extension Networking.WooShippingUpdateShipmentResponse {
     public func copy(
-        shipments: CopiableProp<WooShippingShipments> = .copy
+        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy
     ) -> Networking.WooShippingUpdateShipmentResponse {
         let shipments = shipments ?? self.shipments
 

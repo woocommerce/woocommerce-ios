@@ -150,7 +150,14 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.updateImpressions(startDate: .now, dayCount: 3, dailyBudget: 15)
 
         // Then
-        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1,000 - 5,000"))
+        XCTAssertEqual(
+            viewModel.forecastedImpressionState,
+            .result(
+                formattedResult: "1,000 - 5,000",
+                minValue: 1000,
+                maxValue: 5000
+            )
+        )
     }
 
     @MainActor

@@ -72,6 +72,10 @@ public protocol WooShippingRemoteProtocol {
                              orderID: Int64,
                              shippingLabelID: Int64,
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
+
+    func acceptUPSTermsOfService(siteID: Int64,
+                                 originAddress: WooShippingAddress,
+                                 completion: @escaping(Result<Bool, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -158,7 +162,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.orderID: orderID,
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
-                ParameterKey.packages: try packages.map { try $0.toDictionary() }
+                ParameterKey.packages: try packages.map { try $0.toDictionary() },
+                ParameterKey.featuresSupported: [Values.upsdap]
             ]
             let path = Path.rates
             let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -183,11 +188,15 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func loadPackages(siteID: Int64,
                              completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
         do {
+            let parameters: [String: Any] = [
+                ParameterKey.featuresSupported: [Values.upsdap]
+            ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .get,
                                          siteID: siteID,
                                          path: path,
+                                         parameters: parameters,
                                          availableAsRESTRequest: true)
 
             let mapper = WooShippingPackagesMapper(siteID: siteID)
@@ -521,6 +530,34 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
         let mapper = ShippingLabelRefundMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Updates the Terms of Service agreement status for a specific origin address in the UPS DAP carrier strategies.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - originAddress: The origin address to accept the TOS.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func acceptUPSTermsOfService(siteID: Int64,
+                                        originAddress: WooShippingAddress,
+                                        completion: @escaping(Result<Bool, Error>) -> Void) {
+        do {
+            let path = Path.upsdapCarrierStrategy
+            let parameters: [String: Any] = [
+                ParameterKey.originAddress: try originAddress.toDictionary(),
+                ParameterKey.confirmed: true
+            ]
+            let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                         method: .post,
+                                         siteID: siteID,
+                                         path: path,
+                                         parameters: parameters,
+                                         availableAsRESTRequest: true)
+            let mapper = SuccessDataResultMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constants
@@ -550,6 +587,7 @@ private extension WooShippingRemote {
         static func refundLabel(orderID: Int64, labelID: Int64) -> String {
             "label/refund/\(orderID)/\(labelID)"
         }
+        static let upsdapCarrierStrategy = "carrier-strategy/upsdap"
     }
 
     enum ParameterKey {
@@ -572,6 +610,12 @@ private extension WooShippingRemote {
         static let selectedPaymentMethodID = "selected_payment_method_id"
         static let emailReceipts = "email_receipts"
         static let enabled = "enabled"
+        static let featuresSupported = "features_supported_by_client"
+        static let confirmed = "confirmed"
+    }
+
+    enum Values {
+        static let upsdap = "upsdap"
     }
 }
 

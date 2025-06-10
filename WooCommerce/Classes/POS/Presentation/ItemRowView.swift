@@ -3,6 +3,7 @@ import SwiftUI
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
+    private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding private var showProductImage: Bool
@@ -11,48 +12,54 @@ struct ItemRowView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(cartItem: Cart.PurchasableItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: Cart.PurchasableItem,
+         showImage: Binding<Bool> = .constant(true),
+         onItemRemoveTapped: (() -> Void)? = nil,
+         onCancelLoading: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
+        self.onCancelLoading = onCancelLoading
     }
 
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
-            productImage
-
-            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
-                Text(cartItem.title)
-                    .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
-                    .font(Constants.itemTitleFont)
-                    .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
-                if let subtitle = cartItem.subtitle {
-                    Text(subtitle)
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemSubtitleFont)
-                        .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
+            if case .loading = cartItem.state {
+                GhostItemCardView(configuration: .cart) {
+                    if let onCancelLoading {
+                        CartRowRemoveButton {
+                            onCancelLoading()
+                        }
+                    }
                 }
+                .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+            } else {
+                productImage
 
-                switch cartItem.state {
-                case .loaded(let item):
-                    Text(item.formattedPrice)
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
-                case .loading:
-                    Text("$0.00")
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                        .font(Constants.itemPriceFont)
-                        .redacted(reason: .placeholder)
+                VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+                    Text(cartItem.title)
+                        .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
+                        .font(Constants.itemTitleFont)
+                    if let subtitle = cartItem.subtitle {
+                        Text(subtitle)
+                            .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                            .font(Constants.itemSubtitleFont)
+                    }
+
+                    if case .loaded(let item) = cartItem.state {
+                        Text(item.formattedPrice)
+                            .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                            .font(Constants.itemPriceFont)
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
-            .accessibilityElement(children: .combine)
-            .shimmering(active: cartItem.state.isLoading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
+                .accessibilityElement(children: .combine)
 
-            if let onItemRemoveTapped {
-                CartRowRemoveButton {
-                    onItemRemoveTapped()
+                if let onItemRemoveTapped {
+                    CartRowRemoveButton {
+                        onItemRemoveTapped()
+                    }
                 }
             }
         }
@@ -67,21 +74,11 @@ struct ItemRowView: View {
     private var productImage: some View {
         if !showProductImage {
             EmptyView()
-        } else {
-            switch cartItem.state {
-            case .loaded(let item):
-                POSItemImageView(imageSource: item.productImageSource,
-                                 imageSize: dimension,
-                                 scale: 1)
-                .frame(width: dimension, height: dimension)
-            case .loading:
-                POSItemImageView(imageSource: nil,
-                                 imageSize: dimension,
-                                 scale: 1)
-                .frame(width: dimension, height: dimension)
-                .redacted(reason: .placeholder)
-                .shimmering()
-            }
+        } else if case .loaded(let item) = cartItem.state {
+            POSItemImageView(imageSource: item.productImageSource,
+                             imageSize: dimension,
+                             scale: 1)
+            .frame(width: dimension, height: dimension)
         }
     }
 }
@@ -124,6 +121,6 @@ private extension ItemRowView {
 @available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
     ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
-                onItemRemoveTapped: { })
+                onCancelLoading: { })
 }
 #endif

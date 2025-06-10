@@ -78,7 +78,10 @@ struct CartView: View {
                                             )
                                         )
                                         posModel.remove(cartItem: cartItem)
-                                    } : nil)
+                                    } : nil,
+                                                onCancelLoading: {
+                                        posModel.cancelLoadingItem(id: cartItem.id)
+                                    })
                                     .id(cartItem.id)
                                     .transition(.opacity)
                                 }

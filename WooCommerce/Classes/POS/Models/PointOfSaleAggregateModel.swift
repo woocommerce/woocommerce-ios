@@ -144,6 +144,10 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    func cancelLoadingItem(id: UUID) {
+        cart.removeItem(id: id)
+    }
+
     func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
         for type in types {
             switch type {

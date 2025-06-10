@@ -3,13 +3,13 @@ import UIKit
 import SwiftUI
 import Yosemite
 
+/// View controller that provides the tab bar item for the Point of Sale tab.
+/// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
 final class POSTabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO: localize and move to SwiftUI if feasible
-        title = "Point of Sale"
-        tabBarItem.title = title
+        tabBarItem.title = NSLocalizedString("pos.tab.title", value: "Point of Sale", comment: "Title for the Point of Sale tab.")
         tabBarItem.image = .creditCardImage
         tabBarItem.accessibilityIdentifier = "tab-bar-pos-item"
     }

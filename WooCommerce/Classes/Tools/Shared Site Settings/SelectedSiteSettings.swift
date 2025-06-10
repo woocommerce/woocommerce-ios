@@ -71,7 +71,7 @@ extension SelectedSiteSettings {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
 
-        NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
+        NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: self)
 
         // Needed to correcly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)

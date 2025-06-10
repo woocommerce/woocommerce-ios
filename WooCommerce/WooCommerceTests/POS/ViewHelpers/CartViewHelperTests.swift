@@ -214,6 +214,41 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)
     }
+
+    @Test func hasLoadingItems_when_cart_is_empty_returns_false() async throws {
+        // Given
+        let cart = Cart()
+
+        // When, Then
+        #expect(sut.hasLoadingItems(cart: cart) == false)
+    }
+
+    @Test func hasLoadingItems_when_cart_has_only_loaded_items_returns_false() async throws {
+        // Given
+        let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.hasLoadingItems(cart: cart) == false)
+    }
+
+    @Test func hasLoadingItems_when_cart_has_loading_item_returns_true() async throws {
+        // Given
+        let loadingItem = Cart.PurchasableItem.loading(id: UUID())
+        let cart = Cart(purchasableItems: [loadingItem])
+
+        // When, Then
+        #expect(sut.hasLoadingItems(cart: cart) == true)
+    }
+
+    @Test func hasLoadingItems_when_cart_has_mixed_items_returns_true() async throws {
+        // Given
+        let loadingItem = Cart.PurchasableItem.loading(id: UUID())
+        let loadedItem = makeItem()
+        let cart = Cart(purchasableItems: [loadingItem, loadedItem])
+
+        // When, Then
+        #expect(sut.hasLoadingItems(cart: cart) == true)
+    }
 }
 
 private func makeItem() -> Cart.PurchasableItem {

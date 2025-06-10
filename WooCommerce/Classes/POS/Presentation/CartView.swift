@@ -280,6 +280,7 @@ private extension CartView {
             Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .disabled(CartViewHelper().hasLoadingItems(cart: posModel.cart))
     }
 
     var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {

@@ -27,6 +27,15 @@ struct CartViewHelper {
 
         return cart.purchasableItems.isNotEmpty
     }
+
+    func hasLoadingItems(cart: Cart) -> Bool {
+        cart.purchasableItems.contains { item in
+            if case .loading = item.state {
+                return true
+            }
+            return false
+        }
+    }
 }
 
 private extension PointOfSalePaymentState {

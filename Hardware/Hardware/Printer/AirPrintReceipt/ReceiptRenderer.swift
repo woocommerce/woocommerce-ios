@@ -18,8 +18,14 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
         self.content = content
 
         super.init()
+    }
 
-        configureFormatter()
+    public func configureFormatterForPrinting() {
+        let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
+        formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
+        formatter.maximumContentWidth = content.preferredPageSizeForPrinting.width - 2 * Constants.margin
+
+        addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 }
 
@@ -100,14 +106,6 @@ public extension ReceiptRenderer {
 
 
 private extension ReceiptRenderer {
-    private func configureFormatter() {
-        let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
-        formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
-        formatter.maximumContentWidth = content.preferredPageSizeForPrinting.width - 2 * Constants.margin
-
-        addPrintFormatter(formatter, startingAtPageAt: 0)
-    }
-
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in content.lineItems {

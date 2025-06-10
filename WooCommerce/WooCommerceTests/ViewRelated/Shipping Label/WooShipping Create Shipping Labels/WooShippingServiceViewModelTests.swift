@@ -208,7 +208,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Media Mail")
     }
 
-    func test_shortShipping_by_deliveryDays_returns_sorted_list() {
+    func test_sortShipping_by_deliveryDays_returns_sorted_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: WooShippingAddress.fake(),

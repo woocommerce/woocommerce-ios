@@ -408,12 +408,12 @@ private extension WooShippingShipmentDetailsViewModel {
         }
         let customSavedPackages = packages.customPackages.map { $0.toPackageData() }
         let predefinedSavedPackages = packages.savedPredefinedPackages.map { $0.toPackageData() }
-        let carrierPackages = packages.allPredefinedOptions.compactMap { $0.toCarrierPackages() }
 
         if let foundPackage = (customSavedPackages + predefinedSavedPackages).first(where: { $0.id == oldPackage.id }) {
             return foundPackage
         }
 
+        let carrierPackages = packages.allPredefinedOptions.compactMap { $0.toCarrierPackages() }
         var foundCarrierPackage: WooShippingPackageDataRepresentable?
         outerLoop: for carrierPackage in carrierPackages {
             let packageGroups = carrierPackage.packageGroups

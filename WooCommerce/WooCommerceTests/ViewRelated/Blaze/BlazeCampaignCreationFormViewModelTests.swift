@@ -534,6 +534,53 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
+    @MainActor
+    func test_ad_cannot_be_confirmed_if_terms_of_service_is_not_accepted() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        await viewModel.loadAISuggestions()
+
+        // When terms of service is not accepted
+        viewModel.isToSAccepted = false
+
+        // Then
+        XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
+    @MainActor
+    func test_ad_can_be_confirmed_when_all_requirements_are_met() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        await viewModel.loadAISuggestions()
+
+        // When terms of service is accepted
+        viewModel.isToSAccepted = true
+
+        // Then
+        XCTAssertTrue(viewModel.canConfirmDetails)
+    }
 
     // MARK: `didTapConfirmDetails`
     @MainActor
@@ -924,6 +971,72 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["error_code"] as? String, "1")
+    }
+
+    // MARK: ToS Checkbox Attributed Text
+    func test_tosCheckboxAttributedText_contains_weekly_amount() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+
+        // Then
+        let expectedWeeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let textContent = String(attributedText.characters)
+        XCTAssertTrue(textContent.contains("$\(Int(expectedWeeklyAmount))"), "Attributed text should contain the weekly amount")
+    }
+
+    func test_tosCheckboxAttributedText_contains_start_date() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+
+        // Then
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let expectedDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+        let textContent = String(attributedText.characters)
+        XCTAssertTrue(textContent.contains(expectedDate), "Attributed text should contain the formatted start date")
+    }
+
+    func test_tosCheckboxAttributedText_has_proper_link_attributes() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+
+        // Then
+        let textContent = String(attributedText.characters)
+        if let range = textContent.range(of: "campaign details") {
+            let attributedRange = Range(range, in: attributedText)
+            if let attributedRange = attributedRange {
+                let linkAttributes = attributedText[attributedRange]
+                XCTAssertNotNil(linkAttributes.link, "Campaign details text should have a link attribute")
+            }
+        }
     }
 }
 

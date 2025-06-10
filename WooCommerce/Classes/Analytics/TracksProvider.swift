@@ -158,8 +158,6 @@ private extension TracksProvider {
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
             WooAnalyticsStat.cardReaderDisconnectTapped,
-            WooAnalyticsStat.manageCardReadersTapToPayReaderAutoDisconnect,
-            WooAnalyticsStat.cardReaderAutomaticDisconnect,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
 
